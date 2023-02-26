@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+  <title>Create team form</title>
+</head>
+<body>
+<p>this is a form to create a team </p>
+<div>
+  <div>
+    <form th:action="@{team_form}" method="post">
+      <label for="name"> Name: </label>
+      <input type="text" class="form-control" id="name" placeholder="Name"
+             th:name="name" th:value="*{name}" data-cy="name" required autofocus>
+      <br/>
+      <label for="sport"> What sport do you play? </label>
+      <input type="text" class="form-control" id="sport" placeholder="Underwater hockey?"
+             th:name="sport" th:value="*{sport}" data-cy="sport" required
+             autofocus>
+      <br/>
+      <a th:href="@{demo}">
+        <button type="submit">Save!</button>
+      </a>
+      <a th:href="@{demo}">Cancel</a>
+    </form>
+  </div>
+  <div th:if="${displayTeamName!=''}">
+    <h4 th:text="'Welcome ' + ${displayTeamName} +', ' + ${displayTeamSport} + ' is a pretty good sport.'"></h4>
+  </div>
+  <div>
+    <a th:href="@{demo}">Back to home</a>
+  </div>
+</div>
+</body>
+</html>
