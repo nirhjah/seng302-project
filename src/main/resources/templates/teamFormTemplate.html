@@ -18,6 +18,11 @@
              th:name="sport" th:value="*{sport}" data-cy="sport" required
              autofocus>
       <br/>
+      <label for="location">what is your teams location?</label>
+      <input type="text" class="form-control" id="location" placeholder="?"
+             th:name="location" th:value="*{location}" data-cy="location" required
+             autofocus>
+      <br/>
       <a th:href="@{demo}">
         <button type="submit">Save!</button>
       </a>

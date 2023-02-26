@@ -1,7 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import nz.ac.canterbury.seng302.tab.entity.FormResult;
-import nz.ac.canterbury.seng302.tab.service.FormService;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class TeamFormController {
     Logger logger = LoggerFactory.getLogger(TeamFormController.class);
 
     @Autowired
-    private FormService formService;
+    private TeamService teamService;
 
     /**
      * Gets form to be displayed, includes the ability to display results of previous form when linked to from POST form
@@ -32,6 +32,7 @@ public class TeamFormController {
     @GetMapping("/team_form")
     public String teamForm(@RequestParam(name="displayTeamName", required = false, defaultValue = "") String displayTeamName,
                        @RequestParam(name="displayTeamSport", required = false, defaultValue = "") String displayTeamSport,
+                       @RequestParam(name="displayTeamLocation", required = false, defaultValue = "") String displayTeamLocation,
                        Model model) {
         logger.info("GET /team_form");
         model.addAttribute("displayTeamName", displayTeamName);
@@ -51,10 +52,12 @@ public class TeamFormController {
     @PostMapping("/team_form")
     public String submitTeamForm( @RequestParam(name="name") String name,
                               @RequestParam(name = "sport") String sport,
+                              @RequestParam(name = "location") String location,
                               Model model) {
         logger.info("POST /team_form");
-        formService.addFormResult(new FormResult(name, sport));
+        teamService.addTeam(new Team(name, location, sport));
         model.addAttribute("displayTeamName", name);
+        model.addAttribute("displayTeamLocation");
         model.addAttribute("displayTeamSport", sport);
         return "teamFormTemplate";
 
