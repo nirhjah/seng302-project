@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
     <head>
+        <link href="./resources/static.css/style.css" rel="stylesheet" type="text/css" />
         <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
         <title>Form Demo</title>
     </head>
@@ -10,5 +11,12 @@
         <a th:href="@{form}">View an interactive form example</a>
         <br/>
         <a th:href="@{fragments/main}">View a fragment example</a>
+        <br/>
+<!--        <a th:href="@{team}">Create Team</a>-->
+<!--        <form action="@{team}">-->
+<!--            <input type="submit" value="Create Team" />-->
+<!--        </form>-->
+        <a href="@{team}"><button>Create Team</button></a>
+
     </body>
 </html>
