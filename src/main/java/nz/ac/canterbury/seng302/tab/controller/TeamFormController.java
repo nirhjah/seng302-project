@@ -55,6 +55,11 @@ public class TeamFormController {
                               @RequestParam(name = "location") String location,
                               Model model) {
         logger.info("POST /team_form");
+
+        // server side validation
+        if(sport.matches(".*\\d+.*")) {
+            return "hello";
+        }
         teamService.addTeam(new Team(name, location, sport));
         model.addAttribute("displayTeamName", name);
         model.addAttribute("displayTeamLocation");
