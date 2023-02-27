@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <title>Create team form</title>
 </head>
 <body>
-
+<div>
+    <form th:action="@{team_form}" method="post">
+        <p>Team Profile</p>
+        <br />
+        <p>Name:</p>
+        <p>Sport:</p>
+        <p>Location:</p>
+        <a th:href="@{demo}">Back</a>
+    </form>
+</div>
 </body>
 </html>
