@@ -5,7 +5,6 @@
   <title>Create team form</title>
 </head>
 <body>
-<p>this is a form to create a team </p>
 <div>
   <div>
     <form th:action="@{team_form}" method="post">
@@ -24,7 +23,7 @@
              th:name="location" th:value="*{location}" data-cy="location" required
              autofocus th:pattern="${allUnicodeRegex}">
       <br/>
-      <!-- Display error message if sportValid is false 'color:red'-->
+      <!-- Display error message if client validation is bypassed but server isn't-->
       <div th:if="${error == true}" class="error-message">An error occurred.</div>
       <a th:href="@{demo}">
         <button type="submit">Create team</button>

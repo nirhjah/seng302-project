@@ -59,9 +59,7 @@ public class TeamFormController {
                               Model model) {
         logger.info("POST /team_form");
 
-//        String allUnicodeRegex = "\\p{L}\\s+";
         String allUnicodeRegex = "^[\\p{L}\\s]+$";
-        String allUnicodeNotNumbersRegex = "[\\p{L}+^[0-9]]";
         // client side validation
         model.addAttribute("allUnicodeRegex", allUnicodeRegex);
 
