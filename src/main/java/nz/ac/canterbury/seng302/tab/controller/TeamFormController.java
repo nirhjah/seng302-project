@@ -60,10 +60,9 @@ public class TeamFormController {
         logger.info("POST /team_form");
 
         // server side validation
-        logger.info("SPORT IS "+ sport);
         boolean sportValid = !(sport.matches(".*\\d+.*"));
-        logger.info("SPORT valid IS "+ sportValid);
         if (!sportValid) {
+            logger.info("sport field failed validation");
             model.addAttribute("isSportValid", false);
             return "teamFormTemplate";
         }

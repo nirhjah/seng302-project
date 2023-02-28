@@ -16,8 +16,8 @@
       <label for="sport"> What sport do you play? </label>
       <input type="text" class="form-control" id="sport" placeholder="Sport"
              th:name="sport" th:value="*{sport}" data-cy="sport" required
-             autofocus>
-        <!-- Display error message if sportValid is false -->
+             autofocus th:style="${isSportValid == false ? 'border:1px solid red' : null}">
+        <!-- Display error message if sportValid is false 'color:red'-->
         <div th:if="${isSportValid != null && isSportValid == false}" class="error-message">Invalid character</div>
       <br/>
       <label for="location">what is your teams location?</label>
