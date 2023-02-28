@@ -35,8 +35,11 @@ public class TeamFormController {
                        @RequestParam(name="displayTeamLocation", required = false, defaultValue = "") String displayTeamLocation,
                        Model model) {
         logger.info("GET /team_form");
+
         model.addAttribute("displayTeamName", displayTeamName);
         model.addAttribute("teamSport", displayTeamSport);
+        model.addAttribute("displayTeamLocation", displayTeamLocation);
+        model.addAttribute("isSportValid", true);
         return "teamFormTemplate";
     }
 
@@ -57,10 +60,17 @@ public class TeamFormController {
         logger.info("POST /team_form");
 
         // server side validation
-        if(sport.matches(".*\\d+.*")) {
-            return "hello";
+        logger.info("SPORT IS "+ sport);
+        boolean sportValid = !(sport.matches(".*\\d+.*"));
+        logger.info("SPORT valid IS "+ sportValid);
+        if (!sportValid) {
+            model.addAttribute("isSportValid", false);
+            return "teamFormTemplate";
         }
+
         teamService.addTeam(new Team(name, location, sport));
+
+        // handy for debugging
         model.addAttribute("displayTeamName", name);
         model.addAttribute("displayTeamLocation");
         model.addAttribute("displayTeamSport", sport);

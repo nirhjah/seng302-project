@@ -14,12 +14,14 @@
              th:name="name" th:value="*{name}" data-cy="name" required autofocus>
       <br/>
       <label for="sport"> What sport do you play? </label>
-      <input type="text" class="form-control" id="sport" placeholder="Underwater hockey?"
+      <input type="text" class="form-control" id="sport" placeholder="Sport"
              th:name="sport" th:value="*{sport}" data-cy="sport" required
              autofocus>
+        <!-- Display error message if sportValid is false -->
+        <div th:if="${isSportValid != null && isSportValid == false}" class="error-message">Invalid character</div>
       <br/>
       <label for="location">what is your teams location?</label>
-      <input type="text" class="form-control" id="location" placeholder="location"
+      <input type="text" class="form-control" id="location" placeholder="Location"
              th:name="location" th:value="*{location}" data-cy="location" required
              autofocus>
       <br/>
