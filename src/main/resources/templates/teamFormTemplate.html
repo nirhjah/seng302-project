@@ -12,13 +12,13 @@
       <label for="name"> Name: </label>
       <input type="text" class="form-control" id="name" placeholder="Name"
              th:name="name" th:value="*{name}" data-cy="name" required autofocus
-             th:style="${isNameValid == false ? 'border:1px solid red' : null}">
-      <div th:if="${isSportValid == false}" class="error-message">Invalid character</div>
+             pattern="${nameRegex}">
+      <div th:if="${isNameValid == false}" class="error-message">Invalid character</div>
       <br/>
       <label for="sport"> What sport do you play? </label>
       <input type="text" class="form-control" id="sport" placeholder="Sport"
              th:name="sport" th:value="*{sport}" data-cy="sport" required
-             autofocus th:style="${isSportValid == false ? 'border:1px solid red' : null}">
+             autofocus pattern="${}">
         <!-- Display error message if sportValid is false 'color:red'-->
         <div th:if="${isSportValid == false}" class="error-message">Invalid character</div>
       <br/>
@@ -28,16 +28,13 @@
              autofocus>
       <br/>
       <a th:href="@{demo}">
-        <button type="submit">Save!</button>
+        <button type="submit">Create team</button>
       </a>
       <a th:href="@{demo}">Cancel</a>
     </form>
   </div>
   <div th:if="${displayTeamName!=''}">
     <h4 th:text="'Welcome ' + ${displayTeamName} +', ' + ${displayTeamSport} + ' is a pretty good sport.'"></h4>
-  </div>
-  <div>
-    <a th:href="@{demo}">Back to home</a>
   </div>
 </div>
 </body>

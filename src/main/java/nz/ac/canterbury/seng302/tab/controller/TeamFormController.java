@@ -60,17 +60,27 @@ public class TeamFormController {
         logger.info("POST /team_form");
 
         // server side validation
-        boolean nameValid = !(name.matches("[^a-zA-Z0-9\\d\\s\\.\\}{]"));
-        boolean sportValid = !(sport.matches(".*\\d+.*"));
+
+        String allUnicodeRegex = "[\\p{L}+]";
+        String allUnicodeNotNumbersRegex = "[\\p{L}+^[0-9]]";
+        model.addAttribute("nameRegex", allUnicodeRegex);
+
+        boolean nameValid = !(name.matches(allUnicodeRegex));
+        boolean sportValid = !(sport.matches(allUnicodeRegex));
+        boolean locationValid = !(location.matches(allUnicodeRegex));
         if (!sportValid) {
             logger.info("sport field failed validation");
             model.addAttribute("isSportValid", false);
         }
         if (!nameValid) {
-            logger.info("sport field failed validation");
+            logger.info("name field failed validation");
             model.addAttribute("isNameValid", false);
         }
-        if (!sportValid || !nameValid) { return "teamFormTemplate"; }
+        if (!locationValid) {
+            logger.info("location field failed validation");
+            model.addAttribute("isLocationValid", false);
+        }
+        if (!sportValid || !nameValid || !locationValid) { return "teamFormTemplate"; }
 
         teamService.addTeam(new Team(name, location, sport));
 
