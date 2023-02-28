@@ -1,11 +1,15 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is a basic spring boot controller, note the @link{Controller} annotation which defines this.
@@ -35,6 +39,11 @@ public class DemoController {
     public String getTemplate(@RequestParam(name = "name", required = false, defaultValue = "World") String name, Model model) {
         logger.info("GET /demo");
         model.addAttribute("name", name);
+
+        List<Team> displayTeams = new ArrayList<Team>();
+//        displayTeams.addAll(teamService.getTeamList());
+        displayTeams.add(new Team("Team1", "Tokyo, Japan", "Football"));
+        model.addAttribute("displayTeams", displayTeams);
         return "demoTemplate";
     }
 

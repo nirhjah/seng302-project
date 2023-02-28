@@ -2,18 +2,29 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
     <title>Create team form</title>
 </head>
 <body>
 <div>
-    <form th:action="@{team_form}" method="post">
-        <p>Team Profile</p>
-        <br />
-        <p>Name:</p>
-        <p>Sport:</p>
-        <p>Location:</p>
-        <a th:href="@{demo}">Back</a>
-    </form>
+    <div class="navbar">
+        <p>Select Team: </p>
+        <select class="form-control" id="dropDownList">
+            <option th:each="option : ${displayTeams}" th:value="${option}" th:text="${option}"></option>
+        </select>
+        <a th:href="@{profile_form}">Profile</a>
+    </div>
+    <div>
+        <form th:action="@{profile_form}" method="post">
+            <h3>Team Profile</h3>
+            <br />
+            <h4 th:text="'Name: ' + ${displayName}"></h4>
+            <h4 th:text="'Sport: ' + ${displaySport}"></h4>
+            <h4 th:text="'Location: ' + ${displayLocation}"></h4>
+            <br />
+            <a th:href="@{demo}">Menu</a>
+        </form>
+    </div>
 </div>
 </body>
 </html>

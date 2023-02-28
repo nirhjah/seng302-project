@@ -41,7 +41,10 @@ public class Team {
         return this.sport;
     }
 
-
+    @Override
+    public String toString() {
+        return this.name;
+    }
 
 
 }

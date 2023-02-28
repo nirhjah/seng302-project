@@ -1,7 +1,9 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import nz.ac.canterbury.seng302.tab.entity.FormResult;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.FormService;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controller for profile form
@@ -22,21 +27,31 @@ public class ProfileFormController {
     @Autowired
     private FormService formService;
 
+    @Autowired
+    private TeamService teamService;
+
     /**
      * Gets form to be displayed, includes the ability to display results of previous form when linked to from POST form
-     * @param displayName previous name entered into form to be displayed
-     * @param displayLanguage previous favourite programming language entered into form to be displayed
+     * @param displayName location assigned to the team
+     * @param displaySport sport assigned to the team
+     * @param displayLocation location assigned to the team
      * @param model (map-like) representation of name, language and isJava boolean for use in thymeleaf
      * @return thymeleaf profileForm
      */
     @GetMapping("/profile_form")
-    public String profileForm(@RequestParam(name="displayName", required = false, defaultValue = "") String displayName,
-                       @RequestParam(name="displayFavouriteLanguage", required = false, defaultValue = "") String displayLanguage,
+    public String profileForm(@RequestParam(name="displayName",  required = false) String displayName,
+                              @RequestParam(name="displaySport",  required = false) String displaySport,
+                              @RequestParam(name="displayLocation",  required = false) String displayLocation,
                        Model model) {
-        logger.info("GET /form");
+        logger.info("GET /profile_form");
         model.addAttribute("displayName", displayName);
-        model.addAttribute("displayFavouriteLanguage", displayLanguage);
-        model.addAttribute("isJava", displayLanguage.equalsIgnoreCase("java"));
+        model.addAttribute("displaySport", displaySport);
+        model.addAttribute("displayLocation", displayLocation);
+
+        List<Team> displayTeams = new ArrayList<Team>();
+//        displayTeams.addAll(teamService.getTeamList());
+        displayTeams.add(new Team("Team1", "Tokyo, Japan", "Football"));
+        model.addAttribute("displayTeams", displayTeams);
         return "profileForm";
     }
 

@@ -3,17 +3,21 @@
     <head>
         <link href="./resources/static.css/style.css" rel="stylesheet" type="text/css" />
         <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+        <link th:href="@{/css/styles.css}" rel="stylesheet">
         <title>Form Demo</title>
     </head>
+    <div class="navbar">
+        <p>Select Team: </p>
+        <select class="form-control" id="dropDownList">
+            <option th:each="option : ${displayTeams}" th:value="${option}" th:text="${option}"></option>
+        </select>
+        <a th:href="@{profile_form}">Profile</a>
+    </div>
     <body>
         <h4>Welcome To SENG302</h4>
         <p th:text="'hello, ' + ${name} + '!'"></p>
         <a th:href="@{form}">View an interactive form example</a>
         <br/>
         <a th:href="@{fragments/main}">View a fragment example</a>
-        <br/>
-        <a th:href="@{profile_form}">View team profile</a>
-        <br/>
-
     </body>
 </html>
