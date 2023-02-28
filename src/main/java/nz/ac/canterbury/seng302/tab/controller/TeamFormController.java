@@ -59,28 +59,20 @@ public class TeamFormController {
                               Model model) {
         logger.info("POST /team_form");
 
-        // server side validation
-
-        String allUnicodeRegex = "[\\p{L}+]";
+//        String allUnicodeRegex = "\\p{L}\\s+";
+        String allUnicodeRegex = "^[\\p{L}\\s]+$";
         String allUnicodeNotNumbersRegex = "[\\p{L}+^[0-9]]";
-        model.addAttribute("nameRegex", allUnicodeRegex);
+        // client side validation
+        model.addAttribute("allUnicodeRegex", allUnicodeRegex);
 
-        boolean nameValid = !(name.matches(allUnicodeRegex));
-        boolean sportValid = !(sport.matches(allUnicodeRegex));
-        boolean locationValid = !(location.matches(allUnicodeRegex));
-        if (!sportValid) {
-            logger.info("sport field failed validation");
-            model.addAttribute("isSportValid", false);
+        // server side validation
+        boolean nameValid = (name.matches(allUnicodeRegex));
+        boolean sportValid = (sport.matches(allUnicodeRegex));
+        boolean locationValid = (location.matches(allUnicodeRegex));
+        if (!sportValid || !nameValid || !locationValid) {
+            model.addAttribute("error", true);
+            return "teamFormTemplate";
         }
-        if (!nameValid) {
-            logger.info("name field failed validation");
-            model.addAttribute("isNameValid", false);
-        }
-        if (!locationValid) {
-            logger.info("location field failed validation");
-            model.addAttribute("isLocationValid", false);
-        }
-        if (!sportValid || !nameValid || !locationValid) { return "teamFormTemplate"; }
 
         teamService.addTeam(new Team(name, location, sport));
 

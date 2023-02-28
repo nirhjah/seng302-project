@@ -11,22 +11,21 @@
     <form th:action="@{team_form}" method="post">
       <label for="name"> Name: </label>
       <input type="text" class="form-control" id="name" placeholder="Name"
-             th:name="name" th:value="*{name}" data-cy="name" required autofocus
-             pattern="${nameRegex}">
-      <div th:if="${isNameValid == false}" class="error-message">Invalid character</div>
+             th:name="name" th:value="*{name}" data-cy="name" required
+             autofocus th:pattern="${allUnicodeRegex}">
       <br/>
       <label for="sport"> What sport do you play? </label>
       <input type="text" class="form-control" id="sport" placeholder="Sport"
              th:name="sport" th:value="*{sport}" data-cy="sport" required
-             autofocus pattern="${}">
-        <!-- Display error message if sportValid is false 'color:red'-->
-        <div th:if="${isSportValid == false}" class="error-message">Invalid character</div>
+             autofocus th:pattern="${allUnicodeRegex}">
       <br/>
       <label for="location">what is your teams location?</label>
       <input type="text" class="form-control" id="location" placeholder="Location"
              th:name="location" th:value="*{location}" data-cy="location" required
-             autofocus>
+             autofocus th:pattern="${allUnicodeRegex}">
       <br/>
+      <!-- Display error message if sportValid is false 'color:red'-->
+      <div th:if="${error == true}" class="error-message">An error occurred.</div>
       <a th:href="@{demo}">
         <button type="submit">Create team</button>
       </a>
