@@ -1,7 +1,10 @@
 package nz.ac.canterbury.seng302.tab;
 
+import nz.ac.canterbury.seng302.tab.controller.DemoController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.io.File;
 
 /**
  * TAB (not that TAB) entry-point
@@ -15,6 +18,7 @@ public class TabApplication {
 	 * @param args command line arguments
 	 */
 	public static void main(String[] args) {
+		new File(DemoController.uploadDirectory).mkdir();
 		SpringApplication.run(TabApplication.class, args);
 	}
 

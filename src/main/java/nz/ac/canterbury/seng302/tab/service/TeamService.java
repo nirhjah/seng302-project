@@ -18,4 +18,15 @@ public class TeamService {
     public Team addTeam(Team team) {
         return teamRepository.save(team);
     }
+
+    /**
+     * Method which uses the team id to set the profile picture's filename
+     * @param id Team entity's primary key
+     * @param fileName Name of file for profile picture
+     */
+    public void updateTeamPhoto(long id, String fileName){
+        Team team = teamRepository.findById(id).get();
+        team.setPhoto(fileName);
+        teamRepository.save(team);
+    }
 }

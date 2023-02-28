@@ -12,11 +12,14 @@
         <br/>
         <a th:href="@{fragments/main}">View a fragment example</a>
         <br/>
-<!--        <a th:href="@{team}">Create Team</a>-->
-<!--        <form action="@{team}">-->
-<!--            <input type="submit" value="Create Team" />-->
-<!--        </form>-->
         <a th:href="@{team_form}"><button>Create Team</button></a>
+        <br/>
+        <p th:text="${message}" th:if="${message ne null}"></p>
 
+        <form method="post" th:action="@{/upload}" enctype="multipart/form-data">
+            <div class="form-group">
+                <input type="file" id="file-upload" name="image" accept="image/png, image/jpeg, image/svg">
+            </div>
+        </form>
     </body>
 </html>
