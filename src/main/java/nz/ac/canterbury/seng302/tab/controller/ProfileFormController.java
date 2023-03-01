@@ -25,7 +25,7 @@ public class ProfileFormController {
     private TeamService teamService;
     /**
      * Gets form to be displayed, includes the ability to display results of previous form when linked to from POST form
-     * @param selectedTeamID team for which the details are to be displayed
+     * @param teamID team for which the details are to be displayed
      * @param model (map-like) representation of name, language and isJava boolean for use in thymeleaf
      * @return thymeleaf profileForm
      */
@@ -33,26 +33,28 @@ public class ProfileFormController {
 
     @GetMapping("/profile_form")
     public String profileForm(Model model,
-                              @RequestParam(value = "selectedTeamID", required = false) Long selectedTeamID) {
+                              @RequestParam(value = "teamID", required = false) Long teamID) {
         logger.info("GET /profile_form");
-        logger.info(selectedTeamID.toString());
+
 
         // Retrieve the selected team from the list of available teams using the ID
         // If the name is null or empty, return null
         List<Team> teamList = teamService.getTeamList();
+        logger.info(teamList.get(0).toString());
         Team selectedTeam = null;
-        if (selectedTeamID != null) {
+        if (teamID != null) {
             // Find the selected team by its id
             selectedTeam = teamList.stream()
-                    .filter(team -> team.getTeamId().equals(selectedTeamID))
+                    .filter(team -> team.getTeamId().equals(teamID))
                     .findFirst()
                     .orElse(null);
         }
 
+        model.addAttribute("displayTeams", teamList);
+        model.addAttribute("teamID", teamID);
         model.addAttribute("displayName", selectedTeam.getName());
         model.addAttribute("displaySport", selectedTeam.getSport());
         model.addAttribute("displayLocation", selectedTeam.getLocation());
-        model.addAttribute("displayTeams", teamList);
 
         return "profileForm";
     }
