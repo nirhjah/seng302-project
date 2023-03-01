@@ -6,14 +6,19 @@
         <link th:href="@{/css/styles.css}" rel="stylesheet">
         <title>Form Demo</title>
     </head>
-    <div class="navbar">
-        <p>Select Team: </p>
-        <select class="form-control" id="dropDownList">
-            <option th:each="option : ${displayTeams}" th:value="${option}" th:text="${option}"></option>
-        </select>
-        <a th:href="@{profile_form}">Profile</a>
-    </div>
     <body>
+        <div th:fragment="navbar">
+            <p>Select Team:
+                <select class="form-control" id="dropDownList" name="selectedTeam"
+                        onchange="window.location.href = '?selectedTeam=' + this.value;">
+                    <option th:each="team : ${displayTeams}"
+                            th:value="${team.teamId}"
+                            th:text="${team}"
+                            th:selected="${team.teamId} == ${selectedTeam?.teamId}"> </option>
+                </select>
+                <a th:href="@{/profile_form(selectedTeam=${selectedTeam?.teamId})}">Profile</a>
+            </p>
+        </div>
         <h4>Welcome To SENG302</h4>
         <p th:text="'hello, ' + ${name} + '!'"></p>
         <a th:href="@{form}">View an interactive form example</a>

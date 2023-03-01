@@ -1,8 +1,10 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,8 @@ import java.util.List;
 public class DemoController {
     Logger logger = LoggerFactory.getLogger(DemoController.class);
 
+    @Autowired
+    private TeamService teamService;
     /**
      * Redirects GET default url '/' to '/demo'
      * @return redirect to /demo
@@ -39,11 +43,7 @@ public class DemoController {
     public String getTemplate(@RequestParam(name = "name", required = false, defaultValue = "World") String name, Model model) {
         logger.info("GET /demo");
         model.addAttribute("name", name);
-
-        List<Team> displayTeams = new ArrayList<Team>();
-//        displayTeams.addAll(teamService.getTeamList());
-        displayTeams.add(new Team("Team1", "Tokyo, Japan", "Football"));
-        model.addAttribute("displayTeams", displayTeams);
+        model.addAttribute("displayTeams", teamService.getTeamList());
         return "demoTemplate";
     }
 

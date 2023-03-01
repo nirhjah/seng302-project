@@ -7,13 +7,7 @@
 </head>
 <body>
 <div>
-    <div class="navbar">
-        <p>Select Team: </p>
-        <select class="form-control" id="dropDownList">
-            <option th:each="option : ${displayTeams}" th:value="${option}" th:text="${option}"></option>
-        </select>
-        <a th:href="@{profile_form}">Profile</a>
-    </div>
+    <div th:insert="/demoTemplate.html::navbar(displayTeams=${displayTeams})"></div>
     <div>
         <form th:action="@{profile_form}" method="post">
             <h3>Team Profile</h3>

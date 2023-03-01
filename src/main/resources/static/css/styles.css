@@ -2,7 +2,7 @@ body {
     background-color: aliceblue;
 }
 
-.navbar {
+navbar {
     background-color: grey;
     overflow: hidden;
     white-space: nowrap;
