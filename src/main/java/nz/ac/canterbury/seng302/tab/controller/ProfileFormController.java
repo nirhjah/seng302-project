@@ -40,8 +40,6 @@ public class ProfileFormController {
         // Retrieve the selected team from the list of available teams using the ID
         // If the name is null or empty, return null
         List<Team> teamList = teamService.getTeamList();
-        teamList.add(new Team("NULL", "NULL", "NULL"));
-        teamList.add(new Team("Team1", "Tokyo, Japan", "Football"));
         Team selectedTeam = null;
         if (selectedTeamID != null) {
             // Find the selected team by its id

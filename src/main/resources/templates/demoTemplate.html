@@ -9,14 +9,15 @@
     <body>
         <div th:fragment="navbar">
             <p>Select Team:
-                <select class="form-control" id="dropDownList" name="selectedTeam"
-                        onchange="window.location.href = '?selectedTeam=' + this.value;">
+                <select class="form-control" id="dropDownList" name="teamSelector"
+                        onchange="window.location.href = '?teamID=' + this.value;">
                     <option th:each="team : ${displayTeams}"
                             th:value="${team.teamId}"
                             th:text="${team}"
-                            th:selected="${team.teamId} == ${selectedTeam?.teamId}"> </option>
+                            th:selected="${team.teamId.equals(teamID)}"> </option>
+
                 </select>
-                <a th:href="@{/profile_form(selectedTeam=${selectedTeam?.teamId})}">Profile</a>
+                <a th:href="@{/profile_form}">Profile</a>
             </p>
         </div>
         <h4>Welcome To SENG302</h4>
