@@ -1,6 +1,14 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+
+import java.io.File;
+import java.io.InputStream;
 
 @Entity
 public class Team {
@@ -16,9 +24,8 @@ public class Team {
 
     @Column(nullable = false)
     private String sport;
-
-    @Column(nullable = false, length = 64)
-    private String picture="/image/default-profile.png";
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private String picture;
 
     protected Team(){}
 
@@ -26,9 +33,10 @@ public class Team {
         this.name = name;
         this.location = location;
         this.sport= sport;
+
     }
 
-    public Team (String name, String location, String sport, String photo){
+    public Team (String name, String location, String sport, String picture){
         this.name = name;
         this.location = location;
         this.sport= sport;

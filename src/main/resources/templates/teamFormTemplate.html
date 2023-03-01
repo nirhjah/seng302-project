@@ -9,7 +9,7 @@
 <body align = "center" >
 <p style="text-align: center">this is a form to create a team </p>
 <p style="text-align: center">
-  <img th:src ="@{/image/default-profile.png}" width="100" height="100"/>
+  <img th:src ="*{'data:image/jpeg;base64,'+{fileArray}}"  width="100" height="100"/>
 </p>
 <div>
   <div class ="row">
