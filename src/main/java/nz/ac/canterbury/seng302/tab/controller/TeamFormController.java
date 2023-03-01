@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class TeamFormController {
 
     Logger logger = LoggerFactory.getLogger(TeamFormController.class);
-    String defaultFilename= "default-profile.png";
 
     @Autowired
     private TeamService teamService;
@@ -56,7 +55,9 @@ public class TeamFormController {
                               @RequestParam(name = "location") String location,
                               Model model) {
         logger.info("POST /team_form");
-        teamService.addTeam(new Team(name, location, sport,defaultFilename));
+        Team team = new Team(name,location,sport);
+        teamService.addTeam(team);
+        model.addAttribute("profileFilePath",team.getPicturePath());
         model.addAttribute("displayTeamName", name);
         model.addAttribute("displayTeamLocation");
         model.addAttribute("displayTeamSport", sport);

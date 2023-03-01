@@ -1,6 +1,9 @@
 package nz.ac.canterbury.seng302.tab;
 
 import nz.ac.canterbury.seng302.tab.controller.DemoController;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -13,13 +16,15 @@ import java.io.File;
 @SpringBootApplication
 public class TabApplication {
 
+
+
 	/**
 	 * Main entry point, runs the Spring application
 	 * @param args command line arguments
 	 */
 	public static void main(String[] args) {
-		new File(DemoController.uploadDirectory).mkdir();
 		SpringApplication.run(TabApplication.class, args);
+
 	}
 
 }

@@ -1,10 +1,15 @@
 package nz.ac.canterbury.seng302.tab.service;
 
+import jakarta.transaction.Transactional;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -19,14 +24,19 @@ public class TeamService {
         return teamRepository.save(team);
     }
 
-    /**
-     * Method which uses the team id to set the profile picture's filename
-     * @param id Team entity's primary key
-     * @param fileName Name of file for profile picture
-     */
-    public void updateTeamPhoto(long id, String fileName){
+    public void  updatePicture(MultipartFile file,long id)
+    {
         Team team = teamRepository.findById(id).get();
-        team.setPhoto(fileName);
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        if(fileName.contains(".."))
+        {
+            System.out.println("not a a valid file");
+        }
+        try {
+            team.setPicturePath(Base64.getEncoder().encodeToString(file.getBytes()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         teamRepository.save(team);
     }
 }

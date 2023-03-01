@@ -1,21 +1,16 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
-import nz.ac.canterbury.seng302.tab.service.FileUploadService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -40,6 +35,7 @@ public class DemoController {
     @GetMapping("/")
     public String home() {
         logger.info("GET /");
+
         return "redirect:./demo";
     }
 
@@ -52,20 +48,14 @@ public class DemoController {
     @GetMapping("/demo")
     public String getTemplate(@RequestParam(name = "name", required = false, defaultValue = "World") String name, Model model) {
         logger.info("GET /demo");
+        teamService.addTeam(new Team("test","test","test"));
         model.addAttribute("name", name);
         return "demoTemplate";
     }
-
-    //TODO re-adjust this code so that it's working properly.
     @PostMapping("/upload")
-    public RedirectView saveTeam(@RequestParam(name = "team") long teamId,
-                                 @RequestParam("image") MultipartFile multipartFile) throws IOException {
-        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-        teamService.updateTeamPhoto(teamId,fileName);
-        String uploadDir = "resources/image/" + teamId;
-        FileUploadService.saveFile(uploadDir, fileName, multipartFile);
-        return new RedirectView("/users", true);
+    public String saveProduct(@RequestParam("file") MultipartFile file)
+    {
+        teamService.updatePicture(file, 1);
+        return "demoTemplate";
     }
-
-
 }

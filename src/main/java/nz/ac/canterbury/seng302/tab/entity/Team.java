@@ -18,7 +18,7 @@ public class Team {
     private String sport;
 
     @Column(nullable = false, length = 64)
-    private String photo;
+    private String picture="/image/default-profile.png";
 
     protected Team(){}
 
@@ -32,7 +32,7 @@ public class Team {
         this.name = name;
         this.location = location;
         this.sport= sport;
-        this.photo=photo;
+        this.picture=picture;
     }
 
     public Long getTeamId(){
@@ -51,23 +51,14 @@ public class Team {
         return this.sport;
     }
 
-    public String getPhoto() {
-        return this.photo;
+    public String getPicturePath() {
+        return this.picture;
     }
 
-    public void setPhoto(String photo){
-        this.photo = photo;
+    public void setPicturePath(String picture){
+        this.picture = picture;
     }
 
-    /**
-     * @param teamId Team entity's primary key, team id
-     * @param photo Filename of profile picture
-     * @return  The file path of profile picture
-     */
-    @Transient
-    public String getPhotosImagePath(long teamId, String photo) {
-        return "resources/image/" + teamId+ "/" + photo;
-    }
 
 
 }
