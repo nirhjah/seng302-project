@@ -15,10 +15,11 @@
         <a th:href="@{team_form}"><button>Create Team</button></a>
         <br/>
         <p th:text="${message}" th:if="${message ne null}"></p>
-        <form method="post" th:action="@{/upload}" th:object="${team}" enctype="multipart/form-data">
+        <form method="post" th:action="@{/upload}" enctype="multipart/form-data">
             <div class="form-group">
-                <input type="file" id="file-upload" name="file" accept="image/png, image/jpeg, image/svg">
+                <input type="file" name="file" class="form-control-file">
             </div>
+            <button type="submit" class="btn btn-primary">Upload Profile Picture</button>
         </form>
     </body>
 </html>
