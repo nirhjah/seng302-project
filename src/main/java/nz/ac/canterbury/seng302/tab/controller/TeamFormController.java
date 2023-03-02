@@ -22,13 +22,18 @@ public class TeamFormController {
     @Autowired
     private TeamService teamService;
 
+    private String allUnicodeRegex = "^[\\p{L}\\s\\d\\.\\}\\{]+$";
+
     /**
      * Gets form to be displayed, includes the ability to display results of previous form when linked to from POST form
      * @return thymeleaf demoFormTemplate
      */
     @GetMapping("/team_form")
-    public String teamForm() {
+    public String teamForm(Model model) {
         logger.info("GET /team_form");
+
+        // client side validation
+        model.addAttribute("allUnicodeRegex", allUnicodeRegex);
 
         return "teamFormTemplate";
     }
@@ -50,7 +55,6 @@ public class TeamFormController {
                                  Model model) {
         logger.info("POST /team_form");
 
-        String allUnicodeRegex = "^[\\p{L}\\s\\d]+$";
         // client side validation
         model.addAttribute("allUnicodeRegex", allUnicodeRegex);
 
