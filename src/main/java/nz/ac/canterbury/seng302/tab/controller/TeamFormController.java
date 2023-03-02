@@ -24,17 +24,10 @@ public class TeamFormController {
 
     /**
      * Gets form to be displayed, includes the ability to display results of previous form when linked to from POST form
-     *
-     * @param displayTeamName  previous name entered into form to be displayed
-     * @param displayTeamSport previous favourite programming language entered into form to be displayed
-     * @param model            (map-like) representation of name, language and isJava boolean for use in thymeleaf
      * @return thymeleaf demoFormTemplate
      */
     @GetMapping("/team_form")
-    public String teamForm(@RequestParam(name = "displayTeamName", required = false, defaultValue = "") String displayTeamName,
-                           @RequestParam(name = "displayTeamSport", required = false, defaultValue = "") String displayTeamSport,
-                           @RequestParam(name = "displayTeamLocation", required = false, defaultValue = "") String displayTeamLocation,
-                           Model model) {
+    public String teamForm() {
         logger.info("GET /team_form");
 
         return "teamFormTemplate";
