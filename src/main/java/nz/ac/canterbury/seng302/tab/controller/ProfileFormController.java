@@ -40,8 +40,10 @@ public class ProfileFormController {
         // Retrieve the selected team from the list of available teams using the ID
         // If the name is null or empty, return null
         List<Team> teamList = teamService.getTeamList();
-        logger.info(teamList.get(0).toString());
         Team selectedTeam = null;
+        String teamName = null;
+        String teamLocation= null;
+        String teamSport= null;
         if (teamID != null) {
             // Find the selected team by its id
             selectedTeam = teamList.stream()
@@ -49,12 +51,18 @@ public class ProfileFormController {
                     .findFirst()
                     .orElse(null);
         }
+        if (selectedTeam != null) {
+            teamName=selectedTeam.getName() ;
+            teamLocation=selectedTeam.getSport();
+            teamSport=selectedTeam.getLocation();
+        }
+
 
         model.addAttribute("displayTeams", teamList);
         model.addAttribute("teamID", teamID);
-        model.addAttribute("displayName", selectedTeam.getName());
-        model.addAttribute("displaySport", selectedTeam.getSport());
-        model.addAttribute("displayLocation", selectedTeam.getLocation());
+        model.addAttribute("displayName", teamName);
+        model.addAttribute("displaySport", teamLocation);
+        model.addAttribute("displayLocation", teamSport);
 
         return "profileForm";
     }

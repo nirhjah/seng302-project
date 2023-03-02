@@ -16,7 +16,7 @@
             <h4 th:text="'Sport: ' + ${displaySport}"></h4>
             <h4 th:text="'Location: ' + ${displayLocation}"></h4>
             <br />
-            <a th:href="@{demo}">Menu</a>
+            <a th:href="@{demo(teamID=${teamID})}">Menu</a>
         </form>
     </div>
 </div>
