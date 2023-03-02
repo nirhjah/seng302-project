@@ -1,27 +1,38 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
+  <link th:href="@{/css/styles.css}" rel="stylesheet" />
   <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
   <title>Create team form</title>
 </head>
 <body>
 <div>
-  <div>
+  <div class="create-team">
+    <h1>Create Team</h1>
+  </div>
+  <div class ="wrapper">
     <form th:action="@{team_form}" method="post">
+      <div class="input-box">
+        <br/>
       <label for="name"> Name: </label>
       <input type="text" class="form-control" id="name" placeholder="Name"
              th:name="name" th:value="*{name}" data-cy="name" required
              autofocus th:pattern="${allUnicodeRegex}">
+      </div>
       <br/>
       <label for="sport"> What sport do you play? </label>
+      <div class="input-box">
       <input type="text" class="form-control" id="sport" placeholder="Sport"
              th:name="sport" th:value="*{sport}" data-cy="sport" required
              autofocus th:pattern="${allUnicodeRegex}">
+      </div>
       <br/>
+      <div class="input-box">
       <label for="location">what is your teams location?</label>
       <input type="text" class="form-control" id="location" placeholder="Location"
              th:name="location" th:value="*{location}" data-cy="location" required
              autofocus th:pattern="${allUnicodeRegex}">
+      </div>
       <br/>
       <!-- Display error message if client validation is bypassed but server isn't-->
       <div th:if="${error == true}" class="error-message">An error occurred.</div>
