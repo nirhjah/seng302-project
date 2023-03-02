@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,10 +34,17 @@ public class ViewTeamsFormController {
 
     @GetMapping("/view_teams_form")
     public String profileForm(Model model,
-                              @RequestParam(value = "teamID", required = false) Long teamID) {
+                              @RequestParam(value = "teamID", required = false) Long teamID,
+                              @RequestParam(value = "teamFilter", required = false) String teamSearchQuery) {
         logger.info("GET /view_teams_form");
 
         List<Team> teamList = teamService.getTeamList();
+        if (teamSearchQuery != null) {
+            List<Team> filteredList = teamList.stream()
+                    .filter(p -> (p.getLocation().toLowerCase().contains(teamSearchQuery.toLowerCase()) ||
+                            p.getName().toLowerCase().contains(teamSearchQuery.toLowerCase())))
+                    .collect(Collectors.toList());
+        }
 
         model.addAttribute("displayTeams", teamList);
         model.addAttribute("teamID", teamID);

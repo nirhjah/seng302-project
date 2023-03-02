@@ -10,7 +10,18 @@
   <div th:insert="/demoTemplate.html::navbar(displayTeams=${displayTeams})"></div>
   <div>
     <table>
-      <th></th>
+      <tr>
+        <th>Profile Picture</th>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Sport</th>
+      </tr>
+      <tr th:each="team : ${displayTeams}">
+        <td th:text="img"></td>
+        <td th:text="${team.name}"></td>
+        <td th:text="${team.location}"></td>
+        <td th:text="${team.sport}"></td>
+      </tr>
     </table>
   </div>
 </div>

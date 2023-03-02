@@ -17,7 +17,7 @@
                             th:selected="${team.teamId.equals(teamID)}"> </option>
 
                 </select>
-                <a th:href="@{/profile_form(teamID=${teamID})}">Profile</a>
+                <a th:href="@{profile_form(teamID=${teamID})}">Profile</a>
             </p>
         </div>
         <h4>Welcome To SENG302</h4>
@@ -25,5 +25,7 @@
         <a th:href="@{form}">View an interactive form example</a>
         <br/>
         <a th:href="@{fragments/main}">View a fragment example</a>
+        <br/>
+        <a th:href="@{view_teams_form(teamID=${teamID})}">View All Teams</a>
     </body>
 </html>
