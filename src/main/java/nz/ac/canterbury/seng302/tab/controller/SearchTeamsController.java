@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.stream.Collectors;
@@ -40,6 +41,14 @@ public class SearchTeamsController {
         logger.info("GET /search_teams_form");
         model.addAttribute("allUnicodeRegex",allUnicodeRegex);
 
+        return "searchTeamsForm";
+    }
+
+    @PostMapping("/search_teams_form")
+    public String submitSearchTeams(Model model,
+        @RequestParam(value = "teamFilter", required = false) String teamSearchQuery) {
+        logger.info("POST /search_teams_form");
+
         List<Team> teamList = teamService.getTeamList();
         if (teamSearchQuery != null) {
             List<Team> filteredList = teamList.stream()
@@ -48,8 +57,8 @@ public class SearchTeamsController {
                     .collect(Collectors.toList());
         }
 
-        model.addAttribute("displayTeams", teamList);
-        model.addAttribute("teamID", teamID);
+//        model.addAttribute("displayTeams", teamList);
+//        model.addAttribute("teamID", teamID);
         return "searchTeamsForm";
     }
 }
