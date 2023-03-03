@@ -25,12 +25,25 @@ public class TeamFormController {
     private String allUnicodeRegex = "^[\\p{L}\\s\\d\\.\\}\\{]+$";
 
     /**
-     * Gets form to be displayed, includes the ability to display results of previous form when linked to from POST form
+     * Gets form to be displayed, includes the ability to display results of
+     * previous form when linked to from POST form
+     *
      * @return thymeleaf demoFormTemplate
      */
     @GetMapping("/team_form")
-    public String teamForm(Model model) {
+    public String teamForm(@RequestParam(name = "edit", defaultValue = "-1") long teamID,
+            Model model) {
         logger.info("GET /team_form");
+
+        Team team;
+        if (teamID != -1 && (team = teamService.getTeam(teamID)) != null) {
+            model.addAttribute("name", team.getName());
+            model.addAttribute("sport", team.getSport());
+            model.addAttribute("location", team.getLocation());
+            model.addAttribute("teamID", team.getTeamId());
+        } else {
+            model.addAttribute("error", "Invalid team ID, creating a new team instead.");
+        }
 
         // client side validation
         model.addAttribute("allUnicodeRegex", allUnicodeRegex);
@@ -38,21 +51,21 @@ public class TeamFormController {
         return "teamFormTemplate";
     }
 
-
     /**
      * Posts a form response with name and favourite language
      *
      * @param name  name if user
      * @param sport users team sport
-     * @param model (map-like) representation of name, language and isJava boolean for use in thymeleaf,
+     * @param model (map-like) representation of name, language and isJava boolean
+     *              for use in thymeleaf,
      *              with values being set to relevant parameters provided
      * @return thymeleaf teamFormTemplate
      */
     @PostMapping("/team_form")
     public String submitTeamForm(@RequestParam(name = "name") String name,
-                                 @RequestParam(name = "sport") String sport,
-                                 @RequestParam(name = "location") String location,
-                                 Model model) {
+            @RequestParam(name = "sport") String sport,
+            @RequestParam(name = "location") String location,
+            Model model) {
         logger.info("POST /team_form");
 
         // client side validation
@@ -63,13 +76,13 @@ public class TeamFormController {
         boolean sportValid = (sport.matches(allUnicodeRegex));
         boolean locationValid = (location.matches(allUnicodeRegex));
         if (!sportValid || !nameValid || !locationValid) {
-            model.addAttribute("error", true);
+            model.addAttribute("error", "An error occurred");
             return "teamFormTemplate";
         }
 
         Team newTeam = new Team(name, location, sport);
         teamService.addTeam(newTeam);
-        return String.format("profileForm?teamID=%s", newTeam.getTeamId());
+        return String.format("redirect:./profileForm?teamID=%s", newTeam.getTeamId());
 
     }
 }

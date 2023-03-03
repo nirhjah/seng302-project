@@ -15,7 +15,12 @@ public class TeamService {
     public List<Team> getTeamList() {
         return teamRepository.findAll();
     }
+
     public Team addTeam(Team team) {
         return teamRepository.save(team);
+    }
+
+    public Team getTeam(long teamID) {
+        return teamRepository.findById(teamID).orElse(null);
     }
 }
