@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
-<head>
-  <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
-  <link th:href="@{/css/styles.css}" rel="stylesheet">
-  <title>Create team form</title>
-</head>
-<body>
-<div>
-  <div th:insert="/demoTemplate.html::navbar(displayTeams=${displayTeams})"></div>
-  <div>
-    <table>
-      <tr>
-        <th>Profile Picture</th>
-        <th>Name</th>
-        <th>Location</th>
-        <th>Sport</th>
-      </tr>
-      <tr th:each="team : ${displayTeams}">
-        <td th:text="img"></td>
-        <td th:text="${team.name}"></td>
-        <td th:text="${team.location}"></td>
-        <td th:text="${team.sport}"></td>
-      </tr>
-    </table>
-  </div>
-</div>
-</body>
+  <head>
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <title>Create team form</title>
+  </head>
+  <body>
+    <div>
+      <div th:insert="/demoTemplate.html::navbar(displayTeams=${displayTeams})"></div>
+      <div>
+        <table id="teamTable">
+          <tr>
+            <th>Profile Picture</th>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Sport</th>
+          </tr>
+          <tr th:each="team : ${displayTeams}">
+            <td th:text="img"></td>
+            <td th:text="${team.name}"></td>
+            <td th:text="${team.location}"></td>
+            <td th:text="${team.sport}"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </body>
 </html>

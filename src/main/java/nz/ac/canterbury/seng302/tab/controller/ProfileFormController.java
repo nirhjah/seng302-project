@@ -50,7 +50,7 @@ public class ProfileFormController {
                     .orElse(null);
         }
 
-        model.addAttribute("displayTeams", teamList);
+        model.addAttribute("navTeams", teamList);
         model.addAttribute("teamID", teamID);
         model.addAttribute("displayName", selectedTeam.getName());
         model.addAttribute("displaySport", selectedTeam.getSport());

@@ -44,11 +44,14 @@ public class DemoController {
         if (teamService.getTeamList().size()<2) {
             teamService.addTeam(new Team("t", "t", "t"));
             teamService.addTeam(new Team("f", "f", "f"));
+            for (int i = 0; i < 10; i++) {
+                teamService.addTeam(new Team(String.valueOf(i), "f", "f"));
+            }
         }
         if (teamID == null) {
             teamID = teamService.getTeamList().get(0).getTeamId();
         }
-        model.addAttribute("displayTeams", teamService.getTeamList());
+        model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("teamID", teamID);
         return "demoTemplate";
     }

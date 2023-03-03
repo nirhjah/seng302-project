@@ -10,8 +10,8 @@
         <div th:fragment="navbar">
             <p>Select Team:
                 <select class="form-control" id="dropDownList" name="teamSelector"
-                        onchange="window.location.href = '?teamID=' + this.value;">
-                    <option th:each="team : ${displayTeams}"
+                        onchange="window.location.href=updateURL(this.value);">
+                    <option th:each="team : ${navTeams}"
                             th:value="${team.teamId}"
                             th:text="${team}"
                             th:selected="${team.teamId.equals(teamID)}"> </option>
@@ -19,6 +19,16 @@
                 </select>
                 <a th:href="@{profile_form(teamID=${teamID})}">Profile</a>
             </p>
+            <script th:inline="javascript">
+                function updateURL(teamID) {
+                    let url = new URL(window.location.href);
+                    let params = url.searchParams;
+                    params.set('teamID', teamID);
+                    url.search = params.toString();
+                    let new_url = url.toString();
+                    return new_url;
+                }
+            </script>
         </div>
         <h4>Welcome To SENG302</h4>
         <p th:text="'hello, ' + ${name} + '!'"></p>
@@ -26,6 +36,16 @@
         <br/>
         <a th:href="@{fragments/main}">View a fragment example</a>
         <br/>
-        <a th:href="@{view_teams_form(teamID=${teamID})}">View All Teams</a>
+        <a th:href="@{view_teams_form(teamID=${teamID},pageNumber=1)}">View All Teams</a>
     </body>
+    <script th:inline="javascript" th:fragment="updateURLScript">
+            function updateURL(teamID) {
+            let url = new URL(window.location.href);
+            let params = url.searchParams;
+            params.set('teamID', teamID);
+            url.search = params.toString();
+            let new_url = url.toString();
+            return new_url;
+        }
+    </script>
 </html>
