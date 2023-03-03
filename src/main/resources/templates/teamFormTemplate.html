@@ -36,10 +36,11 @@
           <button type="submit">Create</button>
         </a>
       </div>
-
+      <div th:if="${error == true}" class="error-message">An error occurred.</div>
       <div class ="cancel-link">
         <a th:href="@{demo}">Cancel</a>
       </div>
+
     </form>
 
 
