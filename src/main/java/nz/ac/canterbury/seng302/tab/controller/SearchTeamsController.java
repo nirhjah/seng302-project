@@ -30,8 +30,9 @@ public class SearchTeamsController {
 
     /**
      * Gets form to be displayed, includes the ability to display results of previous form when linked to from POST form
+     *
      * @param teamID team for which the details are to be displayed
-     * @param model (map-like) representation of name, language and isJava boolean for use in thymeleaf
+     * @param model  (map-like) representation of name, language and isJava boolean for use in thymeleaf
      * @return thymeleaf profileForm
      */
     @GetMapping("/search_teams_form")
@@ -39,16 +40,23 @@ public class SearchTeamsController {
                               @RequestParam(value = "teamID", required = false) Long teamID,
                               @RequestParam(value = "teamFilter", required = false) String teamSearchQuery) {
         logger.info("GET /search_teams_form");
-        model.addAttribute("allUnicodeRegex",allUnicodeRegex);
+        model.addAttribute("allUnicodeRegex", allUnicodeRegex);
 
         return "searchTeamsForm";
     }
 
     @PostMapping("/search_teams_form")
     public String submitSearchTeams(Model model,
-        @RequestParam(value = "teamFilter", required = false) String teamSearchQuery) {
+                                    @RequestParam(value = "teamFilter", required = false) String teamSearchQuery) {
         logger.info("POST /search_teams_form");
 
+        // server side validation
+        if (!teamSearchQuery.matches(allUnicodeRegex)) {
+            model.addAttribute("validationError", true);
+            return "searchTeamsForm";
+        }
+
+        model.addAttribute("teamFilter", teamSearchQuery);
         List<Team> teamList = teamService.getTeamList();
         if (teamSearchQuery != null) {
             List<Team> filteredList = teamList.stream()
