@@ -9,19 +9,43 @@
 <body>
 
 <div class="profile-background">
-<!--    <div th:insert="/demoTemplate.html::background-image(displayTeams=${displayTeams})"></div>-->
     <div class ="wrapper-profile">
-        <div class ="profile-pic"></div>
+        <div class ="profile-pic">
+            <form method="post" th:action="@{/upload}" enctype="multipart/form-data">
+            <div class ="image-styling">
+                <img src="https://placehold.co/250x250">
+                </br>
+            </div>
+            </br>
+            <div class ="file-upload">
+                <div class="form-group">
+                    <input type="file" name="file" class="form-control-file">
+                </div>
+            </div>
+                <div class ="file-upload">
+                    <button type="submit" class="btn btn-primary">Edit Profile Picture</button>
+                </div>
+
+            </form>
+        </div>
         <div class ="team-info">
         <form th:action="@{profile_form}" method="post">
             <h3>Team Profile</h3>
-            <br />
-            <h4 th:text="'Name: ' + ${displayName}"></h4>
-            <h4 th:text="'Sport: ' + ${displaySport}"></h4>
+            <div class = "team-display">
+                <h4 th:text="'Name: ' + ${displayName}"></h4>
+            </div>
+            <div class = "team-display">
+                <h4 th:text="'Sport: ' + ${displaySport}"></h4>
+            </div>
+            <div class = "team-display">
             <h4 th:text="'Location: ' + ${displayLocation}"></h4>
+            </div>
             <br />
-            <a th:href="@{demo(teamID=${teamID})}">Edit Profile</a>
-
+            <div class = "edit-button">
+                <a th:href="@{demo(teamID=${teamID})}">
+                    <button type="submit">Edit Profile</button>
+                </a>
+            </div>
         </form>
         </div>
     </div>
