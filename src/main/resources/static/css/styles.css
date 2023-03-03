@@ -1,9 +1,89 @@
 body {
-    background-color: aliceblue;
+    background-color: white;
 }
 
-navbar {
-    background-color: grey;
+.navbar {
+    position:relative;
+    padding-top:15px;
+    padding-bottom: 15px;
+    height:20px;
+    background-color: #1b263b;
     overflow: hidden;
     white-space: nowrap;
 }
+
+.menu-items a{
+    font-family: "Noto Sans",sans-serif;
+    position:relative;
+    text-decoration:none;
+    font-size:17px;
+    font-weight:500;
+    color: white;
+    padding:6px 15px;
+    border-radius:20px;
+}
+/*.menu-items a.active Currently trying to make nav menu change colour when page is selected*/
+.menu-items a:hover{
+    background:#fff;
+    color:#2b1055;
+    opacity:1;
+}
+
+.wrapper-profile{
+    position: absolute;
+    width:700px;
+    height:440px;
+    background:transparent;
+    border: 2px solid rgba(255,255,255,.5);
+    border-radius:20px;
+    backdrop-filter:blur(20px);
+    box-shadow:0 0 30px rgba(0,0,0,.5);
+
+
+
+}
+.wrapper-profile .profile-pic{
+    position:absolute;
+    top:0;
+    left:0;
+    width:300px;
+    height:440px;
+    /*background:yellowgreen;*/
+
+
+}
+
+.wrapper-profile .team-info{
+    position:absolute;
+    top:0;
+    right:0;
+    width:400px;
+    height:440px;
+    /*background:red;*/
+    display:flex;
+    justify-content:center;
+    align-items: center;
+
+
+}
+
+.profile-background{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    background-color: #FFFFFF;
+
+}
+*{
+    margin:0;
+    padding:0;
+}
+.background-image{
+    background-image: url('../image/landscape.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height:100vh;
+}
+
+
