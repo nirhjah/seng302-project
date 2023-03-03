@@ -22,8 +22,10 @@ public class SearchTeamsController {
 
     Logger logger = LoggerFactory.getLogger(nz.ac.canterbury.seng302.tab.controller.SearchTeamsController.class);
 
-@Autowired
-private TeamService teamService;
+    private String allUnicodeRegex = "^[\\p{L}\\s\\d\\.\\}\\{]+$";
+
+    @Autowired
+    private TeamService teamService;
 
     /**
      * Gets form to be displayed, includes the ability to display results of previous form when linked to from POST form
@@ -35,7 +37,8 @@ private TeamService teamService;
     public String profileForm(Model model,
                               @RequestParam(value = "teamID", required = false) Long teamID,
                               @RequestParam(value = "teamFilter", required = false) String teamSearchQuery) {
-        logger.info("GET /view_teams_form");
+        logger.info("GET /search_teams_form");
+        model.addAttribute("allUnicodeRegex",allUnicodeRegex);
 
         List<Team> teamList = teamService.getTeamList();
         if (teamSearchQuery != null) {
