@@ -36,7 +36,6 @@ public class DemoController {
     private TeamService teamService;
     public static String uploadDirectory=System.getProperty("user.dir")+"/resources/image";
     Logger logger = LoggerFactory.getLogger(DemoController.class);
-
     /**
      * Redirects GET default url '/' to '/demo'
      * @return redirect to /demo
@@ -58,7 +57,6 @@ public class DemoController {
     public String getTemplate(@RequestParam(name = "name", required = false, defaultValue = "World") String name, Model model) throws IOException {
         logger.info("GET /demo");
         model.addAttribute("name", name);
-
         //Testing image being encoded as a byteArray and being decoded and displayed. Currently working.
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
@@ -67,12 +65,32 @@ public class DemoController {
         Team team = new Team("test","test","test",fileEncoded);
         teamService.addTeam(team);
 
+
         return "demoTemplate";
     }
-    @PostMapping("/upload")
-    public String saveProduct(@RequestParam("file") MultipartFile file)
+    @PostMapping("/demo")
+    public String saveProduct(@RequestParam("file") MultipartFile file, Model model)
     {
+        if (file.isEmpty()){
+            model.addAttribute("emptyFileError", true);
+            return "demoTemplate";
+        }
+
+        if (!isSupportedContentType(file.getContentType())){
+            model.addAttribute("typeError", true);
+            return "demoTemplate";
+        }
+        if (file.getSize()>1000000){
+            model.addAttribute("sizeError",true);
+            System.out.println(file.getSize()>0);
+            return "demoTemplate";
+        }
+        System.out.println(file.getContentType());
         teamService.updatePicture(file, 1);
         return "demoTemplate";
+    }
+
+    private boolean isSupportedContentType(String contentType){
+        return contentType.equals("image/png")|| contentType.equals("image/jpg")||contentType.equals("image/svg");
     }
 }

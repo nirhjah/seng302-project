@@ -25,7 +25,7 @@ public class Team {
     @Column(nullable = false)
     private String sport;
     @Column(columnDefinition = "MEDIUMBLOB")
-    private String picture;
+    private String pictureString;
 
     protected Team(){}
 
@@ -36,11 +36,11 @@ public class Team {
 
     }
 
-    public Team (String name, String location, String sport, String picture){
+    public Team (String name, String location, String sport, String pictureString){
         this.name = name;
         this.location = location;
         this.sport= sport;
-        this.picture=picture;
+        this.pictureString=pictureString;
     }
 
     public Long getTeamId(){
@@ -59,13 +59,14 @@ public class Team {
         return this.sport;
     }
 
-    public String getPicturePath() {
-        return this.picture;
+    public String getPictureString() {
+        return this.pictureString;
     }
 
-    public void setPicturePath(String picture){
-        this.picture = picture;
+    public void setPictureString(String pictureString){
+        this.pictureString=pictureString;
     }
+
 
 
 

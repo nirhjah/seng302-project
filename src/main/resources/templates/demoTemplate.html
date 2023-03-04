@@ -14,12 +14,14 @@
         <br/>
         <a th:href="@{team_form}"><button>Create Team</button></a>
         <br/>
-        <p th:text="${message}" th:if="${message ne null}"></p>
-        <form method="post" th:action="@{/upload}" enctype="multipart/form-data">
+        <form method="post" th:action="@{/demo}" enctype="multipart/form-data">
             <div class="form-group">
                 <input type="file" name="file" class="form-control-file">
             </div>
             <button type="submit" class="btn btn-primary">Upload Profile Picture</button>
         </form>
+        <div th:if="${sizeError == true}">Image must be less than 10MB</div>
+        <div th:if="${typeError == true}">Please choose a .png, .jpg or .svg file</div>
+        <div th:if="${emptyFileError == true}">Please choose a file</div>
     </body>
 </html>
