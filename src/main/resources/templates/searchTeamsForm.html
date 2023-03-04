@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org" >
 <head>
   <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
   <link th:href="@{/css/styles.css}" rel="stylesheet">
@@ -8,32 +8,31 @@
 <body>
 <div>
   <div th:insert="/demoTemplate.html::navbar(displayTeams=${displayTeams})"></div>
-  <form th:action="@{search_teams_form}" method="post">
-    <input type="text" class="form-control" id="teamFilter"
-           th:name="teamFilter" th:value="*{teamFilter}" data-cy="teamFilter" required
-           autofocus th:pattern="${allUnicodeRegex}" th:placeholder="${validationError} ? 'ERROR' : 'team name'">
-  <a th:href="@{team_search_form}">
-    <button type="submit">Search</button>
-  </a>
+
+  <form th:action="@{/searchTeams(teamName=${teamName})}" method="get">
+  <label for="teamName">Team Name:</label>
+  <input type="text" id="teamName" name="teamName" />
+  <button type="submit">Search</button>
   </form>
-  <h4 th:text="'Welcome ' + ${teamFilter}"></h4>
-  </div>
-  <div>
-    <table>
+</div>
+<div th:if="${not #lists.isEmpty(teams)}">
+  <h2>Search Results</h2>
+  <table>
+    <thread>
       <tr>
-        <th>Profile Picture</th>
         <th>Name</th>
-        <th>Location</th>
         <th>Sport</th>
+        <th>Location</th>
       </tr>
-      <tr th:each="team : ${displayTeams}">
-        <td th:text="img"></td>
+    </thread>
+    <tbody>
+      <tr th:each="team : ${teams}">
         <td th:text="${team.name}"></td>
-        <td th:text="${team.location}"></td>
         <td th:text="${team.sport}"></td>
+        <td th:text="${team.location}"></td>
       </tr>
-    </table>
-  </div>
+    </tbody>
+  </table>
 </div>
 </body>
 </html>
