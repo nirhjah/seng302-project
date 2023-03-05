@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.List;
+
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+
 /**
  * Controller for profile form
  */
@@ -33,15 +35,20 @@ public class SearchTeamsController {
      * Gets form to be displayed
      *
      * @param teamName name of the team that has been searched for by the database
-     * @param model  (map-like) representation of teamID and teamFilter
+     * @param model    (map-like) representation of teamID and teamFilter
      * @return thymeleaf searchTeamsForm
      */
     @GetMapping("/searchTeams")
     public String searchTeams(@RequestParam(value = "teamName", required = false) String teamName,
                               Model model) {
         if (teamName != null) {
-            List<Team> teams = teamRepository.findTeamByName(teamName);
-            model.addAttribute("teams", teams);
+            if (teamName.length() < 3) {
+                model.addAttribute("error", "team name must be at least 3 characters long");
+                model.addAttribute("teams", new ArrayList<Team>());
+            } else {
+                List<Team> teams = teamRepository.findTeamByName(teamName);
+                model.addAttribute("teams", teams);
+            }
         } else {
             model.addAttribute("teams", new ArrayList<Team>());
         }
