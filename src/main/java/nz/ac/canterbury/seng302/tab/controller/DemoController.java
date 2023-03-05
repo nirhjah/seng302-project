@@ -34,7 +34,6 @@ import java.util.Base64;
 public class DemoController {
     @Autowired
     private TeamService teamService;
-    public static String uploadDirectory=System.getProperty("user.dir")+"/resources/image";
     Logger logger = LoggerFactory.getLogger(DemoController.class);
     /**
      * Redirects GET default url '/' to '/demo'
@@ -82,10 +81,8 @@ public class DemoController {
         }
         if (file.getSize()>1000000){
             model.addAttribute("sizeError",true);
-            System.out.println(file.getSize()>0);
             return "demoTemplate";
         }
-        System.out.println(file.getContentType());
         teamService.updatePicture(file, 1);
         return "demoTemplate";
     }
