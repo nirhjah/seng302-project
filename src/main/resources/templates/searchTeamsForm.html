@@ -9,11 +9,27 @@
 <div>
   <div th:insert="/demoTemplate.html::navbar(displayTeams=${displayTeams})"></div>
 
-  <form th:action="@{/searchTeams(teamName=${teamName})}" method="get">
+  <form id="search-form" th:action="@{/searchTeams(teamName=${teamName})}" method="get">
   <label for="teamName">Team Name:</label>
   <input type="text" id="teamName" name="teamName" />
   <button type="submit">Search</button>
   </form>
+  <script>
+    // get search form and input element
+    const form = document.getElementById('search-form');
+    const input = document.getElementById('teamName');
+
+    form.addEventListener('submit', (event) => {
+      // if the value is less than 3 characters, prevent form from submitting
+      if (input.value.length < 3) {
+        event.preventDefault();
+        // Display error message
+        const errorMessage = document.createElement('p');
+        errorMessage.textContent = "search must be at least 3 characters";
+        form.appendChild(errorMessage);
+      }
+    });
+  </script>
 </div>
 <div th:if="${not #lists.isEmpty(teams)}">
   <h2>Search Results</h2>
