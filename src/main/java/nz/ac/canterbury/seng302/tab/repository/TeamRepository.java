@@ -13,6 +13,9 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
     Optional<Team> findById(long id);
     List<Team> findAll();
 
-    @Query("SELECT t FROM Team t WHERE LOWER(t.name) LIKE LOWER(CONCAT('%', :name, '%')) OR LOWER(t.location) LIKE LOWER(CONCAT('%', :name, '%'))")
+    @Query("SELECT t FROM Team t " +
+            "WHERE LOWER(t.name) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(t.location) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "ORDER BY t.location ASC , t.name asc ")
     public List<Team> findTeamByName(@Param("name") String name);
 }
