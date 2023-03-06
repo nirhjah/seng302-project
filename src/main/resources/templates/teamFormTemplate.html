@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
+  <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">
   <link th:href="@{/css/styles.css}" rel="stylesheet" />
   <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
   <title>Create team form</title>
 </head>
-<body class="team-form">
-
-<div>
+<body>
+<div th:insert="/demoTemplate.html::navbar(displayTeams=${displayTeams})" ></div>
+<div class="team-form">
   <div class="create-team">
     <h1>Create Team</h1>
   </div>
-
   <div class ="wrapper">
     <form th:action="@{team_form}" method="post">
       <div class="input-box">

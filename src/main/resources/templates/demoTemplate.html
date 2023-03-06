@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
-    <link href="./resources/static.css/style.css" rel="stylesheet" type="text/css" />
+    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <title>Form Demo</title>
@@ -38,14 +38,5 @@
     <a th:href="@{fragments/main}">View a fragment example</a>
 
 </div>
-<form method="post" th:action="@{/demo}" enctype="multipart/form-data">
-    <div class="form-group">
-        <input type="file" name="file" class="form-control-file">
-    </div>
-    <button type="submit" class="btn btn-primary">Upload Profile Picture</button>
-</form>
-<div th:if="${sizeError == true}">Image must be less than 10MB</div>
-<div th:if="${typeError == true}">Please choose a .png, .jpg or .svg file</div>
-<div th:if="${emptyFileError == true}">Please choose a file</div>
 </body>
 </html>

@@ -7,12 +7,15 @@
 /*    background-color: #FFFFFF;*/
 /*}*/
 
-body.team-form{
-    display:flex;
+.team-form{
+    display: grid;
+    grid-auto-rows: 300px;
     justify-content:center;
     align-items:center;
-    min-height:90vh;
-    background-color: #FFFFFF;
+    background-image: url('../image/landscape.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height:100vh;
 }
 
 
@@ -26,6 +29,18 @@ body.team-form{
     overflow: hidden;
     white-space: nowrap;
 }
+
+.form-control{
+    background: #415A77;
+    color:#fff;
+    border-radius:20px;
+    border:none;
+    outline:0;
+    padding: 0 .5em;
+    cursor:pointer;
+    font-family: "Noto Sans",sans-serif;
+}
+
 
 .menu-items a{
     font-family: "Noto Sans",sans-serif;
@@ -127,6 +142,10 @@ body.team-form{
     align-items:center;
     min-height:100vh;
     background-color: #FFFFFF;
+    background-image: url('../image/landscape.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height:100vh;
 
 }
 *{
@@ -175,10 +194,9 @@ body.team-form{
 }
 
 .create-team{
+    position:relative;
     font-family: "Noto Sans",sans-serif;
-    /*color: #0B1B2A;*/
     text-align: center;
-    /*font-size: 30px;*/
     font-size: 40px;
     font-weight: 600;
     background-image: radial-gradient(ellipse, #0D1B2A, #778DA9);
@@ -224,8 +242,8 @@ body.team-form{
     padding:0 35px 0 5px;
 }
 
-.submit-button button{
-  font-family: "Noto Sans",sans-serif;
+.submit-button button {
+    font-family: "Noto Sans",sans-serif;
     width: 100%;
     height:45px;
     background-color: #1B263B;
@@ -239,7 +257,7 @@ body.team-form{
 
 }
 
-.edit-button button:hover {
+.edit-button button:hover,.profile-pic .back-button:hover {
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
@@ -251,10 +269,9 @@ body.team-form{
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
-.submit-button button:hover {
+.submit-button,button:hover{
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
 }
-
 
 .cancel-link{
     font-size: 1em;
@@ -281,3 +298,21 @@ body.team-form{
     color:red;
     text-align:center;
 }
+
+.profile-pic .back-button{
+    position:relative;
+    bottom:-35px;
+    font-family: "Noto Sans",sans-serif;
+    width: 35%;
+    height:25px;
+    background-color: #778DA9;
+    border:none;
+    outline:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:1em;
+    color:#fff;
+    font-weight:500;
+
+}
+

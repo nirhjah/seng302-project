@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
+    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <title>Create team form</title>
@@ -23,13 +24,14 @@
                 </div>
             </div>
                 <div class ="file-upload">
-                    <button type="submit" class="btn btn-primary" value="Reload Page" onClick="window.location.reload(true)">Edit Profile Picture</button>
+                    <button type="submit" value="Reload Page" onClick="window.location.reload(true)">Edit Profile Picture</button>
 
                     <div th:if="${sizeError == true}">Image must be less than 10MB</div>
                     <div th:if="${typeError == true}">Please choose a .png, .jpg or .svg file</div>
                     <div th:if="${emptyFileError == true}">Please choose a file</div>
 
                 </div>
+                <button type="button"  class = "back-button" onclick="window.history.go(-1);">Back</button>
 
             </form>
 
