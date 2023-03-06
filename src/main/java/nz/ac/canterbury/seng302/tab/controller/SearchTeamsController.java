@@ -41,6 +41,7 @@ public class SearchTeamsController {
     @GetMapping("/searchTeams")
     public String searchTeams(@RequestParam(value = "teamName", required = false) String teamName,
                               Model model) {
+        model.addAttribute("notSearch", false);
         if (teamName != null) {
             if (teamName.length() < 3) {
                 model.addAttribute("error", "team name must be at least 3 characters long");
@@ -51,6 +52,7 @@ public class SearchTeamsController {
             }
         } else {
             model.addAttribute("teams", new ArrayList<Team>());
+            model.addAttribute("notSearch", true);
         }
         return "searchTeamsForm";
     }

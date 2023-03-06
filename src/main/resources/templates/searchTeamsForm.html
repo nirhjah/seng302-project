@@ -58,5 +58,6 @@
     </tbody>
   </table>
 </div>
+<div th:if="${#lists.isEmpty(teams) and not (notSearch)}">The search results are empty!</div>
 </body>
 </html>
