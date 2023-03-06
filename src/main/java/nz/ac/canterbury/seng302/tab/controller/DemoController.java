@@ -1,11 +1,17 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is a basic spring boot controller, note the @link{Controller} annotation which defines this.
@@ -15,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class DemoController {
     Logger logger = LoggerFactory.getLogger(DemoController.class);
 
+    @Autowired
+    private TeamService teamService;
     /**
      * Redirects GET default url '/' to '/demo'
      * @return redirect to /demo
@@ -27,14 +35,21 @@ public class DemoController {
 
     /**
      * Gets the thymeleaf page representing the /demo page (a basic welcome screen with some links)
-     * @param name url query parameter of user's name
      * @param model (map-like) representation of data to be used in thymeleaf display
      * @return thymeleaf demoTemplate
      */
     @GetMapping("/demo")
-    public String getTemplate(@RequestParam(name = "name", required = false, defaultValue = "World") String name, Model model) {
+    public String getTemplate(@RequestParam(name = "teamID", required = false) Long teamID, Model model) {
         logger.info("GET /demo");
-        model.addAttribute("name", name);
+        if (teamService.getTeamList().size()<2) {
+            teamService.addTeam(new Team("t", "t", "t"));
+            teamService.addTeam(new Team("f", "f", "f"));
+        }
+        if (teamID == null) {
+            teamID = teamService.getTeamList().get(0).getTeamId();
+        }
+        model.addAttribute("displayTeams", teamService.getTeamList());
+        model.addAttribute("teamID", teamID);
         return "demoTemplate";
     }
 
