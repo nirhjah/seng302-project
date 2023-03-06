@@ -41,8 +41,6 @@ public class TeamFormController {
     @GetMapping("/team_form")
     public String teamForm(Model model) {
         logger.info("GET /team_form");
-        Team team = teamRepository.findById(1).get();
-        model.addAttribute("fileArray",team.getPictureString());
         // client side validation
         model.addAttribute("allUnicodeRegex", allUnicodeRegex);
 
@@ -86,7 +84,7 @@ public class TeamFormController {
 
         Team newTeam = new Team(name, location, sport,pictureString);
         teamService.addTeam(newTeam);
-        return String.format("profileForm?teamID=%s", newTeam.getTeamId());
+        return String.format("/profileForm?teamID=%s", newTeam.getTeamId());
 
     }
 }
