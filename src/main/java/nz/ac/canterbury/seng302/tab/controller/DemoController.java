@@ -67,28 +67,5 @@ public class DemoController {
         model.addAttribute("teamID", teamID);
         return "demoTemplate";
     }
-    @PostMapping("/demo")
-    public String saveProduct(@RequestParam("file") MultipartFile file, Model model)
-    {
-        if (file.isEmpty()){
-            model.addAttribute("emptyFileError", true);
-            return "demoTemplate";
-        }
-
-        if (!isSupportedContentType(file.getContentType())){
-            model.addAttribute("typeError", true);
-            return "demoTemplate";
-        }
-        if (file.getSize()>1000000){
-            model.addAttribute("sizeError",true);
-            return "demoTemplate";
-        }
-        teamService.updatePicture(file, 1);
-        return "demoTemplate";
-    }
-
-    private boolean isSupportedContentType(String contentType){
-        return contentType.equals("image/png")|| contentType.equals("image/jpg")||contentType.equals("image/svg");
-    }
 }
 

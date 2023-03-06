@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,8 +58,8 @@ public class TeamFormController {
      *              with values being set to relevant parameters provided
      * @return thymeleaf teamFormTemplate
      */
-    @PostMapping("/team_form")
-    public String submitTeamForm(@RequestParam(name = "name") String name,
+    @PostMapping("demo")
+    public RedirectView submitTeamForm(@RequestParam(name = "name") String name,
                                  @RequestParam(name = "sport") String sport,
                                  @RequestParam(name = "location") String location,
                                  Model model) throws IOException {
@@ -79,12 +80,13 @@ public class TeamFormController {
         boolean locationValid = (location.matches(allUnicodeRegex));
         if (!sportValid || !nameValid || !locationValid) {
             model.addAttribute("error", true);
-            return "teamFormTemplate";
+            return new RedirectView("/team_form", true);
         }
 
         Team newTeam = new Team(name, location, sport,pictureString);
         teamService.addTeam(newTeam);
-        return String.format("/profileForm?teamID=%s", newTeam.getTeamId());
 
+        return new RedirectView("/demo?teamID=" + newTeam.getTeamId(), true);
+        //String.format("/profileForm?teamID=%s", newTeam.getTeamId()) You can't return this as you need to return an html
     }
 }
