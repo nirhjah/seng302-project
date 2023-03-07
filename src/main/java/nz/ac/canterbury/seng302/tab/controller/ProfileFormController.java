@@ -101,7 +101,7 @@ public class ProfileFormController {
         return new RedirectView("/profile_form?teamID=" + this.teamId, true);
     }
     private boolean isSupportedContentType(String contentType){
-        return contentType.equals("image/png")|| contentType.equals("image/jpg")||contentType.equals("image/svg");
+        return contentType.equals("image/png")|| contentType.equals("image/jpg")||contentType.equals("image/svg+xml")|| contentType.equals("image/jpeg");
     }
 
 }
