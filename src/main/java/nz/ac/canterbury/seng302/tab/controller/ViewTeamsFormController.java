@@ -46,16 +46,19 @@ public class ViewTeamsFormController {
         logger.info("GET /viewTeamsForm");
         model.addAttribute("teamID", teamID);
         model.addAttribute("searchQuery", searchQuery);
-        return findPaginated(pageNo, model);
+        return findPaginated(pageNo, teamID, model);
     }
 
 
     @GetMapping()
-    public String findPaginated(@PathVariable (value = "pageNo") int pageNo, Model model) {
+    public String findPaginated(@PathVariable (value = "pageNo") int pageNo,
+                                @PathVariable (value = "teamID") long teamID,
+                                Model model) {
 
         // If page number is not in range
         if (pageNo < 1 || pageNo > teamService.findPaginated(pageNo, maxPageSize).getTotalPages()) {
             pageNo = pageNo < 1 ? 1: teamService.findPaginated(pageNo, maxPageSize).getTotalPages();
+            return "redirect:/viewTeamsForm?teamID=" + teamID + "&page=" + pageNo;
         }
 
         Page<Team> page = teamService.findPaginated(pageNo, maxPageSize);
