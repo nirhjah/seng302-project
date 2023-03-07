@@ -23,4 +23,8 @@ public class TeamService {
     public Team getTeam(long teamID) {
         return teamRepository.findById(teamID).orElse(null);
     }
+
+    public Team updateTeam(Team team) {
+        return teamRepository.save(team);
+    }
 }

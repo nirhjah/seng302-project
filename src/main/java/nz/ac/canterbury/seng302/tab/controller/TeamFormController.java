@@ -31,18 +31,25 @@ public class TeamFormController {
      * @return thymeleaf demoFormTemplate
      */
     @GetMapping("/team_form")
-    public String teamForm(@RequestParam(name = "edit", defaultValue = "-1") long teamID,
+    public String teamForm(@RequestParam(name = "edit", required = false) Long teamID,
+            @RequestParam(name = "invalid_input", defaultValue = "0") boolean invalidInput,
             Model model) {
         logger.info("GET /team_form");
 
         Team team;
-        if (teamID != -1 && (team = teamService.getTeam(teamID)) != null) {
-            model.addAttribute("name", team.getName());
-            model.addAttribute("sport", team.getSport());
-            model.addAttribute("location", team.getLocation());
-            model.addAttribute("teamID", team.getTeamId());
-        } else {
-            model.addAttribute("error", "Invalid team ID, creating a new team instead.");
+        if (teamID != null) {
+            if ((team = teamService.getTeam(teamID)) != null) {
+                model.addAttribute("name", team.getName());
+                model.addAttribute("sport", team.getSport());
+                model.addAttribute("location", team.getLocation());
+                model.addAttribute("teamID", team.getTeamId());
+            } else {
+                model.addAttribute("invalid_team", "Invalid team ID, creating a new team instead.");
+            }
+        }
+
+        if (invalidInput) {
+            model.addAttribute("invalid_input", "Invalid input.");
         }
 
         // client side validation
@@ -62,7 +69,9 @@ public class TeamFormController {
      * @return thymeleaf teamFormTemplate
      */
     @PostMapping("/team_form")
-    public String submitTeamForm(@RequestParam(name = "name") String name,
+    public String submitTeamForm(
+            @RequestParam(name = "teamID", defaultValue = "-1") long teamID,
+            @RequestParam(name = "name") String name,
             @RequestParam(name = "sport") String sport,
             @RequestParam(name = "location") String location,
             Model model) {
@@ -76,13 +85,22 @@ public class TeamFormController {
         boolean sportValid = (sport.matches(allUnicodeRegex));
         boolean locationValid = (location.matches(allUnicodeRegex));
         if (!sportValid || !nameValid || !locationValid) {
-            model.addAttribute("error", "An error occurred");
-            return "teamFormTemplate";
+            return "redirect:./team_form?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
         }
 
-        Team newTeam = new Team(name, location, sport);
-        teamService.addTeam(newTeam);
-        return String.format("redirect:./profileForm?teamID=%s", newTeam.getTeamId());
+        Team team;
+        if ((team = teamService.getTeam(teamID)) != null) {
+            team.setName(name);
+            team.setSport(sport);
+            team.setLocation(location);
+            teamService.updateTeam(team);
+        } else {
+            team = new Team(name, location, sport);
+            teamService.addTeam(team);
+            teamID = team.getTeamId();
+        }
+
+        return String.format("redirect:./profileForm?teamID=%s", team.getTeamId());
 
     }
 }
