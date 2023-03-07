@@ -14,7 +14,7 @@
                     <option th:each="team : ${navTeams}"
                             th:value="${team.teamId}"
                             th:text="${team}"
-                            th:selected="${team.teamId.equals(teamID)}"> </option>
+                            th:selected="${team.teamId == teamID}"> </option>
 
                 </select>
                 <a th:href="@{profileForm(teamID=${teamID})}">Profile</a>

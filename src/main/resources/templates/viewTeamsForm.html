@@ -9,26 +9,20 @@
             <div>
                 <div th:insert="/demoTemplate.html::navbar(displayTeams=${displayTeams})"></div>
                 <table id="teamTable">
-                <tr>
-                    <th>Profile Picture</th>
-                    <th>Name</th>
-                    <th>Location</th>
-                    <th>Sport</th>
-                </tr>
-                <tr th:each="team : ${displayTeams}">
-                    <td th:text="img"></td>
-                    <td th:text="${team.name}"></td>
-                    <td th:text="${team.location}"></td>
-                    <td th:text="${team.sport}"></td>
-                </tr>
+                    <tr>
+                        <th>Profile Picture</th>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Sport</th>
+                    </tr>
+                    <tr th:each="team : ${displayTeams}"
+                        th:onclick="|window.location.href='/profileForm?teamID=${team.teamId}'|">
+                        <td th:text="img"></td>
+                        <td th:text="${team.name}"></td>
+                        <td th:text="${team.location}"></td>
+                        <td th:text="${team.sport}"></td>
+                    </tr>
                 </table>
-                <div th:if = "${totalPages > 1}">
-                    <div class = "row col-sm-10">
-                        <div class = "col-sm-2" ></div>
-                        <div class = "col-sm-1" ></div>
-                        <div class = "col-sm-1" ></div>
-                    </div>
-                </div>
                 <div class="pagination">
                     <div class="paginationContainer">
                         <div class="totalPages">
