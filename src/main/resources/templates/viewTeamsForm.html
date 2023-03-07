@@ -31,17 +31,21 @@
                 </div>
                 <div class="pagination">
                     <div class="paginationContainer">
+                        <div class="totalPages">
+                            Total Pages: [[${totalPages}]]
+                        </div>
                         <div>
-                            <div>
-                                Total Pages: [[${totalPages}]]
-                            </div>
-                            <button th:onclick= "|window.location.href='/viewTeamsForm?teamID=${teamID}&page=${1}'|"
-                                    class="paginationButton">First
+                            <button th:disabled="${currentPage == 1}"
+                                    th:onclick= "|window.location.href='/viewTeamsForm?teamID=${teamID}&page=${1}'|"
+                                    class="paginationButton">
+                                <span>First</span>
                             </button>
                         </div>
-                        <div th:classappend="${currentPage == 1} ? disabled : enabled">
-                            <button th:onclick= "|window.location.href='/viewTeamsForm?teamID=${teamID}&page=${currentPage - 1}'|"
-                                    class="paginationButton">< Prev
+                        <div>
+                            <button th:disabled="${currentPage == 1}"
+                                    th:onclick= "|window.location.href='/viewTeamsForm?teamID=${teamID}&page=${currentPage - 1}'|"
+                                    class="paginationButton">
+                                <span>< Prev</span>
                             </button>
                         </div>
                         <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
@@ -57,14 +61,18 @@
                                 </button>
                             </div>
                         </th:block>
-                        <div th:classappend="${currentPage >= totalPages - 1} ? disabled : enabled">
-                            <button th:onclick="|window.location.href='/viewTeamsForm?teamID=${teamID}&page=${currentPage + 1}'|"
-                                    class="paginationButton">Next >
+                        <div>
+                            <button th:disabled="${currentPage == totalPages}"
+                                    th:onclick="|window.location.href='/viewTeamsForm?teamID=${teamID}&page=${currentPage + 1}'|"
+                                    class="paginationButton">
+                                <span>Next ></span>
                             </button>
                         </div>
                         <div>
-                            <button th:onclick= "|window.location.href='/viewTeamsForm?teamID=${teamID}&page=${totalPages}'|"
-                                    class="paginationButton">Last
+                            <button th:disabled="${currentPage == totalPages}"
+                                    th:onclick= "|window.location.href='/viewTeamsForm?teamID=${teamID}&page=${totalPages}'|"
+                                    class="paginationButton">
+                                <span>Last</span>
                             </button>
                         </div>
                     </div>

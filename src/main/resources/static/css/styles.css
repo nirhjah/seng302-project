@@ -5,3 +5,43 @@ body {
 .paginationActive {
     background-color: blue;
 }
+
+.paginationButton[disabled] {
+    pointer-events: none; /* Disable pointer events */
+}
+
+.paginationButton[disabled] span {
+    opacity: 0.5; /* Set opacity to 50% */
+}
+
+.paginationContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.paginationContainer > div {
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.totalPages {
+    justify-content: left;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    width: 25%; /* 4 columns, so each column gets 25% width */
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
