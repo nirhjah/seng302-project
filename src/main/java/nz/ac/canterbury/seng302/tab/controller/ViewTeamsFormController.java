@@ -5,14 +5,18 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Controller for profile form
@@ -34,51 +38,35 @@ public class ViewTeamsFormController {
      * @return thymeleaf profileForm
      */
 
-    @GetMapping("/view_teams_form")
+    @GetMapping("/viewTeamsForm")
     public String profileForm(Model model,
                               @RequestParam(value = "teamID", required = false) Long teamID,
-                              @RequestParam(value = "teamFilter", required = false, defaultValue = "") String teamSearchQuery,
-                              @RequestParam(value = "page", defaultValue = "1") int pageNumber) {
-        logger.info("GET /view_teams_form");
-        logger.info(teamSearchQuery);
-        List<Team> teamList = teamService.getTeamList();
+                              @RequestParam(value = "searchQuery", required = false, defaultValue = "") String searchQuery,
+                              @RequestParam(value = "page", defaultValue = "1") int pageNo) {
+        logger.info("GET /viewTeamsForm");
+        model.addAttribute("teamID", teamID);
+        model.addAttribute("searchQuery", searchQuery);
+        return findPaginated(pageNo, model);
+    }
 
-        // Comparator for sorting teams by location first then name
-        Comparator<Team> compareByText = Comparator
-                                        .comparing(Team::getLocation)
-                                        .thenComparing(Team::getName);
 
-        // Filters and then sorts the list
-        teamList = teamList.stream()
-                .filter(p -> (p.getLocation().toLowerCase().contains(teamSearchQuery.toLowerCase()) ||
-                        p.getName().toLowerCase().contains(teamSearchQuery.toLowerCase())))
-                .sorted(compareByText)
-                .collect(Collectors.toList());
-        int totalPages = (int)Math.ceil((double)teamList.size() / maxPageSize);
+    @GetMapping()
+    public String findPaginated(@PathVariable (value = "pageNo") int pageNo, Model model) {
 
-        // Prevent users from trying to access pages outside of range
-        if (teamList.size() > 0 && pageNumber > (int)Math.ceil(totalPages)) {
-            pageNumber = (int)Math.ceil(totalPages);
-        } else if (pageNumber < 1) {
-            pageNumber = 1;
+        // If page number is not in range
+        if (pageNo < 1 || pageNo > teamService.findPaginated(pageNo, maxPageSize).getTotalPages()) {
+            pageNo = pageNo < 1 ? 1: teamService.findPaginated(pageNo, maxPageSize).getTotalPages();
         }
 
-        if (teamList.size() > 0) {
-            // Remove teams that won't fit on the page
-            teamList = teamList.stream()
-                    .skip((long) (pageNumber - 1) * maxPageSize)
-                    .limit(maxPageSize)
-                    .collect(Collectors.toList());
-        }
+        Page<Team> page = teamService.findPaginated(pageNo, maxPageSize);
 
-
+        List<Team> listTeams = page.getContent();
 
         model.addAttribute("navTeams", teamService.getTeamList());
-        model.addAttribute("displayTeams", teamList);
-        model.addAttribute("teamID", teamID);
-        model.addAttribute("pageNumber", pageNumber);
-        model.addAttribute("totalPages", totalPages);
-
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("displayTeams", listTeams);
         return "viewTeamsForm";
     }
 }

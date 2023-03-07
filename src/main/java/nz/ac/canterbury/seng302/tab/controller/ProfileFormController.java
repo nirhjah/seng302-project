@@ -31,10 +31,10 @@ public class ProfileFormController {
      */
 
 
-    @GetMapping("/profile_form")
+    @GetMapping("/profileForm")
     public String profileForm(Model model,
                               @RequestParam(value = "teamID", required = false) Long teamID) {
-        logger.info("GET /profile_form");
+        logger.info("GET /profileForm");
 
 
         // Retrieve the selected team from the list of available teams using the ID
@@ -61,23 +61,4 @@ public class ProfileFormController {
 }
 
 
-//    /**
-//     * Posts a form response with name and favourite language
-//     * @param name name if user
-//     * @param favouriteLanguage users favourite programming language
-//     * @param model (map-like) representation of name, language and isJava boolean for use in thymeleaf,
-//     *              with values being set to relevant parameters provided
-//     * @return thymeleaf profileForm
-//     */
-//    @PostMapping("/profile_form")
-//    public String submitProfileForm( @RequestParam(name="name") String name,
-//                              @RequestParam(name = "favouriteLanguage") String favouriteLanguage,
-//                              Model model) {
-//        logger.info("POST /profile_form");
-//        formService.addFormResult(new FormResult(name, favouriteLanguage));
-//        model.addAttribute("displayName", name);
-//        model.addAttribute("displayFavouriteLanguage", favouriteLanguage);
-//        model.addAttribute("isJava", favouriteLanguage.equalsIgnoreCase("java"));
-//        return "profileForm";
-//    }
 

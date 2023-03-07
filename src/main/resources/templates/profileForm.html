@@ -9,7 +9,7 @@
     <div>
         <div th:insert="/demoTemplate.html::navbar(displayTeams=${displayTeams})"></div>
         <div>
-            <form th:action="@{profile_form}" method="post">
+            <form th:action="@{profileForm}" method="post">
                 <h3>Team Profile</h3>
                 <br />
                 <h4 th:text="'Name: ' + ${displayName}"></h4>

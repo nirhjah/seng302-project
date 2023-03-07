@@ -44,7 +44,7 @@ public class DemoController {
         if (teamService.getTeamList().size()<2) {
             teamService.addTeam(new Team("t", "t", "t"));
             teamService.addTeam(new Team("f", "f", "f"));
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 50; i++) {
                 teamService.addTeam(new Team(String.valueOf(i), "f", "f"));
             }
         }

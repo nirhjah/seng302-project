@@ -2,8 +2,6 @@ body {
     background-color: aliceblue;
 }
 
-navbar {
-    background-color: grey;
-    overflow: hidden;
-    white-space: nowrap;
+.paginationActive {
+    background-color: blue;
 }
