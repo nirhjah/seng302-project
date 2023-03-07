@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
-    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">
+    <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <title>Form Demo</title>
@@ -17,20 +17,20 @@
                 <option th:each="team : ${displayTeams}"
                         th:value="${team.teamId}"
                         th:text="${team}"
-                        th:selected="${team.teamId.equals(teamID)}"> </option>
+                        th:selected="${team.teamId.equals(teamID)}"></option>
 
             </select>
-            <a th:href="@{profile_form(teamID=${teamID})}" >Profile</a>
+            <a th:href="@{profile_form(teamID=${teamID})}" th:classappend="${isTeamEmpty} ? disabled : enabled">
+                Profile</a>
             <a th:href="@{demo(teamID=${teamID})}" class="active">Home</a>
             <a th:href="@{team_form}">Create Team</a>
             <a th:href="@{demo(teamID=${teamID})}">Search Team</a>
-
 
         </p>
     </div>
 
 </div>
-<div th:fragment ="background-image" class="background-image">
+<div th:fragment="background-image" class="background-image">
     <h4>Welcome To SENG302</h4>
     <p th:text="'hello, ' + ${name} + '!'"></p>
     <a th:href="@{form}">View an interactive form example</a>

@@ -14,6 +14,7 @@ public class DemoFragmentController {
 
     /**
      * Gets the basic fragment example home page
+     *
      * @return thymeleaf fragmentExample/fragments
      */
     @GetMapping("/fragments/main")
@@ -24,6 +25,7 @@ public class DemoFragmentController {
 
     /**
      * Gets the params fragment example page
+     *
      * @return thymeleaf fragmentExample/params
      */
     @GetMapping("/fragments/params")

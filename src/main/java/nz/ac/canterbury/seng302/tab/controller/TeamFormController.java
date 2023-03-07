@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.File;
@@ -37,6 +38,7 @@ public class TeamFormController {
 
     /**
      * Gets form to be displayed, includes the ability to display results of previous form when linked to from POST form
+     *
      * @return thymeleaf demoFormTemplate
      */
     @GetMapping("/team_form")
@@ -60,9 +62,9 @@ public class TeamFormController {
      */
     @PostMapping("demo")
     public RedirectView submitTeamForm(@RequestParam(name = "name") String name,
-                                 @RequestParam(name = "sport") String sport,
-                                 @RequestParam(name = "location") String location,
-                                 Model model) throws IOException {
+                                       @RequestParam(name = "sport") String sport,
+                                       @RequestParam(name = "location") String location,
+                                       Model model, RedirectAttributes redirectAttributes) throws IOException {
         logger.info("POST /team_form");
 
         // client side validation
@@ -71,7 +73,7 @@ public class TeamFormController {
         //Retrieving the default profile image and converting it to byte array string to be stored in database
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
-        String pictureString= Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+        String pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
 
 
         // server side validation
@@ -79,11 +81,11 @@ public class TeamFormController {
         boolean sportValid = (sport.matches(allUnicodeRegex));
         boolean locationValid = (location.matches(allUnicodeRegex));
         if (!sportValid || !nameValid || !locationValid) {
-            model.addAttribute("error", true);
+            redirectAttributes.addFlashAttribute("error", true);
             return new RedirectView("/team_form", true);
         }
 
-        Team newTeam = new Team(name, location, sport,pictureString);
+        Team newTeam = new Team(name, location, sport, pictureString);
         teamService.addTeam(newTeam);
 
         return new RedirectView("/demo?teamID=" + newTeam.getTeamId(), true);

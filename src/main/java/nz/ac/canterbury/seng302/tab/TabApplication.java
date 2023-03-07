@@ -17,14 +17,14 @@ import java.io.File;
 public class TabApplication {
 
 
+    /**
+     * Main entry point, runs the Spring application
+     *
+     * @param args command line arguments
+     */
+    public static void main(String[] args) {
+        SpringApplication.run(TabApplication.class, args);
 
-	/**
-	 * Main entry point, runs the Spring application
-	 * @param args command line arguments
-	 */
-	public static void main(String[] args) {
-		SpringApplication.run(TabApplication.class, args);
-
-	}
+    }
 
 }

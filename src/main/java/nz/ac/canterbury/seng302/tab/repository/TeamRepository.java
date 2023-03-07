@@ -6,8 +6,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+
 @Repository
 public interface TeamRepository extends CrudRepository<Team, Long> {
     Optional<Team> findById(long id);
+
     List<Team> findAll();
 }

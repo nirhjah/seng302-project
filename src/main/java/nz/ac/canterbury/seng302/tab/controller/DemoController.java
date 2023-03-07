@@ -31,8 +31,10 @@ public class DemoController {
 
     @Autowired
     private TeamService teamService;
+
     /**
      * Redirects GET default url '/' to '/demo'
+     *
      * @return redirect to /demo
      */
     @GetMapping("/")
@@ -43,26 +45,28 @@ public class DemoController {
 
     /**
      * Gets the thymeleaf page representing the /demo page (a basic welcome screen with some links)
+     *
      * @param model (map-like) representation of data to be used in thymeleaf display
      * @return thymeleaf demoTemplate
      */
     @GetMapping("/demo")
     public String getTemplate(@RequestParam(name = "teamID", required = false) Long teamID, Model model) throws IOException {
         logger.info("GET /demo");
-        //Testing image being encoded as a byteArray and being decoded and displayed. Currently working.
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        File file = resource.getFile();
-        String fileEncoded= Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+//        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+//        File file = resource.getFile();
+//        String fileEncoded = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+//
+//        Team team = new Team("test", "test", "test", fileEncoded);
+//        teamService.addTeam(team);
+//        if (teamID == null) {
+//            teamID = teamService.getTeamList().get(0).getTeamId();
+//        }
 
-        Team team = new Team("test","test","test",fileEncoded);
-        teamService.addTeam(team);
-        if (teamService.getTeamList().size()<2) {
-            teamService.addTeam(new Team("t", "t", "t"));
-            teamService.addTeam(new Team("f", "f", "f"));
-        }
-        if (teamID == null) {
-            teamID = teamService.getTeamList().get(0).getTeamId();
-        }
+        System.out.println(teamService.getTeamList());
+        System.out.println(teamService.getTeamList().isEmpty());
+
+        model.addAttribute("isTeamEmpty", teamService.getTeamList().isEmpty());
+
         model.addAttribute("displayTeams", teamService.getTeamList());
         model.addAttribute("teamID", teamID);
         return "demoTemplate";

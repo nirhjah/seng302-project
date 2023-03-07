@@ -5,13 +5,13 @@ import jakarta.persistence.*;
 @Entity
 public class Team {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
 
-    @Column (nullable= false)
+    @Column(nullable = false)
     private String name;
 
-    @Column (nullable= false)
+    @Column(nullable = false)
     private String location;
 
     @Column(nullable = false)
@@ -19,46 +19,51 @@ public class Team {
 
     @Column(columnDefinition = "MEDIUMBLOB")
     private String pictureString;
-    protected Team(){}
 
-    public Team (String name, String location, String sport){
+    protected Team() {
+    }
+
+    public Team(String name, String location, String sport) {
         this.name = name;
         this.location = location;
-        this.sport= sport;
+        this.sport = sport;
     }
-    public Team (String name, String location, String sport, String pictureString){
+
+    public Team(String name, String location, String sport, String pictureString) {
         this.name = name;
         this.location = location;
-        this.sport= sport;
-        this.pictureString=pictureString;
+        this.sport = sport;
+        this.pictureString = pictureString;
     }
-    public Long getTeamId(){
+
+    public Long getTeamId() {
         return this.teamId;
     }
 
-    public String getName(){
+    public String getName() {
         return this.name;
     }
 
-    public String getLocation(){
+    public String getLocation() {
         return this.location;
     }
 
-    public String getSport(){
+    public String getSport() {
         return this.sport;
     }
+
     @Override
     public String toString() {
         return this.name;
     }
+
     public String getPictureString() {
         return this.pictureString;
     }
 
-    public void setPictureString(String pictureString){
-        this.pictureString=pictureString;
+    public void setPictureString(String pictureString) {
+        this.pictureString = pictureString;
     }
-
 
 
 }

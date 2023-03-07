@@ -18,6 +18,7 @@ public class FormService {
 
     /**
      * Gets all FormResults from persistence
+     *
      * @return all FormResults currently saved in persistence
      */
     public List<FormResult> getFormResults() {
@@ -26,6 +27,7 @@ public class FormService {
 
     /**
      * Adds a formResult to persistence
+     *
      * @param formResult object to persist
      * @return the saved formResult object
      */
