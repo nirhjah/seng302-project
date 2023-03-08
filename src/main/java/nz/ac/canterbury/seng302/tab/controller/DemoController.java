@@ -52,22 +52,17 @@ public class DemoController {
     @GetMapping("/demo")
     public String getTemplate(@RequestParam(name = "teamID", required = false) Long teamID, Model model) throws IOException {
         logger.info("GET /demo");
-//        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-//        File file = resource.getFile();
-//        String fileEncoded = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
-//
-//        Team team = new Team("test", "test", "test", fileEncoded);
-//        teamService.addTeam(team);
-//        if (teamID == null) {
-//            teamID = teamService.getTeamList().get(0).getTeamId();
-//        }
-
-        System.out.println(teamService.getTeamList());
-        System.out.println(teamService.getTeamList().isEmpty());
-
-        model.addAttribute("isTeamEmpty", teamService.getTeamList().isEmpty());
-
-        model.addAttribute("displayTeams", teamService.getTeamList());
+        if (teamService.getTeamList().size()<2) {
+            teamService.addTeam(new Team("t", "t", "t"));
+            teamService.addTeam(new Team("f", "f", "f"));
+            for (int i = 0; i < 50; i++) {
+                teamService.addTeam(new Team(String.valueOf(i), "f", "f"));
+            }
+        }
+        if (teamID == null) {
+            teamID = teamService.getTeamList().get(0).getTeamId();
+        }
+        model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("teamID", teamID);
         return "demoTemplate";
     }

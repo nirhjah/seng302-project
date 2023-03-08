@@ -41,10 +41,10 @@ public class ProfileFormController {
      */
 
 
-    @GetMapping("/profile_form")
+    @GetMapping("/profileForm")
     public String profileForm(Model model,
                               @RequestParam(value = "teamID", required = false) Long teamID) {
-        logger.info("GET /profile_form");
+        logger.info("GET /profileForm");
 
 
         // Retrieve the selected team from the list of available teams using the ID
@@ -62,6 +62,8 @@ public class ProfileFormController {
                     .findFirst()
                     .orElse(null);
         }
+
+
         if (selectedTeam != null) {
             teamName=selectedTeam.getName() ;
             teamLocation=selectedTeam.getSport();
@@ -69,7 +71,7 @@ public class ProfileFormController {
             teamPicture= selectedTeam.getPictureString();
         }
         this.teamId= teamID;
-        model.addAttribute("displayTeams", teamList);
+        model.addAttribute("navTeams", teamList);
         model.addAttribute("teamID", teamID);
         model.addAttribute("displayName", teamName);
         model.addAttribute("displaySport", teamLocation);
