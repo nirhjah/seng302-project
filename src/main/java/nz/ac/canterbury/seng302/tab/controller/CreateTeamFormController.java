@@ -90,12 +90,6 @@ public class CreateTeamFormController {
         // client side validation
         model.addAttribute("allUnicodeRegex", allUnicodeRegex);
 
-        //Retrieving the default profile image and converting it to byte array string to be stored in database
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        File file = resource.getFile();
-        String pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
-
-
         // server side validation
         boolean nameValid = (name.matches(allUnicodeRegex));
         boolean sportValid = (sport.matches(allUnicodeRegex));
@@ -109,10 +103,9 @@ public class CreateTeamFormController {
             team.setName(name);
             team.setSport(sport);
             team.setLocation(location);
-            team.setPictureString(pictureString);
             teamService.updateTeam(team);
         } else {
-            team = new Team(name, location, sport, pictureString);
+            team = new Team(name, location, sport);
             teamService.addTeam(team);
             teamID = team.getTeamId();
         }

@@ -1,6 +1,13 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Base64;
 
 @Entity
 public class Team {
@@ -23,18 +30,16 @@ public class Team {
     protected Team() {
     }
 
-    public Team(String name, String location, String sport) {
+    public Team(String name, String location, String sport) throws IOException {
         this.name = name;
         this.location = location;
         this.sport = sport;
+        //Retrieving the default profile image and converting it to byte array string to be stored in database
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        File file = resource.getFile();
+        this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
     }
 
-    public Team(String name, String location, String sport, String pictureString) {
-        this.name = name;
-        this.location = location;
-        this.sport = sport;
-        this.pictureString = pictureString;
-    }
 
     public Long getTeamId() {
         return this.teamId;

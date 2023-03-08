@@ -4,52 +4,56 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <title th:inline="text">
-        [[${teamID != null ? 'Edit' : 'Create'}]] Team
-    </title>
+        [[${teamID != null ? 'Edit' : 'Create'}]] Team</title>
 </head>
 <body>
-<div th:insert="/homeForm.html::navbar(displayTeams=${displayTeams})"></div>
-<div class="team-form">
-    <div class="create-team">
-        <h1 th:inline="text">
-            [[${teamID != null ? 'Edit' : 'Create'}]] Team
-        </h1>
+    <div th:insert="/homeForm.html::navbar(displayTeams=${displayTeams})"></div>
+    <div class="team-form">
+        <div class="create-team">
+            <h1 th:inline="text">
+                [[${teamID != null ? 'Edit' : 'Create'}]] Team
+            </h1>
+        </div>
+        <div class="wrapper">
+            <form th:action="@{createTeam}" method="post">
+                <div th:if="${invalid_team != null}" th:text="${invalid_team}" class="invalid-team error-message"></div>
+                <input type="hidden" th:if="${teamID != null}" th:name="teamID" th:value="${teamID}"/>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="name"
+                           th:name="name" th:value="*{name}" data-cy="name" required
+                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                    <label for="name"> Name: </label>
+                </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="sport"
+                           th:name="sport" th:value="*{sport}" data-cy="sport" required
+                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                    <label for="sport"> Sport: </label>
+                </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="location"
+                           th:name="location" th:value="*{location}" data-cy="location" required
+                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                    <label for="location">Location:</label>
+                </div>
+                <br/>
+                <div class="submit-button">
+                    <a th:href="@{home}">
+                        <button type="submit" th:text="${teamID != null ? 'Save' : 'Create'}"></button>
+                    </a>
+                </div>
+                <div th:if="${invalid_input != null}" th:text="${invalid_input}" class="error-message"></div>
+                <div class="cancel-link">
+                    <a th:if="${teamID != null}" th:href="@{profile(teamID=${teamID})}">Cancel</a>
+                    <a th:unless="${teamID != null}" th:href="@{home}">Cancel</a>
+                </div>
+            </form>
+        </div>
     </div>
-    <div class="wrapper">
-        <form th:action="@{createTeam}" method="post">
-            <div th:if="${invalid_team != null}" th:text="${invalid_team}" class="invalid-team error-message"></div>
-            <input type="hidden" th:if="${teamID != null}" th:name="teamID" th:value="${teamID}"/>
-            <div class="input-box">
-                <input type="text" class="form-control" id="name"
-                       th:name="name" th:value="*{name}" data-cy="name" required
-                       autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                <label for="name"> Name: </label>
-            </div>
-            <div class="input-box">
-                <input type="text" class="form-control" id="sport"
-                       th:name="sport" th:value="*{sport}" data-cy="sport" required
-                       autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                <label for="sport"> Sport: </label>
-            </div>
-            <div class="input-box">
-                <input type="text" class="form-control" id="location"
-                       th:name="location" th:value="*{location}" data-cy="location" required
-                       autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                <label for="location">Location:</label>
-            </div>
-            <br/>
-            <div class="submit-button">
-                <a th:href="@{home}">
-                    <button type="submit" th:text="${teamID != null ? 'Save' : 'Create'}"></button>
-                </a>
-            </div>
-            <div th:if="${invalid_input != null}" th:text="${invalid_input}" class="error-message"></div>
-            <div class="cancel-link">
-                <a th:if="${teamID != null}" th:href="@{profile(teamID=${teamID})}">Cancel</a>
-                <a th:unless="${teamID != null}" th:href="@{home}">Cancel</a>
-            </div>
-        </form>
-    </div>
-</div>
+    <footer>
+        <p>
+            Image by <a href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a> on Freepik
+        </p>
+    </footer>
 </body>
 </html>
