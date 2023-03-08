@@ -27,6 +27,14 @@ public class TeamService {
         return teamRepository.save(team);
     }
 
+    public Team getTeam(long teamID) {
+        return teamRepository.findById(teamID).orElse(null);
+    }
+
+    public Team updateTeam(Team team) {
+        return teamRepository.save(team);
+    }
+
     public Page<Team> findPaginated(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         return teamRepository.findAll(pageable);
