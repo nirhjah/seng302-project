@@ -46,6 +46,7 @@ table {
     border-collapse: collapse;
     font-family: "Noto Sans", sans-serif;
     padding: 50px;
+    font-size: 18px;
 }
 
 th {
