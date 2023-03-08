@@ -86,7 +86,7 @@ public class TeamFormController {
             @RequestParam(name = "name") String name,
             @RequestParam(name = "sport") String sport,
             @RequestParam(name = "location") String location,
-            Model model) {
+            Model model) throws IOException {
         logger.info("POST /team_form");
 
         // client side validation
@@ -111,16 +111,14 @@ public class TeamFormController {
             team.setName(name);
             team.setSport(sport);
             team.setLocation(location);
+            team.setPictureString(pictureString);
             teamService.updateTeam(team);
         } else {
-            team = new Team(name, location, sport);
+            team = new Team(name, location, sport, pictureString);
             teamService.addTeam(team);
             teamID = team.getTeamId();
         }
 
         return String.format("redirect:./profileForm?teamID=%s", team.getTeamId());
-
-        return new RedirectView("/demo?teamID=" + newTeam.getTeamId(), true);
-        //String.format("/profileForm?teamID=%s", newTeam.getTeamId()) You can't return this as you need to return an html
     }
 }
