@@ -7,8 +7,7 @@
 </head>
 <body>
 <div>
-  <div th:insert="/demoTemplate.html::navbar(displayTeams=${displayTeams})"></div>
-
+  <div th:insert="/homeForm.html::navbar(displayTeams=${displayTeams})"></div>
   <form id="search-form" th:action="@{/searchTeams(teamName=${teamName})}" method="get">
   <label for="teamName">Team Name:</label>
   <input type="text" id="teamName" name="teamName" />
