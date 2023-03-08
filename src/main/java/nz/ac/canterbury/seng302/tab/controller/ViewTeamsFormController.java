@@ -40,7 +40,7 @@ public class ViewTeamsFormController {
     @GetMapping("/viewTeams")
     public String findPaginated(@RequestParam(value = "page", defaultValue = "1") int pageNo,
                                 Model model) {
-        logger.info("GET /viewTeamsForm");
+        logger.info("GET /viewTeams");
 
         // If page number is not in range
         if (pageNo < 1 || pageNo > teamService.findPaginated(pageNo, maxPageSize).getTotalPages()) {
