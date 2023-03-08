@@ -42,9 +42,10 @@ public class ViewTeamsFormController {
                                 Model model) {
         logger.info("GET /viewTeams");
 
+        int tempTotalPages =  teamService.findPaginated(pageNo, maxPageSize).getTotalPages();
         // If page number is not in range
-        if (pageNo < 1 || pageNo > teamService.findPaginated(pageNo, maxPageSize).getTotalPages()) {
-            pageNo = pageNo < 1 ? 1: teamService.findPaginated(pageNo, maxPageSize).getTotalPages();
+        if (pageNo < 1 || pageNo > tempTotalPages && tempTotalPages > 0) {
+            pageNo = pageNo < 1 ? 1: tempTotalPages;
             return "redirect:/viewTeams?page=" + pageNo;
         }
 

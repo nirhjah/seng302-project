@@ -7,30 +7,29 @@
     <title>Home</title>
 </head>
 <body>
-    <div th:fragment="navbar" class="navbar">
-        <div class="menu-items">
-            <p>
-                <a th:href="@{home}">Home</a>
-                <a th:href="@{createTeam}">Create Team</a>
-                <a th:href="@{home}">Search Team</a>
-                <a th:href="@{viewTeams(page=1)}">See All Teams</a>
-                View Profile:
-                <select class="form-control" id="dropDownList" name="teamSelector"
-                        onchange="if(this.value != '-1') window.location.href = '/profile?teamID=' + this.value;">
-                    <option value="-1" selected>Select a Team</option>
-                    <option th:each="team : ${navTeams}"
-                            th:value="${team.teamId}"
-                            th:text="${team}"
-                            th:selected="${team.teamId.equals(teamID)}"> </option>
-                </select>
-            </p>
+    <div class ="home-background">
+        <div th:fragment="navbar" class="navbar">
+            <div class="menu-items">
+                <p>
+                    <a th:href="@{home}">Home</a>
+                    <a th:href="@{createTeam}">Create Team</a>
+                    <a th:href="@{home}">Search Team</a>
+                    <a th:href="@{viewTeams(page=1)}">See All Teams</a>
+                    View Profile:
+                    <select class="form-control" id="dropDownList" name="teamSelector"
+                            onchange="if(this.value != '-1') window.location.href = '/profile?teamID=' + this.value;">
+                        <option value="-1" selected>Select a Team</option>
+                        <option th:each="team : ${navTeams}"
+                                th:value="${team.teamId}"
+                                th:text="${team}"
+                                th:selected="${team.teamId.equals(teamID)}"> </option>
+                    </select>
+                </p>
+            </div>
         </div>
-    </div>
-    <div class="home-background">
         <div class="Welcome-header">
             <h1>Welcome!</h1>
         </div>
-
         <footer>
             <p>
                 Image by <a href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a> on Freepik

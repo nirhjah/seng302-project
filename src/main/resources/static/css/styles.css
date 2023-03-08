@@ -116,6 +116,11 @@ td {
     border-radius: 20px;
 }
 
+.menu-items a:hover {
+    background: #415A77;
+    color: #fff;
+    opacity: 1;
+}
 
 .wrapper-profile {
     position: absolute;
