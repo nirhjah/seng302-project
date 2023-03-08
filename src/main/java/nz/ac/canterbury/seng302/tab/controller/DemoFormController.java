@@ -24,14 +24,15 @@ public class DemoFormController {
 
     /**
      * Gets form to be displayed, includes the ability to display results of previous form when linked to from POST form
-     * @param displayName previous name entered into form to be displayed
+     *
+     * @param displayName     previous name entered into form to be displayed
      * @param displayLanguage previous favourite programming language entered into form to be displayed
-     * @param model (map-like) representation of name, language and isJava boolean for use in thymeleaf
+     * @param model           (map-like) representation of name, language and isJava boolean for use in thymeleaf
      * @return thymeleaf demoFormTemplate
      */
     @GetMapping("/form")
-    public String form(@RequestParam(name="displayName", required = false, defaultValue = "") String displayName,
-                       @RequestParam(name="displayFavouriteLanguage", required = false, defaultValue = "") String displayLanguage,
+    public String form(@RequestParam(name = "displayName", required = false, defaultValue = "") String displayName,
+                       @RequestParam(name = "displayFavouriteLanguage", required = false, defaultValue = "") String displayLanguage,
                        Model model) {
         logger.info("GET /form");
         model.addAttribute("displayName", displayName);
@@ -42,16 +43,17 @@ public class DemoFormController {
 
     /**
      * Posts a form response with name and favourite language
-     * @param name name if user
+     *
+     * @param name              name if user
      * @param favouriteLanguage users favourite programming language
-     * @param model (map-like) representation of name, language and isJava boolean for use in thymeleaf,
-     *              with values being set to relevant parameters provided
+     * @param model             (map-like) representation of name, language and isJava boolean for use in thymeleaf,
+     *                          with values being set to relevant parameters provided
      * @return thymeleaf demoFormTemplate
      */
     @PostMapping("/form")
-    public String submitForm( @RequestParam(name="name") String name,
-                              @RequestParam(name = "favouriteLanguage") String favouriteLanguage,
-                              Model model) {
+    public String submitForm(@RequestParam(name = "name") String name,
+                             @RequestParam(name = "favouriteLanguage") String favouriteLanguage,
+                             Model model) {
         logger.info("POST /form");
         formService.addFormResult(new FormResult(name, favouriteLanguage));
         model.addAttribute("displayName", name);
@@ -62,6 +64,7 @@ public class DemoFormController {
 
     /**
      * Gets all form responses
+     *
      * @param model (map-like) representation of results to be used by thymeleaf
      * @return thymeleaf demoResponseTemplate
      */

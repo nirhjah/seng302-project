@@ -5,12 +5,20 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -23,8 +31,10 @@ public class DemoController {
 
     @Autowired
     private TeamService teamService;
+
     /**
      * Redirects GET default url '/' to '/demo'
+     *
      * @return redirect to /demo
      */
     @GetMapping("/")
@@ -35,11 +45,12 @@ public class DemoController {
 
     /**
      * Gets the thymeleaf page representing the /demo page (a basic welcome screen with some links)
+     *
      * @param model (map-like) representation of data to be used in thymeleaf display
      * @return thymeleaf demoTemplate
      */
     @GetMapping("/demo")
-    public String getTemplate(@RequestParam(name = "teamID", required = false) Long teamID, Model model) {
+    public String getTemplate(@RequestParam(name = "teamID", required = false) Long teamID, Model model) throws IOException {
         logger.info("GET /demo");
         if (teamService.getTeamList().size()<2) {
             teamService.addTeam(new Team("t", "t", "t"));
@@ -55,5 +66,5 @@ public class DemoController {
         model.addAttribute("teamID", teamID);
         return "demoTemplate";
     }
-
 }
+

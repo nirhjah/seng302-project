@@ -21,11 +21,13 @@ public class FormResult {
     /**
      * JPA required no-args constructor
      */
-    protected FormResult() {}
+    protected FormResult() {
+    }
 
     /**
      * Creates a new FormResult object
-     * @param name name of user
+     *
+     * @param name     name of user
      * @param language user's favourite programming language
      */
     public FormResult(String name, String language) {
