@@ -77,5 +77,10 @@ public class Team {
         this.teamId=teamId;
     }
 
+    public void setSport(String sport) {
+        this.sport = sport;
+    }
+
+
 
 }
