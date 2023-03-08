@@ -5,6 +5,8 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +42,7 @@ public class SearchTeamsController {
      */
     @GetMapping("/searchTeams")
     public String searchTeams(@RequestParam(value = "teamName", required = false) String teamName,
+                              @RequestParam(value = "page", defaultValue = "0") int page,
                               Model model) {
         model.addAttribute("notSearch", false);
         if (teamName != null) {
@@ -47,8 +50,15 @@ public class SearchTeamsController {
                 model.addAttribute("error", "team name must be at least 3 characters long");
                 model.addAttribute("teams", new ArrayList<Team>());
             } else {
-                List<Team> teams = teamRepository.findTeamByName(teamName);
+                int pageSize = 10; // number of results per page
+                PageRequest pageRequest = PageRequest.of(page, pageSize);
+                Page<Team> teamPage = teamRepository.findTeamByName(teamName, pageRequest);
+                List<Team> teams = teamPage.getContent();
+                int numPages = teamPage.getTotalPages();
+//                int numPages = (int) Math.ceil((double) teams.size() / (double) pageSize);
                 model.addAttribute("teams", teams);
+                model.addAttribute("currentPage", page);
+                model.addAttribute("totalPages", numPages);
             }
         } else {
             model.addAttribute("teams", new ArrayList<Team>());

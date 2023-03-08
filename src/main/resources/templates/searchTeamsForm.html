@@ -40,22 +40,76 @@
 </div>
 <div th:if="${not #lists.isEmpty(teams)}">
   <h2>Search Results</h2>
-  <table>
+  <table id="teamTable">
     <thread>
       <tr>
+        <th>Profile Picture</th>
         <th>Name</th>
         <th>Sport</th>
         <th>Location</th>
       </tr>
     </thread>
     <tbody>
-      <tr th:each="team : ${teams}">
+      <tr th:each="team : ${teams}"
+          th:onclick="|window.location.href='/profile?teamID=${team.teamId}'|">
+        <td>
+          <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" width="50" height="50"/>
+        </td>
         <td th:text="${team.name}"></td>
         <td th:text="${team.sport}"></td>
         <td th:text="${team.location}"></td>
       </tr>
     </tbody>
   </table>
+  <div class="pagination">
+    <div class="paginationContainer">
+      <div class="totalPages">
+        Total Pages: [[${totalPages}]]
+      </div>
+      <div>
+        <button th:onclick="@{/searchTeams(teamName=${teamName},page=0,size=${size})}"
+                class="paginationButton">
+          <span>First</span>
+        </button>
+      </div>
+      <div>
+        <!-- previous page button -->
+        <button th:if="${currentPage == i}" class="paginationActive" th:text="${i}"
+                th:onclick= "|window.location.href='/searchTeams(teamName=${teamName},page=${i - 1},size=${size})'|">
+          <span>< Prev</span>
+        </button>
+      </div>
+      <!-- page buttons -->
+      <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+        <div th:if="${i >= currentPage - 1 and i <= currentPage + 1
+                                    or currentPage == 1 and i >= currentPage - 1 and i <= currentPage + 2
+                                    or currentPage == totalPages and i >= currentPage - 2 and i <= currentPage + 1}">
+          <button th:if="${currentPage == i}" class="paginationActive" th:text="${i}"
+                  th:onclick= "|window.location.href='/searchTeams(teamName=${teamName},page=${i - 1},size=${size})'|">
+          </button>
+          <button th:unless="${currentPage == i}" th:text="${i}"
+                  th:onclick="|window.location.href='/searchTeams(teamName=${teamName},page=${i - 1},size=${size})'|"
+                  class="paginationButton">
+          </button>
+        </div>
+<!--      </th:block>-->
+        <div>
+          <button th:disabled="${currentPage == totalPages}"
+                  th:onclick="|window.location.href='/searchTeams(teamName=${teamName},page=${i + 1},size=${size})'|"
+                  class="paginationButton">
+            <span>Next ></span>
+          </button>
+        </div>
+      </th:block>
+      <div>
+        <button th:disabled="${currentPage == totalPages}"
+                th:onclick= "|window.location.href='/searchTeams(teamName=${teamName},page=${totalPages - 1},size=${size})'|"
+                class="paginationButton">
+          <span>Last</span>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 <div th:if="${#lists.isEmpty(teams) and not (notSearch)}">The search results are empty!</div>
 </body>
