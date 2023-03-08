@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    public void testGettingTeamById(){
+    public void testGettingTeamById() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
         Team team = new Team("test", "Christchurch", "Hockey");
@@ -39,7 +41,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    public void testGettingTeamList(){
+    public void testGettingTeamList() throws IOException {
         assertTrue(teamService.getTeamList().isEmpty());
         Team team = new Team("test", "Christchurch", "Hockey");
         Team team2= new Team ("test2", "Auckland", "Netball");

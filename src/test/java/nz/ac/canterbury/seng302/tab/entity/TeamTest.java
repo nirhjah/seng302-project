@@ -31,7 +31,7 @@ public class TeamTest {
 
     }
     @Test
-    public void testTeamConstructor(){
+    public void testTeamConstructor() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
         Team team = new Team("test", "Christchurch", "Hockey");
@@ -42,7 +42,7 @@ public class TeamTest {
     }
 
     @Test
-    public void testGettingTeamId(){
+    public void testGettingTeamId() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
         Team team = new Team("test", "Christchurch", "Hockey");
@@ -59,16 +59,16 @@ public class TeamTest {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
         // TODO currently default-profile is in test resource directory (will need to ask about project structure). So test may fail when others run it.
-        Resource resource = new ClassPathResource("/default-profile.png");
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
         String pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
-        Team team = new Team("test", "Christchurch", "Hockey", pictureString);
+        Team team = new Team("test", "Christchurch", "Hockey");
         teamService.addTeam(team);
         assertEquals(pictureString,team.getPictureString() );
     }
 
     @Test
-    public void testGettingTeamName(){
+    public void testGettingTeamName() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
         Team team = new Team("test", "Christchurch", "Hockey");
@@ -77,7 +77,7 @@ public class TeamTest {
     }
 
     @Test
-    public void testGettingTeamLocation(){
+    public void testGettingTeamLocation() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
         Team team = new Team("test", "Christchurch", "Hockey");

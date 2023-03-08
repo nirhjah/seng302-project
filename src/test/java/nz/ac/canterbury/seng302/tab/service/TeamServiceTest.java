@@ -37,7 +37,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void testGettingTeamList() {
+    public void testGettingTeamList() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
         Team team = new Team("test", "Christchurch", "Hockey");
@@ -53,7 +53,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void testAddingTeam(){
+    public void testAddingTeam() throws IOException {
         Team team = new Team("test", "Christchurch", "Hockey");
         teamService.addTeam(team);
         assertEquals(team.getName(), teamRepository.findById(team.getTeamId()).get().getName());
