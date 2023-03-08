@@ -32,33 +32,20 @@ public class ViewTeamsFormController {
 
     /**
      * Gets form to be displayed, includes the ability to display results of previous form when linked to from POST form
-     *
-     * @param teamID team for which the details are to be displayed
+     * @param pageNo integer corresponding page to be displayed
      * @param model  (map-like) representation of name, language and isJava boolean for use in thymeleaf
      * @return thymeleaf profileForm
      */
 
-    @GetMapping("/viewTeamsForm")
-    public String profileForm(Model model,
-                              @RequestParam(value = "teamID", required = false) Long teamID,
-                              @RequestParam(value = "searchQuery", required = false, defaultValue = "") String searchQuery,
-                              @RequestParam(value = "page", defaultValue = "1") int pageNo) {
-        logger.info("GET /viewTeamsForm");
-        model.addAttribute("teamID", teamID);
-        model.addAttribute("searchQuery", searchQuery);
-        return findPaginated(pageNo, teamID, model);
-    }
-
-
-    @GetMapping()
-    public String findPaginated(@PathVariable (value = "pageNo") int pageNo,
-                                @PathVariable (value = "teamID") long teamID,
+    @GetMapping("/viewTeams")
+    public String findPaginated(@RequestParam(value = "page", defaultValue = "1") int pageNo,
                                 Model model) {
+        logger.info("GET /viewTeamsForm");
 
         // If page number is not in range
         if (pageNo < 1 || pageNo > teamService.findPaginated(pageNo, maxPageSize).getTotalPages()) {
             pageNo = pageNo < 1 ? 1: teamService.findPaginated(pageNo, maxPageSize).getTotalPages();
-            return "redirect:/viewTeamsForm?teamID=" + teamID + "&page=" + pageNo;
+            return "redirect:/viewTeams?page=" + pageNo;
         }
 
         Page<Team> page = teamService.findPaginated(pageNo, maxPageSize);

@@ -41,20 +41,21 @@ public class ProfileFormController {
      */
 
 
-    @GetMapping("/profileForm")
-    public String profileForm(Model model,
-                              @RequestParam(value = "teamID", required = false) Long teamID) {
+    @GetMapping("/profile")
+    public String profileForm(Model model, @RequestParam(value = "teamID", required = false) Long teamID) {
         logger.info("GET /profileForm");
 
 
         // Retrieve the selected team from the list of available teams using the ID
         // If the name is null or empty, return null
         List<Team> teamList = teamService.getTeamList();
+        this.teamId= teamID;
+
         Team selectedTeam = null;
         String teamName = null;
-        String teamLocation= null;
-        String teamSport= null;
-        String teamPicture=null;
+        String teamLocation = null;
+        String teamSport = null;
+        String teamPicture = null;
         if (teamID != null) {
             // Find the selected team by its id
             selectedTeam = teamList.stream()
@@ -63,14 +64,13 @@ public class ProfileFormController {
                     .orElse(null);
         }
 
-
         if (selectedTeam != null) {
-            teamName=selectedTeam.getName() ;
-            teamLocation=selectedTeam.getSport();
-            teamSport=selectedTeam.getLocation();
-            teamPicture= selectedTeam.getPictureString();
+            teamName = selectedTeam.getName() ;
+            teamLocation = selectedTeam.getSport();
+            teamSport = selectedTeam.getLocation();
+            teamPicture = selectedTeam.getPictureString();
         }
-        this.teamId= teamID;
+
         model.addAttribute("navTeams", teamList);
         model.addAttribute("teamID", teamID);
         model.addAttribute("displayName", teamName);
@@ -81,26 +81,26 @@ public class ProfileFormController {
         return "profileForm";
     }
 
-    @PostMapping("/profile_form")
+    @PostMapping("/profile")
     public RedirectView uploadPicture(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes, Model model)
     {
 
         model.addAttribute("teamID", this.teamId);
         if (file.isEmpty()){
             redirectAttributes.addFlashAttribute("emptyFileError", true);
-            return new RedirectView("/profile_form?teamID=" + this.teamId, true);
+            return new RedirectView("/profile?teamID=" + this.teamId, true);
         }
 
         if (!isSupportedContentType(file.getContentType())){
             redirectAttributes.addFlashAttribute("typeError", true);
-            return new RedirectView("/profile_form?teamID=" + this.teamId, true);
+            return new RedirectView("/profile?teamID=" + this.teamId, true);
         }
         if (file.getSize()>10000000){
             redirectAttributes.addFlashAttribute("sizeError", true);
-            return new RedirectView("/profile_form?teamID=" + this.teamId, true);
+            return new RedirectView("/profile?teamID=" + this.teamId, true);
         }
         teamService.updatePicture(file,this.teamId );
-        return new RedirectView("/profile_form?teamID=" + this.teamId, true);
+        return new RedirectView("/profile?teamID=" + this.teamId, true);
     }
     private boolean isSupportedContentType(String contentType){
         return contentType.equals("image/png")|| contentType.equals("image/jpg")||contentType.equals("image/svg+xml")|| contentType.equals("image/jpeg");

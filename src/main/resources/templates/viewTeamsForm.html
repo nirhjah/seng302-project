@@ -3,11 +3,11 @@
     <head>
         <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
         <link th:href="@{/css/styles.css}" rel="stylesheet">
-        <title>Create team form</title>
+        <title>View All Teams</title>
     </head>
         <body>
             <div>
-                <div th:insert="/demoTemplate.html::navbar(displayTeams=${displayTeams})"></div>
+                <div th:insert="/homeForm.html::navbar(displayTeams=${displayTeams})"></div>
                 <table id="teamTable">
                     <tr>
                         <th>Profile Picture</th>
@@ -16,8 +16,10 @@
                         <th>Sport</th>
                     </tr>
                     <tr th:each="team : ${displayTeams}"
-                        th:onclick="|window.location.href='/profileForm?teamID=${team.teamId}'|">
-                        <td th:text="img"></td>
+                        th:onclick="|window.location.href='/profile?teamID=${team.teamId}'|">
+                        <td>
+                            <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" width="50" height="50"/>
+                        </td>
                         <td th:text="${team.name}"></td>
                         <td th:text="${team.location}"></td>
                         <td th:text="${team.sport}"></td>
@@ -30,14 +32,14 @@
                         </div>
                         <div>
                             <button th:disabled="${currentPage == 1}"
-                                    th:onclick= "|window.location.href='/viewTeamsForm?teamID=${teamID}&page=${1}'|"
+                                    th:onclick= "|window.location.href='/viewTeams?page=${1}'|"
                                     class="paginationButton">
                                 <span>First</span>
                             </button>
                         </div>
                         <div>
                             <button th:disabled="${currentPage == 1}"
-                                    th:onclick= "|window.location.href='/viewTeamsForm?teamID=${teamID}&page=${currentPage - 1}'|"
+                                    th:onclick= "|window.location.href='/viewTeams?page=${currentPage - 1}'|"
                                     class="paginationButton">
                                 <span>< Prev</span>
                             </button>
@@ -47,24 +49,24 @@
                                             or currentPage == 1 and i >= currentPage - 1 and i <= currentPage + 2
                                             or currentPage == totalPages and i >= currentPage - 2 and i <= currentPage + 1}">
                                 <button th:if="${currentPage == i}" class="paginationActive" th:text="${i}"
-                                        th:onclick= "|window.location.href='/viewTeamsForm?teamID=${teamID}&page=${i}'|">
+                                        th:onclick= "|window.location.href='/viewTeams?page=${i}'|">
                                 </button>
                                 <button th:unless="${currentPage == i}" th:text="${i}"
-                                        th:onclick="|window.location.href='/viewTeamsForm?teamID=${teamID}&page=${i}'|"
+                                        th:onclick="|window.location.href='/viewTeams?page=${i}'|"
                                         class="paginationButton">
                                 </button>
                             </div>
                         </th:block>
                         <div>
                             <button th:disabled="${currentPage == totalPages}"
-                                    th:onclick="|window.location.href='/viewTeamsForm?teamID=${teamID}&page=${currentPage + 1}'|"
+                                    th:onclick="|window.location.href='/viewTeams?page=${currentPage + 1}'|"
                                     class="paginationButton">
                                 <span>Next ></span>
                             </button>
                         </div>
                         <div>
                             <button th:disabled="${currentPage == totalPages}"
-                                    th:onclick= "|window.location.href='/viewTeamsForm?teamID=${teamID}&page=${totalPages}'|"
+                                    th:onclick= "|window.location.href='/viewTeams?page=${totalPages}'|"
                                     class="paginationButton">
                                 <span>Last</span>
                             </button>
