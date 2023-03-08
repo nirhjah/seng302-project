@@ -8,49 +8,49 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
 /**
  * This is a basic spring boot controller, note the @link{Controller} annotation which defines this.
  * This controller defines endpoints as functions with specific HTTP mappings
  */
 @Controller
-public class DemoController {
-    Logger logger = LoggerFactory.getLogger(DemoController.class);
+public class HomeFormController {
+    Logger logger = LoggerFactory.getLogger(HomeFormController.class);
 
     @Autowired
     private TeamService teamService;
+
     /**
-     * Redirects GET default url '/' to '/demo'
-     * @return redirect to /demo
+     * Redirects GET default url '/' to '/home'
+     *
+     * @return redirect to /home
      */
     @GetMapping("/")
     public String home() {
-        logger.info("GET /");
-        return "redirect:./demo";
+        logger.info("GET /homeForm");
+        return "redirect:./home";
     }
 
     /**
      * Gets the thymeleaf page representing the /demo page (a basic welcome screen with some links)
+     *
      * @param model (map-like) representation of data to be used in thymeleaf display
      * @return thymeleaf demoTemplate
      */
-    @GetMapping("/demo")
-    public String getTemplate(@RequestParam(name = "teamID", required = false) Long teamID, Model model) {
-        logger.info("GET /demo");
+    @GetMapping("/home")
+    public String getTemplate(Model model) throws IOException {
+        logger.info("GET /homeForm");
         if (teamService.getTeamList().size()<2) {
             teamService.addTeam(new Team("t", "t", "t"));
             teamService.addTeam(new Team("f", "f", "f"));
+            for (int i = 0; i < 50; i++) {
+                teamService.addTeam(new Team(String.valueOf(i), "f", "f"));
+            }
         }
-        if (teamID == null) {
-            teamID = teamService.getTeamList().get(0).getTeamId();
-        }
-        model.addAttribute("displayTeams", teamService.getTeamList());
-        model.addAttribute("teamID", teamID);
-        return "demoTemplate";
+        model.addAttribute("navTeams", teamService.getTeamList());
+        return "homeForm";
     }
-
 }
+

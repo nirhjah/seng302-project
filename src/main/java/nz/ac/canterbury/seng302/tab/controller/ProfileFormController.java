@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
@@ -8,8 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +30,7 @@ import java.util.List;
 public class ProfileFormController {
 
     Logger logger = LoggerFactory.getLogger(ProfileFormController.class);
-
+    private long teamId;
     @Autowired
     private TeamService teamService;
     /**
@@ -31,17 +41,21 @@ public class ProfileFormController {
      */
 
 
-    @GetMapping("/profile_form")
-    public String profileForm(Model model,
-                              @RequestParam(value = "teamID", required = false) Long teamID) {
-        logger.info("GET /profile_form");
+    @GetMapping("/profile")
+    public String profileForm(Model model, @RequestParam(value = "teamID", required = false) Long teamID) {
+        logger.info("GET /profileForm");
 
 
         // Retrieve the selected team from the list of available teams using the ID
         // If the name is null or empty, return null
         List<Team> teamList = teamService.getTeamList();
-        logger.info(teamList.get(0).toString());
+        this.teamId= teamID;
+
         Team selectedTeam = null;
+        String teamName = null;
+        String teamLocation = null;
+        String teamSport = null;
+        String teamPicture = null;
         if (teamID != null) {
             // Find the selected team by its id
             selectedTeam = teamList.stream()
@@ -50,34 +64,48 @@ public class ProfileFormController {
                     .orElse(null);
         }
 
-        model.addAttribute("displayTeams", teamList);
+        if (selectedTeam != null) {
+            teamName = selectedTeam.getName() ;
+            teamLocation = selectedTeam.getSport();
+            teamSport = selectedTeam.getLocation();
+            teamPicture = selectedTeam.getPictureString();
+        }
+
+        model.addAttribute("navTeams", teamList);
         model.addAttribute("teamID", teamID);
-        model.addAttribute("displayName", selectedTeam.getName());
-        model.addAttribute("displaySport", selectedTeam.getSport());
-        model.addAttribute("displayLocation", selectedTeam.getLocation());
+        model.addAttribute("displayName", teamName);
+        model.addAttribute("displaySport", teamLocation);
+        model.addAttribute("displayLocation", teamSport);
+        model.addAttribute("displayPicture", teamPicture);
 
         return "profileForm";
     }
+
+    @PostMapping("/profile")
+    public RedirectView uploadPicture(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes, Model model)
+    {
+
+        model.addAttribute("teamID", this.teamId);
+        if (file.isEmpty()){
+            redirectAttributes.addFlashAttribute("emptyFileError", true);
+            return new RedirectView("/profile?teamID=" + this.teamId, true);
+        }
+
+        if (!isSupportedContentType(file.getContentType())){
+            redirectAttributes.addFlashAttribute("typeError", true);
+            return new RedirectView("/profile?teamID=" + this.teamId, true);
+        }
+        if (file.getSize()>10000000){
+            redirectAttributes.addFlashAttribute("sizeError", true);
+            return new RedirectView("/profile?teamID=" + this.teamId, true);
+        }
+        teamService.updatePicture(file,this.teamId );
+        return new RedirectView("/profile?teamID=" + this.teamId, true);
+    }
+    private boolean isSupportedContentType(String contentType){
+        return contentType.equals("image/png")|| contentType.equals("image/jpg")||contentType.equals("image/svg+xml")|| contentType.equals("image/jpeg");
+    }
+
 }
 
-
-//    /**
-//     * Posts a form response with name and favourite language
-//     * @param name name if user
-//     * @param favouriteLanguage users favourite programming language
-//     * @param model (map-like) representation of name, language and isJava boolean for use in thymeleaf,
-//     *              with values being set to relevant parameters provided
-//     * @return thymeleaf profileForm
-//     */
-//    @PostMapping("/profile_form")
-//    public String submitProfileForm( @RequestParam(name="name") String name,
-//                              @RequestParam(name = "favouriteLanguage") String favouriteLanguage,
-//                              Model model) {
-//        logger.info("POST /profile_form");
-//        formService.addFormResult(new FormResult(name, favouriteLanguage));
-//        model.addAttribute("displayName", name);
-//        model.addAttribute("displayFavouriteLanguage", favouriteLanguage);
-//        model.addAttribute("isJava", favouriteLanguage.equalsIgnoreCase("java"));
-//        return "profileForm";
-//    }
 
