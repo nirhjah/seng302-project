@@ -4,61 +4,59 @@
 <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
-    <title>Create team form</title>
+    <title>Profile</title>
 </head>
-<div th:insert="/demoTemplate.html::navbar(displayTeams=${displayTeams})"></div>
+    <div th:insert="/homeForm.html::navbar(displayTeams=${displayTeams})"></div>
 <body>
-
-<div class="profile-background">
-    <div class="wrapper-profile">
-        <div class="profile-pic">
-            <form id="upload-picture" method="post" th:action="@{profile_form}" enctype="multipart/form-data">
-                <div class="image-styling">
-                    <img th:src="*{'data:image/jpeg;base64,'+{displayPicture}}" width="200" height="200"/>
+    <div class="profile-background">
+        <div class="wrapper-profile">
+            <div class="profile-pic">
+                <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
+                    <div class="image-styling">
+                        <img th:src="*{'data:image/jpeg;base64,'+{displayPicture}}" width="200" height="200"/>
+                        </br>
+                    </div>
                     </br>
-                </div>
-                </br>
-                <div class="file-upload">
-                    <div class="form-group">
-                        <input type="file" name="file" class="form-control-file">
+                    <div class="file-upload">
+                        <div class="form-group">
+                            <input type="file" name="file" class="form-control-file">
+                        </div>
                     </div>
-                </div>
-                <div class="file-upload">
-                    <button type="submit" value="Upload Picture">Edit Profile Picture</button>
+                    <div class="file-upload">
+                        <button type="submit" value="Upload Picture">Edit Profile Picture</button>
 
-                    <div class="error-message" th:if="${sizeError == true}">Image must be less than 10MB</div>
-                    <div class="error-message" th:if="${typeError == true}">Please choose a .png, .jpg or .svg file
+                        <div class="error-message" th:if="${sizeError == true}">Image must be less than 10MB</div>
+                        <div class="error-message" th:if="${typeError == true}">Please choose a .png, .jpg or .svg file
+                        </div>
+                        <div class="error-message" th:if="${emptyFileError == true}">Please choose a file</div>
+
                     </div>
-                    <div class="error-message" th:if="${emptyFileError == true}">Please choose a file</div>
+                    <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
 
-                </div>
-                <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+                </form>
 
-            </form>
-
-        </div>
-        <div class="team-info">
-            <form th:action="@{profile_form}" method="post">
-                <h3>Team Profile</h3>
-                <div class="team-display">
-                    <h4 th:text="'Name: ' + ${displayName}"></h4>
-                </div>
-                <div class="team-display">
-                    <h4 th:text="'Sport: ' + ${displaySport}"></h4>
-                </div>
-                <div class="team-display">
-                    <h4 th:text="'Location: ' + ${displayLocation}"></h4>
-                </div>
-                <br/>
-                <div class="edit-button">
-                    <a th:href="@{demo(teamID=${teamID})}">
-                        <button type="submit">Edit Profile</button>
-                    </a>
-                </div>
-            </form>
+            </div>
+            <div class="team-info">
+                <form th:action="@{profile}" method="post">
+                    <h3>Team Profile</h3>
+                    <div class="team-display">
+                        <h4 th:text="'Name: ' + ${displayName}"></h4>
+                    </div>
+                    <div class="team-display">
+                        <h4 th:text="'Sport: ' + ${displaySport}"></h4>
+                    </div>
+                    <div class="team-display">
+                        <h4 th:text="'Location: ' + ${displayLocation}"></h4>
+                    </div>
+                    <br/>
+                    <div class="edit-button">
+                        <a th:href="@{home}">
+                            <button type="submit">Edit Profile</button>
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
-</div>
 </body>
 </html>

@@ -5,42 +5,32 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
 
 /**
  * This is a basic spring boot controller, note the @link{Controller} annotation which defines this.
  * This controller defines endpoints as functions with specific HTTP mappings
  */
 @Controller
-public class DemoController {
-    Logger logger = LoggerFactory.getLogger(DemoController.class);
+public class HomeFormController {
+    Logger logger = LoggerFactory.getLogger(HomeFormController.class);
 
     @Autowired
     private TeamService teamService;
 
     /**
-     * Redirects GET default url '/' to '/demo'
+     * Redirects GET default url '/' to '/home'
      *
-     * @return redirect to /demo
+     * @return redirect to /home
      */
     @GetMapping("/")
     public String home() {
-        logger.info("GET /");
-        return "redirect:./demo";
+        logger.info("GET /homeForm");
+        return "redirect:./home";
     }
 
     /**
@@ -49,9 +39,9 @@ public class DemoController {
      * @param model (map-like) representation of data to be used in thymeleaf display
      * @return thymeleaf demoTemplate
      */
-    @GetMapping("/demo")
-    public String getTemplate(@RequestParam(name = "teamID", required = false) Long teamID, Model model) throws IOException {
-        logger.info("GET /demo");
+    @GetMapping("/home")
+    public String getTemplate(Model model) throws IOException {
+        logger.info("GET /homeForm");
         if (teamService.getTeamList().size()<2) {
             teamService.addTeam(new Team("t", "t", "t"));
             teamService.addTeam(new Team("f", "f", "f"));
@@ -59,12 +49,8 @@ public class DemoController {
                 teamService.addTeam(new Team(String.valueOf(i), "f", "f"));
             }
         }
-        if (teamID == null) {
-            teamID = teamService.getTeamList().get(0).getTeamId();
-        }
         model.addAttribute("navTeams", teamService.getTeamList());
-        model.addAttribute("teamID", teamID);
-        return "demoTemplate";
+        return "homeForm";
     }
 }
 

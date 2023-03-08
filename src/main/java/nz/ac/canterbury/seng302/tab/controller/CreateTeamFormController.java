@@ -1,7 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,14 +24,12 @@ import java.util.Base64;
  * controller for the team form
  */
 @Controller
-public class TeamFormController {
+public class CreateTeamFormController {
 
-    Logger logger = LoggerFactory.getLogger(TeamFormController.class);
+    Logger logger = LoggerFactory.getLogger(CreateTeamFormController.class);
 
     @Autowired
     private TeamService teamService;
-    @Autowired
-    private TeamRepository teamRepository;
 
     private String allUnicodeRegex = "^[\\p{L}\\s\\d\\.\\}\\{]+$";
 
@@ -41,13 +38,13 @@ public class TeamFormController {
      *
      * @return thymeleaf demoFormTemplate
      */
-    @GetMapping("/team_form")
+    @GetMapping("/createTeam")
     public String teamForm(Model model) {
-        logger.info("GET /team_form");
+        logger.info("GET /createTeamForm");
         // client side validation
         model.addAttribute("allUnicodeRegex", allUnicodeRegex);
-
-        return "teamFormTemplate";
+        model.addAttribute("navTeams", teamService.getTeamList());
+        return "createTeamForm";
     }
 
 
@@ -60,12 +57,12 @@ public class TeamFormController {
      *              with values being set to relevant parameters provided
      * @return thymeleaf teamFormTemplate
      */
-    @PostMapping("demo")
+    @PostMapping("home")
     public RedirectView submitTeamForm(@RequestParam(name = "name") String name,
                                        @RequestParam(name = "sport") String sport,
                                        @RequestParam(name = "location") String location,
                                        Model model, RedirectAttributes redirectAttributes) throws IOException {
-        logger.info("POST /team_form");
+        logger.info("POST /homeForm");
 
         // client side validation
         model.addAttribute("allUnicodeRegex", allUnicodeRegex);
@@ -82,13 +79,13 @@ public class TeamFormController {
         boolean locationValid = (location.matches(allUnicodeRegex));
         if (!sportValid || !nameValid || !locationValid) {
             redirectAttributes.addFlashAttribute("error", true);
-            return new RedirectView("/team_form", true);
+            return new RedirectView("/createTeam", true);
         }
 
         Team newTeam = new Team(name, location, sport, pictureString);
         teamService.addTeam(newTeam);
 
-        return new RedirectView("/demo?teamID=" + newTeam.getTeamId(), true);
+        return new RedirectView("/home", true);
         //String.format("/profileForm?teamID=%s", newTeam.getTeamId()) You can't return this as you need to return an html
     }
 }
