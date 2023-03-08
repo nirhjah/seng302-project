@@ -52,6 +52,14 @@ public class Team {
         return this.sport;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     @Override
     public String toString() {
         return this.name;
@@ -65,5 +73,7 @@ public class Team {
         this.pictureString = pictureString;
     }
 
-
+    public void setSport(String sport) {
+        this.sport = sport;
+    }
 }

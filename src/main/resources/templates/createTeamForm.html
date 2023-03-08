@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
-<!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
-    <title>Create Team</title>
+    <title th:inline="text">
+        [[${teamID != null ? 'Edit' : 'Create'}]] Team
+    </title>
 </head>
 <body>
 <div th:insert="/homeForm.html::navbar(displayTeams=${displayTeams})"></div>
 <div class="team-form">
     <div class="create-team">
-        <h1>Create Team</h1>
+        <h1 th:inline="text">
+            [[${teamID != null ? 'Edit' : 'Create'}]] Team
+        </h1>
     </div>
     <div class="wrapper">
-        <form th:action="@{home}" method="post">
+        <form th:action="@{createTeam}" method="post">
+            <div th:if="${invalid_team != null}" th:text="${invalid_team}" class="invalid-team error-message"></div>
+            <input type="hidden" th:if="${teamID != null}" th:name="teamID" th:value="${teamID}"/>
             <div class="input-box">
                 <input type="text" class="form-control" id="name"
                        th:name="name" th:value="*{name}" data-cy="name" required
@@ -35,12 +40,13 @@
             <br/>
             <div class="submit-button">
                 <a th:href="@{home}">
-                    <button type="submit">Create</button>
+                    <button type="submit" th:text="${teamID != null ? 'Save' : 'Create'}"></button>
                 </a>
             </div>
-            <div th:if="${error == true}" class="error-message">An error occurred.</div>
+            <div th:if="${invalid_input != null}" th:text="${invalid_input}" class="error-message"></div>
             <div class="cancel-link">
-                <a th:href="@{home}">Cancel</a>
+                <a th:if="${teamID != null}" th:href="@{profileForm(teamID=${teamID})}">Cancel</a>
+                <a th:unless="${teamID != null}" th:href="@{home}">Cancel</a>
             </div>
         </form>
     </div>
