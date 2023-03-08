@@ -1,18 +1,33 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
-    <head>
-        <link href="./resources/static.css/style.css" rel="stylesheet" type="text/css" />
-        <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
-        <title>Form Demo</title>
-    </head>
-    <body>
-        <h4>Welcome To SENG302</h4>
-        <p th:text="'hello, ' + ${name} + '!'"></p>
-        <a th:href="@{form}">View an interactive form example</a>
-        <br/>
-        <a th:href="@{fragments/main}">View a fragment example</a>
-        <br/>
-        <a th:href="@{team_form}"><button>Create Team</button></a>
+<head>
+    <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <title>Form Demo</title>
+</head>
+<body>
 
-    </body>
+<div th:fragment="navbar" class="navbar">
+    <div class="menu-items">
+        <p>Select Team:
+            <select class="form-control" id="dropDownList" name="teamSelector"
+                    onchange="window.location.href = '?teamID=' + this.value;">
+                <option value="-1">No team</option>
+                <option th:each="team : ${displayTeams}"
+                        th:value="${team.teamId}"
+                        th:text="${team}"
+                        th:selected="${team.teamId.equals(teamID)}"></option>
+
+            </select>
+            <a th:href="@{profile_form(teamID=${teamID})}" th:classappend="${isTeamEmpty} ? disabled : enabled">
+                Profile</a>
+            <a th:href="@{demo(teamID=${teamID})}" class="active">Home</a>
+            <a th:href="@{team_form}">Create Team</a>
+            <a th:href="@{demo(teamID=${teamID})}">Search Team</a>
+
+        </p>
+    </div>
+</div>
+</body>
 </html>

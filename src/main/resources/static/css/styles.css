@@ -1,28 +1,249 @@
-body {
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-    background-color: #FFFFFF;
+/*body {*/
+/*    display:flex;*/
+/*    justify-content:center;*/
+/*    align-items:center;*/
+/*    min-height:90vh;*/
+/*    background-color: #FFFFFF;*/
+/*}*/
+
+.team-form {
+    display: grid;
+    grid-auto-rows: 300px;
+    justify-content: center;
+    align-items: center;
+    /*background-image: url('../image/landscape.jpg');*/
+    /*background-size: cover;*/
+    /*background-repeat: no-repeat;*/
+    height: 100vh;
 }
 
-.wrapper{
+.paginationActive {
+    background-color: blue;
+}
+
+.paginationButton[disabled] {
+    pointer-events: none; /* Disable pointer events */
+}
+
+.paginationButton[disabled] span {
+    opacity: 0.5; /* Set opacity to 50% */
+}
+
+.paginationContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.paginationContainer > div {
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.totalPages {
+    justify-content: left;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    width: 25%; /* 4 columns, so each column gets 25% width */
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+td:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+}
+
+.navbar {
     position: relative;
-    width:500px;
-    height:440px;
-    background:transparent;
-    border: 2px solid rgba(255,255,255,.5);
-    border-radius:20px;
-    backdrop-filter:blur(20px);
-    box-shadow:0 0 30px rgba(0,0,0,.5);
-    display:flex;
-    justify-content:center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    height: 20px;
+    background-color: #1b263b;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.form-control {
+    background: #415A77;
+    color: #fff;
+    border-radius: 20px;
+    border: none;
+    outline: 0;
+    padding: 0 .5em;
+    cursor: pointer;
+    font-family: "Noto Sans", sans-serif;
+}
+
+
+.menu-items a {
+    font-family: "Noto Sans", sans-serif;
+    position: relative;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: 500;
+    color: white;
+    padding: 6px 15px;
+    border-radius: 20px;
+}
+
+.menu-items a:hover {
+    background: #415A77;
+    color: #fff;
+    opacity: 1;
+}
+
+.wrapper-profile {
+    position: absolute;
+    width: 700px;
+    height: 440px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, .5);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+
+
+}
+
+.wrapper {
+    position: relative;
+    width: 500px;
+    height: 440px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, .5);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+    display: flex;
+    justify-content: center;
     align-items: center;
 
 
 }
 
-.create-team{
+.wrapper-profile .profile-pic {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 400px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*background:yellowgreen;*/
+
+
+}
+
+.wrapper-profile .team-info {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 440px;
+    /*background:red;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.file-upload {
+    padding: 5px 0 5px 0;
+}
+
+.file-upload button {
+    font-family: "Noto Sans", sans-serif;
+    width: 50%;
+    height: 20px;
+    background-color: #778DA9;
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #fff;
+    font-weight: 500;
+}
+
+.menu-items p {
+    font-size: 13px;
+    padding-left: 10px;
+    font-family: "Noto Sans", sans-serif;
+    color: white;
+}
+
+.profile-background {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #FFFFFF;
+    /*background-image: url('../image/landscape.jpg');*/
+    /*background-size: cover;*/
+    /*background-repeat: no-repeat;*/
+    height: 100vh;
+
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/*.background-image {*/
+/*    background-image: url('../image/landscape.jpg');*/
+/*    background-size: cover;*/
+/*    background-repeat: no-repeat;*/
+/*    height: 100vh;*/
+/*}*/
+
+.team-info h3 {
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 600;
+    font-size: 35px;
+    color: #1B263B;
+
+
+}
+
+.team-display {
+    padding: 20px 0 20px 0;
+    font-weight: 500;
+    font-family: "Noto Sans", sans-serif;
+    color: #1B263B;
+
+}
+
+.edit-button button {
+    font-family: "Noto Sans", sans-serif;
+    width: 100%;
+    height: 45px;
+    background-color: #415A77;
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    color: #fff;
+    font-weight: 500;
+
+
+}
+
+.team-form .create-team {
     font-family: "Noto Sans",sans-serif;
     /*color: #0B1B2A;*/
     text-align: center;
@@ -33,87 +254,127 @@ body {
     color: transparent;
     background-clip: text;
     -webkit-background-clip: text;
+
 }
 
-.input-box{
+a.disabled {
+    pointer-events: none;
+    cursor: default;
+}
+
+a.enabled{
+    pointer-events:auto;
+    cursor:pointer;
+}
+
+.input-box {
     position: relative;
     width: 100%;
-    height:50px;
+    height: 50px;
     border-bottom: 2px solid #162938;
-    margin:30px 0;
+    margin: 30px 0;
 }
 
-.input-box input:focus~label,
-.input-box input:not(:placeholder-shown)~label{
-    top:-5px;
+.input-box input:focus ~ label,
+.input-box input:not(:placeholder-shown) ~ label {
+    top: -5px;
 }
 
-.input-box label{
-    font-family: "Noto Sans",sans-serif;
+.input-box label {
+    font-family: "Noto Sans", sans-serif;
     position: absolute;
-    top:50%;
-    left:5px;
+    top: 50%;
+    left: 5px;
     transform: translateY(-50%);
-    font-size:1em;
-    font-weight:500;
-    pointer-events: none;
-    transition:.5s;
-}
-
-.input-box input{
-    width: 140%;
-    height:100%;
-    background:transparent;
-    border:none;
-    outline: none;
-    font-size:1em;
-    color:#0D1B2A;
-    font-weight: 500;
-    padding:0 35px 0 5px;
-}
-
-.submit-button button{
-    font-family: "Noto Sans",sans-serif;
-    width: 100%;
-    height:45px;
-    background-color: #1B263B;
-    border:none;
-    outline:none;
-    border-radius:6px;
-    cursor:pointer;
-    font-size:1em;
-    color:#fff;
-    font-weight:500;
-}
-
-.submit-button button:hover {
-    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
-}
-
-.cancel-link{
     font-size: 1em;
-    text-align:center;
-    font-weight:500;
-    margin:25px 0 10px;
-    font-color:#415A77;
+    font-weight: 500;
+    pointer-events: none;
+    transition: .5s;
 }
 
-.cancel-link a{
-    font-family: "Noto Sans",sans-serif;
-    color:#415A77;
-    text-decoration:none;
-    font-weight:600;
+.input-box input {
+    width: 140%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    color: #0D1B2A;
+    font-weight: 500;
+    padding: 0 35px 0 5px;
 }
 
-.cancel-link a:hover{
-    text-decoration:underline;
+.submit-button button {
+    font-family: "Noto Sans", sans-serif;
+    width: 100%;
+    height: 45px;
+    background-color: #1B263B;
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    color: #fff;
+    font-weight: 500;
+
 }
 
-.error-message{
-    font-size: 15px;
-    font-family: "Noto Sans",sans-serif;
-    font-weight:300;
-    color:red;
-    text-align:center;
+.edit-button button:hover, .profile-pic .back-button:hover {
+    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.image-styling img {
+    border-radius: 20px;
+}
+
+.image-styling img:hover {
+    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.submit-button, button:hover {
+    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.cancel-link {
+    font-size: 1em;
+    text-align: center;
+    font-weight: 500;
+    margin: 25px 0 10px;
+}
+
+.cancel-link a {
+    font-family: "Noto Sans", sans-serif;
+    color: #415A77;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.cancel-link a:hover {
+    text-decoration: underline;
+}
+
+.error-message {
+    font-size: 13px;
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 300;
+    color: red;
+    text-align: center;
+}
+
+.profile-pic .back-button {
+    position: relative;
+    bottom: -35px;
+    font-family: "Noto Sans", sans-serif;
+    width: 35%;
+    height: 25px;
+    background-color: #778DA9;
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    color: #fff;
+    font-weight: 500;
+
 }
 

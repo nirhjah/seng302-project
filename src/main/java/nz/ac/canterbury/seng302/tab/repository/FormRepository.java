@@ -12,5 +12,6 @@ import java.util.Optional;
  */
 public interface FormRepository extends CrudRepository<FormResult, Long> {
     Optional<FormResult> findById(long id);
+
     List<FormResult> findAll();
 }
