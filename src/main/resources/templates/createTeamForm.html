@@ -44,7 +44,7 @@
                 </div>
                 <div th:if="${invalid_input != null}" th:text="${invalid_input}" class="error-message"></div>
                 <div class="cancel-link">
-                    <a th:if="${teamID != null}" th:href="@{profileForm(teamID=${teamID})}">Cancel</a>
+                    <a th:if="${teamID != null}" th:href="@{profile(teamID=${teamID})}">Cancel</a>
                     <a th:unless="${teamID != null}" th:href="@{home}">Cancel</a>
                 </div>
             </form>
