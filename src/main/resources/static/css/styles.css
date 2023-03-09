@@ -430,3 +430,55 @@ a.enabled{
     background: linear-gradient(-30deg, #333 50%, white 50%);
     background-size: 400% 400%;
 }
+
+.paginationContainer {
+    display: flex;
+    justify-content: center;
+}
+
+ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+li {
+    margin: 0;
+    padding: 0;
+}
+
+li a {
+    display: block;
+    padding: 0.5em;
+    text-align: center;
+}
+
+li.active a {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.team-name-label{
+    font-family: "Noto Sans", sans-serif;
+    padding-left:30px;
+
+}
+
+.team-name-input{
+    border-radius: 5px;
+    padding-bottom:4px;
+    width:15%;
+}
+
+.search-team-button{
+    font-family: "Noto Sans", sans-serif;
+    background-color: #415A77;
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    color: #fff;
+    width:6%;
+}

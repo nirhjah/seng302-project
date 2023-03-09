@@ -8,9 +8,9 @@
 <body class="Search-teams-background">
 <div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
   <form id="search-form" th:action="@{/searchTeams(teamName=${teamName},page=1)}" method="get">
-  <label for="teamName">Search Teams:</label>
-  <input type="text" id="teamName" name="teamName" />
-  <button type="submit">Search</button>
+  <label for="teamName" class ="team-name-label">Search Teams:</label>
+  <input class ="team-name-input" type="text" id="teamName" name="teamName" />
+  <button class ="search-team-button" type="submit">Search</button>
   </form>
   <p th:if="${error}">search must be at least 3 characters</p>
   <script>
