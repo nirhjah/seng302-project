@@ -1,1 +1,0 @@
-INSERT INTO TEAM ( location,name,sport) VALUES ('location','name','sport');

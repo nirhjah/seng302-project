@@ -13,6 +13,10 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
+
+/**
+ * Spring Boot Repository class for TeamRespository which extends Spring Data interface for generic CRUD operations.
+ */
 @Repository
 public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSortingRepository<Team, Long> {
     Optional<Team> findById(long id);
