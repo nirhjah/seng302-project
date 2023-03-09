@@ -5,8 +5,8 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <title>View All Teams</title>
 </head>
-<body>
-    <div class="view-teams-background">
+<body class="view-teams-background">
+    <div>
         <div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
         <table id="teamTable">
             <tr>

@@ -4,7 +4,7 @@
     grid-auto-rows: 300px;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 90vh;
 }
 
 .paginationActive {
@@ -149,8 +149,6 @@ td {
     display: flex;
     justify-content: center;
     align-items: center;
-
-
 }
 
 .wrapper-profile .profile-pic {
@@ -221,15 +219,14 @@ td {
     color: white;
 }
 
-.profile-background {
+.profile-form {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background-color: #FFFFFF;
+    min-height: 90vh;
 }
 
-.home-background, .view-teams-background, .team-form, .profile-background, .Search-teams-background {
+.home-background, .view-teams-background, .team-form-background, .profile-background, .Search-teams-background {
     background-image: url('../image/landscape.jpeg');
     background-size: cover;
     background-repeat: no-repeat;
@@ -419,7 +416,7 @@ a.enabled{
 .Welcome-header {
     position: relative;
     overflow: hidden;
-    height: 100vh;
+    height: 90vh;
 }
 
 .Welcome-header h1 {
