@@ -78,7 +78,14 @@ public class Team {
         this.pictureString = pictureString;
     }
 
+    public void setTeamId(long teamId){
+        this.teamId=teamId;
+    }
+
     public void setSport(String sport) {
         this.sport = sport;
     }
+
+
+
 }
