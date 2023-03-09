@@ -41,13 +41,6 @@ public class HomeFormController {
     @GetMapping("/home")
     public String getTemplate(Model model) throws IOException {
         logger.info("GET /homeForm");
-        if (teamService.getTeamList().size()<2) {
-            teamService.addTeam(new Team("t", "t", "t"));
-            teamService.addTeam(new Team("f", "f", "f"));
-            for (int i = 0; i < 50; i++) {
-                teamService.addTeam(new Team(String.valueOf(i), "f", "f"));
-            }
-        }
         model.addAttribute("navTeams", teamService.getTeamList());
         return "homeForm";
     }
