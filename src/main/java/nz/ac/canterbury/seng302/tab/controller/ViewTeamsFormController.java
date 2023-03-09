@@ -31,23 +31,27 @@ public class ViewTeamsFormController {
     private TeamService teamService;
 
     /**
-     * Gets form to be displayed, includes the ability to display results of previous form when linked to from POST form
+     * Gets viewTeamsForm with required attributes. Reroutes if page out of available range or no teams in database
      * @param pageNo integer corresponding page to be displayed
      * @param model  (map-like) representation of name, language and isJava boolean for use in thymeleaf
      * @return thymeleaf profileForm
      */
-
     @GetMapping("/viewTeams")
-    public String findPaginated(@RequestParam(value = "page", defaultValue = "1") int pageNo,
+    public String findPaginated(@RequestParam(value = "page", defaultValue = "-1") int pageNo,
                                 Model model) {
-        logger.info("GET /viewTeams");
 
-        int tempTotalPages =  teamService.findPaginated(pageNo, maxPageSize).getTotalPages();
-        // If page number is not in range
-        if (pageNo < 1 || pageNo > tempTotalPages && tempTotalPages > 0) {
-            pageNo = pageNo < 1 ? 1: tempTotalPages;
+        // If no teams exist in the database
+        if (teamService.getTeamList().size() == 0) {
+            return "redirect:/home";
+        }
+
+        // If page number outside of page then reloads page with appropriate number
+        if (pageNo < 1 || pageNo > teamService.findPaginated(pageNo, maxPageSize).getTotalPages() && teamService.findPaginated(pageNo, maxPageSize).getTotalPages() > 0) {
+            pageNo = pageNo < 1 ? 1: teamService.findPaginated(pageNo, maxPageSize).getTotalPages();
             return "redirect:/viewTeams?page=" + pageNo;
         }
+
+        logger.info("GET /viewTeams");
 
         Page<Team> page = teamService.findPaginated(pageNo, maxPageSize);
 

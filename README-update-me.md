@@ -1,9 +1,17 @@
-# SENG302 Example Project
-basic project using ```gradle```, ```Spring Boot```, ```Thymeleaf```, and ```GitLab CI```.
+# SENG302 TAB Project Overview
+Team Analytics Buddy (TAB) is an application designed for active individuals to access their team's game analytics. This application allows user to register, create teams and record their game statistics.
 
-> This should be your project's README (renamed to `README.md`) that your team will continually update as your team progresses throughout the year.
->
-> Update this document as necessary.
+## Prerequisites
+- JDK >= 17 [click here to get the latest stable OpenJDK release (as of writing this README)](https://jdk.java.net/18/)
+- Gradle
+
+## What's Included
+This project comes with some of the following:
+
+- Spring Boot
+- Thymeleaf
+- Junit 5
+- Mockito (mocking unit tests)
 
 ## How to run
 ### 1 - Running the project
@@ -47,8 +55,10 @@ By default, the application will run on local port 8080 [http://localhost:8080](
 - Decide on a LICENSE
 
 ## Contributors
-
-- SENG302 teaching team
+- Cameron Pearce
+- Philip Dolbel
+- Sebastian Conaghan-Carr
+- Angela Yu
 
 ## References
 
