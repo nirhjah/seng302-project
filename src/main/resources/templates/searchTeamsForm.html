@@ -5,9 +5,8 @@
   <link th:href="@{/css/styles.css}" rel="stylesheet">
   <title>search teams</title>
 </head>
-<body>
-<div>
-  <div th:insert="/homeForm.html::navbar(displayTeams=${displayTeams})"></div>
+<body class="Search-teams-background">
+<div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
   <form id="search-form" th:action="@{/searchTeams(teamName=${teamName},page=1)}" method="get">
   <label for="teamName">Search Teams:</label>
   <input type="text" id="teamName" name="teamName" />
@@ -80,7 +79,11 @@
       </ul>
     </div>
   </div>
-
+  <footer>
+    <p>
+      Image by <a href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a> on Freepik
+    </p>
+  </footer>
 </div>
 <div th:if="${#lists.isEmpty(teams) and not (notSearch)}">The search results are empty!</div>
 </body>
