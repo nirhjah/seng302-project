@@ -47,7 +47,7 @@ public class SearchTeamsController {
         model.addAttribute("notSearch", false);
         if (teamName != null) {
             if (teamName.length() < 3) {
-                model.addAttribute("error", "team name must be at least 3 characters long");
+                model.addAttribute("error", true);
                 model.addAttribute("teams", new ArrayList<Team>());
             } else {
                 int pageSize = 10; // number of results per page
@@ -55,7 +55,6 @@ public class SearchTeamsController {
                 Page<Team> teamPage = teamRepository.findTeamByName(teamName, pageRequest);
                 List<Team> teams = teamPage.getContent();
                 int numPages = teamPage.getTotalPages();
-//                int numPages = (int) Math.ceil((double) teams.size() / (double) pageSize);
                 model.addAttribute("teams", teams);
                 model.addAttribute("currentPage", page);
                 model.addAttribute("totalPages", numPages);
