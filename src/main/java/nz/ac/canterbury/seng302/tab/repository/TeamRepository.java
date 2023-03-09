@@ -7,6 +7,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +18,12 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
     Optional<Team> findById(long id);
 
     List<Team> findAll();
+
     Page<Team> findAll(Pageable pageable);
 
+    @Query("SELECT t FROM Team t " +
+            "WHERE LOWER(t.name) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(t.location) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "ORDER BY t.location ASC , t.name asc ")
+    public Page<Team> findTeamByName(@Param("name") String name, Pageable pageable);
 }

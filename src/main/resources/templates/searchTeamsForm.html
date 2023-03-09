@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org" >
+<head>
+  <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+  <link th:href="@{/css/styles.css}" rel="stylesheet">
+  <title>search teams</title>
+</head>
+<body>
+<div>
+  <div th:insert="/homeForm.html::navbar(displayTeams=${displayTeams})"></div>
+  <form id="search-form" th:action="@{/searchTeams(teamName=${teamName},page=1)}" method="get">
+  <label for="teamName">Team Name:</label>
+  <input type="text" id="teamName" name="teamName" />
+  <button type="submit">Search</button>
+  </form>
+  <p th:if="${error}">search must be at least 3 characters</p>
+  <script>
+    // get search form and input element
+    const form = document.getElementById('search-form');
+    const input = document.getElementById('teamName');
+
+    form.addEventListener('submit', (event) => {
+      // if the value is less than 3 characters, prevent form from submitting
+      if (input.value.length < 3) {
+        event.preventDefault();
+
+        // Remove existing error message
+        const existingErrorMessage = document.getElementById('search-error');
+        if(existingErrorMessage) {
+          existingErrorMessage.remove();
+        }
+        // Display error message
+        const errorMessage = document.createElement('p');
+        errorMessage.setAttribute('id', 'search-error');
+        errorMessage.textContent = "search must be at least 3 characters";
+        form.appendChild(errorMessage);
+      }
+    });
+  </script>
+</div>
+<div th:if="${not #lists.isEmpty(teams)}">
+  <h2>Search Results</h2>
+  <table id="teamTable">
+    <thread>
+      <tr>
+        <th>Profile Picture</th>
+        <th>Name</th>
+        <th>Sport</th>
+        <th>Location</th>
+      </tr>
+    </thread>
+    <tbody>
+      <tr th:each="team : ${teams}"
+          th:onclick="|window.location.href='/profile?teamID=${team.teamId}'|">
+        <td>
+          <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" width="50" height="50"/>
+        </td>
+        <td th:text="${team.name}"></td>
+        <td th:text="${team.sport}"></td>
+        <td th:text="${team.location}"></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="pagination">
+    <div class="paginationContainer">
+      <ul>
+        <li th:if="${currentPage > 0}">
+          <a th:href="@{/searchTeams(teamName=${teamName},page=${currentPage-1})}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;Prev</span>
+          </a>
+        </li>
+        <li th:each="page : ${#numbers.sequence(0, totalPages-1)}" th:class="${page == currentPage ? 'active' : ''}">
+          <a th:href="@{/searchTeams(teamName=${teamName},page=${page})}" th:text="${page+1}"></a>
+        </li>
+        <li th:if="${currentPage < totalPages-1}">
+          <a th:href="@{/searchTeams(teamName=${teamName},page=${currentPage+1})}" aria-label="Next">
+            <span aria-hidden="true">&raquo;Next</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+<div th:if="${#lists.isEmpty(teams) and not (notSearch)}">The search results are empty!</div>
+</body>
+</html>
