@@ -40,11 +40,6 @@ By default, the application will run on local port 8080 [http://localhost:8080](
 ## How to run tests
 > Once you have some tests written make sure you detail how to run them, especially if there are special requirements.
 
-## Todo (Sprint 1)
-
-- Add team name into `build.gradle`
-- Update this README title
-- Update this README contributors
 
 ## Todo (Sprint 2)
 
