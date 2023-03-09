@@ -5,23 +5,16 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Base64;
 
 /**
- * controller for the team form
+ * Spring Boot Controller class for the Create Team Form
  */
 @Controller
 public class CreateTeamFormController {
@@ -34,10 +27,9 @@ public class CreateTeamFormController {
     private String allUnicodeRegex = "^[\\p{L}\\s\\d\\.\\}\\{]+$";
 
     /**
-     * Gets form to be displayed, includes the ability to display results of
-     * previous form when linked to from POST form
-     *
-     * @return thymeleaf demoFormTemplate
+     * Gets createTeamForm to be displayed and contains name, sport,
+     * location and teamID model attributes to be added to html.
+     * @return thymeleaf createTeamForm
      */
 
     @GetMapping("/createTeam")
@@ -76,6 +68,7 @@ public class CreateTeamFormController {
      * @param model (map-like) representation of name, language and isJava boolean
      *              for use in thymeleaf,
      *              with values being set to relevant parameters provided
+     * @param location the team's location
      * @return thymeleaf teamFormTemplate
      */
     @PostMapping("/createTeam")

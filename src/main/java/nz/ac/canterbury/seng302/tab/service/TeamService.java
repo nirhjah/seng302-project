@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 
+/**
+ *Spring Boot Service class for Team Service
+ */
 @Service
 public class TeamService {
     @Autowired

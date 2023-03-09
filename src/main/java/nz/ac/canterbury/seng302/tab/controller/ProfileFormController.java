@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
@@ -10,21 +9,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Controller for profile form
+ * Spring Boot Controller class for the ProfileForm
  */
 @Controller
 public class ProfileFormController {
@@ -33,14 +26,13 @@ public class ProfileFormController {
     private long teamId;
     @Autowired
     private TeamService teamService;
+
     /**
      * Gets form to be displayed, includes the ability to display results of previous form when linked to from POST form
      * @param teamID team for which the details are to be displayed
      * @param model (map-like) representation of name, language and isJava boolean for use in thymeleaf
      * @return thymeleaf profileForm
      */
-
-
     @GetMapping("/profile")
     public String profileForm(Model model, @RequestParam(value = "teamID", required = false) Long teamID) {
         logger.info("GET /profileForm");
@@ -102,6 +94,11 @@ public class ProfileFormController {
         teamService.updatePicture(file,this.teamId );
         return new RedirectView("/profile?teamID=" + this.teamId, true);
     }
+
+    /**
+     * @param contentType The picture file type in string, e.g image/jpg, image/svg+xml etc
+     * @return Boolean type if the contentType parameter matches either the image/png, image/jpg, image/svg+xml or image/jpeg string
+     */
     private boolean isSupportedContentType(String contentType){
         return contentType.equals("image/png")|| contentType.equals("image/jpg")||contentType.equals("image/svg+xml")|| contentType.equals("image/jpeg");
     }
