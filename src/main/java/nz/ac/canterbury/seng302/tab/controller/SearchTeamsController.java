@@ -10,17 +10,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.List;
 
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 
 /**
- * Controller for profile form
+ * Spring Boot Controller class for Search Teams
  */
 @Controller
 public class SearchTeamsController {
@@ -34,9 +32,10 @@ public class SearchTeamsController {
     private TeamRepository teamRepository;
 
     /**
-     * Gets form to be displayed
+     * Gets searchTeamsForm to be displayed
      *
      * @param teamName name of the team that has been searched for by the database
+     * @param page return the page number
      * @param model    (map-like) representation of teamID and teamFilter
      * @return thymeleaf searchTeamsForm
      */

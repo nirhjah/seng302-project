@@ -58,7 +58,6 @@ public class TeamTest {
     public void testGettingPictureString() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
-        // TODO currently default-profile is in test resource directory (will need to ask about project structure). So test may fail when others run it.
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
         String pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));

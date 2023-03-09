@@ -229,7 +229,7 @@ td {
     background-color: #FFFFFF;
 }
 
-.home-background, .view-teams-background, .team-form, .profile-background {
+.home-background, .view-teams-background, .team-form, .profile-background, .Search-teams-background {
     background-image: url('../image/landscape.jpeg');
     background-size: cover;
     background-repeat: no-repeat;

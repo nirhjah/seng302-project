@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.io.IOException;
 
 /**
- * This is a basic spring boot controller, note the @link{Controller} annotation which defines this.
- * This controller defines endpoints as functions with specific HTTP mappings
+ * Spring Boot Controller class for the Home Form class.
  */
 @Controller
 public class HomeFormController {
@@ -34,10 +33,10 @@ public class HomeFormController {
     }
 
     /**
-     * Gets the thymeleaf page representing the /demo page (a basic welcome screen with some links)
+     * Gets the thymeleaf page representing the /home page (a basic welcome screen with nav bar)
      *
      * @param model (map-like) representation of data to be used in thymeleaf display
-     * @return thymeleaf demoTemplate
+     * @return thymeleaf homeForm
      */
     @GetMapping("/home")
     public String getTemplate(Model model) throws IOException {

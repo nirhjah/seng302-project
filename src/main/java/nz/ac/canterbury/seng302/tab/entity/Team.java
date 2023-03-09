@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
 
+/**
+ * Class for Team object which is annotated as a JPA entity.
+ */
 @Entity
 public class Team {
     @Id
@@ -30,6 +33,13 @@ public class Team {
     protected Team() {
     }
 
+    /**
+     * Team constructor method
+     * @param name The name of team
+     * @param location The location of team
+     * @param sport The sport that the team play
+     * @throws IOException
+     */
     public Team(String name, String location, String sport) throws IOException {
         this.name = name;
         this.location = location;
