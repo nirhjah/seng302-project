@@ -59,6 +59,7 @@ public class SearchTeamsController {
                 model.addAttribute("teams", teams);
                 model.addAttribute("currentPage", page);
                 model.addAttribute("totalPages", numPages);
+                model.addAttribute("teamName", teamName);
             }
         } else {
             model.addAttribute("teams", new ArrayList<Team>());

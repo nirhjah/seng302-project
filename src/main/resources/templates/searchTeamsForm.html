@@ -8,7 +8,7 @@
 <body>
 <div>
   <div th:insert="/homeForm.html::navbar(displayTeams=${displayTeams})"></div>
-  <form id="search-form" th:action="@{/searchTeams(teamName=${teamName})}" method="get">
+  <form id="search-form" th:action="@{/searchTeams(teamName=${teamName},page=1)}" method="get">
   <label for="teamName">Team Name:</label>
   <input type="text" id="teamName" name="teamName" />
   <button type="submit">Search</button>
@@ -63,53 +63,24 @@
   </table>
   <div class="pagination">
     <div class="paginationContainer">
-      <div class="totalPages">
-        Total Pages: [[${totalPages}]]
-      </div>
-      <div>
-        <button th:onclick="@{/searchTeams(teamName=${teamName},page=0,size=${size})}"
-                class="paginationButton">
-          <span>First</span>
-        </button>
-      </div>
-      <div>
-        <!-- previous page button -->
-        <button th:if="${currentPage == i}" class="paginationActive" th:text="${i}"
-                th:onclick= "|window.location.href='/searchTeams(teamName=${teamName},page=${i - 1},size=${size})'|">
-          <span>< Prev</span>
-        </button>
-      </div>
-      <!-- page buttons -->
-      <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
-        <div th:if="${i >= currentPage - 1 and i <= currentPage + 1
-                                    or currentPage == 1 and i >= currentPage - 1 and i <= currentPage + 2
-                                    or currentPage == totalPages and i >= currentPage - 2 and i <= currentPage + 1}">
-          <button th:if="${currentPage == i}" class="paginationActive" th:text="${i}"
-                  th:onclick= "|window.location.href='/searchTeams(teamName=${teamName},page=${i - 1},size=${size})'|">
-          </button>
-          <button th:unless="${currentPage == i}" th:text="${i}"
-                  th:onclick="|window.location.href='/searchTeams(teamName=${teamName},page=${i - 1},size=${size})'|"
-                  class="paginationButton">
-          </button>
-        </div>
-<!--      </th:block>-->
-        <div>
-          <button th:disabled="${currentPage == totalPages}"
-                  th:onclick="|window.location.href='/searchTeams(teamName=${teamName},page=${i + 1},size=${size})'|"
-                  class="paginationButton">
-            <span>Next ></span>
-          </button>
-        </div>
-      </th:block>
-      <div>
-        <button th:disabled="${currentPage == totalPages}"
-                th:onclick= "|window.location.href='/searchTeams(teamName=${teamName},page=${totalPages - 1},size=${size})'|"
-                class="paginationButton">
-          <span>Last</span>
-        </button>
-      </div>
+      <ul>
+        <li th:if="${currentPage > 0}">
+          <a th:href="@{/searchTeams(teamName=${teamName},page=${currentPage-1})}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;Prev</span>
+          </a>
+        </li>
+        <li th:each="page : ${#numbers.sequence(0, totalPages-1)}" th:class="${page == currentPage ? 'active' : ''}">
+          <a th:href="@{/searchTeams(teamName=${teamName},page=${page})}" th:text="${page+1}"></a>
+        </li>
+        <li th:if="${currentPage < totalPages-1}">
+          <a th:href="@{/searchTeams(teamName=${teamName},page=${currentPage+1})}" aria-label="Next">
+            <span aria-hidden="true">&raquo;Next</span>
+          </a>
+        </li>
+      </ul>
     </div>
   </div>
+
 </div>
 <div th:if="${#lists.isEmpty(teams) and not (notSearch)}">The search results are empty!</div>
 </body>
