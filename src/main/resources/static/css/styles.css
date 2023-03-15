@@ -271,6 +271,31 @@ footer {
 
 }
 
+.form-control-file {
+    display: none;
+}
+
+
+.file-label-border {
+    font-family: "Noto Sans", sans-serif;
+    width: 70%;
+    height: 25px;
+    white-space: nowrap;
+    background-color: #415A77;
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #fff;
+    font-weight: 500;
+    font-size: 13px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
 .edit-button button {
     font-family: "Noto Sans", sans-serif;
     width: 100%;

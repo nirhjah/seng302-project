@@ -78,11 +78,6 @@ public class ProfileFormController {
     {
 
         model.addAttribute("teamID", this.teamId);
-        if (file.isEmpty()){
-            redirectAttributes.addFlashAttribute("emptyFileError", true);
-            return new RedirectView("/profile?teamID=" + this.teamId, true);
-        }
-
         if (!isSupportedContentType(file.getContentType())){
             redirectAttributes.addFlashAttribute("typeError", true);
             return new RedirectView("/profile?teamID=" + this.teamId, true);
