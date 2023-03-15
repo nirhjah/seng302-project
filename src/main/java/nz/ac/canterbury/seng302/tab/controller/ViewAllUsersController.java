@@ -42,11 +42,12 @@ public class ViewAllUsersController {
      * @return List of users matching the nameQuery
      */
     private List<User> getUserList(int page, String nameQuery) {
+        var pageable = PageRequest.of(pageNumber, pageSize) // add sort by alphabetical here
         if (nameQuery.length() <= 0) {
             if (page <= 0) {     // We want the user to think "Page 1" is the first page, even though Java starts at 0.
                 return List.of();
             } else {
-                return userService.getPaginatedUsers(PAGE_SIZE, page-1);
+                return userService.getPaginatedUsers(pageable);
             }
         }
 
@@ -55,9 +56,9 @@ public class ViewAllUsersController {
             var names = nameQuery.split(" ");
             var firstName = names[0];
             var lastName = names[1];
-            return userService.findUsersByName(PAGE_SIZE, page-1, firstName, lastName);
+            return userService.findUsersByName(pageable, firstName, lastName);
         } else {
-            return userService.findUsersByName(PAGE_SIZE, page-1, nameQuery);
+            return userService.findUsersByName(pageable, nameQuery);
         }
     }
 }
