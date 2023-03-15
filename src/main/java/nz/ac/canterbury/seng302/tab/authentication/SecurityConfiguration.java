@@ -52,27 +52,28 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // Allow h2 console through security. Note: Spring 6 broke the nicer way to do this (i.e. how the authorisation is handled below)
         // See https://github.com/spring-projects/spring-security/issues/12546
-        http.authorizeHttpRequests(auth -> auth.requestMatchers(AntPathRequestMatcher.antMatcher("/h2/**"), AntPathRequestMatcher.antMatcher("/resources/**"), AntPathRequestMatcher.antMatcher("/static/**"), AntPathRequestMatcher.antMatcher("/css/**")).permitAll())
-                .headers(headers -> headers.frameOptions().disable())
-                .csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2/**")))
-                .authorizeHttpRequests()
-                // Allow "/", "/register", and "/login" to anyone (permitAll)
-                .requestMatchers("/", "/register", "/login", "/demo", "/populate_database")
-                .permitAll()
-                // Only allow admins to reach the "/admin" page
-                .requestMatchers("/admin")
-                // note we do not need the "ROLE_" prefix as we are calling "hasRole()"
-                .hasRole("ADMIN")
-                // Any other request requires authentication
-                .anyRequest()
-                //TODO: CHANGE BACK TO AUTHENTICATED
-                .authenticated()
-                .and()
-                // Define logging in, a POST "/login" endpoint now exists under the hood, after login redirect to user page
-                .formLogin().loginPage("/login").loginProcessingUrl("/login").defaultSuccessUrl("/user-info/self").failureUrl("/login?error=true")
-                .and()
-                // Define logging out, a POST "/logout" endpoint now exists under the hood, redirect to "/login", invalidate session and remove cookie
-                .logout().logoutUrl("/logout").logoutSuccessUrl("/login").invalidateHttpSession(true).deleteCookies("JSESSIONID");
+
+        // http.authorizeHttpRequests(auth -> auth.requestMatchers(AntPathRequestMatcher.antMatcher("/h2/**"), AntPathRequestMatcher.antMatcher("/resources/**"), AntPathRequestMatcher.antMatcher("/static/**"), AntPathRequestMatcher.antMatcher("/css/**")).permitAll())
+        //         .headers(headers -> headers.frameOptions().disable())
+        //         .csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2/**")))
+        //         .authorizeHttpRequests()
+        //         // Allow "/", "/register", and "/login" to anyone (permitAll)
+        //         .requestMatchers("/", "/register", "/login", "/demo", "/populate_database")
+        //         .permitAll()
+        //         // Only allow admins to reach the "/admin" page
+        //         .requestMatchers("/admin")
+        //         // note we do not need the "ROLE_" prefix as we are calling "hasRole()"
+        //         .hasRole("ADMIN")
+        //         // Any other request requires authentication
+        //         .anyRequest()
+        //         //TODO: CHANGE BACK TO AUTHENTICATED
+        //         .authenticated()
+        //         .and()
+        //         // Define logging in, a POST "/login" endpoint now exists under the hood, after login redirect to user page
+        //         .formLogin().loginPage("/login").loginProcessingUrl("/login").defaultSuccessUrl("/user-info/self").failureUrl("/login?error=true")
+        //         .and()
+        //         // Define logging out, a POST "/logout" endpoint now exists under the hood, redirect to "/login", invalidate session and remove cookie
+        //         .logout().logoutUrl("/logout").logoutSuccessUrl("/login").invalidateHttpSession(true).deleteCookies("JSESSIONID");
         return http.build();
 
     }

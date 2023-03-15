@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<head>
+  <link rel="stylesheet" type="text/css" media="all"
+        href="/../static/css/styles.css" th:href="@{/css/styles.css}" />
+  <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+  <th:block th:replace="~{fragments/general :: headerFiles}" />
+  <title>Login</title>
+</head>
+<body>
+<div class="userLogin">
+  <header th:replace="~{fragments/general :: sharedHeader}" />
+  <h2> Login </h2>
+  <div class="errorMessage">
+    <h6 th:text="${errorMessage}"></h6>
+  </div>
+  <form th:action="@{login}" method="post">
+    <div class="formContainer">
+      <div class="leftContainer">
+        <label for="username"> Email: </label>
+      </div>
+      <div class="rightContainer">
+        <input type="email" class="form-control" id="username" placeholder="Email"
+             th:name="username" th:value="*{username}" data-cy="username" required autofocus>
+      </div>
+    </div>
+    <br/>
+    <div class="formContainer">
+      <div class="leftContainer">
+        <label for="password"> Password: </label>
+      </div>
+      <div class="rightContainer">
+        <input type="password" class="form-control" id="password" placeholder="Password"
+             th:name="password" th:value="*{password}" data-cy="password" required autofocus>
+      <br/>
+      </div>
+    </div>
+    <button type="submit" class="registerLoginButton">Login</button>
+  </form>
+
+  <a th:href="@{register}">Create Account</a>
+  <br>
+  <a th:href="@{demo}">Cancel</a>
+</div>
+</body>
+</html>
