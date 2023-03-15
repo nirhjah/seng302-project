@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <title>Register</title>
+
+    <th:block th:replace="~{fragments/general :: headerFiles}"></th:block>
+</head>
+
+<body>
+    <header th:replace="~{fragments/general :: sharedHeader}" />
+
+    <div class="viewAllUsersMain">
+        <p>Page #[[${page}]].
+            <a th:if="${page > 1}" th:href="@{view-all-users(page=${page-1}, currentSearch=${currentSearch})}">Back</a>
+            <a th:if="${#lists.size(listOfUsers) < 10}"></a>
+            <a th:if="${#lists.size(listOfUsers) == 10}" th:href="@{view-all-users(page=${page+1}, currentSearch=${currentSearch})}">Forward</a>
+
+        </p>
+    </div>
+
+    <div class="viewAllUsersMain">
+        <p>
+        <form th:action="@{view-all-users}" method="get">
+            <input type="text" placeholder="Search name" th:name="currentSearch" th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">
+            <button type="submit"> Search </button>
+        </form>
+        </p>
+    </div>
+
+    <div class="viewAllUsersTable" th:insert="fragmentExample/fragments/userTable.html :: userTable(${listOfUsers})"></div>
+</body>
