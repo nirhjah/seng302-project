@@ -3,12 +3,12 @@ package nz.ac.canterbury.seng302.tab.controller;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -39,17 +40,20 @@ public class ProfileFormControllerTest {
 
     private Team team;
 
+
+    //Each time you delete a team from database and re-add the team then the team_id increments by 1.
+    //This is the reason my test failed in the sprint review. The test will fail if you run all of it at once but
+    //will pass if you run one at a time. The team id always change even though there is only one team in database
     @BeforeEach
-    public void beforeEach() throws IOException {
+    public void beforeAll() throws IOException {
         teamRepository.deleteAll();
         team = new Team("test", "Christchurch", "Hockey");
         teamRepository.save(team);
+        ProfileFormController.teamId=team.getTeamId();
     }
 
     @Test
     public void testGettingTeamList() throws Exception {
-        Team team = new Team("test", "Christchurch", "Hockey");
-        teamRepository.save(team);
         mockMvc.perform(get("/profile?teamID={id}", team.getTeamId())
                         .requestAttr("teamID", 1))
                 .andExpect(status().isOk())
@@ -62,14 +66,43 @@ public class ProfileFormControllerTest {
 
     @Test
     public void testUploadValidProfilePicture() throws Exception {
+        List<Team> testing = teamService.getTeamList();
+        System.out.println(testing.size());
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
         FileInputStream input = new FileInputStream(file);
         MockMultipartFile multipartFile = new MockMultipartFile("file",
                 file.getName(), "image/png", input.readAllBytes());
-        mockMvc.perform(multipart("/profile").file(multipartFile))
+        mockMvc.perform(multipart("/profile?teamID={id}", team.getTeamId()).file(multipartFile))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/profile?teamID=1"));
 
     }
+    @Test
+    public void testUploadInvalidProfilePictureType() throws Exception {
+        List<Team> testing = teamService.getTeamList();
+        System.out.println(testing.size());
+        System.out.println("team id =" + team.getTeamId());
+        Resource resource = new ClassPathResource("/testingfiles/invalidFileType.txt");
+        File file = resource.getFile();
+        FileInputStream input= new FileInputStream(file);
+        MockMultipartFile multipartFile = new MockMultipartFile("file", file.getName(),"text/plain", input.readAllBytes());
+        mockMvc.perform(multipart("/profile?teamID={id}", team.getTeamId()).file(multipartFile))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attribute("typeError", true))
+                .andExpect(redirectedUrl("/profile?teamID=1"));
+    }
+    @Test
+    public void testUploadInvalidProfilePictureSize() throws Exception {
+        Resource resource = new ClassPathResource("/testingfiles/maxFileSize.png");
+        File file = resource.getFile();
+        FileInputStream input= new FileInputStream(file);
+        MockMultipartFile multipartFile = new MockMultipartFile("file", file.getName(),"image/png", input.readAllBytes());
+        mockMvc.perform(multipart("/profile?teamID={id}", team.getTeamId()).file(multipartFile))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attribute("sizeError", true))
+                .andExpect(redirectedUrl("/profile?teamID=1"));
+
+    }
+
 }

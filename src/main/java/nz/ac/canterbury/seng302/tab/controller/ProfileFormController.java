@@ -23,7 +23,7 @@ import java.util.List;
 public class ProfileFormController {
 
     Logger logger = LoggerFactory.getLogger(ProfileFormController.class);
-    private long teamId;
+    public static long teamId;
     @Autowired
     private TeamService teamService;
 
