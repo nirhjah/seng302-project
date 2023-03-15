@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
 <head>
     <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
@@ -24,6 +24,13 @@
                                 th:text="${team}"
                                 th:selected="${team.teamId.equals(teamID)}"> </option>
                     </select>
+                    <div sec:authorize="isAnonymous()">
+                        <a th:href="@{login}">Login</a>
+                        <a th:href="@{register}">Register</a>
+                    </div>
+                    <div sec:authorize="isAuthenticated()">
+                        <a th:href="@{logout}">Logout</a>
+                    </div>
                 </p>
             </div>
         </div>
