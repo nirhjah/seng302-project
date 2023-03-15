@@ -160,9 +160,6 @@ td {
     display: flex;
     justify-content: center;
     align-items: center;
-    /*background:yellowgreen;*/
-
-
 }
 
 .wrapper-profile .team-info {
@@ -195,23 +192,6 @@ td {
     color: #fff;
     font-weight: 500;
 }
-
-/*.profile-pic .back-button {*/
-/*    position: relative;*/
-/*    bottom: -35px;*/
-/*    font-family: "Noto Sans", sans-serif;*/
-/*    width: 35%;*/
-/*    height: 25px;*/
-/*    background-color: #415A77;*/
-/*    border: none;*/
-/*    outline: none;*/
-/*    border-radius: 6px;*/
-/*    cursor: pointer;*/
-/*    font-size: 1em;*/
-/*    color: #fff;*/
-/*    font-weight: 500;*/
-/*}*/
-
 .menu-items p {
     font-size: 18px;
     padding-left: 15px;
@@ -245,14 +225,6 @@ footer {
     margin: 0;
     padding: 0;
 }
-
-
-/*.background-image {*/
-/*    background-image: url('../image/landscape.jpg');*/
-/*    background-size: cover;*/
-/*    background-repeat: no-repeat;*/
-/*    height: 100vh;*/
-/*}*/
 
 .team-info h3 {
     font-family: "Noto Sans", sans-serif;

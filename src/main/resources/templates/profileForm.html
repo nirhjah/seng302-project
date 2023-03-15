@@ -1,70 +1,68 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
-<!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
+    <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <title>Profile</title>
 </head>
 <body class="profile-background">
-    <div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
-    <div class="profile-form">
-        <div class="wrapper-profile">
-            <div class="profile-pic">
-                <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
-                    <div class="image-styling">
-                        <img th:src="*{'data:image/jpeg;base64,'+{displayPicture}}" width="200" height="200"/>
-                        </br>
-                    </div>
+<div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+<div class="profile-form">
+    <div class="wrapper-profile">
+        <div class="profile-pic">
+            <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
+                <div class="image-styling">
+                    <img th:src="*{'data:image/jpeg;base64,'+{displayPicture}}" width="200" height="200"/>
                     </br>
-                    <div class="file-upload">
-                        <div class="file-label-border">
-                            <label for ="file" class ="file-label">
-                                Edit Profile Picture </label>
-                        </div>
-                            <input type="file" name="file" class="form-control-file" id="file" onchange="form.submit()">
+                </div>
+                </br>
+                <div class="file-upload">
+                    <div class="file-label-border">
+                        <label for="file" class="file-label">
+                            Edit Profile Picture </label>
                     </div>
-                    <div class="file-upload">
-<!--
-                        <button type="submit" value="Upload Picture">Edit Profile Picture</button>
--->
-
-                        <div class="error-message" th:if="${sizeError == true}">Image must be less than 10MB</div>
-                        <div class="error-message" th:if="${typeError == true}">Please choose a .png, .jpg or .svg file
-                        </div>
+                    <input type="file" name="file" class="form-control-file" id="file" onchange="form.submit()">
+                </div>
+                <div class="file-upload">
+                    <div class="error-message" th:if="${sizeError == true}">Image must be less than 10MB</div>
+                    <div class="error-message" th:if="${typeError == true}">Please choose a .png, .jpg or .svg file
                     </div>
-                    <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+                </div>
+                <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
 
-                </form>
+            </form>
 
 
         </div>
-            <div class="team-info">
-                <form th:action="@{profile}" method="post">
-                    <h3>Team Profile</h3>
-                    <div class="team-display">
-                        <h4 th:text="'Name: ' + ${displayName}"></h4>
-                    </div>
-                    <div class="team-display">
-                        <h4 th:text="'Sport: ' + ${displaySport}"></h4>
-                    </div>
-                    <div class="team-display">
-                        <h4 th:text="'Location: ' + ${displayLocation}"></h4>
-                    </div>
-                    <br/>
-                    <div class="edit-button">
-                        <a th:href="@{createTeam(edit=${teamID})}">
-                            <button type="button">Edit Profile</button>
-                        </a>
-                    </div>
-                </form>
-            </div>
+        <div class="team-info">
+            <form th:action="@{profile}" method="post">
+                <h3>Team Profile</h3>
+                <div class="team-display">
+                    <h4 th:text="'Name: ' + ${displayName}"></h4>
+                </div>
+                <div class="team-display">
+                    <h4 th:text="'Sport: ' + ${displaySport}"></h4>
+                </div>
+                <div class="team-display">
+                    <h4 th:text="'Location: ' + ${displayLocation}"></h4>
+                </div>
+                <br/>
+                <div class="edit-button">
+                    <a th:href="@{createTeam(edit=${teamID})}">
+                        <button type="button">Edit Profile</button>
+                    </a>
+                </div>
+            </form>
         </div>
-        <footer>
-            <p>
-                Image by <a href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a> on Freepik
-            </p>
-        </footer>
     </div>
+    <footer>
+        <p>
+            Image by <a
+                href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+            on Freepik
+        </p>
+    </footer>
+</div>
 </body>
 </html>
