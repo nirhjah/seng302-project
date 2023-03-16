@@ -1,18 +1,14 @@
 package nz.ac.canterbury.seng302.tab.validator;
 
 import java.lang.annotation.*;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
-import java.util.Date;
 
 import jakarta.validation.Constraint;
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.Payload;
 import jakarta.validation.constraints.*;
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
+
+import nz.ac.canterbury.seng302.tab.validator.logic.DateOfBirthCheck;
 
 /**
  * A collection of validation annotation groups relating to user forms (registration, editing, ...)
@@ -33,6 +29,7 @@ public class UserFormValidators {
 
     // Matches the alphabet, spaces (e.g. 'van Beethoven'),
     // and hyphens (e.g. 'Taylor-Joy'), because names can have those.
+    // TODO: This regex can't handle non-English characters (e.g. Über)
     public static final String VALID_NAME_REGEX = "[a-zA-Z\\- ]+";
 
     public static final String NOT_BLANK_MSG = "Field can't be blank";
@@ -93,6 +90,7 @@ public class UserFormValidators {
      * <li>Must not be null</li>
      * <li>Must be at least <code>minimumAge</code> years ago</li>
      * </ul>
+     * The implementation is at {@link DateOfBirthCheck}
      */
     /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
     /**/@Retention(RUNTIME)
@@ -109,23 +107,4 @@ public class UserFormValidators {
         Class<? extends Payload>[] payload() default {};
     }
 
-    private class DateOfBirthCheck implements ConstraintValidator<DateOfBirthValidator, Date> {
-
-        private int minimumAge;
-
-        @Override
-        public void initialize(DateOfBirthValidator constraintAnnotation) {
-            this.minimumAge = constraintAnnotation.minimumAge();
-        }
-
-        @Override
-        public boolean isValid(Date dateOfBirth, ConstraintValidatorContext context) {
-            LocalDate dateNow = LocalDate.now();
-            LocalDate localDateOfBirth = dateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-            int ageInYears = Period.between(localDateOfBirth, dateNow).getYears();
-            return (ageInYears >= minimumAge);
-
-        }
-    }
 }

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,6 +55,42 @@ public class UserService {
      */
     public Optional<User> findUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    /**
+     * <h4>For Editing</h4>
+     * <p>
+     *  Checks whether the given email is in use <strong>by someone else</strong>,
+     *  i.e. not the current user.
+     * <br/>
+     * This is so the user can keep their email while updating other details, without failing its "unique" constraint.
+     * </p>
+     * 
+     * If you simply want to see if the email is already used, see {@link UserService#emailIsInUse} 
+     * @param currentUser The user who's email we're excluding
+     * @param email The email that we're checking is unique
+     * @return <code>true</code> if another user has this email,
+     *          <code>false</code> if it's the <code>currentUser</code>'s email, or if the email is unique
+     */
+    public boolean emailIsUsedByAnother(User currentUser, String email) {
+        // If the user isn't changing their email, no 'unique' email constraints are broken
+        if (currentUser.getEmail().equals(email)) {
+            return false;
+        }
+        // If the email's changed, we must see that it's not in use
+        return emailIsInUse(email);
+    }
+
+    /**
+     * <h4>For Registration</h4>
+     * <p>Checks whether the given email is already in the repository</p>
+     * 
+     * If you want to see if <strong>another</strong> user has that email, see {@link UserService#emailIsUsedByAnother} 
+     * @param email The email that we're checking is unique
+     * @return <code>true</code> if another user has this email
+     */
+    public boolean emailIsInUse(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     /**
