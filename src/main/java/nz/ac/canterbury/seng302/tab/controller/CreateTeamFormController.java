@@ -24,7 +24,14 @@ public class CreateTeamFormController {
     @Autowired
     private TeamService teamService;
 
-    private String allUnicodeRegex = "^[\\p{L}\\s\\d\\.\\}\\{]+$";
+    /** A team name can be alphanumeric, dots and curly braces **/
+    private final String teamNameUnicodeRegex = "^[\\p{L}\\s\\d\\.\\}\\{]+$";
+
+    /** A sport can be letters, space, apostrophes or dashes **/
+    private final String sportUnicodeRegex = "^[\\p{L}\\s\\.\\'\\-]+$";
+
+    /** A sport can be letters, space, apostrophes or dashes **/
+    private final String locationUnicodeRegex = "^[\\p{L}\\s\\.\\'\\-]+$";
 
     /**
      * Gets createTeamForm to be displayed and contains name, sport,
@@ -55,7 +62,10 @@ public class CreateTeamFormController {
         }
 
         // client side validation
-        model.addAttribute("allUnicodeRegex", allUnicodeRegex);
+        model.addAttribute("teamNameUnicodeRegex", teamNameUnicodeRegex);
+        model.addAttribute("sportUnicodeRegex", sportUnicodeRegex);
+        model.addAttribute("locationUnicodeRegex", locationUnicodeRegex);
+
         model.addAttribute("navTeams", teamService.getTeamList());
         return "createTeamForm";
     }
@@ -81,12 +91,14 @@ public class CreateTeamFormController {
         logger.info("POST /createTeam");
 
         // client side validation
-        model.addAttribute("allUnicodeRegex", allUnicodeRegex);
+        model.addAttribute("teamNameUnicodeRegex", teamNameUnicodeRegex);
+        model.addAttribute("sportUnicodeRegex", sportUnicodeRegex);
+        model.addAttribute("locationUnicodeRegex", locationUnicodeRegex);
 
         // server side validation
-        boolean nameValid = (name.matches(allUnicodeRegex));
-        boolean sportValid = (sport.matches(allUnicodeRegex));
-        boolean locationValid = (location.matches(allUnicodeRegex));
+        boolean nameValid = (name.matches(teamNameUnicodeRegex));
+        boolean sportValid = (sport.matches(sportUnicodeRegex));
+        boolean locationValid = (location.matches(locationUnicodeRegex));
         if (!sportValid || !nameValid || !locationValid) {
             return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
         }
