@@ -63,8 +63,6 @@ public class ProfileFormControllerTest {
 
     @Test
     public void testUploadValidProfilePicture() throws Exception {
-        List<Team> testing = teamService.getTeamList();
-        System.out.println(testing.size());
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
         FileInputStream input = new FileInputStream(file);
@@ -77,9 +75,6 @@ public class ProfileFormControllerTest {
     }
     @Test
     public void testUploadInvalidProfilePictureType() throws Exception {
-        List<Team> testing = teamService.getTeamList();
-        System.out.println(testing.size());
-        System.out.println("team id =" + team.getTeamId());
         Resource resource = new ClassPathResource("/testingfiles/invalidFileType.txt");
         File file = resource.getFile();
         FileInputStream input= new FileInputStream(file);
