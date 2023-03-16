@@ -73,6 +73,14 @@ public class ProfileFormController {
         return "profileForm";
     }
 
+    /**
+     * Gets the image file as a multipartfile and checks if it's a .jpg, .svg, or .png and within size limit. If no, an
+     * error message is displayed. Else, the file will be saved in the database as a Byte array.
+     * @param file uploaded MultipartFile file
+     * @param redirectAttributes
+     * @param model (map-like) representation of team id
+     * @return
+     */
     @PostMapping("/profile")
     public RedirectView uploadPicture(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes, Model model)
     {
@@ -82,7 +90,7 @@ public class ProfileFormController {
             redirectAttributes.addFlashAttribute("typeError", true);
             return new RedirectView("/profile?teamID=" + this.teamId, true);
         }
-        if (file.getSize()>10000000){
+        else if (file.getSize()>10000000){
             redirectAttributes.addFlashAttribute("sizeError", true);
             return new RedirectView("/profile?teamID=" + this.teamId, true);
         }
