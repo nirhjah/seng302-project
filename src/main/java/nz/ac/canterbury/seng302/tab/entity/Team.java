@@ -18,12 +18,15 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
 
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name ="fk_locationId", referencedColumnName = "locationId")
+    private Location locations;
+
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
     private String location;
-
     @Column(nullable = false)
     private String sport;
 
