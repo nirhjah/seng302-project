@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.UserService;
@@ -19,7 +20,12 @@ public class ViewAllUsersController {
     @Autowired
     UserService userService;
 
-    static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 10;
+
+    private static final Sort sort = Sort.by(
+        new Sort.Order(Sort.Direction.ASC, "lastName"),
+        new Sort.Order(Sort.Direction.ASC, "firstName")
+    );
 
     /**
      * Takes user to the view all users page
@@ -44,7 +50,7 @@ public class ViewAllUsersController {
      * @return List of users matching the nameQuery
      */
     private List<User> getUserList(int page, String nameQuery) {
-        var pageable = PageRequest.of(page-1, PAGE_SIZE); // add sort by alphabetical here
+        var pageable = PageRequest.of(page-1, PAGE_SIZE, sort);
         if (nameQuery.length() <= 0) {
             if (page <= 0) {     // We want the user to think "Page 1" is the first page, even though Java starts at 0.
                 return List.of();

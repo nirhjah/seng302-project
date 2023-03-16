@@ -32,11 +32,11 @@ public class UserService {
     }
 
     public List<User> findUsersByName(Pageable pageable, String name) {
-        return userRepository.findByFirstOrLastName(pageable, name, name);
+        return userRepository.findAllByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(pageable, name, name);
     }
 
     public List<User> findUsersByName(Pageable pageable, String firstName, String lastName) {
-        return userRepository.findByFullName(pageable, firstName, lastName);
+        return userRepository.findAllByFirstNameIgnoreCaseContainingAndLastNameIgnoreCaseContaining(pageable, firstName, lastName);
     }
 
     /**
