@@ -3,13 +3,9 @@
 
 <head>
     <title>Register</title>
-
-    <th:block th:replace="~{fragments/general :: headerFiles}"></th:block>
 </head>
 
 <body>
-    <header th:replace="~{fragments/general :: sharedHeader}" />
-
     <div class="viewAllUsersMain">
         <p>Page #[[${page}]].
             <a th:if="${page > 1}" th:href="@{view-all-users(page=${page-1}, currentSearch=${currentSearch})}">Back</a>
