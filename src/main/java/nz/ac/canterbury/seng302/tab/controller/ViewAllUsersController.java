@@ -8,10 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import net.bytebuddy.description.annotation.AnnotationValue.Sort;
-
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.UserService;
