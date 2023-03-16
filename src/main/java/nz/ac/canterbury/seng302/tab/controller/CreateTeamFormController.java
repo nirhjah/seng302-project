@@ -28,10 +28,22 @@ public class CreateTeamFormController {
     private final String teamNameUnicodeRegex = "^[\\p{L}\\s\\d\\.\\}\\{]+$";
 
     /** A sport can be letters, space, apostrophes or dashes **/
-    private final String sportUnicodeRegex = "^[\\p{L}\\s\\.\\'\\-]+$";
+    private final String sportUnicodeRegex = "^[\\p{L}\\s\\'\\-]+$";
 
     /** A sport can be letters, space, apostrophes or dashes **/
-    private final String locationUnicodeRegex = "^[\\p{L}\\s\\.\\'\\-]+$";
+    private final String locationUnicodeRegex = "^[\\p{L}\\s\\'\\-]+$";
+
+    public String getTeamNameUnicodeRegex() {
+        return teamNameUnicodeRegex;
+    }
+
+    public String getSportUnicodeRegex() {
+        return sportUnicodeRegex;
+    }
+
+    public String getLocationUnicodeRegex() {
+        return locationUnicodeRegex;
+    }
 
     /**
      * Gets createTeamForm to be displayed and contains name, sport,
