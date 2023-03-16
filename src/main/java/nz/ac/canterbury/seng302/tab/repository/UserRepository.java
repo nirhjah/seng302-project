@@ -23,6 +23,14 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     List<User> findAll(Pageable pageable);
 
-    List<User> findAllByFirstNameIgnoreCaseContainingAndLastNameIgnoreCaseContaining(Pageable pageable, String firstName, String lastName);
-    List<User> findAllByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(Pageable pageable, String firstName, String lastName);
+    @Query("SELECT u FROM UserEntity u " +
+            "WHERE LOWER(u.firstName) LIKE LOWER(CONCAT('%', :firstName, '%')) " +
+            "AND LOWER(u.lastName) LIKE LOWER(CONCAT('%', :firstName, '%'))" +
+            " ORDER BY LOWER(u.firstName) ASC, LOWER(u.lastName) ASC")
+    List<User> findByFullName(Pageable pageable, String firstName, String lastName);
+    @Query("SELECT u FROM UserEntity u " +
+            "WHERE LOWER(u.firstName) LIKE LOWER(CONCAT('%', :firstName, '%')) " +
+            "OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :firstName, '%'))" +
+            " ORDER BY LOWER(u.firstName) ASC, LOWER(u.lastName) ASC")
+    List<User> findByFirstOrLastName(Pageable pageable, String firstName, String lastName);
 }
