@@ -24,7 +24,18 @@ public class Location {
     @Column(nullable = false)
     private String country;
 
-    @OneToOne(mappedBy = "locations")
-    private Team team;
+//    @OneToOne(mappedBy = "locations")
+//    private Team team;
 
+    public Location (String address, String suburb, String city, long postcode,String country ){
+        this.address= address;
+        this.suburb= suburb;
+        this.city=city;
+        this.postcode= postcode;
+        this.country= country;
+    }
+
+    protected Location() {
+
+    }
 }

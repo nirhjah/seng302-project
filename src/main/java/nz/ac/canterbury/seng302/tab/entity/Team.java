@@ -53,6 +53,18 @@ public class Team {
         this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
     }
 
+    public Team (String name,String location, Location locations, String sport) throws IOException{
+        this.name = name;
+        this.location = location;
+        this.locations= locations;
+        this.sport = sport;
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        File file = resource.getFile();
+        this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+
+    }
+
+
 
     public Long getTeamId() {
         return this.teamId;

@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
@@ -77,6 +78,11 @@ public class CreateTeamFormController {
             @RequestParam(name = "name") String name,
             @RequestParam(name = "sport") String sport,
             @RequestParam(name = "location") String location,
+            @RequestParam (name ="address") String address,
+            @RequestParam (name ="city") String city,
+            @RequestParam (name ="country") String country,
+            @RequestParam (name ="postcode") long postcode,
+            @RequestParam(name ="suburb") String suburb,
             Model model) throws IOException {
         logger.info("POST /createTeam");
 
@@ -90,7 +96,7 @@ public class CreateTeamFormController {
         if (!sportValid || !nameValid || !locationValid) {
             return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
         }
-
+        Location locations = new Location (address, suburb, city, postcode, country);
         Team team;
         if ((team = teamService.getTeam(teamID)) != null) {
             team.setName(name);
@@ -98,7 +104,7 @@ public class CreateTeamFormController {
             team.setLocation(location);
             teamService.updateTeam(team);
         } else {
-            team = new Team(name, location, sport);
+            team = new Team(name, location,locations, sport);
             teamService.addTeam(team);
             teamID = team.getTeamId();
         }

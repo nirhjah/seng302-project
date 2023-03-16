@@ -34,6 +34,41 @@
                            autofocus th:pattern="${allUnicodeRegex}" placeholder="">
                     <label for="location">Location:</label>
                 </div>
+
+                <div class="input-box">
+                    <input type="text" class="form-control" id="location-address"
+                           th:name="address" th:value="*{address}" data-cy="location" required
+                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                    <label for="location-address">Address:</label>
+                </div>
+
+                <div class="input-box">
+                    <input type="text" class="form-control" id="location-city"
+                           th:name="city" th:value="*{city}" data-cy="location" required
+                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                    <label for="location-city">City:</label>
+                </div>
+
+                <div class="input-box">
+                    <input type="text" class="form-control" id="location-country"
+                           th:name="country" th:value="*{country}" data-cy="location" required
+                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                    <label for="location-country">Country:</label>
+                </div>
+
+                <div class="input-box">
+                    <input type="text" class="form-control" id="location-postcode"
+                           th:name="postcode" th:value="*{postcode}" data-cy="location" required
+                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                    <label for="location-postcode">Postcode:</label>
+                </div>
+
+                <div class="input-box">
+                    <input type="text" class="form-control" id="location-suburb"
+                           th:name="suburb" th:value="*{suburb}" data-cy="location" required
+                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                    <label for="location-suburb">Suburb:</label>
+                </div>
                 <br/>
                 <div class="submit-button">
                     <a th:href="@{home}">
