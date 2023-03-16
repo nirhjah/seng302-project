@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,19 +26,23 @@ public class EditUserFormController {
 
     static final String TEMPLATE_NAME = "undefined";
 
-    @GetMapping("/edit-user")
+    @GetMapping("/editUser")
     public String getEditUserForm(
             // TODO: Remove the `id` field, and just grab the current user's details once
             // auth's back up.
             @RequestParam(name = "id", required = true) long id,
-            EditUserForm editUserForm) {
+            EditUserForm editUserForm, Model model) {
         User user = userService.findUserById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         editUserForm.prepopulate(user);
-
-        return TEMPLATE_NAME;
+        model.addAttribute("user", user);
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("email", user.getEmail());
+        model.addAttribute("dateOfBirth", user.getDateOfBirthFormatted());
+        return "editUserForm";
     }
 
-    @PostMapping("/edit-user")
+    @PostMapping("/editUser")
     public String submitEditUserForm(
             // TODO: Remove the `id` field, and just grab the current user's details once
             // auth's back up.
