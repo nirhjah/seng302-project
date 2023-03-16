@@ -6,7 +6,7 @@
 </head>
 
 <body>
-    <div class="viewAllUsersMain">
+    <div>
         <p>Page #[[${page}]].
             <a th:if="${page > 1}" th:href="@{view-all-users(page=${page-1}, currentSearch=${currentSearch})}">Back</a>
             <a th:if="${#lists.size(listOfUsers) < 10}"></a>
@@ -14,7 +14,7 @@
         </p>
     </div>
 
-    <div class="viewAllUsersMain">
+    <div>
         <p>
         <form th:action="@{view-all-users}" method="get">
             <input type="text" placeholder="Search name" th:name="currentSearch" th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">
@@ -23,5 +23,5 @@
         </p>
     </div>
 
-    <div class="viewAllUsersTable" th:insert="userTable.html :: userTable(${listOfUsers})"></div>
+    <div th:insert="userTable.html :: userTable(${listOfUsers})"></div>
 </body>
