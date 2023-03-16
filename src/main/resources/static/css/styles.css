@@ -286,9 +286,12 @@ a.enabled{
     font-weight: 500;
 }
 
-.edit-button button:hover, .profile-pic .back-button:hover, .submit-button, .file-upload button:hover {
-    color:#0D1B2A;
+.edit-button button:hover, .profile-pic .back-button:hover, .submit-button:hover, .file-label:hover, .file-label-border label:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+    cursor: pointer;
 }
+
+
 
 .image-styling img {
     border-radius: 20px;
