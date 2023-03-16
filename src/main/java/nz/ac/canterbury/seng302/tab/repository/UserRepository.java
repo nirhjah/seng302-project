@@ -28,6 +28,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
             "AND LOWER(u.lastName) LIKE LOWER(CONCAT('%', :firstName, '%'))" +
             " ORDER BY LOWER(u.firstName) ASC, LOWER(u.lastName) ASC")
     List<User> findByFullName(Pageable pageable, String firstName, String lastName);
+    
     @Query("SELECT u FROM UserEntity u " +
             "WHERE LOWER(u.firstName) LIKE LOWER(CONCAT('%', :firstName, '%')) " +
             "OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :firstName, '%'))" +
