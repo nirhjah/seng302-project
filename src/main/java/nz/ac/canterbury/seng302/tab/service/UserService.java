@@ -3,8 +3,14 @@ package nz.ac.canterbury.seng302.tab.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -17,6 +23,7 @@ import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 @Service
 public class UserService {
     
+    final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private UserRepository userRepository;
@@ -111,6 +118,20 @@ public class UserService {
      */
     public User getUserByEmailAndPassword(String email, String password) {
         return userRepository.getUserByEmailAndPassword(email, password);
+    }
+
+    public Optional<User> getCurrentUser() {
+        
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        // Issue: The security context chain gives you "Anonymous Authentication"
+        //          if you're not logged in, so `isAuthenticated()` is always true.
+        //        To get around this, check if you're anonymous.
+        if (auth instanceof AnonymousAuthenticationToken) {
+            return Optional.empty();
+        }
+        long userId = (long)auth.getPrincipal();
+        return userRepository.findById(userId);
     }
 
 }

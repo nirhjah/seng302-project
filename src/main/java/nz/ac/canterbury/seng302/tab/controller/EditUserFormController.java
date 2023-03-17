@@ -37,8 +37,7 @@ public class EditUserFormController {
             EditUserForm editUserForm,
             Model model) {
         prefillModel(model);
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<User> user = userService.findUserByEmail(email); 
+        Optional<User> user = userService.getCurrentUser(); 
         if (user.isEmpty()) {
             return "redirect:/login";
         }
@@ -53,8 +52,7 @@ public class EditUserFormController {
             BindingResult bindingResult,
             Model model) {
         prefillModel(model);
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<User> optUser = userService.findUserByEmail(email);
+        Optional<User> optUser = userService.getCurrentUser();
         if (optUser.isEmpty()) {
             return "redirect:/login";
         }

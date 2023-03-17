@@ -55,9 +55,7 @@ public class ViewUserController {
     @GetMapping("/user-info/self")
     public String getCurrentUser(Model model, HttpServletResponse httpServletResponse)
     {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        Optional<User> user = userService.findUserByEmail(currentPrincipalName);
+        Optional<User> user = userService.getCurrentUser();
         if (user.isEmpty())
         {
             return "redirect:/login";

@@ -41,7 +41,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         {
             throw new BadCredentialsException("Invalid username or password");
         }
-        return new UsernamePasswordAuthenticationToken(u.getEmail(), null, u.getAuthorities());
+        // Because the username is their email, which they can change, we instead set
+        // their principal to their database ID, which can't change.
+        return new UsernamePasswordAuthenticationToken(u.getUserId(), null, u.getAuthorities());
     }
 
     @Override
