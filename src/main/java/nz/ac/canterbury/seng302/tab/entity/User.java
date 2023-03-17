@@ -1,16 +1,18 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
-
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Entity(name = "UserEntity")
 public class User {
 
-    protected User() {
+    public User() {
     }
 
     public static User defaultDummyUser() {
@@ -54,6 +56,9 @@ public class User {
     @Column(nullable = false)
     private Date dateOfBirth;
 
+
+    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
+            flags = Pattern.Flag.CASE_INSENSITIVE)
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -101,8 +106,6 @@ public class User {
     }
 
     public String getPassword() {return hashedPassword; }
-
-    public void setHashedPassword(String password) {this.hashedPassword = password;}
 
     public void setEmail(String email) {
         this.email = email;

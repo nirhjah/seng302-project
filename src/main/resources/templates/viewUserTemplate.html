@@ -1,0 +1,50 @@
+<!--/* View Users Page
+  - Contains the details of a specified user.
+
+  Attributes:
+  - thisUser: Optional<User> - The user detail we'll show. If it's empty, they've asked
+      for a non-existent 
+  */-->
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+  <title>View User</title>
+</head>
+
+<body>
+  <div class="viewUser">
+    <p th:if="${thisUser.isEmpty()}">
+      <strong>Specified user does not exist</strong>
+    </p>
+    <div th:if="${thisUser.isPresent()}" th:object="${thisUser.get()}">
+      <div class="userDetailsContainer">
+        <!--/* Currently there's no profile picture code, so let's use the default */-->
+        <img class="profilePictureContainer" th:src="@{/image/defaultuser.jpg}" alt="Profile Picture">
+        <div class="userDetailsTextContainer">
+          <p th:text="|Name: *{FirstName} *{LastName}|"></p>
+          <p th:text="|Email: *{email}|"></p>
+          <p th:text="|Date of Birth: *{#dates.format(dateOfBirth, 'dd-MM-yyyy')}|"></p>
+        </div>
+        <br />
+      </div>
+    </div>
+    <br/>
+    <button id="backButton" onclick="history.back()">Back</button>
+  </div>
+  
+  <script>
+    // We don't want the button visible if we just signed up or logged in.
+    const illegal_urls = ['/login', '/register'];
+    const backButton = document.getElementById('backButton');
+    const previousPage = document.referrer;
+    if (illegal_urls.every(url => !previousPage.includes(url))) {
+      backButton.style.visibility = '';
+    } else {
+      backButton.remove();
+    }
+  </script>
+
+</body>
+
+</html>

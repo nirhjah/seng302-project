@@ -1,14 +1,14 @@
 package nz.ac.canterbury.seng302.tab.service;
 
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 
 /**
  * Service class for User database entries, defined by the @link{Service} annotation.
@@ -17,12 +17,13 @@ import java.util.Optional;
 @Service
 public class UserService {
     
+
     @Autowired
     private UserRepository userRepository;
 
     /**
      * Gets a page of users.
-     * 
+     *
      * @param pageSize How many users are in a "page"
      * @param pageNumber The page number (page 0 is the first page)
      * @return A slice of users returned from pagination

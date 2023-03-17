@@ -1,0 +1,95 @@
+<!--/* User Registration Page
+       
+       */-->
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<head>
+    <title>Register</title>
+</head>
+<body>
+    <div class="registerUser">
+        <h2> Register </h2>
+        <form th:action="@{register}" method="post" th:object="${registerForm}">
+            <div class="formContainer">
+                <div class="leftContainer">
+                    <label for="firstName"> First Name: </label>
+                </div>
+                <div class="rightContainer">
+                    <input type="text" class="form-control" id="firstName" placeholder="First name"
+                        th:field="*{firstName}" data-cy="firstName" required autofocus>
+                </div>
+                <p th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="errorMessage" />
+            </div>
+            <br/>
+            <div class="formContainer">
+                <div class="leftContainer">
+                    <label for="lastName"> Last Name: </label>
+                </div>
+                <div class="rightContainer">
+                    <input type="text" class="form-control" id="lastName" placeholder="Last name"
+                           th:field="*{lastName}" data-cy="lastName" required
+                           autofocus>
+                </div>
+                <p th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="errorMessage" />
+            </div>
+            <br/>
+            <div class="formContainer">
+                <div class="leftContainer">
+                    <label for="dateOfBirth"> Date of birth: </label>
+                </div>
+                <div class="rightContainer">
+                    <input type="date" class="form-control" id="dateOfBirth" placeholder="Name"
+                           th:field="*{dateOfBirth}" data-cy="dateOfBirth" required autofocus>
+                </div>
+                <p th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="errorMessage" />
+            </div>
+            <br/>
+            <div class="formContainer">
+                <div class="leftContainer">
+                    <label for="email"> Email: </label>
+                </div>
+                <div class="rightContainer">
+                    <input type="email" class="form-control" id="email" placeholder="Email"
+                           th:field="*{email}" data-cy="email" required autofocus>
+                </div>
+                <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="errorMessage" />
+            </div>
+            <br/>
+            <div class="formContainer">
+                <div class="leftContainer">
+                    <label for="password"> Password: </label>
+                </div>
+                <div class="rightContainer">
+                    <input type="password" class="form-control" id="password" placeholder="Password"
+                           th:field="*{password}" data-cy="password" required autofocus>
+                </div>
+                <p th:each="err : ${#fields.errors('password')}" th:text="${err}" class="errorMessage" />
+            </div>
+            <br/>
+            <div class="formContainer">
+                <div class="leftContainer">
+                    <label for="password"> Confirm password: </label>
+                </div>
+                <div class="rightContainer">
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password"
+                           th:field="*{confirmPassword}" data-cy="confirmPassword" required autofocus>
+                </div>
+                <p th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}" class="errorMessage" />
+            </div>
+            <div class="formContainer">
+                <p>Password rules:</p>
+                    <p>at least 8 characters long</p>
+                    <p>must contain at least one lowercase, uppercase, number, and symbol</p>
+                    <p>can't contain your name/email</p>
+            </div>
+            <button type="submit" class="registerLoginButton" >Register</button>
+
+        </form>
+        <br>
+        <a th:href="@{login}">Login</a>
+        <br>
+        <a th:href="@{demo}">Cancel</a>
+    </div>
+</body>
+</html>
