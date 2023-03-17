@@ -59,9 +59,19 @@ th:first-child {
     width: 10%;
 }
 
-th:not(:first-child) {
-    width: calc((100% - 10%) / 3);
+th:nth-child(2){
+    width:15%;
 }
+th:nth-child(3){
+    width:15%;
+}
+th:nth-child(4){
+    width:60%;
+}
+
+/*th:not(:first-child) {*/
+/*    width: calc((100% - 10%) / 3);*/
+/*}*/
 
 tr, .wrapper,.wrapper-profile {
     background-color: white;

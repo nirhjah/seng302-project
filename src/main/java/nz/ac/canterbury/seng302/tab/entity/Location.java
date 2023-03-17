@@ -24,9 +24,6 @@ public class Location {
     @Column(nullable = false)
     private String country;
 
-//    @OneToOne(mappedBy = "locations")
-//    private Team team;
-
     public Location (String address, String suburb, String city, long postcode,String country ){
         this.address= address;
         this.suburb= suburb;
@@ -76,5 +73,9 @@ public class Location {
 
     public void setCountry(String country){
         this.country= country;
+    }
+
+    public String toString(){
+        return this.address + ", " + this.suburb + ", " + this.city + ", " + this.postcode + ", "+ this.country;
     }
 }
