@@ -1,3 +1,12 @@
+<!--/*
+    Edit User Form.
+
+    Attributes:
+    - editUserForm: The POJO containing the user's details, should be pre-filled on first load
+    - validNameRegex: The valid name pattern (Any language's alphabet, with spaces and hyphens. Otherwise no symbols/numbers)
+    - validNameMessage: The message to display if the validNameRegex fails 
+*/-->
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
@@ -12,31 +21,33 @@
             <h1 th:inline="text">Edit User</h1>
         </div>
         <div class="wrapper">
-            <form th:action="@{editUser}" method="post">
-                <div th:if="${invalid_user != null}" th:text="${invalid_team}" class="invalid-team error-message"></div>
-                <input type="hidden" th:if="${teamID != null}" th:name="teamID" th:value="${teamID}"/>
+            <form th:action="@{editUser}" method="post" th:object="${editUserForm}">
                 <div class="input-box">
-                    <input type="text" class="form-control" id="firstName"
-                           th:name="firstName" th:value="*{firstName}" data-cy="firstName" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                    <input type="text" class="form-control"
+                           th:field="*{firstName}" data-cy="firstName" required
+                           autofocus th:pattern="${validNameRegex}" th:title="${validNameMessage}">
                     <label for="firstName">First Name: </label>
+                    <p th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="errorMessage" />
                 </div>
                 <div class="input-box">
-                    <input type="text" class="form-control" id="lastName"
-                           th:name="lastName" th:value="*{lastName}" data-cy="lastName" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                    <input type="text" class="form-control"
+                           th:field="*{lastName}" data-cy="lastName" required
+                           autofocus th:pattern="${validNameRegex}" th:title="${validNameMessage}">
                     <label for="lastName">Last Name: </label>
+                    <p th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="errorMessage" />
                 </div>
                 <div class="input-box">
-                    <input type="text" class="form-control" id="email"
-                           th:name="email" th:value="*{email}" data-cy="email" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                    <input type="text" class="form-control"
+                           th:field="*{email}" data-cy="email" required
+                           autofocus>
                     <label for="email">Email: </label>
+                    <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="errorMessage" />
                 </div>
                 <div class="input-box">
-                    <input type="date" class="form-control" id="dateOfBirth" placeholder=""
-                           th:value="*{dateOfBirth}" data-cy="dateOfBirth" required autofocus>
+                    <input type="date" class="form-control"
+                           th:field="*{dateOfBirth}" th:value="*{#dates.formatISO(dateOfBirth)}" data-cy="dateOfBirth" required autofocus>
                     <label for="dateOfBirth">Date of Birth: </label>
+                    <p th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="errorMessage" />
                 </div>
                 <br/>
                 <div class="submit-button">
@@ -44,7 +55,6 @@
                         <button type="submit">Save</button>
                     </a>
                 </div>
-                <div th:if="${invalid_input != null}" th:text="${invalid_input}" class="error-message"></div>
                 <div class="cancel-link">
                     <a th:if="${teamID != null}" th:href="@{profile(teamID=${teamID})}">Cancel</a>
                     <a th:unless="${teamID != null}" th:href="@{home}">Cancel</a>

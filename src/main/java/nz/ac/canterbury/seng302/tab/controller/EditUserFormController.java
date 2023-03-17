@@ -1,6 +1,9 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,42 +16,43 @@ import jakarta.validation.Valid;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.EditUserForm;
 import nz.ac.canterbury.seng302.tab.service.UserService;
+import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
 
 @Controller
 public class EditUserFormController {
 
+    private final Logger logger = LoggerFactory.getLogger(EditUserFormController.class);
+
     @Autowired
     UserService userService;
 
-    static final String TEMPLATE_NAME = "undefined";
+    private void prefillModel(Model model) {
+        model.addAttribute("validNameRegex", UserFormValidators.VALID_NAME_REGEX);
+        model.addAttribute("validNameMessage", UserFormValidators.INVALID_NAME_MSG);
+    }
 
     @GetMapping("/editUser")
     public String getEditUserForm(
-            // TODO: Remove the `id` field, and just grab the current user's details once
-            // auth's back up.
-            // //@RequestParam(name = "id", required = true) long id,
-            EditUserForm editUserForm, Model model) {
-        // // User user = userService.findUserById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        User user = User.defaultDummyUser();
+            EditUserForm editUserForm,
+            Model model) {
+        prefillModel(model);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        logger.info("email = {}", email);
+
+        User user = userService.findUserByEmail(email).get();
         editUserForm.prepopulate(user);
-        model.addAttribute("user", user);
-        model.addAttribute("firstName", user.getFirstName());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("email", user.getEmail());
-        model.addAttribute("dateOfBirth", user.getDateOfBirthFormatted());
+
         return "editUserForm";
     }
 
     @PostMapping("/editUser")
-    @ResponseBody
     public String submitEditUserForm(
-            // TODO: Remove the `id` field, and just grab the current user's details once
-            // auth's back up.
-            // //@RequestParam(name = "id", required = true) long id,
             @Valid EditUserForm editUserForm,
-            BindingResult bindingResult) {
-        ////User user = userService.findUserById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        User user = User.defaultDummyUser();
+            BindingResult bindingResult,
+            Model model) {
+        prefillModel(model);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findUserByEmail(email).get();
 
         // Manual email uniqueness check
         if (userService.emailIsUsedByAnother(user, editUserForm.getEmail())) {
@@ -56,8 +60,8 @@ public class EditUserFormController {
         }
 
         if (bindingResult.hasErrors()) {
-            return bindingResult.toString();
+            return "editUserForm";
         }
-        return "All valid!";
+        return "redirect:user-info/self";
     }
 }
