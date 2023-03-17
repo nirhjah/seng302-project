@@ -44,9 +44,8 @@ public class HomeFormController {
      * @return thymeleaf homeForm
      */
     @GetMapping("/home")
-    public String getTemplate(Model model) throws IOException {
+    public String getTemplate(Model model) {
         logger.info("GET /homeForm");
-        userService.updateOrAddUser(User.defaultDummyUser());
         model.addAttribute("navTeams", teamService.getTeamList());
         return "homeForm";
     }

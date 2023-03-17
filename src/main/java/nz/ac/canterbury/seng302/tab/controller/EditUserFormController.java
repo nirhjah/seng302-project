@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -37,10 +38,11 @@ public class EditUserFormController {
             Model model) {
         prefillModel(model);
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        logger.info("email = {}", email);
-
-        User user = userService.findUserByEmail(email).get();
-        editUserForm.prepopulate(user);
+        Optional<User> user = userService.findUserByEmail(email); 
+        if (user.isEmpty()) {
+            return "redirect:/login";
+        }
+        editUserForm.prepopulate(user.get());
 
         return "editUserForm";
     }
@@ -52,7 +54,11 @@ public class EditUserFormController {
             Model model) {
         prefillModel(model);
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findUserByEmail(email).get();
+        Optional<User> optUser = userService.findUserByEmail(email);
+        if (optUser.isEmpty()) {
+            return "redirect:/login";
+        }
+        User user = optUser.get();
 
         // Manual email uniqueness check
         if (userService.emailIsUsedByAnother(user, editUserForm.getEmail())) {
@@ -62,6 +68,14 @@ public class EditUserFormController {
         if (bindingResult.hasErrors()) {
             return "editUserForm";
         }
+
+        user.setFirstName(editUserForm.getFirstName());
+        user.setLastName(editUserForm.getLastName());
+        user.setEmail(editUserForm.getEmail());
+        user.setDateOfBirth(editUserForm.getDateOfBirth());
+        userService.updateOrAddUser(user);
+
+
         return "redirect:user-info/self";
     }
 }

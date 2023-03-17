@@ -60,7 +60,7 @@ public class ViewUserController {
         Optional<User> user = userService.findUserByEmail(currentPrincipalName);
         if (user.isEmpty())
         {
-            return "redirect:/demo";
+            return "redirect:/login";
         }
         else {
             User authUser = user.get();

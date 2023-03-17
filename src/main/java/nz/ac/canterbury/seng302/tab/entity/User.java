@@ -89,6 +89,10 @@ public class User {
         return dateOfBirth;
     }
 
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
     /**
      * Returns the date as a string in a 'yyyy-MM-dd format, such that it can be directly parsed in an
      * HTML date object
