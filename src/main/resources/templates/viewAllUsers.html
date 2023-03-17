@@ -7,7 +7,7 @@
     <title>View All Users</title>
 </head>
 
-<body class="view-teams-background">
+<body class="view-users-background">
     <div>
         <p>Page #[[${page}]].
             <a th:if="${page > 1}" th:href="@{view-all-users(page=${page-1}, currentSearch=${currentSearch})}">Back</a>
@@ -25,5 +25,5 @@
         </p>
     </div>
 
-    <div th:insert="userTable.html :: userTable(${listOfUsers})"></div>
+    <div th:insert="~{userTable.html :: userTable(${listOfUsers})}"></div>
 </body>
