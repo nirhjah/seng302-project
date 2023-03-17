@@ -120,8 +120,9 @@ td {
 
 .wrapper-profile {
     position: absolute;
-    width: 700px;
-    height: 440px;
+    width: 900px;
+    height: 500px;
+    display:grid;
     /*background: transparent;*/
     /*backdrop-filter: blur(20px);*/
 }
@@ -137,22 +138,28 @@ td {
     border-radius: 20px;
 }
 
-.wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form  {
+.wrapper, .wrapper-profile .profile-pic, .file-label-border ,.profile-form  {
     justify-content: center;
     align-items: center;
 }
 
-.wrapper-profile .profile-pic, .wrapper-profile .team-info{
+.wrapper-profile .profile-pic{
     position: absolute;
     top: 0;
-    width: 400px;
-    height: 440px;
+    width: 300px;
+    height: 500px;
+}
+
+.wrapper-profile .team-info{
+    position: absolute;
+    top: 0;
+    width: 600px;
+    height: 500px;
 }
 
 .wrapper-profile .profile-pic {
     left: 0;
 }
-
 .wrapper-profile .team-info, footer {
     right: 0;
 }

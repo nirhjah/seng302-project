@@ -82,6 +82,14 @@ public class Team {
         return this.sport;
     }
 
+    public Location getLocations(){
+        return this.locations;
+    }
+
+    public void setLocations(Location location){
+        this.locations= location;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

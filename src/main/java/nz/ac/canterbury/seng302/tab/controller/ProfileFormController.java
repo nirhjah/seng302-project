@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
@@ -48,6 +49,7 @@ public class ProfileFormController {
         String teamLocation = null;
         String teamSport = null;
         String teamPicture = null;
+        Location location = null;
         if (teamID != null) {
             // Find the selected team by its id
             selectedTeam = teamList.stream()
@@ -61,6 +63,7 @@ public class ProfileFormController {
             teamLocation = selectedTeam.getSport();
             teamSport = selectedTeam.getLocation();
             teamPicture = selectedTeam.getPictureString();
+            location = selectedTeam.getLocations();
         }
 
         model.addAttribute("navTeams", teamList);
@@ -69,6 +72,12 @@ public class ProfileFormController {
         model.addAttribute("displaySport", teamLocation);
         model.addAttribute("displayLocation", teamSport);
         model.addAttribute("displayPicture", teamPicture);
+
+        model.addAttribute("displayAddress", location.getAddress());
+        model.addAttribute("displayCity", location.getCity());
+        model.addAttribute("displayCountry", location.getCountry());
+        model.addAttribute("displayPostcode", location.getPostcode());
+        model.addAttribute("displaySuburb", location.getSuburb());
 
         return "profileForm";
     }

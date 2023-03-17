@@ -36,6 +36,45 @@ public class Location {
     }
 
     protected Location() {
+    }
 
+    public String getAddress(){
+        return this.address;
+    }
+
+    public String getSuburb(){
+        return this.suburb;
+    }
+
+    public String getCity(){
+        return this.city;
+    }
+
+    public long getPostcode(){
+        return this.postcode;
+    }
+
+    public String getCountry(){
+        return this.country;
+    }
+
+    public void setAddress(String address){
+        this.address=address;
+    }
+
+    public void setSuburb(String suburb){
+        this.suburb= suburb;
+    }
+
+    public void setCity(String city){
+        this.city= city;
+    }
+
+    public void setPostcode(long postcode){
+        this.postcode= postcode;
+    }
+
+    public void setCountry(String country){
+        this.country= country;
     }
 }
