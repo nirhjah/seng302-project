@@ -1,170 +1,104 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import org.junit.jupiter.api.BeforeAll;
+
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+@SpringBootTest
+@AutoConfigureMockMvc
 public class CreateTeamFormControllerTest {
 
-    private static String teamNameUnicodeRegex;
+    @Autowired
+    private MockMvc mockMvc;
 
-    /** A sport can be letters, space, apostrophes or dashes **/
-    private static String sportUnicodeRegex;
-
-    /** A sport can be letters, space, apostrophes or dashes **/
-    private static String locationUnicodeRegex;
-
-    private static CreateTeamFormController createTeamFormController;
-
-    @BeforeAll
-    public static void setUp() {
-        createTeamFormController = new CreateTeamFormController();
-        teamNameUnicodeRegex = createTeamFormController.getTeamNameUnicodeRegex();
-        sportUnicodeRegex = createTeamFormController.getSportUnicodeRegex();
-        locationUnicodeRegex = createTeamFormController.getLocationUnicodeRegex();
+    /**
+     * All fields are valid according to the regex
+     * @throws Exception thrown if Mocking fails
+     */
+    @Test
+    void whenAllFieldsValid_return302() throws Exception {
+        mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
+                .param("name", "{test.team 1}").param("sport", "hockey-team a'b")
+                .param("location", "christchurch")).andExpect(status().isFound())
+                .andExpect(view().name("redirect:./profile?teamID=1"));
     }
 
+    /**
+     * The Team Name is Invalid according to the regex, as it contains invalid char: ^
+     * @throws Exception thrown if Mocking fails
+     */
     @Test
-    public void validTeamNameWithLetters() {
-        String validName = "test";
-        assertTrue(validName.matches(teamNameUnicodeRegex));
+    void whenTeamNameFieldIsInvalid_return302() throws Exception {
+        mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
+                        .param("name", "test^team").param("sport", "hockey")
+                        .param("location", "christchurch")).andExpect(status().isFound())
+                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
     }
 
+    /**
+     * The Sport name is Invalid as it containings invalid char: #
+     * @throws Exception thrown if Mocking fails
+     */
     @Test
-    public void validTeamNameWithNumbers() {
-        String validNameWithNumbers = "123";
-        assertTrue(validNameWithNumbers.matches(teamNameUnicodeRegex));
+    void whenSportFieldIsInvalid_return302() throws Exception {
+        mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
+                        .param("name", "test").param("sport", "###")
+                        .param("location", "christchurch")).andExpect(status().isFound())
+                        .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
     }
 
+    /**
+     * The Location name is invalid as it contains invalid char: $
+     * @throws Exception thrown if Mocking fails
+     */
     @Test
-    public void validTeamNameWithCurlyBraces() {
-        String validNameWithCurlyBraces = "{hello}";
-        assertTrue(validNameWithCurlyBraces.matches(teamNameUnicodeRegex));
+    void whenLocationIsInvalid_return302() throws Exception {
+        mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
+                        .param("name", "test").param("sport", "hockey")
+                        .param("location", "$sumner$")).andExpect(status().isFound())
+                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
     }
 
+    /**
+     * The Team name is invalid as it contains invalid chars (which are valid for sport and location): - '
+     * @throws Exception thrown if Mocking fails
+     */
     @Test
-    public void validTeamNameWithDots() {
-        String validNameWithDots = "hello.hello";
-        assertTrue(validNameWithDots.matches(teamNameUnicodeRegex));
+    void whenTeamNameFieldIsInvalidWithCharsValidForSport_return302() throws Exception {
+        mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
+                        .param("name", "test-team's").param("sport", "hockey")
+                        .param("location", "christchurch")).andExpect(status().isFound())
+                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
     }
 
+    /**
+     * The sport name is invalid as it contains invalid chars (which are valid for team):  . { } and numbers
+     * @throws Exception thrown if Mocking fails
+     */
     @Test
-    public void invalidTeamNameWithDashes() {
-        String invalid = "invalid-name";
-        assertFalse(invalid.matches(teamNameUnicodeRegex));
+    void whenSportFieldIsInvalidWithCharsValidForTeam_return302() throws Exception {
+        mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
+                        .param("name", "test").param("sport", "123.123{123}")
+                        .param("location", "christchurch")).andExpect(status().isFound())
+                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
     }
 
+    /**
+     * The location name is invalid as it contains invalid chars (which are valid for team):  . { } and numbers
+     * @throws Exception thrown if Mocking fails
+     */
     @Test
-    public void invalidTeamNameWithApostrophes() {
-        String invalid = "invalid'name";
-        assertFalse(invalid.matches(teamNameUnicodeRegex));
-    }
-
-    @Test
-    public void invalidCharsTeamName() {
-        String invalid = "!@#$%^&*()";
-        assertFalse(invalid.matches(teamNameUnicodeRegex));
-    }
-
-    /** Sport Regex Test**/
-
-    @Test
-    public void validSportWithLetters() {
-        String validName = "test";
-        assertTrue(validName.matches(sportUnicodeRegex));
-    }
-
-    @Test
-    public void invalidSportWithNumbers() {
-        String validNameWithNumbers = "123";
-        assertFalse(validNameWithNumbers.matches(sportUnicodeRegex));
-    }
-
-    @Test
-    public void invalidSportWithCurlyBraces() {
-        String validNameWithCurlyBraces = "{hello}";
-        assertFalse(validNameWithCurlyBraces.matches(sportUnicodeRegex));
-    }
-
-    @Test
-    public void invalidSportWithDots() {
-        String dots = "hello.hello";
-        assertFalse(dots.matches(sportUnicodeRegex));
-    }
-
-    @Test
-    public void validSportWithDashes() {
-        String valid = "invalid-name";
-        assertTrue(valid.matches(sportUnicodeRegex));
-    }
-
-    @Test
-    public void validSportWithApostrophes() {
-        String valid = "invalid'name";
-        assertTrue(valid.matches(sportUnicodeRegex));
-    }
-
-    @Test
-    public void validSportWithSpaces() {
-        String valid = "invalid name";
-        assertTrue(valid.matches(sportUnicodeRegex));
-    }
-
-    @Test
-    public void invalidCharsSport() {
-        String invalid = "!@#$%^&*()";
-        assertFalse(invalid.matches(sportUnicodeRegex));
-    }
-
-    /** Location Regex Test**/
-
-    @Test
-    public void validLocationWithLetters() {
-        String validName = "test";
-        assertTrue(validName.matches(locationUnicodeRegex));
-    }
-
-    @Test
-    public void invalidLocationWithNumbers() {
-        String validNameWithNumbers = "123";
-        assertFalse(validNameWithNumbers.matches(locationUnicodeRegex));
-    }
-
-    @Test
-    public void invalidLocationWithCurlyBraces() {
-        String validNameWithCurlyBraces = "{hello}";
-        assertFalse(validNameWithCurlyBraces.matches(locationUnicodeRegex));
-    }
-
-    @Test
-    public void invalidLocationWithDots() {
-        String dots = "hello.hello";
-        assertFalse(dots.matches(locationUnicodeRegex));
-    }
-
-    @Test
-    public void validLocationWithDashes() {
-        String valid = "invalid-name";
-        assertTrue(valid.matches(locationUnicodeRegex));
-    }
-
-    @Test
-    public void validLocationWithApostrophes() {
-        String valid = "invalid'name";
-        assertTrue(valid.matches(locationUnicodeRegex));
-    }
-
-    @Test
-    public void validLocationWithSpaces() {
-        String valid = "invalid name";
-        assertTrue(valid.matches(locationUnicodeRegex));
-    }
-
-    @Test
-    public void invalidCharsLocation() {
-        String invalid = "!@#$%^&*()";
-        assertFalse(invalid.matches(locationUnicodeRegex));
+    void whenLocationIsInvalidWithCharsValidForTeam__return302() throws Exception {
+        mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
+                        .param("name", "test").param("sport", "hockey")
+                        .param("location", "abc123'{}.a")).andExpect(status().isFound())
+                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
     }
 }

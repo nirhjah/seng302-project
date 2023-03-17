@@ -33,18 +33,6 @@ public class CreateTeamFormController {
     /** A sport can be letters, space, apostrophes or dashes **/
     private final String locationUnicodeRegex = "^[\\p{L}\\s\\'\\-]+$";
 
-    public String getTeamNameUnicodeRegex() {
-        return teamNameUnicodeRegex;
-    }
-
-    public String getSportUnicodeRegex() {
-        return sportUnicodeRegex;
-    }
-
-    public String getLocationUnicodeRegex() {
-        return locationUnicodeRegex;
-    }
-
     /**
      * Gets createTeamForm to be displayed and contains name, sport,
      * location and teamID model attributes to be added to html.
@@ -83,7 +71,7 @@ public class CreateTeamFormController {
     }
 
     /**
-     * Posts a form response with name and favourite language
+     * Posts a form response with  team name, sport and location
      *
      * @param name  name if user
      * @param sport users team sport
