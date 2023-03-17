@@ -36,34 +36,16 @@ public class Team {
     protected Team() {
     }
 
-    /**
-     * Team constructor method
-     * @param name The name of team
-     * @param location The location of team
-     * @param sport The sport that the team play
-     * @throws IOException
-     */
-    public Team(String name, String location, String sport) throws IOException {
-        this.name = name;
-        this.location = location;
-        this.sport = sport;
-        //Retrieving the default profile image and converting it to byte array string to be stored in database
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        File file = resource.getFile();
-        this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
-    }
-
     public Team (String name,String location, Location locations, String sport) throws IOException{
         this.name = name;
         this.location = location;
-        this.locations= locations;
+        this.locations = locations;
         this.sport = sport;
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
         this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
 
     }
-
 
 
     public Long getTeamId() {

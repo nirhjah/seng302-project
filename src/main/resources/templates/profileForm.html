@@ -38,17 +38,11 @@
 
         <div class="team-info">
             <form th:action="@{profile}" method="post">
-                <h3>Team Profile</h3>
+                <h2>Team Profile</h2>
                 <div class="team-display">
-                    <h4 th:text="'Name: ' + ${displayName}"></h4>
-                    </br>
-                    <h4 th:text="'Sport: ' + ${displaySport}"></h4>
-                    <h4 th:text="'Location: ' + ${displayLocation}"></h4>
-                    <h4 th:text="'Address: ' + ${displayAddress}"></h4>
-                    <h4 th:text="'City: ' + ${displayCity}"></h4>
-                    <h4 th:text="'Country: ' + ${displayCountry}"></h4>
-                    <h4 th:text="'Postcode: ' + ${displayPostcode}"></h4>
-                    <h4 th:text="'Suburb: ' + ${displaySuburb}"></h4>
+                    <h3 th:text="'Name: ' + ${displayName}"></h3>
+                    <h3 th:text="'Sport: ' + ${displaySport}"></h3>
+                    <h3 th:text="'Location: ' + ${displayLocation}"></h3>
                 </div>
                 <div class="edit-button">
                     <a th:href="@{createTeam(edit=${teamID})}">

@@ -45,11 +45,10 @@ public class ProfileFormController {
         this.teamId= teamID;
 
         Team selectedTeam = null;
-        String teamName = null;
-        String teamLocation = null;
-        String teamSport = null;
-        String teamPicture = null;
+        String name = null;
+        String sport = null;
         Location location = null;
+        String picture = null;
         if (teamID != null) {
             // Find the selected team by its id
             selectedTeam = teamList.stream()
@@ -59,26 +58,18 @@ public class ProfileFormController {
         }
 
         if (selectedTeam != null) {
-            teamName = selectedTeam.getName() ;
-            teamLocation = selectedTeam.getSport();
-            teamSport = selectedTeam.getLocation();
-            teamPicture = selectedTeam.getPictureString();
+            name = selectedTeam.getName() ;
+            sport = selectedTeam.getSport();
             location = selectedTeam.getLocations();
+            picture = selectedTeam.getPictureString();
         }
 
         model.addAttribute("navTeams", teamList);
         model.addAttribute("teamID", teamID);
-        model.addAttribute("displayName", teamName);
-        model.addAttribute("displaySport", teamLocation);
-        model.addAttribute("displayLocation", teamSport);
-        model.addAttribute("displayPicture", teamPicture);
-
-        model.addAttribute("displayAddress", location.getAddress());
-        model.addAttribute("displayCity", location.getCity());
-        model.addAttribute("displayCountry", location.getCountry());
-        model.addAttribute("displayPostcode", location.getPostcode());
-        model.addAttribute("displaySuburb", location.getSuburb());
-
+        model.addAttribute("displayName", name);
+        model.addAttribute("displaySport", sport);
+        model.addAttribute("displayLocation", location);
+        model.addAttribute("displayPicture", picture);
         return "profileForm";
     }
 

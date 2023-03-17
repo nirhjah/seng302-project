@@ -76,6 +76,6 @@ public class Location {
     }
 
     public String toString(){
-        return this.address + ", " + this.suburb + ", " + this.city + ", " + this.postcode + ", "+ this.country;
+        return this.address + " " + this.suburb + ", " + this.city + ", " + this.postcode + ", "+ this.country;
     }
 }
