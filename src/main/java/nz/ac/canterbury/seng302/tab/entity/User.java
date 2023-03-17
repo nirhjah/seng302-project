@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import jakarta.persistence.*;
@@ -81,6 +82,18 @@ public class User {
 
     public Date getDateOfBirth() {
         return dateOfBirth;
+    }
+
+    /**
+     * Returns the date as a string in a 'yyyy-MM-dd format, such that it can be directly parsed in an
+     * HTML date object
+     *
+     * @return date string
+     */
+    public String getDateOfBirthFormatted() {
+        SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String isoDate = isoDateFormat.format(dateOfBirth);
+        return isoDate;
     }
 
     public String getEmail() {
