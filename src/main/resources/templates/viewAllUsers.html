@@ -7,12 +7,17 @@
     <title>View All Users</title>
 </head>
 
+<div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+
 <body class="view-users-background">
     <div>
         <p>Page #[[${page}]].
-            <a th:if="${page > 1}" th:href="@{view-all-users(page=${page-1}, currentSearch=${currentSearch})}">Back</a>
-            <a th:if="${#lists.size(listOfUsers) < 10}"></a>
-            <a th:if="${#lists.size(listOfUsers) == 10}" th:href="@{view-all-users(page=${page+1}, currentSearch=${currentSearch})}">Forward</a>
+            <a th:if="${page > 1}" th:href="@{view-all-users(page=${page-1}, currentSearch=${currentSearch})}">
+                <button>Previous</button>
+            </a>
+            <a th:if="${#lists.size(listOfUsers) == 10}" th:href="@{view-all-users(page=${page+1}, currentSearch=${currentSearch})}">
+                <button>Next</button>
+            </a>
         </p>
     </div>
 
@@ -20,7 +25,7 @@
         <p>
         <form th:action="@{view-all-users}" method="get">
             <input type="text" placeholder="Search name" th:name="currentSearch" th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">
-            <button type="submit"> Search </button>
+            <button class="search-user-button" type="submit"> Search </button>
         </form>
         </p>
     </div>

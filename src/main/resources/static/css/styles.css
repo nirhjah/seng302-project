@@ -471,7 +471,7 @@ li.active a {
     width:15%;
 }
 
-.search-team-button{
+.search-team-button, .search-user-button {
     font-family: "Noto Sans", sans-serif;
     background-color: #415A77;
     border: none;
