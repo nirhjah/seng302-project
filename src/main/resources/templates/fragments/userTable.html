@@ -1,7 +1,7 @@
 
 
 <div th:fragment="userTable(listOfUsers)">
-    <table>
+    <table id="userTable">
         <tr th:if="${listOfUsers.empty}">
             <td colspan="2"> No users </td>
         </tr>
