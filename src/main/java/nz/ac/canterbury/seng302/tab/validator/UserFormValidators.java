@@ -35,10 +35,9 @@ public class UserFormValidators {
      * /?v=5.4#section-constraint-composition
      */
 
-    // Matches the alphabet, spaces (e.g. 'van Beethoven'),
-    // and hyphens (e.g. 'Taylor-Joy'), because names can have those.
-    // TODO: This regex can't handle non-English characters (e.g. Über)
-    public static final String VALID_NAME_REGEX = "[a-zA-Z\\- ]+";
+    // Matches any language's alphabet, spaces, and hyphens
+    // (e.g. 'van Beethoven', 'Taylor-Joy')...
+    public static final String VALID_NAME_REGEX = "^[\\p{L}\\- ]+$";   
 
     public static final String NOT_BLANK_MSG = "Field can't be blank";
     public static final String INVALID_NAME_MSG = "Names can only contain letters, spaces, and hyphens";
