@@ -101,7 +101,7 @@ public class UserFormValidators {
      */
     /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
     /**/@Retention(RUNTIME)
-    /**/@Constraint(validatedBy = {})
+    /**/@Constraint(validatedBy = DateOfBirthCheck.class)
     /**/@Documented
     @NotNull(message = NOT_BLANK_MSG)
     public @interface DateOfBirthValidator {
