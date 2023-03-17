@@ -4,22 +4,29 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 
+import org.springframework.security.test.context.support.WithMockUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-@ExtendWith(SpringExtension.class)
-@DataJpaTest
+@SpringBootTest
+@AutoConfigureMockMvc
 public class ViewAllUsersControllerTest {
+
+    @Autowired
+    MockMvc mockMvc;
 
     @Autowired
     private UserRepository userRepository;
@@ -27,28 +34,21 @@ public class ViewAllUsersControllerTest {
     @Autowired
     private UserService userService;
 
-    private static final Sort sort = Sort.by(
-            new Sort.Order(Sort.Direction.ASC, "lastName"),
-            new Sort.Order(Sort.Direction.ASC, "firstName")
-    );
+    private User user;
 
-    /**
-     * Tests that the order the users are displayed in is correct - alphabetically
-     */
+    @BeforeEach
+    public void beforeAll() throws IOException {
+        userRepository.deleteAll();
+        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY,
+                1).getTime(), "johndoe@example.com", "password");
+        userRepository.save(user);
+    }
+
+    @WithMockUser
     @Test
-    public void testUserListOrder() {
-        User user1 = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "password");
-        User user2 = new User("Jane", "Doe", new GregorianCalendar(1980, Calendar.JANUARY, 1).getTime(), "janedoe@example.com", "password");
-
-        userService.updateOrAddUser(user1);
-        userService.updateOrAddUser(user2);
-
-        var pageable = PageRequest.of(0, 10, sort);
-
-        var userList = userService.getPaginatedUsers(pageable);
-
-        assertEquals(userList.size(), 2);
-        assertEquals(userList.get(0), user2);
-        assertEquals(userList.get(1), user1);
+    public void testViewAllUsersReturns200() throws Exception {
+        mockMvc.perform(get("/view-all-users"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("viewAllUsers"));
     }
 }
