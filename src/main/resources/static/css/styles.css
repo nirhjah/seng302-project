@@ -432,11 +432,13 @@ ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-prof
 }
 
 .search-bar{
-    width:40%;
-    max-width:400px;
-    background:#415A77;
+    margin: 10px auto;
+    width:60%;
+    max-width:500px;
+    background-color: rgba(255,255,255,0.5);
     display:flex;
     align-items:center;
+    border: 2px solid #58629b;
     border-radius:60px;
     padding:10px 20px;
     height: 25px;
@@ -450,11 +452,11 @@ ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-prof
     outline:none;
     padding:10px 10px;
     font-size:20px;
-    color:white;
+    color:black;
 }
 
 ::placeholder{
-    color:white;
+    color:black;
 }
 
 .search-bar button img{
