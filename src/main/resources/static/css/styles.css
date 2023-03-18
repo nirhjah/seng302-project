@@ -430,3 +430,42 @@ li.active a {
 ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form{
     display: flex;
 }
+
+.search-bar{
+    width:40%;
+    max-width:400px;
+    background:#415A77;
+    display:flex;
+    align-items:center;
+    border-radius:60px;
+    padding:10px 20px;
+    height: 25px;
+    backdrop-filter:blur(4px) saturate(180%);
+}
+
+.search-bar input{
+    background:transparent;
+    flex:1;
+    border:0;
+    outline:none;
+    padding:10px 10px;
+    font-size:20px;
+    color:white;
+}
+
+::placeholder{
+    color:white;
+}
+
+.search-bar button img{
+    width:25px;
+}
+
+.search-bar button{
+    border:0;
+    border-radius:50%;
+    width:40px;
+    height:40px;
+    background:#58629b;
+    cursor:pointer;
+}

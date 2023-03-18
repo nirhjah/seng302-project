@@ -7,12 +7,11 @@
 </head>
 <body class="Search-teams-background">
 <div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
-  <form id="search-form" th:action="@{/searchTeams(teamName=${teamName},page=1)}" method="get">
-  <label for="teamName" class ="team-name-label">Search Teams:</label>
-  <input class ="team-name-input" type="text" id="teamName" name="teamName" />
-  <button class ="search-team-button" type="submit">Search</button>
+  <form id="search-form" th:action="@{/searchTeams(teamName=${teamName},page=1)}" method="get" class="search-bar">
+<!--  <label for="teamName" class ="team-name-label">Search Teams:</label>-->
+  <input class ="team-name-input" type="text" id="teamName" name="teamName" placeholder="Search Teams" />
+  <button class ="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
   </form>
-  <p th:if="${error}">search must be at least 3 characters</p>
   <script>
     // get search form and input element
     const form = document.getElementById('search-form');
@@ -36,6 +35,9 @@
       }
     });
   </script>
+</div>
+<div th:if="${error}">
+<label>search must be at least 3 characters</label>
 </div>
 <div th:if="${not #lists.isEmpty(teams)}">
   <h2>Search Results</h2>
