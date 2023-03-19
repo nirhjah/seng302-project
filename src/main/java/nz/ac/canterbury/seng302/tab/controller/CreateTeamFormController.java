@@ -69,7 +69,6 @@ public class CreateTeamFormController {
      * @param model (map-like) representation of name, language and isJava boolean
      *              for use in thymeleaf,
      *              with values being set to relevant parameters provided
-     * @param location the team's location
      * @return thymeleaf teamFormTemplate
      */
     @PostMapping("/createTeam")
@@ -77,9 +76,8 @@ public class CreateTeamFormController {
             @RequestParam(name = "teamID", defaultValue = "-1") long teamID,
             @RequestParam(name = "name") String name,
             @RequestParam(name = "sport") String sport,
-            @RequestParam(name = "location") String location,
-            @RequestParam (name ="address") String address,
-            @RequestParam (name ="city") String city,
+            @RequestParam (name = "address") String address,
+            @RequestParam (name = "city") String city,
             @RequestParam (name ="country") String country,
             @RequestParam (name ="postcode") long postcode,
             @RequestParam(name ="suburb") String suburb,
@@ -92,8 +90,7 @@ public class CreateTeamFormController {
         // server side validation
         boolean nameValid = (name.matches(allUnicodeRegex));
         boolean sportValid = (sport.matches(allUnicodeRegex));
-        boolean locationValid = (location.matches(allUnicodeRegex));
-        if (!sportValid || !nameValid || !locationValid) {
+        if (!sportValid || !nameValid) {
             return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
         }
         Location locations = new Location (address, suburb, city, postcode, country);
@@ -101,10 +98,9 @@ public class CreateTeamFormController {
         if ((team = teamService.getTeam(teamID)) != null) {
             team.setName(name);
             team.setSport(sport);
-            team.setLocation(location);
             teamService.updateTeam(team);
         } else {
-            team = new Team(name, location,locations, sport);
+            team = new Team(name, "REMOVE THIS", locations, sport);
             teamService.addTeam(team);
             teamID = team.getTeamId();
         }
