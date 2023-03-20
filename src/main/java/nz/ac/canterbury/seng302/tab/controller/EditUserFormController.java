@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +12,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.EditUserForm;
@@ -37,7 +39,7 @@ public class EditUserFormController {
             EditUserForm editUserForm,
             Model model) {
         prefillModel(model);
-        Optional<User> user = userService.getCurrentUser(); 
+        Optional<User> user = userService.getCurrentUser();
         if (user.isEmpty()) {
             return "redirect:/login";
         }
@@ -50,7 +52,10 @@ public class EditUserFormController {
     public String submitEditUserForm(
             @Valid EditUserForm editUserForm,
             BindingResult bindingResult,
-            Model model) {
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse,
+            Model model) throws ServletException {
+
         prefillModel(model);
         Optional<User> optUser = userService.getCurrentUser();
         if (optUser.isEmpty()) {
@@ -64,6 +69,7 @@ public class EditUserFormController {
         }
 
         if (bindingResult.hasErrors()) {
+            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "editUserForm";
         }
 
@@ -77,7 +83,7 @@ public class EditUserFormController {
         userService.updateOrAddUser(user);
 
         if (shouldLogout) {
-            SecurityContextHolder.getContext().setAuthentication(null);
+            httpServletRequest.logout();
         }
 
         return "redirect:user-info/self";
