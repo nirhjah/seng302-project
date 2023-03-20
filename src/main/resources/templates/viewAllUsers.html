@@ -30,5 +30,29 @@
         </p>
     </div>
 
-    <div th:insert="~{userTable.html :: userTable(${listOfUsers})}"></div>
+    <!-- Can convert this table into a fragment if neccessary.
+        for now, embrace YAGNI -->
+    <table>
+        <tr th:if="${listOfUsers.empty}">
+            <td colspan="2"> No users </td>
+        </tr>
+
+        <tr th:unless="${listOfUsers.empty}">
+            <th>Profile Picture</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Link</th>
+        </tr>
+
+        <tr th:each="user : ${listOfUsers}">
+            <td>
+                <img th:src="${'data:image/jpeg;base64,' + user.pictureString}" width="50" height="50"/>
+            </td>
+            <td> [[|${user.firstName} ${user.lastName}|]] </td>
+            <td th:text="${user.email}"> Email </td>
+            <td>
+                <a th:href="@{user-info(name=${user.userId})}"> Profile </a>
+            </td>
+        </tr>
+    </table>
 </body>
