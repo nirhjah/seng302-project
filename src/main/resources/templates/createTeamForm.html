@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <title th:inline="text">
         [[${teamID != null ? 'Edit' : 'Create'}]] Team</title>
@@ -52,6 +53,11 @@
                         <label for="location-suburb">Suburb:</label>
                     </div>
 
+                <div class="input-box">
+                    <input type="text" class="form-control" id="city"
+                           th:name="city" th:value="*{city}" data-cy="location" required
+                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                    <label for="city">City:</label>
                     <div class="input-box">
                         <input type="text" class="form-control" id="location-city"
                                th:name="city" th:value="*{city}" data-cy="location" required
@@ -72,6 +78,19 @@
                                autofocus th:pattern="${allUnicodeRegex}" placeholder="">
                         <label for="location-postcode">Postcode:</label>
                     </div>
+
+                <div class="input-box">
+                    <input type="text" class="form-control" id="country"
+                           th:name="country" th:value="*{country}" data-cy="location" required
+                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                    <label for="country">Country:</label>
+                </div>
+
+                <div class="input-box">
+                    <input type="text" class="form-control" id="postcode"
+                           th:name="postcode" th:value="*{postcode}" data-cy="location" required
+                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                    <label for="postcode">Postcode:</label>
                 </div>
                 <br/>
                 <div class="submit-button">
@@ -93,4 +112,68 @@
         </p>
     </footer>
 </body>
+<script  type="module">
+    const API_KEY = 'API-KEY-HERE';
+    const ENDPOINT = 'https://api.openrouteservice.org/geocode/autocomplete';
+
+    const searchBox = document.querySelector('#address');
+    const resultsContainer = document.querySelector('#results');
+    const countryInput = document.querySelector('#country');
+    const cityInput = document.querySelector('#city');
+    const suburbInput = document.querySelector('#suburb');
+    const postcodeInput = document.querySelector('#postcode');
+    const countryCodeInput = document.querySelector('#country-code');
+
+    searchBox.addEventListener('input', function() {
+        const searchTerm = this.value.trim();
+
+        if (searchTerm.length >= 3) {
+            axios.get(ENDPOINT, {
+                params: {
+                    text: searchTerm,
+                    api_key: API_KEY,
+                    language: 'en'
+                }
+            })
+                .then(response => {
+                    const results = response.data.features;
+                    let html = '';
+                    if (results.length > 0) {
+                        html = '<ul>';
+                        results.forEach(result => {
+                            html += `<li data-country="${result.properties.country}" data-city="${result.properties.locality}" data-suburb="${result.properties.localadmin}" data-postcode="${result.properties.postalcode}" data-country-code="${result.properties.country_a}">${result.properties.label}</li>`;
+                        });
+                        html += '</ul>';
+                    } else {
+                        html = '<p>No results found</p>';
+                    }
+                    resultsContainer.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error(error);
+                    resultsContainer.innerHTML = '<p>Error fetching results</p>';
+                });
+        } else {
+            resultsContainer.innerHTML = '';
+        }
+    });
+
+    resultsContainer.addEventListener('click', function(event) {
+        if (event.target.tagName === 'LI') {
+            // const address = event.target.textContent.split(',')[0];
+            const address = event.target.textContent;
+            searchBox.value = address;
+            const country = event.target.getAttribute('data-country');
+            const city = event.target.getAttribute('data-city');
+            const suburb = event.target.getAttribute('data-suburb');
+            const postcode = event.target.getAttribute('data-postcode');
+            const countryCode = event.target.getAttribute('data-country-code');
+            countryInput.value = country;
+            cityInput.value = suburb;
+            suburbInput.value = city;
+            postcodeInput.value = postcode;
+            countryCodeInput.value = countryCode;
+        }
+    });
+</script>
 </html>
