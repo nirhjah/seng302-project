@@ -58,8 +58,7 @@
                     </a>
                 </div>
                 <div class="cancel-link">
-                    <a th:if="${teamID != null}" th:href="@{profile(teamID=${teamID})}">Cancel</a>
-                    <a th:unless="${teamID != null}" th:href="@{home}">Cancel</a>
+                    <a th:href="@{user-info/self})}">Cancel</a>
                 </div>
             </form>
         </div>
