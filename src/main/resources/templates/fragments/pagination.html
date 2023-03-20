@@ -2,48 +2,50 @@
     This is used to render a page "swapper" to navigate through pages.
     Mainly useful for navigating through table data.
 -->
-<div th:fragment="pagination (pageName)" class="pagination">
+<div th:fragment="pagination" class="pagination">
     <div class="paginationContainer">
         <div class="totalPages">
             Total Pages: [[${totalPages}]]
         </div>
+        <!--
+            UNTESTED OLI CODE BEGINS:
+        -->
         <div>
-            <button th:disabled="${currentPage == 1}"
-                    th:onclick= "|window.location.href='/${pageName}?page=${1}'|"
-                    class="paginationButton">
-                <span>First</span>
-            </button>
+            <form th:disabled="${currentPage == 1}" action="@{/{pageName}?page={pageNumber}(pageName=${pageName},pageNumber=${1})}">
+                <button class = "paginationButton"> <span>First</span> </button>
+            </form>
         </div>
         <div>
-            <button th:disabled="${currentPage == 1}"
-                    th:onclick= "|window.location.href='/${pageName}?page=${currentPage - 1}'|"
-                    class="paginationButton">
-                <span>< Prev</span>
-            </button>
+            <form th:disabled="${currentPage == 1}" action="@{/{pageName}?page={pageNumber}(pageName=${pageName},pageNumber=${currentPage - 1})}">
+                <button class = "paginationButton"> <span>Prev</span> </button>
+            </form>
         </div>
+        <!--
+            UNTESTED OLI CODE ENDS
+        -->
         <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
             <div th:if="${i >= currentPage - 1 and i <= currentPage + 1
                             or currentPage == 1 and i >= currentPage - 1 and i <= currentPage + 2
                             or currentPage == totalPages and i >= currentPage - 2 and i <= currentPage + 1}">
                 <button th:if="${currentPage == i}" class="paginationActive" th:text="${i}"
-                        th:onclick= "|window.location.href='/${pageName}?page=${i}'|">
+                        th:onclick= "|window.location.href='/' + ${pageName} + '?page=${i}'|">
                 </button>
                 <button th:unless="${currentPage == i}" th:text="${i}"
-                        th:onclick="|window.location.href='/${pageName}?page=${i}'|"
+                        th:onclick="|window.location.href='/' + ${pageName}'?page=${i}'|"
                         class="paginationButton">
                 </button>
             </div>
         </th:block>
         <div>
             <button th:disabled="${currentPage == totalPages}"
-                    th:onclick="|window.location.href='/${pageName}?page=${currentPage + 1}'|"
+                    th:onclick="|window.location.href='/' + ${pageName} + '?page=${currentPage + 1}'|"
                     class="paginationButton">
                 <span>Next ></span>
             </button>
         </div>
         <div>
             <button th:disabled="${currentPage == totalPages}"
-                    th:onclick= "|window.location.href='/${pageName}?page=${totalPages}'|"
+                    th:onclick= "|window.location.href='/' + ${pageName} + '?page=${totalPages}'|"
                     class="paginationButton">
                 <span>Last</span>
             </button>
