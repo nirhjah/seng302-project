@@ -17,19 +17,19 @@ import java.util.List;
  * Spring Boot Controller for View Teams Form
  */
 @Controller
-public class ViewTeamsFormController {
+public class ViewAllTeamsController {
 
     private static int maxPageSize = 10;
-    Logger logger = LoggerFactory.getLogger(ViewTeamsFormController.class);
+    Logger logger = LoggerFactory.getLogger(ViewAllTeamsController.class);
 
     @Autowired
     private TeamService teamService;
 
     /**
-     * Gets viewTeamsForm with required attributes. Reroutes if page out of available range or no teams in database
+     * Gets viewAllTeams doc with required attributes. Reroutes if page out of available range or no teams in database
      * @param pageNo integer corresponding page to be displayed
      * @param model  (map-like) representation of name, language and isJava boolean for use in thymeleaf
-     * @return thymeleaf viewTeamsForm
+     * @return thymeleaf viewAllTeams
      */
     @GetMapping("/view-teams")
     public String findPaginated(@RequestParam(value = "page", defaultValue = "-1") int pageNo,
@@ -57,6 +57,6 @@ public class ViewTeamsFormController {
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
         model.addAttribute("displayTeams", listTeams);
-        return "viewTeamsForm";
+        return "viewAllTeams";
     }
 }
