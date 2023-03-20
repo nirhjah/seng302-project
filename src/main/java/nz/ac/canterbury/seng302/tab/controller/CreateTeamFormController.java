@@ -21,7 +21,6 @@ import java.io.IOException;
 public class CreateTeamFormController {
 
     Logger logger = LoggerFactory.getLogger(CreateTeamFormController.class);
-
     @Autowired
     private TeamService teamService;
 
@@ -37,6 +36,12 @@ public class CreateTeamFormController {
     public String teamForm(@RequestParam(name = "edit", required = false) Long teamID,
             @RequestParam(name = "invalid_input", defaultValue = "0") boolean invalidInput,
             Model model) {
+//        Dotenv dotenv = Dotenv.load();
+//        String apiKey = dotenv.get("LOCATION_API_KEY");
+
+        // At the moment , have to manually set the apiKey as your string api key. To load the api key from .env, I need to add
+        // a dependency which I might need to ask for approval. This import => import io.github.cdimascio.dotenv.Dotenv;
+        model.addAttribute("apiKey", "ADD_API_KEY_HERE");
         logger.info("GET /createTeam");
 
         Team team;

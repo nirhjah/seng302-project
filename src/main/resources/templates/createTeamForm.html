@@ -94,8 +94,9 @@
         </p>
     </footer>
 </body>
-<script  type="module">
-    const API_KEY = '5b3ce3597851110001cf624872c21df9f0f8419799b5718ed8769650';
+<script th:inline="javascript">
+
+    const API_KEY = [[${apiKey}]];
     const ENDPOINT = 'https://api.openrouteservice.org/geocode/autocomplete';
 
     const searchBox = document.querySelector('#address-line-1');

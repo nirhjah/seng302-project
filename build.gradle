@@ -17,7 +17,7 @@ repositories {
 def locationApiKey = new File('.env').text.trim().split('=')[1]
 
 // Set the environment variable for the entire Gradle process
-gradle.startParameter.environment['LOCATION_API_KEY'] = locationApiKey
+//gradle.startParameter.environment['LOCATION_API_KEY'] = locationApiKey
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
