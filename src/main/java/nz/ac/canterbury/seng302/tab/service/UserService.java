@@ -6,10 +6,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -30,21 +29,21 @@ public class UserService {
 
     /**
      * Gets a page of users.
-     *
+     * 
      * @param pageSize How many users are in a "page"
      * @param pageNumber The page number (page 0 is the first page)
      * @return A slice of users returned from pagination
      */
-    public List<User> getPaginatedUsers(int pageSize, int pageNumber) {
-        return userRepository.findAll(PageRequest.of(pageNumber, pageSize));
+    public List<User> getPaginatedUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
-    public List<User> findUsersByName(int pageSize, int pageNumber, String name) {
-        return userRepository.findAllByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(PageRequest.of(pageNumber, pageSize), name, name);
+    public List<User> findUsersByName(Pageable pageable, String name) {
+        return userRepository.findAllByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(pageable, name, name);
     }
 
-    public List<User> findUsersByName(int pageSize, int pageNumber, String firstName, String lastName) {
-        return userRepository.findAllByFirstNameIgnoreCaseContainingAndLastNameIgnoreCaseContaining(PageRequest.of(pageNumber, pageSize), firstName, lastName);
+    public List<User> findUsersByName(Pageable pageable, String firstName, String lastName) {
+        return userRepository.findAllByFirstNameIgnoreCaseContainingAndLastNameIgnoreCaseContaining(pageable, firstName, lastName);
     }
 
     /**
