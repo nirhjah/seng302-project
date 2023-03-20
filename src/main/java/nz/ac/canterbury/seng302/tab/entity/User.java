@@ -3,8 +3,16 @@ package nz.ac.canterbury.seng302.tab.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Base64;
+
 
 import java.util.*;
 
@@ -14,7 +22,7 @@ public class User {
     public User() {
     }
 
-    public static User defaultDummyUser() {
+    public static User defaultDummyUser() throws IOException {
         return new User(
                 "test",
                 "again",
@@ -26,12 +34,15 @@ public class User {
     /**
      * TODO: Implement password hashing, probably via Bcrypt
      */
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password) {
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password) throws IOException {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.hashedPassword = password;
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        File file = resource.getFile();
+        this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
     }
 
     public User(String firstName, String lastName, String email, String password) {
@@ -64,6 +75,9 @@ public class User {
     @Column(nullable = false)
     private String hashedPassword;
 
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private String pictureString;
+
     public long getUserId() {
         return userId;
     }
@@ -93,6 +107,14 @@ public class User {
     }
 
     public String getPassword() {return hashedPassword; }
+
+    public String getPictureString() {
+       return this.pictureString;
+    }
+
+    public void setPictureString(String pictureString) {
+        this.pictureString = pictureString;
+    }
 
     public void setEmail(String email) {
         this.email = email;
