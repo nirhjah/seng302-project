@@ -20,18 +20,20 @@ public class User {
                 "again",
                 new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "test@gmail.com",
-                "dfghjk");
+                "dfghjk",
+                new ArrayList<>());
     }
 
     /**
      * TODO: Implement password hashing, probably via Bcrypt
      */
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password) {
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.hashedPassword = password;
+        this.favoriteSports = favoriteSports;
     }
 
     public User(String firstName, String lastName, String email, String password) {
@@ -54,6 +56,11 @@ public class User {
 
     @Column(nullable = false)
     private Date dateOfBirth;
+
+    @Column()
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "Id")
+    private List<Sport> favoriteSports;
 
 
     @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
@@ -118,6 +125,13 @@ public class User {
         return authorities;
     }
 
+    public List<Sport> getFavoriteSports() {
+        return favoriteSports;
+    }
+
+    public void setFavoriteSports(List<Sport> favoriteSports) {
+        this.favoriteSports = favoriteSports;
+    }
 
     /**
      * TODO: IMPLEMENT. There shouldn't be a way to see the password, only to check
