@@ -33,64 +33,45 @@
                 </div>
                 <div class="input-boxes">
                     <div class="input-box">
-                        <input type="text" class="form-control" id="location-address-line-1"
-                               th:name="location-address-line-1" th:value="*{addressLine1}" data-cy="location" required
+                        <input type="text" class="form-control" id="address-line-1"
+                               th:name="address-line-1" th:value="*{addressLine1}" data-cy="location" required
                                autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                        <label for="location-address-line-1">Address Line 1:</label>
+                        <label for="address-line-1">Address Line 1:</label>
                     </div>
                     <div class="input-box">
-                        <input type="text" class="form-control" id="location-address-line-2"
-                               th:name="location-address-line-2" th:value="*{addressLine2}" data-cy="location" required
+                        <input type="text" class="form-control" id="address-line-2"
+                               th:name="address-line-2" th:value="*{addressLine2}" data-cy="location" required
                                autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                        <label for="location-address-line-2">Address Line 2:</label>
+                        <label for="address-line-2">Address Line 2:</label>
                     </div>
                 </div>
                 <div class="input-boxes">
                     <div class="input-box">
-                        <input type="text" class="form-control" id="location-suburb"
+                        <input type="text" class="form-control" id="suburb"
                                th:name="suburb" th:value="*{suburb}" data-cy="location" required
                                autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                        <label for="location-suburb">Suburb:</label>
+                        <label for="suburb">Suburb:</label>
                     </div>
-
-                <div class="input-box">
-                    <input type="text" class="form-control" id="city"
-                           th:name="city" th:value="*{city}" data-cy="location" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                    <label for="city">City:</label>
                     <div class="input-box">
-                        <input type="text" class="form-control" id="location-city"
+                        <input type="text" class="form-control" id="city"
                                th:name="city" th:value="*{city}" data-cy="location" required
                                autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                        <label for="location-city">City:</label>
+                        <label for="city">City:</label>
                     </div>
                 </div>
                 <div class="input-boxes">
                     <div class="input-box">
-                        <input type="text" class="form-control" id="location-country"
+                        <input type="text" class="form-control" id="country"
                                th:name="country" th:value="*{country}" data-cy="location" required
                                autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                        <label for="location-country">Country:</label>
+                        <label for="country">Country:</label>
                     </div>
                     <div class="input-box">
-                        <input type="text" class="form-control" id="location-postcode"
+                        <input type="text" class="form-control" id="postcode"
                                th:name="postcode" th:value="*{postcode}" data-cy="location" required
                                autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                        <label for="location-postcode">Postcode:</label>
+                        <label for="postcode">Postcode:</label>
                     </div>
-
-                <div class="input-box">
-                    <input type="text" class="form-control" id="country"
-                           th:name="country" th:value="*{country}" data-cy="location" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                    <label for="country">Country:</label>
-                </div>
-
-                <div class="input-box">
-                    <input type="text" class="form-control" id="postcode"
-                           th:name="postcode" th:value="*{postcode}" data-cy="location" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                    <label for="postcode">Postcode:</label>
                 </div>
                 <br/>
                 <div class="submit-button">
@@ -104,6 +85,7 @@
                     <a th:unless="${teamID != null}" th:href="@{home}">Cancel</a>
                 </div>
             </form>
+            <div id="results"></div>
         </div>
     </div>
     <footer>
@@ -113,10 +95,10 @@
     </footer>
 </body>
 <script  type="module">
-    const API_KEY = 'API-KEY-HERE';
+    const API_KEY = '5b3ce3597851110001cf624872c21df9f0f8419799b5718ed8769650';
     const ENDPOINT = 'https://api.openrouteservice.org/geocode/autocomplete';
 
-    const searchBox = document.querySelector('#address');
+    const searchBox = document.querySelector('#address-line-1');
     const resultsContainer = document.querySelector('#results');
     const countryInput = document.querySelector('#country');
     const cityInput = document.querySelector('#city');
