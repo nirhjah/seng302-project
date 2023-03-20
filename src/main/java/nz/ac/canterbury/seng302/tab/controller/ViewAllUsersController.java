@@ -34,7 +34,7 @@ public class ViewAllUsersController {
      * @param model map representation of information to be passed to thymeleaf page
      * @return view all users page
      */
-    @GetMapping("/viewUsers")
+    @GetMapping("/view-users")
     public String viewPageOfUsers(@RequestParam(name="page", defaultValue = "1") int page, @RequestParam(value = "currentSearch", defaultValue = "") String currentSearch, Model model) {
         var userList = getUserList(page, currentSearch);
         model.addAttribute("currentSearch", currentSearch);

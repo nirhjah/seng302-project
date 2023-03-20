@@ -31,7 +31,7 @@ public class ViewTeamsFormController {
      * @param model  (map-like) representation of name, language and isJava boolean for use in thymeleaf
      * @return thymeleaf viewTeamsForm
      */
-    @GetMapping("/viewTeams")
+    @GetMapping("/view-teams")
     public String findPaginated(@RequestParam(value = "page", defaultValue = "-1") int pageNo,
                                 Model model) {
 
@@ -43,10 +43,10 @@ public class ViewTeamsFormController {
         // If page number outside of page then reloads page with appropriate number
         if (pageNo < 1 || pageNo > teamService.findPaginated(pageNo, maxPageSize).getTotalPages() && teamService.findPaginated(pageNo, maxPageSize).getTotalPages() > 0) {
             pageNo = pageNo < 1 ? 1: teamService.findPaginated(pageNo, maxPageSize).getTotalPages();
-            return "redirect:/viewTeams?page=" + pageNo;
+            return "redirect:/view-teams?page=" + pageNo;
         }
 
-        logger.info("GET /viewTeams");
+        logger.info("GET /view-teams");
 
         Page<Team> page = teamService.findPaginated(pageNo, maxPageSize);
 
