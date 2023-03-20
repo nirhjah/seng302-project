@@ -25,7 +25,7 @@
                 <td th:text="${team.sport}"></td>
             </tr>
         </table>
-        
+        <div th:insert="fragments/pagination.html :: pagination(pageName='viewTeams')"></div>
     </div>
     <footer>
         <p>
