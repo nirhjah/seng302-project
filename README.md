@@ -54,6 +54,10 @@ By default, the application will run on local port 8080 [http://localhost:8080](
 - Philip Dolbel
 - Sebastian Conaghan-Carr
 - Angela Yu
+- Andrew Hall
+- Oliver Garrett
+- Nirhjah Selvarajah
+- Amy Paull
 
 ## References
 
