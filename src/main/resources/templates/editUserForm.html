@@ -40,7 +40,9 @@
                     <input type="text" class="form-control"
                            th:field="*{email}" data-cy="email" required
                            autofocus>
-                    <label for="email">Email: </label>
+                    <label for="email">Email
+                        <span style="color: darkred">(You will be logged out if you edit your email):</span>
+                    </label>
                     <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="errorMessage" />
                 </div>
                 <div class="input-box">

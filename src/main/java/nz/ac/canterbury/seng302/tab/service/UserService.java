@@ -125,13 +125,13 @@ public class UserService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         // Issue: The security context chain gives you "Anonymous Authentication"
-        //          if you're not logged in, so `isAuthenticated()` is always true.
+        //          if you're not logged in, so `isAuthenticated()` can be true.
         //        To get around this, check if you're anonymous.
-        if (auth instanceof AnonymousAuthenticationToken) {
+        if (!auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
             return Optional.empty();
         }
-        long userId = (long)auth.getPrincipal();
-        return userRepository.findById(userId);
+        String email = auth.getName();
+        return userRepository.findByEmail(email);
     }
 
 }

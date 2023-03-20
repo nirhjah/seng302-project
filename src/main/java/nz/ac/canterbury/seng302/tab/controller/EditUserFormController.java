@@ -67,12 +67,18 @@ public class EditUserFormController {
             return "editUserForm";
         }
 
+        // Log-out if the user changes their email
+        boolean shouldLogout = user.getEmail().equals(editUserForm.getEmail());
+
         user.setFirstName(editUserForm.getFirstName());
         user.setLastName(editUserForm.getLastName());
         user.setEmail(editUserForm.getEmail());
         user.setDateOfBirth(editUserForm.getDateOfBirth());
         userService.updateOrAddUser(user);
 
+        if (shouldLogout) {
+            SecurityContextHolder.getContext().setAuthentication(null);
+        }
 
         return "redirect:user-info/self";
     }
