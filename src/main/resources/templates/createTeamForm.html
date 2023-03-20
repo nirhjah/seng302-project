@@ -16,53 +16,63 @@
             <form th:action="@{createTeam}" method="post">
                 <div th:if="${invalid_team != null}" th:text="${invalid_team}" class="invalid-team error-message"></div>
                 <input type="hidden" th:if="${teamID != null}" th:name="teamID" th:value="${teamID}"/>
-                <div class="input-box">
-                    <input type="text" class="form-control" id="name"
-                           th:name="name" th:value="*{name}" data-cy="name" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                    <label for="name"> Name: </label>
+                <div class="input-boxes">
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="name"
+                               th:name="name" th:value="*{name}" data-cy="name" required
+                               autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                        <label for="name"> Name: </label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="sport"
+                               th:name="sport" th:value="*{sport}" data-cy="sport" required
+                               autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                        <label for="sport"> Sport: </label>
+                    </div>
                 </div>
-                <div class="input-box">
-                    <input type="text" class="form-control" id="sport"
-                           th:name="sport" th:value="*{sport}" data-cy="sport" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                    <label for="sport"> Sport: </label>
+                <div class="input-boxes">
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="location-address-line-1"
+                               th:name="location-address-line-1" th:value="*{addressLine1}" data-cy="location" required
+                               autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                        <label for="location-address-line-1">Address Line 1:</label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="location-address-line-2"
+                               th:name="location-address-line-2" th:value="*{addressLine2}" data-cy="location" required
+                               autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                        <label for="location-address-line-2">Address Line 2:</label>
+                    </div>
                 </div>
-                <div class="input-box">
-                    <input type="text" class="form-control" id="location-address"
-                           th:name="address" th:value="*{address}" data-cy="location" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                    <label for="location-address">Address:</label>
-                </div>
+                <div class="input-boxes">
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="location-suburb"
+                               th:name="suburb" th:value="*{suburb}" data-cy="location" required
+                               autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                        <label for="location-suburb">Suburb:</label>
+                    </div>
 
-                <div class="input-box">
-                    <input type="text" class="form-control" id="location-suburb"
-                           th:name="suburb" th:value="*{suburb}" data-cy="location" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                    <label for="location-suburb">Suburb:</label>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="location-city"
+                               th:name="city" th:value="*{city}" data-cy="location" required
+                               autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                        <label for="location-city">City:</label>
+                    </div>
                 </div>
-
-                <div class="input-box">
-                    <input type="text" class="form-control" id="location-city"
-                           th:name="city" th:value="*{city}" data-cy="location" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                    <label for="location-city">City:</label>
+                <div class="input-boxes">
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="location-country"
+                               th:name="country" th:value="*{country}" data-cy="location" required
+                               autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                        <label for="location-country">Country:</label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="location-postcode"
+                               th:name="postcode" th:value="*{postcode}" data-cy="location" required
+                               autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                        <label for="location-postcode">Postcode:</label>
+                    </div>
                 </div>
-
-                <div class="input-box">
-                    <input type="text" class="form-control" id="location-country"
-                           th:name="country" th:value="*{country}" data-cy="location" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                    <label for="location-country">Country:</label>
-                </div>
-
-                <div class="input-box">
-                    <input type="text" class="form-control" id="location-postcode"
-                           th:name="postcode" th:value="*{postcode}" data-cy="location" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                    <label for="location-postcode">Postcode:</label>
-                </div>
-
                 <br/>
                 <div class="submit-button">
                     <a th:href="@{home}">
