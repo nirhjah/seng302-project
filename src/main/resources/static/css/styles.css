@@ -1,8 +1,9 @@
 .team-form {
     display: grid;
-    grid-auto-rows: 300px;
+    grid-auto-rows: 770px;
     justify-content: center;
     align-items: center;
+    grid-template-rows: 125px;
     height: 90vh;
 }
 
@@ -142,6 +143,12 @@ td {
     height: 440px;
     /*backdrop-filter: blur(20px);*/
 }
+
+.team-form .wrapper {
+    width: 500px;
+    height: 750px;
+}
+
 .wrapper,.wrapper-profile{
     border: 2px solid rgba(255, 255, 255, .5);
     box-shadow: 0 0 30px rgba(0, 0, 0, .5);
@@ -227,6 +234,7 @@ footer {
     font-weight: 500;
     font-family: "Noto Sans", sans-serif;
     color: #1B263B;
+    margin-bottom: 30px;
 }
 
 .form-control-file {
@@ -293,7 +301,7 @@ a.enabled{
 }
 
 .input-box input {
-    width: 140%;
+    width: 96%;
     height: 100%;
     background: transparent;
     font-size: 1em;
