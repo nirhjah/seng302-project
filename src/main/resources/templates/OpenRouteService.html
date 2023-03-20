@@ -20,8 +20,8 @@
     <div id="results"></div>
 </div>
 <script>
+    const API_KEY = '<%= System.getenv("LOCATION_API_KEY") %>';
     const ENDPOINT = 'https://api.openrouteservice.org/geocode/autocomplete';
-
     const searchBox = document.querySelector('#search-box');
     const resultsContainer = document.querySelector('#results');
     const countryInput = document.querySelector('#country');
