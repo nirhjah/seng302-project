@@ -9,13 +9,27 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+
 /**
  * Service class for User database entries, defined by the @link{Service} annotation.
  * This class links automatically with @link{UserRepository}, see the @link{Autowired} annotation below
  */
 @Service
 public class UserService {
-    
+
+    final Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private UserRepository userRepository;
 
@@ -26,16 +40,16 @@ public class UserService {
      * @param pageNumber The page number (page 0 is the first page)
      * @return A slice of users returned from pagination
      */
-    public List<User> getPaginatedUsers(int pageSize, int pageNumber) {
-        return userRepository.findAll(PageRequest.of(pageNumber, pageSize));
+    public List<User> getPaginatedUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
-    public List<User> findUsersByName(int pageSize, int pageNumber, String name) {
-        return userRepository.findAllByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(PageRequest.of(pageNumber, pageSize), name, name);
+    public List<User> findUsersByName(Pageable pageable, String name) {
+        return userRepository.findAllByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(pageable, name, name);
     }
 
-    public List<User> findUsersByName(int pageSize, int pageNumber, String firstName, String lastName) {
-        return userRepository.findAllByFirstNameIgnoreCaseContainingAndLastNameIgnoreCaseContaining(PageRequest.of(pageNumber, pageSize), firstName, lastName);
+    public List<User> findUsersByName(Pageable pageable, String firstName, String lastName) {
+        return userRepository.findAllByFirstNameIgnoreCaseContainingAndLastNameIgnoreCaseContaining(pageable, firstName, lastName);
     }
 
     /**
@@ -57,6 +71,42 @@ public class UserService {
     }
 
     /**
+     * <h4>For Editing</h4>
+     * <p>
+     *  Checks whether the given email is in use <strong>by someone else</strong>,
+     *  i.e. not the current user.
+     * <br/>
+     * This is so the user can keep their email while updating other details, without failing its "unique" constraint.
+     * </p>
+     *
+     * If you simply want to see if the email is already used, see {@link UserService#emailIsInUse}
+     * @param currentUser The user who's email we're excluding
+     * @param email The email that we're checking is unique
+     * @return <code>true</code> if another user has this email,
+     *          <code>false</code> if it's the <code>currentUser</code>'s email, or if the email is unique
+     */
+    public boolean emailIsUsedByAnother(User currentUser, String email) {
+        // If the user isn't changing their email, no 'unique' email constraints are broken
+        if (currentUser.getEmail().equals(email)) {
+            return false;
+        }
+        // If the email's changed, we must see that it's not in use
+        return emailIsInUse(email);
+    }
+
+    /**
+     * <h4>For Registration</h4>
+     * <p>Checks whether the given email is already in the repository</p>
+     *
+     * If you want to see if <strong>another</strong> user has that email, see {@link UserService#emailIsUsedByAnother}
+     * @param email The email that we're checking is unique
+     * @return <code>true</code> if another user has this email
+     */
+    public boolean emailIsInUse(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    /**
      * Saves a user to persistence
      * @param user User to save to persistence
      * @return the saved user object
@@ -73,6 +123,20 @@ public class UserService {
      */
     public User getUserByEmailAndPassword(String email, String password) {
         return userRepository.getUserByEmailAndPassword(email, password);
+    }
+
+    public Optional<User> getCurrentUser() {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        // Issue: The security context chain gives you "Anonymous Authentication"
+        //          if you're not logged in, so `isAuthenticated()` can be true.
+        //        To get around this, check if you're anonymous.
+        if (!auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+            return Optional.empty();
+        }
+        String email = auth.getName();
+        return userRepository.findByEmail(email);
     }
 
 }

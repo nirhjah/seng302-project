@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <title>View All Users</title>
+</head>
+
+<div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+
+<body class="view-users-background">
+    <div>
+        <p>Page #[[${page}]].
+            <a th:if="${page > 1}" th:href="@{view-all-users(page=${page-1}, currentSearch=${currentSearch})}">
+                <button>Previous</button>
+            </a>
+            <a th:if="${#lists.size(listOfUsers) == 10}" th:href="@{view-all-users(page=${page+1}, currentSearch=${currentSearch})}">
+                <button>Next</button>
+            </a>
+        </p>
+    </div>
+
+    <div>
+        <p>
+        <form th:action="@{view-all-users}" method="get">
+            <input type="text" placeholder="Search name" th:name="currentSearch" th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">
+            <button class="search-user-button" type="submit"> Search </button>
+        </form>
+        </p>
+    </div>
+
+    <div th:insert="~{userTable.html :: userTable(${listOfUsers})}"></div>
+</body>
