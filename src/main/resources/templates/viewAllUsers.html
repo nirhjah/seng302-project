@@ -27,6 +27,14 @@
             <input type="text" placeholder="Search name" th:name="currentSearch" th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">
             <button class="search-user-button" type="submit"> Search </button>
         </form>
+        <select class="form-control" id="dropDownList" name="teamSelector"
+                onchange="if(this.value != '-1') window.location.href = '/view-all-users';">
+            <option value="-1" selected>Filter by Sport</option>
+            <option th:each="sport : ${listOfSports}"
+                    th:value="${sport.sportId}"
+                    th:text="${sport.name}"
+                    th:selected="${sport.sportId.equals(sportID)}"> </option>
+        </select>
         </p>
     </div>
 
