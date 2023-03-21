@@ -55,13 +55,5 @@ public class HomeFormController {
         return "homeForm";
     }
 
-    @GetMapping("/addSport")
-    public String addSport() {
-        Sport sport = new Sport("Hockey");
-
-        sportService.addSport(sport);
-        System.out.println(sportService.getAllSports());
-        return "redirect:./home";
-    }
 }
 

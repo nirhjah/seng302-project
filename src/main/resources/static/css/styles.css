@@ -183,7 +183,7 @@ td {
     min-height: 90vh;
 }
 
-.home-background, .view-users-background, .view-teams-background, .team-form-background, .profile-background, .Search-teams-background {
+.home-background, .view-users-background, .view-teams-background, .team-form-background, .profile-background, .Search-teams-background, .user-form {
     background-image: url('../image/landscape.jpeg');
     background-size: cover;
     background-repeat: no-repeat;

@@ -9,6 +9,8 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 
 <head>
+  <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+  <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
   <title>View User</title>
 </head>
 
@@ -18,19 +20,20 @@
       <strong>Specified user does not exist</strong>
     </p>
     <div th:if="${thisUser.isPresent()}" th:object="${thisUser.get()}">
-      <div class="userDetailsContainer">
+      <div class="wrapper">
         <!--/* Currently there's no profile picture code, so let's use the default */-->
         <img class="profilePictureContainer" th:src="@{/image/defaultuser.jpg}" alt="Profile Picture">
         <div class="userDetailsTextContainer">
           <p th:text="|Name: *{FirstName} *{LastName}|"></p>
           <p th:text="|Email: *{email}|"></p>
           <p th:text="|Date of Birth: *{#dates.format(dateOfBirth, 'dd-MM-yyyy')}|"></p>
+          <p th:text="|Favourite Sports: *{favoriteSports}"></p>
         </div>
         <br />
       </div>
     </div>
     <br/>
-    <a th:href="@{editUser}">Edit</button>
+    <a th:href="@{editUser}">Edit</a>
     <button id="backButton" onclick="history.back()">Back</button>
   </div>
   
