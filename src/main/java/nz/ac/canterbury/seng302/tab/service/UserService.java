@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -33,15 +34,15 @@ public class UserService {
      * @param pageNumber The page number (page 0 is the first page)
      * @return A slice of users returned from pagination
      */
-    public List<User> getPaginatedUsers(Pageable pageable) {
+    public Page<User> getPaginatedUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 
-    public List<User> findUsersByName(Pageable pageable, String name) {
+    public Page<User> findUsersByName(Pageable pageable, String name) {
         return userRepository.findAllByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(pageable, name, name);
     }
 
-    public List<User> findUsersByName(Pageable pageable, String firstName, String lastName) {
+    public Page<User> findUsersByName(Pageable pageable, String firstName, String lastName) {
         return userRepository.findAllByFirstNameIgnoreCaseContainingAndLastNameIgnoreCaseContaining(pageable, firstName, lastName);
     }
 

@@ -1,6 +1,8 @@
 package nz.ac.canterbury.seng302.tab.repository;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
+
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -16,13 +18,13 @@ import java.util.Optional;
 public interface UserRepository extends CrudRepository<User, Long> {
     Optional<User> findById(long id);
     Optional<User> findByEmail(String email);
-    List<User> findAll();
+    Page<User> findAll();
 
     @Query("SELECT u FROM UserEntity u WHERE u.email = :email and u.hashedPassword = :password")
     User getUserByEmailAndPassword(@Param("email") String email, @Param("password") String password);
 
-    List<User> findAll(Pageable pageable);
+    Page<User> findAll(Pageable pageable);
 
-    List<User> findAllByFirstNameIgnoreCaseContainingAndLastNameIgnoreCaseContaining(Pageable pageable, String firstName, String lastName);
-    List<User> findAllByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(Pageable pageable, String firstName, String lastName);
+    Page<User> findAllByFirstNameIgnoreCaseContainingAndLastNameIgnoreCaseContaining(Pageable pageable, String firstName, String lastName);
+    Page<User> findAllByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(Pageable pageable, String firstName, String lastName);
 }
