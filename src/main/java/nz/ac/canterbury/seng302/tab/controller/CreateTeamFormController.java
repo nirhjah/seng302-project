@@ -6,6 +6,7 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,9 @@ public class CreateTeamFormController {
     @Autowired
     private TeamService teamService;
 
+    @Value("${ops.api.key}")
+    private String apiKey;
+
     private String allUnicodeRegex = "^[\\p{L}\\s\\d\\.\\}\\{]+$";
 
     /**
@@ -36,12 +40,7 @@ public class CreateTeamFormController {
     public String teamForm(@RequestParam(name = "edit", required = false) Long teamID,
             @RequestParam(name = "invalid_input", defaultValue = "0") boolean invalidInput,
             Model model) {
-//        Dotenv dotenv = Dotenv.load();
-//        String apiKey = dotenv.get("LOCATION_API_KEY");
-
-        // At the moment , have to manually set the apiKey as your string api key. To load the api key from .env, I need to add
-        // a dependency which I might need to ask for approval. This import => import io.github.cdimascio.dotenv.Dotenv;
-        model.addAttribute("apiKey", "ADD_API_KEY_HERE");
+        model.addAttribute("apiKey", apiKey);
         logger.info("GET /createTeam");
 
         Team team;
