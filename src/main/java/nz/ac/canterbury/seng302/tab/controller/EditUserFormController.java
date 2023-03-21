@@ -74,7 +74,7 @@ public class EditUserFormController {
         }
 
         // Log-out if the user changes their email
-        boolean shouldLogout = user.getEmail().equals(editUserForm.getEmail());
+        boolean shouldLogout = !user.getEmail().equals(editUserForm.getEmail());
 
         user.setFirstName(editUserForm.getFirstName());
         user.setLastName(editUserForm.getLastName());
@@ -84,6 +84,7 @@ public class EditUserFormController {
 
         if (shouldLogout) {
             httpServletRequest.logout();
+            return "redirect:login";
         }
 
         return "redirect:user-info/self";

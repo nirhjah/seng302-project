@@ -5,10 +5,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -88,7 +88,7 @@ public class EditUserFormControllerTest {
                         .param(P_LNAME, "Johnson")
                         .param(P_EMAIL, USER_EMAIL)
                         .param(P_DOB, USER_DOB))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(redirectedUrl("user-info/self"));
 
         verify(mockUserService, times(1)).updateOrAddUser(any());
     }
@@ -109,7 +109,7 @@ public class EditUserFormControllerTest {
 
     @Test
     @WithMockUser()
-    void givenNameContainsNumbers_ThenFormIsNotSaved() throws Exception {
+    void givenNameContainsNumbers_ThenFormIsRejected() throws Exception {
         mockMvc.perform(
                 post(URL)
                         .param(P_FNAME, "Ch3353")
@@ -123,7 +123,7 @@ public class EditUserFormControllerTest {
 
     @Test
     @WithMockUser()
-    void givenNameContainsSymbols_ThenFormIsNotSaved() throws Exception {
+    void givenNameContainsSymbols_ThenFormIsRejected() throws Exception {
         mockMvc.perform(
                 post(URL)
                         .param(P_FNAME, "xX_eP!C_Te$t_X><")
@@ -137,7 +137,7 @@ public class EditUserFormControllerTest {
 
     @Test
     @WithMockUser()
-    void givenEmailIsNotValid_ThenFormIsNotSaved() throws Exception {
+    void givenEmailIsNotValid_ThenFormIsRejected() throws Exception {
         mockMvc.perform(
                 post(URL)
                         .param(P_FNAME, USER_FNAME)
@@ -151,7 +151,7 @@ public class EditUserFormControllerTest {
 
     @Test
     @WithMockUser()
-    void givenUserIsYoungerThan13_ThenFormIsNotSaved() throws Exception {
+    void givenUserIsYoungerThan13_ThenFormIsRejected() throws Exception {
         LocalDate date = LocalDate.now();
         String dateString = String.format("%s-%s-%s",
                 date.getYear() - 10,
@@ -170,7 +170,7 @@ public class EditUserFormControllerTest {
 
     @Test
     @WithMockUser()
-    void givenUserEntersEmailAlreadyInUse_ThenFormIsNotSaved() throws Exception {
+    void givenUserEntersEmailAlreadyInUse_ThenFormIsRejected() throws Exception {
         final String IN_USE_EMAIL = "company-email@email.com";
         when(mockUserService.emailIsUsedByAnother(any(), anyString())).thenReturn(true);
         mockMvc.perform(
@@ -185,22 +185,24 @@ public class EditUserFormControllerTest {
     }
 
     @Test
-    @WithMockUser()
-    void givenUserChangesTheirEmail_ThenFormIsSaved() throws Exception {
+    @WithMockUser(username = USER_EMAIL)
+    void givenUserChangesTheirEmail_ThenFormIsSaved_AndUserIsLoggedOut() throws Exception {
         mockMvc.perform(
                 post(URL)
                         .param(P_FNAME, USER_FNAME)
                         .param(P_LNAME, USER_LNAME)
                         .param(P_EMAIL, "new@email.com")
                         .param(P_DOB, USER_DOB))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(redirectedUrl("login"));
 
         verify(mockUserService, times(1)).updateOrAddUser(any());
     }
 
     /*
-     * ! OMITTED FAILING TEST: "When email is changed, then you are logged out."
+     * ! CAN NOT TEST: "When email is changed, then you are logged out."
      * Even though we are logged out by the controller (manually testable),
-     * MockMvc thinks otherwise.
+     * and we have the `unauthenticated()` ResultMatcher, logging out inside
+     * the controller doesn't work.
+     * Therefore, we test the redirect URL.
      */
 }
