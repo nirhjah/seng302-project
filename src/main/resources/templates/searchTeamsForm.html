@@ -12,6 +12,9 @@
   <input class ="team-name-input" type="text" id="teamName" name="teamName" />
   <button class ="search-team-button" type="submit">Search</button>
   </form>
+  <select class="form-control" id="dropDownList" name="citySelector">
+    <option value="-1" selected>Filter by city</option>
+  </select>
   <p th:if="${error}">search must be at least 3 characters</p>
   <script>
     // get search form and input element
