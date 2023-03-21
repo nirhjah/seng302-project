@@ -37,6 +37,7 @@
                                th:name="address-line-1" th:value="*{addressLine1}" data-cy="location" required
                                autofocus th:pattern="${allUnicodeRegex}" placeholder="">
                         <label for="address-line-1">Address Line 1:</label>
+                        <div class="autocomplete-container" id="autocomplete-container"></div>
                     </div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="address-line-2"
@@ -85,7 +86,6 @@
                     <a th:unless="${teamID != null}" th:href="@{home}">Cancel</a>
                 </div>
             </form>
-            <div id="results"></div>
         </div>
     </div>
     <footer>
@@ -100,12 +100,11 @@
     const ENDPOINT = 'https://api.openrouteservice.org/geocode/autocomplete';
 
     const searchBox = document.querySelector('#address-line-1');
-    const resultsContainer = document.querySelector('#results');
+    const resultsContainer = document.querySelector('#autocomplete-container');
     const countryInput = document.querySelector('#country');
     const cityInput = document.querySelector('#city');
     const suburbInput = document.querySelector('#suburb');
     const postcodeInput = document.querySelector('#postcode');
-    const countryCodeInput = document.querySelector('#country-code');
 
     searchBox.addEventListener('input', function() {
         const searchTerm = this.value.trim();
@@ -119,12 +118,12 @@
                 }
             })
                 .then(response => {
-                    const results = response.data.features;
+                    const results = response.data.features.slice(0, 5);
                     let html = '';
                     if (results.length > 0) {
                         html = '<ul>';
                         results.forEach(result => {
-                            html += `<li data-country="${result.properties.country}" data-city="${result.properties.locality}" data-suburb="${result.properties.localadmin}" data-postcode="${result.properties.postalcode}" data-country-code="${result.properties.country_a}">${result.properties.label}</li>`;
+                            html += `<li class="location-autocomplete-value" data-country="${result.properties.country}" data-city="${result.properties.locality}" data-suburb="${result.properties.localadmin}" data-postcode="${result.properties.postalcode}" data-house-number="${result.properties.housenumber}" data-street="${result.properties.street}">${result.properties.label}</li>`;
                         });
                         html += '</ul>';
                     } else {
@@ -144,19 +143,21 @@
     resultsContainer.addEventListener('click', function(event) {
         if (event.target.tagName === 'LI') {
             // const address = event.target.textContent.split(',')[0];
-            const address = event.target.textContent;
+            let address = event.target.getAttribute('data-house-number') === "undefined" ? "" : event.target.getAttribute('data-house-number') + " ";
+            address += event.target.getAttribute('data-street') === "undefined" ? "" : event.target.getAttribute('data-street');
             searchBox.value = address;
-            const country = event.target.getAttribute('data-country');
-            const city = event.target.getAttribute('data-city');
-            const suburb = event.target.getAttribute('data-suburb');
-            const postcode = event.target.getAttribute('data-postcode');
-            const countryCode = event.target.getAttribute('data-country-code');
+            const country = event.target.getAttribute('data-country') === "undefined" ? "" : event.target.getAttribute('data-country');
+            const city = event.target.getAttribute('data-city') === "undefined" ? "" : event.target.getAttribute('data-city');
+            const suburb = event.target.getAttribute('data-suburb') === "undefined" ? "" : event.target.getAttribute('data-suburb');
+            const postcode = event.target.getAttribute('data-postcode') === "undefined" ? "" : event.target.getAttribute('data-postcode');
             countryInput.value = country;
             cityInput.value = suburb;
             suburbInput.value = city;
             postcodeInput.value = postcode;
-            countryCodeInput.value = countryCode;
+            resultsContainer.innerHTML = "";
         }
     });
 </script>
 </html>
+
+

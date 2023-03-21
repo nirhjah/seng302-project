@@ -7,6 +7,38 @@
     height: 90vh;
 }
 
+.input-box .autocomplete-container {
+    background-color: white;
+    z-index: 1;
+    position: absolute;
+    border: #888888;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin-top: 2px;
+}
+
+.input-box .autocomplete-container:hover {
+    cursor: pointer;
+}
+
+.input-box .autocomplete-container ul li {
+    display: inline-block;
+    padding: 10px; /* add padding to the list items */
+    border-bottom: 1px solid #ccc; /* add a border to separate the list items */
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    width: 91%
+}
+
+.input-box .autocomplete-container ul li:hover {
+    background-color: #007bff;
+}
+
+.input-box .autocomplete-container ul li:last-child {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
 .paginationActive {
     background-color: #1B263B;
     color: white;
@@ -440,7 +472,7 @@ li.active a {
     color: white;
 }
 
-ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form{
+.paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form{
     display: flex;
 }
 
