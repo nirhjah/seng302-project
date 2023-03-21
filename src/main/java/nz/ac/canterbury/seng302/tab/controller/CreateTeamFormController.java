@@ -6,7 +6,6 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +23,9 @@ public class CreateTeamFormController {
     Logger logger = LoggerFactory.getLogger(CreateTeamFormController.class);
     @Autowired
     private TeamService teamService;
-
-    @Value("${ops.api.key}")
-    private String apiKey;
+//
+//    @Value("${ops.api.key}")
+//    private String apiKey;
 
     private String allUnicodeRegex = "^[\\p{L}\\s\\d\\.\\}\\{]+$";
 
@@ -40,7 +39,7 @@ public class CreateTeamFormController {
     public String teamForm(@RequestParam(name = "edit", required = false) Long teamID,
             @RequestParam(name = "invalid_input", defaultValue = "0") boolean invalidInput,
             Model model) {
-        model.addAttribute("apiKey", apiKey);
+
         logger.info("GET /createTeam");
 
         Team team;

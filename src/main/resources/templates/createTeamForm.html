@@ -95,9 +95,7 @@
     </footer>
 </body>
 <script th:inline="javascript">
-
-    const API_KEY = [[${apiKey}]];
-    const ENDPOINT = 'https://api.openrouteservice.org/geocode/autocomplete';
+    const ENDPOINT = '/geocode/autocomplete';
 
     const searchBox = document.querySelector('#address-line-1');
     const resultsContainer = document.querySelector('#autocomplete-container');
@@ -113,7 +111,6 @@
             axios.get(ENDPOINT, {
                 params: {
                     text: searchTerm,
-                    api_key: API_KEY,
                     language: 'en'
                 }
             })
