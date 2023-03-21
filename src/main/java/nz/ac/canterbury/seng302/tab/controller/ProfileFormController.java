@@ -60,7 +60,7 @@ public class ProfileFormController {
         if (selectedTeam != null) {
             name = selectedTeam.getName() ;
             sport = selectedTeam.getSport();
-            location = selectedTeam.getLocations();
+            location = selectedTeam.getLocation();
             picture = selectedTeam.getPictureString();
         }
 

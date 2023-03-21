@@ -20,13 +20,11 @@ public class Team {
 
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name ="fk_locationId", referencedColumnName = "locationId")
-    private Location locations;
+    private Location location;
 
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String location;
     @Column(nullable = false)
     private String sport;
 
@@ -36,10 +34,9 @@ public class Team {
     protected Team() {
     }
 
-    public Team (String name,String location, Location locations, String sport) throws IOException{
+    public Team (String name, String sport, Location location) throws IOException{
         this.name = name;
         this.location = location;
-        this.locations = locations;
         this.sport = sport;
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
@@ -56,28 +53,20 @@ public class Team {
         return this.name;
     }
 
-    public String getLocation() {
-        return this.location;
-    }
-
     public String getSport() {
         return this.sport;
     }
 
-    public Location getLocations(){
-        return this.locations;
+    public Location getLocation(){
+        return this.location;
     }
 
-    public void setLocations(Location location){
-        this.locations= location;
+    public void setLocation(Location location){
+        this.location= location;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     @Override

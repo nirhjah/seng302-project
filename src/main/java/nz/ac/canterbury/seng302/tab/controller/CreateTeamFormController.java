@@ -80,7 +80,8 @@ public class CreateTeamFormController {
             @RequestParam(name = "teamID", defaultValue = "-1") long teamID,
             @RequestParam(name = "name") String name,
             @RequestParam(name = "sport") String sport,
-            @RequestParam (name = "address") String address,
+            @RequestParam (name = "addressLine1") String addressLine1,
+            @RequestParam (name = "addressLine2") String addressLine2,
             @RequestParam (name = "city") String city,
             @RequestParam (name ="country") String country,
             @RequestParam (name ="postcode") long postcode,
@@ -97,14 +98,15 @@ public class CreateTeamFormController {
         if (!sportValid || !nameValid) {
             return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
         }
-        Location locations = new Location (address, suburb, city, postcode, country);
+        Location location = new Location (addressLine1, addressLine2, suburb, city, postcode, country);
         Team team;
         if ((team = teamService.getTeam(teamID)) != null) {
             team.setName(name);
             team.setSport(sport);
+            team.setLocation(location);
             teamService.updateTeam(team);
         } else {
-            team = new Team(name, "REMOVE THIS", locations, sport);
+            team = new Team(name, sport, location);
             teamService.addTeam(team);
             teamID = team.getTeamId();
         }

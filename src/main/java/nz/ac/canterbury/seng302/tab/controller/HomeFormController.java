@@ -46,11 +46,6 @@ public class HomeFormController {
     public String getTemplate(Model model) throws IOException {
         logger.info("GET /homeForm");
         model.addAttribute("navTeams", teamService.getTeamList());
-
-        Location location = new Location ("uc campus", "avonhead", "christchurch", 8042, "new zealand");
-        Team team = new Team ("teamname" ,"locations",location, "netball");
-        locationService.addLocation(location);
-        teamService.addTeam(team);
         return "homeForm";
     }
 }

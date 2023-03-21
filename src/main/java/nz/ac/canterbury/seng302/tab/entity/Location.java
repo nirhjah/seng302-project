@@ -3,6 +3,10 @@ package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 @Entity
 public class Location {
 
@@ -10,22 +14,27 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long locationId;
 
-    @Column(nullable = false)
-    private String address;
+    @Column
+    private String addressLine1;
+
+    @Column
+    private String addressLine2;
 
     @Column
     private String suburb;
 
+    @Column
+    private long postcode;
+
     @Column(nullable = false)
     private String city;
 
-    @Column
-    private long postcode;
     @Column(nullable = false)
     private String country;
 
-    public Location (String address, String suburb, String city, long postcode,String country ){
-        this.address= address;
+    public Location (String addressLine1, String addressLine2, String suburb, String city, long postcode,String country ){
+        this.addressLine1 = addressLine1;
+        this.addressLine2 = addressLine2;
         this.suburb= suburb;
         this.city=city;
         this.postcode= postcode;
@@ -33,10 +42,15 @@ public class Location {
     }
 
     protected Location() {
+
     }
 
-    public String getAddress(){
-        return this.address;
+    public String getAddressLine1(){
+        return this.addressLine1;
+    }
+
+    public String getAddressLine2(){
+        return this.addressLine2;
     }
 
     public String getSuburb(){
@@ -55,8 +69,12 @@ public class Location {
         return this.country;
     }
 
-    public void setAddress(String address){
-        this.address=address;
+    public void setAddressLine1(String addressLine1){
+        this.addressLine1=addressLine1;
+    }
+
+    public void setAddressLine2(String addressLine2) {
+        this.addressLine2=addressLine2;
     }
 
     public void setSuburb(String suburb){
@@ -75,7 +93,11 @@ public class Location {
         this.country= country;
     }
 
-    public String toString(){
-        return this.address + " " + this.suburb + ", " + this.city + ", " + this.postcode + ", "+ this.country;
+    public String toString() {
+        return Stream.of(this.addressLine1, this.addressLine2, this.suburb)
+                .filter(Objects::nonNull)
+                .collect(java.util.stream.Collectors.joining(" ")) +
+                (this.suburb != null ? ", " + this.suburb : "") +
+                ", " + this.city + ", " + this.postcode + ", " + this.country;
     }
 }
