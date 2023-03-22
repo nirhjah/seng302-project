@@ -23,7 +23,6 @@ import nz.ac.canterbury.seng302.tab.repository.UserRepository;
  */
 @Service
 public class UserService {
-    
     final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
@@ -55,7 +54,6 @@ public class UserService {
         return userRepository.findAllFiltered(pageable, favouriteSports, nameSearch);
     }
 
-
     /**
      * Finds a user by their ID.
      * @param id The user's database ID
@@ -82,8 +80,8 @@ public class UserService {
      * <br/>
      * This is so the user can keep their email while updating other details, without failing its "unique" constraint.
      * </p>
-     * 
-     * If you simply want to see if the email is already used, see {@link UserService#emailIsInUse} 
+     *
+     * If you simply want to see if the email is already used, see {@link UserService#emailIsInUse}
      * @param currentUser The user who's email we're excluding
      * @param email The email that we're checking is unique
      * @return <code>true</code> if another user has this email,
@@ -101,8 +99,8 @@ public class UserService {
     /**
      * <h4>For Registration</h4>
      * <p>Checks whether the given email is already in the repository</p>
-     * 
-     * If you want to see if <strong>another</strong> user has that email, see {@link UserService#emailIsUsedByAnother} 
+     *
+     * If you want to see if <strong>another</strong> user has that email, see {@link UserService#emailIsUsedByAnother}
      * @param email The email that we're checking is unique
      * @return <code>true</code> if another user has this email
      */
@@ -130,7 +128,7 @@ public class UserService {
     }
 
     public Optional<User> getCurrentUser() {
-        
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         // Issue: The security context chain gives you "Anonymous Authentication"

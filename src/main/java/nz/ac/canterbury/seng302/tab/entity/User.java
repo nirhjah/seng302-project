@@ -21,18 +21,20 @@ public class User {
                 "again",
                 new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "test@gmail.com",
-                "dfghjk");
+                "dfghjk",
+                new ArrayList<>());
     }
 
     /**
      * TODO: Implement password hashing, probably via Bcrypt
      */
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password) {
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.hashedPassword = password;
+        this.favoriteSports = favoriteSports;
     }
 
     public User(String firstName, String lastName, String email, String password) {

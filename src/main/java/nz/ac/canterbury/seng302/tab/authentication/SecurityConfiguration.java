@@ -33,7 +33,7 @@ public class SecurityConfiguration {
      * Create an Authentication Manager
      * @param http http security config
      * @return the created auth manager
-     * @throws Exception
+     * @throws Exception when unable to create auth manager
      */
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
