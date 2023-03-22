@@ -1,17 +1,28 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.post;
 
 class SearchTeamsControllerTest {
 
+    private MockMvc mvc;
+
+    @BeforeEach
+    public void setup() {
+        for (int i=1; i<1000; i++) {
+        }
+    }
 
     @WithMockUser
     @Test
     public void searchTeams_testSearch_withOneCity() {
-
+        mvc.perform(post("/searchTeams?citys=[]")
     }
 
     @WithMockUser
