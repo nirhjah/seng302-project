@@ -53,7 +53,7 @@ public class ViewAllTeamsController {
         List<Team> listTeams = page.getContent();
 
         model.addAttribute("navTeams", teamService.getTeamList());
-        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("page", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
         model.addAttribute("displayTeams", listTeams);

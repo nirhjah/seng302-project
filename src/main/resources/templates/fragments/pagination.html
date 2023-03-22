@@ -11,43 +11,54 @@
             UNTESTED OLI CODE BEGINS:
         -->
         <div>
-            <form th:disabled="${currentPage == 1}" action="@{/{pageName}?page={pageNumber}(pageName=${pageName},pageNumber=${1})}">
-                <button class = "paginationButton"> <span>First</span> </button>
+            <form th:disabled="${page == 1}" action="@{/{pageName}?page={pageNumber}(pageName=${pageName},pageNumber=${1})}">
+                <button class = "paginationButton">
+                    <span>First</span>
+                </button>
             </form>
         </div>
         <div>
-            <form th:disabled="${currentPage == 1}" action="@{/{pageName}?page={pageNumber}(pageName=${pageName},pageNumber=${currentPage - 1})}">
-                <button class = "paginationButton"> <span>Prev</span> </button>
+            <form th:disabled="${page == 1}" action="@{/{pageName}?page={pageNumber}(pageName=${pageName},pageNumber=${page - 1})}">
+                <button class = "paginationButton">
+                    <span>Prev</span>
+                </button>
             </form>
         </div>
         <!--
             UNTESTED OLI CODE ENDS
         -->
+
         <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
-            <div th:if="${i >= currentPage - 1 and i <= currentPage + 1
-                            or currentPage == 1 and i >= currentPage - 1 and i <= currentPage + 2
-                            or currentPage == totalPages and i >= currentPage - 2 and i <= currentPage + 1}">
-                <button th:if="${currentPage == i}" class="paginationActive" th:text="${i}"
-                        th:onclick= "|window.location.href='/' + ${pageName} + '?page=${i}'|">
-                </button>
-                <button th:unless="${currentPage == i}" th:text="${i}"
-                        th:onclick="|window.location.href='/' + ${pageName}'?page=${i}'|"
-                        class="paginationButton">
-                </button>
+            <div th:if="${i >= page - 1 and i <= page + 1
+                            or page == 1 and i >= page - 1 and i <= page + 2
+                            or page == totalPages and i >= page - 2 and i <= page + 1}">
+                <form th:unless="${page == i}" action="@{/{pageName}?page={i}(pageName=${pageName},pageNumber=${page - 1})}">
+                    <button class="paginationActive" th:text="${i}"></button>
+                </form>
+                <form th:if="${page == i}" action="@{/{pageName}?page={i}(pageName=${pageName},pageNumber=${page - 1})}">
+                    <button class="paginationButton" th:text="${i}"></button>
+                </form>
             </div>
         </th:block>
+
         <div>
-            <button th:disabled="${currentPage == totalPages}"
-                    th:onclick="|window.location.href='/' + ${pageName} + '?page=${currentPage + 1}'|"
-                    class="paginationButton">
-                <span>Next ></span>
-            </button>
+            <form action="@{/{pageName}?page={pageNumber}(pageName=${pageName},pageNumber=${page + 1})}">
+                <button class="paginationButton" th:disabled="${page == totalPages}">
+                    Next >
+                </button>
+            </form>
         </div>
         <div>
-            <button th:disabled="${currentPage == totalPages}"
+            
+            <form action="@{/{pageName}?page={pageNumber}(pageName=${pageName},pageNumber=${totalPages})}">
+                <button class="paginationButton" th:disabled="${page == totalPages}" >
+                    Last >
+                </button>
+            </form>
+            <button th:disabled="${page == totalPages}"
                     th:onclick= "|window.location.href='/' + ${pageName} + '?page=${totalPages}'|"
                     class="paginationButton">
-                <span>Last</span>
+                <span>Last <</span>
             </button>
         </div>
     </div>
