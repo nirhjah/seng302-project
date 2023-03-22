@@ -22,32 +22,20 @@ class UserRepositoryTest {
 
     static final int N_USERS_TO_ADD = 100;
 
-    // Sourced from https://gist.github.com/ruanbekker/a1506f06aa1df06c5a9501cb393626ea
-    static final String[] RANDOM_NAMES = {
-            "Arved", "Brehme", "Chrismedi", "Dre", "Edwin", "Farren", "Georgy", "Harris", "Ishwar", "Justinas", "Kit",
-            "Lael", "Mackie", "Nick", "Orrick", "Paul", "Qasim", "Raphael", "Stevie", "Tyler", "Ubayd", "Vincenzo",
-            "Wiktor", "Xander", "Yahya", "Zaine"
-    };
-
     static final String[] LOCATIONS = {
             "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
     };
 
-    /**
-     * Generates a user with a random name, email, and DOB.
-     * In future, we might consider making this its own class for testing purposes
-     * @return A randomly generated user.
-     */
-    public static User createRandomUser(String location) {
+    public static User createUserAtLocation(String location) {
         Random random = new Random();
         long startDate = new Date(1980, 1, 1).getTime();
         long endDate = new Date(2005, 12, 31).getTime();
 
-        String firstName = RANDOM_NAMES[random.nextInt(0, RANDOM_NAMES.length)];
-        String lastName = RANDOM_NAMES[random.nextInt(0, RANDOM_NAMES.length)];
+        String firstName = "john";
+        String lastName = "doe";
         Date dob = new Date(random.nextLong(startDate, endDate));
         String email = UUID.randomUUID().toString() + "@email.com";
-        List<Sport> favSports = new ArrayList<>();
+        List<Sport> favSports = List.of();
 
         return new User(firstName, lastName, dob, email, "abc123", favSports, location);
     }
@@ -56,7 +44,7 @@ class UserRepositoryTest {
     public void setup() {
         userService.deleteAll();
         for (int i = 0; i < N_USERS_TO_ADD; i++) {
-            userService.updateOrAddUser(createRandomUser(LOCATIONS[i % LOCATIONS.length]));
+            userService.updateOrAddUser(createUserAtLocation(LOCATIONS[i % LOCATIONS.length]));
         }
     }
 
