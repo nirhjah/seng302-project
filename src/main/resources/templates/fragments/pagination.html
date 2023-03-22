@@ -23,19 +23,15 @@
             </a>
         </div>
 
-        <th:block th:each="i : ${#numbers.sequence(1, 1, totalPages)}">
-            <div th:if="${i >= page - 1 and i <= page + 1}">
-                <a th:unless="${(i - 1) < 0}" th:href="@{'/' + ${pageName} + '?page=' + ${i - 1}}" th:action="@{'/' + ${pageName} + '?page=' + ${i}}">
-                    <button class="paginationActive" th:text="${i - 1}"></button>
-                </a>
-                <a th:unless="${totalPages == 0}" th:href="@{'/' + ${pageName} + '?page=' + ${i}}" th:action="@{'/' + ${pageName} + '?page=' + ${i}}">
-                    <button class="paginationActive" th:text="${i}"></button>
-                </a>
-                <a th:unless="${i+1 > totalPages}" th:href="@{'/' + ${pageName} + '?page=' + ${i + 1}}" th:action="@{'/' + ${pageName} + '?page=' + ${i}}">
-                    <button class="paginationActive" th:text="${i+1}"></button>
-                </a>
-            </div>
-        </th:block>
+        <a th:unless="${(page - 1) <= 0}" th:href="@{'/' + ${pageName} + '?page=' + ${page - 1}}">
+            <button class="paginationActive" th:text="${i - 1}"></button>
+        </a>
+        <a th:unless="${totalPages == 0}" th:href="@{'/' + ${pageName} + '?page=' + ${page}}">
+            <button class="paginationActive" th:text="${page}"></button>
+        </a>
+        <a th:unless="${(page + 1) > totalPages}" th:href="@{'/' + ${pageName} + '?page=' + ${page + 1}}">
+            <button class="paginationActive" th:text="${page+1}"></button>
+        </a>
 
         <div>
             <a th:unless="${page == totalPages}" th:href="@{'/' + ${pageName} + '?page=' + ${page + 1}}">
