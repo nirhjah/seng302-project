@@ -22,6 +22,9 @@ public class TeamRepositoryTest {
     @Autowired
     private TeamService teamService;
 
+    @Autowired
+    private SportRepository sportRepository;
+
     @BeforeEach
     public void beforeEach(){
         teamRepository.deleteAll();
@@ -55,4 +58,22 @@ public class TeamRepositoryTest {
 
     }
 
+    @Test
+    public void searchTeams_searchWithSingleSport_resultsShown() throws IOException {
+        Team team = new Team("test", "Christchurch", "Hockey");
+        Team team2= new Team ("test2", "Auckland", "Netball");
+        Team team3= new Team ("test3", "Dunedin", "Basketball");
+        List<Team> expectedTeams = Arrays.asList(team);
+
+        teamRepository.save(team);
+        teamRepository.save(team2);
+        teamRepository.save(team3);
+
+        ArrayList<Sport> sports = new ArrayList<>();
+        sport.add("Hockey");
+
+
+        Page<Team> actualTeams = teamRepository.findTeamByNameAndSport("tes", sports, PageRequest.of(0, 10));
+        assertEquals(actualTeams.toString(), expectedTeams.toString());
+    }
 }

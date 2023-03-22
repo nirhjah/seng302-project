@@ -30,4 +30,6 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             "OR LOWER(t.location) LIKE LOWER(CONCAT('%', :name, '%')) " +
             "ORDER BY LOWER(t.name) ASC, LOWER(t.location) ASC ")
     public Page<Team> findTeamByName(@Param("name") String name, Pageable pageable);
+
+
 }
