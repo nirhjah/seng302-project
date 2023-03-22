@@ -26,6 +26,8 @@ class UserRepositoryTest {
             "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
     };
 
+    static final PageRequest TAKE_ALL = PageRequest.of(0, 0xffff);
+
     public static User createUserAtLocation(String location) {
         Random random = new Random();
         long startDate = new Date(1980, 1, 1).getTime();
@@ -51,30 +53,28 @@ class UserRepositoryTest {
 
     @Test
     public void searchTeams_testSearch_withOneCity() {
-        assertEquals(userService.findUsersByLocation(PageRequest.of(0, 0xffff), "a").toList().size(), 10);
-        assertEquals(userService.findUsersByLocation(PageRequest.of(0, 0xffff), "b").toList().size(), 10);
-        assertEquals(userService.findUsersByLocation(PageRequest.of(0, 0xffff), "c").toList().size(), 10);
+        assertEquals(userService.findUsersByLocation(TAKE_ALL, "a").toList().size(), 10);
+        assertEquals(userService.findUsersByLocation(TAKE_ALL, "b").toList().size(), 10);
+        assertEquals(userService.findUsersByLocation(TAKE_ALL, "c").toList().size(), 10);
     }
 
     @Test
     public void searchTeams_testSearch_withMultipleCities() {
-        assertEquals(userService.findUsersByLocations(PageRequest.of(0, 0xffff), List.of("a", "b")).toList().size(), 20);
-        assertEquals(userService.findUsersByLocations(PageRequest.of(0, 0xffff), List.of("b","c")).toList().size(), 20);
-        assertEquals(userService.findUsersByLocations(PageRequest.of(0, 0xffff), List.of("c","d","e")).toList().size(), 30);
+        assertEquals(userService.findUsersByLocations(TAKE_ALL, List.of("a", "b")).toList().size(), 20);
+        assertEquals(userService.findUsersByLocations(TAKE_ALL, List.of("b","c")).toList().size(), 20);
+        assertEquals(userService.findUsersByLocations(TAKE_ALL, List.of("c","d","e")).toList().size(), 30);
     }
 
     @Test
     public void searchTeams_testSearch_withNoCities() {
-        assertEquals(userService.findUsersByLocations(PageRequest.of(0, 0xffff), List.of()).toList().size(), 0);
+        assertEquals(userService.findUsersByLocations(TAKE_ALL, List.of()).toList().size(), 0);
         // should return all users
 
     }
 
     @Test
     public void searchTeams_testSearch_withAllCities() {
-        assertEquals(userService.findUsersByLocations(PageRequest.of(0, 0xffff), Arrays.asList(LOCATIONS)).toList().size(), N_USERS_TO_ADD);
+        assertEquals(userService.findUsersByLocations(TAKE_ALL, Arrays.asList(LOCATIONS)).toList().size(), N_USERS_TO_ADD);
         // should also return all teams
-
     }
-
 }
