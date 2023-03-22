@@ -24,7 +24,7 @@ public class Location {
     private String suburb;
 
     @Column
-    private long postcode;
+    private String postcode;
 
     @Column(nullable = false)
     private String city;
@@ -32,7 +32,7 @@ public class Location {
     @Column(nullable = false)
     private String country;
 
-    public Location (String addressLine1, String addressLine2, String suburb, String city, long postcode,String country ){
+    public Location (String addressLine1, String addressLine2, String suburb, String city, String postcode,String country ){
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
         this.suburb= suburb;
@@ -61,7 +61,7 @@ public class Location {
         return this.city;
     }
 
-    public long getPostcode(){
+    public String getPostcode(){
         return this.postcode;
     }
 
@@ -85,7 +85,7 @@ public class Location {
         this.city= city;
     }
 
-    public void setPostcode(long postcode){
+    public void setPostcode(String postcode){
         this.postcode= postcode;
     }
 
