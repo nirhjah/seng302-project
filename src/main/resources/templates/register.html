@@ -62,14 +62,15 @@ password must be at least <strong>8 characters</strong>, and MUST contain <stron
                 <div class="submit-button">
                     <button type="submit">Register</button>
                 </div>
+                <div class="cancel-link">
+                    <a th:href="@{login}">Login</a>
+                    <div class="cancel-link">
+                        <a th:href="@{home}">Cancel</a>
+                    </div>
+                </div>
 
             </form>
-            <div class="cancel-link">
-                <a th:href="@{login}">Login</a>
-                <div class="cancel-link">
-                    <a th:href="@{home}">Cancel</a>
-                </div>
-            </div>
+
         </div>
     </div>
 </body>
