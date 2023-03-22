@@ -14,7 +14,7 @@ public class ProxyController {
     public ResponseEntity<String> autocomplete(@RequestParam("text") String text,
                                                @RequestParam("language") String language) {
 
-        String apiKey = "5b3ce3597851110001cf6248eb4baa5190f94f1e82db6b5aa275bfe3";
+        String apiKey = "5b3ce3597851110001cf624872c21df9f0f8419799b5718ed8769650";
 
         String endpoint = "https://api.openrouteservice.org/geocode/autocomplete" +
                 "?text=" + text +

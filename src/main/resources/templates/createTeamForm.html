@@ -96,6 +96,7 @@
 </body>
 <script th:inline="javascript">
     const ENDPOINT = '/geocode/autocomplete';
+    const DEBOUNCE_DELAY = 450; // set the debounce delay to 450ms
 
     const searchBox = document.querySelector('#address-line-1');
     const resultsContainer = document.querySelector('#autocomplete-container');
@@ -104,7 +105,16 @@
     const suburbInput = document.querySelector('#suburb');
     const postcodeInput = document.querySelector('#postcode');
 
-    searchBox.addEventListener('input', function() {
+    let timeoutId;
+
+    function debounce(fn, delay) {
+        return function() {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => fn.apply(this, arguments), delay);
+        }
+    }
+
+    function searchAutocomplete() {
         const searchTerm = this.value.trim();
 
         if (searchTerm.length >= 3) {
@@ -135,11 +145,12 @@
         } else {
             resultsContainer.innerHTML = '';
         }
-    });
+    }
+
+    searchBox.addEventListener('input', debounce(searchAutocomplete, DEBOUNCE_DELAY));
 
     resultsContainer.addEventListener('click', function(event) {
         if (event.target.tagName === 'LI') {
-            // const address = event.target.textContent.split(',')[0];
             let address = event.target.getAttribute('data-house-number') === "undefined" ? "" : event.target.getAttribute('data-house-number') + " ";
             address += event.target.getAttribute('data-street') === "undefined" ? "" : event.target.getAttribute('data-street');
             searchBox.value = address;
@@ -151,9 +162,10 @@
             cityInput.value = suburb;
             suburbInput.value = city;
             postcodeInput.value = postcode;
-            resultsContainer.innerHTML = "";
+
         }
     });
+
 </script>
 </html>
 
