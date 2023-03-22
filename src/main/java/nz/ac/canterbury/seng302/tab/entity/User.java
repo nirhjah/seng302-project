@@ -37,6 +37,16 @@ public class User {
         this.favoriteSports = favoriteSports;
     }
 
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.email = email;
+        this.hashedPassword = password;
+        this.favoriteSports = new ArrayList<>();
+    }
+
+
     public User(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
