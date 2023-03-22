@@ -3,6 +3,8 @@ package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,7 +26,7 @@ public class Location {
     private String suburb;
 
     @Column
-    private long postcode;
+    private String postcode;
 
     @Column(nullable = false)
     private String city;
@@ -32,7 +34,7 @@ public class Location {
     @Column(nullable = false)
     private String country;
 
-    public Location (String addressLine1, String addressLine2, String suburb, String city, long postcode,String country ){
+    public Location (String addressLine1, String addressLine2, String suburb, String city, String postcode, String country ){
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
         this.suburb= suburb;
@@ -61,7 +63,7 @@ public class Location {
         return this.city;
     }
 
-    public long getPostcode(){
+    public String getPostcode(){
         return this.postcode;
     }
 
@@ -85,7 +87,7 @@ public class Location {
         this.city= city;
     }
 
-    public void setPostcode(long postcode){
+    public void setPostcode(String postcode){
         this.postcode= postcode;
     }
 
@@ -94,10 +96,15 @@ public class Location {
     }
 
     public String toString() {
-        return Stream.of(this.addressLine1, this.addressLine2, this.suburb)
-                .filter(Objects::nonNull)
-                .collect(java.util.stream.Collectors.joining(" ")) +
-                (this.suburb != null ? ", " + this.suburb : "") +
-                ", " + this.city + ", " + this.postcode + ", " + this.country;
+        String output = "";
+        int i = 1;
+        for (String value : new String[] {addressLine1, addressLine2, suburb, city, postcode, country}) {
+            if (value != null) {
+                output += value;
+                output += i > 2 ? ", " : " ";
+            }
+            i++;
+        }
+        return output;
     }
 }

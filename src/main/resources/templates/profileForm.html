@@ -37,13 +37,15 @@
         </div>
 
         <div class="team-info">
-            <form th:action="@{profile}" method="post">
+            <div class="team-display">
                 <h2>Team Profile</h2>
-                <div class="team-display">
-                    <h3 th:text="'Name: ' + ${displayName}"></h3>
-                    <h3 th:text="'Sport: ' + ${displaySport}"></h3>
-                    <h3 th:text="'Location: ' + ${displayLocation}"></h3>
-                </div>
+                <h3 th:text="'Name: ' + ${displayName}"></h3>
+                <h3 th:text="'Sport: ' + ${displaySport}"></h3>
+                <h3 th:text="'Location: ' + ${displayLocation}"></h3>
+            </div>
+        </div>
+        <div class="edit-button-div">
+            <form th:action="@{profile}" method="post">
                 <div class="edit-button">
                     <a th:href="@{createTeam(edit=${teamID})}">
                         <button type="button">Edit Profile</button>

@@ -55,6 +55,8 @@ public class ProfileFormController {
                     .filter(team -> team.getTeamId().equals(teamID))
                     .findFirst()
                     .orElse(null);
+        } else {
+            return "redirect:./home";
         }
 
         if (selectedTeam != null) {

@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.repository;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +32,8 @@ public class TeamRepositoryTest {
     public void testGettingTeamById() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
-        Team team = new Team("test", "Christchurch", "Hockey");
+        Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
+        Team team = new Team("test", "Hockey", testLocation);
         teamRepository.save(team);
         assertEquals(team.getTeamId(), teamRepository.findById(team.getTeamId()).get().getTeamId());
         assertEquals(team.getLocation(), teamRepository.findById(team.getTeamId()).get().getLocation());
@@ -43,9 +45,10 @@ public class TeamRepositoryTest {
     @Test
     public void testGettingTeamList() throws IOException {
         assertTrue(teamService.getTeamList().isEmpty());
-        Team team = new Team("test", "Christchurch", "Hockey");
-        Team team2= new Team ("test2", "Auckland", "Netball");
-        Team team3= new Team ("test3", "Dunedin", "Basketball");
+        Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
+        Team team = new Team("test", "Hockey",  testLocation);
+        Team team2= new Team ("test2", "Netball", testLocation);
+        Team team3= new Team ("test3", "Basketball", testLocation);
         List<Team> list = Arrays.asList(team, team2, team3);
 
         teamRepository.save(team);

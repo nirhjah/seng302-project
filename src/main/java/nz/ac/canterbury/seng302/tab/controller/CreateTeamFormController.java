@@ -83,7 +83,7 @@ public class CreateTeamFormController {
             @RequestParam (name = "addressLine2") String addressLine2,
             @RequestParam (name = "city") String city,
             @RequestParam (name ="country") String country,
-            @RequestParam (name ="postcode") long postcode,
+            @RequestParam (name ="postcode") String postcode,
             @RequestParam(name ="suburb") String suburb,
             Model model) throws IOException {
         logger.info("POST /createTeam");
