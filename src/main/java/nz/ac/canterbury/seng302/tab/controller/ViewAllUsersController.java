@@ -2,6 +2,8 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import java.util.List;
 
+import nz.ac.canterbury.seng302.tab.entity.Sport;
+import nz.ac.canterbury.seng302.tab.service.SportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +22,8 @@ public class ViewAllUsersController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    SportService sportService;
     private static final int PAGE_SIZE = 10;
 
     private static final Sort sort = Sort.by(
@@ -40,6 +44,7 @@ public class ViewAllUsersController {
         model.addAttribute("currentSearch", currentSearch);
         model.addAttribute("page", page);
         model.addAttribute("listOfUsers", userList);
+        model.addAttribute("listOfSports", sportService.getAllSports());
         return "viewAllUsers";
     }
 
