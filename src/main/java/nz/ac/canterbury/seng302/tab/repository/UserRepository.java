@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.repository;
 
+import nz.ac.canterbury.seng302.tab.entity.User;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+import java.util.Optional;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
 /**
