@@ -51,7 +51,12 @@ public class CreateTeamFormController {
             if ((team = teamService.getTeam(teamID)) != null) {
                 model.addAttribute("name", team.getName());
                 model.addAttribute("sport", team.getSport());
-                model.addAttribute("location", team.getLocation());
+                model.addAttribute("addressLine1", team.getLocation().getAddressLine1());
+                model.addAttribute("addressLine2", team.getLocation().getAddressLine2());
+                model.addAttribute("city", team.getLocation().getCity());
+                model.addAttribute("suburb", team.getLocation().getSuburb());
+                model.addAttribute("country", team.getLocation().getCountry());
+                model.addAttribute("postcode", team.getLocation().getPostcode());
                 model.addAttribute("teamID", team.getTeamId());
             } else {
                 model.addAttribute("invalid_team", "Invalid team ID, creating a new team instead.");
