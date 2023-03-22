@@ -15,6 +15,17 @@ public class User {
     public User() {
     }
 
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports, String location) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.email = email;
+        this.hashedPassword = password;
+        this.favoriteSports = favoriteSports;
+        this.location = location;
+
+    }
+
     public static User defaultDummyUser() {
         return new User(
                 "test",
@@ -29,6 +40,15 @@ public class User {
      * TODO: Implement password hashing, probably via Bcrypt
      */
     public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.email = email;
+        this.hashedPassword = password;
+        this.favoriteSports = favoriteSports;
+    }
+
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -71,6 +91,9 @@ public class User {
 
     @Column(nullable = false)
     private String hashedPassword;
+
+    @Column(nullable = true)
+    private String location;
 
     public long getUserId() {
         return userId;
@@ -165,29 +188,27 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         User user = (User) o;
-
-        if (getFirstName() != null ? !getFirstName().equals(user.getFirstName()) : user.getFirstName() != null)
-            return false;
-        if (getLastName() != null ? !getLastName().equals(user.getLastName()) : user.getLastName() != null)
-            return false;
-        if (getDateOfBirth() != null ? !getDateOfBirth().equals(user.getDateOfBirth()) : user.getDateOfBirth() != null)
-            return false;
-        if (getEmail() != null ? !getEmail().equals(user.getEmail()) : user.getEmail() != null) return false;
-        if (!Objects.equals(hashedPassword, user.hashedPassword))
-            return false;
-        return Objects.equals(userRoles, user.userRoles);
+        return Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(dateOfBirth, user.dateOfBirth) && Objects.equals(favoriteSports, user.favoriteSports) && Objects.equals(email, user.email) && Objects.equals(hashedPassword, user.hashedPassword) && Objects.equals(location, user.location) && Objects.equals(userRoles, user.userRoles);
     }
 
     @Override
     public int hashCode() {
-        int result = getFirstName() != null ? getFirstName().hashCode() : 0;
-        result = 31 * result + (getLastName() != null ? getLastName().hashCode() : 0);
-        result = 31 * result + (getDateOfBirth() != null ? getDateOfBirth().hashCode() : 0);
-        result = 31 * result + (getEmail() != null ? getEmail().hashCode() : 0);
-        result = 31 * result + (hashedPassword != null ? hashedPassword.hashCode() : 0);
-        result = 31 * result + (userRoles != null ? userRoles.hashCode() : 0);
-        return result;
+        return Objects.hash(firstName, lastName, dateOfBirth, favoriteSports, email, hashedPassword, location, userRoles);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", favoriteSports=" + favoriteSports +
+                ", email='" + email + '\'' +
+                ", hashedPassword='" + hashedPassword + '\'' +
+                ", location='" + location + '\'' +
+                ", userRoles=" + userRoles +
+                '}';
     }
 }

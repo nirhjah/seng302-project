@@ -31,4 +31,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     List<User> findAllByFirstNameIgnoreCaseContainingAndLastNameIgnoreCaseContaining(Pageable pageable, String firstName, String lastName);
     List<User> findAllByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(Pageable pageable, String firstName, String lastName);
+
+    List<User> findUsersByLocationIn(List<String> locations);
 }

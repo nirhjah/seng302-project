@@ -35,7 +35,7 @@ public class UserService {
 
     /**
      * Gets a page of users.
-     * 
+     *
      * @param pageSize How many users are in a "page"
      * @param pageNumber The page number (page 0 is the first page)
      * @return A slice of users returned from pagination
@@ -138,5 +138,12 @@ public class UserService {
         String email = auth.getName();
         return userRepository.findByEmail(email);
     }
+
+    /**
+     * Returns a list of users who match one of the locations in the list
+     * @param locations a list of locations
+     * @return a list of users who match one of the locations
+     */
+    public List<User> filterUsersByLocation(List<String> locations) { return userRepository.findUsersByLocationIn(locations); }
 
 }
