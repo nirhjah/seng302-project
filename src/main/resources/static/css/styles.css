@@ -6,6 +6,14 @@
     height: 90vh;
 }
 
+.user-form {
+    display: grid;
+    grid-auto-rows: 325px;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
 .paginationActive {
     background-color: #1B263B;
     color: white;
@@ -220,7 +228,7 @@ footer {
     height: 45px;
 }
 
-.team-form .create-team {
+.team-form .create-team, .user-form .user-header{
     font-family: "Noto Sans",sans-serif;
     /*color: #0B1B2A;*/
     text-align: center;
@@ -254,6 +262,8 @@ a.enabled{
     top: -5px;
 }
 
+
+
 .input-box label {
     font-family: "Noto Sans", sans-serif;
     position: absolute;
@@ -267,7 +277,7 @@ a.enabled{
 }
 
 .input-box input {
-    width: 140%;
+    width: 100%;
     height: 100%;
     background: transparent;
     font-size: 1em;
