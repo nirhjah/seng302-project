@@ -48,6 +48,9 @@ public class HomeFormController {
         return "homeForm";
     }
 
+    /*
+    TODO: REMOVE FROM BRANCH ONCE ADDING SPORTS IS IMPLEMENTED
+    */
     @GetMapping("/addSport")
     public String addSport() {
         Sport sport = new Sport("Hockey");

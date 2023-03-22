@@ -7,11 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 
@@ -30,21 +32,29 @@ public class UserService {
     /**
      * Gets a page of users.
      * 
-     * @param pageSize How many users are in a "page"
-     * @param pageNumber The page number (page 0 is the first page)
+     * @param pageable A page object showing how the page should be shown
+     *                  (Page size, page count, and [optional] sorting)
      * @return A slice of users returned from pagination
      */
     public List<User> getPaginatedUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 
-    public List<User> findUsersByName(Pageable pageable, String name) {
-        return userRepository.findAllByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(pageable, name, name);
+    /**
+     * Gets a page of users, filtered down by their name and sports interest
+     * 
+     * @param pageable A page object showing how the page should be shown
+     *                  (Page size, page count, and [optional] sorting)
+     * @param favouriteSports Includes all users who have <em>at least one</em>
+     *                          of these as their favourite sport
+     * @param nameSearch Includes all users where
+     *              <code>nameSearch</code> is a substring of <code>firstName+' '+lastName</code>
+     * @return A slice of users with the applied filters
+     */
+    public List<User> findUsersByNameOrSport(Pageable pageable, @Nullable List<Sport> favouriteSports, @Nullable String nameSearch) {
+        return userRepository.findAllFiltered(pageable, favouriteSports, nameSearch);
     }
 
-    public List<User> findUsersByName(Pageable pageable, String firstName, String lastName) {
-        return userRepository.findAllByFirstNameIgnoreCaseContainingAndLastNameIgnoreCaseContaining(pageable, firstName, lastName);
-    }
 
     /**
      * Finds a user by their ID.

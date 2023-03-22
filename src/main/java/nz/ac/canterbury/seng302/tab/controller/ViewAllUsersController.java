@@ -55,22 +55,15 @@ public class ViewAllUsersController {
      */
     private List<User> getUserList(int page, String nameQuery) {
         var pageable = PageRequest.of(page-1, PAGE_SIZE, sort);
-        if (nameQuery.length() <= 0) {
+        if (nameQuery.isEmpty()) {
             if (page <= 0) {     // We want the user to think "Page 1" is the first page, even though Java starts at 0.
                 return List.of();
             } else {
                 return userService.getPaginatedUsers(pageable);
             }
-        }
-
-        if (nameQuery.contains(" ") && nameQuery.split(" ").length > 1) {
-            // search via first and last name
-            var names = nameQuery.split(" ");
-            var firstName = names[0];
-            var lastName = names[1];
-            return userService.findUsersByName(pageable, firstName, lastName);
         } else {
-            return userService.findUsersByName(pageable, nameQuery);
+            // TODO: Patch in the 'favourite sports' check once that's working
+            return userService.findUsersByNameOrSport(pageable, null, nameQuery);
         }
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
 /**
@@ -26,6 +27,19 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     List<User> findAll(Pageable pageable);
 
-    List<User> findAllByFirstNameIgnoreCaseContainingAndLastNameIgnoreCaseContaining(Pageable pageable, String firstName, String lastName);
-    List<User> findAllByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(Pageable pageable, String firstName, String lastName);
+    /*
+     * Query Logic:
+     * - The `:? is null or ...` means the filter isn't applied if you give it a null. 
+     * - U17 AC2 specifies that provided a list of sports,
+     *      get all users who have at least one of these sports.
+     *      This is achieved via the join, and the `s in :sports` check.
+     * - U7 AC4 states that a search succeeds if "The search string is contained in the first or last name".
+     *      However, this would mean that User("John", "Capenter") would never be found by searching
+     *      "John Capenter", as "John Capenter" isn't in "John", nor is it in "Capenter".
+     *      So, we concatenate it and then check.
+     */
+    @Query("SELECT distinct u FROM UserEntity u JOIN u.favouriteSports s"
+            +"WHERE (:sports is null or s in :sports)"
+            +"AND (:name is null or lower(:name) like lower(CONCAT(u.firstName, ' ', u.lastName)))")
+    List<User> findAllFiltered(Pageable pageable, @Param("sports") List<Sport> sports, @Param("name") String name);
 }
