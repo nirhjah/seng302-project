@@ -9,14 +9,14 @@
         </div>
 
         <div>
-            <a th:href="@{'/' + ${pageName} + '?page=1'}">
+            <a th:unless="${page == 1}" th:href="@{'/' + ${pageName} + '?page=1'}">
                 <button class = "paginationButton" th:disabled="${page == 1}">
                     <span>First</span>
                 </button>
             </a>
         </div>
         <div>
-            <a th:href="@{'/' + ${pageName} + '?page=' + ${page - 1}}">
+            <a th:unless="${page == 1}" th:href="@{'/' + ${pageName} + '?page=' + ${page - 1}}">
                 <button class = "paginationButton" th:disabled="${page == 1}" >
                     <span>Prev</span>
                 </button>
@@ -24,21 +24,22 @@
         </div>
 
         <th:block th:each="i : ${#numbers.sequence(1, 1, totalPages)}">
-            <div th:if="${i >= page - 1 and i <= page + 1
-                            or page == 1 and i >= page - 1 and i <= page + 2
-                            or page == totalPages and i >= page - 2 and i <= page + 1}">
-                <a th:href="${page == i}" th:action="@{'/' + ${pageName} + '?page=' + ${i}}">
+            <div th:if="${i >= page - 1 and i <= page + 1}">
+                <a th:unless="${(i - 1) < 0}" th:href="@{'/' + ${pageName} + '?page=' + ${i - 1}}" th:action="@{'/' + ${pageName} + '?page=' + ${i}}">
+                    <button class="paginationActive" th:text="${i - 1}"></button>
+                </a>
+                <a th:unless="${totalPages == 0}" th:href="@{'/' + ${pageName} + '?page=' + ${i}}" th:action="@{'/' + ${pageName} + '?page=' + ${i}}">
                     <button class="paginationActive" th:text="${i}"></button>
                 </a>
-                <a th:href="${page == i}" th:action="@{'/' + ${pageName} + '?page=' + ${i}}">
-                    <button class="paginationButton" th:text="${i}"></button>
+                <a th:unless="${i+1 > totalPages}" th:href="@{'/' + ${pageName} + '?page=' + ${i + 1}}" th:action="@{'/' + ${pageName} + '?page=' + ${i}}">
+                    <button class="paginationActive" th:text="${i+1}"></button>
                 </a>
             </div>
         </th:block>
 
         <div>
-            <a th:href="@{'/' + ${pageName} + '?page=' + ${page + 1}}">
-                <button class="paginationButton" th:disabled="${page == totalPages}">
+            <a th:unless="${page == totalPages}" th:href="@{'/' + ${pageName} + '?page=' + ${page + 1}}">
+                <button class="paginationButton">
                     Next >
                 </button>
             </a>
