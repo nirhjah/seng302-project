@@ -19,19 +19,19 @@
                 <div class="input-box">
                     <input type="text" class="form-control" id="name"
                            th:name="name" th:value="*{name}" data-cy="name" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                           autofocus th:pattern="${teamNameUnicodeRegex}" placeholder="">
                     <label for="name"> Name: </label>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="sport"
                            th:name="sport" th:value="*{sport}" data-cy="sport" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                           autofocus th:pattern="${sportUnicodeRegex}" placeholder="">
                     <label for="sport"> Sport: </label>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="location"
                            th:name="location" th:value="*{location}" data-cy="location" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
+                           autofocus th:pattern="${locationUnicodeRegex}" placeholder="">
                     <label for="location">Location:</label>
                 </div>
                 <br/>
