@@ -3,7 +3,6 @@
   grid-auto-rows: 300px;
   justify-content: center;
   align-items: center;
-  height: 112vh;
 }
 
 .paginationActive {
@@ -314,6 +313,7 @@ footer {
 .team-form.register {
   grid-auto-rows: 630px;
   grid-template-rows: 300px;
+  height: 112vh;
 }
 
 a.disabled {

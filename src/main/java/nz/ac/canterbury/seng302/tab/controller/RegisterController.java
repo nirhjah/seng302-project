@@ -106,7 +106,7 @@ public class RegisterController {
         String password = registerForm.getPassword();
         String confirmPassword = registerForm.getConfirmPassword();
         if (!password.equals(confirmPassword)) {
-            bindingResult.addError(new FieldError("registerForm", "confirmPassword", "Passwords do not match"));
+            bindingResult.addError(new FieldError("registerForm", "password", "Passwords do not match"));
         }
     }
 
@@ -153,7 +153,7 @@ public class RegisterController {
 
         if (!uppercase || !lowercase || !number || !symbol) {
             bindingResult.addError(new FieldError("registerForm", "password",
-                    "Password must contain an uppercase and lowercase letter, a number, and a symbol"));
+                    "Password does not meet the requirements"));
         }
     }
 

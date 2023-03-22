@@ -49,14 +49,13 @@
                         data-cy="password" required autofocus>
                     <label for="password"> Password: </label>
                 </div>
-                <div th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error-message"></div>
                 <div class="input-box">
                     <input type="password" class="form-control" id="confirm-password" placeholder=""
                         th:field="*{confirmPassword}" data-cy="confirmPassword" required autofocus>
                     <label for="confirm-password"> Confirm Password: </label>
                 </div>
                 <div class="password-info">
-                <div th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}" class="error-message"></div>
+                <div th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error-message"></div>
                 <p>
 password must be at least <strong>8 characters</strong>, and MUST contain <strong>upper</strong> and <strong>lower</strong> case letters, <strong>numbers</strong> and <strong>symbols</strong>, and can NOT contain your <strong>name</strong> or <strong>email</strong></p>
                 </div>
