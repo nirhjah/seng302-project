@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.service;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -137,6 +138,18 @@ public class UserService {
         }
         String email = auth.getName();
         return userRepository.findByEmail(email);
+    }
+
+    public Page<User> findUsersByLocation(Pageable pageable, String location) {
+        return userRepository.findAllByLocation(pageable, location);
+    }
+
+    public Page<User> findUsersByLocations(Pageable pageable, List<String> locations){
+        return userRepository.findAllByMultipleLocations(pageable,locations);
+    }
+
+    public void deleteAll(){
+        userRepository.deleteAll();
     }
 
 }

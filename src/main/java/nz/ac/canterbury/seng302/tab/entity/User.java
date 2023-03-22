@@ -22,12 +22,23 @@ public class User {
                 new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "test@gmail.com",
                 "dfghjk",
-                new ArrayList<>());
+                new ArrayList<>(),
+                "Christchurch");
     }
 
     /**
      * TODO: Implement password hashing, probably via Bcrypt
      */
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports, String location) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.email = email;
+        this.hashedPassword = password;
+        this.favoriteSports = favoriteSports;
+        this.location = location;
+    }
+
     public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -35,6 +46,17 @@ public class User {
         this.email = email;
         this.hashedPassword = password;
         this.favoriteSports = favoriteSports;
+        this.location = "TODO";
+    }
+
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.email = email;
+        this.hashedPassword = password;
+        this.favoriteSports = List.of();
+        this.location = "TODO";
     }
 
     public User(String firstName, String lastName, String email, String password) {
@@ -70,6 +92,9 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    private String location;
+
+    @Column(nullable = false)
     private String hashedPassword;
 
     public long getUserId() {
@@ -99,6 +124,7 @@ public class User {
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
+
 
     /**
      * Returns the date as a string in a 'yyyy-MM-dd format, such that it can be directly parsed in an
