@@ -505,9 +505,13 @@ li.active a {
 }
 
 .password-info {
-  width: 271px;
-  font-style: italic;
-  font-size: small;
-  margin-top: -20px;
-  margin-bottom: 20px;
+    width: 271px;
+    font-style: italic;
+    font-size: small;
+    margin-top: -20px;
+    margin-bottom: 20px;
+}
+
+.auth-buttons {
+    float: right;
 }
