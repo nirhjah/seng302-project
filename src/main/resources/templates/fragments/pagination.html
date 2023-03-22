@@ -9,14 +9,14 @@
         </div>
 
         <div>
-            <form action="@{/{pageName}?page={pageNumber}(pageName=${pageName},pageNumber=${1})}">
+            <form action="@{/{endpoint}?page={pageNumber}(endpoint=${pageName},pageNumber=${1})}">
                 <button class = "paginationButton" th:disabled="${page == 1}">
                     <span>First</span>
                 </button>
             </form>
         </div>
         <div>
-            <form action="@{/{pageName}?page={pageNumber}(pageName=${pageName},pageNumber=${page - 1})}">
+            <form action="@{/{endpoint}?page={pageNumber}(endpoint=${pageName},pageNumber=${page - 1})}">
                 <button class = "paginationButton" th:disabled="${page == 1}" >
                     <span>Prev</span>
                 </button>
@@ -27,17 +27,17 @@
             <div th:if="${i >= page - 1 and i <= page + 1
                             or page == 1 and i >= page - 1 and i <= page + 2
                             or page == totalPages and i >= page - 2 and i <= page + 1}">
-                <form th:unless="${page == i}" action="@{/{pageName}?page={i}(pageName=${pageName},pageNumber=${page - 1})}">
+                <form th:unless="${page == i}" action="@{/{endpoint}?page={i}(endpoint=${pageName},pageNumber=${i})}">
                     <button class="paginationActive" th:text="${i}"></button>
                 </form>
-                <form th:if="${page == i}" action="@{/{pageName}?page={i}(pageName=${pageName},pageNumber=${page - 1})}">
+                <form th:if="${page == i}" action="@{/{endpoint}?page={i}(endpoint=${pageName},pageNumber=${i})}">
                     <button class="paginationButton" th:text="${i}"></button>
                 </form>
             </div>
         </th:block>
 
         <div>
-            <form action="@{/{pageName}?page={pageNumber}(pageName=${pageName},pageNumber=${page + 1})}">
+            <form action="@{/{endpoint}?page={pageNumber}(endpoint=${pageName},pageNumber=${page + 1})}">
                 <button class="paginationButton" th:disabled="${page == totalPages}">
                     Next >
                 </button>
@@ -45,7 +45,7 @@
         </div>
 
         <div>
-            <form action="@{/{pageName}?page={pageNumber}(pageName=${pageName},pageNumber=${totalPages})}">
+            <form action="@{/{endpoint}?page={pageNumber}(endpoint=${pageName},pageNumber=${totalPages})}">
                 <button class="paginationButton" th:disabled="${page == totalPages}" >
                     Last >
                 </button>
