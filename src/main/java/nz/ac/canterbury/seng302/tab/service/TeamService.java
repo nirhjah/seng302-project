@@ -42,6 +42,7 @@ public class TeamService {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         return teamRepository.findAll(pageable);
     }
+
     /**
      * Method which updates the picture by taking the MultipartFile type and updating the picture
      * stored in the team with id primary key.

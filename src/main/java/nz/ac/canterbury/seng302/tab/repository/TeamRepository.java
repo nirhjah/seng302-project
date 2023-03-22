@@ -31,5 +31,5 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             "ORDER BY LOWER(t.name) ASC, LOWER(t.location) ASC ")
     public Page<Team> findTeamByName(@Param("name") String name, Pageable pageable);
 
-
+    public Page<Team> filterTeamsBySports();
 }

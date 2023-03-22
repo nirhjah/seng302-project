@@ -63,6 +63,24 @@ public class TeamRepositoryTest {
     }
 
     @Test
+    public void filteringTeamsBySports_noSportsSelected_allSportsDisplayed() throws IOException {
+        List<Team> teamList = teamService.getTeamList();
+        assertTrue(teamList.isEmpty());
+        Team team = new Team("test", "Christchurch", "Hockey");
+        Team team2 = new Team("test2", "Auckland", "Netball");
+        Team team3 = new Team("test3", "Dunedin", "Basketball");
+        List<Team> list = Arrays.asList(team, team2, team3);
+        teamRepository.save(team);
+        teamRepository.save(team2);
+        teamRepository.save(team3);
+
+        Page<Team> filteredTeams = teamRepository.filterTeamsBySports();
+        assertEquals(list.toString(), filteredTeams.toString());
+
+        teamService.getTeamList();
+    }
+
+    @Test
     public void searchTeams_searchWithSingleSport_resultsShown() throws IOException {
         Team team = new Team("test", "Christchurch", "Hockey");
         Team team2= new Team ("test2", "Auckland", "Netball");

@@ -48,7 +48,6 @@ public class TeamServiceTest {
         teamRepository.save(team2);
         teamRepository.save(team3);
         teamService.getTeamList();
-
         assertEquals(list.toString(), teamService.getTeamList().toString());
     }
 
@@ -76,7 +75,6 @@ public class TeamServiceTest {
         teamService.updatePicture(multipartFile, team.getTeamId());
         assertEquals(pictureString, Base64.getEncoder().encodeToString(multipartFile.getBytes()));
     }
-
 
 }
 
