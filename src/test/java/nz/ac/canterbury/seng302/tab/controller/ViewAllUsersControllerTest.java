@@ -39,8 +39,7 @@ public class ViewAllUsersControllerTest {
     @BeforeEach
     public void beforeAll() throws IOException {
         userRepository.deleteAll();
-        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY,
-                1).getTime(), "johndoe@example.com", "password");
+        user = new User("John", "Doe", "johndoe@example.com", "password");
         userRepository.save(user);
     }
 

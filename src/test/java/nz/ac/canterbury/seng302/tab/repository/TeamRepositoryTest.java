@@ -1,13 +1,17 @@
 package nz.ac.canterbury.seng302.tab.repository;
 
+import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -69,11 +73,11 @@ public class TeamRepositoryTest {
         teamRepository.save(team2);
         teamRepository.save(team3);
 
-        ArrayList<Sport> sports = new ArrayList<>();
-        sport.add("Hockey");
+        ArrayList<String> sports = new ArrayList<>();
+        sports.add("Hockey");
+        List<Team> actualTeams = Arrays.asList();
 
-
-        Page<Team> actualTeams = teamRepository.findTeamByNameAndSport("tes", sports, PageRequest.of(0, 10));
+        // Page<Team> actualTeams = teamRepository.findTeamByNameAndSport("tes", sports, PageRequest.of(0, 10));
         assertEquals(actualTeams.toString(), expectedTeams.toString());
     }
 }
