@@ -51,7 +51,9 @@
                       <h4 th:text="|Date of Birth: *{#dates.format(dateOfBirth, 'dd-MM-yyyy')}|"></h4>
                 </div>
                 <div class="edit-button">
-                      <a th:href="@{editUser}">Edit</a>
+                      <a th:href="@{editUser}">
+                        <button type="button">Edit Profile</button>
+                      </a>
                 </div>
 
             </div>
