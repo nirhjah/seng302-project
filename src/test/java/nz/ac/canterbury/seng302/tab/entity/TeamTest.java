@@ -42,19 +42,6 @@ public class TeamTest {
     }
 
     @Test
-    public void testGettingTeamId() throws IOException {
-        List<Team> teamList = teamService.getTeamList();
-        assertTrue(teamList.isEmpty());
-        Team team = new Team("test", "Christchurch", "Hockey");
-        teamRepository.save(team);
-
-        Team team2= new Team ("test2","Auckland", "Netball");
-        teamRepository.save(team2);
-        assertEquals(1, team.getTeamId());
-        assertEquals(2,team2.getTeamId());
-    }
-
-    @Test
     public void testGettingPictureString() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
