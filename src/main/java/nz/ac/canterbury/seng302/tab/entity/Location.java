@@ -43,8 +43,12 @@ public class Location {
         this.country= country;
     }
 
-    protected Location() {
+    public Location() {
 
+    }
+
+    public static Location createDummyLocation() {
+        return new Location("50 Papanui Road", "A", "Papanui", "Christchurch", "8052", "New Zealand");
     }
 
     public String getAddressLine1(){

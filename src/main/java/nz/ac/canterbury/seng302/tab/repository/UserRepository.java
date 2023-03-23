@@ -4,6 +4,7 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -31,4 +32,11 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     List<User> findAllByFirstNameIgnoreCaseContainingAndLastNameIgnoreCaseContaining(Pageable pageable, String firstName, String lastName);
     List<User> findAllByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(Pageable pageable, String firstName, String lastName);
+
+    @Query("SELECT u FROM UserEntity u WHERE u.location.suburb = :suburb")
+    Page<User> findUsersBySuburb(String suburb);
+
+    @Query("SELECT u FROM UserEntity u WHERE u.location.addressLine1 = :suburb")
+    Page<User> findUsersByAddressLine1(String address1);
+
 }

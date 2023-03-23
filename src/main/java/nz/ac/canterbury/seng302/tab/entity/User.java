@@ -16,13 +16,16 @@ public class User {
     }
 
     public static User defaultDummyUser() {
-        return new User(
+        var user = new User(
                 "test",
                 "again",
                 new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "test@gmail.com",
                 "dfghjk",
-                new ArrayList<>());
+                new ArrayList<>()
+        );
+        user.setLocation(Location.createDummyLocation());
+        return user;
     }
 
     /**
@@ -35,6 +38,7 @@ public class User {
         this.email = email;
         this.hashedPassword = password;
         this.favoriteSports = favoriteSports;
+        this.location = location;
     }
 
     public User(String firstName, String lastName, Date dateOfBirth, String email, String password) {
@@ -73,6 +77,10 @@ public class User {
     @JoinColumn(name = "Id")
     private List<Sport> favoriteSports;
 
+    @Column(nullable = true)
+    @ManyToMany
+    @JoinColumn
+    private List<Team> teams;
 
     @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
             flags = Pattern.Flag.CASE_INSENSITIVE)
@@ -81,6 +89,10 @@ public class User {
 
     @Column(nullable = false)
     private String hashedPassword;
+
+    @Column(nullable = true)
+    @ManyToOne
+    private Location location;
 
     public long getUserId() {
         return userId;
@@ -130,6 +142,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location loc) {
+        location = loc;
     }
 
     @Column()
