@@ -93,7 +93,16 @@
     </footer>
 </body>
 <script th:inline="javascript">
+    /**
+     * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
+     * @type {string}
+     */
     const ENDPOINT = '/geocode/autocomplete';
+
+    /**
+     * The delay time (in milliseconds) for debouncing the search input.
+     * @type {number}
+     */
     const DEBOUNCE_DELAY = 450; // set the debounce delay to 450ms
 
     const searchBox = document.querySelector('#address-line-1');
@@ -105,6 +114,12 @@
 
     let timeoutId;
 
+    /**
+     * Debounces the given function with the given delay time.
+     * @param {Function} fn - The function to be debounced.
+     * @param {number} delay - The delay time (in milliseconds) for debouncing.
+     * @returns {Function} The debounced function.
+     */
     function debounce(fn, delay) {
         return function () {
             clearTimeout(timeoutId);
@@ -112,6 +127,10 @@
         }
     }
 
+    /**
+     * Searches the OpenRouteService Geocoding API for autocomplete results based on the current search input value.
+     * Displays the results in the results container element.
+     */
     function searchAutocomplete() {
         const searchTerm = this.value.trim();
 
@@ -145,8 +164,16 @@
         }
     }
 
+    /**
+     * Adds an event listener to the search input element for debouncing the searchAutocomplete function.
+     */
     searchBox.addEventListener('input', debounce(searchAutocomplete, DEBOUNCE_DELAY));
 
+
+    /**
+     * Adds an event listener to the results container element for handling the click event on an autocomplete result.
+     * Updates the search input and the selected address elements with the clicked result data.
+     */
     resultsContainer.addEventListener('click', function (event) {
         if (event.target.tagName === 'LI') {
             let address = event.target.getAttribute('data-house-number') === "undefined" ? "" : event.target.getAttribute('data-house-number') + " ";
