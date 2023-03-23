@@ -1,20 +1,27 @@
 package nz.ac.canterbury.seng302.tab.service;
 
-import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service class for User database entries, defined by the @link{Service} annotation.
@@ -22,7 +29,9 @@ import java.util.Optional;
  */
 @Service
 public class UserService {
-    
+
+    final Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private UserRepository userRepository;
 
@@ -64,6 +73,42 @@ public class UserService {
     }
 
     /**
+     * <h4>For Editing</h4>
+     * <p>
+     *  Checks whether the given email is in use <strong>by someone else</strong>,
+     *  i.e. not the current user.
+     * <br/>
+     * This is so the user can keep their email while updating other details, without failing its "unique" constraint.
+     * </p>
+     *
+     * If you simply want to see if the email is already used, see {@link UserService#emailIsInUse}
+     * @param currentUser The user who's email we're excluding
+     * @param email The email that we're checking is unique
+     * @return <code>true</code> if another user has this email,
+     *          <code>false</code> if it's the <code>currentUser</code>'s email, or if the email is unique
+     */
+    public boolean emailIsUsedByAnother(User currentUser, String email) {
+        // If the user isn't changing their email, no 'unique' email constraints are broken
+        if (currentUser.getEmail().equals(email)) {
+            return false;
+        }
+        // If the email's changed, we must see that it's not in use
+        return emailIsInUse(email);
+    }
+
+    /**
+     * <h4>For Registration</h4>
+     * <p>Checks whether the given email is already in the repository</p>
+     *
+     * If you want to see if <strong>another</strong> user has that email, see {@link UserService#emailIsUsedByAnother}
+     * @param email The email that we're checking is unique
+     * @return <code>true</code> if another user has this email
+     */
+    public boolean emailIsInUse(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    /**
      * Saves a user to persistence
      * @param user User to save to persistence
      * @return the saved user object
@@ -82,6 +127,19 @@ public class UserService {
         return userRepository.getUserByEmailAndPassword(email, password);
     }
 
+    public Optional<User> getCurrentUser() {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        // Issue: The security context chain gives you "Anonymous Authentication"
+        //          if you're not logged in, so `isAuthenticated()` can be true.
+        //        To get around this, check if you're anonymous.
+        if (!auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+            return Optional.empty();
+        }
+        String email = auth.getName();
+        return userRepository.findByEmail(email);
+    }
 
     /**
      * Method which updates the picture by taking the MultipartFile type and updating the picture
@@ -108,5 +166,4 @@ public class UserService {
         //Saved the updated picture string in the database.
         userRepository.save(user);
     }
-
 }

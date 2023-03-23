@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.io.IOException;
 
 /**
  * Spring Boot Controller class for the Home Form class.
@@ -20,6 +18,7 @@ public class HomeFormController {
 
     @Autowired
     private TeamService teamService;
+
 
     /**
      * Redirects GET default url '/' to '/home'
@@ -39,7 +38,7 @@ public class HomeFormController {
      * @return thymeleaf homeForm
      */
     @GetMapping("/home")
-    public String getTemplate(Model model) throws IOException {
+    public String getTemplate(Model model) {
         logger.info("GET /homeForm");
         model.addAttribute("navTeams", teamService.getTeamList());
         return "homeForm";

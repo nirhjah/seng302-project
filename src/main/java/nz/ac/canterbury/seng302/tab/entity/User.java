@@ -1,9 +1,7 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
-import org.springframework.core.io.ClassPathResource;
+import jakarta.validation.constraints.Email; import jakarta.validation.constraints.Pattern; import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,9 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Base64;
-
-
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Entity(name = "UserEntity")
@@ -22,28 +18,40 @@ public class User {
     public User() {
     }
 
-    public static User defaultDummyUser() throws IOException {
+    public static User defaultDummyUser() {
         return new User(
                 "test",
                 "again",
                 new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "test@gmail.com",
-                "dfghjk");
+                "dfghjk",
+                new ArrayList<>());
     }
 
     /**
      * TODO: Implement password hashing, probably via Bcrypt
      */
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.email = email;
+        this.hashedPassword = password;
+        this.favoriteSports = favoriteSports;
+    }
+
     public User(String firstName, String lastName, Date dateOfBirth, String email, String password) throws IOException {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.hashedPassword = password;
+        this.favoriteSports = new ArrayList<>();
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
         this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
     }
+
 
     public User(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
@@ -66,6 +74,14 @@ public class User {
     @Column(nullable = false)
     private Date dateOfBirth;
 
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private String pictureString;
+
+    @Column()
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "Id")
+    private List<Sport> favoriteSports;
+
 
     @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
             flags = Pattern.Flag.CASE_INSENSITIVE)
@@ -74,9 +90,6 @@ public class User {
 
     @Column(nullable = false)
     private String hashedPassword;
-
-    @Column(columnDefinition = "MEDIUMBLOB")
-    private String pictureString;
 
     public long getUserId() {
         return userId;
@@ -102,22 +115,38 @@ public class User {
         return dateOfBirth;
     }
 
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    /**
+     * Returns the date as a string in a 'yyyy-MM-dd format, such that it can be directly parsed in an
+     * HTML date object
+     *
+     * @return date string
+     */
+    public String getDateOfBirthFormatted() {
+        SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String isoDate = isoDateFormat.format(dateOfBirth);
+        return isoDate;
+    }
+
     public String getEmail() {
         return email;
     }
 
     public String getPassword() {return hashedPassword; }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getPictureString() {
-       return this.pictureString;
+        return this.pictureString;
     }
 
     public void setPictureString(String pictureString) {
         this.pictureString = pictureString;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     @Column()
@@ -140,6 +169,13 @@ public class User {
         return authorities;
     }
 
+    public List<Sport> getFavoriteSports() {
+        return favoriteSports;
+    }
+
+    public void setFavoriteSports(List<Sport> favoriteSports) {
+        this.favoriteSports = favoriteSports;
+    }
 
     /**
      * TODO: IMPLEMENT. There shouldn't be a way to see the password, only to check
