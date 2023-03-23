@@ -99,7 +99,7 @@ public class Location {
         String output = "";
         int i = 1;
         for (String value : new String[] {addressLine1, addressLine2, suburb, city, postcode, country}) {
-            if (value != null) {
+            if (value != null && value.length() > 0) {
                 output += value;
                 output += i > 2 && i < 6 ? ", " : " ";
             }

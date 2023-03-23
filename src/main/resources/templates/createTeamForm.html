@@ -34,39 +34,39 @@
                 <div class="input-boxes">
                     <div class="input-box">
                         <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
-                            th:value="*{addressLine1}" data-cy="location" required autofocus
-                            th:pattern="${addressRegex}" placeholder="" autocomplete="off">
+                            th:value="*{addressLine1}" data-cy="location" th:pattern="${addressRegex}"
+                               autofocus placeholder="" autocomplete="off">
                         <label for="address-line-1">Address Line 1:</label>
                         <div class="autocomplete-container" id="autocomplete-container"></div>
                     </div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
-                            th:value="*{addressLine2}" data-cy="location" required autofocus
-                            th:pattern="${allUnicodeRegex}" placeholder="">
+                            th:value="*{addressLine2}" data-cy="location" autofocus placeholder=""
+                               th:pattern="${addressRegex}">
                         <label for="address-line-2">Address Line 2:</label>
                     </div>
                 </div>
                 <div class="input-boxes">
                     <div class="input-box">
                         <input type="text" class="form-control" id="suburb" th:name="suburb" th:value="*{suburb}"
-                            data-cy="location" required autofocus th:pattern="${cityNameRegex}" placeholder="">
+                            data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="">
                         <label for="suburb">Suburb:</label>
                     </div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="city" th:name="city" th:value="*{city}"
-                            data-cy="location" required autofocus th:pattern="${cityNameRegex}" placeholder="">
+                            data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="">
                         <label for="city">City:</label>
                     </div>
                 </div>
                 <div class="input-boxes">
                     <div class="input-box">
                         <input type="text" class="form-control" id="country" th:name="country" th:value="*{country}"
-                            data-cy="location" required autofocus th:pattern="${countryNameRegex}" placeholder="">
+                            data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="">
                         <label for="country">Country:</label>
                     </div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="postcode" th:name="postcode" th:value="*{postcode}"
-                            data-cy="location" required autofocus th:pattern="${postcodeRegex}" placeholder="">
+                            data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder="">
                         <label for="postcode">Postcode:</label>
                     </div>
                 </div>
