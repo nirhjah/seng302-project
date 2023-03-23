@@ -12,19 +12,32 @@
             <div class="menu-items">
                 <p>
                     <a th:href="@{home}">Home</a>
-                    <a th:href="@{createTeam}">Create Team</a>
-                    <a th:href="@{searchTeams}">Search Teams</a>
-                    <a th:href="@{view-teams(page=1)}">See All Teams</a>
-                    <a th:href="@{view-users(page=1)}">View All Users</a>
-                    View Profile:
-                    <select class="form-control" id="dropDownList" name="teamSelector"
-                            onchange="if(this.value != '-1') window.location.href = '/profile?teamID=' + this.value;">
-                        <option value="-1" selected>Select a Team</option>
-                        <option th:each="team : ${navTeams}"
-                                th:value="${team.teamId}"
-                                th:text="${team}"
-                                th:selected="${team.teamId.equals(teamID)}"> </option>
-                    </select>
+
+                    <!-- These buttons only make sense in the context of a logged in user -->
+                    <span sec:authorize="isAuthenticated()">
+                        <a th:href="@{createTeam}">Create Team</a>
+                        <a th:href="@{searchTeams}">Search Teams</a>
+                        <a th:href="@{view-teams(page=1)}">See All Teams</a>
+                        <a th:href="@{view-users(page=1)}">View All Users</a>
+                        View Profile:
+                        <select class="form-control" id="dropDownList" name="teamSelector"
+                                onchange="if(this.value != '-1') window.location.href = '/profile?teamID=' + this.value;">
+                            <option value="-1" selected>Select a Team</option>
+                            <option th:each="team : ${navTeams}"
+                                    th:value="${team.teamId}"
+                                    th:text="${team}"
+                                    th:selected="${team.teamId.equals(teamID)}"> </option>
+                        </select>
+                    </span>
+
+                    <span class="auth-buttons" sec:authorize="isAnonymous()">
+                        <a th:href="@{login}">Login</a>
+                        <a th:href="@{register}">Register</a>
+                    </span>
+                    <span class="auth-buttons" sec:authorize="isAuthenticated()">
+                        <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
+                        <form id="logoutForm" th:action="@{logout}" method="POST"></form>
+                    </span>
                 </p>
             </div>
         </div>

@@ -3,12 +3,16 @@ package nz.ac.canterbury.seng302.tab.repository;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
 import org.springframework.data.domain.Page;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
+import nz.ac.canterbury.seng302.tab.entity.User;
 
 /**
  * FormResult repository accessor using Spring's @link{CrudRepository}.
@@ -18,6 +22,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
     Optional<User> findById(long id);
     Optional<User> findByEmail(String email);
     Page<User> findAll();
+
+    boolean existsByEmail(String email);
 
     @Query("SELECT u FROM UserEntity u WHERE u.email = :email and u.hashedPassword = :password")
     User getUserByEmailAndPassword(@Param("email") String email, @Param("password") String password);
