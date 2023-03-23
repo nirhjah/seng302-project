@@ -8,6 +8,10 @@
     height: 770px;
 }
 
+.user-form .wrapper {
+    height: 490px;
+}
+
 ul.search {
     display: flex;
     list-style: none;
