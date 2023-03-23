@@ -183,18 +183,18 @@ public class CreateTeamFormControllerTest {
      *
      * @throws Exception thrown if Mocking fails
      */
-//    @Test
-//    void whenCityIsInvalidWithCharsValidForTeam__return302() throws Exception {
-//        mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
-//                        .param("name", "test").param("sport", "hockey")                 .param("location", "abc123'{}.a")
-//                .param("addressLine1", "abc123'{}.a1")
-//                .param("addressLine2", "addressline2")
-//                .param("city", "Christchurch")
-//                .param("country", "New Zealand")
-//                .param("postcode", "fghj")
-//                .param("suburb", "ilam")).andExpect(status().isFound())
-//                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
-//    }
+    @Test
+    void whenCityIsInvalidWithCharsValidForTeam__return302() throws Exception {
+        mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
+                        .param("name", "test").param("sport", "hockey")                 .param("location", "abc123'{}.a")
+                .param("addressLine1", "abc123'{}.a1")
+                .param("addressLine2", "addressline2")
+                .param("city", "Christchurch")
+                .param("country", "N^&*ew Zealand")
+                .param("postcode", "56fghj")
+                .param("suburb", "^&*ilam")).andExpect(status().isFound())
+                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
+    }
 
     /**
      * The country name is invalid as it contains invalid chars (which are valid
@@ -202,11 +202,43 @@ public class CreateTeamFormControllerTest {
      *
      * @throws Exception thrown if Mocking fails
      */
-//    @Test
-//    void whenCountryIsInvalidWithCharsValidForTeam__return302() throws Exception {
-//        mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
-//                        .param("name", "test").param("sport", "hockey")
-//                        .param("location", "abc123'{}.a")).andExpect(status().isFound())
-//                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
-//    }
+    @Test
+    void whenCountryIsInvalidWithCharsValidForTeam__return302() throws Exception {
+        mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
+                        .param("name", "test").param("sport", "hockey")
+                        .param("addressLine1", "abc123'{}.a1")
+                        .param("addressLine2", "addressline2")
+                        .param("city", "Christchurch")
+                        .param("country", "45678New Zealand")
+                        .param("postcode", "56fghj")
+                        .param("suburb", "ilam")).andExpect(status().isFound())
+                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
+    }
+
+    @Test
+    void whenSuburbIsInvalidWithCharsValidForTeam__return302() throws Exception {
+        mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
+                        .param("name", "test").param("sport", "hockey")
+                        .param("addressLine1", "abc123'{}.a1")
+                        .param("addressLine2", "addressline2")
+                        .param("city", "Christchurch")
+                        .param("country", "%^&*New Zealand")
+                        .param("postcode", "56fghj")
+                        .param("suburb", "ilam")).andExpect(status().isFound())
+                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
+    }
+
+    @Test
+    void whenPostcodeIsInvalidWithCharsValidForTeam__return302() throws Exception {
+        mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
+                        .param("name", "test")
+                        .param("sport", "hockey")
+                        .param("addressLine1", "abc123'{}.a1")
+                        .param("addressLine2", "addressline2")
+                        .param("city", "Christchurch")
+                        .param("country", "New Zealand")
+                        .param("postcode", "56$%^fghj")
+                        .param("suburb", "ilam")).andExpect(status().isFound())
+                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
+    }
 }
