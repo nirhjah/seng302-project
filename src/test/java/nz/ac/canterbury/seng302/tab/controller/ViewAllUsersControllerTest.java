@@ -47,7 +47,7 @@ public class ViewAllUsersControllerTest {
     @WithMockUser
     @Test
     public void testViewAllUsersReturns200() throws Exception {
-        mockMvc.perform(get("/view-all-users"))
+        mockMvc.perform(get("/view-users"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("viewAllUsers"));
     }
