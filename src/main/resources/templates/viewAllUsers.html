@@ -27,6 +27,13 @@
             <input type="text" placeholder="Search name" th:name="currentSearch" th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">
             <button class="search-user-button" type="submit"> Search </button>
         </form>
+        <label>filter</label>
+        <select class="multiselect" name="sports" id="sports" size="10" multiple>
+            <option th:each="sport : ${listOfSports}"
+                    th:value="${sport.sportId}"
+                    th:text="${sport.name}"
+                    th:selected="${sport.sportId.equals(sportID)}"> </option>
+        </select>
         </p>
     </div>
 
