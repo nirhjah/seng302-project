@@ -9,10 +9,13 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 
 <head>
-  <title>View User</title>
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <title>View Profile</title>
 </head>
 
 <body>
+<div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
   <div class="viewUser">
     <p th:if="${thisUser.isEmpty()}">
       <strong>Specified user does not exist</strong>
