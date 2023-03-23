@@ -25,6 +25,9 @@ public class User {
                 new ArrayList<>());
     }
 
+    /**
+     * TODO: Implement password hashing, probably via Bcrypt
+     */
     public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -40,6 +43,7 @@ public class User {
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.hashedPassword = password;
+        this.favoriteSports = new ArrayList<>();
     }
 
     @Id

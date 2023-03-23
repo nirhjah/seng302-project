@@ -1,3 +1,32 @@
+.team-form.register {
+    grid-auto-rows: 630px;
+    grid-template-rows: 300px;
+    height: 112vh;
+}
+
+.register .wrapper {
+    height: 770px;
+}
+
+ul.search {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.password-info {
+    width: 271px;
+    font-style: italic;
+    font-size: small;
+    margin-top: -20px;
+    margin-bottom: 20px;
+}
+
+.auth-buttons {
+    float: right;
+}
+
 .team-form {
     display: grid;
     grid-auto-rows: 300px;
@@ -183,10 +212,11 @@ td {
     min-height: 90vh;
 }
 
-.home-background, .view-users-background, .view-teams-background, .team-form-background, .profile-background, .Search-teams-background, .user-form {
+.home-background, .view-users-background, .view-teams-background, .team-form-background, .profile-background, .Search-teams-background, .background-image, .user-form {
     background-image: url('../image/landscape.jpeg');
     background-size: cover;
     background-repeat: no-repeat;
+    background-attachment: fixed;
     height: 100vh;
 }
 
@@ -255,6 +285,7 @@ a.enabled{
     height: 50px;
     border-bottom: 2px solid #162938;
     margin: 30px 0;
+    font-family: "Noto Sans", sans-serif;
 }
 
 .input-box input:focus ~ label,
@@ -262,6 +293,9 @@ a.enabled{
     top: -5px;
 }
 
+.input-box input[type="date"] {
+    width: 100%;
+}
 
 
 .input-box label {
