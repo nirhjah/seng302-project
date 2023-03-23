@@ -103,18 +103,17 @@ public class CreateTeamFormController {
             return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
         }
 
-        Team team;
-        if ((team = teamService.getTeam(teamID)) != null) {
+        Team team = teamService.getTeam(teamID);
+        if (team != null) { // Team hasn't been created yet
             team.setName(name);
             team.setSport(sport);
             team.setLocation(location);
-            teamService.updateTeam(team);
+            team = teamService.updateTeam(team);
         } else {
             team = new Team(name, location, sport);
-            teamService.addTeam(team);
-            teamID = team.getTeamId();
+            team = teamService.addTeam(team);
         }
-
+        
         return String.format("redirect:./profile?teamID=%s", team.getTeamId());
     }
 }

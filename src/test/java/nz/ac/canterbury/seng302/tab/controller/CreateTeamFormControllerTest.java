@@ -10,13 +10,18 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
+
 
 import java.util.Optional;
 
@@ -31,6 +36,11 @@ public class CreateTeamFormControllerTest {
     @MockBean
     private UserService mockUserService;
 
+    @MockBean
+    private TeamService mockTeamService;
+
+    static final Long TEAM_ID = 1L;
+
     @BeforeEach
     void beforeEach() {
         User testUser = new User("Test", "User", "test@email.com", "awfulPassword");
@@ -44,14 +54,38 @@ public class CreateTeamFormControllerTest {
      * @throws Exception thrown if Mocking fails
      */
     @Test
-    void whenAllFieldsValid_return302() throws Exception {
+    void creatingTeam_whenAllFieldsValid_redirectToTeamProfile() throws Exception {
+        
+        Team mockTeam = new Team("Test", "Test", "Test");
+        mockTeam.setTeamId(TEAM_ID);
+        when(mockTeamService.getTeam(TEAM_ID)).thenReturn(null);
+        when(mockTeamService.addTeam(any())).thenReturn(mockTeam);
         mockMvc.perform(post("/createTeam", 42L)
-                .param("teamID", "1")
                 .param("name", "{test.team 1}")
                 .param("sport", "hockey-team a'b")
                 .param("location", "christchurch"))
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:./profile?teamID=1"));
+            .andExpect(status().isFound())
+            .andExpect(redirectedUrlPattern("**/profile?teamID="+TEAM_ID));
+    }
+    /**
+     * All fields are valid according to the regex
+     * @throws Exception thrown if Mocking fails
+     */
+    @Test
+    void editingTeam_whenAllFieldsValid_redirectToTeamProfile() throws Exception {
+
+        Team mockTeam = new Team("Test", "Test", "Test");
+        mockTeam.setTeamId(TEAM_ID);
+        when(mockTeamService.getTeam(TEAM_ID)).thenReturn(mockTeam);
+        when(mockTeamService.updateTeam(any())).thenReturn(mockTeam);
+
+        mockMvc.perform(post("/createTeam", 42L)
+                .param("teamID", TEAM_ID.toString())
+                .param("name", "{test.team 1}")
+                .param("sport", "hockey-team a'b")
+                .param("location", "christchurch"))
+            .andExpect(status().isFound())
+            .andExpect(redirectedUrlPattern("**/profile?teamID="+TEAM_ID));
     }
 
     /**
@@ -60,10 +94,13 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenTeamNameFieldIsInvalid_return302() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
-                        .param("name", "test^team").param("sport", "hockey")
-                        .param("location", "christchurch")).andExpect(status().isFound())
-                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
+        mockMvc.perform(post("/createTeam", 42L)
+                .param("teamID", "1")
+                .param("name", "test^team")
+                .param("sport", "hockey")
+                .param("location", "christchurch"))
+            .andExpect(status().isFound())
+            .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
     }
 
     /**
@@ -72,10 +109,13 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenSportFieldIsInvalid_return302() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
-                        .param("name", "test").param("sport", "###")
-                        .param("location", "christchurch")).andExpect(status().isFound())
-                        .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
+        mockMvc.perform(post("/createTeam", 42L)
+                .param("teamID", "1")
+                .param("name", "test")
+                .param("sport", "###")
+                .param("location", "christchurch"))
+            .andExpect(status().isFound())
+            .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
     }
 
     /**
