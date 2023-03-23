@@ -13,12 +13,6 @@ repositories {
 	mavenCentral()
 }
 
-// Read the value of the LOCATION_API_KEY environment variable from the .env file
-def locationApiKey = new File('.env').text.trim().split('=')[1]
-
-// Set the environment variable for the entire Gradle process
-//gradle.startParameter.environment['LOCATION_API_KEY'] = locationApiKey
-
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -27,9 +21,14 @@ dependencies {
 	implementation 'com.h2database:h2'
 	implementation 'io.github.cdimascio:dotenv-java:2.3.2'
 
+	implementation "org.springframework.boot:spring-boot-starter-security"
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	implementation 'org.springframework.boot:spring-boot-starter-validation:3.0.4'
+
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {

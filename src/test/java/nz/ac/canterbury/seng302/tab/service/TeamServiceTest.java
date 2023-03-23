@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.service;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,13 +37,15 @@ public class TeamServiceTest {
         teamRepository.deleteAll();
     }
 
+    Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
+
     @Test
     public void testGettingTeamList() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
-        Team team = new Team("test", "Christchurch", "Hockey");
-        Team team2 = new Team("test2", "Auckland", "Netball");
-        Team team3 = new Team("test3", "Dunedin", "Basketball");
+        Team team = new Team("test", "Hockey", location);
+        Team team2 = new Team("test2", "Netball", location);
+        Team team3 = new Team("test3", "Cricket", location);
         List<Team> list = Arrays.asList(team, team2, team3);
         teamRepository.save(team);
         teamRepository.save(team2);
@@ -54,7 +57,7 @@ public class TeamServiceTest {
 
     @Test
     public void testAddingTeam() throws IOException {
-        Team team = new Team("test", "Christchurch", "Hockey");
+        Team team = new Team("test", "Hockey", location);
         teamService.addTeam(team);
         assertEquals(team.getName(), teamRepository.findById(team.getTeamId()).get().getName());
         assertEquals(team.getLocation(), teamRepository.findById(team.getTeamId()).get().getLocation());
@@ -63,21 +66,18 @@ public class TeamServiceTest {
 
     @Test
     public void testUpdatingPicture() throws IOException {
-        Team team = new Team("test", "Christchurch", "Hockey");
+        Team team = new Team("test", "Hockey", location);
         teamRepository.save(team);
-
 
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
         String pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
-        FileInputStream input = new FileInputStream(file);
-        MultipartFile multipartFile = new MockMultipartFile("file",
-                file.getName(), "image/png", input.readAllBytes());
-        teamService.updatePicture(multipartFile, team.getTeamId());
-        assertEquals(pictureString, Base64.getEncoder().encodeToString(multipartFile.getBytes()));
+        try (FileInputStream input = new FileInputStream(file)) {
+            MultipartFile multipartFile = new MockMultipartFile("file",
+                    file.getName(), "image/png", input.readAllBytes());
+            teamService.updatePicture(multipartFile, team.getTeamId());
+            assertEquals(pictureString, Base64.getEncoder().encodeToString(multipartFile.getBytes()));
+        }
     }
 
-
 }
-
-

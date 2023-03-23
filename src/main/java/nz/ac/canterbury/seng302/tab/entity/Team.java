@@ -18,8 +18,8 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
 
-    @OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name ="fk_locationId", referencedColumnName = "locationId")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_locationId", referencedColumnName = "locationId")
     private Location location;
 
     @Column(nullable = false)
@@ -34,7 +34,7 @@ public class Team {
     protected Team() {
     }
 
-    public Team (String name, String sport, Location location) throws IOException{
+    public Team(String name, String sport, Location location) throws IOException {
         this.name = name;
         this.location = location;
         this.sport = sport;
@@ -43,7 +43,6 @@ public class Team {
         this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
 
     }
-
 
     public Long getTeamId() {
         return this.teamId;
@@ -57,12 +56,12 @@ public class Team {
         return this.sport;
     }
 
-    public Location getLocation(){
+    public Location getLocation() {
         return this.location;
     }
 
-    public void setLocation(Location location){
-        this.location= location;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public void setName(String name) {
@@ -82,14 +81,12 @@ public class Team {
         this.pictureString = pictureString;
     }
 
-    public void setTeamId(long teamId){
-        this.teamId=teamId;
+    public void setTeamId(long teamId) {
+        this.teamId = teamId;
     }
 
     public void setSport(String sport) {
         this.sport = sport;
     }
-
-
 
 }

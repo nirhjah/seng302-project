@@ -23,19 +23,29 @@ public class CreateTeamFormController {
     Logger logger = LoggerFactory.getLogger(CreateTeamFormController.class);
     @Autowired
     private TeamService teamService;
-//
-//    @Value("${ops.api.key}")
-//    private String apiKey;
+    //
+    // @Value("${ops.api.key}")
+    // private String apiKey;
 
-    private String allUnicodeRegex = "^[\\p{L}\\s\\d\\.\\}\\{]+$";
-    private String addressRegex= "^\\d+\\s[A-z]+\\s[A-z]+";
-    private String countryNameRegex= "^[A-Z][a-z]+( [A-Z][a-z]+)*$";
-    private String cityNameRegex= "^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$";
-    private String postcodeRegex= "(?i)^[a-z0-9][a-z0-9\\- ]{0,10}[a-z0-9]$";
+    /**
+     * Countries and cities can have letters from all alphabets, with hyphens and
+     * spaces allowed if not leading.
+     */
+    private final String countryOrCityNameRegex = "^\\p{L}+[\\- \\p{L}]*$";
+
+    /** Allow letters, numbers and dashes */
+    private final String postcodeRegex = "^[\\d\\w\\-]+$";
+
+    /** A team name can be alphanumeric, dots and curly braces **/
+    private final String teamNameUnicodeRegex = "^[\\p{L}\\s\\d\\.\\}\\{]+$";
+
+    /** A sport can be letters, space, apostrophes or dashes **/
+    private final String sportUnicodeRegex = "^[\\p{L}\\s\\'\\-]+$";
 
     /**
      * Gets createTeamForm to be displayed and contains name, sport,
      * location and teamID model attributes to be added to html.
+     *
      * @return thymeleaf createTeamForm
      */
 
@@ -68,17 +78,17 @@ public class CreateTeamFormController {
         }
 
         // client side validation
-        model.addAttribute("addressRegex", addressRegex);
-        model.addAttribute("allUnicodeRegex", allUnicodeRegex);
-        model.addAttribute("countryNameRegex",countryNameRegex);
-        model.addAttribute("cityNameRegex",cityNameRegex);
-        model.addAttribute("postcodeRegex",postcodeRegex);
+
+        model.addAttribute(countryOrCityNameRegex, countryOrCityNameRegex);
+        model.addAttribute("postcodeRegex", postcodeRegex);
+        model.addAttribute("teamNameUnicodeRegex", teamNameUnicodeRegex);
+        model.addAttribute("sportUnicodeRegex", sportUnicodeRegex);
         model.addAttribute("navTeams", teamService.getTeamList());
         return "createTeamForm";
     }
 
     /**
-     * Posts a form response with name and favourite language
+     * Posts a form response with team name, sport and location
      *
      * @param name  name if user
      * @param sport users team sport
@@ -92,35 +102,32 @@ public class CreateTeamFormController {
             @RequestParam(name = "teamID", defaultValue = "-1") long teamID,
             @RequestParam(name = "name") String name,
             @RequestParam(name = "sport") String sport,
-            @RequestParam (name = "addressLine1") String addressLine1,
-            @RequestParam (name = "addressLine2") String addressLine2,
-            @RequestParam (name = "city") String city,
-            @RequestParam (name ="country") String country,
-            @RequestParam (name ="postcode") String postcode,
-            @RequestParam(name ="suburb") String suburb,
+            @RequestParam(name = "addressLine1") String addressLine1,
+            @RequestParam(name = "addressLine2") String addressLine2,
+            @RequestParam(name = "city") String city,
+            @RequestParam(name = "country") String country,
+            @RequestParam(name = "postcode") String postcode,
+            @RequestParam(name = "suburb") String suburb,
             Model model) throws IOException {
         logger.info("POST /createTeam");
 
         // client side validation
-        model.addAttribute("allUnicodeRegex", allUnicodeRegex);
-        model.addAttribute("addressRegex",addressRegex);
-        model.addAttribute("countryNameRegex",countryNameRegex);
-        model.addAttribute("cityNameRegex",cityNameRegex);
-        model.addAttribute("postcodeRegex",postcodeRegex);
+        model.addAttribute(countryOrCityNameRegex, countryOrCityNameRegex);
+        model.addAttribute("postcodeRegex", postcodeRegex);
+        model.addAttribute("teamNameUnicodeRegex", teamNameUnicodeRegex);
+        model.addAttribute("sportUnicodeRegex", sportUnicodeRegex);
 
         // server side validation
-        boolean nameValid = (name.matches(allUnicodeRegex));
-        boolean sportValid = (sport.matches(allUnicodeRegex));
-        boolean address1Valid= (addressLine1.matches(addressRegex));
-        boolean address2Valid= (addressLine2.matches(addressRegex)||addressLine2.matches(cityNameRegex));
-        boolean countryValid = (country.matches(countryNameRegex));
-        boolean cityValid = (city.matches(cityNameRegex));
+        boolean nameValid = (name.matches(teamNameUnicodeRegex));
+        boolean sportValid = (sport.matches(sportUnicodeRegex));
+        boolean countryValid = (country.matches(countryOrCityNameRegex));
+        boolean cityValid = (city.matches(countryOrCityNameRegex));
         boolean postcodeValid = (postcode.matches(postcodeRegex));
-        boolean suburbValid = (suburb.matches(cityNameRegex));
-        if (!sportValid || !nameValid||!address1Valid||!countryValid||!cityValid||!postcodeValid||!suburbValid||!address2Valid) {
+        boolean suburbValid = (suburb.matches(countryOrCityNameRegex));
+        if (!sportValid || !nameValid || !countryValid || !cityValid || !postcodeValid || !suburbValid) {
             return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
         }
-        Location location = new Location (addressLine1, addressLine2, suburb, city, postcode, country);
+        Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
         Team team;
         if ((team = teamService.getTeam(teamID)) != null) {
             team.setName(name);
