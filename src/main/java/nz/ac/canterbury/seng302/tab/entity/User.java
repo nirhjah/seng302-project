@@ -18,7 +18,7 @@ public class User {
     public User() {
     }
 
-    public static User defaultDummyUser() {
+    public static User defaultDummyUser() throws IOException{
         return new User(
                 "test",
                 "again",
@@ -31,25 +31,25 @@ public class User {
     /**
      * TODO: Implement password hashing, probably via Bcrypt
      */
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports) {
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports) throws IOException{
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.hashedPassword = password;
         this.favoriteSports = favoriteSports;
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        File file = resource.getFile();
+        this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
     }
 
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password) throws IOException {
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.hashedPassword = password;
         this.favoriteSports = new ArrayList<>();
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        File file = resource.getFile();
-        this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
     }
 
 
