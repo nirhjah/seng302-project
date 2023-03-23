@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.service;
 
-import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,14 +7,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +22,8 @@ import org.springframework.stereotype.Service;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service class for User database entries, defined by the @link{Service} annotation.
@@ -147,7 +143,6 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-
     /**
      * Method which updates the picture by taking the MultipartFile type and updating the picture
      * stored in the team with id primary key.
@@ -173,5 +168,4 @@ public class UserService {
         //Saved the updated picture string in the database.
         userRepository.save(user);
     }
-
 }

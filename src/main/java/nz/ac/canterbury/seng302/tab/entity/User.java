@@ -1,9 +1,7 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
-import org.springframework.core.io.ClassPathResource;
+import jakarta.validation.constraints.Email; import jakarta.validation.constraints.Pattern; import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -36,7 +34,7 @@ public class User {
     /**
      * TODO: Implement password hashing, probably via Bcrypt
      */
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports) {
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports) throws IOException{
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -82,6 +80,9 @@ public class User {
     @Column(nullable = false)
     private Date dateOfBirth;
 
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private String pictureString;
+
     @Column()
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "Id")
@@ -95,9 +96,6 @@ public class User {
 
     @Column(nullable = false)
     private String hashedPassword;
-
-    @Column(columnDefinition = "MEDIUMBLOB")
-    private String pictureString;
 
     public long getUserId() {
         return userId;
@@ -145,16 +143,16 @@ public class User {
 
     public String getPassword() {return hashedPassword; }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getPictureString() {
-       return this.pictureString;
+        return this.pictureString;
     }
 
     public void setPictureString(String pictureString) {
         this.pictureString = pictureString;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     @Column()
