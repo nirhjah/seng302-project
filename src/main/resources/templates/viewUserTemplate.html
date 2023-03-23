@@ -20,7 +20,7 @@
     <div th:if="${thisUser.isPresent()}" th:object="${thisUser.get()}">
       <div class="userDetailsContainer">
         <!--/* Currently there's no profile picture code, so let's use the default */-->
-        <img class="profilePictureContainer" th:src="@{/image/defaultuser.jpg}" alt="Profile Picture">
+<!--        <img class="profilePictureContainer" th:src="@{/image/defaultuser.jpg}" alt="Profile Picture">-->
         <div class="userDetailsTextContainer">
           <p th:text="|Name: *{FirstName} *{LastName}|"></p>
           <p th:text="|Email: *{email}|"></p>
@@ -29,8 +29,32 @@
         <br />
       </div>
     </div>
+    <div class="profile-pic">
+      <form id="upload-picture" method="post" th:action="@{/user-info}" enctype="multipart/form-data">
+        <div class="image-styling">
+          <img th:src="*{'data:image/jpeg;base64,'+{displayPicture}}" width="200" height="200"/>
+          </br>
+        </div>
+        </br>
+        <div class="file-upload">
+          <div class="file-label-border">
+            <label for="file" class="file-label">
+              Edit Profile Picture </label>
+          </div>
+          <input type="file" name="file" class="form-control-file" id="file" onchange="form.submit()">
+        </div>
+        <div class="file-upload">
+          <div class="error-message" th:if="${sizeError == true}">Image must be less than 10MB</div>
+          <div class="error-message" th:if="${typeError == true}">Please choose a .png, .jpg or .svg file
+          </div>
+        </div>
+        <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+
+      </form>
+
     <br/>
-    <a th:href="@{editUser}">Edit</button>
+    <a th:href="@{editUser}">Edit</a>
+
     <button id="backButton" onclick="history.back()">Back</button>
   </div>
   
