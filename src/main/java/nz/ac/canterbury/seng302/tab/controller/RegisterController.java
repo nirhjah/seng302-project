@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 
@@ -37,7 +38,6 @@ public class RegisterController {
 
     /**
      * Logs the given user in.
-     * 
      * Because our logins are entirely handled through the security chain, we have
      * to hack together
      * a login if we can't go through it.
@@ -106,7 +106,7 @@ public class RegisterController {
         String password = registerForm.getPassword();
         String confirmPassword = registerForm.getConfirmPassword();
         if (!password.equals(confirmPassword)) {
-            bindingResult.addError(new FieldError("registerForm", "confirmPassword", "Passwords do not match"));
+            bindingResult.addError(new FieldError("registerForm", "password", "Passwords do not match"));
         }
     }
 
@@ -153,7 +153,7 @@ public class RegisterController {
 
         if (!uppercase || !lowercase || !number || !symbol) {
             bindingResult.addError(new FieldError("registerForm", "password",
-                    "Password must contain an uppercase and lowercase letter, a number, and a symbol"));
+                    "Password does not meet the requirements"));
         }
     }
 
@@ -196,7 +196,7 @@ public class RegisterController {
         }
 
         User user = new User(registerForm.getFirstName(), registerForm.getLastName(), registerForm.getDateOfBirth(),
-                registerForm.getEmail(), registerForm.getPassword());
+                registerForm.getEmail(), registerForm.getPassword(), new ArrayList<>());
         user.grantAuthority("ROLE_USER");
         user = userService.updateOrAddUser(user);
 

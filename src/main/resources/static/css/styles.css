@@ -1,6 +1,43 @@
+.team-form.register {
+    grid-auto-rows: 630px;
+    grid-template-rows: 300px;
+    height: 112vh;
+}
+
+.register .wrapper {
+    height: 770px;
+}
+
+ul.search {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.password-info {
+    width: 271px;
+    font-style: italic;
+    font-size: small;
+    margin-top: -20px;
+    margin-bottom: 20px;
+}
+
+.auth-buttons {
+    float: right;
+}
+
 .team-form {
     display: grid;
     grid-auto-rows: 300px;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
+.user-form {
+    display: grid;
+    grid-auto-rows: 325px;
     justify-content: center;
     align-items: center;
     height: 90vh;
@@ -175,10 +212,11 @@ td {
     min-height: 90vh;
 }
 
-.home-background, .view-users-background, .view-teams-background, .team-form-background, .profile-background, .Search-teams-background {
+.home-background, .view-users-background, .view-teams-background, .team-form-background, .profile-background, .Search-teams-background, .background-image {
     background-image: url('../image/landscape.jpeg');
     background-size: cover;
     background-repeat: no-repeat;
+    background-attachment: fixed;
     height: 100vh;
 }
 
@@ -220,7 +258,7 @@ footer {
     height: 45px;
 }
 
-.team-form .create-team {
+.team-form .create-team, .user-form .user-header{
     font-family: "Noto Sans",sans-serif;
     /*color: #0B1B2A;*/
     text-align: center;
@@ -247,12 +285,18 @@ a.enabled{
     height: 50px;
     border-bottom: 2px solid #162938;
     margin: 30px 0;
+    font-family: "Noto Sans", sans-serif;
 }
 
 .input-box input:focus ~ label,
 .input-box input:not(:placeholder-shown) ~ label {
     top: -5px;
 }
+
+.input-box input[type="date"] {
+    width: 100%;
+}
+
 
 .input-box label {
     font-family: "Noto Sans", sans-serif;
@@ -267,7 +311,7 @@ a.enabled{
 }
 
 .input-box input {
-    width: 140%;
+    width: 100%;
     height: 100%;
     background: transparent;
     font-size: 1em;

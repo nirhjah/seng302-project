@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Entity(name = "UserEntity")
@@ -20,19 +21,31 @@ public class User {
                 "again",
                 new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "test@gmail.com",
-                "dfghjk");
+                "dfghjk",
+                new ArrayList<>());
     }
 
     /**
      * TODO: Implement password hashing, probably via Bcrypt
      */
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.email = email;
+        this.hashedPassword = password;
+        this.favoriteSports = favoriteSports;
+    }
+
     public User(String firstName, String lastName, Date dateOfBirth, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.hashedPassword = password;
+        this.favoriteSports = new ArrayList<>();
     }
+
 
     public User(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
@@ -54,6 +67,11 @@ public class User {
 
     @Column(nullable = false)
     private Date dateOfBirth;
+
+    @Column()
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "Id")
+    private List<Sport> favoriteSports;
 
 
     @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
@@ -88,6 +106,22 @@ public class User {
         return dateOfBirth;
     }
 
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    /**
+     * Returns the date as a string in a 'yyyy-MM-dd format, such that it can be directly parsed in an
+     * HTML date object
+     *
+     * @return date string
+     */
+    public String getDateOfBirthFormatted() {
+        SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String isoDate = isoDateFormat.format(dateOfBirth);
+        return isoDate;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -118,6 +152,13 @@ public class User {
         return authorities;
     }
 
+    public List<Sport> getFavoriteSports() {
+        return favoriteSports;
+    }
+
+    public void setFavoriteSports(List<Sport> favoriteSports) {
+        this.favoriteSports = favoriteSports;
+    }
 
     /**
      * TODO: IMPLEMENT. There shouldn't be a way to see the password, only to check

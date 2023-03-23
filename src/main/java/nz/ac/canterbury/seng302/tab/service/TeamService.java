@@ -55,7 +55,7 @@ public class TeamService {
         //Gets the original file name as a string for validation
         String pictureString = StringUtils.cleanPath(file.getOriginalFilename());
         if (pictureString.contains("..")) {
-            System.out.println("not a a valid file");
+            System.out.println("not a valid file");
         }
         try {
             //Encodes the file to a byte array and then convert it to string, then set it as the pictureString variable.
