@@ -46,7 +46,7 @@ public class User {
         this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
     }
 
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password) {
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password) throws IOException {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -107,6 +107,11 @@ public class User {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public void setFullName(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public String getLastName() {
