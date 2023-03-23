@@ -1,7 +1,10 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.entity.Sport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +46,16 @@ public class EditUserFormController {
         if (user.isEmpty()) {
             return "redirect:/login";
         }
-        editUserForm.prepopulate(user.get());
-
+        Sport s1 = new Sport("Hockey");
+        Sport s2 = new Sport("Football");
+        List<Sport> sports = new ArrayList<>();
+        sports.add(s1);
+        sports.add(s2);
+        User u = user.get();
+        u.setFavoriteSports(sports);
+        userService.updateOrAddUser(u);
+        editUserForm.prepopulate(u);
+        model.addAttribute("favouriteSports", u.getFavoriteSports());
         return "editUserForm";
     }
 
@@ -80,6 +91,7 @@ public class EditUserFormController {
         user.setLastName(editUserForm.getLastName());
         user.setEmail(editUserForm.getEmail());
         user.setDateOfBirth(editUserForm.getDateOfBirth());
+        user.setFavoriteSports(editUserForm.getFavouriteSports());
         userService.updateOrAddUser(user);
 
         if (shouldLogout) {

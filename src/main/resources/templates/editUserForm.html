@@ -51,7 +51,10 @@
                     <label for="dateOfBirth">Date of Birth: </label>
                     <p th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="errorMessage" />
                 </div>
-                <br/>
+                <div class="input-box">
+                <p th:each="sport: ${favouriteSports}" th:text="${sport}"></p>
+                </div>
+                <br>
                 <div class="submit-button">
                     <a th:href="@{home}">
                         <button type="submit">Save</button>

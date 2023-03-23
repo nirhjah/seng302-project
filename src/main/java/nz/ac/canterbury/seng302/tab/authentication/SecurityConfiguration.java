@@ -33,7 +33,7 @@ public class SecurityConfiguration {
      * Create an Authentication Manager
      * @param http http security config
      * @return the created auth manager
-     * @throws Exception
+     * @throws Exception when unable to create auth manager
      */
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
@@ -57,7 +57,7 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2/**")))
                 .authorizeHttpRequests()
                 // Allow "/", "/register", and "/login" to anyone (permitAll)
-                .requestMatchers("/", "/register", "/login", "/demo", "/populate_database", "/home", "/addSport")
+                .requestMatchers("/", "/register", "/login", "/demo", "/populate_database", "/home")
                 .permitAll()
                 // Only allow admins to reach the "/admin" page
                 .requestMatchers("/admin")
