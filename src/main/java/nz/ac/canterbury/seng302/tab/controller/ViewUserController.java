@@ -48,6 +48,7 @@ public class ViewUserController {
             httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } else {
             userPicture = user.get().getPictureString();
+            model.addAttribute("userId", userId);
         }
 
         // Thymeleaf has no special support for optionals
@@ -86,11 +87,14 @@ public class ViewUserController {
      * @return
      */
     @PostMapping("/user-info/upload-pfp")
-    public String uploadPicture(@RequestParam(name = "userId") long userId, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes, Model model)
-    {
+    public String uploadPicture(
+            @RequestParam(name = "userId", defaultValue = "-1") long userId,
+            @RequestParam("file") MultipartFile file,
+            RedirectAttributes redirectAttributes,
+            Model model
+    ) {
         Optional<User> user = userService.getCurrentUser();
-        if (user.isEmpty())
-        {
+        if (user.isEmpty()) {
             return "redirect:/login";
         }
         User authUser = user.get();
