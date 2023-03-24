@@ -62,18 +62,17 @@ public class ProfileFormController {
         }
 
         if (selectedTeam != null) {
-            name = selectedTeam.getName();
-            sport = selectedTeam.getSport();
-            location = selectedTeam.getLocation();
-            picture = selectedTeam.getPictureString();
+            model.addAttribute("displayName", selectedTeam.getName());
+            model.addAttribute("displaySport", selectedTeam.getSport());
+            model.addAttribute("displayLocation", selectedTeam.getLocation());
+            model.addAttribute("displayPicture", selectedTeam.getPictureString());
+        } else {
+            return "redirect:./home";
         }
 
         model.addAttribute("navTeams", teamList);
         model.addAttribute("teamID", teamID);
-        model.addAttribute("displayName", name);
-        model.addAttribute("displaySport", sport);
-        model.addAttribute("displayLocation", location);
-        model.addAttribute("displayPicture", picture);
+
         return "profileForm";
     }
 

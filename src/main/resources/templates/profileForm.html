@@ -22,7 +22,7 @@
                         <label for="file" class="file-label">
                             Edit Profile Picture </label>
                     </div>
-                    <input type="file" name="file" class="form-control-file" id="file" onchange="form.submit()">
+                        <input type="file" name="file" class="form-control-file" id="file" onchange="form.submit()">
                 </div>
                 <div class="file-upload">
                     <div class="error-message" th:if="${sizeError == true}">Image must be less than 10MB</div>
@@ -30,12 +30,8 @@
                     </div>
                 </div>
                 <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
-
             </form>
-
-
         </div>
-
         <div class="team-info">
             <div class="team-display">
                 <h2>Team Profile</h2>

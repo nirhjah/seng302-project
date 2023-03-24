@@ -29,23 +29,22 @@ public class CreateTeamFormController {
 
     /**
      * Countries and cities can have letters from all alphabets, with hyphens and
-     * spaces allowed if not leading.
+     * spaces. Must start with an alphabetical character
      */
-    private final String countryCitySuburbNameRegex = "^[\\p{L}\\s'-]+$";
+    private final String countryCitySuburbNameRegex = "^\\p{L}+[\\- \\p{L}]*$";
 
-    /** Addresses can have letters, numbers, spaces, commas, periods, hyphens, forward slashes and pound signs **/
+    /** Addresses can have letters, numbers, spaces, commas, periods, hyphens, forward slashes and pound signs. Must
+     * include at least one alphanumeric character **/
+    private  final String addressRegex = "^[\\p{L}\\p{N}]+[\\- ,./#\\p{L}\\p{N}]*$";
 
-    private  final String addressRegex = "/^[\\p{L}\\p{N}\\s,.-/#]+$/u";
+    /** Allow letters, numbers, forward slashes and hyphens. Must start with an alphanumeric character. */
+    private final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
 
-    /** Allow letters, numbers and dashes */
-    private final String postcodeRegex = "^[\\p{L}\\p{N}\\s\\/-]+$";
+    /** A team name can be alphanumeric, dots and curly braces. Must start with on alphabetical character **/
+    private final String teamNameUnicodeRegex = "^[\\p{L}\\p{N}]+[}{.\\p{L}\\p{N}]+$";
 
-    /** A team name can be alphanumeric, dots and curly braces **/
-    private final String teamNameUnicodeRegex = "^[\\p{L}\\s\\d\\.\\}\\{]+$";
-
-    /** A sport can be letters, space, apostrophes or dashes **/
-    private final String sportUnicodeRegex = "^[\\p{L}\\s\\'\\-]+$";
-
+    /** A sport can be letters, space, apostrophes or hyphens. Must include at least on alphabetical character**/
+    private final String sportUnicodeRegex = "^\\p{L}+[\\- '\\p{L}]*$";
 
     /**
      * Gets createTeamForm to be displayed and contains name, sport,
