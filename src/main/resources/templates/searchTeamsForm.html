@@ -32,7 +32,7 @@
   </div>
 </div>
 
-<script>
+<script th:inline="javascript">
   var show = true;
 
   function showCheckboxes() {
@@ -46,11 +46,11 @@
     }
   }
 
-  // This needs to be fixed
-  var cities = "[[${cities}]]".split(", "); //for testing purposes only, need to use locations api instead
+  /*<![CDATA[*/
+  var cities = /*[[${cities}]]*/ [];
+  /*]]>*/
 
   console.log(cities)
-
   var checkboxDiv = document.getElementById("checkBoxes");
 
   for (var i = 0; i < cities.length; i++) {
