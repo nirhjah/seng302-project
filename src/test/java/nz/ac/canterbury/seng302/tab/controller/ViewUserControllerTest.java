@@ -88,4 +88,31 @@ public class ViewUserControllerTest {
                 .andExpect(view().name("redirect:/user-info?name=" + user.getUserId()))
                 .andExpect(MockMvcResultMatchers.model().attribute("pictureString", user.getPictureString()));
     }
+
+    @Test
+    @WithMockUser
+    public void whenLoggedIn_whenUploadTooBigFile_expectTypeError() throws Exception {
+        var URL = "/user-info";
+        Resource resource = new ClassPathResource("/testingfiles/maxFileSize.png");
+        File file = resource.getFile();
+        FileInputStream input= new FileInputStream(file);
+        MockMultipartFile tooBigImage = new MockMultipartFile("file", file.getName(),"image/png", input.readAllBytes());
+        mockMvc.perform(multipart(URL).file(tooBigImage))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attribute("sizeError", true))
+                .andExpect(redirectedUrl(String.format("/user-info?name=%s", user.getUserId())));
+    }
+
+    @Test
+    @WithMockUser
+    public void whenLoggedIn_whenUploadGoodFile_expectNoErrors() throws Exception {
+        var URL = "/user-info";
+        Resource resource = new ClassPathResource("/testingfiles/maxFileSize.png");
+        File file = resource.getFile();
+        FileInputStream input= new FileInputStream(file);
+        MockMultipartFile tooBigImage = new MockMultipartFile("file", file.getName(),"image/png", input.readAllBytes());
+        mockMvc.perform(multipart(URL).file(tooBigImage))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(String.format("/user-info?name=%s", user.getUserId())));
+    }
 }
