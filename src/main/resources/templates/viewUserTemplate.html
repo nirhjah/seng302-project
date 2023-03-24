@@ -25,6 +25,11 @@
           <p th:text="|Name: *{FirstName} *{LastName}|"></p>
           <p th:text="|Email: *{email}|"></p>
           <p th:text="|Date of Birth: *{#dates.format(dateOfBirth, 'dd-MM-yyyy')}|"></p>
+          <!-- TODO: DEBUG - Remove later -->
+          <p>Favourite Sports: (Amount: [[*{#arrays.length(favoriteSports)}]])</p>
+          <ul th:each="sport: *{favoriteSports}">
+            <li th:text="${sport.name}"></li>
+          </ul>
         </div>
         <br />
       </div>

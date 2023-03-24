@@ -38,12 +38,13 @@ public interface UserRepository extends CrudRepository<User, Long> {
      *      "John Carpenter", as "John Carpenter" isn't in "John", nor is it in "Carpenter".
      *      So, we ALSO check if the first name or last name is in the search string.
      */
-    @Query("SELECT distinct u FROM UserEntity u LEFT JOIN u.favoriteSports s "
-            +"WHERE (:searchedSports is null OR s in :searchedSports) "
+    @Query("SELECT distinct u "
+            +"FROM UserEntity u LEFT JOIN u.favoriteSports s "
+            +"WHERE (:searchedSports is null OR s.name in (:searchedSports)) "
             +"AND (:name is null OR "
-                    +"lower(:name) like lower(concat('%', u.firstName, '%')) OR lower(:name) like lower(concat('%', u.lastName, '%'))"
+                    +"lower(:name) like lower(concat('%', u.firstName, '%')) OR lower(:name) like lower(concat('%', u.lastName, '%')) "
                     +"OR lower(u.firstName) like lower(concat('%', :name, '%')) OR lower(u.lastName) like lower(concat('%', :name, '%')) "
             +")"
     )
-    List<User> findAllFiltered(Pageable pageable, @Param("searchedSports") List<Sport> searchedSports, @Param("name") String name);
+    List<User> findAllFiltered(Pageable pageable, @Param("searchedSports") List<String> searchedSports, @Param("name") String name);
 }

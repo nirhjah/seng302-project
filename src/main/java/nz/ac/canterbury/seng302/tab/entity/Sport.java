@@ -45,6 +45,6 @@ public class Sport {
 
     @Override
     public String toString() {
-        return this.name;
+        return "Sport('" + this.name + "')";
     }
 }

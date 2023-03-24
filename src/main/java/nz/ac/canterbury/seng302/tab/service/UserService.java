@@ -50,13 +50,17 @@ public class UserService {
      *              <code>nameSearch</code> is a substring of <code>firstName+' '+lastName</code>
      * @return A slice of users with the applied filters
      */
-    public List<User> findUsersByNameOrSport(Pageable pageable, @Nullable List<Sport> favouriteSports, @Nullable String nameSearch) {
+    public List<User> findUsersByNameOrSport(Pageable pageable, @Nullable List<String> favouriteSports, @Nullable String nameSearch) {
+        logger.info("fav sports = {}", favouriteSports);
+        logger.info("nameSearch = {}", nameSearch);
         if (favouriteSports != null && favouriteSports.isEmpty()) {
             favouriteSports = null;
         }
         if (nameSearch != null && nameSearch.isEmpty()) {
             nameSearch = null;
         }
+        logger.info("...nameSearch = {}", nameSearch);
+        logger.info("...fav sports = {}", favouriteSports);
         return userRepository.findAllFiltered(pageable, favouriteSports, nameSearch);
     }
 
