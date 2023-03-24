@@ -26,7 +26,7 @@
             <h1 th:inline="text">Edit User</h1>
         </div>
         <div class="wrapper-edit-profile">
-            <form th:action="@{editUser}" method="post" th:object="${editUserForm}">
+            <form th:action="@{editUser}" method="post" th:object="${editUserForm}" id="editUserForm">
                 <div class="input-box">
                     <input type="text" class="form-control"
                            th:field="*{firstName}" data-cy="firstName" required
@@ -99,12 +99,13 @@
         </p>
     </footer>
 
-    <script>
+    <script th:inline="javascript">
         const ul = document.querySelector(".content ul"),
             input = document.querySelector(".content input"),
             tagNumb = document.querySelector(".details span");
+        const form = document.getElementById("editUserForm")
         let maxTags = 10,
-            tags = ["apple", "cat"];
+            tags = /*[[${user.getFavouriteSportNames()}]]*/ [];
         countTags();
         createTag();
 
@@ -137,6 +138,7 @@
                         tag.split(',').forEach(tag => {
                             tags.push(tag);
                             createTag();
+
                         });
                     }
                 }
@@ -152,6 +154,7 @@
                 if (tags.length < 10) {
                     tags.push(tag);
                     createTag();
+
                 }
             }
             e.target.value = "";
@@ -164,6 +167,11 @@
             countTags();
         });
 
+
+        form.addEventListener('submit', (event) => {
+            form.setAttribute("favouriteSports", "Hockey")
+            form.submit()
+        });
     </script>
 </body>
 </html>

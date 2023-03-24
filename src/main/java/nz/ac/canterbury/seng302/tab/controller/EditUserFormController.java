@@ -56,6 +56,7 @@ public class EditUserFormController {
         userService.updateOrAddUser(u);
         editUserForm.prepopulate(u);
         model.addAttribute("favouriteSports", u.getFavoriteSports());
+        model.addAttribute("user", u);
         return "editUserForm";
     }
 
@@ -87,6 +88,7 @@ public class EditUserFormController {
         // Log-out if the user changes their email
         boolean shouldLogout = !user.getEmail().equals(editUserForm.getEmail());
 
+        System.out.println(model.getAttribute("favouriteSports"));
         user.setFirstName(editUserForm.getFirstName());
         user.setLastName(editUserForm.getLastName());
         user.setEmail(editUserForm.getEmail());

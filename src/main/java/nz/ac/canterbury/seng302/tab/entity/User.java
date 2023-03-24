@@ -192,4 +192,14 @@ public class User {
         result = 31 * result + (userRoles != null ? userRoles.hashCode() : 0);
         return result;
     }
+
+    public List<String> getFavouriteSportNames ()
+    {
+        List<String> sport = new ArrayList<>();
+        for (Sport s : favoriteSports)
+        {
+            sport.add(s.getName());
+        }
+        return sport;
+    }
 }
