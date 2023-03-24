@@ -140,13 +140,13 @@ public class CreateTeamFormController {
             team.setName(name);
             team.setSport(sport);
             team.setLocation(location);
-            teamService.updateTeam(team);
+            team = teamService.updateTeam(team);
         } else {
             team = new Team(name, sport, location);
             teamService.addTeam(team);
             teamID = team.getTeamId();
         }
-
+        
         return String.format("redirect:./profile?teamID=%s", team.getTeamId());
     }
 }

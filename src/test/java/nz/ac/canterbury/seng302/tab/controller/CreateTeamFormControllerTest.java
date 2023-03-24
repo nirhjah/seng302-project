@@ -21,6 +21,10 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
+
+
+import java.util.Optional;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -47,6 +51,22 @@ public class CreateTeamFormControllerTest {
         User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD);
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
         when(mockUserService.emailIsInUse(anyString())).thenReturn(false);
+    }
+
+    @MockBean
+    private UserService mockUserService;
+
+    @MockBean
+    private TeamService mockTeamService;
+
+    static final Long TEAM_ID = 1L;
+
+    @BeforeEach
+    void beforeEach() {
+        User testUser = new User("Test", "User", "test@email.com", "awfulPassword");
+
+        when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
+
     }
 
     /**
