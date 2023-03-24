@@ -8,7 +8,7 @@
 </head>
 
 <body class="profile-background">
-<div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+<div th:insert="~{/homeForm.html::navbar}"></div>
     <div class="profile-form">
         <div class="wrapper-profile">
             <p th:if="${thisUser.isEmpty()}">
@@ -16,7 +16,7 @@
             </p>
             <div class="profile-pic">
 
-                <form id="upload-picture" method="post" th:action="@{/user-info}" enctype="multipart/form-data">
+                <form id="upload-picture" method="post" th:action="@{/user-info/upload-pfp(userId=${userId})}" enctype="multipart/form-data">
                     <div class="image-styling">
                         <img th:src="*{'data:image/jpeg;base64,'+{displayPicture}}" width="200" height="200"/>
                         </br>
@@ -35,19 +35,17 @@
                         </div>
                     </div>
                     <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
-
                 </form>
-
             </div>
-        <div class="team-info">
+        <div class="user-info">
             <div th:if="${thisUser.isPresent()}" th:object="${thisUser.get()}">
-                <div class="team-display">
+                <div class="user-display">
                       <h4 th:text="|Name: *{FirstName} *{LastName}|"></h4>
                 </div>
-                <div class="team-display">
+                <div class="user-display">
                       <h4 th:text="|Email: *{email}|"></h4>
                 </div>
-                <div class="team-display">
+                <div class="user-display">
                       <h4 th:text="|Date of Birth: *{#dates.format(dateOfBirth, 'dd-MM-yyyy')}|"></h4>
                 </div>
                 <div class="edit-button">
