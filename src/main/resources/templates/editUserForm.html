@@ -26,7 +26,7 @@
         flex-wrap: wrap;
         padding: 7px;
         margin: 12px 0;
-        border: 1px solid #a6a6a6;
+        border: 1px dashed #a6a6a6;
         overflow-y: scroll;
         max-height: 100px;
         gap: 3px;
@@ -57,11 +57,19 @@
         background: #dfdfdf;
         justify-content: center;
     }
+    .content{
+        position:absolute;
+        bottom:130px;
+    }
+    .content input{
+        width:295px;
+    }
 </style>
 <body class="edit-user-background">
     <div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+
     <div class="user-form">
-        <div class="user-header">
+        <div class="user-header" style="padding-bottom: 80px;">
             <h1 th:inline="text">Edit User</h1>
         </div>
         <div class="wrapper-edit-profile">
@@ -95,12 +103,14 @@
                     <label for="dateOfBirth">Date of Birth: </label>
                     <p th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="errorMessage" id ="dateOfBirth" />
                 </div>
-                <div class ="sport-box"></div>
+                <label for="sport-box"> Favourite Sport</label>
+                <div class ="sport-box" id ="sport-box"></div>
 
-                    <div class="details">
-                        <button type ="button">Remove All</button>
-                    </div>
-                <div class="submit-button">
+<!--                <div class="details">-->
+<!--                    <button type ="button">Clear</button>-->
+<!--                </div>-->
+                </br>
+                <div class="submit-button" style="margin-top: 20px;">
                     <a th:href="@{home}">
                         <button type="submit">Save</button>
                     </a>
@@ -119,6 +129,9 @@
                     <option value="Tennis">
                     <option value="Volleyball">
                 </datalist>
+                <div class="details" style="text-align: center;">
+                    <button type ="button">Clear</button>
+                </div>
             </div>
 
         </div>
@@ -135,7 +148,7 @@
             sportDisplay = document.querySelector(".sport-box"),
             input = document.querySelector(".content input");
         const form = document.getElementById("editUserForm");
-            let tags =/*[[${user.getFavouriteSportNames()}]]*/ [];
+            let tags =[];
         createTag();
         function createTag(){
             sportDisplay.querySelectorAll("li").forEach(li => li.remove());

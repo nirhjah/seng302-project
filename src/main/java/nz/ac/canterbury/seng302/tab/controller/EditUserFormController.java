@@ -70,8 +70,7 @@ public class EditUserFormController {
             @RequestParam("tags") List<String> tags,
             Model model) throws ServletException {
         // TODO I've retrieved the tags as a List<String> tags will need to sort it in the backend
-        //        System.out.println("tags" + tags);
-
+        System.out.println("tags" + tags);
         prefillModel(model);
         Optional<User> optUser = userService.getCurrentUser();
         if (optUser.isEmpty()) {
