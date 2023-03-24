@@ -51,6 +51,12 @@ public class UserService {
      * @return A slice of users with the applied filters
      */
     public List<User> findUsersByNameOrSport(Pageable pageable, @Nullable List<Sport> favouriteSports, @Nullable String nameSearch) {
+        if (favouriteSports != null && favouriteSports.isEmpty()) {
+            favouriteSports = null;
+        }
+        if (nameSearch != null && nameSearch.isEmpty()) {
+            nameSearch = null;
+        }
         return userRepository.findAllFiltered(pageable, favouriteSports, nameSearch);
     }
 

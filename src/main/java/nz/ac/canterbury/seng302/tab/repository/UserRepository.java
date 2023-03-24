@@ -29,17 +29,18 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     /*
      * Query Logic:
-     * - The `:? is null or ...` means the filter isn't applied if you give it a null. 
+     * - The `:<name> is null OR ...` means the filter isn't applied if you don't provide that field.
      * - U17 AC2 specifies that provided a list of sports,
      *      get all users who have at least one of these sports.
      *      This is achieved via the join, and the `s in :sports` check.
      * - U7 AC4 states that a search succeeds if "The search string is contained in the first or last name".
-     *      However, this would mean that User("John", "Capenter") would never be found by searching
-     *      "John Capenter", as "John Capenter" isn't in "John", nor is it in "Capenter".
-     *      So, we concatenate it and then check.
+     *      However, this would mean that User("John", "Carpenter") would never be found by searching
+     *      "John Carpenter", as "John Carpenter" isn't in "John", nor is it in "Carpenter".
+     *      So, we check if the first name or last name is in the search string.
      */
-    @Query("SELECT distinct u FROM UserEntity u JOIN u.favouriteSports s"
-            +"WHERE (:sports is null or s in :sports)"
-            +"AND (:name is null or lower(:name) like lower(CONCAT(u.firstName, ' ', u.lastName)))")
-    List<User> findAllFiltered(Pageable pageable, @Param("sports") List<Sport> sports, @Param("name") String name);
+    @Query("SELECT distinct u FROM UserEntity u LEFT JOIN u.favoriteSports s "
+            +"WHERE (:searchedSports is null OR s in :searchedSports) "
+            +"AND (:name is null OR lower(:name) like lower(concat('%', u.firstName, '%')) OR lower(:name) like lower(concat('%', u.lastName, '%')) )"
+    )
+    List<User> findAllFiltered(Pageable pageable, @Param("searchedSports") List<Sport> searchedSports, @Param("name") String name);
 }
