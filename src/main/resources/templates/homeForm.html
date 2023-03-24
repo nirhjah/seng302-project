@@ -35,6 +35,7 @@
                         <a th:href="@{register}">Register</a>
                     </span>
                     <span class="auth-buttons" sec:authorize="isAuthenticated()">
+                        <a th:href="@{user-info}">My Profile</a>
                         <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
                         <form id="logoutForm" th:action="@{logout}" method="POST"></form>
                     </span>
