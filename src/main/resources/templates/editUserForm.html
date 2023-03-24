@@ -14,27 +14,32 @@
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <title th:inline="text">Edit User</title>
 </head>
+<style>
+    .multiply:before {
+        content: "x";
+    }
+</style>
 <body class="edit-user-background">
     <div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
     <div class="user-form">
         <div class="user-header">
             <h1 th:inline="text">Edit User</h1>
         </div>
-        <div class="wrapper">
+        <div class="wrapper-edit-profile">
             <form th:action="@{editUser}" method="post" th:object="${editUserForm}">
                 <div class="input-box">
                     <input type="text" class="form-control"
                            th:field="*{firstName}" data-cy="firstName" required
                            autofocus th:pattern="${validNameRegex}" th:title="${validNameMessage}">
                     <label for="firstName">First Name: </label>
-                    <p th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="errorMessage" />
+                    <p th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="errorMessage"  id="firstName"/>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control"
                            th:field="*{lastName}" data-cy="lastName" required
                            autofocus th:pattern="${validNameRegex}" th:title="${validNameMessage}">
                     <label for="lastName">Last Name: </label>
-                    <p th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="errorMessage" />
+                    <p th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="errorMessage" id = "lastName"/>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control"
@@ -43,13 +48,13 @@
                     <label for="email">Email
                         <span style="color: darkred">(You will be logged out if you edit your email):</span>
                     </label>
-                    <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="errorMessage" />
+                    <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="errorMessage" id ="email"/>
                 </div>
                 <div class="input-box">
                     <input type="date" class="form-control"
                            th:field="*{dateOfBirth}" th:value="*{#dates.formatISO(dateOfBirth)}" data-cy="dateOfBirth" required autofocus>
                     <label for="dateOfBirth">Date of Birth: </label>
-                    <p th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="errorMessage" />
+                    <p th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="errorMessage" id ="dateOfBirth" />
                 </div>
                 <div class="input-box">
                 <p th:each="sport: ${favouriteSports}" th:text="${sport}"></p>
@@ -63,13 +68,102 @@
                 <div class="cancel-link">
                     <a th:href="@{user-info/self}">Cancel</a>
                 </div>
+                <div class>
+                    <div class="title">
+                        <h2>Sport Interest</h2>
+                    </div>
+                    <div class="content">
+                        <p>Press enter or add a comma after each Sport</p>
+                        <ul><input type="text" spellcheck="false" list="sports"></ul>
+                        <datalist id="sports">
+                            <option value="Swimming">
+                            <option value="Netball">
+                            <option value="Badminton">
+                            <option value="Running">
+                            <option value="Tennis">
+                            <option value="Volleyball">
+                        </datalist>
+                    </div>
+                    <div class="details">
+                        <p><span>10</span> Sports are remaining</p>
+                        <button>Remove All</button>
+                    </div>
+                </div>
             </form>
         </div>
+
     </div>
     <footer>
         <p>
             Image by <a href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a> on Freepik
         </p>
     </footer>
+
+    <script>
+        const ul = document.querySelector(".content ul"),
+            input = document.querySelector(".content input"),
+            tagNumb = document.querySelector(".details span");
+        let maxTags = 10,
+            tags = ["apple", "cat"];
+        countTags();
+        createTag();
+
+        function countTags(){
+            input.focus();
+            tagNumb.innerText = maxTags - tags.length;
+        }
+
+        function createTag(){
+            ul.querySelectorAll("li").forEach(li => li.remove());
+            tags.slice().reverse().forEach(tag =>{
+                let liTag = `<li>${tag} <i class="multiply" onclick="remove(this, '${tag}')"></i></li>`;
+                ul.insertAdjacentHTML("afterbegin", liTag);
+            });
+            countTags();
+        }
+
+        function remove(element, tag){
+            let index  = tags.indexOf(tag);
+            tags = [...tags.slice(0, index), ...tags.slice(index + 1)];
+            element.parentElement.remove();
+            countTags();
+        }
+
+        function addTag(e){
+            if(e.key == "Enter"){
+                let tag = e.target.value.replace(/\s+/g, ' ');
+                if(tag.length > 1 && !tags.includes(tag)){
+                    if(tags.length < 10){
+                        tag.split(',').forEach(tag => {
+                            tags.push(tag);
+                            createTag();
+                        });
+                    }
+                }
+                e.target.value = "";
+            }
+        }
+
+        input.addEventListener("keyup", addTag);
+
+        input.addEventListener("change", (e) => {
+            let tag = e.target.value.trim();
+            if (tag.length > 0 && !tags.includes(tag)) {
+                if (tags.length < 10) {
+                    tags.push(tag);
+                    createTag();
+                }
+            }
+            e.target.value = "";
+        });
+
+        const removeBtn = document.querySelector(".details button");
+        removeBtn.addEventListener("click", () =>{
+            tags.length = 0;
+            ul.querySelectorAll("li").forEach(li => li.remove());
+            countTags();
+        });
+
+    </script>
 </body>
 </html>

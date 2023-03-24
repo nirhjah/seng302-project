@@ -104,7 +104,7 @@ th:not(:first-child) {
     width: calc((100% - 10%) / 3);
 }
 
-tr, .wrapper,.wrapper-profile {
+tr, .wrapper,.wrapper-profile,.wrapper-edit-profile {
     background-color: white;
 }
 
@@ -122,7 +122,7 @@ td {
     border-bottom: 1px solid #ddd;
 }
 
-.navbar, .menu-items a, .wrapper, .input-box, .profile-pic .back-button, .Welcome-header{
+.navbar, .menu-items a, .wrapper, .input-box, .profile-pic .back-button, .Welcome-header,.wrapper-edit-profile{
     position: relative;
 }
 
@@ -167,18 +167,23 @@ td {
     /*backdrop-filter: blur(20px);*/
 }
 
+.wrapper-edit-profile{
+    width: 700px;
+    height: 550px;
+}
+
 .wrapper {
     width: 500px;
     height: 440px;
     /*backdrop-filter: blur(20px);*/
 }
-.wrapper,.wrapper-profile{
+.wrapper,.wrapper-profile,.wrapper-edit-profile{
     border: 2px solid rgba(255, 255, 255, .5);
     box-shadow: 0 0 30px rgba(0, 0, 0, .5);
     border-radius: 20px;
 }
 
-.wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form  {
+.wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form,.wrapper-edit-profile  {
     justify-content: center;
     align-items: center;
 }
@@ -449,6 +454,6 @@ li.active a {
     color: white;
 }
 
-ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form{
+ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form,.wrapper-edit-profile{
     display: flex;
 }

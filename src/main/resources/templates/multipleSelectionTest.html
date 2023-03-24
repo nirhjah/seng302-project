@@ -6,18 +6,18 @@
 <body>
 <style>
     .multiply:before {
-        font-family: 'Unicons';
-        content: "\e010";
+        content: "x";
     }
 </style>
 
-<div class="wrapper">
+<div class="wrapper-edit-profile">
     <div class="title">
         <h2>Sport Interest</h2>
     </div>
     <div class="content">
         <p>Press enter or add a comma after each Sport</p>
         <ul><input type="text" spellcheck="false" list="sports"></ul>
+        <div class ="input-container">
         <datalist id="sports">
             <option value="Swimming">
             <option value="Netball">
@@ -26,6 +26,7 @@
             <option value="Tennis">
             <option value="Volleyball">
         </datalist>
+        </div>
     </div>
     <div class="details">
         <p><span>10</span> Sports are remaining</p>
