@@ -18,10 +18,39 @@
     .multiply:before {
         content: "x";
     }
-    .sport-box{
-        width: 200px;
-        height: 200px;
-        overflow: scroll;
+
+    .sport-box {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 7px;
+        margin: 12px 0;
+        border: 1px solid #a6a6a6;
+        overflow-y: scroll;
+        max-height: 100px;
+        gap: 3px;
+        align-content: flex-start;
+    }
+    .sport-box  li{
+        color: #333;
+        margin: 0;
+        list-style: none;
+        border-radius: 20px;
+        background: #F2F2F2;
+        padding: 5px 8px 5px 10px;
+        border: 1px solid #e3e1e1;
+        display: inline-block;
+        white-space: nowrap;
+    }
+    .sport-box  li i{
+        height: 20px;
+        width: 20px;
+        color: #808080;
+        margin-left: 8px;
+        font-size: 12px;
+        cursor: pointer;
+        border-radius: 50%;
+        background: #dfdfdf;
+        justify-content: center;
     }
 </style>
 <body class="edit-user-background">
@@ -61,6 +90,7 @@
                     <label for="dateOfBirth">Date of Birth: </label>
                     <p th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="errorMessage" id ="dateOfBirth" />
                 </div>
+                <div class ="sport-box"></div>
                 <br>
                 <div class="submit-button">
                     <a th:href="@{home}">
@@ -70,24 +100,23 @@
                 <div class="cancel-link">
                     <a th:href="@{user-info/self}">Cancel</a>
                 </div>
-                <div class>
-                    <div class="content">
-                        <div class ="sport-box"></div>
-                        <ul><input type="text" spellcheck="false" list="sports"></ul>
-                        <datalist id="sports">
-                            <option value="Swimming">
-                            <option value="Netball">
-                            <option value="Badminton">
-                            <option value="Running">
-                            <option value="Tennis">
-                            <option value="Volleyball">
-                        </datalist>
-                    </div>
-                    <div class="details">
-                        <button>Remove All</button>
-                    </div>
-                </div>
             </form>
+            <div class>
+                <div class="content">
+                    <ul><input type="text" spellcheck="false" list="sports"></ul>
+                    <datalist id="sports">
+                        <option value="Swimming">
+                        <option value="Netball">
+                        <option value="Badminton">
+                        <option value="Running">
+                        <option value="Tennis">
+                        <option value="Volleyball">
+                    </datalist>
+                </div>
+                <div class="details">
+                    <button>Remove All</button>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -150,7 +179,7 @@
         const removeBtn = document.querySelector(".details button");
         removeBtn.addEventListener("click", () =>{
             tags.length = 0;
-            ul.querySelectorAll("li").forEach(li => li.remove());
+            sportDisplay.querySelectorAll("li").forEach(li => li.remove());
         });
 
 
