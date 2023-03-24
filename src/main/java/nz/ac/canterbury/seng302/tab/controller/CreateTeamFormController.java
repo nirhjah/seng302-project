@@ -29,18 +29,22 @@ public class CreateTeamFormController {
 
     /**
      * Countries and cities can have letters from all alphabets, with hyphens and
-     * spaces allowed if not leading.
+     * spaces. Must start with an alphabetical character
      */
-    private final String countryOrCityNameRegex = "^\\p{L}+[\\- \\p{L}]*$";
+    private final String countryCitySuburbNameRegex = "^\\p{L}+[\\- \\p{L}]*$";
 
-    /** Allow letters, numbers and dashes */
-    private final String postcodeRegex = "^[\\d\\w\\-]+$";
+    /** Addresses can have letters, numbers, spaces, commas, periods, hyphens, forward slashes and pound signs. Must
+     * include at least one alphanumeric character **/
+    private  final String addressRegex = "^[\\p{L}\\p{N}]+[\\- ,./#\\p{L}\\p{N}]*$";
 
-    /** A team name can be alphanumeric, dots and curly braces **/
-    private final String teamNameUnicodeRegex = "^[\\p{L}\\s\\d\\.\\}\\{]+$";
+    /** Allow letters, numbers, forward slashes and hyphens. Must start with an alphanumeric character. */
+    private final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
 
-    /** A sport can be letters, space, apostrophes or dashes **/
-    private final String sportUnicodeRegex = "^[\\p{L}\\s\\'\\-]+$";
+    /** A team name can be alphanumeric, dots and curly braces. Must start with on alphabetical character **/
+    private final String teamNameUnicodeRegex = "^[\\p{L}\\p{N}]+[}{.\\p{L}\\p{N}]+$";
+
+    /** A sport can be letters, space, apostrophes or hyphens. Must include at least on alphabetical character**/
+    private final String sportUnicodeRegex = "^\\p{L}+[\\- '\\p{L}]*$";
 
     /**
      * Gets createTeamForm to be displayed and contains name, sport,
@@ -79,7 +83,8 @@ public class CreateTeamFormController {
 
         // client side validation
 
-        model.addAttribute(countryOrCityNameRegex, countryOrCityNameRegex);
+        model.addAttribute("addressRegex", addressRegex);
+        model.addAttribute("countryCitySuburbNameRegex", countryCitySuburbNameRegex);
         model.addAttribute("postcodeRegex", postcodeRegex);
         model.addAttribute("teamNameUnicodeRegex", teamNameUnicodeRegex);
         model.addAttribute("sportUnicodeRegex", sportUnicodeRegex);
@@ -112,7 +117,7 @@ public class CreateTeamFormController {
         logger.info("POST /createTeam");
 
         // client side validation
-        model.addAttribute(countryOrCityNameRegex, countryOrCityNameRegex);
+        model.addAttribute("countryOrCityNameRegex", countryCitySuburbNameRegex);
         model.addAttribute("postcodeRegex", postcodeRegex);
         model.addAttribute("teamNameUnicodeRegex", teamNameUnicodeRegex);
         model.addAttribute("sportUnicodeRegex", sportUnicodeRegex);
@@ -120,11 +125,13 @@ public class CreateTeamFormController {
         // server side validation
         boolean nameValid = (name.matches(teamNameUnicodeRegex));
         boolean sportValid = (sport.matches(sportUnicodeRegex));
-        boolean countryValid = (country.matches(countryOrCityNameRegex));
-        boolean cityValid = (city.matches(countryOrCityNameRegex));
-        boolean postcodeValid = (postcode.matches(postcodeRegex));
-        boolean suburbValid = (suburb.matches(countryOrCityNameRegex));
-        if (!sportValid || !nameValid || !countryValid || !cityValid || !postcodeValid || !suburbValid) {
+        boolean countryValid = (country.matches(countryCitySuburbNameRegex));
+        boolean addressLine1Valid = (addressLine1.matches(addressRegex)) || addressLine1 == "";
+        boolean addressLine2Valid = (addressLine2.matches(addressRegex)) || addressLine2 == "";
+        boolean cityValid = (city.matches(countryCitySuburbNameRegex));
+        boolean postcodeValid = (postcode.matches(postcodeRegex)) || postcode == "";
+        boolean suburbValid = (suburb.matches(countryCitySuburbNameRegex)) || suburb == "";
+        if (!sportValid || !nameValid || !countryValid || !cityValid || !postcodeValid || !suburbValid || !addressLine1Valid || !addressLine2Valid) {
             return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
         }
         Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);

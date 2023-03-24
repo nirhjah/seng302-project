@@ -411,6 +411,19 @@ a.enabled {
   font-family: "Noto Sans", sans-serif;
 }
 
+input:invalid {
+  width: calc(100% - 2.5em);
+}
+
+input:invalid + label:after {
+  width: 2.5em;
+}
+
+
+.input-box .required {
+  color: red;
+}
+
 
 .input-boxes .input-box {
   width: 45%;
