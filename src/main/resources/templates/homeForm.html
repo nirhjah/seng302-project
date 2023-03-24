@@ -10,9 +10,12 @@
     <div>
         <div th:fragment="navbar" class="navbar">
             <div class="menu-items">
+                <span class="auth-buttons" sec:authorize="isAnonymous()">
+                    <a th:href="@{login}">Login</a>
+                    <a th:href="@{register}">Register</a>
+                </span>
                 <p>
                     <a th:href="@{home}">Home</a>
-
                     <!-- These buttons only make sense in the context of a logged in user -->
                     <span sec:authorize="isAuthenticated()">
                         <a th:href="@{createTeam}">Create Team</a>
@@ -29,15 +32,10 @@
                                     th:selected="${team.teamId.equals(teamID)}"> </option>
                         </select>
                     </span>
-
-                    <span class="auth-buttons" sec:authorize="isAnonymous()">
-                        <a th:href="@{login}">Login</a>
-                        <a th:href="@{register}">Register</a>
-                    </span>
                     <span class="auth-buttons" sec:authorize="isAuthenticated()">
                         <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
-                        <form id="logoutForm" th:action="@{logout}" method="POST"></form>
                     </span>
+                    <form id="logoutForm" th:action="@{logout}" method="POST"></form>
                 </p>
             </div>
         </div>

@@ -22,7 +22,7 @@
                         <label for="file" class="file-label">
                             Edit Profile Picture </label>
                     </div>
-                    <input type="file" name="file" class="form-control-file" id="file" onchange="form.submit()">
+                        <input type="file" name="file" class="form-control-file" id="file" onchange="form.submit()">
                 </div>
                 <div class="file-upload">
                     <div class="error-message" th:if="${sizeError == true}">Image must be less than 10MB</div>
@@ -30,24 +30,18 @@
                     </div>
                 </div>
                 <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
-
             </form>
-
-
         </div>
         <div class="team-info">
+            <div class="team-display">
+                <h2>Team Profile</h2>
+                <h3 th:text="'Name: ' + ${displayName}"></h3>
+                <h3 th:text="'Sport: ' + ${displaySport}"></h3>
+                <h3 th:text="'Location: ' + ${displayLocation}"></h3>
+            </div>
+        </div>
+        <div class="edit-button-div">
             <form th:action="@{profile}" method="post">
-                <h3>Team Profile</h3>
-                <div class="team-display">
-                    <h4 th:text="'Name: ' + ${displayName}"></h4>
-                </div>
-                <div class="team-display">
-                    <h4 th:text="'Sport: ' + ${displaySport}"></h4>
-                </div>
-                <div class="team-display">
-                    <h4 th:text="'Location: ' + ${displayLocation}"></h4>
-                </div>
-                <br/>
                 <div class="edit-button">
                     <a th:href="@{createTeam(edit=${teamID})}">
                         <button type="button">Edit Profile</button>

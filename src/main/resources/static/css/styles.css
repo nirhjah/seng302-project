@@ -1,459 +1,669 @@
-.team-form.register {
-    grid-auto-rows: 630px;
-    grid-template-rows: 300px;
-    height: 112vh;
-}
-
-.register .wrapper {
-    height: 770px;
+.register-form .wrapper {
+  height: 770px;
 }
 
 ul.search {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .password-info {
-    width: 271px;
-    font-style: italic;
-    font-size: small;
-    margin-top: -20px;
-    margin-bottom: 20px;
+  width: 271px;
+  font-style: italic;
+  font-size: small;
+  margin-top: -20px;
+  margin-bottom: 20px;
 }
 
 .auth-buttons {
-    float: right;
+  float: right;
+}
+
+.login-form {
+  display: grid;
+  grid-auto-rows: 300px;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
 }
 
 .team-form {
-    display: grid;
-    grid-auto-rows: 300px;
-    justify-content: center;
-    align-items: center;
-    height: 90vh;
+  display: grid;
+  grid-auto-rows: 570px;
+  justify-content: center;
+  align-items: center;
+  grid-template-rows: 215px;
+  height: 90vh;
+}
+
+.register-form {
+  display: grid;
+  grid-auto-rows: 815px;
+  justify-content: center;
+  align-items: center;
+  grid-template-rows: 105px;
+  height: 90vh;
+}
+
+.input-box .autocomplete-container {
+  background-color: white;
+  z-index: 1;
+  position: absolute;
+  border: #888888;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  margin-top: 2px;
+}
+
+.input-box .autocomplete-container:hover {
+  cursor: pointer;
+}
+
+.input-box .autocomplete-container ul li {
+  display: inline-block;
+  padding: 10px; /* add padding to the list items */
+  border-bottom: 1px solid #ccc; /* add a border to separate the list items */
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  width: 91%;
+}
+
+.input-box .autocomplete-container ul li:hover {
+  background-color: #007bff;
+}
+
+.input-box .autocomplete-container ul li:last-child {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .user-form {
-    display: grid;
-    grid-auto-rows: 325px;
-    justify-content: center;
-    align-items: center;
-    height: 90vh;
+  display: grid;
+  grid-auto-rows: 325px;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
 }
 
 .paginationActive {
-    background-color: #1B263B;
-    color: white;
-    border-radius: 1px;
+  background-color: #1b263b;
+  color: white;
+  border-radius: 1px;
 }
 
-.paginationButton, .paginationActive, .totalPages {
-    padding: 5px;
+.paginationButton,
+.paginationActive,
+.totalPages {
+  padding: 5px;
 }
 
 .paginationButton[disabled] {
-    pointer-events: none; /* Disable pointer events */
+  pointer-events: none; /* Disable pointer events */
 }
 
 .paginationButton[disabled] span {
-    opacity: 0.5; /* Set opacity to 50% */
+  opacity: 0.5; /* Set opacity to 50% */
 }
 
 .paginationContainer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .paginationContainer > div {
-    margin-right: 5px;
-    margin-left: 5px;
+  margin-right: 5px;
+  margin-left: 5px;
 }
 
 .totalPages {
-    justify-content: left;
+  justify-content: left;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: "Noto Sans", sans-serif;
-    padding: 50px;
-    font-size: 18px;
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Noto Sans", sans-serif;
+  padding: 50px;
+  font-size: 18px;
 }
 
 th {
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
-    background-color: #415A77;
-    color: white;
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  background-color: #415a77;
+  color: white;
 }
 
 th:first-child {
-    width: 10%;
+  width: 10%;
 }
 
-th:not(:first-child) {
-    width: calc((100% - 10%) / 3);
+th:nth-child(2) {
+  width: 15%;
+}
+th:nth-child(3) {
+  width: 15%;
+}
+th:nth-child(4) {
+  width: 60%;
 }
 
-tr, .wrapper,.wrapper-profile {
-    background-color: white;
+/*th:not(:first-child) {*/
+/*    width: calc((100% - 10%) / 3);*/
+/*}*/
+
+tr,
+.wrapper,
+.wrapper-profile {
+  background-color: white;
 }
 
 tr:hover {
-    background-color: #E0E1DD;
-    cursor: pointer;
+  background-color: #e0e1dd;
+  cursor: pointer;
 }
 
 th:hover {
-    cursor: default;
+  cursor: default;
 }
 
 td {
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
 }
 
-.navbar, .menu-items a, .wrapper, .input-box, .profile-pic .back-button, .Welcome-header{
-    position: relative;
+.navbar,
+.menu-items a,
+.wrapper,
+.input-box,
+.profile-pic .back-button,
+.Welcome-header {
+  position: relative;
 }
 
 .navbar {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    height: 20px;
-    background-color: #1b263b;
-    overflow: hidden;
-    white-space: nowrap;
+  padding-top: 15px;
+  padding-bottom: 20px;
+  height: 20px;
+  background-color: #1b263b;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .form-control {
-    background: #415A77;
-    border-radius: 20px;
-    font-size: 16px;
-    border: none;
-    outline: 0;
-    padding: .1em .5em;
-    cursor: pointer;
+  background: #415a77;
+  border-radius: 20px;
+  font-size: 16px;
+  border: none;
+  outline: 0;
+  padding: 0.1em 0.5em;
+  cursor: pointer;
 }
 
 .menu-items a {
-    text-decoration: none;
-    font-size: 17px;
-    font-weight: 500;
-    padding: 6px 15px;
-    border-radius: 20px;
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: 500;
+  padding: 6px 15px;
+  border-radius: 20px;
 }
 
+
 .menu-items a:hover {
-    background: #415A77;
-    color: #fff;
-    opacity: 1;
+  background: #415a77;
+  color: #fff;
+  opacity: 1;
 }
 
 .wrapper-profile {
-    position: absolute;
-    width: 700px;
-    height: 440px;
-    /*background: transparent;*/
-    /*backdrop-filter: blur(20px);*/
+  position: absolute;
+  width: 850px;
+  height: 430px;
+  display: grid;
+  /*background: transparent;*/
+  /*backdrop-filter: blur(20px);*/
 }
 
-.wrapper {
-    width: 500px;
-    height: 440px;
-    /*backdrop-filter: blur(20px);*/
-}
-.wrapper,.wrapper-profile{
-    border: 2px solid rgba(255, 255, 255, .5);
-    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
-    border-radius: 20px;
+.login-form .wrapper {
+  width: 500px;
+  height: 440px;
+  /*backdrop-filter: blur(20px);*/
 }
 
-.wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form  {
-    justify-content: center;
-    align-items: center;
+.register-form .wrapper {
+  width: 500px;
+  height: 780px;
 }
 
-.wrapper-profile .profile-pic, .wrapper-profile .team-info{
-    position: absolute;
-    top: 0;
-    width: 400px;
-    height: 440px;
+.team-form .wrapper {
+  width: 630px;
+  height: 570px;
+}
+
+.wrapper,
+.wrapper-profile {
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+}
+
+.wrapper,
+.wrapper-profile .profile-pic,
+.file-label-border,
+.profile-form {
+  justify-content: center;
+  align-items: center;
 }
 
 .wrapper-profile .profile-pic {
-    left: 0;
+  position: absolute;
+  top: 0;
+  width: 300px;
+  height: 400px;
 }
 
-.wrapper-profile .team-info, footer {
-    right: 0;
+.wrapper-profile .team-info {
+  position: absolute;
+  top: 0;
+  width: 380px;
+  justify-content: flex-start;
+  align-items: center;
+  padding-right: 170px;
+  padding-top: 51px;
 }
 
-.file-upload {
-    padding: 5px 5px 5px 5px;
+.wrapper-profile .profile-pic {
+  left: 0;
+}
+.wrapper-profile .team-info,
+footer {
+  right: 0;
 }
 
-.file-label-border,.edit-button button, .profile-pic .back-button {
-    background-color: #415A77;
-    font-weight: 500;
+.file-label-border,
+.edit-button button,
+.profile-pic .back-button {
+  background-color: #415a77;
+  font-weight: 500;
 }
 
 .menu-items p {
-    font-size: 18px;
-    padding-left: 15px;
+  font-size: 18px;
+  padding-left: 15px;
 }
 
 .profile-form {
-    min-height: 90vh;
+  min-height: 90vh;
 }
 
-.home-background, .view-users-background, .view-teams-background, .team-form-background, .profile-background, .Search-teams-background, .background-image {
-    background-image: url('../image/landscape.jpeg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    height: 100vh;
+.home-background,
+.view-users-background,
+.view-teams-background,
+.team-form-background,
+.profile-background,
+.Search-teams-background,
+.background-image {
+  background-image: url("../image/landscape.jpeg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  height: 100vh;
 }
 
 footer {
-    position: absolute;
-    bottom: 0;
-    padding: 10px;
+  position: absolute;
+  bottom: 0;
+  padding: 10px;
+}
+
+.team-info {
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 600;
+  color: #1b263b;
+}
+
+.team-info form {
+  width: 100%;
+}
+
+.team-info h2 {
+  font-size: 35px;
 }
 
 .team-info h3 {
-    font-family: "Noto Sans", sans-serif;
-    font-weight: 600;
-    font-size: 35px;
-    color: #1B263B;
+  font-size: 22px;
 }
 
 .team-display {
-    padding: 20px 0 20px 0;
-    font-weight: 500;
-    font-family: "Noto Sans", sans-serif;
-    color: #1B263B;
-
+  padding: 20px 0 20px 0;
+  font-weight: 500;
+  font-family: "Noto Sans", sans-serif;
+  color: #1b263b;
+  margin-bottom: 100px;
+  width: 100%;
 }
 
-.form-control-file {
-    display: none;
-}
-
-.file-label-border {
-    width: 70%;
-    height: 25px;
-    white-space: nowrap;
-    text-align: center;
-    flex: 1;
+.edit-button {
+  float: right;
+  margin-right: 50px;
+  position: absolute;
+  right: 20px;
+  bottom: 40px;
 }
 
 .edit-button button {
-    width: 100%;
-    height: 45px;
+  width: 150%;
+  height: 40px;
 }
 
-.team-form .create-team, .user-form .user-header{
-    font-family: "Noto Sans",sans-serif;
-    /*color: #0B1B2A;*/
-    text-align: center;
-    /*font-size: 30px;*/
-    font-size: 40px;
-    font-weight: 600;
-    color: #0D1B2A;
-    background-clip: text;
-    -webkit-background-clip: text;
+.form-control-file {
+  display: none;
 }
+
+.file-label-border {
+  width: 100%;
+  height: 35px;
+  white-space: nowrap;
+  text-align: center;
+  flex: 1;
+}
+
+.team-form .create-team,
+.user-form .user-header,
+.login-form .login-header,
+.register-form .register-header{
+  font-family: "Noto Sans", sans-serif;
+  /*color: #0B1B2A;*/
+  text-align: center;
+  /*font-size: 30px;*/
+  font-size: 40px;
+  font-weight: 600;
+  color: #0d1b2a;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
 
 a.disabled {
-    pointer-events: none;
-    cursor: default;
+  pointer-events: none;
+  cursor: default;
 }
 
-a.enabled{
-    pointer-events:auto;
-    cursor:pointer;
+a.enabled {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.input-boxes {
+  display: flex;
+  justify-content: space-between;
 }
 
 .input-box {
-    width: 100%;
-    height: 50px;
-    border-bottom: 2px solid #162938;
-    margin: 30px 0;
-    font-family: "Noto Sans", sans-serif;
+  width: 100%;
+  height: 50px;
+  border-bottom: 2px solid #162938;
+  margin: 30px 0;
+  font-family: "Noto Sans", sans-serif;
+}
+
+input:invalid {
+  width: calc(100% - 2.5em);
+}
+
+input:invalid + label:after {
+  width: 2.5em;
+}
+
+
+.input-box .required {
+  color: red;
+}
+
+
+.input-boxes .input-box {
+  width: 45%;
+  height: 35px;
+  border-bottom: 2px solid #162938;
+  margin: 30px 0;
+  font-family: "Noto Sans", sans-serif;
 }
 
 .input-box input:focus ~ label,
 .input-box input:not(:placeholder-shown) ~ label {
-    top: -5px;
+  top: -5px;
 }
 
 .input-box input[type="date"] {
-    width: 100%;
+  width: 100%;
 }
-
 
 .input-box label {
-    font-family: "Noto Sans", sans-serif;
-    position: absolute;
-    top: 50%;
-    left: 5px;
-    transform: translateY(-50%);
-    font-size: 1em;
-    font-weight: 500;
-    pointer-events: none;
-    transition: .5s;
+  font-family: "Noto Sans", sans-serif;
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  transform: translateY(-50%);
+  font-size: 1em;
+  font-weight: 500;
+  pointer-events: none;
+  transition: 0.5s;
 }
 
+
 .input-box input {
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    font-size: 1em;
-    color: #0D1B2A;
-    font-weight: 500;
-    padding: 0 35px 0 5px;
-    border: none;
-    outline: none;
-    cursor: pointer;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  font-size: 1em;
+  color: #0d1b2a;
+  font-weight: 500;
+  padding: 0 35px 0 5px;
+  border: none;
+  outline: none;
+  cursor: pointer;
 }
 
 .submit-button button {
-    width: 100%;
-    height: 45px;
-    background-color: #1B263B;
-    font-weight: 500;
+  width: 100%;
+  height: 45px;
+  background-color: #1b263b;
+  font-weight: 500;
 }
 
-.edit-button button:hover, .profile-pic .back-button:hover, .submit-button:hover, .file-label:hover, .file-label-border label:hover {
-    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
-    cursor: pointer;
+.edit-button button:hover,
+.profile-pic .back-button:hover,
+.submit-button:hover,.file-label-border:hover{
+  box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24),
+    0 17px 50px 0 rgba(0, 0, 0, 0.19);
+  cursor: pointer;
 }
-
+.file-label{
+  cursor: pointer;
+}
 
 
 .image-styling img {
-    border-radius: 20px;
-    border: 4px solid #1B263B;
+  border-radius: 20px;
+  border: 4px solid #1b263b;
 }
 
 .cancel-link {
-    font-size: 1em;
-    text-align: center;
-    font-weight: 500;
-    margin: 25px 0 10px;
+  font-size: 1em;
+  text-align: center;
+  font-weight: 500;
+  margin: 25px 0 10px;
 }
 
+
 .cancel-link a {
-    font-family: "Noto Sans", sans-serif;
-    color: #415A77;
-    text-decoration: none;
-    font-weight: 600;
+  font-family: "Noto Sans", sans-serif;
+  color: #415a77;
+  text-decoration: none;
+  font-weight: 600;
 }
 
 .cancel-link a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .error-message {
-    font-size: 13px;
-    font-family: "Noto Sans", sans-serif;
-    font-weight: 300;
-    color: red;
-    text-align: center;
+  font-size: 13px;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 300;
+  color: red;
+  text-align: center;
 }
 
 .profile-pic .back-button {
-    bottom: -35px;
-    width: 35%;
-    height: 25px;
+  bottom: -35px;
+  width: 35%;
+  height: 35px;
 }
 
 .Welcome-header {
-    overflow: hidden;
-    height: 90vh;
+  overflow: hidden;
+  height: 90vh;
 }
 
 .Welcome-header h1 {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 7rem;
-    color: #0D1B2A;
-    padding: 1rem;
-    background: linear-gradient(-30deg, #333 50%, white 50%);
-    background-size: 400% 400%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 7rem;
+  color: #0d1b2a;
+  padding: 1rem;
+  background: linear-gradient(-30deg, #333 50%, white 50%);
+  background-size: 400% 400%;
 }
 
 .paginationContainer {
-    justify-content: center;
+  justify-content: center;
 }
 
 ul {
-    list-style: none;
+  list-style: none;
 }
-*, li, ul{
-    margin: 0;
-    padding: 0;
+*,
+li,
+ul {
+  margin: 0;
+  padding: 0;
 }
 
 li a {
-    display: block;
-    padding: 0.5em;
-    text-align: center;
+  display: block;
+  padding: 0.5em;
+  text-align: center;
 }
+
 
 li.active a {
-    background-color: #007bff;
-    color: #fff;
+  background-color: #007bff;
+  color: #fff;
 }
 
-.team-name-label{
-    font-family: "Noto Sans", sans-serif;
-    padding-left:30px;
+.team-name-label {
+  font-family: "Noto Sans", sans-serif;
+  padding-left: 30px;
 }
 
-.team-name-input{
-    border-radius: 5px;
-    padding-bottom:4px;
-    width:15%;
+.team-name-input {
+  border-radius: 5px;
+  padding-bottom: 4px;
+  width: 15%;
 }
 
-.search-team-button, .search-user-button {
-    background-color: #415A77;
-    width:6%;
+.search-team-button,
+.search-user-button {
+  background-color: #415a77;
+  width: 6%;
 }
 
-.search-team-button, .profile-pic .back-button, .submit-button button , .edit-button button, .file-label-border{
-    border: none;
-    outline: none;
-    cursor: pointer;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 1em;
-    color: #fff;
-    border-radius: 6px;
+.search-team-button,
+.profile-pic .back-button,
+.submit-button button,
+.edit-button button,
+.file-label-border {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 1em;
+  color: #fff;
+  border-radius: 6px;
 }
 
-.menu-items p, .form-control, .menu-items a{
-    font-family: "Noto Sans", sans-serif;
-    color: white;
+.menu-items p,
+.form-control,
+.menu-items a {
+  font-family: "Noto Sans", sans-serif;
+  color: white;
 }
+
+.paginationContainer,
+.wrapper,
+.wrapper-profile .profile-pic,
+.wrapper-profile .team-info,
+.file-label-border,
+.profile-form {
+  display: flex;
+}
+
+.profile-form {
+  flex-direction: column;
+}
+
+.search-bar {
+  margin: 10px auto;
+  width: 60%;
+  max-width: 500px;
+  background-color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  border: 2px solid #58629b;
+  border-radius: 60px;
+  padding: 10px 20px;
+  height: 25px;
+  backdrop-filter: blur(4px) saturate(180%);
+}
+
+.search-bar input {
+  background: transparent;
+  flex: 1;
+  border: 0;
+  outline: none;
+  padding: 10px 10px;
+  font-size: 20px;
+  color: black;
+}
+
+::placeholder {
+  color: black;
+}
+
+.search-bar button img {
+  width: 25px;
+}
+
+.search-bar button {
+  border: 0;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background: #58629b;
+  cursor: pointer;
+}
+
 
 ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form{
     display: flex;
 }
-
-
-
-
-
-
 
 .multipleSelection {
     background-color: #415A77;

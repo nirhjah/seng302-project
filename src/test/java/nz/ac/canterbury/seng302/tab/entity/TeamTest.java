@@ -26,19 +26,35 @@ public class TeamTest {
     private TeamService teamService;
 
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() {
         teamRepository.deleteAll();
 
     }
+
+    Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
+
     @Test
     public void testTeamConstructor() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
-        Team team = new Team("test", "Christchurch", "Hockey");
+        Team team = new Team("test", "Hockey", location);
         teamRepository.save(team);
         assertEquals("test", team.getName());
-        assertEquals("Christchurch", team.getLocation());
+        assertEquals("Christchurch", team.getLocation().getCity());
         assertEquals("Hockey", team.getSport());
+    }
+
+    @Test
+    public void testGettingTeamId() throws IOException {
+        List<Team> teamList = teamService.getTeamList();
+        assertTrue(teamList.isEmpty());
+        Team team = new Team("test", "Hockey", location);
+        teamRepository.save(team);
+
+        Team team2 = new Team("test2", "Netball", location);
+        teamRepository.save(team2);
+        assertEquals(1, team.getTeamId());
+        assertEquals(2, team2.getTeamId());
     }
 
     @Test
@@ -48,28 +64,27 @@ public class TeamTest {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
         String pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
-        Team team = new Team("test", "Christchurch", "Hockey");
+        Team team = new Team("test", "Hockey", location);
         teamService.addTeam(team);
-        assertEquals(pictureString,team.getPictureString() );
+        assertEquals(pictureString, team.getPictureString());
     }
 
     @Test
     public void testGettingTeamName() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
-        Team team = new Team("test", "Christchurch", "Hockey");
+        Team team = new Team("test", "Hockey", location);
         teamService.addTeam(team);
-        assertEquals("test",team.getName());
+        assertEquals("test", team.getName());
     }
 
     @Test
     public void testGettingTeamLocation() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
-        Team team = new Team("test", "Christchurch", "Hockey");
+        Team team = new Team("test", "Hockey", location);
         teamService.addTeam(team);
-        assertEquals("Christchurch",team.getLocation());
+        assertEquals("Christchurch", team.getLocation().getCity());
     }
-
 
 }
