@@ -12,9 +12,87 @@
   <input class ="team-name-input" type="text" id="teamName" name="teamName" />
   <button class ="search-team-button" type="submit">Search</button>
   </form>
-  <select class="form-control" id="dropDownList" name="citySelector">
+ <!-- <select class="form-control" id="dropDownList" name="citySelector">
     <option value="-1" selected>Filter by city</option>
-  </select>
+  </select>-->
+
+
+<div class="multipleSelection">
+  <div class="selectBox"
+       onclick="showCheckboxes()">
+    <select name="cities" id="cities" >
+      <option>Filter by city</option>
+    </select>
+    <div class="overSelect"></div>
+  </div>
+  <div id="checkBoxes">
+    <label for="select_all">
+      <input type="checkbox" id="select_all" onclick=selectAllCheckboxes(this) />
+      Select all
+    </label>
+  </div>
+</div>
+
+<script>
+  var show = true;
+
+  function showCheckboxes() {
+    var checkboxes = document.getElementById("checkBoxes");
+    if (show) {
+      checkboxes.style.display = "block";
+      show = false;
+    } else {
+      checkboxes.style.display = "none";
+      show = true;
+    }
+  }
+
+  var cities = ["city 1", "city 2", "city 3", "city 4"]; //for testing purposes only, need to use locations api instead
+
+  var checkboxDiv = document.getElementById("checkBoxes");
+
+  for (var i = 0; i < cities.length; i++) {
+    var checkBox = document.createElement("input");
+    var label = document.createElement("label");
+    var span = document.createElement("span");
+    checkBox.type = "checkbox";
+    checkBox.value = cities[i];
+
+    span.appendChild(document.createTextNode(cities[i]));
+    label.appendChild(checkBox)
+    label.appendChild(span)
+    checkboxDiv.appendChild(label);
+
+  }
+
+  //currently not working
+  function selectAllCheckboxes(selectAllCheckbox) {
+
+   /* if (selectAllCheckbox.checked) {
+      $("#checkBoxes input:checkbox").prop("checked", true);
+
+    }*/
+
+
+    var checkboxes = document.querySelectorAll('#' + selectAllCheckbox + ' input[type="checkbox"]');
+    for(var i =0; i< checkboxes.length;i++){
+      var checkbox = checkboxes[i];
+      checkbox.checked = true;
+
+    }
+
+
+
+  }
+
+</script>
+
+
+
+
+
+
+
   <p th:if="${error}">search must be at least 3 characters</p>
   <script>
     // get search form and input element
