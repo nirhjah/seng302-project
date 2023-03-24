@@ -192,6 +192,7 @@ td {
   background-color: #1b263b;
   overflow: hidden;
   white-space: nowrap;
+  padding-right: 20px;
 }
 
 .form-control {
@@ -661,7 +662,7 @@ li.active a {
 }
 
 
-ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form{
+.paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form{
     display: flex;
 }
 

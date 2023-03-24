@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.repository;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +28,14 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
 
     @Query("SELECT t FROM Team t " +
             "WHERE LOWER(t.name) LIKE LOWER(CONCAT('%', :name, '%')) " +
-            "OR LOWER(t.location) LIKE LOWER(CONCAT('%', :name, '%')) " +
-            "ORDER BY LOWER(t.name) ASC, LOWER(t.location) ASC ")
+            "OR LOWER(t.location.country) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(t.location.city) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "ORDER BY LOWER(t.name) ASC, LOWER(t.location.country) ASC, LOWER(t.location.city) ASC ")
     public Page<Team> findTeamByName(@Param("name") String name, Pageable pageable);
+
+    @Query("SELECT t.location FROM Team t " +
+            "WHERE LOWER(t.name) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(t.location.country) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(t.location.city) LIKE LOWER(CONCAT('%', :name, '%')) ")
+    public List<Location> findLocationsByName(@Param("name") String name);
 }
