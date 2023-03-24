@@ -174,12 +174,12 @@ td {
     border-radius: 20px;
 }
 
-.wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form, .user-info  {
+.wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form, .wrapper-profile .user-info {
     justify-content: center;
     align-items: center;
 }
 
-.wrapper-profile .profile-pic, .wrapper-profile .team-info .user-info {
+.wrapper-profile .profile-pic, .wrapper-profile .team-info, .wrapper-profile .user-info {
     position: absolute;
     top: 0;
     width: 400px;
@@ -190,7 +190,7 @@ td {
     left: 0;
 }
 
-.wrapper-profile .team-info, footer, .user-info {
+.wrapper-profile .team-info, .wrapper-profile .user-info, footer {
     right: 0;
 }
 
@@ -445,6 +445,6 @@ li.active a {
     color: white;
 }
 
-ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .user-info, .file-label-border ,.profile-form{
+ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .wrapper-profile .user-info, .file-label-border ,.profile-form{
     display: flex;
 }
