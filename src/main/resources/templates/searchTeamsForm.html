@@ -37,6 +37,7 @@
 
   function showCheckboxes() {
     var checkboxes = document.getElementById("checkBoxes");
+
     if (show) {
       checkboxes.style.display = "block";
       show = false;
@@ -52,6 +53,7 @@
 
   console.log(cities)
   var checkboxDiv = document.getElementById("checkBoxes");
+  var selectAllCheckbox = document.getElementById("select_all");
 
   for (var i = 0; i < cities.length; i++) {
     var checkBox = document.createElement("input");
@@ -60,20 +62,36 @@
     checkBox.type = "checkbox";
     checkBox.value = cities[i];
     checkBox.name = "cityCheckbox";
+    checkBox.onclick = function() { checkIfAnyCheckboxUnchecked(selectAllCheckbox); };
     span.appendChild(document.createTextNode(cities[i]));
     label.appendChild(checkBox)
     label.appendChild(span)
     checkboxDiv.appendChild(label);
 
   }
+  
+  function checkIfAnyCheckboxUnchecked(selectAllCheckbox) {
+    var checkboxes = document.getElementsByName('cityCheckbox');
+    if (selectAllCheckbox.checked) {
+      for (var i=0; i < checkboxes.length; i++) {
+        if(checkboxes[i].type == 'checkbox') {
+          if (!checkboxes[i].checked) {
+            selectAllCheckbox.checked = false;
+          }}
+      }}
+  }
 
   function selectAllCheckboxes(selectAllCheckbox) {
     var checkboxes = document.getElementsByName('cityCheckbox');
     if (selectAllCheckbox.checked) {
       for (var i=0; i < checkboxes.length; i++) {
+
         if(checkboxes[i].type == 'checkbox')
           checkboxes[i].checked = true;
       }
+
+
+
     }
     else {
       for (var i=0; i < checkboxes.length; i++) {
