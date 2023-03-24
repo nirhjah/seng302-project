@@ -61,9 +61,6 @@
                     <label for="dateOfBirth">Date of Birth: </label>
                     <p th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="errorMessage" id ="dateOfBirth" />
                 </div>
-                <div class="input-box">
-                <p th:each="sport: ${favouriteSports}" th:text="${sport}"></p>
-                </div>
                 <br>
                 <div class="submit-button">
                     <a th:href="@{home}">
@@ -74,14 +71,9 @@
                     <a th:href="@{user-info/self}">Cancel</a>
                 </div>
                 <div class>
-                    <div class="title">
-                        <h2>Sport Interest</h2>
-                    </div>
                     <div class="content">
-                        <p>Press enter or add a comma after each Sport</p>
-                        <div class ="sport-box">
-                            <ul><input type="text" spellcheck="false" list="sports"></ul>
-                        </div>
+                        <div class ="sport-box"></div>
+                        <ul><input type="text" spellcheck="false" list="sports"></ul>
                         <datalist id="sports">
                             <option value="Swimming">
                             <option value="Netball">
@@ -107,15 +99,16 @@
 
     <script th:inline="javascript">
         const ul = document.querySelector(".content ul"),
+            sportDisplay = document.querySelector(".sport-box"),
             input = document.querySelector(".content input");
         const form = document.getElementById("editUserForm");
             let tags =/*[[${user.getFavouriteSportNames()}]]*/ [];
         createTag();
         function createTag(){
-            ul.querySelectorAll("li").forEach(li => li.remove());
+            sportDisplay.querySelectorAll("li").forEach(li => li.remove());
             tags.slice().reverse().forEach(tag =>{
                 let liTag = `<li>${tag} <i class="multiply" onclick="remove(this, '${tag}')"></i></li>`;
-                ul.insertAdjacentHTML("afterbegin", liTag);
+                sportDisplay.insertAdjacentHTML("afterbegin", liTag);
             });
         }
 
