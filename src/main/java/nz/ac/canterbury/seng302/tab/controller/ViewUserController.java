@@ -50,7 +50,7 @@ public class ViewUserController {
         }
 
         // if the optional user is present then we want to get the pfp else we set the pfp to null
-        String teamPicture = user.map(User::getPictureString).orElse(null);
+        String teamPicture = user.get().getPictureString();
         // Thymeleaf has no special support for optionals
         model.addAttribute("thisUser", user);
         model.addAttribute("displayPicture", teamPicture);
