@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
@@ -60,6 +61,7 @@ public class SearchTeamsController {
                 for (Location location: locations) {
                     if (!cities.contains(location.getCity())) {
                         cities.add(location.getCity());
+                        Collections.sort(cities);
                     }
                 }
                 int numPages = teamPage.getTotalPages();
