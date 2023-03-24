@@ -23,6 +23,7 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.EditUserForm;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class EditUserFormController {
@@ -66,7 +67,10 @@ public class EditUserFormController {
             BindingResult bindingResult,
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
+            @RequestParam("tags") List<String> tags,
             Model model) throws ServletException {
+        // TODO I've retrieved the tags as a List<String> tags will need to sort it in the backend
+        //        System.out.println("tags" + tags);
 
         prefillModel(model);
         Optional<User> optUser = userService.getCurrentUser();
