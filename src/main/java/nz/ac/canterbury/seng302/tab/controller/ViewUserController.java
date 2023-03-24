@@ -23,7 +23,6 @@ import java.util.Optional;
 public class ViewUserController {
     Logger logger = LoggerFactory.getLogger(ViewUserController.class);
 
-    public static long userId;
     @Autowired
     UserService userService;
 
@@ -43,17 +42,17 @@ public class ViewUserController {
             HttpServletResponse httpServletResponse) {
         logger.info("GET /user-info");
 
-        ViewUserController.userId = userId;
         Optional<User> user = userService.findUserById(userId);
+        String userPicture = null;
         if (user.isEmpty()) { // If empty, throw a 404
             httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        } else {
+            userPicture = user.get().getPictureString();
         }
 
-        // if the optional user is present then we want to get the pfp else we set the pfp to null
-        String teamPicture = user.get().getPictureString();
         // Thymeleaf has no special support for optionals
         model.addAttribute("thisUser", user);
-        model.addAttribute("displayPicture", teamPicture);
+        model.addAttribute("displayPicture", userPicture);
         return "viewUserTemplate";
     }
 
@@ -86,9 +85,8 @@ public class ViewUserController {
      * @param model (map-like) representation of team id
      * @return
      */
-    @PostMapping("/user-info")
-//    public RedirectView uploadPicture(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes, Model model)
-    public String uploadPicture(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes, Model model)
+    @PostMapping("/user-info/upload-pfp")
+    public String uploadPicture(@RequestParam(name = "userId") long userId, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes, Model model)
     {
         Optional<User> user = userService.getCurrentUser();
         if (user.isEmpty())
@@ -96,7 +94,8 @@ public class ViewUserController {
             return "redirect:/login";
         }
         User authUser = user.get();
-        model.addAttribute("teamID", userId);
+        model.addAttribute("userId", userId);
+
         if (!isSupportedContentType(file.getContentType())){
             redirectAttributes.addFlashAttribute("typeError", true);
             return "redirect:/user-info?name=" + authUser.getUserId();
@@ -105,7 +104,7 @@ public class ViewUserController {
             redirectAttributes.addFlashAttribute("sizeError", true);
             return "redirect:/user-info?name=" + authUser.getUserId();
         }
-        userService.updatePicture(file,userId );
+        userService.updatePicture(file, userId);
         return "redirect:/user-info?name=" + authUser.getUserId();
     }
 
