@@ -56,7 +56,7 @@
     var span = document.createElement("span");
     checkBox.type = "checkbox";
     checkBox.value = cities[i];
-
+    checkBox.name = "cityCheckbox";
     span.appendChild(document.createTextNode(cities[i]));
     label.appendChild(checkBox)
     label.appendChild(span)
@@ -64,24 +64,20 @@
 
   }
 
-  //currently not working
   function selectAllCheckboxes(selectAllCheckbox) {
-
-   /* if (selectAllCheckbox.checked) {
-      $("#checkBoxes input:checkbox").prop("checked", true);
-
-    }*/
-
-
-    var checkboxes = document.querySelectorAll('#' + selectAllCheckbox + ' input[type="checkbox"]');
-    for(var i =0; i< checkboxes.length;i++){
-      var checkbox = checkboxes[i];
-      checkbox.checked = true;
-
+    var checkboxes = document.getElementsByName('cityCheckbox');
+    if (selectAllCheckbox.checked) {
+      for (var i=0; i < checkboxes.length; i++) {
+        if(checkboxes[i].type == 'checkbox')
+          checkboxes[i].checked = true;
+      }
     }
-
-
-
+    else {
+      for (var i=0; i < checkboxes.length; i++) {
+        if(checkboxes[i].type == 'checkbox')
+          checkboxes[i].checked = false;
+      }
+    }
   }
 
 </script>
