@@ -69,7 +69,7 @@ public class User {
     private Date dateOfBirth;
 
     @Column()
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "Id")
     private List<Sport> favoriteSports;
 

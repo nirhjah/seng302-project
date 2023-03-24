@@ -17,9 +17,9 @@ public class Sport {
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "Id")
-    private User user;
+    // @ManyToMany(fetch = FetchType.EAGER)
+    // @JoinColumn(name = "Id")
+    // private User user;
 
     public Sport(String name) {
         this.name = name;
