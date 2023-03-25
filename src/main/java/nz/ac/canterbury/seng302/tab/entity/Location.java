@@ -47,6 +47,10 @@ public class Location {
 
     }
 
+    public Long getLocationId() {
+        return this.locationId;
+    }
+
     public String getAddressLine1(){
         return this.addressLine1;
     }

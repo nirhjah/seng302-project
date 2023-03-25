@@ -44,6 +44,7 @@ public class TeamTest {
         assertEquals("Hockey", team.getSport());
     }
 
+    // TODO this test is failing
     @Test
     public void testGettingTeamId() throws IOException {
         List<Team> teamList = teamService.getTeamList();

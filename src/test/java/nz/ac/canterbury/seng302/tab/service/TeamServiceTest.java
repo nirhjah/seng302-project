@@ -39,6 +39,7 @@ public class TeamServiceTest {
 
     Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
 
+    // TODO test failing detached entity passed to persist?
     @Test
     public void testGettingTeamList() throws IOException {
         List<Team> teamList = teamService.getTeamList();
@@ -55,6 +56,7 @@ public class TeamServiceTest {
         assertEquals(list.toString(), teamService.getTeamList().toString());
     }
 
+    // TODO test failing detached entity passed to persist?
     @Test
     public void testAddingTeam() throws IOException {
         Team team = new Team("test", "Hockey", location);

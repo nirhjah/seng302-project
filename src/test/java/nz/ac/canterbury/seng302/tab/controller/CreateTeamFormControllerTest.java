@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.text.ParseException;
@@ -21,10 +20,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
-
-
-import java.util.Optional;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -53,22 +48,6 @@ public class CreateTeamFormControllerTest {
         when(mockUserService.emailIsInUse(anyString())).thenReturn(false);
     }
 
-    @MockBean
-    private UserService mockUserService;
-
-    @MockBean
-    private TeamService mockTeamService;
-
-    static final Long TEAM_ID = 1L;
-
-    @BeforeEach
-    void beforeEach() {
-        User testUser = new User("Test", "User", "test@email.com", "awfulPassword");
-
-        when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
-
-    }
-
     /**
      * Miminimum amount of fields filled with valid input for post request
      *
@@ -78,7 +57,7 @@ public class CreateTeamFormControllerTest {
     void whenAFieldsValid_return302() throws Exception {
         mockMvc.perform(post("/createTeam", 42L)
                         .param("teamID", "1")
-                        .param("name", "{test.team 1}")
+                        .param("name", "name")
                         .param("sport", "hockey-team a'b")
                         .param("addressLine1", "addressline1")
                         .param("addressLine2", "addressline2")
@@ -235,30 +214,140 @@ public class CreateTeamFormControllerTest {
                 .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
     }
 
+    /**
+     * The view will be redirected to the url with invalid input as the suburb contains invalid chars
+     *
+     * @throws Exception
+     */
     @Test
     void whenSuburbIsInvalidWithCharsValidForTeam__return302() throws Exception {
         mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
                         .param("name", "test").param("sport", "hockey")
-                        .param("addressLine1", "abc123'{}.a1")
+                        .param("addressLine1", "addressline1")
                         .param("addressLine2", "addressline2")
                         .param("city", "Christchurch")
-                        .param("country", "%^&*New Zealand")
+                        .param("country", "New Zealand")
                         .param("postcode", "56fghj")
-                        .param("suburb", "ilam")).andExpect(status().isFound())
+                        .param("suburb", "ilam^")).andExpect(status().isFound())
                 .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
     }
 
+    /**
+     * The view will be redirected to the url with invalid input as the postcode contains invalid chars
+     *
+     * @throws Exception
+     */
     @Test
     void whenPostcodeIsInvalidWithCharsValidForTeam__return302() throws Exception {
         mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
                         .param("name", "test")
                         .param("sport", "hockey")
-                        .param("addressLine1", "abc123'{}.a1")
+                        .param("addressLine1", "addressline1")
                         .param("addressLine2", "addressline2")
                         .param("city", "Christchurch")
                         .param("country", "New Zealand")
                         .param("postcode", "56$%^fghj")
                         .param("suburb", "ilam")).andExpect(status().isFound())
                 .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
+    }
+
+    /**
+     * Team will be created and redirected to profile form when address line 1 is empty
+     *
+     * @throws Exception
+     */
+    @Test
+    void whenAllFieldsAreValidButAddressLine1IsEmpty__return302() throws Exception {
+        mockMvc.perform(post("/createTeam", 42L)
+                        .param("teamID", "1")
+                        .param("name", "name")
+                        .param("sport", "hockey-team a'b")
+                        .param("addressLine1", "")
+                        .param("addressLine2", "addressline2")
+                        .param("city", "Christchurch")
+                        .param("country", "New Zealand")
+                        .param("postcode", "fghj").param("suburb", "ilam"))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:./profile?teamID=1"));
+    }
+
+    /**
+     * Team will be created and redirected to profile form when address line 2 is empty
+     * @throws Exception
+     */
+    @Test
+    void whenAllFieldsAreValidButAddressLine2IsEmpty__return302() throws Exception {
+        mockMvc.perform(post("/createTeam", 42L)
+                        .param("teamID", "1")
+                        .param("name", "name")
+                        .param("sport", "hockey-team a'b")
+                        .param("addressLine1", "addressline1")
+                        .param("addressLine2", "")
+                        .param("city", "Christchurch")
+                        .param("country", "New Zealand")
+                        .param("postcode", "fghj").param("suburb", "ilam"))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:./profile?teamID=1"));
+    }
+
+    /**
+     * Team will be created and redirected to profile form when suburb is empty
+     *
+     * @throws Exception
+     */
+    @Test
+    void whenAllFieldsAreValidButSuburbIsEmpty__return302() throws Exception {
+        mockMvc.perform(post("/createTeam", 42L)
+                        .param("teamID", "1")
+                        .param("name", "name")
+                        .param("sport", "hockey-team a'b")
+                        .param("addressLine1", "addressline1")
+                        .param("addressLine2", "addressline1")
+                        .param("city", "Christchurch")
+                        .param("country", "New Zealand")
+                        .param("postcode", "fghj").param("suburb", ""))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:./profile?teamID=1"));
+    }
+
+    /**
+     * Team will be created and redirected to profile form when postcode is empty
+     *
+     * @throws Exception
+     */
+    @Test
+    void whenAllFieldsAreValidButPostcodeIsEmpty__return302() throws Exception {
+        mockMvc.perform(post("/createTeam", 42L)
+                        .param("teamID", "1")
+                        .param("name", "name")
+                        .param("sport", "hockey-team a'b")
+                        .param("addressLine1", "addressline1")
+                        .param("addressLine2", "addressline1")
+                        .param("city", "Christchurch")
+                        .param("country", "New Zealand")
+                        .param("postcode", "").param("suburb", ""))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:./profile?teamID=1"));
+    }
+
+    /**
+     * Team will be created and redirected to profile form when optional fields are empty
+     *
+     * @throws Exception
+     */
+    @Test
+    void whenAllOptionalFieldsAreEmpty__return302() throws Exception{
+        mockMvc.perform(post("/createTeam", 42L)
+                        .param("teamID", "1")
+                        .param("name", "name")
+                        .param("sport", "hockey-team a'b")
+                        .param("addressLine1", "")
+                        .param("addressLine2", "")
+                        .param("city", "Christchurch")
+                        .param("country", "New Zealand")
+                        .param("postcode", "").param("suburb", ""))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:./profile?teamID=1"));
+
     }
 }
