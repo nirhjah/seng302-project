@@ -676,6 +676,7 @@ li.active a {
     padding: .1em .5em;
     cursor: pointer;
     position: absolute;
+    display: inline-block;
 }
 
 .selectBox {

@@ -11,97 +11,7 @@
   <input class ="team-name-input" type="text" id="teamName" name="teamName" placeholder="Search Teams" />
   <button class ="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
   </form>
- <!-- <select class="form-control" id="dropDownList" name="citySelector">
-    <option value="-1" selected>Filter by city</option>
-  </select>-->
 
-
-<div class="multipleSelection" th:if="${not #lists.isEmpty(teams)}">
-  <div class="selectBox"
-       onclick="showCheckboxes()">
-    <select name="cities" id="cities" >
-      <option>Filter by city</option>
-    </select>
-    <div class="overSelect"></div>
-  </div>
-  <div id="checkBoxes">
-    <label for="select_all">
-      <input type="checkbox" id="select_all" onclick=selectAllCheckboxes(this) />
-      Select all
-    </label>
-  </div>
-</div>
-
-<script th:inline="javascript">
-  var show = true;
-
-  function showCheckboxes() {
-    var checkboxes = document.getElementById("checkBoxes");
-
-    if (show) {
-      checkboxes.style.display = "block";
-      show = false;
-    } else {
-      checkboxes.style.display = "none";
-      show = true;
-    }
-  }
-
-  /*<![CDATA[*/
-  var cities = /*[[${cities}]]*/ [];
-  /*]]>*/
-
-  console.log(cities)
-  var checkboxDiv = document.getElementById("checkBoxes");
-  var selectAllCheckbox = document.getElementById("select_all");
-
-  for (var i = 0; i < cities.length; i++) {
-    var checkBox = document.createElement("input");
-    var label = document.createElement("label");
-    var span = document.createElement("span");
-    checkBox.type = "checkbox";
-    checkBox.value = cities[i];
-    checkBox.name = "cityCheckbox";
-    checkBox.onclick = function() { checkIfAnyCheckboxUnchecked(selectAllCheckbox); };
-    span.appendChild(document.createTextNode(cities[i]));
-    label.appendChild(checkBox)
-    label.appendChild(span)
-    checkboxDiv.appendChild(label);
-
-  }
-  
-  function checkIfAnyCheckboxUnchecked(selectAllCheckbox) {
-    var checkboxes = document.getElementsByName('cityCheckbox');
-    if (selectAllCheckbox.checked) {
-      for (var i=0; i < checkboxes.length; i++) {
-        if(checkboxes[i].type == 'checkbox') {
-          if (!checkboxes[i].checked) {
-            selectAllCheckbox.checked = false;
-          }}
-      }}
-  }
-
-  function selectAllCheckboxes(selectAllCheckbox) {
-    var checkboxes = document.getElementsByName('cityCheckbox');
-    if (selectAllCheckbox.checked) {
-      for (var i=0; i < checkboxes.length; i++) {
-
-        if(checkboxes[i].type == 'checkbox')
-          checkboxes[i].checked = true;
-      }
-
-
-
-    }
-    else {
-      for (var i=0; i < checkboxes.length; i++) {
-        if(checkboxes[i].type == 'checkbox')
-          checkboxes[i].checked = false;
-      }
-    }
-  }
-
-</script>
   <p th:if="${error}">search must be at least 3 characters</p>
   <script>
     // get search form and input element
@@ -128,7 +38,85 @@
   </script>
 </div>
 <div th:if="${not #lists.isEmpty(teams)}">
-  <h2>Search Results</h2>
+  <h2 style="display: inline-block">Search Results</h2>
+  <div class="multipleSelection" th:if="${not #lists.isEmpty(teams)}">
+    <div class="selectBox"
+         onclick="showCheckboxes()">
+      <select name="cities" id="cities" >
+        <option>Filter by city</option>
+      </select>
+      <div class="overSelect"></div>
+    </div>
+    <div id="checkBoxes">
+      <label for="select_all">
+        <input type="checkbox" id="select_all" onclick=selectAllCheckboxes(this) />
+        Select all
+      </label>
+    </div>
+  </div>
+  <script th:inline="javascript">
+    var show = true;
+
+    function showCheckboxes() {
+      var checkboxes = document.getElementById("checkBoxes");
+
+      if (show) {
+        checkboxes.style.display = "block";
+        show = false;
+      } else {
+        checkboxes.style.display = "none";
+        show = true;
+      }
+    }
+
+    /*<![CDATA[*/
+    var cities = /*[[${cities}]]*/ [];
+    /*]]>*/
+
+    console.log(cities)
+    var checkboxDiv = document.getElementById("checkBoxes");
+    var selectAllCheckbox = document.getElementById("select_all");
+    for (var i = 0; i < cities.length; i++) {
+      var checkBox = document.createElement("input");
+      var label = document.createElement("label");
+      var span = document.createElement("span");
+      checkBox.type = "checkbox";
+      checkBox.value = cities[i];
+      checkBox.name = "cityCheckbox";
+      checkBox.onclick = function() { checkIfAnyCheckboxUnchecked(selectAllCheckbox); };
+      span.appendChild(document.createTextNode(cities[i]));
+      label.appendChild(checkBox)
+      label.appendChild(span)
+      checkboxDiv.appendChild(label);
+    }
+    function checkIfAnyCheckboxUnchecked(selectAllCheckbox) {
+      var checkboxes = document.getElementsByName('cityCheckbox');
+      if (selectAllCheckbox.checked) {
+        for (var i=0; i < checkboxes.length; i++) {
+          if(checkboxes[i].type == 'checkbox') {
+            if (!checkboxes[i].checked) {
+              selectAllCheckbox.checked = false;
+            }}
+        }}
+    }
+
+    function selectAllCheckboxes(selectAllCheckbox) {
+      var checkboxes = document.getElementsByName('cityCheckbox');
+      if (selectAllCheckbox.checked) {
+        for (var i=0; i < checkboxes.length; i++) {
+          if(checkboxes[i].type == 'checkbox')
+            checkboxes[i].checked = true;
+        }} else {
+        for (var i=0; i < checkboxes.length; i++) {
+          if(checkboxes[i].type == 'checkbox')
+            checkboxes[i].checked = false;
+        }}
+    }
+  </script>
+
+
+
+
   <table id="teamTable">
     <thread>
       <tr>
