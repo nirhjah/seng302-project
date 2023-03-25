@@ -198,33 +198,48 @@
             createTag();
         }
 
-        function addTag(e){
-            if(e.key == "Enter"){
-                e.preventDefault();
-                let tag = e.target.value.replace(/\s+/g, ' ');
-                if(tag.length > 1 && !tags.includes(tag) && /^[a-zA-Z\s]+$/.test(tag)){
-                        tags.push(tag);
-                        createTag();
-                }
-                    e.target.value = "";
+        let fromChangeEvent = false;
 
+        function addTag(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                let tag = e.target.value.replace(/\s+/g, ' ').trim();
+                if (tag === "") {
+                    document.getElementById("error-message").innerText = "Please enter sport";
+                } else if (!/^[a-zA-Z\s]+$/.test(tag)) {
+                    document.getElementById("error-message").innerText = "Please enter valid characters";
+                } else if (tags.includes(tag)) {
+                    document.getElementById("error-message").innerText = "Duplicate tag";
+
+                } else {
+                    tags.push(tag);
+                    createTag();
+                    document.getElementById("error-message").innerText = "";
                 }
+                e.target.value = "";
+            }
         }
 
-        input.addEventListener("keyup", addTag);
+        input.addEventListener("keyup", (e) => {
+            if (!fromChangeEvent) {
+                addTag(e);
+            }
+            fromChangeEvent = false;
+        });
 
         input.addEventListener("change", (e) => {
             let tag = e.target.value.trim();
-            if (tag.length > 0 && !tags.includes(tag)  && /^[a-zA-Z\s]+$/.test(tag)) {
+            if (tag.length > 1 && !tags.includes(tag) && /^[a-zA-Z\s]+$/.test(tag)) {
                 document.getElementById("error-message").innerText = "";
                 tags.push(tag);
                 createTag();
+                fromChangeEvent = true;
+                e.target.value = "";
+            } else {
+                document.getElementById("error-message").innerText = "Please enter valid characters";
             }
-            else {
-                document.getElementById("error-message").innerText = "Please enter valid characters / duplicate sport";
-            }
-            e.target.value = "";
         });
+
 
 
         const removeBtn = document.querySelector(".details button");
