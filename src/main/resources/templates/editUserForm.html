@@ -92,6 +92,11 @@
         text-decoration: underline;
         cursor:pointer;
     }
+    .error-message {
+        position: absolute;
+        top: -20px; /* adjust this value to position the label as needed */
+        left: 0;
+    }
 
 </style>
 <body class="edit-user-background">
@@ -138,10 +143,11 @@
                 </div>
                 <div class ="sport-box" id ="sport-box"></div>
 
+
                 </br>
                 <div class="submit-button" style="margin-top: 20px;">
                     <a th:href="@{home}">
-                        <button type="submit">Save</button>
+                        <button type="submit" id ="submit">Save</button>
                     </a>
                 </div>
                 <div class="cancel-link">
@@ -149,7 +155,8 @@
                 </div>
             </form>
             <div class="content">
-                <ul><input type="text" spellcheck="false" list="sports"></ul>
+                <ul><input type="text" spellcheck="false" list="sports" id ="sport-list">
+                    <label for="sport-list" id ="error-message" class ="error-message"> </label></ul>
                 <datalist id="sports">
                     <option value="Swimming">
                     <option value="Netball">
@@ -195,22 +202,25 @@
             if(e.key == "Enter"){
                 e.preventDefault();
                 let tag = e.target.value.replace(/\s+/g, ' ');
-                if(tag.length > 1 && !tags.includes(tag)){
+                if(tag.length > 1 && !tags.includes(tag) && /^[a-zA-Z\s]+$/.test(tag)){
                         tags.push(tag);
                         createTag();
                 }
-                e.target.value = "";
-            }
+                    e.target.value = "";
+
+                }
         }
 
         input.addEventListener("keyup", addTag);
 
         input.addEventListener("change", (e) => {
             let tag = e.target.value.trim();
-            if (tag.length > 0 && !tags.includes(tag)) {
+            if (tag.length > 0 && !tags.includes(tag)  && /^[a-zA-Z\s]+$/.test(tag)) {
                 tags.push(tag);
                 createTag();
-
+            }
+            else {
+                document.getElementById("error-message").innerText = "Please enter valid characters";
             }
             e.target.value = "";
         });
