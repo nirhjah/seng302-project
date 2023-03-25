@@ -53,8 +53,8 @@ public class UserService {
     public List<User> findUsersByNameOrSport(Pageable pageable, @Nullable List<String> favouriteSports, @Nullable String nameSearch) {
         logger.info("fav sports = {}", favouriteSports);
         logger.info("nameSearch = {}", nameSearch);
-        if (favouriteSports != null && favouriteSports.isEmpty()) {
-            favouriteSports = null;
+        if (favouriteSports == null) {
+            favouriteSports = List.of();
         }
         if (nameSearch != null && nameSearch.isEmpty()) {
             nameSearch = null;

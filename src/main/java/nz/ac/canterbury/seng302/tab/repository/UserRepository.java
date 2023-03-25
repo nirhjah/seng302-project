@@ -40,7 +40,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
      */
     @Query("SELECT distinct u "
             +"FROM UserEntity u LEFT JOIN u.favoriteSports s "
-            +"WHERE (:searchedSports is null OR s.name in (:searchedSports)) "
+            +"WHERE (:#{#searchedSports.size}=0 OR s.name in (:searchedSports)) "
             +"AND (:name is null OR "
                     +"lower(:name) like lower(concat('%', u.firstName, '%')) OR lower(:name) like lower(concat('%', u.lastName, '%')) "
                     +"OR lower(u.firstName) like lower(concat('%', :name, '%')) OR lower(u.lastName) like lower(concat('%', :name, '%')) "

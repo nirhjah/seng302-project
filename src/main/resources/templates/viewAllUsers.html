@@ -25,8 +25,8 @@
         <p>
         <form th:action="@{view-all-users}" method="get">
             <input type="text" placeholder="Search name" th:field="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3"><br>
-            <input type="checkbox" name="filterByHockey" th:value="${filterByHockey}"><label for="filterByHockey">DEBUG: Filter By Hockey</label><br>
-            <input type="checkbox" name="filterByRugby" th:value="${filterByRugby}"><label for="filterByRugby">DEBUG: Filter By Rugby</label>
+            <input type="checkbox" id="filterByHockey" name="filterByHockey" th:checked="${filterByHockey != null}" th:value="${filterByHockey}"><label for="filterByHockey">DEBUG: Filter By Hockey</label><br>
+            <input type="checkbox" id="filterByRugby" name="filterByRugby" th:checked="${filterByRugby != null}" th:value="${filterByRugby}"><label for="filterByRugby">DEBUG: Filter By Rugby</label>
             <button class="search-user-button" type="submit"> Search </button>
         </form>
         <select class="form-control" id="dropDownList" name="teamSelector"

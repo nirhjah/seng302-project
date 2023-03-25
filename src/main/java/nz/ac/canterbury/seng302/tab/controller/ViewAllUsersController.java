@@ -50,15 +50,19 @@ public class ViewAllUsersController {
     public String viewPageOfUsers(
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "currentSearch", defaultValue = "") String currentSearch,
-            @RequestParam(name = "filterByHockey", defaultValue = "true") boolean filterByHockey,
-            @RequestParam(name = "filterByRugby", defaultValue = "true") boolean filterByRugby,
+            @RequestParam(name = "filterByHockey", required = false) String filterByHockey,
+            @RequestParam(name = "filterByRugby", required = false) String filterByRugby,
             Model model) {
         // A TERRIBLE MOCK "FITLER BY SPORTS" THING FOR TESTING
+        // ONCE THE DROP-DOWN IS IN PLACE, USE THAT
         ArrayList<String> favSports = new ArrayList<>();
-        if (filterByHockey) {
+        logger.info("currentSearch = {}", currentSearch);
+        logger.info("filterByHockey = {}", filterByHockey);
+        logger.info("filterByRugby = {}", filterByRugby);
+        if (filterByHockey != null) {
             favSports.add("Hockey");
         }
-        if (filterByRugby) {
+        if (filterByRugby != null) {
             favSports.add("Rugby");
         }
         var userList = getUserList(page, currentSearch, favSports);

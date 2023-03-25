@@ -31,7 +31,7 @@ public class TestPopulateUsersController {
 
     private final Random random = ThreadLocalRandom.current();
 
-    static final int N_USERS_TO_ADD = 30;
+    static final int N_USERS_TO_ADD = 10;
 
     // Sourced from https://gist.github.com/ruanbekker/a1506f06aa1df06c5a9501cb393626ea
     static final String[] RANDOM_NAMES = {
