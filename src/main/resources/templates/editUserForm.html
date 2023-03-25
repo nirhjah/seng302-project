@@ -216,11 +216,12 @@
         input.addEventListener("change", (e) => {
             let tag = e.target.value.trim();
             if (tag.length > 0 && !tags.includes(tag)  && /^[a-zA-Z\s]+$/.test(tag)) {
+                document.getElementById("error-message").innerText = "";
                 tags.push(tag);
                 createTag();
             }
             else {
-                document.getElementById("error-message").innerText = "Please enter valid characters";
+                document.getElementById("error-message").innerText = "Please enter valid characters / duplicate sport";
             }
             e.target.value = "";
         });
