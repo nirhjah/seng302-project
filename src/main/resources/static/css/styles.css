@@ -715,3 +715,7 @@ ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-prof
 #checkBoxes label:hover {
     background-color: #4F615E;
 }
+
+ul.autocomplete-result{
+  display:block;
+}

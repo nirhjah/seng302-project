@@ -152,7 +152,7 @@
                     const results = response.data.features.slice(0, 5);
                     let html = '';
                     if (results.length > 0) {
-                        html = '<ul>';
+                        html = '<ul class ="autocomplete-result">';
                         results.forEach(result => {
                             html += `<li class="location-autocomplete-value" data-country="${result.properties.country}" data-city="${result.properties.locality}" data-suburb="${result.properties.localadmin}" data-postcode="${result.properties.postalcode}" data-house-number="${result.properties.housenumber}" data-street="${result.properties.street}">${result.properties.label}</li>`;
                         });
