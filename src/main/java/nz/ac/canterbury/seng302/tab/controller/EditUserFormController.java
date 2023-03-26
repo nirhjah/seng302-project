@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nz.ac.canterbury.seng302.tab.entity.Sport;
+import nz.ac.canterbury.seng302.tab.service.SportService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class EditUserFormController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    SportService sportService;
 
     private void prefillModel(Model model) {
         model.addAttribute("validNameRegex", UserFormValidators.VALID_NAME_REGEX);
@@ -110,12 +114,21 @@ public class EditUserFormController {
         // Log-out if the user changes their email
         boolean shouldLogout = !user.getEmail().equals(editUserForm.getEmail());
 
-        System.out.println(model.getAttribute("favouriteSports"));
         user.setFirstName(editUserForm.getFirstName());
         user.setLastName(editUserForm.getLastName());
         user.setEmail(editUserForm.getEmail());
         user.setDateOfBirth(editUserForm.getDateOfBirth());
-        user.setFavoriteSports(editUserForm.getFavouriteSports());
+        List<String> knownSports = sportService.getAllSportNames();
+        List<Sport> newSports = new ArrayList<>();
+        List<Sport> newFavSports = new ArrayList<>();
+        for (String tag : tags) {
+            if (!knownSports.contains(tag)) {
+                newSports.add(new Sport(tag));
+            }
+            newFavSports.add(new Sport(tag));
+        }
+        sportService.addAllSports(newSports);
+        user.setFavoriteSports(newFavSports);
         userService.updateOrAddUser(user);
 
         if (shouldLogout) {
