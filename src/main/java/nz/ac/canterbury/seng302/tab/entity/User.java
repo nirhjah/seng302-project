@@ -22,37 +22,40 @@ public class User {
                 new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "test@gmail.com",
                 "dfghjk",
-                new ArrayList<>());
+                new Location(null,null,null,"Christchurch",null,"New Zealand"));
     }
 
     /**
      * TODO: Implement password hashing, probably via Bcrypt
      */
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports) {
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports, Location location) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.hashedPassword = password;
         this.favoriteSports = favoriteSports;
+        this.location = location;
     }
 
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password) {
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.hashedPassword = password;
         this.favoriteSports = new ArrayList<>();
+        this.location = location;
     }
 
 
-    public User(String firstName, String lastName, String email, String password) {
+    public User(String firstName, String lastName, String email, String password, Location location) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.dateOfBirth = new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime();
         this.hashedPassword = password;
+        this.location = location;
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,6 +76,9 @@ public class User {
     @JoinColumn(name = "Id")
     private List<Sport> favoriteSports;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_locationId", referencedColumnName = "locationId")
+    private Location location;
 
     @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
             flags = Pattern.Flag.CASE_INSENSITIVE)
