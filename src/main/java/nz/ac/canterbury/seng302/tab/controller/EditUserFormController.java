@@ -74,7 +74,7 @@ public class EditUserFormController {
         String invalidTags= "These are invalid sports: ";
         boolean first= true ,invalidSport=false;
         for (String tag : tags) {
-            if (!tag.matches("/^[a-zA-Z\\s'-]*$/")) {
+            if (!tag.matches("^[\\p{L}\\s\\'\\-]+$")) {
                 invalidSport=true;
                 if (!first) {
                     invalidTags += ", ";
