@@ -143,7 +143,12 @@ public class UserService {
      * @param locations a list of locations
      * @return a list of users who match one of the locations
      */
-    public List<User> filterUsersByLocation(List<String> locations) { return userRepository.findUsersByLocationIn(locations); }
+    public List<User> filterUsersByLocation(List<String> locations) {
+        if (locations.isEmpty()) {
+            return userRepository.findAll();
+        }
+        return userRepository.findUsersByLocationIn(locations);
+    }
 
     /**
      * Method which updates the picture by taking the MultipartFile type and updating the picture

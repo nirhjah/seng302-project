@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * The form provided to the user when registering for the website.
@@ -27,7 +27,7 @@ public class RegisterForm {
 
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    Date dateOfBirth;
+    LocalDate dateOfBirth;
 
     @NotBlank
     @Size(min=8, max=100)
@@ -60,11 +60,11 @@ public class RegisterForm {
         this.email = email;
     }
 
-    public Date getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

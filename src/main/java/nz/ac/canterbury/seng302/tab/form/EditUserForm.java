@@ -1,6 +1,6 @@
 package nz.ac.canterbury.seng302.tab.form;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -19,7 +19,7 @@ public class EditUserForm {
 
     @UserFormValidators.DateOfBirthValidator(minimumAge = 13, message = "You must be at least 13 years old")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
     /**
      * Fills out all of the <em>empty</em> fields with the user's details.
@@ -63,11 +63,11 @@ public class EditUserForm {
         this.email = email;
     }
 
-    public Date getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

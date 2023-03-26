@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -58,13 +57,7 @@ public class EditUserFormControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        Date userDOB;
-        try {
-            // Have to catch a constant parse exception annoyingly
-            userDOB = new SimpleDateFormat("YYYY-mm-dd").parse(USER_DOB);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        LocalDate userDOB = LocalDate.parse(USER_DOB);
         User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD);
 
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
@@ -152,11 +145,52 @@ public class EditUserFormControllerTest {
     @Test
     @WithMockUser()
     void givenUserIsYoungerThan13_ThenFormIsRejected() throws Exception {
-        LocalDate date = LocalDate.now();
-        String dateString = String.format("%s-%s-%s",
-                date.getYear() - 10,
-                date.getMonthValue(),
-                date.getDayOfMonth());
+        LocalDate thirteenYearsAgo = LocalDate.now().minusYears(13).plusDays(1);
+        mockMvc.perform(
+                post(URL)
+                        .param(P_FNAME, USER_FNAME)
+                        .param(P_LNAME, USER_LNAME)
+                        .param(P_EMAIL, USER_EMAIL)
+                        .param(P_DOB, thirteenYearsAgo.toString()))
+                .andExpect(status().isBadRequest());
+
+        verify(mockUserService, times(0)).updateOrAddUser(any());
+    }
+
+    @Test
+    @WithMockUser()
+    void givenUserIsExactly13_ThenFormIsAccepted() throws Exception {
+        LocalDate thirteenYearsAgo = LocalDate.now().minusYears(13);
+        mockMvc.perform(
+                post(URL)
+                        .param(P_FNAME, USER_FNAME)
+                        .param(P_LNAME, USER_LNAME)
+                        .param(P_EMAIL, USER_EMAIL)
+                        .param(P_DOB, thirteenYearsAgo.toString()))
+                .andExpect(status().isFound());
+
+        verify(mockUserService, times(1)).updateOrAddUser(any());
+    }
+
+    @Test
+    @WithMockUser()
+    void givenUserIsExactly13AndOneDay_ThenFormIsAccepted() throws Exception {
+        LocalDate thirteenYearsAgo = LocalDate.now().minusYears(13).minusDays(1);
+        mockMvc.perform(
+                post(URL)
+                        .param(P_FNAME, USER_FNAME)
+                        .param(P_LNAME, USER_LNAME)
+                        .param(P_EMAIL, USER_EMAIL)
+                        .param(P_DOB, thirteenYearsAgo.toString()))
+                .andExpect(status().isFound());
+
+        verify(mockUserService, times(1)).updateOrAddUser(any());
+    }
+
+    @Test
+    @WithMockUser()
+    void givenAnInvalidDateIsProvided_ThenFormIsRejected() throws Exception {
+        String dateString = "2000-54-01";
         mockMvc.perform(
                 post(URL)
                         .param(P_FNAME, USER_FNAME)

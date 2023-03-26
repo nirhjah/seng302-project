@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -40,8 +41,7 @@ public class ViewAllUsersControllerTest {
     @BeforeEach
     public void beforeAll() throws IOException {
         userRepository.deleteAll();
-        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY,
-                1).getTime(), "johndoe@example.com", "password", new ArrayList<>());
+        user = new User("John", "Doe", LocalDate.EPOCH, "johndoe@example.com", "password", new ArrayList<>());
         userRepository.save(user);
     }
 

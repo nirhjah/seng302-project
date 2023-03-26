@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 @Entity(name = "UserEntity")
@@ -18,7 +19,7 @@ public class User {
     public User() {
     }
 
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports, String location) {
+    public User(String firstName, String lastName, LocalDate dateOfBirth, String email, String password, List<Sport> favoriteSports, String location) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -26,13 +27,14 @@ public class User {
         this.hashedPassword = password;
         this.favoriteSports = favoriteSports;
         this.location = location;
+        this.userRoles = Collections.emptyList();
     }
 
     public static User defaultDummyUser() throws IOException{
         return new User(
                 "test",
                 "again",
-                new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
+                LocalDate.EPOCH,
                 "test@gmail.com",
                 "dfghjk",
                 new ArrayList<>());
@@ -41,7 +43,7 @@ public class User {
     /**
      * TODO: Implement password hashing, probably via Bcrypt
      */
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports) throws IOException{
+    public User(String firstName, String lastName, LocalDate dateOfBirth, String email, String password, List<Sport> favoriteSports) throws IOException {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -53,7 +55,7 @@ public class User {
         this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
     }
 
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password) {
+    public User(String firstName, String lastName, LocalDate dateOfBirth, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -67,7 +69,7 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.dateOfBirth = new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime();
+        this.dateOfBirth = LocalDate.EPOCH;
         this.hashedPassword = password;
     }
     @Id
@@ -82,7 +84,7 @@ public class User {
     private String lastName;
 
     @Column(nullable = false)
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @Column(columnDefinition = "MEDIUMBLOB")
     private String pictureString;
@@ -124,11 +126,11 @@ public class User {
         this.lastName = lastName;
     }
 
-    public Date getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -206,7 +208,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(dateOfBirth, user.dateOfBirth) && Objects.equals(favoriteSports, user.favoriteSports) && Objects.equals(email, user.email) && Objects.equals(hashedPassword, user.hashedPassword) && Objects.equals(location, user.location) && Objects.equals(userRoles, user.userRoles);
+        return Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(dateOfBirth, user.dateOfBirth) && Objects.equals(List.copyOf(favoriteSports), List.copyOf(user.favoriteSports)) && Objects.equals(email, user.email) && Objects.equals(hashedPassword, user.hashedPassword) && Objects.equals(location, user.location) && Objects.equals(List.copyOf(userRoles), List.copyOf(user.userRoles));
     }
 
     @Override

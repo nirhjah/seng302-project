@@ -46,7 +46,7 @@
                       <h4 th:text="|Email: *{email}|"></h4>
                 </div>
                 <div class="user-display">
-                      <h4 th:text="|Date of Birth: *{#dates.format(dateOfBirth, 'dd-MM-yyyy')}|"></h4>
+                      <h4 th:text="|Date of Birth: *{#temporals.format(dateOfBirth, 'dd-MM-yyyy')}|"></h4>
                 </div>
                 <div class="edit-button">
                       <a th:href="@{editUser}">

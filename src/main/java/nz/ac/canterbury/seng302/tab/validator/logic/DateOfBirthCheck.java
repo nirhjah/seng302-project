@@ -2,8 +2,6 @@ package nz.ac.canterbury.seng302.tab.validator.logic;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.ZoneId;
-import java.util.Date;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -14,7 +12,7 @@ import nz.ac.canterbury.seng302.tab.validator.UserFormValidators.DateOfBirthVali
  * <p>Implementation for the {@link UserFormValidators} annotation.</p>
  * Checks whether the provided date is at least <code>minimumAge()</code> years before now.
  */
-public class DateOfBirthCheck implements ConstraintValidator<DateOfBirthValidator, Date> {
+public class DateOfBirthCheck implements ConstraintValidator<DateOfBirthValidator, LocalDate> {
 
     private int minimumAge;
 
@@ -24,12 +22,9 @@ public class DateOfBirthCheck implements ConstraintValidator<DateOfBirthValidato
     }
 
     @Override
-    public boolean isValid(Date dateOfBirth, ConstraintValidatorContext context) {
-        LocalDate dateNow = LocalDate.now();
-        LocalDate localDateOfBirth = dateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-        int ageInYears = Period.between(localDateOfBirth, dateNow).getYears();
+    public boolean isValid(LocalDate dateOfBirth, ConstraintValidatorContext context) {
+        if (dateOfBirth == null) return false;
+        int ageInYears = Period.between(dateOfBirth, LocalDate.now()).getYears();
         return (ageInYears >= minimumAge);
-
     }
 }

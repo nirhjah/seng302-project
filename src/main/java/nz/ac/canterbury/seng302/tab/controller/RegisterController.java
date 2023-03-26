@@ -24,7 +24,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Optional;
 
 @Controller
@@ -72,11 +71,9 @@ public class RegisterController {
      * @param bindingResult The object we'll attach errors to if it fails
      */
     private void checkAgeOnRegister(RegisterForm registerForm, BindingResult bindingResult) {
-        Date dateOfBirth = registerForm.getDateOfBirth();
-        LocalDate dateNow = LocalDate.now();
-        LocalDate localDateOfBirth = dateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate dateOfBirth = registerForm.getDateOfBirth();
 
-        int age = Period.between(localDateOfBirth, dateNow).getYears();
+        int age = Period.between(dateOfBirth, LocalDate.now()).getYears();
         if (age < 13) {
             bindingResult.addError(
                     new FieldError("registerForm", "dateOfBirth", "You must be at least 13 years old to register"));
