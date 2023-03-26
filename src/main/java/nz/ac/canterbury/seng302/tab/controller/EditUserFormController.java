@@ -24,6 +24,7 @@ import nz.ac.canterbury.seng302.tab.form.EditUserForm;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class EditUserFormController {
@@ -68,9 +69,27 @@ public class EditUserFormController {
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
             @RequestParam("tags") List<String> tags,
-            Model model) throws ServletException {
-        // TODO I've retrieved the tags as a List<String> tags will need to sort it in the backend
-        System.out.println("tags" + tags);
+            Model model, RedirectAttributes redirectAttributes) throws ServletException {
+
+        String invalidTags= "These are invalid sports: ";
+        boolean first= true ,invalidSport=false;
+        for (String tag : tags) {
+            if (!tag.matches("/^[a-zA-Z\\s'-]*$/")) {
+                invalidSport=true;
+                if (!first) {
+                    invalidTags += ", ";
+                } else {
+                    first = false;
+                }
+                invalidTags += tag;
+            }
+        }
+        if (invalidSport) {
+            redirectAttributes.addFlashAttribute("errorMessage", invalidTags);
+            return "redirect:/editUser";
+        }
+
+        System.out.println(invalidTags);
         prefillModel(model);
         Optional<User> optUser = userService.getCurrentUser();
         if (optUser.isEmpty()) {

@@ -34,12 +34,13 @@
         gap: 3px;
         align-content: flex-start;
     }
-    .sport-box  li{
+
+    .sport-box li {
         margin: 0;
         list-style: none;
         border-radius: 20px;
         background: #778DA9;
-        padding-left:5px;
+        padding-left: 5px;
         border: 1px solid #1B263B;
         display: inline-block;
         white-space: nowrap;
@@ -49,7 +50,8 @@
         color: #FFFF;
         text-align: center;
     }
-    .sport-box  li i{
+
+    .sport-box li i {
         color: #FFF;
         margin-right: 8px;
         margin-left: 5px;
@@ -58,11 +60,13 @@
         border-radius: 50%;
         background: #778DA9;
     }
-    .content{
-        position:absolute;
-        bottom:111px;
+
+    .content {
+        position: absolute;
+        bottom: 111px;
     }
-    .content input{
+
+    .content input {
         width: 293px;
         height: 25px;
         border-bottom-left-radius: 11px;
@@ -70,193 +74,182 @@
         border: 2px solid #778DA9;
         border-top: none;
     }
-    .sport-box::-webkit-scrollbar{
+
+    .sport-box::-webkit-scrollbar {
         width: 8px;
     }
-    .sport-box::-webkit-scrollbar-track{
-        background-color:#E0E1DD;
-    }
-    .sport-box::-webkit-scrollbar-thumb{
-        background-color:#415A77;
-        border-radius:10px
-    }
-    .sport-box::-webkit-scrollbar-thumb:hover{
-        background-color:#0D1B2A;
+
+    .sport-box::-webkit-scrollbar-track {
+        background-color: #E0E1DD;
     }
 
-    .details button{
-        background:none;
+    .sport-box::-webkit-scrollbar-thumb {
+        background-color: #415A77;
+        border-radius: 10px
+    }
+
+    .sport-box::-webkit-scrollbar-thumb:hover {
+        background-color: #0D1B2A;
+    }
+
+    .details button {
+        background: none;
         border: none;
-        padding:0;
+        padding: 0;
         font-family: "Noto Sans", sans-serif;
         text-decoration: underline;
-        cursor:pointer;
+        cursor: pointer;
     }
-    .error-message {
-        position: absolute;
-        top: -20px; /* adjust this value to position the label as needed */
-        left: 0;
-    }
+
+    /*.error-message {*/
+    /*    position: absolute;*/
+    /*    top: -20px; !* adjust this value to position the label as needed *!*/
+    /*    left: 0;*/
+    /*}*/
 
 </style>
 <body class="edit-user-background">
-    <div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+<div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
 
-    <div class="user-form">
-        <div class="user-header" style="padding-bottom: 80px;">
-            <h1 th:inline="text">Edit User</h1>
-        </div>
-        <div class="wrapper-edit-profile">
-            <form th:action="@{editUser}" method="post" th:object="${editUserForm}" id="editUserForm">
-                <div class="input-box">
-                    <input type="text" class="form-control"
-                           th:field="*{firstName}" data-cy="firstName" required
-                           autofocus th:pattern="${validNameRegex}" th:title="${validNameMessage}">
-                    <label for="firstName">First Name: </label>
-                    <p th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="errorMessage"  id="firstName"/>
-                </div>
-                <div class="input-box">
-                    <input type="text" class="form-control"
-                           th:field="*{lastName}" data-cy="lastName" required
-                           autofocus th:pattern="${validNameRegex}" th:title="${validNameMessage}">
-                    <label for="lastName">Last Name: </label>
-                    <p th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="errorMessage" id = "lastName"/>
-                </div>
-                <div class="input-box">
-                    <input type="text" class="form-control"
-                           th:field="*{email}" data-cy="email" required
-                           autofocus>
-                    <label for="email">Email
-                        <span style="color: darkred">(You will be logged out if you edit your email):</span>
-                    </label>
-                    <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="errorMessage" id ="email"/>
-                </div>
-                <div class="input-box">
-                    <input type="date" class="form-control"
-                           th:field="*{dateOfBirth}" th:value="*{#dates.formatISO(dateOfBirth)}" data-cy="dateOfBirth" required autofocus>
-                    <label for="dateOfBirth">Date of Birth: </label>
-                    <p th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="errorMessage" id ="dateOfBirth" />
-                </div>
-                <label for="sport-box"> Favourite Sport:</label>
-                <div class="details">
-                        <button type ="button">Clear</button>
-                </div>
-                <div class ="sport-box" id ="sport-box"></div>
-
-
-                </br>
-                <div class="submit-button" style="margin-top: 20px;">
-                    <a th:href="@{home}">
-                        <button type="submit" id ="submit">Save</button>
-                    </a>
-                </div>
-                <div class="cancel-link">
-                    <a th:href="@{user-info/self}">Cancel</a>
-                </div>
-            </form>
-            <div class="content">
-                <ul><input type="text" spellcheck="false" list="sports" id ="sport-list">
-                    <label for="sport-list" id ="error-message" class ="error-message"> </label></ul>
-                <datalist id="sports">
-                    <option value="Swimming">
-                    <option value="Netball">
-                    <option value="Badminton">
-                    <option value="Running">
-                    <option value="Tennis">
-                    <option value="Volleyball">
-                </datalist>
+<div class="user-form">
+    <div class="user-header" style="padding-bottom: 80px;">
+        <h1 th:inline="text">Edit User</h1>
+    </div>
+    <div class="wrapper-edit-profile">
+        <form th:action="@{editUser}" method="post" th:object="${editUserForm}" id="editUserForm">
+            <div class="input-box">
+                <input type="text" class="form-control"
+                       th:field="*{firstName}" data-cy="firstName" required
+                       autofocus th:pattern="${validNameRegex}" th:title="${validNameMessage}">
+                <label for="firstName">First Name: </label>
+                <p th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="errorMessage" id="firstName"/>
             </div>
+            <div class="input-box">
+                <input type="text" class="form-control"
+                       th:field="*{lastName}" data-cy="lastName" required
+                       autofocus th:pattern="${validNameRegex}" th:title="${validNameMessage}">
+                <label for="lastName">Last Name: </label>
+                <p th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="errorMessage" id="lastName"/>
+            </div>
+            <div class="input-box">
+                <input type="text" class="form-control"
+                       th:field="*{email}" data-cy="email" required
+                       autofocus>
+                <label for="email">Email
+                    <span style="color: darkred">(You will be logged out if you edit your email):</span>
+                </label>
+                <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="errorMessage" id="email"/>
+            </div>
+            <div class="input-box">
+                <input type="date" class="form-control"
+                       th:field="*{dateOfBirth}" th:value="*{#dates.formatISO(dateOfBirth)}" data-cy="dateOfBirth"
+                       required autofocus>
+                <label for="dateOfBirth">Date of Birth: </label>
+                <p th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="errorMessage"
+                   id="dateOfBirth"/>
+            </div>
+            <label for="sport-box">Favourite Sport:</label>
+            <div class="details">
+                <button type="button">Clear</button>
+            </div>
+            <div class="sport-box" id="sport-box"></div>
 
+            </br>
+
+            <div class="submit-button" style="margin-top: 20px;">
+                <label th:if="${errorMessage}" th:text="${errorMessage}"></label>
+                <a th:href="@{home}">
+                    <button type="submit" id="submit">Save</button>
+                </a>
+            </div>
+            <div class="cancel-link">
+                <a th:href="@{user-info/self}">Cancel</a>
+            </div>
+        </form>
+        <div class="content">
+            <label for="sport-list"  id="error-message"></label>
+            <ul><input type="text" spellcheck="false" list="sports" id="sport-list"></ul>
+            <datalist id="sports">
+                <option value="Swimming">
+                <option value="Netball">
+                <option value="Badminton">
+                <option value="Running">
+                <option value="Tennis">
+                <option value="Volleyball">
+            </datalist>
         </div>
 
     </div>
-    <footer>
-        <p>
-            Image by <a href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a> on Freepik
-        </p>
-    </footer>
 
-    <script th:inline="javascript">
-        const ul = document.querySelector(".content ul"),
-            sportDisplay = document.querySelector(".sport-box"),
-            input = document.querySelector(".content input");
-        const form = document.getElementById("editUserForm");
-            let tags =[];
+</div>
+<footer>
+    <p>
+        Image by <a
+            href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+        on Freepik
+    </p>
+</footer>
+
+<script th:inline="javascript">
+    const ul = document.querySelector(".content ul"),
+        sportDisplay = document.querySelector(".sport-box"),
+        input = document.querySelector(".content input");
+    const form = document.getElementById("editUserForm");
+
+    const tagsInput = document.createElement("input");
+    tagsInput.setAttribute("type", "hidden");
+    tagsInput.setAttribute("name", "tags");
+    let tags =[];
+
+    createTag();
+    function createTag(){
+        sportDisplay.querySelectorAll("li").forEach(li => li.remove());
+        tags.slice().reverse().forEach(tag =>{
+            let liTag = `<li>${tag} <i class="multiply" onclick="remove(this, '${tag}')"></i></li>`;
+            sportDisplay.insertAdjacentHTML("afterbegin", liTag);
+        });
+    }
+
+    function remove(element, tag){
+        let index  = tags.indexOf(tag);
+        tags = [...tags.slice(0, index), ...tags.slice(index + 1)];
+        element.parentElement.remove();
         createTag();
-        function createTag(){
-            sportDisplay.querySelectorAll("li").forEach(li => li.remove());
-            tags.slice().reverse().forEach(tag =>{
-                let liTag = `<li>${tag} <i class="multiply" onclick="remove(this, '${tag}')"></i></li>`;
-                sportDisplay.insertAdjacentHTML("afterbegin", liTag);
-            });
-        }
+    }
 
-        function remove(element, tag){
-            let index  = tags.indexOf(tag);
-            tags = [...tags.slice(0, index), ...tags.slice(index + 1)];
-            element.parentElement.remove();
-            createTag();
-        }
-
-        let fromChangeEvent = false;
-
-        function addTag(e) {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                let tag = e.target.value.replace(/\s+/g, ' ').trim();
-                if (tag === "") {
-                    document.getElementById("error-message").innerText = "Please enter sport";
-                } else if (!/^[a-zA-Z\s]+$/.test(tag)) {
-                    document.getElementById("error-message").innerText = "Please enter valid characters";
-                } else if (tags.includes(tag)) {
-                    document.getElementById("error-message").innerText = "Duplicate tag";
-
-                } else {
+    function addTag(e) {
+        if(e.key == "Enter"){
+            e.preventDefault();
+            let tag = e.target.value.replace(/\s+/g, ' ');
+            if(tag.length>0 && !tags.includes(tag)){
                     tags.push(tag);
                     createTag();
-                    document.getElementById("error-message").innerText = "";
-                }
-                e.target.value = "";
             }
+            else if (tag.length==0){
+                document.getElementById("error-message").innerText  ="Please enter a sport";
+            }
+            e.target.value = "";
         }
+    }
 
-        input.addEventListener("keyup", (e) => {
-            if (!fromChangeEvent) {
-                addTag(e);
-            }
-            fromChangeEvent = false;
-        });
-
-        input.addEventListener("change", (e) => {
-            let tag = e.target.value.trim();
-            if (tag.length > 1 && !tags.includes(tag) && /^[a-zA-Z\s]+$/.test(tag)) {
-                document.getElementById("error-message").innerText = "";
-                tags.push(tag);
-                createTag();
-                fromChangeEvent = true;
-                e.target.value = "";
-            } else {
-                document.getElementById("error-message").innerText = "Please enter valid characters";
-            }
-        });
+    input.addEventListener("keyup", addTag);
 
 
+    const removeBtn = document.querySelector(".details button");
+    removeBtn.addEventListener("click", () =>{
+        tags.length = 0;
+        sportDisplay.querySelectorAll("li").forEach(li => li.remove());
+    });
+    form.addEventListener('submit', (event) => {
+        const tagsInput = document.createElement("input");
+        tagsInput.setAttribute("type", "hidden");
+        tagsInput.setAttribute("name", "tags");
+        tagsInput.setAttribute("value", tags.join(","));
+        form.appendChild(tagsInput);
+        return true;
+    });
 
-        const removeBtn = document.querySelector(".details button");
-        removeBtn.addEventListener("click", () =>{
-            tags.length = 0;
-            sportDisplay.querySelectorAll("li").forEach(li => li.remove());
-        });
 
-        // Created a hidden input type for the form tag which contains the tags input, it should return a list of tags in teh controller
-        form.addEventListener('submit', (event) => {
-            const tagsInput = document.createElement("input");
-            tagsInput.setAttribute("type", "hidden");
-            tagsInput.setAttribute("name", "tags");
-            tagsInput.setAttribute("value", tags.join(","));
-            form.appendChild(tagsInput);
-            return true;
-        });
-    </script>
+</script>
 </body>
 </html>
