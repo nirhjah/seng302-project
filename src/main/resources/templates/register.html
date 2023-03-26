@@ -12,67 +12,107 @@
 </head>
 
 <body class="background-image">
-    <!-- add navbar-->
-    <div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
-    <div class="register-form">
-        <div class="register-header">
-            <h1>Register</h1>
-        </div>
-        <div class="wrapper">
-            <form th:action="@{register}" method="post" th:object="${registerForm}">
-                <div class="input-box">
-                    <input type="text" class="form-control" id="first-name" placeholder="" th:field="*{firstName}"
-                        data-cy="firstName" required autofocus>
-                    <label for="first-name"> First Name: </label>
-                </div>
-                <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message"></div>
-                <div class="input-box">
-                    <input type="text" class="form-control" id="last-name" placeholder="" th:field="*{lastName}"
-                        data-cy="lastName" required autofocus>
-                    <label for="last-name"> Last Name: </label>
-                </div>
-                <div th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error-message"></div>
-                <div class="input-box">
-                    <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
-                        data-cy="dateOfBirth" required autofocus>
-                    <label for="date-of-birth"> Date of Birth: </label>
-                </div>
-                <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
-                <div class="input-box">
-                    <input type="email" class="form-control" id="email" placeholder="" th:field="*{email}"
-                        data-cy="email" required autofocus>
-                    <label for="email"> Email: </label>
-                </div>
-                <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message"></div>
-                <div class="input-box">
-                    <input type="password" class="form-control" id="password" placeholder="" th:field="*{password}"
-                        data-cy="password" required autofocus>
-                    <label for="password"> Password: </label>
-                </div>
-                <div class="input-box">
-                    <input type="password" class="form-control" id="confirm-password" placeholder=""
-                        th:field="*{confirmPassword}" data-cy="confirmPassword" required autofocus>
-                    <label for="confirm-password"> Confirm Password: </label>
-                </div>
-                <div class="password-info">
-                <div th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error-message"></div>
-                <p>
-password must be at least <strong>8 characters</strong>, and MUST contain <strong>upper</strong> and <strong>lower</strong> case letters, <strong>numbers</strong> and <strong>symbols</strong>, and can NOT contain your <strong>name</strong> or <strong>email</strong></p>
-                </div>
-                <div class="submit-button">
-                    <button type="submit">Register</button>
-                </div>
-                <div class="cancel-link">
-                    <a th:href="@{login}">Login</a>
-                    <div class="cancel-link">
-                        <a th:href="@{home}">Cancel</a>
+<!-- add navbar-->
+<div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+<div class="register-form">
+    <div class="register-header">
+        <h1>Register</h1>
+    </div>
+    <div class="wrapper">
+        <form th:action="@{register}" method="post" th:object="${registerForm}">
+            <div class="register-inputs">
+                <div class="register-inputs-left">
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="first-name" placeholder="" th:field="*{firstName}"
+                               data-cy="firstName" required autofocus>
+                        <label for="first-name"> First Name: </label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message"></div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="last-name" placeholder="" th:field="*{lastName}"
+                               data-cy="lastName" required autofocus>
+                        <label for="last-name"> Last Name: </label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error-message"></div>
+                    <div class="input-box">
+                        <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
+                               data-cy="dateOfBirth" required autofocus>
+                        <label for="date-of-birth"> Date of Birth: </label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
+                    <div class="input-box">
+                        <input type="email" class="form-control" id="email" placeholder="" th:field="*{email}"
+                               data-cy="email" required autofocus>
+                        <label for="email"> Email: </label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message"></div>
+                    <div class="input-box">
+                        <input type="password" class="form-control" id="password" placeholder="" th:field="*{password}"
+                               data-cy="password" required autofocus>
+                        <label for="password"> Password: </label>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" class="form-control" id="confirm-password" placeholder=""
+                               th:field="*{confirmPassword}" data-cy="confirmPassword" required autofocus>
+                        <label for="confirm-password"> Confirm Password: </label>
+                    </div>
+                    <div class="password-info">
+                        <div th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error-message"></div>
+                        <p>password must be at least <strong>8 characters</strong>, and MUST contain <strong>upper</strong> and <strong>lower</strong> case letters, <strong>numbers</strong> and <strong>symbols</strong>, and can NOT contain your <strong>name</strong> or <strong>email</strong></p>
                     </div>
                 </div>
-
-            </form>
-
-        </div>
+                <div class="register-inputs-right">
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
+                               data-cy="location" th:pattern="${addressRegex}" autofocus placeholder="" autocomplete="off">
+                        <!--                               th:errors="#{error.key('May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and/or pound signs. Must start with letter or number.')}">-->
+                        <label for="address-line-1">Address Line 1</label>
+                        <div class="autocomplete-container" id="autocomplete-container"></div>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
+                               data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}">
+                        <!--                               th:errors="#{error.key('May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number.')}">-->
+                        <label for="address-line-2">Address Line 2</label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="suburb" th:name="suburb"
+                               data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="">
+                        <!--                               th:errors="#{error.key('May include letters, hyphens, and spaces. Must start with letter.')}">-->
+                        <label for="suburb">Suburb</label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="postcode" th:name="postcode"
+                               data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder="">
+                        <!--                               th:errors="#{error.key('May include letters, numbers, forward slashes, and hyphens. Must start with letter or number.')}">-->
+                        <label for="postcode">Postcode</label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="city" th:name="city"
+                               data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="">
+                        <!--                               th:errors="#{error.key('May include letters, hyphens, and spaces. Must start with letter')}">-->
+                        <label for="city">City <span class="required">*</span></label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="country" th:name="country"
+                               data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="">
+                        <!--                               th:errors="#{error.key('May include letters, hyphens, and spaces. Must start with letter')}">-->
+                        <label for="country">Country <span class="required">*</span></label>
+                    </div>
+                </div>
+            </div>
+            <div class="submit-button">
+                <button type="submit">Register</button>
+            </div>
+            <div class="cancel-link">
+                <a th:href="@{login}">Login</a>
+                <div class="cancel-link">
+                    <a th:href="@{home}">Cancel</a>
+                </div>
+            </div>
+        </form>
     </div>
+</div>
 </body>
 
 </html>
