@@ -19,6 +19,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -106,7 +107,7 @@ public class RegisterController {
         String password = registerForm.getPassword();
         String confirmPassword = registerForm.getConfirmPassword();
         if (!password.equals(confirmPassword)) {
-            bindingResult.addError(new FieldError("registerForm", "confirmPassword", "Passwords do not match"));
+            bindingResult.addError(new FieldError("registerForm", "password", "Passwords do not match"));
         }
     }
 
@@ -153,7 +154,7 @@ public class RegisterController {
 
         if (!uppercase || !lowercase || !number || !symbol) {
             bindingResult.addError(new FieldError("registerForm", "password",
-                    "Password must contain an uppercase and lowercase letter, a number, and a symbol"));
+                    "Password does not meet the requirements"));
         }
     }
 
@@ -182,7 +183,7 @@ public class RegisterController {
     public String register(
             @Valid RegisterForm registerForm,
             BindingResult bindingResult,
-            HttpServletRequest request) {
+            HttpServletRequest request) throws IOException {
 
         // Run the custom validation methods
         // TODO: Move validators that might be reused into their own class
