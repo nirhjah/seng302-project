@@ -31,9 +31,9 @@ public class LocationServiceTest {
     public void testGettingLocationList(){
         List<Location> locationList = locationService.getLocationList();
         assertTrue(locationList.isEmpty());
-        Location location = new Location(null, null, null, "Christchurch", null, "New Zealand");
-        Location location1 = new Location(null, null, null, "Christchurch", null, "New Zealand");
-        Location location2 = new Location(null, null, null, "Christchurch", null, "New Zealand");
+        Location location = new Location("addressline1:", "addressline2", "suburb", "Christchurch", "postcode", "New Zealand");
+        Location location1 = new Location("addressline1:", "addressline2", "suburb", "Christchurch", "postcode", "New Zealand");
+        Location location2 = new Location("addressline1:", "addressline2", "suburb", "Christchurch", "postcode", "New Zealand");
         List<Location> list = Arrays.asList(location, location1, location2);
 
         locationRepository.save(location);

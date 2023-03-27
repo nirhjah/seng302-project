@@ -29,7 +29,7 @@ public class LocationRepositoryTest {
 
     @Test
     public void testGettingLocationById(){
-        Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
+        Location testLocation = new Location("addressline1:", "addressline2", "suburb", "Christchurch", "postcode", "New Zealand");
         locationRepository.save(testLocation);
         assertEquals(testLocation.getAddressLine1(), locationRepository.findById(testLocation.getLocationId()).get().getAddressLine1());
         assertEquals(testLocation.getAddressLine2(), locationRepository.findById(testLocation.getLocationId()).get().getAddressLine2());
@@ -43,9 +43,9 @@ public class LocationRepositoryTest {
     @Test
     public void testGettingLocationList(){
         assertTrue(locationService.getLocationList().isEmpty());
-        Location location = new Location(null, null, null, "Christchurch", null, "New Zealand");
-        Location location1 = new Location(null, null, null, "Christchurch", null, "New Zealand");
-        Location location2 = new Location(null, null, null, "Christchurch", null, "New Zealand");
+        Location location = new Location("addressline1:", "addressline2", "suburb", "Christchurch", "postcode", "New Zealand");
+        Location location1 = new Location("addressline1:", "addressline2", "suburb", "Christchurch", "postcode", "New Zealand");
+        Location location2 = new Location("addressline1:", "addressline2", "suburb", "Christchurch", "postcode", "New Zealand");
         List<Location> list = Arrays.asList(location, location1, location2);
 
         locationRepository.save(location);
