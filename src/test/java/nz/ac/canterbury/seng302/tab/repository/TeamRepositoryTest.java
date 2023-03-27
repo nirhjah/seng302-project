@@ -6,8 +6,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -54,5 +57,38 @@ public class TeamRepositoryTest {
         assertEquals(list.toString(), teamRepository.findAll().toString());
 
     }
+
+    @Test void filteringSearchBySport_filteringAllTeamsByHockey_correctListReturned() throws IOException {
+        assertTrue(teamService.getTeamList().isEmpty());
+        Team team = new Team("test", "Christchurch", "Hockey");
+        Team team2= new Team ("test2", "Auckland", "Netball");
+
+        List<Team> expectedTeamList = List.of(team); // We will filter the search by hockey so only the first team is expected
+        teamRepository.save(team);
+        teamRepository.save(team2);
+        List<String> searchedSports = new ArrayList<String>();
+        searchedSports.add("Hockey");
+        String test =teamRepository.findAllFilteredTeams(PageRequest.of(0,10), searchedSports,  "").toString();
+        System.out.println("test is here "+ test);
+        assertEquals(expectedTeamList.toString(), teamRepository.findAllFilteredTeams(PageRequest.of(0,10), searchedSports,  "").toString());
+
+    }
+//    @Test
+//    public void filteringTeamsBySports_noSportsSelected_allSportsDisplayed() throws IOException {
+//        List<Team> teamList = teamService.getTeamList();
+//        assertTrue(teamList.isEmpty());
+//        Team team = new Team("test", "Christchurch", "Hockey");
+//        Team team2 = new Team("test2", "Auckland", "Netball");
+//        Team team3 = new Team("test3", "Dunedin", "Basketball");
+//        List<Team> list = Arrays.asList(team, team2, team3);
+//        teamRepository.save(team);
+//        teamRepository.save(team2);
+//        teamRepository.save(team3);
+//
+//        Page<Team> filteredTeams = teamRepository.filterTeamsBySports();
+//        assertEquals(list.toString(), filteredTeams.toString());
+//
+//        teamService.getTeamList();
+//    }
 
 }
