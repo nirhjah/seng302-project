@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,8 @@ public class HomeFormController {
     @Autowired
     private TeamService teamService;
 
+    @Autowired
+    private TeamRepository teamRepository;
 
     /**
      * Redirects GET default url '/' to '/home'
