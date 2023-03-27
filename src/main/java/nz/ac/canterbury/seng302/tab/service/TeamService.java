@@ -100,6 +100,12 @@ public class TeamService {
 
     public Page<Team> findTeamsByNameOrSport(Pageable pageable, List<String> filterSports, String nameSearch)
     {
+        if (filterSports == null) {
+            filterSports = List.of();
+        }
+        if (nameSearch != null && nameSearch.isEmpty()) {
+            nameSearch = null;
+        }
         return teamRepository.findTeamByNameAndSportIn(pageable, filterSports, nameSearch);
     }
 }
