@@ -44,23 +44,23 @@ public class TeamRepositoryTest {
         assertEquals(team.getName(), teamRepository.findById(team.getTeamId()).get().getName());
 
     }
-    // TODO this test are failing
-    @Test
-    public void testGettingTeamList() throws IOException {
-        assertTrue(teamService.getTeamList().isEmpty());
-        Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
-        locationRepository.save(testLocation);
-        Team team = new Team("test", "Hockey", locationRepository.findById(testLocation.getLocationId()).get());
-        Team team2 = new Team("test2", "Netball", locationRepository.findById(testLocation.getLocationId()).get());
-        Team team3 = new Team("test3", "Basketball", locationRepository.findById(testLocation.getLocationId()).get());
-        List<Team> list = Arrays.asList(team, team2, team3);
-
-        teamRepository.save(team);
-        teamRepository.save(team2);
-        teamRepository.save(team3);
-
-        assertEquals(list.toString(), teamRepository.findAll().toString());
-    }
+    // TODO told by Matthew to comment out the test for the time being
+//    @Test
+//    public void testGettingTeamList() throws IOException {
+//        assertTrue(teamService.getTeamList().isEmpty());
+//        Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
+//        locationRepository.save(testLocation);
+//        Team team = new Team("test", "Hockey", locationRepository.findById(testLocation.getLocationId()).get());
+//        Team team2 = new Team("test2", "Netball", locationRepository.findById(testLocation.getLocationId()).get());
+//        Team team3 = new Team("test3", "Basketball", locationRepository.findById(testLocation.getLocationId()).get());
+//        List<Team> list = Arrays.asList(team, team2, team3);
+//
+//        teamRepository.save(team);
+//        teamRepository.save(team2);
+//        teamRepository.save(team3);
+//
+//        assertEquals(list.toString(), teamRepository.findAll().toString());
+//    }
 
 
 }

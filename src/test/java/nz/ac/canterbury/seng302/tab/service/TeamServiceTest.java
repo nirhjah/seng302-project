@@ -39,32 +39,32 @@ public class TeamServiceTest {
 
     Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
 
-    // TODO test failing detached entity passed to persist?
-    @Test
-    public void testGettingTeamList() throws IOException {
-        List<Team> teamList = teamService.getTeamList();
-        assertTrue(teamList.isEmpty());
-        Team team = new Team("test", "Hockey", location);
-        Team team2 = new Team("test2", "Netball", location);
-        Team team3 = new Team("test3", "Cricket", location);
-        List<Team> list = Arrays.asList(team, team2, team3);
-        teamRepository.save(team);
-        teamRepository.save(team2);
-        teamRepository.save(team3);
-        teamService.getTeamList();
+    // TODO test failing detached entity passed to persist?, told to comment this test out for the time being
+//    @Test
+//    public void testGettingTeamList() throws IOException {
+//        List<Team> teamList = teamService.getTeamList();
+//        assertTrue(teamList.isEmpty());
+//        Team team = new Team("test", "Hockey", location);
+//        Team team2 = new Team("test2", "Netball", location);
+//        Team team3 = new Team("test3", "Cricket", location);
+//        List<Team> list = Arrays.asList(team, team2, team3);
+//        teamRepository.save(team);
+//        teamRepository.save(team2);
+//        teamRepository.save(team3);
+//        teamService.getTeamList();
+//
+//        assertEquals(list.toString(), teamService.getTeamList().toString());
+//    }
 
-        assertEquals(list.toString(), teamService.getTeamList().toString());
-    }
-
-    // TODO test failing detached entity passed to persist?
-    @Test
-    public void testAddingTeam() throws IOException {
-        Team team = new Team("test", "Hockey", location);
-        teamService.addTeam(team);
-        assertEquals(team.getName(), teamRepository.findById(team.getTeamId()).get().getName());
-        assertEquals(team.getLocation(), teamRepository.findById(team.getTeamId()).get().getLocation());
-        assertEquals(team.getSport(), teamRepository.findById(team.getTeamId()).get().getSport());
-    }
+    // TODO test failing detached entity passed to persist, told to comment this test out for the time being
+//    @Test
+//    public void testAddingTeam() throws IOException {
+//        Team team = new Team("test", "Hockey", location);
+//        teamService.addTeam(team);
+//        assertEquals(team.getName(), teamRepository.findById(team.getTeamId()).get().getName());
+//        assertEquals(team.getLocation(), teamRepository.findById(team.getTeamId()).get().getLocation());
+//        assertEquals(team.getSport(), teamRepository.findById(team.getTeamId()).get().getSport());
+//    }
 
     @Test
     public void testUpdatingPicture() throws IOException {

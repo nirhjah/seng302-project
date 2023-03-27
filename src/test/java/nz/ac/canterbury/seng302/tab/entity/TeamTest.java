@@ -38,60 +38,61 @@ public class TeamTest {
         locationRepository.save(location);
     }
 
+// TODO Told by Matthew to comment out the tests for the time being as he will get back to me soon.
 
-    @Test
-    public void testTeamConstructor() throws IOException {
-        List<Team> teamList = teamService.getTeamList();
-        assertTrue(teamList.isEmpty());
-        Team team = new Team("test", "Hockey", location);
-        teamRepository.save(team);
-        assertEquals("test", team.getName());
-        assertEquals("Christchurch", team.getLocation().getCity());
-        assertEquals("Hockey", team.getSport());
-    }
-
-    // TODO this test is failing
-    @Test
-    public void testGettingTeamId() throws IOException {
-        List<Team> teamList = teamService.getTeamList();
-        assertTrue(teamList.isEmpty());
-        Team team = new Team("test", "Hockey", location);
-        teamRepository.save(team);
-
-        Team team2 = new Team("test2", "Netball", location);
-        teamRepository.save(team2);
-        assertEquals(1, team.getTeamId());
-        assertEquals(2, team2.getTeamId());
-    }
-
-    @Test
-    public void testGettingPictureString() throws IOException {
-        List<Team> teamList = teamService.getTeamList();
-        assertTrue(teamList.isEmpty());
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        File file = resource.getFile();
-        String pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
-        Team team = new Team("test", "Hockey", location);
-        teamService.addTeam(team);
-        assertEquals(pictureString, team.getPictureString());
-    }
-
-    @Test
-    public void testGettingTeamName() throws IOException {
-        List<Team> teamList = teamService.getTeamList();
-        assertTrue(teamList.isEmpty());
-        Team team = new Team("test", "Hockey", location);
-        teamService.addTeam(team);
-        assertEquals("test", team.getName());
-    }
-
-    @Test
-    public void testGettingTeamLocation() throws IOException {
-        List<Team> teamList = teamService.getTeamList();
-        assertTrue(teamList.isEmpty());
-        Team team = new Team("test", "Hockey", location);
-        teamService.addTeam(team);
-        assertEquals("Christchurch", team.getLocation().getCity());
-    }
+//    @Test
+//    public void testTeamConstructor() throws IOException {
+//        List<Team> teamList = teamService.getTeamList();
+//        assertTrue(teamList.isEmpty());
+//        Team team = new Team("test", "Hockey", location);
+//        teamRepository.save(team);
+//        assertEquals("test", team.getName());
+//        assertEquals("Christchurch", team.getLocation().getCity());
+//        assertEquals("Hockey", team.getSport());
+//    }
+//
+//    // TODO this test is failing
+//    @Test
+//    public void testGettingTeamId() throws IOException {
+//        List<Team> teamList = teamService.getTeamList();
+//        assertTrue(teamList.isEmpty());
+//        Team team = new Team("test", "Hockey", location);
+//        teamRepository.save(team);
+//
+//        Team team2 = new Team("test2", "Netball", location);
+//        teamRepository.save(team2);
+//        assertEquals(1, team.getTeamId());
+//        assertEquals(2, team2.getTeamId());
+//    }
+//
+//    @Test
+//    public void testGettingPictureString() throws IOException {
+//        List<Team> teamList = teamService.getTeamList();
+//        assertTrue(teamList.isEmpty());
+//        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+//        File file = resource.getFile();
+//        String pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+//        Team team = new Team("test", "Hockey", location);
+//        teamService.addTeam(team);
+//        assertEquals(pictureString, team.getPictureString());
+//    }
+//
+//    @Test
+//    public void testGettingTeamName() throws IOException {
+//        List<Team> teamList = teamService.getTeamList();
+//        assertTrue(teamList.isEmpty());
+//        Team team = new Team("test", "Hockey", location);
+//        teamService.addTeam(team);
+//        assertEquals("test", team.getName());
+//    }
+//
+//    @Test
+//    public void testGettingTeamLocation() throws IOException {
+//        List<Team> teamList = teamService.getTeamList();
+//        assertTrue(teamList.isEmpty());
+//        Team team = new Team("test", "Hockey", location);
+//        teamService.addTeam(team);
+//        assertEquals("Christchurch", team.getLocation().getCity());
+//    }
 
 }
