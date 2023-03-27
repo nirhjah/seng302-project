@@ -76,8 +76,8 @@ public class TeamRepositoryTest {
 
         ArrayList<String> filteredLocations = new ArrayList<>();
 
-        List<Team> filteredTeams = teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0, 10));
-        assertEquals(expectedTeams.toString(), filteredTeams.toString());
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10)).toList().toString());
+
     }
 
     @Test
@@ -98,9 +98,7 @@ public class TeamRepositoryTest {
         ArrayList<String> filteredLocations = new ArrayList<>();
         filteredLocations.add(WANTED_CITY);
 
-        List<Team> filteredTeams = teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0, 10));
-        assertEquals(expectedTeams.toString(), filteredTeams.toString());
-
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10)).toList().toString());
 
     }
 
@@ -125,10 +123,7 @@ public class TeamRepositoryTest {
         filteredLocations.add(WANTED_CITY1);
         filteredLocations.add(WANTED_CITY2);
 
-
-        List<Team> filteredTeams = teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0, 10));
-        assertEquals(expectedTeams.toString(), filteredTeams.toString());
-
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10)).toList().toString());
 
     }
 
@@ -158,8 +153,7 @@ public class TeamRepositoryTest {
         filteredLocations.add(WANTED_CITY2);
         filteredLocations.add(WANTED_CITY3);
 
-        List<Team> filteredTeams = teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0, 10));
-        assertEquals(expectedTeams.toString(), filteredTeams.toString());
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10)).toList().toString());
 
     }
 }
