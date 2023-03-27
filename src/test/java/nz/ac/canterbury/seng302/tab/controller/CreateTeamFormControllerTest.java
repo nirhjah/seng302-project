@@ -53,22 +53,6 @@ public class CreateTeamFormControllerTest {
         when(mockUserService.emailIsInUse(anyString())).thenReturn(false);
     }
 
-    @MockBean
-    private UserService mockUserService;
-
-    @MockBean
-    private TeamService mockTeamService;
-
-    static final Long TEAM_ID = 1L;
-
-    @BeforeEach
-    void beforeEach() {
-        User testUser = new User("Test", "User", "test@email.com", "awfulPassword");
-
-        when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
-
-    }
-
     /**
      * Miminimum amount of fields filled with valid input for post request
      *
