@@ -52,8 +52,6 @@ public class RegisterForm {
     @NotBlank
     String country;
 
-    public record LocationForm(String addressLine1, String addressLine2, String suburb, String postcode, String city, String country) {};
-
     public String getFirstName() {
         return firstName;
     }
