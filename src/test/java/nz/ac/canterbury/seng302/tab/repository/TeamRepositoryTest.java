@@ -44,15 +44,15 @@ public class TeamRepositoryTest {
         assertEquals(team.getName(), teamRepository.findById(team.getTeamId()).get().getName());
 
     }
-    // TODO this test are failing
     @Test
     public void testGettingTeamList() throws IOException {
         assertTrue(teamService.getTeamList().isEmpty());
         Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
-        locationRepository.save(testLocation);
-        Team team = new Team("test", "Hockey", locationRepository.findById(testLocation.getLocationId()).get());
-        Team team2 = new Team("test2", "Netball", locationRepository.findById(testLocation.getLocationId()).get());
-        Team team3 = new Team("test3", "Basketball", locationRepository.findById(testLocation.getLocationId()).get());
+        Location testLocation2 = new Location(null, null, null, "Christchurch", null, "New Zealand");
+        Location testLocation3 = new Location(null, null, null, "Christchurch", null, "New Zealand");
+        Team team = new Team("test", "Hockey", testLocation);
+        Team team2 = new Team("test2", "Netball", testLocation2);
+        Team team3 = new Team("test3", "Basketball", testLocation3);
         List<Team> list = Arrays.asList(team, team2, team3);
 
         teamRepository.save(team);

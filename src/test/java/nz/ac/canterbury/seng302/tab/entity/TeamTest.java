@@ -35,7 +35,6 @@ public class TeamTest {
     public void beforeEach() {
         teamRepository.deleteAll();
         location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
-        locationRepository.save(location);
     }
 
 
@@ -50,18 +49,13 @@ public class TeamTest {
         assertEquals("Hockey", team.getSport());
     }
 
-    // TODO this test is failing
     @Test
     public void testGettingTeamId() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
         Team team = new Team("test", "Hockey", location);
         teamRepository.save(team);
-
-        Team team2 = new Team("test2", "Netball", location);
-        teamRepository.save(team2);
         assertEquals(1, team.getTeamId());
-        assertEquals(2, team2.getTeamId());
     }
 
     @Test

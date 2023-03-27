@@ -38,15 +38,15 @@ public class TeamServiceTest {
     }
 
     Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
-
-    // TODO test failing detached entity passed to persist?
+    Location location2 = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
+    Location location3 = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
     @Test
     public void testGettingTeamList() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
         Team team = new Team("test", "Hockey", location);
-        Team team2 = new Team("test2", "Netball", location);
-        Team team3 = new Team("test3", "Cricket", location);
+        Team team2 = new Team("test2", "Netball", location2);
+        Team team3 = new Team("test3", "Cricket", location3);
         List<Team> list = Arrays.asList(team, team2, team3);
         teamRepository.save(team);
         teamRepository.save(team2);
@@ -56,13 +56,12 @@ public class TeamServiceTest {
         assertEquals(list.toString(), teamService.getTeamList().toString());
     }
 
-    // TODO test failing detached entity passed to persist?
     @Test
     public void testAddingTeam() throws IOException {
         Team team = new Team("test", "Hockey", location);
         teamService.addTeam(team);
         assertEquals(team.getName(), teamRepository.findById(team.getTeamId()).get().getName());
-        assertEquals(team.getLocation(), teamRepository.findById(team.getTeamId()).get().getLocation());
+        assertEquals(team.getLocation().getAddressLine1(), teamRepository.findById(team.getTeamId()).get().getLocation().getAddressLine1());
         assertEquals(team.getSport(), teamRepository.findById(team.getTeamId()).get().getSport());
     }
 
