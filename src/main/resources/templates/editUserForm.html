@@ -23,82 +23,101 @@
         <div class="wrapper">
             <form th:action="@{editUser}" method="post" th:object="${editUserForm}">
                 <div class="edit-inputs">
-                    <div class="edit-inputs-left">
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="firstName" th:name="firstName"
-                                   data-cy="firstName" autofocus placeholder="" th:pattern="${validNameRegex}" th:field="*{firstName}"
-                                   title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
-                            <label for="address-line-2">First Name</label>
-                        </div>
-                        <div class="input-box">
-                            <input type="text" class="form-control"
-                                   th:field="*{firstName}" data-cy="firstName" required
-                                   autofocus th:pattern="${validNameRegex}" th:title="${validNameMessage}">
-                            <label for="firstName">First Name: </label>
-                            <p th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="errorMessage" />
-                        </div>
-                        <div class="input-box">
-                            <input type="text" class="form-control"
-                                   th:field="*{lastName}" data-cy="lastName" required
-                                   autofocus th:pattern="${validNameRegex}" th:title="${validNameMessage}">
-                            <label for="lastName">Last Name: </label>
-                            <p th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="errorMessage" />
-                        </div>
-                        <div class="input-box">
-                            <input type="text" class="form-control"
-                                   th:field="*{email}" data-cy="email" required autofocus>
-                            <label for="email">Email
-                                <span style="color: darkred">(You will be logged out if you edit your email):</span>
-                            </label>
-                            <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="errorMessage" />
-                        </div>
-                        <div class="input-box">
-                            <input type="date" class="form-control"
-                                   th:field="*{dateOfBirth}" th:value="*{#dates.formatISO(dateOfBirth)}" data-cy="dateOfBirth" required autofocus>
-                            <label for="dateOfBirth">Date of Birth: </label>
-                            <p th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="errorMessage" />
-                        </div>
-                    </div>
-                    <div class="edit-inputs-right">
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
-                                   data-cy="location" th:pattern="${addressRegex}" autofocus placeholder="" autocomplete="off"
-                                   title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and/or pound signs. Must start with letter or number">
-                            <label for="address-line-1">Address Line 1</label>
-                            <div class="autocomplete-container" id="autocomplete-container"></div>
-                        </div>
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
-                                   data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}"
-                                   title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
-                            <label for="address-line-2">Address Line 2</label>
-                        </div>
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="suburb" th:name="suburb"
-                                   data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
-                                   title="May include letters, hyphens, and spaces. Must start with letter">
-                            <label for="suburb">Suburb</label>
-                        </div>
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="postcode" th:name="postcode"
-                                   data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder=""
-                                   title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">
-                            <label for="postcode">Postcode</label>
-                        </div>
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="city" th:name="city"
-                                   data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
-                                   title="May include letters, hyphens, and spaces. Must start with letter">
-                            <label for="city">City <span class="required">*</span></label>
-                        </div>
+<!--                    <div class="edit-inputs-left">-->
+<!--                        <div class="input-box">-->
+<!--                            <input type="text" class="form-control" id="first-name" th:name="firstName"-->
+<!--                                   data-cy="firstName" autofocus placeholder="" th:pattern="${validNameRegex}" th:field="*{firstName}">-->
+<!--                            <label for="first-name">First Name <span class="required">*</span></label>-->
+<!--                            <p th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="errorMessage" />-->
+<!--                        </div>-->
+<!--&lt;!&ndash;                        <div class="input-box">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <input type="text" class="form-control"&ndash;&gt;-->
+<!--&lt;!&ndash;                                   th:field="*{firstName}" data-cy="firstName" required&ndash;&gt;-->
+<!--&lt;!&ndash;                                   autofocus th:pattern="${validNameRegex}" th:title="${validNameMessage}">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <label for="firstName">First Name </label>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <p th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="errorMessage" />&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                        <div class="input-box">-->
+<!--                            <input type="text" class="form-control" id="last-name" th:name="lastName"-->
+<!--                                   data-cy="lastName" autofocus placeholder="" th:pattern="${validNameRegex}" th:field="*{lastName}">-->
+<!--                            <label for="last-name">Last Name <span class="required">*</span></label>-->
+<!--                            <p th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="errorMessage" />-->
+<!--                        </div>-->
+<!--&lt;!&ndash;                        <div class="input-box">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <input type="text" class="form-control"&ndash;&gt;-->
+<!--&lt;!&ndash;                                   th:field="*{lastName}" data-cy="lastName" required&ndash;&gt;-->
+<!--&lt;!&ndash;                                   autofocus th:pattern="${validNameRegex}" th:title="${validNameMessage}">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <label for="lastName">Last Name: </label>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <p th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="errorMessage" />&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                        <div class="input-box">-->
+<!--                            <input type="text" class="form-control" id="email" th:name="email"-->
+<!--                                   data-cy="email" autofocus placeholder="" th:pattern="${validNameRegex}" th:field="*{email}">-->
+<!--                            <label for="email">Email <span class="required">*</span></label>-->
+<!--                            <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="errorMessage" />-->
+<!--                        </div>-->
+<!--&lt;!&ndash;                        <div class="input-box">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <input type="text" class="form-control"&ndash;&gt;-->
+<!--&lt;!&ndash;                                   th:field="*{email}" data-cy="email" required autofocus>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <label for="email">Email&ndash;&gt;-->
+<!--&lt;!&ndash;                                <span style="color: darkred">(You will be logged out if you edit your email):</span>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </label>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="errorMessage" />&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                        <div class="input-box">-->
+<!--                            <input type="text" class="form-control" id="date_of_birth" th:name="email"-->
+<!--                                   data-cy="email" autofocus placeholder="" th:pattern="${validNameRegex}" th:field="*{dateOfBirth}">-->
+<!--                            <label for="date_of_birth">Date of Birth <span class="required">*</span></label>-->
+<!--                            <p th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="errorMessage" />-->
+<!--                        </div>-->
+<!--&lt;!&ndash;                        <div class="input-box">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <input type="date" class="form-control"&ndash;&gt;-->
+<!--&lt;!&ndash;                                   th:field="*{dateOfBirth}" th:value="*{#dates.formatISO(dateOfBirth)}" data-cy="dateOfBirth" required autofocus>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <label for="dateOfBirth">Date of Birth: </label>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <p th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="errorMessage" />&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                    </div>-->
+<!--                    <hr class="solid">-->
+<!--                    <div class="edit-inputs-right">-->
+<!--                        <div class="input-box">-->
+<!--                            <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"-->
+<!--                                   data-cy="location" th:pattern="${addressRegex}" autofocus placeholder="" autocomplete="off" th:field="*{addressLine1}"-->
+<!--                                   title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and/or pound signs. Must start with letter or number">-->
+<!--                            <label for="address-line-1">Address Line 1</label>-->
+<!--                            <div class="autocomplete-container" id="autocomplete-container"></div>-->
+<!--                        </div>-->
+<!--                        <div class="input-box">-->
+<!--                            <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"-->
+<!--                                   data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}" th:field="*{addressLine2}"-->
+<!--                                   title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">-->
+<!--                            <label for="address-line-2">Address Line 2</label>-->
+<!--                        </div>-->
+<!--                        <div class="input-box">-->
+<!--                            <input type="text" class="form-control" id="suburb" th:name="suburb"-->
+<!--                                   data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="" th:field="*{suburb}"-->
+<!--                                   title="May include letters, hyphens, and spaces. Must start with letter">-->
+<!--                            <label for="suburb">Suburb</label>-->
+<!--                        </div>-->
+<!--                        <div class="input-box">-->
+<!--                            <input type="text" class="form-control" id="postcode" th:name="postcode"-->
+<!--                                   data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder="" th:field="*{postcode}"-->
+<!--                                   title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">-->
+<!--                            <label for="postcode">Postcode</label>-->
+<!--                        </div>-->
+<!--                        <div class="input-box">-->
+<!--                            <input type="text" class="form-control" id="city" th:name="city"-->
+<!--                                   data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="" th:field="*{city}"-->
+<!--                                   title="May include letters, hyphens, and spaces. Must start with letter">-->
+<!--                            <label for="city">City <span class="required">*</span></label>-->
+<!--                        </div>-->
                         <div class="input-box">
                             <input type="text" class="form-control" id="country" th:name="country"
-                                   data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                                   data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="" th:value="*{country}"
                                    title="May include letters, hyphens, and spaces. Must start with letter">
                             <label for="country">Country <span class="required">*</span></label>
                         </div>
-                    </div>
-                </div>
+<!--                    </div>-->
+<!--                </div>-->
                 <br/>
                 <div class="submit-button">
                     <a th:href="@{home}">

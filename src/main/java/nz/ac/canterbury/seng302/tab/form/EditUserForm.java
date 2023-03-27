@@ -26,17 +26,11 @@ public class EditUserForm {
      * @param user The user we'll be populating this with.
      */
     public void prepopulate(User user) {
-        if (this.firstName == null)
-            this.firstName = user.getFirstName();
-
-        if (this.lastName == null)
-            this.lastName = user.getLastName();
-
-        if (this.email == null)
-            this.email = user.getEmail();
-
-        if (this.dateOfBirth == null)
-            this.dateOfBirth = user.getDateOfBirth();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.email = user.getEmail();
+        this.dateOfBirth = user.getDateOfBirth();
+        this.location = user.getLocationl();
     }
 
     public String getFirstName() {
