@@ -217,8 +217,7 @@ public class RegisterController {
             return "register";
         }
 
-        var locInput = registerForm.getLocationForm();
-        var location = new Location(locInput.addressLine1(), locInput.addressLine2(), locInput.suburb(), locInput.postcode(), locInput.city(), locInput.country());
+        var location = new Location(registerForm.getAddressLine1(), registerForm.getAddressLine2(), registerForm.getSuburb(), registerForm.getPostcode(), registerForm.getCity(), registerForm.getCountry());
         locationService.addLocation(location);
 
         User user = new User(registerForm.getFirstName(), registerForm.getLastName(), registerForm.getDateOfBirth(),

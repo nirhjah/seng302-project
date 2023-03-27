@@ -119,10 +119,4 @@ public class RegisterForm {
 
     public void setCountry(String country) {this.country = country;}
     public String getCountry() {return country;}
-
-    public LocationForm getLocationForm() {
-        return new LocationForm(
-                addressLine1, addressLine2, suburb, postcode, city, country
-        );
-    }
 }
