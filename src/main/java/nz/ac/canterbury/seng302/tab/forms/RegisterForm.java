@@ -50,7 +50,7 @@ public class RegisterForm {
     @NotBlank
     String country;
 
-    public record LocationForm(String addressLine1, String addressLine2, String suburb, String postcode, String city, String country);
+    public record LocationForm(String addressLine1, String addressLine2, String suburb, String postcode, String city, String country) {};
 
     public String getFirstName() {
         return firstName;
@@ -99,6 +99,13 @@ public class RegisterForm {
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
     }
+
+    public String getAddressLine1() {return addressLine1;}
+    public String getAddressLine2() {return addressLine2;}
+    public String getSuburb() {return suburb;}
+    public String getPostcode() {return postcode;}
+    public String getCity() {return city;}
+    public String getCountry() {return country;}
 
     public LocationForm getLocationForm() {
         return new LocationForm(
