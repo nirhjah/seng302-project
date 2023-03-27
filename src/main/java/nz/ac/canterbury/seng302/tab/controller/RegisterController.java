@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.forms.RegisterForm;
 import nz.ac.canterbury.seng302.tab.service.UserService;
@@ -14,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,12 +39,25 @@ public class RegisterController {
     private AuthenticationManager authenticationManager;
 
     /**
+     * Countries and cities can have letters from all alphabets, with hyphens and
+     * spaces. Must start with an alphabetical character
+     */
+    private final String countryCitySuburbNameRegex = "^\\p{L}+[\\- \\p{L}]*$";
+
+    /** Addresses can have letters, numbers, spaces, commas, periods, hyphens, forward slashes and pound signs. Must
+     * include at least one alphanumeric character **/
+    private  final String addressRegex = "^[\\p{L}\\p{N}]+[\\- ,./#\\p{L}\\p{N}]*$";
+
+    /** Allow letters, numbers, forward slashes and hyphens. Must start with an alphanumeric character. */
+    private final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
+
+    /**
      * Logs the given user in.
      * Because our logins are entirely handled through the security chain, we have
      * to hack together
      * a login if we can't go through it.
      * 
-     * @param user    The user who'll be logged in.
+     * @param user The user who'll be logged in.
      * @param request Your controller's request object, we bind the login to this.
      */
     public void forceLogin(User user, HttpServletRequest request) {
@@ -165,9 +180,11 @@ public class RegisterController {
      */
     @GetMapping("/register")
     public String getRegisterPage(
-            RegisterForm registerForm) {
+            RegisterForm registerForm, Model model) {
         logger.info("GET /register");
-
+        model.addAttribute("countryCitySuburbNameRegex", countryCitySuburbNameRegex);
+        model.addAttribute("addressRegex", addressRegex);
+        model.addAttribute("postcodeRegex", postcodeRegex);
         return "register";
     }
 
@@ -196,7 +213,8 @@ public class RegisterController {
         }
 
         User user = new User(registerForm.getFirstName(), registerForm.getLastName(), registerForm.getDateOfBirth(),
-                registerForm.getEmail(), registerForm.getPassword(), new ArrayList<>());
+                registerForm.getEmail(), registerForm.getPassword(), new ArrayList<>(),
+                new Location("","","","Christchurch","","New Zealand"));
         user.grantAuthority("ROLE_USER");
         user = userService.updateOrAddUser(user);
 
