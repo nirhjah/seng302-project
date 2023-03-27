@@ -47,6 +47,7 @@ public class ViewUserController {
         } else {
             userPicture = user.get().getPictureString();
             model.addAttribute("userId", userId);
+            model.addAttribute("favSportNames", user.get().getFavouriteSportNames());
         }
 
         // Thymeleaf has no special support for optionals

@@ -80,13 +80,12 @@ public class User {
     @Column(nullable = false)
     private Date dateOfBirth;
 
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="favSports")
+    private List<Sport> favoriteSports;
+
     @Column(columnDefinition = "MEDIUMBLOB")
     private String pictureString;
-
-    @Column()
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "Id")
-    private List<Sport> favoriteSports;
 
 
     @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
@@ -227,5 +226,15 @@ public class User {
         result = 31 * result + (hashedPassword != null ? hashedPassword.hashCode() : 0);
         result = 31 * result + (userRoles != null ? userRoles.hashCode() : 0);
         return result;
+    }
+
+    public List<String> getFavouriteSportNames ()
+    {
+        List<String> sport = new ArrayList<>();
+        for (Sport s : favoriteSports)
+        {
+            sport.add(s.getName());
+        }
+        return sport;
     }
 }

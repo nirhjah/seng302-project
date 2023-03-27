@@ -1,7 +1,9 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.util.Optional;
+import java.util.*;
 
+import nz.ac.canterbury.seng302.tab.entity.Sport;
+import nz.ac.canterbury.seng302.tab.service.SportService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.EditUserForm;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class EditUserFormController {
@@ -28,6 +32,9 @@ public class EditUserFormController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    SportService sportService;
 
     private void prefillModel(Model model) {
         model.addAttribute("validNameRegex", UserFormValidators.VALID_NAME_REGEX);
@@ -43,8 +50,12 @@ public class EditUserFormController {
         if (user.isEmpty()) {
             return "redirect:/login";
         }
-        editUserForm.prepopulate(user.get());
-
+        User u = user.get();
+        editUserForm.prepopulate(u);
+        Set<String> sports = new HashSet<>(sportService.getAllSportNames());
+        model.addAttribute("knownSports", sportService.getAllSportNames());
+        model.addAttribute("favouriteSports", u.getFavouriteSportNames());
+        model.addAttribute("user", u);
         return "editUserForm";
     }
 
@@ -54,8 +65,28 @@ public class EditUserFormController {
             BindingResult bindingResult,
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
-            Model model) throws ServletException {
+            @RequestParam("tags") List<String> tags,
+            Model model, RedirectAttributes redirectAttributes) throws ServletException {
 
+        String invalidTags= "These are invalid sports: ";
+        boolean first= true ,invalidSport=false;
+        for (String tag : tags) {
+            if (!tag.matches("^[\\p{L}\\s\\'\\-]+$")) {
+                invalidSport=true;
+                if (!first) {
+                    invalidTags += ", ";
+                } else {
+                    first = false;
+                }
+                invalidTags += tag;
+            }
+        }
+        if (invalidSport) {
+            redirectAttributes.addFlashAttribute("errorMessage", invalidTags);
+            return "redirect:/editUser";
+        }
+
+        System.out.println(invalidTags);
         prefillModel(model);
         Optional<User> optUser = userService.getCurrentUser();
         if (optUser.isEmpty()) {
@@ -80,6 +111,20 @@ public class EditUserFormController {
         user.setLastName(editUserForm.getLastName());
         user.setEmail(editUserForm.getEmail());
         user.setDateOfBirth(editUserForm.getDateOfBirth());
+
+        List<Sport> newFavSports = new ArrayList<>();
+        List<String> knownSportNames = sportService.getAllSportNames();
+        List<Sport> knownSports = sportService.getAllSports();
+        for (String tag : tags) {
+            if (knownSportNames.contains(tag)){
+                int index = knownSportNames.indexOf(tag);
+                newFavSports.add(knownSports.get(index));
+            } else {
+                newFavSports.add(new Sport(tag));
+            }
+        }
+
+        user.setFavoriteSports(newFavSports);
         userService.updateOrAddUser(user);
 
         if (shouldLogout) {
