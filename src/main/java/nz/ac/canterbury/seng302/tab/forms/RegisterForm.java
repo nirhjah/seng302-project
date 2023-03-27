@@ -100,17 +100,33 @@ public class RegisterForm {
         this.confirmPassword = confirmPassword;
     }
 
-    public String getAddressLine1() {return addressLine1;}
-    public void setAddressLine1(String al1) {addressLine1 = al1;}
+    public String getAddressLine1() {
+        return addressLine1;
+    }
+    public void setAddressLine1(String al1) {
+        addressLine1 = al1;
+    }
 
-    public String getAddressLine2() {return addressLine2;}
-    public void setAddressLine2(String al2) {addressLine2 = al2;}
+    public String getAddressLine2() {
+        return addressLine2;
+    }
+    public void setAddressLine2(String al2) {
+        addressLine2 = al2;
+    }
 
-    public void setSuburb(String sub) {suburb = sub;}
-    public String getSuburb() {return suburb;}
+    public void setSuburb(String sub) {
+        suburb = sub;
+    }
+    public String getSuburb() {
+        return suburb;
+    }
 
-    public void setPostcode(String pcode) {postcode = pcode;}
-    public String getPostcode() {return postcode;}
+    public void setPostcode(String pcode) {
+        postcode = pcode;
+    }
+    public String getPostcode() {
+        return postcode;
+    }
 
     public void setCity(String city) {this.city = city;}
     public String getCity() {return city;}
