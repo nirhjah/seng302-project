@@ -213,6 +213,7 @@ public class RegisterController {
         checkPasswordIsSecure(registerForm, bindingResult);
 
         if (bindingResult.hasErrors()) {
+            logger.info("Had errors: " + bindingResult.toString());
             return "register";
         }
 
