@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.forms.RegisterForm;
+import nz.ac.canterbury.seng302.tab.service.LocationService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,9 @@ public class RegisterController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private LocationService locationService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -212,9 +216,14 @@ public class RegisterController {
             return "register";
         }
 
+        var locInput = registerForm.getLocationForm();
+        var location = new Location(locInput.addressLine1(), locInput.addressLine2(), locInput.suburb(), locInput.postcode(), locInput.city(), locInput.country());
+        locationService.addLocation(location);
+
         User user = new User(registerForm.getFirstName(), registerForm.getLastName(), registerForm.getDateOfBirth(),
-                registerForm.getEmail(), registerForm.getPassword(), new ArrayList<>(),
-                new Location("","","","Christchurch","","New Zealand"));
+                registerForm.getEmail(), registerForm.getPassword(), new ArrayList<>(), location
+        );
+
         user.grantAuthority("ROLE_USER");
         user = userService.updateOrAddUser(user);
 

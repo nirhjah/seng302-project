@@ -64,38 +64,38 @@
                     </div>
                     <div class="register-inputs-right">
                         <div class="input-box">
-                            <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
+                            <input type="text" class="form-control" id="address-line-1" th:field="*{addressLine1}"
                                    data-cy="location" th:pattern="${addressRegex}" autofocus placeholder="" autocomplete="off">
                             <!--                               th:errors="#{error.key('May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and/or pound signs. Must start with letter or number.')}">-->
                             <label for="address-line-1">Address Line 1</label>
                             <div class="autocomplete-container" id="autocomplete-container"></div>
                         </div>
                         <div class="input-box">
-                            <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
+                            <input type="text" class="form-control" id="address-line-2" th:field="*{addressLine2}"
                                     data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}">
                             <!--                               th:errors="#{error.key('May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number.')}">-->
                             <label for="address-line-2">Address Line 2</label>
                         </div>
                         <div class="input-box">
-                            <input type="text" class="form-control" id="suburb" th:name="suburb"
+                            <input type="text" class="form-control" id="suburb" th:field="*{suburb}"
                                    data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="">
                             <!--                               th:errors="#{error.key('May include letters, hyphens, and spaces. Must start with letter.')}">-->
                             <label for="suburb">Suburb</label>
                         </div>
                         <div class="input-box">
-                            <input type="text" class="form-control" id="postcode" th:name="postcode"
+                            <input type="text" class="form-control" id="postcode" th:field="*{postcode}"
                                    data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder="">
                             <!--                               th:errors="#{error.key('May include letters, numbers, forward slashes, and hyphens. Must start with letter or number.')}">-->
                             <label for="postcode">Postcode</label>
                         </div>
                         <div class="input-box">
-                            <input type="text" class="form-control" id="city" th:name="city"
+                            <input type="text" class="form-control" id="city" th:field="*{city}"
                                    data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="">
                             <!--                               th:errors="#{error.key('May include letters, hyphens, and spaces. Must start with letter')}">-->
                             <label for="city">City <span class="required">*</span></label>
                         </div>
                         <div class="input-box">
-                            <input type="text" class="form-control" id="country" th:name="country"
+                            <input type="text" class="form-control" id="country" th:field="*{country}"
                                    data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="">
                             <!--                               th:errors="#{error.key('May include letters, hyphens, and spaces. Must start with letter')}">-->
                             <label for="country">Country <span class="required">*</span></label>

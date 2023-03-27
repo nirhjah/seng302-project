@@ -1,8 +1,10 @@
 package nz.ac.canterbury.seng302.tab.forms;
 
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -15,7 +17,6 @@ import java.util.Date;
  * More complex validation is handled inside {@link UserFormValidators}
  */
 public class RegisterForm {
-
     @UserFormValidators.NameValidator
     String firstName;
 
@@ -35,6 +36,21 @@ public class RegisterForm {
 
     @NotBlank
     String confirmPassword;
+
+    @NotBlank
+    String addressLine1;
+    @NotBlank
+    String addressLine2;
+    @NotBlank
+    String suburb;
+    @NotBlank
+    String postcode;
+    @NotBlank
+    String city;
+    @NotBlank
+    String country;
+
+    public record LocationForm(String addressLine1, String addressLine2, String suburb, String postcode, String city, String country);
 
     public String getFirstName() {
         return firstName;
@@ -84,4 +100,9 @@ public class RegisterForm {
         this.confirmPassword = confirmPassword;
     }
 
+    public LocationForm getLocationForm() {
+        return new LocationForm(
+                addressLine1, addressLine2, suburb, postcode, city, country
+        );
+    }
 }
