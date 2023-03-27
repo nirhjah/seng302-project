@@ -59,8 +59,8 @@ public class SearchTeamsController {
                 // Maybe make into dictionary
                 List<String> cities = new ArrayList<>();
                 for (Location location: locations) {
-                    if (!cities.contains(location.getCity())) {
-                        cities.add(location.getCity());
+                    if (!cities.contains(location.getCity().toLowerCase())) {
+                        cities.add(location.getCity().toLowerCase());
                         Collections.sort(cities);
                     }
                 }

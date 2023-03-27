@@ -42,12 +42,18 @@ public class TeamService {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         return teamRepository.findAll(pageable);
     }
-    
+
     public Page<Team> findPaginatedTeamsByCity(Pageable pageable, List<String> searchedLocations) {
 
         if (searchedLocations == null) {
             searchedLocations = List.of();
         }
+
+        for (String city : searchedLocations) {
+            String newCity = city.toLowerCase();
+            searchedLocations.set(searchedLocations.indexOf(city), newCity);
+        }
+
         return teamRepository.findTeamByFilteredLocations(searchedLocations, pageable);
     }
 
