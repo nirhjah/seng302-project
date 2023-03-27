@@ -70,12 +70,12 @@ public class SearchTeamsController {
                 model.addAttribute("totalPages", numPages);
                 model.addAttribute("teamName", teamName);
                 model.addAttribute("cities", cities);
-//                model.addAttribute("cities", );
             }
         } else {
             model.addAttribute("teams", new ArrayList<Team>());
             model.addAttribute("notSearch", true);
         }
+        model.addAttribute("navTeams", teamService.getTeamList());
         return "searchTeamsForm";
     }
 }

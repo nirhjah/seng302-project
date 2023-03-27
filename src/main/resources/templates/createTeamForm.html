@@ -20,64 +20,20 @@
                 <div th:if="${invalid_team != null}" th:text="${invalid_team}" class="invalid-team error-message"></div>
                 <input type="hidden" th:if="${teamID != null}" th:name="teamID" th:value="${teamID}" />
                 <div class="input-boxes">
-                <div class="input-box">
-                    <input type="text" class="form-control" id="name" th:name="name" th:value="*{name}"
-                           data-cy="name" required autofocus th:pattern="${teamNameUnicodeRegex}" placeholder="">
-<!--                           th:errors="#{error.key('May include letters, numbers, dots, and curly braces. Must start with letter or number.')}">-->
-                    <label for="name">Name <span class="required">*</span></label>
-                </div>
-                <div class="input-box">
-                    <input type="text" class="form-control" id="sport" th:name="sport" th:value="*{sport}"
-                           data-cy="sport" required autofocus th:pattern="${sportUnicodeRegex}" placeholder="">
-<!--                           th:errors="#{error.key('May include letters, spaces, apostrophes, and hyphens. Must start with letter.')}">-->
-                    <label for="sport">Sport <span class="required">*</span></label>
-                </div>
-            </div>
-                <div class="input-boxes">
                     <div class="input-box">
-                        <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
-                               th:value="*{addressLine1}" data-cy="location" th:pattern="${addressRegex}"
-                               autofocus placeholder="" autocomplete="off">
-<!--                               th:errors="#{error.key('May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and/or pound signs. Must start with letter or number.')}">-->
-                        <label for="address-line-1">Address Line 1</label>
-                        <div class="autocomplete-container" id="autocomplete-container"></div>
+                        <input type="text" class="form-control" id="name" th:name="name" th:value="*{name}"
+                               data-cy="name" required autofocus th:pattern="${teamNameUnicodeRegex}" placeholder="">
+                        <!--                           th:errors="#{error.key('May include letters, numbers, dots, and curly braces. Must start with letter or number.')}">-->
+                        <label for="name">Name <span class="required">*</span></label>
                     </div>
                     <div class="input-box">
-                        <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
-                               th:value="*{addressLine2}" data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}">
-<!--                               th:errors="#{error.key('May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number.')}">-->
-                        <label for="address-line-2">Address Line 2</label>
+                        <input type="text" class="form-control" id="sport" th:name="sport" th:value="*{sport}"
+                               data-cy="sport" required autofocus th:pattern="${sportUnicodeRegex}" placeholder="">
+                        <!--                           th:errors="#{error.key('May include letters, spaces, apostrophes, and hyphens. Must start with letter.')}">-->
+                        <label for="sport">Sport <span class="required">*</span></label>
                     </div>
                 </div>
-                <div class="input-boxes">
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="suburb" th:name="suburb" th:value="*{suburb}"
-                               data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="">
-<!--                               th:errors="#{error.key('May include letters, hyphens, and spaces. Must start with letter.')}">-->
-                        <label for="suburb">Suburb</label>
-                    </div>
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="postcode" th:name="postcode" th:value="*{postcode}"
-                               data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder="">
-<!--                               th:errors="#{error.key('May include letters, numbers, forward slashes, and hyphens. Must start with letter or number.')}">-->
-                        <label for="postcode">Postcode</label>
-                    </div>
-                </div>
-                <div class="input-boxes">
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="city" th:name="city" th:value="*{city}"
-                               data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="">
-<!--                               th:errors="#{error.key('May include letters, hyphens, and spaces. Must start with letter')}">-->
-                        <label for="city">City <span class="required">*</span></label>
-                    </div>
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="country" th:name="country" th:value="*{country}"
-                            data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="">
-<!--                               th:errors="#{error.key('May include letters, hyphens, and spaces. Must start with letter')}">-->
-                        <label for="country">Country <span class="required">*</span></label>
-                    </div>
-                </div>
-                <br />
+                <div th:insert="~{/fragments/locationSearch.html::locationSearch}"></div>
                 <div class="submit-button">
                     <a th:href="@{home}">
                         <button type="submit" th:text="${teamID != null ? 'Save' : 'Create'}"></button>

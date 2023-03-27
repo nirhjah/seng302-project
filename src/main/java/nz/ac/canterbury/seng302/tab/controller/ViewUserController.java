@@ -1,19 +1,21 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import jakarta.servlet.http.HttpServletResponse;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.service.UserService;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Optional;
+import jakarta.servlet.http.HttpServletResponse;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 
 @Controller
 public class ViewUserController {
@@ -37,12 +39,19 @@ public class ViewUserController {
             Model model,
             HttpServletResponse httpServletResponse) {
         logger.info("GET /user-info");
+
         Optional<User> user = userService.findUserById(userId);
+        String userPicture = null;
         if (user.isEmpty()) { // If empty, throw a 404
             httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        } else {
+            userPicture = user.get().getPictureString();
+            model.addAttribute("userId", userId);
         }
+
         // Thymeleaf has no special support for optionals
         model.addAttribute("thisUser", user);
+        model.addAttribute("displayPicture", userPicture);
         return "viewUserTemplate";
     }
 
@@ -66,4 +75,47 @@ public class ViewUserController {
         }
 
     }
+
+    /**
+     * Gets the image file as a multipartfile and checks if it's a .jpg, .svg, or .png and within size limit. If no, an
+     * error message is displayed. Else, the file will be saved in the database as a Byte array.
+     * @param file uploaded MultipartFile file
+     * @param redirectAttributes
+     * @param model (map-like) representation of team id
+     * @return
+     */
+    @PostMapping("/user-info/upload-pfp")
+    public String uploadPicture(
+            @RequestParam(name = "userId", defaultValue = "-1") long userId,
+            @RequestParam("file") MultipartFile file,
+            RedirectAttributes redirectAttributes,
+            Model model
+    ) {
+        Optional<User> user = userService.getCurrentUser();
+        if (user.isEmpty()) {
+            return "redirect:/login";
+        }
+        User authUser = user.get();
+        model.addAttribute("userId", userId);
+
+        if (!isSupportedContentType(file.getContentType())){
+            redirectAttributes.addFlashAttribute("typeError", true);
+            return "redirect:/user-info?name=" + authUser.getUserId();
+        }
+        else if (file.getSize()>10000000){
+            redirectAttributes.addFlashAttribute("sizeError", true);
+            return "redirect:/user-info?name=" + authUser.getUserId();
+        }
+        userService.updatePicture(file, userId);
+        return "redirect:/user-info?name=" + authUser.getUserId();
+    }
+
+    /**
+     * @param contentType The picture file type in string, e.g image/jpg, image/svg+xml etc
+     * @return Boolean type if the contentType parameter matches either the image/png, image/jpg, image/svg+xml or image/jpeg string
+     */
+    private boolean isSupportedContentType(String contentType){
+        return contentType.equals("image/png")|| contentType.equals("image/jpg")||contentType.equals("image/svg+xml")|| contentType.equals("image/jpeg");
+    }
+
 }
