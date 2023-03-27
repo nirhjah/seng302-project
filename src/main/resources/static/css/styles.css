@@ -253,11 +253,16 @@ td {
 }
 
 .wrapper,
-.wrapper-profile .profile-pic,
-.file-label-border,
-.profile-form {
-  justify-content: center;
-  align-items: center;
+.wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form, .wrapper-profile .user-info {
+    justify-content: center;
+    align-items: center;
+}
+
+.wrapper-profile .profile-pic, .wrapper-profile .team-info, .wrapper-profile .user-info {
+    position: absolute;
+    top: 0;
+    width: 400px;
+    height: 440px;
 }
 
 .wrapper-profile .profile-pic {
@@ -275,6 +280,9 @@ td {
   align-items: center;
   padding-right: 170px;
   padding-top: 51px;
+}
+.wrapper-profile .team-info, .wrapper-profile .user-info, footer {
+    right: 0;
 }
 
 .wrapper-profile .profile-pic {
@@ -335,9 +343,10 @@ footer {
   font-size: 35px;
 }
 
-.team-info h3 {
+
+/* .team-info h3 {
   font-size: 22px;
-}
+} */
 
 .team-display {
   padding: 20px 0 20px 0;
@@ -354,6 +363,20 @@ footer {
   position: absolute;
   right: 30px;
   bottom: 40px;
+}
+
+.team-info h3, .user-info h3 {
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 600;
+    font-size: 35px;
+    color: #1B263B;
+}
+
+.team-display, .user-display {
+    padding: 20px 0 20px 0;
+    font-weight: 500;
+    font-family: "Noto Sans", sans-serif;
+    color: #1B263B;
 }
 
 .edit-button button {
@@ -723,4 +746,7 @@ li.active a {
 
 #checkBoxes label:hover {
     background-color: #4F615E;
+}
+ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .wrapper-profile .user-info, .file-label-border ,.profile-form{
+    display: flex;
 }
