@@ -23,9 +23,12 @@
                     <label for="name"> Name: </label>
                 </div>
                 <div class="input-box">
-                    <input type="text" class="form-control" id="sport"
+                    <input type="text" class="form-control" id="sport" list="sports"
                            th:name="sport" th:value="*{sport}" data-cy="sport" required
                            autofocus th:pattern="${sportUnicodeRegex}" placeholder="">
+                    <datalist id="sports">
+                        <option th:each="sport : ${knownSports}" th:text="${sport}">
+                    </datalist>
                     <label for="sport"> Sport: </label>
                 </div>
                 <div class="input-box">
