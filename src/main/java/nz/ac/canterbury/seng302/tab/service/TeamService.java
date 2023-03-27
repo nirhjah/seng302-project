@@ -97,4 +97,9 @@ public class TeamService {
         //Saved the updated picture string in the database.
         teamRepository.save(team);
     }
+
+    public Page<Team> findTeamsByNameOrSport(Pageable pageable, List<String> filterSports, String nameSearch)
+    {
+        return teamRepository.findTeamByNameAndSportIn(pageable, filterSports, nameSearch);
+    }
 }
