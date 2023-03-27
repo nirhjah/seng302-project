@@ -8,10 +8,6 @@
     height: 770px;
 }
 
-.user-form .wrapper {
-    height: 490px;
-}
-
 ul.search {
     display: flex;
     list-style: none;
@@ -104,7 +100,7 @@ th:not(:first-child) {
     width: calc((100% - 10%) / 3);
 }
 
-tr, .wrapper,.wrapper-profile,.wrapper-edit-profile {
+tr, .wrapper,.wrapper-profile {
     background-color: white;
 }
 
@@ -122,7 +118,7 @@ td {
     border-bottom: 1px solid #ddd;
 }
 
-.navbar, .menu-items a, .wrapper, .input-box, .profile-pic .back-button, .Welcome-header,.wrapper-edit-profile{
+.navbar, .menu-items a, .wrapper, .input-box, .profile-pic .back-button, .Welcome-header{
     position: relative;
 }
 
@@ -167,23 +163,18 @@ td {
     /*backdrop-filter: blur(20px);*/
 }
 
-.wrapper-edit-profile{
-    width: 500px;
-    height: 600px;
-}
-
 .wrapper {
     width: 500px;
     height: 440px;
     /*backdrop-filter: blur(20px);*/
 }
-.wrapper,.wrapper-profile,.wrapper-edit-profile{
+.wrapper,.wrapper-profile{
     border: 2px solid rgba(255, 255, 255, .5);
     box-shadow: 0 0 30px rgba(0, 0, 0, .5);
     border-radius: 20px;
 }
 
-.wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form,.wrapper-edit-profile, .user-info  {
+.wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form, .wrapper-profile .user-info {
     justify-content: center;
     align-items: center;
 }
@@ -221,7 +212,7 @@ td {
     min-height: 90vh;
 }
 
-.home-background, .view-users-background, .view-teams-background, .team-form-background, .profile-background, .Search-teams-background, .background-image, .user-form {
+.home-background, .view-users-background, .view-teams-background, .team-form-background, .profile-background, .Search-teams-background, .background-image {
     background-image: url('../image/landscape.jpeg');
     background-size: cover;
     background-repeat: no-repeat;
@@ -454,6 +445,60 @@ li.active a {
     color: white;
 }
 
-ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form,.wrapper-edit-profile, .wrapper-profile .user-info{
+ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .wrapper-profile .user-info, .file-label-border ,.profile-form{
     display: flex;
+}
+
+.multipleSelection {
+    background-color: #415A77;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 1em;
+    color: #fff;
+    border-radius: 20px;
+    border: none;
+    padding: .1em .5em;
+    cursor: pointer;
+    position: absolute;
+    display: inline-block;
+}
+
+.selectBox {
+    position: relative;
+}
+
+.selectBox select {
+    width: 100%;
+    font-weight: bold;
+    color: #ffffff;
+    background: #415A77;
+    border-radius: 20px;
+    font-size: 16px;
+    border: none;
+    outline: 0;
+    padding: .1em .5em;
+    cursor: pointer;
+}
+
+.overSelect {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+#checkBoxes {
+    display: none;
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
+#checkBoxes label {
+    display: block;
+    padding: 3px;
+
+}
+
+#checkBoxes label:hover {
+    background-color: #4F615E;
 }

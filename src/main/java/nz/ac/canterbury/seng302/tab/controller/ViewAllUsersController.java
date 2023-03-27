@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
@@ -43,13 +45,17 @@ public class ViewAllUsersController {
      * @return view all users page
      */
     @GetMapping("/view-users")
-    public String viewPageOfUsers(@RequestParam(name="page", defaultValue = "1") int page, @RequestParam(value = "currentSearch", defaultValue = "") String currentSearch, Model model) {
-        Page<User> userPage = getUserPage(page, currentSearch, List.of());
+    public String viewPageOfUsers(
+            @RequestParam(name="page", defaultValue = "1") int page,
+            @RequestParam(name = "currentSearch", required = false) String currentSearch,
+            @RequestParam(name = "sports", required=false) List<String> sports,
+            Model model) {
+        Page<User> userPage = getUserPage(page, currentSearch, sports);
         List<User> userList = userPage.toList();
         model.addAttribute("currentSearch", currentSearch);
         model.addAttribute("page", page);
         model.addAttribute("listOfUsers", userList);
-        model.addAttribute("listOfSports", sportService.getAllSports());
+        model.addAttribute("listOfSports", sportService.getAllSports().stream().map(Sport::getName).toList());
         model.addAttribute("totalPages", userPage.getTotalPages());
         return "viewAllUsers";
     }
@@ -61,10 +67,16 @@ public class ViewAllUsersController {
      * @param favSports list of sports, the user should have at least one of these as their fav
      * @return List of users matching the nameQuery
      */
-    private Page<User> getUserPage(int page, String nameQuery, List<String> favSports) {
+    private Page<User> getUserPage(int page, @Nullable String nameQuery, @Nullable List<String> favSports) {
         if (page <= 0) {     // We want the user to think "Page 1" is the first page, even though Java starts at 0.
             logger.info("Invalid page no., returning empty list");
             return Page.empty();
+        }
+        if (nameQuery == null) {
+            nameQuery = "";
+        }
+        if (favSports == null) {
+            favSports = List.of();
         }
         var pageable = PageRequest.of(page-1, PAGE_SIZE, SORT_BY_LAST_AND_FIRST_NAME);
 

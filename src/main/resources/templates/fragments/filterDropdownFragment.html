@@ -1,0 +1,87 @@
+
+<!-- /*
+listItems: List<String> - The list of items shown in the dropdown
+optionName: String - What the dropdown is called "e.g. 'Filter by city'"
+dropdownName: String[opt.] - The parameter name sent to the controller on submit
+*/ -->
+<div th:fragment="filterDropdownFragment(listItems, optionName, dropdownName)">
+
+<div class="multipleSelection">
+  <div class="selectBox"
+       onclick="showCheckboxes()">
+    <select>
+      <option th:text="${optionName}"></option>
+    </select>
+    <div class="overSelect"></div>
+  </div>
+  <div id="checkBoxes">
+    <label for="select_all">
+      <input type="checkbox" id="select_all" onclick=selectAllCheckboxes(this) />
+      Select all
+    </label>
+  </div>
+</div>
+  <script th:inline="javascript">
+    var show = true;
+    var checkBoxname = /*[[${dropdownName}]]*/ "dropdownItem";
+    var listCities = /*[[${listItems}]]*/ [];
+
+    function showCheckboxes() {
+      var checkboxes = document.getElementById("checkBoxes");
+
+      if (show) {
+        checkboxes.style.display = "block";
+        show = false;
+      } else {
+        checkboxes.style.display = "none";
+        show = true;
+      }
+    }
+
+    function init() {
+      var checkboxDiv = document.getElementById("checkBoxes");
+      var selectAllCheckbox = document.getElementById("select_all");
+      for (var i = 0; i < listCities.length; i++) {
+        var checkBox = document.createElement("input");
+        var label = document.createElement("label");
+        var span = document.createElement("span");
+        checkBox.type = "checkbox";
+        checkBox.value = listCities[i];
+        checkBox.name = checkBoxname;
+        checkBox.onclick = function() { checkIfAnyCheckboxUnchecked(selectAllCheckbox); };
+        span.appendChild(document.createTextNode(listCities[i]));
+        label.appendChild(checkBox)
+        label.appendChild(span)
+        checkboxDiv.appendChild(label);
+      }
+    }
+
+    function checkIfAnyCheckboxUnchecked(selectAllCheckbox) {
+      var checkboxes = document.getElementsByName(checkBoxname);
+      if (selectAllCheckbox.checked) {
+        for (var i=0; i < checkboxes.length; i++) {
+          if(checkboxes[i].type == 'checkbox') {
+            if (!checkboxes[i].checked) {
+              selectAllCheckbox.checked = false;
+            }}
+        }}
+    }
+
+    function selectAllCheckboxes(selectAllCheckbox) {
+      var checkboxes = document.getElementsByName(checkBoxname);
+      if (selectAllCheckbox.checked) {
+        for (var i=0; i < checkboxes.length; i++) {
+          if(checkboxes[i].type == 'checkbox')
+            checkboxes[i].checked = true;
+        }} else {
+        for (var i=0; i < checkboxes.length; i++) {
+          if(checkboxes[i].type == 'checkbox')
+            checkboxes[i].checked = false;
+        }}
+    }
+
+    init();
+
+  </script>
+</div>
+
