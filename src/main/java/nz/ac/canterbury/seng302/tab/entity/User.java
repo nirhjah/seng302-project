@@ -1,11 +1,14 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Email; import jakarta.validation.constraints.Pattern; import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -15,7 +18,7 @@ public class User {
     public User() {
     }
 
-    public static User defaultDummyUser() {
+    public static User defaultDummyUser() throws IOException{
         return new User(
                 "test",
                 "again",
@@ -28,13 +31,16 @@ public class User {
     /**
      * TODO: Implement password hashing, probably via Bcrypt
      */
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports) {
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports) throws IOException{
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.hashedPassword = password;
         this.favoriteSports = favoriteSports;
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        File file = resource.getFile();
+        this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
     }
 
     public User(String firstName, String lastName, Date dateOfBirth, String email, String password) {
@@ -46,6 +52,14 @@ public class User {
         this.favoriteSports = new ArrayList<>();
     }
 
+
+    public User(String firstName, String lastName, String email, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.dateOfBirth = new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime();
+        this.hashedPassword = password;
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
@@ -63,6 +77,9 @@ public class User {
     @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(name="favSports")
     private List<Sport> favoriteSports;
+
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private String pictureString;
 
 
     @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
@@ -121,6 +138,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPictureString() {
+        return this.pictureString;
+    }
+
+    public void setPictureString(String pictureString) {
+        this.pictureString = pictureString;
     }
 
     @Column()

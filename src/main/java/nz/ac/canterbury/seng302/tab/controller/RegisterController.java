@@ -20,6 +20,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -184,7 +185,7 @@ public class RegisterController {
     public String register(
             @Valid RegisterForm registerForm,
             BindingResult bindingResult,
-            HttpServletRequest request) {
+            HttpServletRequest request) throws IOException {
 
         // Run the custom validation methods
         // TODO: Move validators that might be reused into their own class

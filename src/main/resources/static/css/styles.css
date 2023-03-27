@@ -183,12 +183,12 @@ td {
     border-radius: 20px;
 }
 
-.wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form,.wrapper-edit-profile  {
+.wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form,.wrapper-edit-profile, .user-info  {
     justify-content: center;
     align-items: center;
 }
 
-.wrapper-profile .profile-pic, .wrapper-profile .team-info{
+.wrapper-profile .profile-pic, .wrapper-profile .team-info, .wrapper-profile .user-info {
     position: absolute;
     top: 0;
     width: 400px;
@@ -199,7 +199,7 @@ td {
     left: 0;
 }
 
-.wrapper-profile .team-info, footer {
+.wrapper-profile .team-info, .wrapper-profile .user-info, footer {
     right: 0;
 }
 
@@ -235,14 +235,14 @@ footer {
     padding: 10px;
 }
 
-.team-info h3 {
+.team-info h3, .user-info h3 {
     font-family: "Noto Sans", sans-serif;
     font-weight: 600;
     font-size: 35px;
     color: #1B263B;
 }
 
-.team-display {
+.team-display, .user-display {
     padding: 20px 0 20px 0;
     font-weight: 500;
     font-family: "Noto Sans", sans-serif;
@@ -454,6 +454,6 @@ li.active a {
     color: white;
 }
 
-ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form,.wrapper-edit-profile{
+ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form,.wrapper-edit-profile, .wrapper-profile .user-info{
     display: flex;
 }

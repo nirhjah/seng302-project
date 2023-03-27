@@ -3,7 +3,7 @@
 
   Attributes:
   - thisUser: Optional<User> - The user detail we'll show. If it's empty, they've asked
-      for a non-existent 
+      for a non-existent
   */-->
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
@@ -14,54 +14,58 @@
   <title>View User</title>
 </head>
 
-<body>
-  <div class="profile-background">
-    <div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+<body class="profile-background">
+<div th:insert="~{/homeForm.html::navbar}"></div>
     <div class="profile-form">
-      <div class="wrapper-profile">
-        <p th:if="${thisUser.isEmpty()}">
-          <strong>Specified user does not exist</strong>
-        </p>
-        <div th:if="${thisUser.isPresent()}" th:object="${thisUser.get()}">
-          <div class="profile-pic">
-            <div class="image-styling">
-              <!--/* Currently there's no profile picture code, so let's use the default */-->
-              <img class="profilePictureContainer" th:src="@{/image/defaultuser.jpg}" alt="Profile Picture" width="200" height="200">
-              <button type="button" class="back-button" id="backButton" onclick="history.back()">Back</button>
+        <div class="wrapper-profile">
+            <p th:if="${thisUser.isEmpty()}">
+              <strong>Specified user does not exist</strong>
+            </p>
+            <div class="profile-pic">
+
+                <form id="upload-picture" method="post" th:action="@{/user-info/upload-pfp(userId=${userId})}" enctype="multipart/form-data">
+                    <div class="image-styling">
+                        <img th:src="*{'data:image/jpeg;base64,'+{displayPicture}}" width="200" height="200"/>
+                        </br>
+                    </div>
+                    </br>
+                    <div class="file-upload">
+                        <div class="file-label-border">
+                            <label for="file" class="file-label">
+                                Edit Profile Picture </label>
+                        </div>
+                        <input type="file" name="file" class="form-control-file" id="file" onchange="form.submit()">
+                    </div>
+                    <div class="file-upload">
+                        <div class="error-message" th:if="${sizeError == true}">Image must be less than 10MB</div>
+                        <div class="error-message" th:if="${typeError == true}">Please choose a .png, .jpg or .svg file
+                        </div>
+                    </div>
+                    <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+                </form>
             </div>
-          </div>
-            <div class="team-info">
-              <form>
-                <h3>User Profile</h3>
-                <div class="team-display">
-                  <h4 th:text="|Name: *{FirstName} *{LastName}|"></h4>
+        <div class="user-info">
+            <div th:if="${thisUser.isPresent()}" th:object="${thisUser.get()}">
+                <div class="user-display">
+                      <h4 th:text="|Name: *{FirstName} *{LastName}|"></h4>
                 </div>
-                <br>
-                <div class="team-display">
-                  <h4 th:text="|Email: *{email}|"></h4>
+                <div class="user-display">
+                      <h4 th:text="|Email: *{email}|"></h4>
                 </div>
-                <br>
-                <div class="team-display">
-                  <h4 th:text="|Date of Birth: *{#dates.format(dateOfBirth, 'dd-MM-yyyy')}|"></h4>
-                </div>
-                <br>
-                <div class="team-display">
-                  <h4 th:text="|Favourite Sports: *{favoriteSports}"></h4>
+                <div class="user-display">
+                      <h4 th:text="|Date of Birth: *{#dates.format(dateOfBirth, 'dd-MM-yyyy')}|"></h4>
                 </div>
                 <div class="edit-button">
-                  <a th:href="@{editUser}">
-                    <button type="button">Edit Profile</button>
-                  </a>
+                      <a th:href="@{editUser}">
+                        <button type="button">Edit Profile</button>
+                      </a>
                 </div>
-              </form>
+
             </div>
-            <br />
         </div>
-        <br/>
-      </div>
     </div>
-  </div>
-  
+</div>
+
   <script>
     // We don't want the button visible if we just signed up or logged in.
     const illegal_urls = ['/login', '/register'];
