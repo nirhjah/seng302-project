@@ -11,22 +11,29 @@
     totalPages : int,  The total number of pages in the pagination object.
 -->
 <div th:fragment="pagination" class="pagination">
+    <script>
+        function gotoPage(pageNum) {
+            const url = new URL(document.location.href);
+            url.searchParams.set('page', pageNum);
+            window.location.href = url.toString();
+        }
+    </script>
     <div class="paginationContainer">
         <div class="totalPages">
             Total Pages: [[${totalPages}]]
         </div>
 
         <div>
-            <a th:unless="${page == 1}" th:href="@{'/' + ${pageName}(page=${1}, currentSearch=${currentSearch})}">
-                <button class = "paginationButton" th:disabled="${page == 1}">
-                    <span>< First</span>
+            <th:block th:unless="${page == 1}">
+                <button class = "paginationButton" th:disabled="${page == 1}" th:onclick="|gotoPage(1)|">
+                    <span>&leftarrow; First</span>
                 </button>
-            </a>
+            </th:block>
         </div>
         <div>
             <a th:unless="${page == 1}" th:href="@{'/' + ${pageName}(page=${page - 1}, currentSearch=${currentSearch})}">
                 <button class = "paginationButton" th:disabled="${page == 1}" >
-                    <span>< Prev</span>
+                    <span>&leftarrow; Prev</span>
                 </button>
             </a>
         </div>
@@ -46,7 +53,7 @@
         <div>
             <a th:unless="${page == totalPages}" th:href="@{'/' + ${pageName}(page=${page + 1}, currentSearch=${currentSearch})}">
                 <button class="paginationButton">
-                    Next >
+                    Next &rightarrow;
                 </button>
             </a>
         </div>
@@ -54,7 +61,7 @@
         <div>
             <a th:unless="${page == totalPages}" th:href="@{'/' + ${pageName}(page=${totalPages}, currentSearch=${currentSearch})}">
                 <button class="paginationButton" th:disabled="${page == totalPages}" >
-                    Last >
+                    Last &rightarrow;
                 </button>
             </a>
         </div>
