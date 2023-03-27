@@ -8,6 +8,10 @@
     height: 770px;
 }
 
+.user-form .wrapper {
+    height: 490px;
+}
+
 ul.search {
     display: flex;
     list-style: none;
@@ -100,7 +104,7 @@ th:not(:first-child) {
     width: calc((100% - 10%) / 3);
 }
 
-tr, .wrapper,.wrapper-profile {
+tr, .wrapper,.wrapper-profile,.wrapper-edit-profile {
     background-color: white;
 }
 
@@ -118,7 +122,7 @@ td {
     border-bottom: 1px solid #ddd;
 }
 
-.navbar, .menu-items a, .wrapper, .input-box, .profile-pic .back-button, .Welcome-header{
+.navbar, .menu-items a, .wrapper, .input-box, .profile-pic .back-button, .Welcome-header,.wrapper-edit-profile{
     position: relative;
 }
 
@@ -163,18 +167,23 @@ td {
     /*backdrop-filter: blur(20px);*/
 }
 
+.wrapper-edit-profile{
+    width: 500px;
+    height: 600px;
+}
+
 .wrapper {
     width: 500px;
     height: 440px;
     /*backdrop-filter: blur(20px);*/
 }
-.wrapper,.wrapper-profile{
+.wrapper,.wrapper-profile,.wrapper-edit-profile{
     border: 2px solid rgba(255, 255, 255, .5);
     box-shadow: 0 0 30px rgba(0, 0, 0, .5);
     border-radius: 20px;
 }
 
-.wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form, .wrapper-profile .user-info {
+.wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form,.wrapper-edit-profile, .user-info  {
     justify-content: center;
     align-items: center;
 }
@@ -212,7 +221,7 @@ td {
     min-height: 90vh;
 }
 
-.home-background, .view-users-background, .view-teams-background, .team-form-background, .profile-background, .Search-teams-background, .background-image {
+.home-background, .view-users-background, .view-teams-background, .team-form-background, .profile-background, .Search-teams-background, .background-image, .user-form {
     background-image: url('../image/landscape.jpeg');
     background-size: cover;
     background-repeat: no-repeat;
@@ -445,6 +454,6 @@ li.active a {
     color: white;
 }
 
-ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .wrapper-profile .user-info, .file-label-border ,.profile-form{
+ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form,.wrapper-edit-profile, .wrapper-profile .user-info{
     display: flex;
 }

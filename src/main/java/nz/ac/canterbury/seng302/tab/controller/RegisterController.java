@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.forms.RegisterForm;
 import nz.ac.canterbury.seng302.tab.service.UserService;
@@ -25,6 +26,7 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -196,8 +198,15 @@ public class RegisterController {
             return "register";
         }
 
+        //TODO REMOVE DEFAULT SPORTS - UNCOMMENT TO SEE THE SPORTS ON VIEW USER
+//        Sport s = new Sport("Hockey");
+//        Sport h = new Sport("Hacky Sack");
+//        List<Sport> fav = new ArrayList<>();
+//        fav.add(s);
+//        fav.add(h);
         User user = new User(registerForm.getFirstName(), registerForm.getLastName(), registerForm.getDateOfBirth(),
                 registerForm.getEmail(), registerForm.getPassword(), new ArrayList<>());
+
         user.grantAuthority("ROLE_USER");
         user = userService.updateOrAddUser(user);
 

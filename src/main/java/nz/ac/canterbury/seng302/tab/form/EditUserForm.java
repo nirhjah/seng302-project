@@ -1,7 +1,10 @@
 package nz.ac.canterbury.seng302.tab.form;
 
 import java.util.Date;
+import java.util.List;
 
+import jakarta.validation.Valid;
+import nz.ac.canterbury.seng302.tab.entity.Sport;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -21,6 +24,8 @@ public class EditUserForm {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
 
+    private List<Sport> favouriteSports;
+
     /**
      * Fills out all of the <em>empty</em> fields with the user's details.
      * @param user The user we'll be populating this with.
@@ -37,6 +42,9 @@ public class EditUserForm {
 
         if (this.dateOfBirth == null)
             this.dateOfBirth = user.getDateOfBirth();
+
+        if (this.favouriteSports == null)
+            this.favouriteSports = user.getFavoriteSports();
     }
 
     public String getFirstName() {
@@ -70,5 +78,9 @@ public class EditUserForm {
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
+
+    public List<Sport> getFavouriteSports() { return favouriteSports; }
+
+    public void setFavouriteSports(List<Sport> sports) {this.favouriteSports = sports; }
 
 }

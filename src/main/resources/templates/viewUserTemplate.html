@@ -1,11 +1,114 @@
+<!--/* View Users Page
+  - Contains the details of a specified user.
+
+  Attributes:
+  - thisUser: Optional<User> - The user detail we'll show. If it's empty, they've asked
+      for a non-existent
+  */-->
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 
 <head>
-    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
-    <link th:href="@{/css/styles.css}" rel="stylesheet">
-    <title>View Profile</title>
+  <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+  <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+  <title>View User</title>
 </head>
+
+<style>
+    .multiply:before {
+        content: "\00D7";
+    }
+
+    .sport-box {
+        height: 50px;
+        width: 280px;
+        display: flex;
+        flex-wrap: wrap;
+        padding: 7px;
+        margin: 12px 0;
+        border: 2px dashed #778DA9;
+        border-top-left-radius: 11px;
+        border-top-right-radius: 11px;
+        overflow-y: scroll;
+        max-height: 100px;
+        gap: 3px;
+        align-content: flex-start;
+    }
+
+    .sport-box li {
+        margin: 0;
+        list-style: none;
+        border-radius: 20px;
+        background: #778DA9;
+        padding-left: 5px;
+        padding-right: 5px;
+        border: 1px solid #1B263B;
+        display: inline-block;
+        white-space: nowrap;
+        font-size: 11px;
+        font-weight: 600;
+        font-family: "Noto Sans", sans-serif;
+        color: #FFFF;
+        text-align: center;
+    }
+
+    .sport-box li i {
+        color: #FFF;
+        margin-right: 8px;
+        margin-left: 5px;
+        font-size: 12px;
+        cursor: pointer;
+        border-radius: 50%;
+        background: #778DA9;
+    }
+
+    .content {
+        position: absolute;
+        bottom: 111px;
+    }
+
+    .content input {
+        width: 293px;
+        height: 25px;
+        border-bottom-left-radius: 11px;
+        border-bottom-right-radius: 11px;
+        border: 2px solid #778DA9;
+        border-top: none;
+    }
+
+    .sport-box::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .sport-box::-webkit-scrollbar-track {
+        background-color: #E0E1DD;
+    }
+
+    .sport-box::-webkit-scrollbar-thumb {
+        background-color: #415A77;
+        border-radius: 10px
+    }
+
+    .sport-box::-webkit-scrollbar-thumb:hover {
+        background-color: #0D1B2A;
+    }
+
+    .details button {
+        background: none;
+        border: none;
+        padding: 0;
+        font-family: "Noto Sans", sans-serif;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    /*.error-message {*/
+    /*    position: absolute;*/
+    /*    top: -20px; !* adjust this value to position the label as needed *!*/
+    /*    left: 0;*/
+    /*}*/
+
+</style>
 
 <body class="profile-background">
 <div th:insert="~{/homeForm.html::navbar}"></div>
@@ -22,16 +125,18 @@
                         </br>
                     </div>
                     </br>
-                    <div class="file-upload">
-                        <div class="file-label-border">
-                            <label for="file" class="file-label">
-                                Edit Profile Picture </label>
+                    <div th:if="${canEdit}">
+                        <div class="file-upload">
+                            <div class="file-label-border">
+                                <label for="file" class="file-label">
+                                    Edit Profile Picture </label>
+                            </div>
+                            <input type="file" name="file" class="form-control-file" id="file" onchange="form.submit()">
                         </div>
-                        <input type="file" name="file" class="form-control-file" id="file" onchange="form.submit()">
-                    </div>
-                    <div class="file-upload">
-                        <div class="error-message" th:if="${sizeError == true}">Image must be less than 10MB</div>
-                        <div class="error-message" th:if="${typeError == true}">Please choose a .png, .jpg or .svg file
+                        <div class="file-upload">
+                            <div class="error-message" th:if="${sizeError == true}">Image must be less than 10MB</div>
+                            <div class="error-message" th:if="${typeError == true}">Please choose a .png, .jpg or .svg file
+                            </div>
                         </div>
                     </div>
                     <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
@@ -48,7 +153,14 @@
                 <div class="user-display">
                       <h4 th:text="|Date of Birth: *{#dates.format(dateOfBirth, 'dd-MM-yyyy')}|"></h4>
                 </div>
-                <div class="edit-button">
+                <div class="user-display">
+                    <h4 th:text="|Favourite Sports:|"></h4>
+                    <div class="sport-box" id="sport-box">
+                        <li th:each="sport : ${favSportNames}" th:text="${sport}"></li>
+                    </div>
+
+                </div>
+                <div th:if="${canEdit}" class="edit-button">
                       <a th:href="@{editUser}">
                         <button type="button">Edit Profile</button>
                       </a>
@@ -59,7 +171,7 @@
     </div>
 </div>
 
-  <script>
+  <script th:inline="javascript">
     // We don't want the button visible if we just signed up or logged in.
     const illegal_urls = ['/login', '/register'];
     const backButton = document.getElementById('backButton');

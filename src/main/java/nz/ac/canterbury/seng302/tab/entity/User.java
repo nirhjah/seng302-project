@@ -9,6 +9,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Base64;
+
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -18,7 +21,7 @@ public class User {
     public User() {
     }
 
-    public static User defaultDummyUser() throws IOException{
+    public static User defaultDummyUser() throws IOException {
         return new User(
                 "test",
                 "again",
@@ -43,12 +46,15 @@ public class User {
         this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
     }
 
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password) {
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password) throws IOException {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.hashedPassword = password;
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        File file = resource.getFile();
+        this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
         this.favoriteSports = new ArrayList<>();
     }
 
@@ -74,22 +80,22 @@ public class User {
     @Column(nullable = false)
     private Date dateOfBirth;
 
+    
     @Column(columnDefinition = "MEDIUMBLOB")
     private String pictureString;
-
-    @Column()
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Id")
-    private List<Sport> favoriteSports;
-
+    
 
     @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
-            flags = Pattern.Flag.CASE_INSENSITIVE)
+    flags = Pattern.Flag.CASE_INSENSITIVE)
     @Column(nullable = false, unique = true)
     private String email;
-
+    
     @Column(nullable = false)
     private String hashedPassword;
+    
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="favSports")
+    private List<Sport> favoriteSports;
 
     public long getUserId() {
         return userId;
@@ -101,6 +107,11 @@ public class User {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public void setFullName(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public String getLastName() {
@@ -216,5 +227,15 @@ public class User {
         result = 31 * result + (hashedPassword != null ? hashedPassword.hashCode() : 0);
         result = 31 * result + (userRoles != null ? userRoles.hashCode() : 0);
         return result;
+    }
+
+    public List<String> getFavouriteSportNames ()
+    {
+        List<String> sport = new ArrayList<>();
+        for (Sport s : favoriteSports)
+        {
+            sport.add(s.getName());
+        }
+        return sport;
     }
 }

@@ -1,11 +1,5 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import nz.ac.canterbury.seng302.tab.entity.Sport;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.repository.SportRepository;
-import nz.ac.canterbury.seng302.tab.service.SportService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
@@ -19,6 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import nz.ac.canterbury.seng302.tab.entity.Sport;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.repository.SportRepository;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 
 @Controller
 public class TestPopulateUsersController {
@@ -69,7 +68,6 @@ public class TestPopulateUsersController {
         long startDate = new Date(1980, 1, 1).getTime();
         long endDate = new Date(2005, 12, 31).getTime();
         Date dob = new Date(random.nextLong(startDate, endDate));
-            
         return new User(firstName, lastName, dob, email, "abc123", ourSports);
 
     }

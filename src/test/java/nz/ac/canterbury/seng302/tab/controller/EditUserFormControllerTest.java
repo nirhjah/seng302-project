@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -57,7 +58,7 @@ public class EditUserFormControllerTest {
     private static final String USER_PWORD = "super_insecure";
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach() throws IOException {
         Date userDOB;
         try {
             // Have to catch a constant parse exception annoyingly
@@ -87,7 +88,7 @@ public class EditUserFormControllerTest {
                         .param(P_FNAME, "Cave")
                         .param(P_LNAME, "Johnson")
                         .param(P_EMAIL, USER_EMAIL)
-                        .param(P_DOB, USER_DOB))
+                        .param(P_DOB, USER_DOB).param("tags", ""))
                 .andExpect(redirectedUrl("user-info/self"));
 
         verify(mockUserService, times(1)).updateOrAddUser(any());
@@ -101,7 +102,7 @@ public class EditUserFormControllerTest {
                         .param(P_FNAME, "Zoë")
                         .param(P_LNAME, "François-Johnson")
                         .param(P_EMAIL, USER_EMAIL)
-                        .param(P_DOB, USER_DOB))
+                        .param(P_DOB, USER_DOB).param("tags", ""))
                 .andExpect(status().is3xxRedirection());
 
         verify(mockUserService, times(1)).updateOrAddUser(any());
@@ -192,7 +193,7 @@ public class EditUserFormControllerTest {
                         .param(P_FNAME, USER_FNAME)
                         .param(P_LNAME, USER_LNAME)
                         .param(P_EMAIL, "new@email.com")
-                        .param(P_DOB, USER_DOB))
+                        .param(P_DOB, USER_DOB).param("tags", ""))
                 .andExpect(redirectedUrl("login"));
 
         verify(mockUserService, times(1)).updateOrAddUser(any());
@@ -205,4 +206,59 @@ public class EditUserFormControllerTest {
      * the controller doesn't work.
      * Therefore, we test the redirect URL.
      */
+
+    @Test
+    @WithMockUser()
+    public void addFavouriteSport_submitForm_saveToDatabase() throws Exception {
+        mockMvc.perform(post(URL).param(P_FNAME, USER_FNAME)
+                .param(P_LNAME, USER_LNAME)
+                .param(P_EMAIL, USER_EMAIL)
+                .param(P_DOB, USER_DOB)
+                .param("tags","Hockey", "Football")).andExpect(redirectedUrl("user-info/self"));
+        verify(mockUserService, times(1)).updateOrAddUser(any());
+    }
+
+    @Test
+    @WithMockUser()
+    public void removeFavouriteSport_submitForm_saveToDatabase() throws Exception {
+        mockMvc.perform(post(URL).param(P_FNAME, USER_FNAME)
+                .param(P_LNAME, USER_LNAME)
+                .param(P_EMAIL, USER_EMAIL)
+                .param(P_DOB, USER_DOB)
+                .param("tags","Hockey")).andExpect(redirectedUrl("user-info/self"));
+        verify(mockUserService, times(1)).updateOrAddUser(any());
+    }
+
+    @Test
+    @WithMockUser()
+    public void removeAllFavouriteSport_submitForm_saveToDatabase() throws Exception {
+        mockMvc.perform(post(URL).param(P_FNAME, USER_FNAME)
+                .param(P_LNAME, USER_LNAME)
+                .param(P_EMAIL, USER_EMAIL)
+                .param(P_DOB, USER_DOB)
+                .param("tags","")).andExpect(redirectedUrl("user-info/self"));
+        verify(mockUserService, times(1)).updateOrAddUser(any());
+    }
+
+    @Test
+    @WithMockUser()
+    public void AddFavouriteSportWithInvalidName_submitForm_saveToDatabase() throws Exception {
+        mockMvc.perform(post(URL).param(P_FNAME, USER_FNAME)
+                .param(P_LNAME, USER_LNAME)
+                .param(P_EMAIL, USER_EMAIL)
+                .param(P_DOB, USER_DOB)
+                .param("tags","678")).andExpect(status().isFound()).andExpect(redirectedUrl("/editUser"));
+        verify(mockUserService, times(0)).updateOrAddUser(any());
+    }
+
+    @Test
+    @WithMockUser()
+    public void AddMultipleFavouriteSportWithInvalidName_submitForm_saveToDatabase() throws Exception {
+        mockMvc.perform(post(URL).param(P_FNAME, USER_FNAME)
+                .param(P_LNAME, USER_LNAME)
+                .param(P_EMAIL, USER_EMAIL)
+                .param(P_DOB, USER_DOB)
+                .param("tags","678", "%^&*")).andExpect(status().isFound()).andExpect(redirectedUrl("/editUser"));
+        verify(mockUserService, times(0)).updateOrAddUser(any());
+    }
 }

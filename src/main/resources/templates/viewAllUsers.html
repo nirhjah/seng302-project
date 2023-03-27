@@ -11,22 +11,9 @@
 
 <body class="view-users-background">
     <div>
-        <p>Page #[[${page}]].
-            <a th:if="${page > 1}" th:href="@{view-all-users(page=${page-1}, currentSearch=${currentSearch})}">
-                <button>Previous</button>
-            </a>
-            <a th:if="${#lists.size(listOfUsers) == 10}" th:href="@{view-all-users(page=${page+1}, currentSearch=${currentSearch})}">
-                <button>Next</button>
-            </a>
-        </p>
-    </div>
-
-    <div>
         <p>
-        <form th:action="@{view-all-users}" method="get">
-            <input type="text" placeholder="Search name" th:field="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3"><br>
-            <input type="checkbox" id="filterByHockey" name="filterByHockey" th:checked="${filterByHockey != null}" th:value="${filterByHockey}"><label for="filterByHockey">DEBUG: Filter By Hockey</label><br>
-            <input type="checkbox" id="filterByRugby" name="filterByRugby" th:checked="${filterByRugby != null}" th:value="${filterByRugby}"><label for="filterByRugby">DEBUG: Filter By Rugby</label>
+        <form th:action="@{view-users}" method="get">
+            <input type="text" placeholder="Search name" th:name="currentSearch" th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">
             <button class="search-user-button" type="submit"> Search </button>
         </form>
         <select class="form-control" id="dropDownList" name="teamSelector"
@@ -40,5 +27,31 @@
         </p>
     </div>
 
-    <div th:insert="~{userTable.html :: userTable(${listOfUsers})}"></div>
+    <!-- Can convert this table into a fragment if neccessary.
+        for now, embrace YAGNI -->
+    <table>
+        <tr th:if="${listOfUsers.empty}">
+            <td colspan="2"> No users </td>
+        </tr>
+
+        <tr th:unless="${listOfUsers.empty}">
+            <th>Profile Picture</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Link</th>
+        </tr>
+
+        <tr th:each="user : ${listOfUsers}">
+            <td>
+                <img th:src="${'data:image/jpeg;base64,' + user.pictureString}" width="50" height="50"/>
+            </td>
+            <td> [[|${user.firstName} ${user.lastName}|]] </td>
+            <td th:text="${user.email}"> Email </td>
+            <td>
+                <a th:href="@{user-info(name=${user.userId})}"> Profile </a>
+            </td>
+        </tr>
+    </table>
+
+    <div th:insert="fragments/pagination.html :: pagination(pageName='view-users')"></div>
 </body>

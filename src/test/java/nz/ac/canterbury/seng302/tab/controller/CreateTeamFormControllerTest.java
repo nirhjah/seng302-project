@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 
+import nz.ac.canterbury.seng302.tab.service.SportService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -38,6 +39,9 @@ public class CreateTeamFormControllerTest {
 
     @MockBean
     private TeamService mockTeamService;
+
+    @MockBean
+    private SportService mockSportService;
 
     static final Long TEAM_ID = 1L;
 
@@ -164,5 +168,22 @@ public class CreateTeamFormControllerTest {
                         .param("name", "test").param("sport", "hockey")
                         .param("location", "abc123'{}.a")).andExpect(status().isFound())
                 .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
+    }
+
+    @Test
+    void whenSportIsNewAndValid_checkThatItWasSaved() throws Exception {
+        Team mockTeam = new Team("Test", "Test", "Test");
+        mockTeam.setTeamId(TEAM_ID);
+        when(mockTeamService.getTeam(TEAM_ID)).thenReturn(mockTeam);
+        when(mockTeamService.updateTeam(any())).thenReturn(mockTeam);
+
+        mockMvc.perform(post("/createTeam", 42L)
+                        .param("teamID", TEAM_ID.toString())
+                        .param("name", "{test.team 1}")
+                        .param("sport", "hockey-team a'b")
+                        .param("location", "christchurch"))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrlPattern("**/profile?teamID="+TEAM_ID));
+        verify(mockSportService, times(1)).addSport(any());
     }
 }
