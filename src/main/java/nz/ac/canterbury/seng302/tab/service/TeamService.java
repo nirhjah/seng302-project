@@ -79,7 +79,7 @@ public class TeamService {
      *
      * @param pageable a page object showing how the page should be shown
      * @param filterSports List of sports to be filtered by
-     * @param searchTeamName the search query
+     * @param nameSearch the search query
      * @return a slice of teams that meet the name conditions and filter conditions
      */
     public Page<Team> findTeamsByNameOrSport(Pageable pageable, List<String> filterSports, String nameSearch)
