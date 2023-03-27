@@ -111,8 +111,6 @@ public class TeamRepositoryTest {
         teamRepository.save(team2);
         teamRepository.save(team3);
         List<String> searchedSports = new ArrayList<>();
-        searchedSports.add("Hockey");
-        searchedSports.add("Netball");
         assertEquals(expectedTeamList.toString(), teamRepository.findTeamByNameAndSportIn(PageRequest.of(0,10), searchedSports, "").toList().toString());
     }
 
