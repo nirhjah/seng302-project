@@ -14,14 +14,12 @@ public class Sport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="sport_id")
+    @Column(name="Id")
     private Long sportId;
 
     @Column(nullable = false)
     private String name;
 
-//    @ManyToMany(mappedBy = "favoriteSports")
-//    private List<User> users;
 
     public Sport(String name) {
         this.name = name;
