@@ -58,45 +58,46 @@
                     </div>
                     <div class="password-info">
                         <div th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error-message"></div>
-                        <p>password must be at least <strong>8 characters</strong>, contain <strong>upper</strong> and <strong>lower</strong> case letters, <strong>numbers</strong> and <strong>symbols</strong>, and can't contain your <strong>name</strong> or <strong>email</strong></p>
+<!--                        <p>password must be at least <strong>8 characters</strong>, contain <strong>upper</strong> and <strong>lower</strong> case letters, <strong>numbers</strong> and <strong>symbols</strong>, and can't contain your <strong>name</strong> or <strong>email</strong></p>-->
                     </div>
                 </div>
+                <hr class="solid">
                 <div class="register-inputs-right">
                     <div class="input-box">
                         <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
-                               data-cy="location" th:pattern="${addressRegex}" autofocus placeholder="" autocomplete="off">
-                        <!--                               th:errors="#{error.key('May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and/or pound signs. Must start with letter or number.')}">-->
+                               data-cy="location" th:pattern="${addressRegex}" autofocus placeholder="" autocomplete="off"
+                        title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and/or pound signs. Must start with letter or number">
                         <label for="address-line-1">Address Line 1</label>
                         <div class="autocomplete-container" id="autocomplete-container"></div>
                     </div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
-                               data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}">
-                        <!--                               th:errors="#{error.key('May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number.')}">-->
+                               data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}"
+                        title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
                         <label for="address-line-2">Address Line 2</label>
                     </div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="suburb" th:name="suburb"
-                               data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="">
-                        <!--                               th:errors="#{error.key('May include letters, hyphens, and spaces. Must start with letter.')}">-->
+                               data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                        title="May include letters, hyphens, and spaces. Must start with letter">
                         <label for="suburb">Suburb</label>
                     </div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="postcode" th:name="postcode"
-                               data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder="">
-                        <!--                               th:errors="#{error.key('May include letters, numbers, forward slashes, and hyphens. Must start with letter or number.')}">-->
+                               data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder=""
+                        title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">
                         <label for="postcode">Postcode</label>
                     </div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="city" th:name="city"
-                               data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="">
-                        <!--                               th:errors="#{error.key('May include letters, hyphens, and spaces. Must start with letter')}">-->
+                               data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                        title="May include letters, hyphens, and spaces. Must start with letter">
                         <label for="city">City <span class="required">*</span></label>
                     </div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="country" th:name="country"
-                               data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="">
-                        <!--                               th:errors="#{error.key('May include letters, hyphens, and spaces. Must start with letter')}">-->
+                               data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                        title="May include letters, hyphens, and spaces. Must start with letter">
                         <label for="country">Country <span class="required">*</span></label>
                     </div>
                 </div>

@@ -77,10 +77,11 @@ ul.search {
 
 .user-form {
   display: grid;
-  grid-auto-rows: 325px;
+  grid-auto-rows: 530px;
   justify-content: center;
   align-items: center;
   height: 90vh;
+  grid-template-rows: 250px;
 }
 
 .paginationActive {
@@ -232,12 +233,24 @@ td {
 
 .register-form .wrapper {
   width: 630px;
-  height: 700px;
+  height: 610px;
 }
 
 .team-form .wrapper {
   width: 630px;
   height: 570px;
+}
+
+.user-form .wrapper {
+  width: 630px;
+  height: 610px;
+}
+
+hr.solid {
+  margin-top: 30px;
+  margin-bottom: 15px;
+  border-left: 2px solid;
+  border-image: linear-gradient(to bottom, white, #1b263b, #1b263b, #1b263b, white) 1;
 }
 
 .wrapper,
@@ -302,6 +315,7 @@ footer {
 .team-form-background,
 .profile-background,
 .Search-teams-background,
+.edit-user-background,
 .background-image {
   background-image: url("../image/landscape.jpeg");
   background-size: cover;
@@ -399,17 +413,26 @@ a.enabled {
   justify-content: space-between;
 }
 
-.register-inputs {
+.register-inputs,
+.edit-inputs {
   display: flex;
   justify-content: space-between;
 }
 
-.register-inputs-right {
+.register-inputs-right,
+.edit-inputs-right {
   margin-left: auto;
   margin-right: 0;
+  width: 250px;
 }
 
-.register-inputs-left .input-box  {
+.register-inputs-left,
+.edit-inputs-left {
+  width: 250px;
+}
+
+.register-inputs-left .input-box,
+.edit-inputs-left .input-box {
   width: 90%;
   height: 35px;
   border-bottom: 2px solid #162938;
@@ -417,19 +440,20 @@ a.enabled {
   font-family: "Noto Sans", sans-serif;
 }
 
-.register-inputs-right .input-box  {
+.register-inputs-right .input-box,
+.edit-inputs-right .input-box {
   width: 90%;
   height: 35px;
   border-bottom: 2px solid #162938;
   margin: 30px 0;
   font-family: "Noto Sans", sans-serif;
   right: auto;
-  left: 30px;
+  left: 27px;
 }
 
 .input-box {
   width: 100%;
-  height: 50px;
+  height: 35px;
   border-bottom: 2px solid #162938;
   margin: 30px 0;
   font-family: "Noto Sans", sans-serif;
@@ -480,13 +504,13 @@ input:invalid + label:after {
 
 
 .input-box input {
-  width: 100%;
+  width: 96%;
   height: 100%;
   background: transparent;
   font-size: 1em;
   color: #0d1b2a;
   font-weight: 500;
-  padding: 0 35px 0 5px;
+  padding: 0 0 0 5px;
   border: none;
   outline: none;
   cursor: pointer;
