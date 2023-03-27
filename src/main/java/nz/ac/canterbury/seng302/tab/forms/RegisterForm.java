@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.forms;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
@@ -37,7 +38,6 @@ public class RegisterForm {
     @NotBlank
     String confirmPassword;
 
-    // TODO: Add proper validation here.
     @NotBlank
     String addressLine1;
     @NotBlank
@@ -45,6 +45,7 @@ public class RegisterForm {
     @NotBlank
     String suburb;
     @NotBlank
+    @Pattern(regexp = "^\\d\\d\\d\\d$")
     String postcode;
     @NotBlank
     String city;
