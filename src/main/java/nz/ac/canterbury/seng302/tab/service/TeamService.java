@@ -49,30 +49,6 @@ public class TeamService {
     }
 
     /**
-     * gets a page of teams filtered by their name and sport
-     *
-     * @param pageable a page object showing how the page should be shown
-     * @param filterSports List of sports to be filtered by
-     * @param searchTeamName
-     * @return a slice of teams that meet the name conditions and filter conditions
-     */
-    public List<Team> findTeamByNameOrSport(Pageable pageable, @Nullable List<String> filterSports, @Nullable String searchTeamName) {
-        logger.info("Sport list = {}", filterSports);
-        logger.info("name search = {}", searchTeamName);
-
-        if (filterSports == null) {
-            filterSports = List.of();
-        }
-        if (searchTeamName == null && searchTeamName.isEmpty()) {
-            searchTeamName = null;
-        }
-        logger.info("Sport list = {}", filterSports);
-        logger.info("name search = {}", searchTeamName);
-
-        return new ArrayList<>();
-    }
-
-    /**
      * Method which updates the picture by taking the MultipartFile type and updating the picture
      * stored in the team with id primary key.
      *
@@ -98,6 +74,14 @@ public class TeamService {
         teamRepository.save(team);
     }
 
+    /**
+     * gets a page of teams filtered by their name and sport
+     *
+     * @param pageable a page object showing how the page should be shown
+     * @param filterSports List of sports to be filtered by
+     * @param searchTeamName the search query
+     * @return a slice of teams that meet the name conditions and filter conditions
+     */
     public Page<Team> findTeamsByNameOrSport(Pageable pageable, List<String> filterSports, String nameSearch)
     {
         if (filterSports == null) {
