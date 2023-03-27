@@ -52,6 +52,12 @@ public class ViewUserController {
         // Thymeleaf has no special support for optionals
         model.addAttribute("thisUser", user);
         model.addAttribute("displayPicture", userPicture);
+
+        var curUser = userService.getCurrentUser();
+        boolean canEdit = curUser.filter(value -> value.getUserId() == userId).isPresent();
+        // canEdit = whether or not this profile can be edited (i.e. belongs to the User)
+        model.addAttribute("canEdit", canEdit);
+
         return "viewUserTemplate";
     }
 

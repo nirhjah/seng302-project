@@ -22,19 +22,21 @@
                         </br>
                     </div>
                     </br>
-                    <div class="file-upload">
-                        <div class="file-label-border">
-                            <label for="file" class="file-label">
-                                Edit Profile Picture </label>
+                    <div th:if="${canEdit}">
+                        <div class="file-upload">
+                            <div class="file-label-border">
+                                <label for="file" class="file-label">
+                                    Edit Profile Picture </label>
+                            </div>
+                            <input type="file" name="file" class="form-control-file" id="file" onchange="form.submit()">
                         </div>
-                        <input type="file" name="file" class="form-control-file" id="file" onchange="form.submit()">
-                    </div>
-                    <div class="file-upload">
-                        <div class="error-message" th:if="${sizeError == true}">Image must be less than 10MB</div>
-                        <div class="error-message" th:if="${typeError == true}">Please choose a .png, .jpg or .svg file
+                        <div class="file-upload">
+                            <div class="error-message" th:if="${sizeError == true}">Image must be less than 10MB</div>
+                            <div class="error-message" th:if="${typeError == true}">Please choose a .png, .jpg or .svg file
+                            </div>
                         </div>
                     </div>
-                    <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+                   <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
                 </form>
             </div>
         <div class="user-info">
@@ -48,7 +50,7 @@
                 <div class="user-display">
                       <h4 th:text="|Date of Birth: *{#dates.format(dateOfBirth, 'dd-MM-yyyy')}|"></h4>
                 </div>
-                <div class="edit-button">
+                <div th:if="${canEdit}" class="edit-button">
                       <a th:href="@{editUser}">
                         <button type="button">Edit Profile</button>
                       </a>
