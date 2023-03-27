@@ -2,6 +2,8 @@ package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 
 /**
  * Sport entity for storing information about sports.
@@ -12,14 +14,14 @@ public class Sport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="sport_id")
     private Long sportId;
 
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "Id")
-    private User user;
+//    @ManyToMany(mappedBy = "favoriteSports")
+//    private List<User> users;
 
     public Sport(String name) {
         this.name = name;

@@ -48,7 +48,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id")
+    @Column(name = "user_id")
     private long userId;
 
     @Column(nullable = false)
@@ -60,9 +60,10 @@ public class User {
     @Column(nullable = false)
     private Date dateOfBirth;
 
-    @Column()
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "Id")
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="favSports",
+            joinColumns = @JoinColumn(name="user_id"),
+            inverseJoinColumns = @JoinColumn(name="sport_id"))
     private List<Sport> favoriteSports;
 
 

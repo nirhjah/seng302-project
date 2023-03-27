@@ -47,4 +47,10 @@ public class SportService {
         }
     }
 
+    public void deleteSports(List<Sport> sports) {
+        for (Sport sport : sports) {
+            deleteSport(sport);
+        }
+    }
+
 }

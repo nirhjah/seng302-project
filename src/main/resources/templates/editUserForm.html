@@ -170,12 +170,7 @@
             <label for="sport-list"  id="error-message"></label>
             <ul><input type="text" spellcheck="false" list="sports" id="sport-list"></ul>
             <datalist id="sports">
-                <option value="Swimming">
-                <option value="Netball">
-                <option value="Badminton">
-                <option value="Running">
-                <option value="Tennis">
-                <option value="Volleyball">
+                <option th:each="sport : ${knownSports}" th:text="${sport}">
             </datalist>
         </div>
 
@@ -199,7 +194,7 @@
     const tagsInput = document.createElement("input");
     tagsInput.setAttribute("type", "hidden");
     tagsInput.setAttribute("name", "tags");
-    let tags =[];
+    let tags = /*[[${favouriteSports}]]*/ [];
 
     createTag();
     function createTag(){

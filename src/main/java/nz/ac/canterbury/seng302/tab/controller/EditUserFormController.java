@@ -1,8 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.service.SportService;
@@ -52,16 +50,11 @@ public class EditUserFormController {
         if (user.isEmpty()) {
             return "redirect:/login";
         }
-        Sport s1 = new Sport("Hockey");
-        Sport s2 = new Sport("Football");
-        List<Sport> sports = new ArrayList<>();
-        sports.add(s1);
-        sports.add(s2);
         User u = user.get();
-        u.setFavoriteSports(sports);
-        userService.updateOrAddUser(u);
         editUserForm.prepopulate(u);
-        model.addAttribute("favouriteSports", u.getFavoriteSports());
+        Set<String> sports = new HashSet<>(sportService.getAllSportNames());
+        model.addAttribute("knownSports", sportService.getAllSportNames());
+        model.addAttribute("favouriteSports", u.getFavouriteSportNames());
         model.addAttribute("user", u);
         return "editUserForm";
     }
@@ -78,7 +71,7 @@ public class EditUserFormController {
         String invalidTags= "These are invalid sports: ";
         boolean first= true ,invalidSport=false;
         for (String tag : tags) {
-            if (!tag.matches("/^[a-zA-Z\\s'-]*$/")) {
+            if (!tag.matches("^[\\p{L}\\s\\'\\-]+$")) {
                 invalidSport=true;
                 if (!first) {
                     invalidTags += ", ";
@@ -118,16 +111,19 @@ public class EditUserFormController {
         user.setLastName(editUserForm.getLastName());
         user.setEmail(editUserForm.getEmail());
         user.setDateOfBirth(editUserForm.getDateOfBirth());
-        List<String> knownSports = sportService.getAllSportNames();
-        List<Sport> newSports = new ArrayList<>();
+
         List<Sport> newFavSports = new ArrayList<>();
+        List<String> knownSportNames = sportService.getAllSportNames();
+        List<Sport> knownSports = sportService.getAllSports();
         for (String tag : tags) {
-            if (!knownSports.contains(tag)) {
-                newSports.add(new Sport(tag));
+            if (knownSportNames.contains(tag)){
+                int index = knownSportNames.indexOf(tag);
+                newFavSports.add(knownSports.get(index));
+            } else {
+                newFavSports.add(new Sport(tag));
             }
-            newFavSports.add(new Sport(tag));
         }
-        sportService.addAllSports(newSports);
+
         user.setFavoriteSports(newFavSports);
         userService.updateOrAddUser(user);
 
