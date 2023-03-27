@@ -205,7 +205,7 @@ public class RegisterController {
 //        fav.add(s);
 //        fav.add(h);
         User user = new User(registerForm.getFirstName(), registerForm.getLastName(), registerForm.getDateOfBirth(),
-                registerForm.getEmail(), registerForm.getPassword());
+                registerForm.getEmail(), registerForm.getPassword(), new ArrayList<>());
 
         user.grantAuthority("ROLE_USER");
         user = userService.updateOrAddUser(user);
