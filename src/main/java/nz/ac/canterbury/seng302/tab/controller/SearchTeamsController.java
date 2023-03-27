@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
@@ -53,16 +55,27 @@ public class SearchTeamsController {
                 PageRequest pageRequest = PageRequest.of(page, pageSize);
                 Page<Team> teamPage = teamRepository.findTeamByName(teamName, pageRequest);
                 List<Team> teams = teamPage.getContent();
+                List<Location> locations = teamRepository.findLocationsByName(teamName);
+                // Maybe make into dictionary
+                List<String> cities = new ArrayList<>();
+                for (Location location: locations) {
+                    if (!cities.contains(location.getCity())) {
+                        cities.add(location.getCity());
+                        Collections.sort(cities);
+                    }
+                }
                 int numPages = teamPage.getTotalPages();
                 model.addAttribute("teams", teams);
                 model.addAttribute("currentPage", page);
                 model.addAttribute("totalPages", numPages);
                 model.addAttribute("teamName", teamName);
+                model.addAttribute("cities", cities);
             }
         } else {
             model.addAttribute("teams", new ArrayList<Team>());
             model.addAttribute("notSearch", true);
         }
+        model.addAttribute("navTeams", teamService.getTeamList());
         return "searchTeamsForm";
     }
 }

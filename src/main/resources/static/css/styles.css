@@ -192,6 +192,7 @@ td {
   background-color: #1b263b;
   overflow: hidden;
   white-space: nowrap;
+  padding-right: 20px;
 }
 
 .form-control {
@@ -351,7 +352,7 @@ footer {
   float: right;
   margin-right: 50px;
   position: absolute;
-  right: 20px;
+  right: 30px;
   bottom: 40px;
 }
 
@@ -631,6 +632,7 @@ li.active a {
   padding: 10px 20px;
   height: 25px;
   backdrop-filter: blur(4px) saturate(180%);
+  background-color: white;
 }
 
 .search-bar input {
@@ -649,6 +651,8 @@ li.active a {
 
 .search-bar button img {
   width: 25px;
+  padding-right: 4px;
+  padding-top: 1px;
 }
 
 .search-bar button {
@@ -658,10 +662,12 @@ li.active a {
   height: 40px;
   background: #58629b;
   cursor: pointer;
+  position: absolute;
+  right: 3px;
 }
 
 
-ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form{
+.paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form{
     display: flex;
 }
 
@@ -675,6 +681,7 @@ ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-prof
     padding: .1em .5em;
     cursor: pointer;
     position: absolute;
+    display: inline-block;
 }
 
 .selectBox {
@@ -704,6 +711,8 @@ ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-prof
 
 #checkBoxes {
     display: none;
+    max-height: 200px;
+    overflow-y: scroll;
 }
 
 #checkBoxes label {
