@@ -163,6 +163,10 @@ th:nth-child(4) {
   width: 60%;
 }
 
+tr, .wrapper,.wrapper-profile,.wrapper-edit-profile {
+    background-color: white;
+}
+
 /*th:not(:first-child) {*/
 /*    width: calc((100% - 10%) / 3);*/
 /*}*/
@@ -193,7 +197,7 @@ td {
 .wrapper,
 .input-box,
 .profile-pic .back-button,
-.Welcome-header {
+.Welcome-header, .wrapper-edit-profile {
   position: relative;
 }
 
@@ -256,6 +260,12 @@ td {
   height: 570px;
 }
 
+.wrapper {
+    width: 500px;
+    height: 780px;
+    /*backdrop-filter: blur(20px);*/
+}
+
 .user-form .wrapper {
   width: 650px;
   height: 610px;
@@ -268,18 +278,17 @@ hr.solid {
   border-image: linear-gradient(to bottom, white, #415a77, #1b263b, #415a77, white) 1;
 }
 
-.wrapper,
-.wrapper-profile {
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-  border-radius: 20px;
+.wrapper,.wrapper-profile,.wrapper-edit-profile{
+    border: 2px solid rgba(255, 255, 255, .5);
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+    border-radius: 20px;
 }
 
 .wrapper,
 .wrapper-profile .profile-pic,
 .file-label-border,
 .profile-form,
-.user-info {
+.user-info, .team-info, .wrapper-edit-profile {
   justify-content: center;
   align-items: center;
 }
@@ -334,6 +343,14 @@ hr.solid {
   min-height: 90vh;
 }
 
+.home-background, .view-users-background, .view-teams-background, .team-form-background, .profile-background, .Search-teams-background, .background-image, .user-form {
+    background-image: url('../image/landscape.jpeg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100vh;
+}
+
 .home-background,
 .view-users-background,
 .view-teams-background,
@@ -354,6 +371,13 @@ footer {
   position: absolute;
   bottom: 0;
   padding: 10px;
+}
+
+.team-info h3, .user-info h3 {
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 600;
+    font-size: 35px;
+    color: #1B263B;
 }
 
 .team-info {
@@ -632,9 +656,8 @@ input:invalid + label:after {
 ul {
   list-style: none;
 }
-*,
-li,
-ul {
+
+*, li, ul {
   margin: 0;
   padding: 0;
 }
@@ -689,6 +712,7 @@ li.active a {
   color: white;
 }
 
+ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form,.wrapper-edit-profile, .wrapper-profile .user-info
 .paginationContainer,
 .wrapper,
 .wrapper-profile .profile-pic,

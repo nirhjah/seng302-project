@@ -35,16 +35,16 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 @AutoConfigureMockMvc(addFilters = false)
 public class EditUserFormControllerTest {
 
-        @Autowired
-        private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-        @MockBean
-        private UserService mockUserService;
+    @MockBean
+    private UserService mockUserService;
 
-        @MockBean
-        private UserRepository mockUserRepository;
+    @MockBean
+    private UserRepository mockUserRepository;
 
-        private static final String URL = "/editUser";
+    private static final String URL = "/editUser";
 
         // Parameter names
         private static final String P_FNAME = "firstName";
@@ -83,17 +83,17 @@ public class EditUserFormControllerTest {
                 Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY, USER_POSTCODE, USER_COUNTRY);
                 User testUser = new User(USER_FNAME, USER_LNAME, new Date(USER_DOB), USER_EMAIL, USER_PWORD, testLocation);
 
-                when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
-                when(mockUserService.emailIsInUse(anyString())).thenReturn(false);
+        when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
+        when(mockUserService.emailIsInUse(anyString())).thenReturn(false);
 
-        }
+    }
 
-        @Test
-        @WithMockUser()
-        void givenUserIsLoggedIn_ThenTheyCanAccessTheForm() throws Exception {
-                mockMvc.perform(get(URL))
-                                .andExpect(status().isOk());
-        }
+    @Test
+    @WithMockUser()
+    void givenUserIsLoggedIn_ThenTheyCanAccessTheForm() throws Exception {
+        mockMvc.perform(get(URL))
+                .andExpect(status().isOk());
+    }
 
         @Test
         @WithMockUser()
@@ -112,8 +112,8 @@ public class EditUserFormControllerTest {
                                                 .param(P_COUNTRY, USER_COUNTRY))
                                 .andExpect(redirectedUrl("user-info/self"));
 
-                verify(mockUserService, times(1)).updateOrAddUser(any());
-        }
+        verify(mockUserService, times(1)).updateOrAddUser(any());
+    }
 
         @Test
         @WithMockUser()
@@ -132,8 +132,8 @@ public class EditUserFormControllerTest {
                                                 .param(P_COUNTRY, USER_COUNTRY))
                                 .andExpect(status().is3xxRedirection());
 
-                verify(mockUserService, times(1)).updateOrAddUser(any());
-        }
+        verify(mockUserService, times(1)).updateOrAddUser(any());
+    }
 
         @Test
         @WithMockUser()
@@ -459,8 +459,8 @@ public class EditUserFormControllerTest {
                                         .param(P_COUNTRY, "Country-of Pigs'"))
                         .andExpect(redirectedUrl("user-info/self"));
 
-                verify(mockUserService, times(1)).updateOrAddUser(any());
-        }
+        verify(mockUserService, times(1)).updateOrAddUser(any());
+    }
 
     /*
      * ! CAN NOT TEST: "When email is changed, then you are logged out."
