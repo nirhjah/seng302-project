@@ -25,10 +25,10 @@
         display: flex;
         flex-wrap: wrap;
         padding: 7px;
-        margin: 12px 0;
+        margin: 5px 0;
         border: 2px dashed #778DA9;
-        border-top-left-radius: 11px;
-        border-top-right-radius: 11px;
+        border-bottom-left-radius: 11px;
+        border-bottom-right-radius: 11px;
         overflow-y: scroll;
         max-height: 100px;
         gap: 3px;
@@ -118,7 +118,6 @@
               <strong>Specified user does not exist</strong>
             </p>
             <div class="profile-pic">
-
                 <form id="upload-picture" method="post" th:action="@{/user-info/upload-pfp(userId=${userId})}" enctype="multipart/form-data">
                     <div class="image-styling">
                         <img th:src="*{'data:image/jpeg;base64,'+{displayPicture}}" width="200" height="200"/>
@@ -142,33 +141,24 @@
                     <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
                 </form>
             </div>
-        <div class="user-info">
-            <div th:if="${thisUser.isPresent()}" th:object="${thisUser.get()}">
-                <div class="user-display">
-                      <h4 th:text="|Name: *{FirstName} *{LastName}|"></h4>
-                </div>
-                <div class="user-display">
-                      <h4 th:text="|Email: *{email}|"></h4>
-                </div>
-                <div class="user-display">
-                      <h4 th:text="|Date of Birth: *{#dates.format(dateOfBirth, 'dd-MM-yyyy')}|"></h4>
-                </div>
-                <div>
-                    <h4 th:text="|Location: *{location}|"></h4>
-                </div>
-
-                <div class="user-display">
-                    <h4 th:text="|Favourite Sports:|"></h4>
+            <div class="team-info">
+                <div class="team-display">
+                    <h2>User Profile</h2>
+                    <h3 th:text="|Name: *{firstName} *{lastName}|"></h3>
+                    <h3 th:text="|Email: *{email}|"></h3>
+                    <h3 th:text="|Date of Birth: *{#dates.format(dateOfBirth, 'dd-MM-yyyy')}|"></h3>
+                    <h3 th:text="|Location: *{location}|"></h3>
+                    <h3>Favourite Sports:</h3>
                     <div class="sport-box" id="sport-box">
                         <li th:each="sport : ${favSportNames}" th:text="${sport}"></li>
                     </div>
                 </div>
+            </div>
                 <div th:if="${canEdit}" class="edit-button">
                       <a th:href="@{editUser}">
                         <button type="button">Edit Profile</button>
                       </a>
                 </div>
-
             </div>
         </div>
     </div>

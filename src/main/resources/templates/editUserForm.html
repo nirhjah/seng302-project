@@ -20,19 +20,19 @@
     }
 
     .sport-box {
-        height: 50px;
-        width: 280px;
+        height: 80px;
+        width: 230px;
         display: flex;
         flex-wrap: wrap;
-        padding: 7px;
-        margin: 12px 0;
+        margin-top: 31px;
         border: 2px dashed #778DA9;
-        border-top-left-radius: 11px;
-        border-top-right-radius: 11px;
+        border-bottom-left-radius: 11px;
+        border-bottom-right-radius: 11px;
         overflow-y: scroll;
         max-height: 100px;
         gap: 3px;
         align-content: flex-start;
+        padding-left: 5px;
     }
 
     .sport-box li {
@@ -63,16 +63,16 @@
 
     .content {
         position: absolute;
-        bottom: 111px;
+        bottom: 243px;
     }
 
     .content input {
-        width: 293px;
+        width: 230px;
         height: 25px;
-        border-bottom-left-radius: 11px;
-        border-bottom-right-radius: 11px;
+        border-top-left-radius: 11px;
+        border-top-right-radius: 11px;
         border: 2px solid #778DA9;
-        border-top: none;
+        padding-left: 5px;
     }
 
     .sport-box::-webkit-scrollbar {
@@ -99,6 +99,18 @@
         font-family: "Noto Sans", sans-serif;
         text-decoration: underline;
         cursor: pointer;
+        position: absolute;
+        margin-left: 75px;
+        margin-top: 3px;
+    }
+
+    .sport-input-box {
+        margin-top: -15px
+    }
+
+    .sports-label {
+        font-family: "Noto Sans", sans-serif;
+        margin-left: 6px;
     }
 
     /*.error-message {*/
@@ -109,7 +121,6 @@
 
 </style>
 <body class="edit-user-background">
-<div th:debug>
     <div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
     <div class="user-form">
         <div class="user-header">
@@ -142,13 +153,21 @@
                                    data-cy="dateOfBirth" required autofocus>
                             <label for="date-of-birth">Date of Birth <span class="required">*</span></label>
                         </div>
-                        <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
-                        <label for="sport-box">Favourite Sport:</label>
-                        <div class="details">
-                            <button type="button">Clear</button>
+                        <div class="sport-input-box">
+                            <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
+                            <div class="details">
+                                <label class="sports-label" for="sport-box">Favourite Sports</label>
+                                <button type="button">Clear</button>
+                            </div>
+                            <div class="content">
+                                <label for="sport-list"  id="error-message"></label>
+                                <ul><input type="text" spellcheck="false" list="sports" id="sport-list"></ul>
+                                <datalist id="sports">
+                                    <option th:each="sport : ${knownSports}" th:text="${sport}">
+                                </datalist>
+                            </div>
+                            <div class="sport-box" id="sport-box"></div>
                         </div>
-                        <div class="sport-box" id="sport-box"></div>
-
                     </div>
                     <hr class="solid">
                     <div class="edit-inputs-right">
@@ -194,22 +213,17 @@
                 </div>
                 <br/>
                 <div class="submit-button">
+                    <label th:if="${errorMessage}" th:text="${errorMessage}" style="position: fixed;"></label>
                     <a th:href="@{home}">
-                        <button type="submit">Save</button>
+                        <button type="submit" id="submit">Save</button>
                     </a>
                 </div>
+
                 <div class="cancel-link">
                     <a th:href="@{user-info/self}">Cancel</a>
                 </div>
             </form>
-            <div class="content">
-                <label for="sport-list"  id="error-message"></label>
-                <ul><input type="text" spellcheck="false" list="sports" id="sport-list"></ul>
-                <datalist id="sports">
-                    <option th:each="sport : ${knownSports}" th:text="${sport}">
-                </datalist>
         </div>
-    </div>
     <footer>
         <p>
             Image by <a
@@ -221,8 +235,8 @@
 
 <script th:inline="javascript">
     const ul = document.querySelector(".content ul"),
-        sportDisplay = document.querySelector(".sport-box"),
-        input = document.querySelector(".content input");
+    sportDisplay = document.querySelector(".sport-box"),
+    input = document.querySelector(".content input");
     const form = document.getElementById("editUserForm");
 
     const tagsInput = document.createElement("input");
@@ -232,51 +246,52 @@
 
     createTag();
     function createTag(){
-        sportDisplay.querySelectorAll("li").forEach(li => li.remove());
-        tags.slice().reverse().forEach(tag =>{
-            let liTag = `<li>${tag} <i class="multiply" onclick="remove(this, '${tag}')"></i></li>`;
-            sportDisplay.insertAdjacentHTML("afterbegin", liTag);
-        });
-    }
+    sportDisplay.querySelectorAll("li").forEach(li => li.remove());
+    tags.slice().reverse().forEach(tag =>{
+    let liTag = `<li>${tag} <i class="multiply" onclick="remove(this, '${tag}')"></i></li>`;
+    sportDisplay.insertAdjacentHTML("afterbegin", liTag);
+    });
+}
 
     function remove(element, tag){
-        let index  = tags.indexOf(tag);
-        tags = [...tags.slice(0, index), ...tags.slice(index + 1)];
-        element.parentElement.remove();
-        createTag();
-    }
+    let index  = tags.indexOf(tag);
+    tags = [...tags.slice(0, index), ...tags.slice(index + 1)];
+    element.parentElement.remove();
+    createTag();
+}
 
     function addTag(e) {
-        if(e.key == "Enter"){
-            e.preventDefault();
-            let tag = e.target.value.replace(/\s+/g, ' ');
-            if(tag.length>0 && !tags.includes(tag)){
-                    tags.push(tag);
-                    createTag();
-            }
-            else if (tag.length==0){
-                document.getElementById("error-message").innerText  ="Please enter a sport";
-            }
-            e.target.value = "";
-        }
-    }
+    if(e.key == "Enter"){
+    e.preventDefault();
+    let tag = e.target.value.replace(/\s+/g, ' ');
+    if(tag.length>0 && !tags.includes(tag)){
+    tags.push(tag);
+    createTag();
+}
+    else if (tag.length==0){
+    document.getElementById("error-message").innerText  ="Please enter a sport";
+}
+    e.target.value = "";
+}
+}
 
     input.addEventListener("keyup", addTag);
 
 
     const removeBtn = document.querySelector(".details button");
     removeBtn.addEventListener("click", () =>{
-        tags.length = 0;
-        sportDisplay.querySelectorAll("li").forEach(li => li.remove());
-    });
+    tags.length = 0;
+    sportDisplay.querySelectorAll("li").forEach(li => li.remove());
+});
     form.addEventListener('submit', (event) => {
-        const tagsInput = document.createElement("input");
-        tagsInput.setAttribute("type", "hidden");
-        tagsInput.setAttribute("name", "tags");
-        tagsInput.setAttribute("value", tags.join(","));
-        form.appendChild(tagsInput);
-        return true;
-    });
+    const tagsInput = document.createElement("input");
+    tagsInput.setAttribute("type", "hidden");
+    tagsInput.setAttribute("name", "tags");
+    tagsInput.setAttribute("value", tags.join(","));
+    form.appendChild(tagsInput);
+    return true;
+});
+</script>
 </script>
 <script th:inline="javascript">
     /**
@@ -383,4 +398,5 @@
     });
 
 </script>
+</body>
 </html>

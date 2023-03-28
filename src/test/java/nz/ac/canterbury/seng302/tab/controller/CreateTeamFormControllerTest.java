@@ -345,7 +345,7 @@ public class CreateTeamFormControllerTest {
                         .param("name", "name")
                         .param("sport", "hockey-team a'b")
                         .param("addressLine1", "addressline1")
-                        .param("addressLine2", "addressline1")
+                        .param("addressLine2", "addressline2")
                         .param("city", "Christchurch")
                         .param("country", "New Zealand")
                         .param("postcode", "").param("suburb", ""))

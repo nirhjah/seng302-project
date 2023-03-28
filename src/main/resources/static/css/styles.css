@@ -169,7 +169,7 @@ th:nth-child(4) {
 
 tr,
 .wrapper,
-.wrapper-profile
+.wrapper-profile,
 .wrapper-edit-profile {
   background-color: white;
 }
@@ -218,7 +218,7 @@ td {
 
 .menu-items a {
   text-decoration: none;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 500;
   padding: 6px 15px;
   border-radius: 20px;
@@ -278,7 +278,8 @@ hr.solid {
 .wrapper,
 .wrapper-profile .profile-pic,
 .file-label-border,
-.profile-form {
+.profile-form,
+.user-info {
   justify-content: center;
   align-items: center;
 }
@@ -289,6 +290,15 @@ hr.solid {
   width: 300px;
   height: 400px;
 }
+
+.wrapper-profile .user-info {
+  position: absolute;
+  top: 0;
+  width: 400px;
+  height: 440px;
+  right: 0px;
+}
+
 
 .wrapper-profile .team-info {
   position: absolute;
@@ -337,7 +347,7 @@ hr.solid {
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    height: 100vh;
+    height: 90vh;
 }
 
 footer {
@@ -373,11 +383,20 @@ footer {
   width: 100%;
 }
 
+.user-info h3 {
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 600;
+  font-size: 35px;
+  color: #1B263B;
+}
+
+
+
 .edit-button {
   float: right;
   margin-right: 50px;
   position: absolute;
-  right: 20px;
+  right: 30px;
   bottom: 40px;
 }
 
@@ -675,7 +694,8 @@ li.active a {
 .wrapper-profile .profile-pic,
 .wrapper-profile .team-info,
 .file-label-border,
-.profile-form {
+.profile-form,
+.user-info {
   display: flex;
 }
 
