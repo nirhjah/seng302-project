@@ -1,13 +1,12 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import nz.ac.canterbury.seng302.tab.forms.RegisterForm;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Date;
@@ -24,10 +23,8 @@ class RegisterControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private UserService mockUserService;
 
-    private RegisterForm validRegisterForm;
+    private RegisterForm registerForm;
 
     private void setRegisterFormLocation(RegisterForm registerForm) {
         registerForm.setAddressLine1("49 Mays Road");
@@ -50,14 +47,25 @@ class RegisterControllerTest {
         rf.setConfirmPassword(password);
         rf.setDateOfBirth(Date.from(Instant.EPOCH)); // born in 1970
         setRegisterFormLocation(rf);
-        validRegisterForm = rf;
+        registerForm = rf;
     }
 
     @Test
     void whenRegisterIsValid_return200() throws Exception {
         mockMvc.perform(post("/register")
-                    .requestAttr("registerForm", validRegisterForm))
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .flashAttr("registerForm", registerForm))
             .andExpect(status().isFound())
-            .andExpect(view().name("register"));
+            .andExpect(view().name("redirect:/user-info?name=1"));
+    }
+
+    @Test
+    void whenLocationIsInvalid_return4XX() throws Exception {
+        registerForm.setCity(null);
+        registerForm.setCountry(null);
+        mockMvc.perform(post("/register")
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .flashAttr("registerForm", registerForm))
+            .andExpect(view().name("redirect:/user-info?name=1"));
     }
 }
