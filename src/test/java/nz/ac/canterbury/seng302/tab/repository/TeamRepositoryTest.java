@@ -89,16 +89,16 @@ public class TeamRepositoryTest {
         Team team2 = new Team("team2", "Hockey", new Location("213 Test2 road", "", "Suburb2", "Dunedin", "1111", "NZ"));
         Team team3 = new Team("team3", "Hockey", new Location("321 Test3 road", "", "Suburb3", "Auckland", "1111", "NZ"));
 
-        List<Team> expectedTeams = Arrays.asList(team1);
-
         teamRepository.save(team1);
         teamRepository.save(team2);
         teamRepository.save(team3);
 
+        List<Team> expectedTeams = Arrays.asList(team1);
+
         ArrayList<String> filteredLocations = new ArrayList<>();
         filteredLocations.add(WANTED_CITY);
 
-        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), null).toList().toString());
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), "").toList().toString());
 
     }
 
