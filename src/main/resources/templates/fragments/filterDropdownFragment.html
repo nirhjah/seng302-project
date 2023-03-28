@@ -52,10 +52,23 @@ dropdownName: String[opt.] - The parameter name sent to the controller on submit
         checkBox.value = entryName;
         checkBox.name = checkBoxname;
         checkBox.checked = preCheckedBoxes.has(entryName);
+        checkBox.onclick = function() { updateSelectAllCheckbox(selectAllCheckbox); };
         span.appendChild(document.createTextNode(entryName));
         label.appendChild(checkBox)
         label.appendChild(span)
         checkboxDiv.appendChild(label);
+      }
+    }
+
+    /* This function unchecks the `Select All` box if all checkboxes aren't checked, then
+        re-checks it all of them are */
+    function updateSelectAllCheckbox(selectAllCheckbox) {
+      const checkboxes = Array.from(document.getElementsByName(checkBoxname));
+      const allBoxesTicked = checkboxes.every(box => box.checked);
+      if (selectAllCheckbox.checked && !allBoxesTicked) {
+        selectAllCheckbox.checked = false;
+      } else if (!selectAllCheckbox.checked && allBoxesTicked) {
+        selectAllCheckbox.checked = true;
       }
     }
 
