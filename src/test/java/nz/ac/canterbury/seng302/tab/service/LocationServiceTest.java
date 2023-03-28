@@ -28,6 +28,7 @@ public class LocationServiceTest {
 
     @BeforeEach
     public void beforeEach() {
+        teamRepository.deleteAll();
         locationRepository.deleteAll();
     }
 

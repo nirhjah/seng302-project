@@ -18,8 +18,7 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_locationId", referencedColumnName = "locationId")
+    @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
 
     @Column(nullable = false)

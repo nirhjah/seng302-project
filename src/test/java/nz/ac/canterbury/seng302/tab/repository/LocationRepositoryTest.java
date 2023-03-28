@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.repository;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.service.LocationService;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,6 @@ public class LocationRepositoryTest {
     @Autowired
     private LocationRepository locationRepository;
 
-    @Autowired
-    private LocationService locationService;
-
     @BeforeEach
     public void beforeEach(){
         locationRepository.deleteAll();
@@ -30,19 +28,17 @@ public class LocationRepositoryTest {
     @Test
     public void testGettingLocationById(){
         Location testLocation = new Location("addressline1:", "addressline2", "suburb", "Christchurch", "postcode", "New Zealand");
-        locationRepository.save(testLocation);
+        testLocation = locationRepository.save(testLocation);
         assertEquals(testLocation.getAddressLine1(), locationRepository.findById(testLocation.getLocationId()).get().getAddressLine1());
         assertEquals(testLocation.getAddressLine2(), locationRepository.findById(testLocation.getLocationId()).get().getAddressLine2());
         assertEquals(testLocation.getSuburb(), locationRepository.findById(testLocation.getLocationId()).get().getSuburb());
         assertEquals(testLocation.getPostcode(), locationRepository.findById(testLocation.getLocationId()).get().getPostcode());
         assertEquals(testLocation.getCity(), locationRepository.findById(testLocation.getLocationId()).get().getCity());
         assertEquals(testLocation.getCountry(), locationRepository.findById(testLocation.getLocationId()).get().getCountry());
-
     }
 
     @Test
     public void testGettingLocationList(){
-        assertTrue(locationService.getLocationList().isEmpty());
         Location location = new Location("addressline1:", "addressline2", "suburb", "Christchurch", "postcode", "New Zealand");
         Location location1 = new Location("addressline1:", "addressline2", "suburb", "Christchurch", "postcode", "New Zealand");
         Location location2 = new Location("addressline1:", "addressline2", "suburb", "Christchurch", "postcode", "New Zealand");

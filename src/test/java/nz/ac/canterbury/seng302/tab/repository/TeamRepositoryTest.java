@@ -37,12 +37,11 @@ public class TeamRepositoryTest {
         assertTrue(teamList.isEmpty());
         Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
         Team team = new Team("test", "Hockey", testLocation);
-        teamRepository.save(team);
+        team = teamRepository.save(team);
         assertEquals(team.getTeamId(), teamRepository.findById(team.getTeamId()).get().getTeamId());
         assertEquals(team.getLocation().getAddressLine2(), teamRepository.findById(team.getTeamId()).get().getLocation().getAddressLine1());
         assertEquals(team.getSport(), teamRepository.findById(team.getTeamId()).get().getSport());
         assertEquals(team.getName(), teamRepository.findById(team.getTeamId()).get().getName());
-
     }
     @Test
     public void testGettingTeamList() throws IOException {
