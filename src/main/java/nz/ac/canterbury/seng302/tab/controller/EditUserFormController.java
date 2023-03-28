@@ -32,6 +32,13 @@ public class EditUserFormController {
     private void prefillModel(Model model) {
         model.addAttribute("validNameRegex", UserFormValidators.VALID_NAME_REGEX);
         model.addAttribute("validNameMessage", UserFormValidators.INVALID_NAME_MSG);
+        model.addAttribute("postcodeRegex",UserFormValidators.VALID_POSTCODE_REGEX);
+        model.addAttribute("postcodeRegexMsg",UserFormValidators.INVALID_POSTCODE_MSG);
+        model.addAttribute("addressRegex",UserFormValidators.VALID_ADDRESS_REGEX);
+        model.addAttribute("addressRegexMsg",UserFormValidators.INVALID_POSTCODE_MSG);
+        model.addAttribute("countryCitySuburbNameRegex",UserFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
+        model.addAttribute("countryCitySuburbNameRegexMsg",UserFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG);
+
     }
 
     @GetMapping("/editUser")
@@ -69,6 +76,7 @@ public class EditUserFormController {
         }
 
         if (bindingResult.hasErrors()) {
+            System.out.println(bindingResult);
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "editUserForm";
         }
@@ -80,6 +88,7 @@ public class EditUserFormController {
         user.setLastName(editUserForm.getLastName());
         user.setEmail(editUserForm.getEmail());
         user.setDateOfBirth(editUserForm.getDateOfBirth());
+        user.setLocation(editUserForm.getLocation());
         userService.updateOrAddUser(user);
 
         if (shouldLogout) {

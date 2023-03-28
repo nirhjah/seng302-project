@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Pattern;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Entity(name = "UserEntity")
@@ -116,18 +115,6 @@ public class User {
         this.dateOfBirth = dateOfBirth;
     }
 
-    /**
-     * Returns the date as a string in a 'yyyy-MM-dd format, such that it can be directly parsed in an
-     * HTML date object
-     *
-     * @return date string
-     */
-    public String getDateOfBirthFormatted() {
-        SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String isoDate = isoDateFormat.format(dateOfBirth);
-        return isoDate;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -136,6 +123,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     @Column()

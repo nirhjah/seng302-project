@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,12 +50,27 @@ public class EditUserFormControllerTest {
         private static final String P_LNAME = "lastName";
         private static final String P_EMAIL = "email";
         private static final String P_DOB = "dateOfBirth";
+        private static final String P_ADDRESS_LINE_1 = "addressLine1";
+        private static final String P_ADDRESS_LINE_2 = "addressLine2";
+        private static final String P_SUBURB = "suburb";
+        private static final String P_POSTCODE = "postcode";
+        private static final String P_CITY = "city";
+        private static final String P_COUNTRY = "country";
+
         // Default values
         private static final String USER_FNAME = "Test";
         private static final String USER_LNAME = "User";
         private static final String USER_EMAIL = "test@email.org";
         private static final String USER_DOB = "2000-01-01";
         private static final String USER_PWORD = "super_insecure";
+        private static final String USER_ADDRESS_LINE_1 = "1 Street Road";
+        private static final String USER_ADDRESS_LINE_2 = "A";
+        private static final String USER_SUBURB = "Riccarton";
+        private static final String USER_POSTCODE = "8000";
+        private static final String USER_CITY = "Christchurch";
+        private static final String USER_COUNTRY = "New Zealand";
+
+        private static final String
 
         @BeforeEach
         void beforeEach() {
@@ -65,7 +81,8 @@ public class EditUserFormControllerTest {
                 } catch (ParseException e) {
                         throw new RuntimeException(e);
                 }
-                User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD);
+                Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY, USER_POSTCODE, USER_COUNTRY);
+                User testUser = new User(USER_FNAME, USER_LNAME, new Date(USER_DOB), USER_EMAIL, USER_PWORD, testLocation);
 
                 when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
                 when(mockUserService.emailIsInUse(anyString())).thenReturn(false);
