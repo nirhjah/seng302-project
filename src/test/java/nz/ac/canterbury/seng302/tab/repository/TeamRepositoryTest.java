@@ -48,10 +48,10 @@ public class TeamRepositoryTest {
     @Test
     public void testGettingTeamList() throws IOException {
         assertTrue(teamService.getTeamList().isEmpty());
-        Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
-        Team team = new Team("test", "Hockey",  testLocation);
-        Team team2= new Team ("test2", "Netball", testLocation);
-        Team team3= new Team ("test3", "Basketball", testLocation);
+        Location testLocation = new Location("123 Test1 road", "", "Suburb1", "Christchurch", "1111", "NZ");
+        Team team = new Team("test", "Hockey", new Location("123 Test1 road", "", "Suburb1", "Christchurch", "1111", "NZ"));
+        Team team2 = new Team("test2", "Netball", new Location("456 Test2 road", "", "Suburb2", "Auckland", "2222", "NZ"));
+        Team team3 = new Team("test3", "Basketball", new Location("789 Test3 road", "", "Suburb3", "Wellington", "3333", "NZ"));
         List<Team> list = Arrays.asList(team, team2, team3);
 
         teamRepository.save(team);
