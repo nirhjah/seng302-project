@@ -88,7 +88,12 @@ public class EditUserFormController {
         user.setLastName(editUserForm.getLastName());
         user.setEmail(editUserForm.getEmail());
         user.setDateOfBirth(editUserForm.getDateOfBirth());
-        user.setLocation(editUserForm.getLocation());
+        user.getLocation().setAddressLine1(editUserForm.getAddressLine1());
+        user.getLocation().setAddressLine2(editUserForm.getAddressLine2());
+        user.getLocation().setCity(editUserForm.getCity());
+        user.getLocation().setCountry(editUserForm.getCountry());
+        user.getLocation().setSuburb(editUserForm.getSuburb());
+        user.getLocation().setPostcode(editUserForm.getPostcode());
         userService.updateOrAddUser(user);
 
         if (shouldLogout) {

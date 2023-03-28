@@ -1,6 +1,8 @@
 package nz.ac.canterbury.seng302.tab.form;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import org.springframework.format.annotation.DateTimeFormat;

@@ -35,12 +35,12 @@ public class Location {
     private String country;
 
     public Location (String addressLine1, String addressLine2, String suburb, String city, String postcode, String country ){
-        this.addressLine1 = addressLine1;
-        this.addressLine2 = addressLine2;
-        this.suburb= suburb;
-        this.city=city;
-        this.postcode= postcode;
+        this.addressLine1 = (addressLine1 == null || addressLine1.equals("")) ? null : addressLine1;
+        this.addressLine2 = (addressLine2 == null || addressLine2.equals("")) ? null : addressLine2;
+        this.suburb = (suburb == null || suburb.equals("")) ? null : suburb;
+        this.postcode = (postcode == null || postcode.equals("")) ? null : postcode;
         this.country= country;
+        this.city = city;
     }
 
     protected Location() {
@@ -76,15 +76,18 @@ public class Location {
     }
 
     public void setAddressLine1(String addressLine1){
-        this.addressLine1=addressLine1;
+        this.addressLine1 = (addressLine1 == null || addressLine1.equals("")) ? null : addressLine1;
+
     }
 
     public void setAddressLine2(String addressLine2) {
-        this.addressLine2=addressLine2;
+        this.addressLine2 = (addressLine2 == null || addressLine2.equals("")) ? null : addressLine2;
+
     }
 
     public void setSuburb(String suburb){
-        this.suburb= suburb;
+        this.suburb = (suburb == null || suburb.equals("")) ? null : suburb;
+
     }
 
     public void setCity(String city){
@@ -92,7 +95,7 @@ public class Location {
     }
 
     public void setPostcode(String postcode){
-        this.postcode= postcode;
+        this.postcode = (postcode == null || postcode.equals("")) ? null : postcode;
     }
 
     public void setCountry(String country){

@@ -232,7 +232,7 @@ td {
 }
 
 .register-form .wrapper {
-  width: 630px;
+  width: 650px;
   height: 690px;
 }
 
@@ -242,7 +242,7 @@ td {
 }
 
 .user-form .wrapper {
-  width: 630px;
+  width: 650px;
   height: 610px;
 }
 
@@ -423,17 +423,17 @@ a.enabled {
 .edit-inputs-right {
   margin-left: auto;
   margin-right: 0;
-  width: 250px;
+  width: 280px;
 }
 
 .register-inputs-left,
 .edit-inputs-left {
-  width: 250px;
+  width: 280px;
 }
 
 .register-inputs-left .input-box,
 .edit-inputs-left .input-box {
-  width: 90%;
+  width: 85%;
   height: 35px;
   border-bottom: 2px solid #162938;
   margin: 30px 0;
@@ -442,13 +442,13 @@ a.enabled {
 
 .register-inputs-right .input-box,
 .edit-inputs-right .input-box {
-  width: 90%;
+  width: 85%;
   height: 35px;
   border-bottom: 2px solid #162938;
   margin: 30px 0;
   font-family: "Noto Sans", sans-serif;
   right: auto;
-  left: 27px;
+  left: 40px;
 }
 
 .input-box {

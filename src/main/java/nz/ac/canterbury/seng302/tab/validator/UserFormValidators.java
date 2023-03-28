@@ -11,11 +11,7 @@ import java.lang.annotation.Target;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import nz.ac.canterbury.seng302.tab.validator.logic.DateOfBirthCheck;
 
 /**
@@ -156,7 +152,7 @@ public class UserFormValidators {
     /**/@Constraint(validatedBy = {})
     /**/@Documented
     @Size(max = 30)
-    @Pattern(regexp = VALID_COUNTRY_SUBURB_CITY_REGEX, message = INVALID_COUNTRY_SUBURB_CITY_MSG)
+    @Pattern(regexp = "^$|" +VALID_COUNTRY_SUBURB_CITY_REGEX, message = INVALID_COUNTRY_SUBURB_CITY_MSG)
     public @interface suburbValidator {
         String message() default "";
 
@@ -179,7 +175,7 @@ public class UserFormValidators {
     /**/@Constraint(validatedBy = {})
     /**/@Documented
     @Size(max = 30)
-    @Pattern(regexp = VALID_ADDRESS_REGEX, message = INVALID_ADDRESS_MSG)
+    @Pattern(regexp = "^$|" +VALID_ADDRESS_REGEX, message = INVALID_ADDRESS_MSG)
     public @interface addressValidator {
         String message() default "";
 
@@ -202,7 +198,7 @@ public class UserFormValidators {
     /**/@Constraint(validatedBy = {})
     /**/@Documented
     @Size(max = 30)
-    @Pattern(regexp = VALID_POSTCODE_REGEX, message = INVALID_POSTCODE_MSG)
+    @Pattern(regexp = "^$|" +VALID_POSTCODE_REGEX, message = INVALID_POSTCODE_MSG)
     public @interface postcodeValidator {
         String message() default "";
 
