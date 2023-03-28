@@ -1,13 +1,11 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
@@ -34,26 +32,28 @@ public class ViewAllUsersController {
      * @param model map representation of information to be passed to thymeleaf page
      * @return view all users page
      */
-    @GetMapping("/view-all-users")
+    @GetMapping("/view-users")
     public String viewPageOfUsers(@RequestParam(name="page", defaultValue = "1") int page, @RequestParam(value = "currentSearch", defaultValue = "") String currentSearch, Model model) {
-        var userList = getUserList(page, currentSearch);
+        var userPage = getUserPage(page, currentSearch);
+        var userList = userPage.toList();
         model.addAttribute("currentSearch", currentSearch);
         model.addAttribute("page", page);
         model.addAttribute("listOfUsers", userList);
+        model.addAttribute("totalPages", userPage.getTotalPages());
         return "viewAllUsers";
     }
 
     /**
-     * Gets list of users matching a search query
+     * Gets page of users matching a search query
      * @param page page number
      * @param nameQuery search query param
-     * @return List of users matching the nameQuery
+     * @return Page of users matching the nameQuery
      */
-    private List<User> getUserList(int page, String nameQuery) {
+    private Page<User> getUserPage(int page, String nameQuery) {
         var pageable = PageRequest.of(page-1, PAGE_SIZE, sort);
         if (nameQuery.length() <= 0) {
             if (page <= 0) {     // We want the user to think "Page 1" is the first page, even though Java starts at 0.
-                return List.of();
+                return Page.empty();
             } else {
                 return userService.getPaginatedUsers(pageable);
             }
