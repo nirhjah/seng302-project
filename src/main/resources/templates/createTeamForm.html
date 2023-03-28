@@ -38,14 +38,16 @@
                         <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
                                th:value="*{addressLine1}" data-cy="location" th:pattern="${addressRegex}"
                                autofocus placeholder="" autocomplete="off"
-                               title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and/or pound signs. Must start with letter or number">
+                               title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include
+                                    at least one letter or number">
                         <label for="address-line-1">Address Line 1</label>
                         <div class="autocomplete-container" id="autocomplete-container"></div>
                     </div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
                                th:value="*{addressLine2}" data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}"
-                               title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
+                               title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include
+                                      at least one letter or number">
                         <label for="address-line-2">Address Line 2</label>
                     </div>
                 </div>
@@ -53,7 +55,7 @@
                     <div class="input-box">
                         <input type="text" class="form-control" id="suburb" th:name="suburb" th:value="*{suburb}"
                                data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
-                                title="May include letters, hyphens, and spaces. Must start with letter">
+                               title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
                         <label for="suburb">Suburb</label>
                     </div>
                     <div class="input-box">
@@ -67,13 +69,13 @@
                     <div class="input-box">
                         <input type="text" class="form-control" id="city" th:name="city" th:value="*{city}"
                                data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
-                           title="May include letters, hyphens, and spaces. Must start with letter">
+                           title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
                         <label for="city">City <span class="required">*</span></label>
                     </div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="country" th:name="country" th:value="*{country}"
                             data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
-                            title="May include letters, hyphens, and spaces. Must start with letter">
+                           title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
                         <label for="country">Country <span class="required">*</span></label>
                     </div>
                 </div>

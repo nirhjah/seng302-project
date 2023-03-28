@@ -28,14 +28,14 @@ public class CreateTeamFormController {
     // private String apiKey;
 
     /**
-     * Countries and cities can have letters from all alphabets, with hyphens and
+     * Countries and cities can have letters from all alphabets, with hyphens, apostrophes and
      * spaces. Must start with an alphabetical character
      */
-    private final String countryCitySuburbNameRegex = "^\\p{L}+[\\- \\p{L}]*$";
+    private final String countryCitySuburbNameRegex = "^\\p{L}+[\\- '\\p{L}]*$";
 
-    /** Addresses can have letters, numbers, spaces, commas, periods, hyphens, forward slashes and pound signs. Must
-     * include at least one alphanumeric character **/
-    private  final String addressRegex = "^[\\p{L}\\p{N}]+[\\- ,./#\\p{L}\\p{N}]*$";
+    /** Addresses can have letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include
+     * at least one alphanumeric character**/
+    private  final String addressRegex = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
 
     /** Allow letters, numbers, forward slashes and hyphens. Must start with an alphanumeric character. */
     private final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";

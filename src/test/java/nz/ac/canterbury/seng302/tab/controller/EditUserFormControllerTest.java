@@ -70,8 +70,6 @@ public class EditUserFormControllerTest {
         private static final String USER_CITY = "Christchurch";
         private static final String USER_COUNTRY = "New Zealand";
 
-        private static final String
-
         @BeforeEach
         void beforeEach() {
                 Date userDOB;
@@ -104,7 +102,13 @@ public class EditUserFormControllerTest {
                                                 .param(P_FNAME, "Cave")
                                                 .param(P_LNAME, "Johnson")
                                                 .param(P_EMAIL, USER_EMAIL)
-                                                .param(P_DOB, USER_DOB))
+                                                .param(P_DOB, USER_DOB)
+                                                .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                                .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                                .param(P_SUBURB, USER_SUBURB)
+                                                .param(P_POSTCODE, USER_POSTCODE)
+                                                .param(P_CITY, USER_CITY)
+                                                .param(P_COUNTRY, USER_COUNTRY))
                                 .andExpect(redirectedUrl("user-info/self"));
 
                 verify(mockUserService, times(1)).updateOrAddUser(any());
@@ -118,7 +122,13 @@ public class EditUserFormControllerTest {
                                                 .param(P_FNAME, "Zoë")
                                                 .param(P_LNAME, "François-Johnson")
                                                 .param(P_EMAIL, USER_EMAIL)
-                                                .param(P_DOB, USER_DOB))
+                                                .param(P_DOB, USER_DOB)
+                                                .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                                .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                                .param(P_SUBURB, USER_SUBURB)
+                                                .param(P_POSTCODE, USER_POSTCODE)
+                                                .param(P_CITY, USER_CITY)
+                                                .param(P_COUNTRY, USER_COUNTRY))
                                 .andExpect(status().is3xxRedirection());
 
                 verify(mockUserService, times(1)).updateOrAddUser(any());
@@ -132,7 +142,13 @@ public class EditUserFormControllerTest {
                                                 .param(P_FNAME, "Ch3353")
                                                 .param(P_LNAME, "L0vr")
                                                 .param(P_EMAIL, USER_EMAIL)
-                                                .param(P_DOB, USER_DOB))
+                                                .param(P_DOB, USER_DOB)
+                                                .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                                .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                                .param(P_SUBURB, USER_SUBURB)
+                                                .param(P_POSTCODE, USER_POSTCODE)
+                                                .param(P_CITY, USER_CITY)
+                                                .param(P_COUNTRY, USER_COUNTRY))
                                 .andExpect(status().isBadRequest());
 
                 verify(mockUserService, times(0)).updateOrAddUser(any());
@@ -146,7 +162,13 @@ public class EditUserFormControllerTest {
                                                 .param(P_FNAME, "xX_eP!C_Te$t_X><")
                                                 .param(P_LNAME, "$o_Very_Cool")
                                                 .param(P_EMAIL, USER_EMAIL)
-                                                .param(P_DOB, USER_DOB))
+                                                .param(P_DOB, USER_DOB)
+                                                .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                                .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                                .param(P_SUBURB, USER_SUBURB)
+                                                .param(P_POSTCODE, USER_POSTCODE)
+                                                .param(P_CITY, USER_CITY)
+                                                .param(P_COUNTRY, USER_COUNTRY))
                                 .andExpect(status().isBadRequest());
 
                 verify(mockUserService, times(0)).updateOrAddUser(any());
@@ -160,7 +182,13 @@ public class EditUserFormControllerTest {
                                                 .param(P_FNAME, USER_FNAME)
                                                 .param(P_LNAME, USER_LNAME)
                                                 .param(P_EMAIL, "a@b")
-                                                .param(P_DOB, USER_DOB))
+                                                .param(P_DOB, USER_DOB)
+                                                .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                                .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                                .param(P_SUBURB, USER_SUBURB)
+                                                .param(P_POSTCODE, USER_POSTCODE)
+                                                .param(P_CITY, USER_CITY)
+                                                .param(P_COUNTRY, USER_COUNTRY))
                                 .andExpect(status().isBadRequest());
 
                 verify(mockUserService, times(0)).updateOrAddUser(any());
@@ -179,7 +207,13 @@ public class EditUserFormControllerTest {
                                                 .param(P_FNAME, USER_FNAME)
                                                 .param(P_LNAME, USER_LNAME)
                                                 .param(P_EMAIL, USER_EMAIL)
-                                                .param(P_DOB, dateString))
+                                                .param(P_DOB, dateString)
+                                                .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                                .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                                .param(P_SUBURB, USER_SUBURB)
+                                                .param(P_POSTCODE, USER_POSTCODE)
+                                                .param(P_CITY, USER_CITY)
+                                                .param(P_COUNTRY, USER_COUNTRY))
                                 .andExpect(status().isBadRequest());
 
                 verify(mockUserService, times(0)).updateOrAddUser(any());
@@ -195,7 +229,13 @@ public class EditUserFormControllerTest {
                                                 .param(P_FNAME, USER_FNAME)
                                                 .param(P_LNAME, USER_LNAME)
                                                 .param(P_EMAIL, IN_USE_EMAIL)
-                                                .param(P_DOB, USER_DOB))
+                                                .param(P_DOB, USER_DOB)
+                                                .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                                .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                                .param(P_SUBURB, USER_SUBURB)
+                                                .param(P_POSTCODE, USER_POSTCODE)
+                                                .param(P_CITY, USER_CITY)
+                                                .param(P_COUNTRY, USER_COUNTRY))
                                 .andExpect(status().isBadRequest());
 
                 verify(mockUserService, times(0)).updateOrAddUser(any());
@@ -209,11 +249,258 @@ public class EditUserFormControllerTest {
                                                 .param(P_FNAME, USER_FNAME)
                                                 .param(P_LNAME, USER_LNAME)
                                                 .param(P_EMAIL, "new@email.com")
-                                                .param(P_DOB, USER_DOB))
+                                                .param(P_DOB, USER_DOB)
+                                                .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                                .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                                .param(P_SUBURB, USER_SUBURB)
+                                                .param(P_POSTCODE, USER_POSTCODE)
+                                                .param(P_CITY, USER_CITY)
+                                                .param(P_COUNTRY, USER_COUNTRY))
                                 .andExpect(redirectedUrl("login"));
 
                 verify(mockUserService, times(1)).updateOrAddUser(any());
         }
+
+        @Test
+        @WithMockUser()
+        void givenValidAddressInput_whenFormIsSubmitted_thenUserIsUpdated() throws Exception {
+                mockMvc.perform(
+                                post(URL)
+                                        .param(P_FNAME, USER_FNAME)
+                                        .param(P_LNAME, USER_LNAME)
+                                        .param(P_EMAIL, USER_EMAIL)
+                                        .param(P_DOB, USER_DOB)
+                                        .param(P_ADDRESS_LINE_1, "1#/, Address-Lane's.")
+                                        .param(P_ADDRESS_LINE_2, "A/2 '#/,.")
+                                        .param(P_SUBURB, USER_SUBURB)
+                                        .param(P_POSTCODE, USER_POSTCODE)
+                                        .param(P_CITY, USER_CITY)
+                                        .param(P_COUNTRY, USER_COUNTRY))
+                        .andExpect(redirectedUrl("user-info/self"));
+
+                verify(mockUserService, times(1)).updateOrAddUser(any());
+        }
+
+        @Test
+        @WithMockUser()
+        void givenInvalidAddressInput_whenFormIsSubmitted_thenUserIsNotUpdated() throws Exception {
+                mockMvc.perform(
+                                post(URL)
+                                        .param(P_FNAME, USER_FNAME)
+                                        .param(P_LNAME, USER_LNAME)
+                                        .param(P_EMAIL, USER_EMAIL)
+                                        .param(P_DOB, USER_DOB)
+                                        .param(P_ADDRESS_LINE_1, "@#$%^&*gf64")
+                                        .param(P_ADDRESS_LINE_2, "@#$%&&fhjb74")
+                                        .param(P_SUBURB, USER_SUBURB)
+                                        .param(P_POSTCODE, USER_POSTCODE)
+                                        .param(P_CITY, USER_CITY)
+                                        .param(P_COUNTRY, USER_COUNTRY))
+                        .andExpect(redirectedUrl("user-info/self"));
+
+                verify(mockUserService, times(0)).updateOrAddUser(any());
+        }
+
+        @Test
+        @WithMockUser()
+        void givenValidPostcodeInput_whenFormIsSubmitted_thenUserIsUpdated() throws Exception {
+                mockMvc.perform(
+                                post(URL)
+                                        .param(P_FNAME, USER_FNAME)
+                                        .param(P_LNAME, USER_LNAME)
+                                        .param(P_EMAIL, USER_EMAIL)
+                                        .param(P_DOB, USER_DOB)
+                                        .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                        .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                        .param(P_SUBURB, USER_SUBURB)
+                                        .param(P_POSTCODE, "12 34/56-A7")
+                                        .param(P_CITY, USER_CITY)
+                                        .param(P_COUNTRY, USER_COUNTRY))
+                        .andExpect(redirectedUrl("user-info/self"));
+
+                verify(mockUserService, times(1)).updateOrAddUser(any());
+        }
+
+        @Test
+        @WithMockUser()
+        void givenInvalidPostcodeInput_whenFormIsSubmitted_thenUserIsNotUpdated() throws Exception {
+                mockMvc.perform(
+                                post(URL)
+                                        .param(P_FNAME, USER_FNAME)
+                                        .param(P_LNAME, USER_LNAME)
+                                        .param(P_EMAIL, USER_EMAIL)
+                                        .param(P_DOB, USER_DOB)
+                                        .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                        .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                        .param(P_SUBURB, USER_SUBURB)
+                                        .param(P_POSTCODE, "#$%^&*")
+                                        .param(P_CITY, USER_CITY)
+                                        .param(P_COUNTRY, USER_COUNTRY))
+                        .andExpect(redirectedUrl("user-info/self"));
+
+                verify(mockUserService, times(0)).updateOrAddUser(any());
+        }
+
+        @Test
+        @WithMockUser()
+        void givenValidSuburbInput_whenFormIsSubmitted_thenUserIsUpdated() throws Exception {
+                mockMvc.perform(
+                                post(URL)
+                                        .param(P_FNAME, USER_FNAME)
+                                        .param(P_LNAME, USER_LNAME)
+                                        .param(P_EMAIL, USER_EMAIL)
+                                        .param(P_DOB, USER_DOB)
+                                        .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                        .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                        .param(P_SUBURB, "Suburbia-Place Burrow's")
+                                        .param(P_POSTCODE, USER_POSTCODE)
+                                        .param(P_CITY, USER_CITY)
+                                        .param(P_COUNTRY, USER_COUNTRY))
+                        .andExpect(redirectedUrl("user-info/self"));
+
+                verify(mockUserService, times(1)).updateOrAddUser(any());
+        }
+
+        @Test
+        @WithMockUser()
+        void givenInvalidSuburbInput_whenFormIsSubmitted_thenUserIsNotUpdated() throws Exception {
+                mockMvc.perform(
+                                post(URL)
+                                        .param(P_FNAME, USER_FNAME)
+                                        .param(P_LNAME, USER_LNAME)
+                                        .param(P_EMAIL, USER_EMAIL)
+                                        .param(P_DOB, USER_DOB)
+                                        .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                        .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                        .param(P_SUBURB, "#$%^&*")
+                                        .param(P_POSTCODE, USER_POSTCODE)
+                                        .param(P_CITY, USER_CITY)
+                                        .param(P_COUNTRY, USER_COUNTRY))
+                        .andExpect(redirectedUrl("user-info/self"));
+
+                verify(mockUserService, times(0)).updateOrAddUser(any());
+        }
+
+        @Test
+        @WithMockUser()
+        void givenValidCityInput_whenFormIsSubmitted_thenUserIsUpdated() throws Exception {
+                mockMvc.perform(
+                                post(URL)
+                                        .param(P_FNAME, USER_FNAME)
+                                        .param(P_LNAME, USER_LNAME)
+                                        .param(P_EMAIL, USER_EMAIL)
+                                        .param(P_DOB, USER_DOB)
+                                        .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                        .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                        .param(P_SUBURB, USER_SUBURB)
+                                        .param(P_POSTCODE, USER_POSTCODE)
+                                        .param(P_CITY, "City-Tower's N")
+                                        .param(P_COUNTRY, USER_COUNTRY))
+                        .andExpect(redirectedUrl("user-info/self"));
+
+                verify(mockUserService, times(1)).updateOrAddUser(any());
+        }
+
+        @Test
+        @WithMockUser()
+        void givenInvalidCityInput_whenFormIsSubmitted_thenUserIsNotUpdated() throws Exception {
+                mockMvc.perform(
+                                post(URL)
+                                        .param(P_FNAME, USER_FNAME)
+                                        .param(P_LNAME, USER_LNAME)
+                                        .param(P_EMAIL, USER_EMAIL)
+                                        .param(P_DOB, USER_DOB)
+                                        .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                        .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                        .param(P_SUBURB, USER_SUBURB)
+                                        .param(P_POSTCODE, USER_POSTCODE)
+                                        .param(P_CITY, "@#$%^&*")
+                                        .param(P_COUNTRY, USER_COUNTRY))
+                        .andExpect(redirectedUrl("user-info/self"));
+
+                verify(mockUserService, times(0)).updateOrAddUser(any());
+        }
+
+        @Test
+        @WithMockUser()
+        void givenEmptyCityInput_whenFormIsSubmitted_thenUserIsNotUpdated() throws Exception {
+                mockMvc.perform(
+                                post(URL)
+                                        .param(P_FNAME, USER_FNAME)
+                                        .param(P_LNAME, USER_LNAME)
+                                        .param(P_EMAIL, USER_EMAIL)
+                                        .param(P_DOB, USER_DOB)
+                                        .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                        .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                        .param(P_SUBURB, USER_SUBURB)
+                                        .param(P_POSTCODE, USER_POSTCODE)
+                                        .param(P_CITY, "")
+                                        .param(P_COUNTRY, USER_COUNTRY))
+                        .andExpect(redirectedUrl("user-info/self"));
+
+                verify(mockUserService, times(0)).updateOrAddUser(any());
+        }
+
+        @Test
+        @WithMockUser()
+        void givenValidCountryInput_whenFormIsSubmitted_thenUserIsUpdated() throws Exception {
+                mockMvc.perform(
+                                post(URL)
+                                        .param(P_FNAME, USER_FNAME)
+                                        .param(P_LNAME, USER_LNAME)
+                                        .param(P_EMAIL, USER_EMAIL)
+                                        .param(P_DOB, USER_DOB)
+                                        .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                        .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                        .param(P_SUBURB, USER_SUBURB)
+                                        .param(P_POSTCODE, USER_POSTCODE)
+                                        .param(P_CITY, USER_COUNTRY)
+                                        .param(P_COUNTRY, "Country-of Pigs'"))
+                        .andExpect(redirectedUrl("user-info/self"));
+
+                verify(mockUserService, times(1)).updateOrAddUser(any());
+        }
+
+        @Test
+        @WithMockUser()
+        void givenInvalidCountryInput_whenFormIsSubmitted_thenUserIsNotUpdated() throws Exception {
+                mockMvc.perform(
+                                post(URL)
+                                        .param(P_FNAME, USER_FNAME)
+                                        .param(P_LNAME, USER_LNAME)
+                                        .param(P_EMAIL, USER_EMAIL)
+                                        .param(P_DOB, USER_DOB)
+                                        .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                        .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                        .param(P_SUBURB, USER_SUBURB)
+                                        .param(P_POSTCODE, USER_POSTCODE)
+                                        .param(P_CITY, USER_CITY)
+                                        .param(P_COUNTRY, "#$%^&*("))
+                        .andExpect(redirectedUrl("user-info/self"));
+
+                verify(mockUserService, times(0)).updateOrAddUser(any());
+        }
+
+        @Test
+        @WithMockUser()
+        void givenEmptyCountryInput_whenFormIsSubmitted_thenUserIsNotUpdated() throws Exception {
+                mockMvc.perform(
+                                post(URL)
+                                        .param(P_FNAME, USER_FNAME)
+                                        .param(P_LNAME, USER_LNAME)
+                                        .param(P_EMAIL, USER_EMAIL)
+                                        .param(P_DOB, USER_DOB)
+                                        .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                        .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                        .param(P_SUBURB, USER_SUBURB)
+                                        .param(P_POSTCODE, USER_POSTCODE)
+                                        .param(P_CITY, USER_CITY)
+                                        .param(P_COUNTRY, ""))
+                        .andExpect(redirectedUrl("user-info/self"));
+
+                verify(mockUserService, times(0)).updateOrAddUser(any());
+        }
+
 
         /*
          * ! CAN NOT TEST: "When email is changed, then you are logged out."
