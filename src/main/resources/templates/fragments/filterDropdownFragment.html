@@ -39,32 +39,24 @@ dropdownName: String[opt.] - The parameter name sent to the controller on submit
     }
 
     function init() {
+      // Build the checkbox
+      const currentURL = new URL(document.location.href);
+      const preCheckedBoxes = new Set(currentURL.searchParams.getAll(checkBoxname));
       var checkboxDiv = document.getElementById("checkBoxes");
       var selectAllCheckbox = document.getElementById("select_all");
-      for (var i = 0; i < listCities.length; i++) {
+      for (const entryName of listCities) {
         var checkBox = document.createElement("input");
         var label = document.createElement("label");
         var span = document.createElement("span");
         checkBox.type = "checkbox";
-        checkBox.value = listCities[i];
+        checkBox.value = entryName;
         checkBox.name = checkBoxname;
-        checkBox.onclick = function() { checkIfAnyCheckboxUnchecked(selectAllCheckbox); };
-        span.appendChild(document.createTextNode(listCities[i]));
+        checkBox.checked = preCheckedBoxes.has(entryName);
+        span.appendChild(document.createTextNode(entryName));
         label.appendChild(checkBox)
         label.appendChild(span)
         checkboxDiv.appendChild(label);
       }
-    }
-
-    function checkIfAnyCheckboxUnchecked(selectAllCheckbox) {
-      var checkboxes = document.getElementsByName(checkBoxname);
-      if (selectAllCheckbox.checked) {
-        for (var i=0; i < checkboxes.length; i++) {
-          if(checkboxes[i].type == 'checkbox') {
-            if (!checkboxes[i].checked) {
-              selectAllCheckbox.checked = false;
-            }}
-        }}
     }
 
     function selectAllCheckboxes(selectAllCheckbox) {
