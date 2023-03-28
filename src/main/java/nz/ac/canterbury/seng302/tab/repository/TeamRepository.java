@@ -26,8 +26,15 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
     Page<Team> findAll(Pageable pageable);
 
     @Query("SELECT t FROM Team t " +
+            "JOIN t.location l "+
             "WHERE LOWER(t.name) LIKE LOWER(CONCAT('%', :name, '%')) " +
-            "OR LOWER(t.location) LIKE LOWER(CONCAT('%', :name, '%')) " +
-            "ORDER BY LOWER(t.name) ASC, LOWER(t.location) ASC ")
+            "OR LOWER(l.addressLine1) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(l.addressLine2) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(l.suburb) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(l.postcode) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(l.city) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(l.country) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "ORDER BY LOWER(t.name) ASC, LOWER(l.addressLine1) ASC, LOWER(l.addressLine2) ASC, LOWER(l.suburb) ASC, LOWER(l.postcode) ASC, LOWER(l.city) ASC, LOWER(l.country) ASC" )
     public Page<Team> findTeamByName(@Param("name") String name, Pageable pageable);
+
 }
