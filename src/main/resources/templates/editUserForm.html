@@ -64,6 +64,7 @@
     .content {
         position: absolute;
         bottom: 243px;
+        margin-left: -325px;
     }
 
     .content input {
@@ -127,7 +128,7 @@
             <h1 th:inline="text">Edit User</h1>
         </div>
         <div class="wrapper">
-            <form th:action="@{editUser}" method="post" th:object="${editUserForm}">
+            <form th:action="@{editUser}" method="post" th:object="${editUserForm}" id="editUserForm">
                 <div class="edit-inputs">
                     <div class="edit-inputs-left">
                         <div class="input-box">
@@ -159,13 +160,7 @@
                                 <label class="sports-label" for="sport-box">Favourite Sports</label>
                                 <button type="button">Clear</button>
                             </div>
-                            <div class="content">
-                                <label for="sport-list"  id="error-message"></label>
-                                <ul><input type="text" spellcheck="false" list="sports" id="sport-list"></ul>
-                                <datalist id="sports">
-                                    <option th:each="sport : ${knownSports}" th:text="${sport}">
-                                </datalist>
-                            </div>
+
                             <div class="sport-box" id="sport-box"></div>
                         </div>
                     </div>
@@ -223,6 +218,13 @@
                     <a th:href="@{user-info/self}">Cancel</a>
                 </div>
             </form>
+            <div class="content">
+                <label for="sport-list"  id="error-message"></label>
+                <ul><input type="text" spellcheck="false" list="sports" id="sport-list"></ul>
+                <datalist id="sports">
+                    <option th:each="sport : ${knownSports}" th:text="${sport}">
+                </datalist>
+            </div>
         </div>
     <footer>
         <p>
@@ -235,8 +237,8 @@
 
 <script th:inline="javascript">
     const ul = document.querySelector(".content ul"),
-    sportDisplay = document.querySelector(".sport-box"),
-    input = document.querySelector(".content input");
+        sportDisplay = document.querySelector(".sport-box"),
+        input = document.querySelector(".content input");
     const form = document.getElementById("editUserForm");
 
     const tagsInput = document.createElement("input");
@@ -246,54 +248,53 @@
 
     createTag();
     function createTag(){
-    sportDisplay.querySelectorAll("li").forEach(li => li.remove());
-    tags.slice().reverse().forEach(tag =>{
-    let liTag = `<li>${tag} <i class="multiply" onclick="remove(this, '${tag}')"></i></li>`;
-    sportDisplay.insertAdjacentHTML("afterbegin", liTag);
-    });
-}
+        sportDisplay.querySelectorAll("li").forEach(li => li.remove());
+        tags.slice().reverse().forEach(tag =>{
+            let liTag = `<li>${tag} <i class="multiply" onclick="remove(this, '${tag}')"></i></li>`;
+            sportDisplay.insertAdjacentHTML("afterbegin", liTag);
+        });
+    }
 
     function remove(element, tag){
-    let index  = tags.indexOf(tag);
-    tags = [...tags.slice(0, index), ...tags.slice(index + 1)];
-    element.parentElement.remove();
-    createTag();
-}
+        let index  = tags.indexOf(tag);
+        tags = [...tags.slice(0, index), ...tags.slice(index + 1)];
+        element.parentElement.remove();
+        createTag();
+    }
 
     function addTag(e) {
-    if(e.key == "Enter"){
-    e.preventDefault();
-    let tag = e.target.value.replace(/\s+/g, ' ');
-    if(tag.length>0 && !tags.includes(tag)){
-    tags.push(tag);
-    createTag();
-}
-    else if (tag.length==0){
-    document.getElementById("error-message").innerText  ="Please enter a sport";
-}
-    e.target.value = "";
-}
-}
+        if(e.key == "Enter"){
+            e.preventDefault();
+            let tag = e.target.value.replace(/\s+/g, ' ');
+            if(tag.length>0 && !tags.includes(tag)){
+                tags.push(tag);
+                createTag();
+            }
+            else if (tag.length==0){
+                document.getElementById("error-message").innerText  ="Please enter a sport";
+            }
+            e.target.value = "";
+        }
+    }
 
     input.addEventListener("keyup", addTag);
 
 
     const removeBtn = document.querySelector(".details button");
     removeBtn.addEventListener("click", () =>{
-    tags.length = 0;
-    sportDisplay.querySelectorAll("li").forEach(li => li.remove());
-});
+        tags.length = 0;
+        sportDisplay.querySelectorAll("li").forEach(li => li.remove());
+    });
     form.addEventListener('submit', (event) => {
-    const tagsInput = document.createElement("input");
-    tagsInput.setAttribute("type", "hidden");
-    tagsInput.setAttribute("name", "tags");
-    tagsInput.setAttribute("value", tags.join(","));
-    form.appendChild(tagsInput);
-    return true;
-});
-</script>
-</script>
-<script th:inline="javascript">
+        const tagsInput = document.createElement("input");
+        tagsInput.setAttribute("type", "hidden");
+        tagsInput.setAttribute("name", "tags");
+        tagsInput.setAttribute("value", tags.join(","));
+        form.appendChild(tagsInput);
+        return true;
+    });
+
+
     /**
      * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
      * @type {string}
