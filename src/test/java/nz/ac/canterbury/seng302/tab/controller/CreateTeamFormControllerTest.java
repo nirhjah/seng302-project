@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,7 +36,7 @@ public class CreateTeamFormControllerTest {
     private UserService mockUserService;
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach() throws IOException {
         Date userDOB;
         try {
             // Have to catch a constant parse exception annoyingly

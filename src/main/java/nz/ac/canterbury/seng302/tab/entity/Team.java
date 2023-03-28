@@ -40,7 +40,22 @@ public class Team {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
         this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+    }
 
+    /**
+     * Should be used for testing ONLY!
+     * TODO: Remove this constructor, use builder pattern. same for user
+     * @param name
+     * @param sport
+     */
+    public Team(String name, String sport) throws IOException {
+        this.name = name;
+        // create a dummy location
+        this.location = new Location("address1", "address2", "suburb", "chch", "8052", "new zealand");
+        this.sport = sport;
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        File file = resource.getFile();
+        this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
     }
 
     public Long getTeamId() {
