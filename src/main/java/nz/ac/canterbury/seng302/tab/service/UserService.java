@@ -28,7 +28,7 @@ import nz.ac.canterbury.seng302.tab.repository.UserRepository;
  */
 @Service
 public class UserService {
-    final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private UserRepository userRepository;
