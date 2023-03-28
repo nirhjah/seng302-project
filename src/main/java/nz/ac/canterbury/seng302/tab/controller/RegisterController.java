@@ -214,7 +214,8 @@ public class RegisterController {
 
         User user = new User(registerForm.getFirstName(), registerForm.getLastName(), registerForm.getDateOfBirth(),
                 registerForm.getEmail(), registerForm.getPassword(), new ArrayList<>(),
-                new Location("","","","Christchurch","","New Zealand"));
+                new Location(registerForm.getAddressLine1(), registerForm.getAddressLine2(), registerForm.getSuburb(),
+                        registerForm.getCity(), registerForm.getPostcode(), registerForm.getCountry()));
         user.grantAuthority("ROLE_USER");
         user = userService.updateOrAddUser(user);
 

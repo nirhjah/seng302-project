@@ -31,52 +31,24 @@
                             <label for="first-name">First Name <span class="required">*</span></label>
                             <p th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="errorMessage" />
                         </div>
-<!--&lt;!&ndash;                        <div class="input-box">&ndash;&gt;-->
-<!--&lt;!&ndash;                            <input type="text" class="form-control"&ndash;&gt;-->
-<!--&lt;!&ndash;                                   th:field="*{firstName}" data-cy="firstName" required&ndash;&gt;-->
-<!--&lt;!&ndash;                                   autofocus th:pattern="${validNameRegex}" th:title="${validNameMessage}">&ndash;&gt;-->
-<!--&lt;!&ndash;                            <label for="firstName">First Name </label>&ndash;&gt;-->
-<!--&lt;!&ndash;                            <p th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="errorMessage" />&ndash;&gt;-->
-<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
                         <div class="input-box">
                             <input type="text" class="form-control" id="last-name" th:name="lastName"
                                    data-cy="lastName" autofocus placeholder="" th:pattern="${validNameRegex}" th:value="*{lastName}">
                             <label for="last-name">Last Name <span class="required">*</span></label>
                             <p th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="errorMessage" />
                         </div>
-<!--&lt;!&ndash;                        <div class="input-box">&ndash;&gt;-->
-<!--&lt;!&ndash;                            <input type="text" class="form-control"&ndash;&gt;-->
-<!--&lt;!&ndash;                                   th:field="*{lastName}" data-cy="lastName" required&ndash;&gt;-->
-<!--&lt;!&ndash;                                   autofocus th:pattern="${validNameRegex}" th:title="${validNameMessage}">&ndash;&gt;-->
-<!--&lt;!&ndash;                            <label for="lastName">Last Name: </label>&ndash;&gt;-->
-<!--&lt;!&ndash;                            <p th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="errorMessage" />&ndash;&gt;-->
-<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
                         <div class="input-box">
                             <input type="text" class="form-control" id="email" th:name="email"
                                    data-cy="email" autofocus placeholder="" th:value="*{email}">
                             <label for="email">Email <span class="required">*</span></label>
                             <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="errorMessage" />
                         </div>
-<!--&lt;!&ndash;                        <div class="input-box">&ndash;&gt;-->
-<!--&lt;!&ndash;                            <input type="text" class="form-control"&ndash;&gt;-->
-<!--&lt;!&ndash;                                   th:field="*{email}" data-cy="email" required autofocus>&ndash;&gt;-->
-<!--&lt;!&ndash;                            <label for="email">Email&ndash;&gt;-->
-<!--&lt;!&ndash;                                <span style="color: darkred">(You will be logged out if you edit your email):</span>&ndash;&gt;-->
-<!--&lt;!&ndash;                            </label>&ndash;&gt;-->
-<!--&lt;!&ndash;                            <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="errorMessage" />&ndash;&gt;-->
-<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
                         <div class="input-box">
                             <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
                                    data-cy="dateOfBirth" required autofocus>
                             <label for="date-of-birth">Date of Birth <span class="required">*</span></label>
                         </div>
                         <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
-<!--&lt;!&ndash;                        <div class="input-box">&ndash;&gt;-->
-<!--&lt;!&ndash;                            <input type="date" class="form-control"&ndash;&gt;-->
-<!--&lt;!&ndash;                                   th:field="*{dateOfBirth}" th:value="*{#dates.formatISO(dateOfBirth)}" data-cy="dateOfBirth" required autofocus>&ndash;&gt;-->
-<!--&lt;!&ndash;                            <label for="dateOfBirth">Date of Birth: </label>&ndash;&gt;-->
-<!--&lt;!&ndash;                            <p th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="errorMessage" />&ndash;&gt;-->
-<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
                     </div>
                     <hr class="solid">
                     <div class="edit-inputs-right">
@@ -139,4 +111,109 @@
     </footer>
 </div>
 </body>
+<script th:inline="javascript">
+    /**
+     * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
+     * @type {string}
+     */
+    const ENDPOINT = '/geocode/autocomplete';
+
+    /**
+     * The delay time (in milliseconds) for debouncing the search input.
+     * @type {number}
+     */
+    const DEBOUNCE_DELAY = 450; // set the debounce delay to 450ms
+
+    const searchBox = document.querySelector('#address-line-1');
+    const resultsContainer = document.querySelector('#autocomplete-container');
+    const countryInput = document.querySelector('#country');
+    const cityInput = document.querySelector('#city');
+    const suburbInput = document.querySelector('#suburb');
+    const postcodeInput = document.querySelector('#postcode');
+
+    let timeoutId;
+
+    /**
+     * Debounces the given function with the given delay time.
+     * @param {Function} fn - The function to be debounced.
+     * @param {number} delay - The delay time (in milliseconds) for debouncing.
+     * @returns {Function} The debounced function.
+     */
+    function debounce(fn, delay) {
+        return function () {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => fn.apply(this, arguments), delay);
+        }
+    }
+
+    /**
+     * Searches the OpenRouteService Geocoding API for autocomplete results based on the current search input value.
+     * Displays the results in the results container element.
+     */
+    function searchAutocomplete() {
+        const searchTerm = this.value.trim();
+
+        if (searchTerm.length >= 3) {
+            axios.get(ENDPOINT, {
+                params: {
+                    text: searchTerm,
+                    language: 'en'
+                }
+            })
+                .then(response => {
+                    const results = response.data.features.slice(0, 5);
+                    let html = '';
+                    if (results.length > 0) {
+                        html = '<ul class ="autocomplete-result">';
+                        results.forEach(result => {
+                            html += `<li class="location-autocomplete-value" data-country="${result.properties.country}" data-city="${result.properties.locality}" data-suburb="${result.properties.localadmin}" data-postcode="${result.properties.postalcode}" data-house-number="${result.properties.housenumber}" data-street="${result.properties.street}">${result.properties.label}</li>`;
+                        });
+                        html += '</ul>';
+                    } else {
+                        html = '<p>No results found</p>';
+                    }
+                    resultsContainer.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error(error);
+                    resultsContainer.innerHTML = '<p>Error fetching results</p>';
+                });
+        } else {
+            resultsContainer.innerHTML = '';
+        }
+    }
+
+    /**
+     * Adds an event listener to the search input element for debouncing the searchAutocomplete function.
+     */
+    searchBox.addEventListener('input', debounce(searchAutocomplete, DEBOUNCE_DELAY));
+
+    /**
+     * Adds an event listener to the results container element for handling the click event on an autocomplete result.
+     * Updates the search input and the selected address elements with the clicked result data.
+     */
+    resultsContainer.addEventListener('click', function (event) {
+        if (event.target.tagName === 'LI') {
+            let address = event.target.getAttribute('data-house-number') === "undefined" ? "" : event.target.getAttribute('data-house-number') + " ";
+            address += event.target.getAttribute('data-street') === "undefined" ? "" : event.target.getAttribute('data-street');
+            searchBox.value = address;
+            const country = event.target.getAttribute('data-country') === "undefined" ? "" : event.target.getAttribute('data-country');
+            const city = event.target.getAttribute('data-city') === "undefined" ? "" : event.target.getAttribute('data-city');
+            const suburb = event.target.getAttribute('data-suburb') === "undefined" ? "" : event.target.getAttribute('data-suburb');
+            const postcode = event.target.getAttribute('data-postcode') === "undefined" ? "" : event.target.getAttribute('data-postcode');
+            countryInput.value = country;
+            cityInput.value = suburb;
+            suburbInput.value = city;
+            postcodeInput.value = postcode;
+            resultsContainer.innerHTML = "";
+        }
+    });
+
+    document.addEventListener('click', function (event) {
+        if (resultsContainer.innerHTML !== '' && !resultsContainer.contains(event.target)) {
+            resultsContainer.innerHTML = "";
+        }
+    });
+
+</script>
 </html>
