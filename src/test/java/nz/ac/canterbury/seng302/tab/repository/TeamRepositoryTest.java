@@ -67,8 +67,10 @@ public class TeamRepositoryTest {
 
     @Test void filteringSearchBySport_filteringAllTeamsByHockey_correctListReturned() throws IOException {
         assertTrue(teamService.getTeamList().isEmpty());
-        Team team = new Team("test", "Christchurch", "Hockey");
-        Team team2= new Team ("test2", "Auckland", "Netball");
+        Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
+
+        Team team = new Team("test", "Hockey", locationRepository.findById(testLocation.getLocationId()).get());
+        Team team2= new Team ("test2", "Netball", locationRepository.findById(testLocation.getLocationId()).get());
 
         List<Team> expectedTeamList = List.of(team); // We will filter the search by hockey so only the first team is expected
         teamRepository.save(team);
@@ -81,8 +83,10 @@ public class TeamRepositoryTest {
 
     @Test void filteringSearchBySport_filteringAllTeamsByHockeyAndNetball_correctListReturned() throws IOException {
         assertTrue(teamService.getTeamList().isEmpty());
-        Team team = new Team("test", "Christchurch", "Hockey");
-        Team team2= new Team ("test2", "Auckland", "Netball");
+        Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
+
+        Team team = new Team("test", "Hockey", locationRepository.findById(testLocation.getLocationId()).get());
+        Team team2= new Team ("test2", "Netball", locationRepository.findById(testLocation.getLocationId()).get());
 
         List<Team> expectedTeamList = List.of(team, team2); // We will filter the search by hockey so only the first team is expected
         teamRepository.save(team);
@@ -95,9 +99,11 @@ public class TeamRepositoryTest {
 
     @Test void filteringSearchBySport_filteringTeamsNamedTestByHockey_correctListReturned() throws IOException {
         assertTrue(teamService.getTeamList().isEmpty());
-        Team team = new Team("test", "Christchurch", "Hockey");
-        Team team2= new Team ("test2", "Auckland", "Netball");
-        Team team3 = new Team("Team", "Nelson", "Hockey");
+        Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
+
+        Team team = new Team("test",  "Hockey", locationRepository.findById(testLocation.getLocationId()).get());
+        Team team2= new Team ("test2", "Netball", locationRepository.findById(testLocation.getLocationId()).get());
+        Team team3 = new Team("Team", "Hockey", locationRepository.findById(testLocation.getLocationId()).get());
 
         List<Team> expectedTeamList = List.of(team); // We will filter the search by hockey so only the first team is expected
         teamRepository.save(team);
@@ -110,9 +116,11 @@ public class TeamRepositoryTest {
 
     @Test void filteringSearchBySport_filteringAllTeamsAndNoSports_correctListReturned() throws IOException {
         assertTrue(teamService.getTeamList().isEmpty());
-        Team team = new Team("test", "Christchurch", "Hockey");
-        Team team2= new Team ("test2", "Auckland", "Netball");
-        Team team3 = new Team("Team", "Nelson", "Hockey");
+        Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
+
+        Team team = new Team("test", "Hockey", locationRepository.findById(testLocation.getLocationId()).get());
+        Team team2= new Team ("test2", "Netball", locationRepository.findById(testLocation.getLocationId()).get());
+        Team team3 = new Team("Team", "Hockey", locationRepository.findById(testLocation.getLocationId()).get());
 
         List<Team> expectedTeamList = List.of(team3, team, team2); // We will filter the search by hockey so only the first team is expected
         teamRepository.save(team);

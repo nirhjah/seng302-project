@@ -72,7 +72,7 @@ public class EditUserFormControllerTest {
         private static final String USER_COUNTRY = "New Zealand";
 
         @BeforeEach
-        void beforeEach() {
+        void beforeEach() throws IOException {
                 Date userDOB;
                 try {
                         // Have to catch a constant parse exception annoyingly

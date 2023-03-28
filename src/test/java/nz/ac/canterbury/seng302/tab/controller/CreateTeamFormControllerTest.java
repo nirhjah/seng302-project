@@ -1,6 +1,9 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 
 import nz.ac.canterbury.seng302.tab.service.SportService;
@@ -12,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,8 +26,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -33,6 +36,12 @@ public class CreateTeamFormControllerTest {
     private static final String USER_EMAIL = "test@email.org";
     private static final String USER_DOB = "2000-01-01";
     private static final String USER_PWORD = "super_insecure";
+    private static final String USER_ADDRESS_LINE_1 = "1 Street Road";
+    private static final String USER_ADDRESS_LINE_2 = "A";
+    private static final String USER_SUBURB = "Riccarton";
+    private static final String USER_POSTCODE = "8000";
+    private static final String USER_CITY = "Christchurch";
+    private static final String USER_COUNTRY = "New Zealand";
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -47,7 +56,7 @@ public class CreateTeamFormControllerTest {
     static final Long TEAM_ID = 1L;
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach() throws IOException {
         Date userDOB;
         try {
             // Have to catch a constant parse exception annoyingly
@@ -55,7 +64,9 @@ public class CreateTeamFormControllerTest {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-        User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD);
+        Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY, USER_POSTCODE, USER_COUNTRY);
+
+        User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD, testLocation);
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
         when(mockUserService.emailIsInUse(anyString())).thenReturn(false);
     }
@@ -365,16 +376,15 @@ public class CreateTeamFormControllerTest {
 
     @Test
     void whenSportIsNewAndValid_checkThatItWasSaved() throws Exception {
-        Team mockTeam = new Team("Test", "Test", "Test");
-        mockTeam.setTeamId(TEAM_ID);
-        when(mockTeamService.getTeam(TEAM_ID)).thenReturn(mockTeam);
-        when(mockTeamService.updateTeam(any())).thenReturn(mockTeam);
-
         mockMvc.perform(post("/createTeam", 42L)
                         .param("teamID", TEAM_ID.toString())
                         .param("name", "{test.team 1}")
                         .param("sport", "hockey-team a'b")
-                        .param("location", "christchurch"))
+                        .param("addressLine1", "")
+                        .param("addressLine2", "")
+                        .param("city", "Christchurch")
+                        .param("country", "New Zealand")
+                        .param("postcode", "").param("suburb", ""))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrlPattern("**/profile?teamID="+TEAM_ID));
         verify(mockSportService, times(1)).addSport(any());

@@ -3,6 +3,8 @@ package nz.ac.canterbury.seng302.tab.controller;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+
+import nz.ac.canterbury.seng302.tab.service.LocationService;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
@@ -26,6 +28,10 @@ public class CreateTeamFormController {
     Logger logger = LoggerFactory.getLogger(CreateTeamFormController.class);
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    private SportService sportService;
+
     //
     // @Value("${ops.api.key}")
     // private String apiKey;
@@ -35,9 +41,6 @@ public class CreateTeamFormController {
      * spaces. Must start with an alphabetical character
      */
     private final String countryCitySuburbNameRegex = "^\\p{L}+[\\- '\\p{L}]*$";
-
-    @Autowired
-    private SportService sportService;
 
     /** Addresses can have letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include
      * at least one alphanumeric character**/
