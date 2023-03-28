@@ -65,7 +65,7 @@ public class EditUserFormControllerTest {
                 } catch (ParseException e) {
                         throw new RuntimeException(e);
                 }
-                User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD);
+                User testUser = User.defaultDummyUser();
 
                 when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
                 when(mockUserService.emailIsInUse(anyString())).thenReturn(false);

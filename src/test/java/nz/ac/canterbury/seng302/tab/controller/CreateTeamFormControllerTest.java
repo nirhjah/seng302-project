@@ -24,11 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 public class CreateTeamFormControllerTest {
-    private static final String USER_FNAME = "Test";
-    private static final String USER_LNAME = "User";
-    private static final String USER_EMAIL = "test@email.org";
-    private static final String USER_DOB = "2000-01-01";
-    private static final String USER_PWORD = "super_insecure";
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -36,14 +31,7 @@ public class CreateTeamFormControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        Date userDOB;
-        try {
-            // Have to catch a constant parse exception annoyingly
-            userDOB = new SimpleDateFormat("YYYY-mm-dd").parse(USER_DOB);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD);
+        User testUser = User.defaultDummyUser();
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
         when(mockUserService.emailIsInUse(anyString())).thenReturn(false);
     }
