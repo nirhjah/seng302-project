@@ -4,6 +4,7 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.LocationService;
 
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,9 @@ public class HomeFormController {
     private LocationService locationService;
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    private TeamRepository teamRepository;
 
     /**
      * Redirects GET default url '/' to '/home'

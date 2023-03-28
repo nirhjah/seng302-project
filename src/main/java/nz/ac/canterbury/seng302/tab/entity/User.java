@@ -1,11 +1,18 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Email; import jakarta.validation.constraints.Pattern; import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Base64;
+
+
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Entity(name = "UserEntity")
@@ -14,14 +21,16 @@ public class User {
     public User() {
     }
 
-    public static User defaultDummyUser() {
+    public static User defaultDummyUser() throws IOException {
         return new User(
                 "test",
                 "again",
                 new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "test@gmail.com",
                 "dfghjk",
+                new ArrayList<>(),
                 new Location(null,null,null,"Christchurch",null,"New Zealand"));
+
     }
 
     /**
@@ -35,14 +44,20 @@ public class User {
         this.hashedPassword = password;
         this.favoriteSports = favoriteSports;
         this.location = location;
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        File file = resource.getFile();
+        this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
     }
 
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location) {
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location) throws IOException{
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.hashedPassword = password;
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        File file = resource.getFile();
+        this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
         this.favoriteSports = new ArrayList<>();
         this.location = location;
     }
@@ -70,14 +85,16 @@ public class User {
     @Column(nullable = false)
     private Date dateOfBirth;
 
-    @Column()
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "Id")
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="favSports")
     private List<Sport> favoriteSports;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_locationId", referencedColumnName = "locationId")
     private Location location;
+
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private String pictureString;
 
     @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
             flags = Pattern.Flag.CASE_INSENSITIVE)
@@ -97,6 +114,11 @@ public class User {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public void setFullName(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public String getLastName() {
@@ -131,6 +153,14 @@ public class User {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public String getPictureString() {
+        return this.pictureString;
+    }
+
+    public void setPictureString(String pictureString) {
+        this.pictureString = pictureString;
     }
 
     @Column()
@@ -200,5 +230,15 @@ public class User {
         result = 31 * result + (hashedPassword != null ? hashedPassword.hashCode() : 0);
         result = 31 * result + (userRoles != null ? userRoles.hashCode() : 0);
         return result;
+    }
+
+    public List<String> getFavouriteSportNames ()
+    {
+        List<String> sport = new ArrayList<>();
+        for (Sport s : favoriteSports)
+        {
+            sport.add(s.getName());
+        }
+        return sport;
     }
 }

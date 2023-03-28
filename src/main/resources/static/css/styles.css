@@ -1,3 +1,17 @@
+.team-form.register {
+    grid-auto-rows: 630px;
+    grid-template-rows: 300px;
+    height: 112vh;
+}
+
+.register .wrapper {
+    height: 770px;
+}
+
+.user-form .wrapper {
+    height: 490px;
+}
+
 ul.search {
   display: flex;
   list-style: none;
@@ -155,7 +169,8 @@ th:nth-child(4) {
 
 tr,
 .wrapper,
-.wrapper-profile {
+.wrapper-profile
+.wrapper-edit-profile {
   background-color: white;
 }
 
@@ -288,9 +303,9 @@ hr.solid {
 .wrapper-profile .profile-pic {
   left: 0;
 }
-.wrapper-profile .team-info,
-footer {
-  right: 0;
+
+.wrapper-profile .team-info, .wrapper-profile .user-info, footer {
+    right: 0;
 }
 
 .file-label-border,
@@ -316,12 +331,13 @@ footer {
 .profile-background,
 .Search-teams-background,
 .edit-user-background,
-.background-image {
-  background-image: url("../image/landscape.jpeg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  height: 100vh;
+.background-image,
+.user-form {
+    background-image: url("../image/landscape.jpeg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100vh;
 }
 
 footer {
@@ -348,7 +364,7 @@ footer {
   font-size: 22px;
 }
 
-.team-display {
+.team-display .user-display {
   padding: 20px 0 20px 0;
   font-weight: 500;
   font-family: "Noto Sans", sans-serif;

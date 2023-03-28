@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import jakarta.validation.Valid;
+import nz.ac.canterbury.seng302.tab.entity.Sport;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -42,7 +44,7 @@ public class EditUserForm {
     @UserFormValidators.suburbValidator
     private String suburb;
 
-
+    private List<Sport> favouriteSports;
 
     /**
      * Fills out all of the <em>empty</em> fields with the user's details.
@@ -59,6 +61,7 @@ public class EditUserForm {
         this.postcode = user.getLocation().getPostcode();
         this.city = user.getLocation().getCity();
         this.country = user.getLocation().getCountry();
+        this.favouriteSports = user.getFavoriteSports();
     }
 
     public String getFirstName() {
@@ -145,5 +148,9 @@ public class EditUserForm {
     public Location getLocation() {
         return new Location(this.addressLine1, this.addressLine2, this.suburb, this.city, this.postcode, this.country);
     }
+
+    public List<Sport> getFavouriteSports() { return favouriteSports; }
+
+    public void setFavouriteSports(List<Sport> sports) {this.favouriteSports = sports; }
 
 }

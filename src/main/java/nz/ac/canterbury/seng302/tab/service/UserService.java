@@ -2,24 +2,22 @@ package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Service class for User database entries, defined by the @link{Service} annotation.
@@ -40,15 +38,15 @@ public class UserService {
      * @param pageNumber The page number (page 0 is the first page)
      * @return A slice of users returned from pagination
      */
-    public List<User> getPaginatedUsers(Pageable pageable) {
+    public Page<User> getPaginatedUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 
-    public List<User> findUsersByName(Pageable pageable, String name) {
+    public Page<User> findUsersByName(Pageable pageable, String name) {
         return userRepository.findAllByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(pageable, name, name);
     }
 
-    public List<User> findUsersByName(Pageable pageable, String firstName, String lastName) {
+    public Page<User> findUsersByName(Pageable pageable, String firstName, String lastName) {
         return userRepository.findAllByFirstNameIgnoreCaseContainingAndLastNameIgnoreCaseContaining(pageable, firstName, lastName);
     }
 
@@ -139,4 +137,29 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+    /**
+     * Method which updates the picture by taking the MultipartFile type and updating the picture
+     * stored in the team with id primary key.
+     *
+     * @param file MultipartFile file upload
+     * @param id   Team's unique id
+     */
+    public void updatePicture(MultipartFile file, long id) {
+        User user = userRepository.findById(id).get();
+
+        //Gets the original file name as a string for validation
+        String pictureString = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        if (pictureString.contains("..")) {
+            System.out.println("not a a valid file");
+        }
+        try {
+            //Encodes the file to a byte array and then convert it to string, then set it as the pictureString variable.
+            user.setPictureString(Base64.getEncoder().encodeToString(file.getBytes()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //Saved the updated picture string in the database.
+        userRepository.save(user);
+    }
 }

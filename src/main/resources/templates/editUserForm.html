@@ -14,6 +14,100 @@
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <title th:inline="text">Edit User</title>
 </head>
+<style>
+    .multiply:before {
+        content: "\00D7";
+    }
+
+    .sport-box {
+        height: 50px;
+        width: 280px;
+        display: flex;
+        flex-wrap: wrap;
+        padding: 7px;
+        margin: 12px 0;
+        border: 2px dashed #778DA9;
+        border-top-left-radius: 11px;
+        border-top-right-radius: 11px;
+        overflow-y: scroll;
+        max-height: 100px;
+        gap: 3px;
+        align-content: flex-start;
+    }
+
+    .sport-box li {
+        margin: 0;
+        list-style: none;
+        border-radius: 20px;
+        background: #778DA9;
+        padding-left: 5px;
+        border: 1px solid #1B263B;
+        display: inline-block;
+        white-space: nowrap;
+        font-size: 11px;
+        font-weight: 600;
+        font-family: "Noto Sans", sans-serif;
+        color: #FFFF;
+        text-align: center;
+    }
+
+    .sport-box li i {
+        color: #FFF;
+        margin-right: 8px;
+        margin-left: 5px;
+        font-size: 12px;
+        cursor: pointer;
+        border-radius: 50%;
+        background: #778DA9;
+    }
+
+    .content {
+        position: absolute;
+        bottom: 111px;
+    }
+
+    .content input {
+        width: 293px;
+        height: 25px;
+        border-bottom-left-radius: 11px;
+        border-bottom-right-radius: 11px;
+        border: 2px solid #778DA9;
+        border-top: none;
+    }
+
+    .sport-box::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .sport-box::-webkit-scrollbar-track {
+        background-color: #E0E1DD;
+    }
+
+    .sport-box::-webkit-scrollbar-thumb {
+        background-color: #415A77;
+        border-radius: 10px
+    }
+
+    .sport-box::-webkit-scrollbar-thumb:hover {
+        background-color: #0D1B2A;
+    }
+
+    .details button {
+        background: none;
+        border: none;
+        padding: 0;
+        font-family: "Noto Sans", sans-serif;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    /*.error-message {*/
+    /*    position: absolute;*/
+    /*    top: -20px; !* adjust this value to position the label as needed *!*/
+    /*    left: 0;*/
+    /*}*/
+
+</style>
 <body class="edit-user-background">
 <div th:debug>
     <div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
@@ -49,6 +143,12 @@
                             <label for="date-of-birth">Date of Birth <span class="required">*</span></label>
                         </div>
                         <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
+                        <label for="sport-box">Favourite Sport:</label>
+                        <div class="details">
+                            <button type="button">Clear</button>
+                        </div>
+                        <div class="sport-box" id="sport-box"></div>
+
                     </div>
                     <hr class="solid">
                     <div class="edit-inputs-right">
@@ -102,15 +202,82 @@
                     <a th:href="@{user-info/self}">Cancel</a>
                 </div>
             </form>
+            <div class="content">
+                <label for="sport-list"  id="error-message"></label>
+                <ul><input type="text" spellcheck="false" list="sports" id="sport-list"></ul>
+                <datalist id="sports">
+                    <option th:each="sport : ${knownSports}" th:text="${sport}">
+                </datalist>
         </div>
     </div>
     <footer>
         <p>
-            Image by <a href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a> on Freepik
+            Image by <a
+                href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+            on Freepik
         </p>
     </footer>
 </div>
-</body>
+
+<script th:inline="javascript">
+    const ul = document.querySelector(".content ul"),
+        sportDisplay = document.querySelector(".sport-box"),
+        input = document.querySelector(".content input");
+    const form = document.getElementById("editUserForm");
+
+    const tagsInput = document.createElement("input");
+    tagsInput.setAttribute("type", "hidden");
+    tagsInput.setAttribute("name", "tags");
+    let tags = /*[[${favouriteSports}]]*/ [];
+
+    createTag();
+    function createTag(){
+        sportDisplay.querySelectorAll("li").forEach(li => li.remove());
+        tags.slice().reverse().forEach(tag =>{
+            let liTag = `<li>${tag} <i class="multiply" onclick="remove(this, '${tag}')"></i></li>`;
+            sportDisplay.insertAdjacentHTML("afterbegin", liTag);
+        });
+    }
+
+    function remove(element, tag){
+        let index  = tags.indexOf(tag);
+        tags = [...tags.slice(0, index), ...tags.slice(index + 1)];
+        element.parentElement.remove();
+        createTag();
+    }
+
+    function addTag(e) {
+        if(e.key == "Enter"){
+            e.preventDefault();
+            let tag = e.target.value.replace(/\s+/g, ' ');
+            if(tag.length>0 && !tags.includes(tag)){
+                    tags.push(tag);
+                    createTag();
+            }
+            else if (tag.length==0){
+                document.getElementById("error-message").innerText  ="Please enter a sport";
+            }
+            e.target.value = "";
+        }
+    }
+
+    input.addEventListener("keyup", addTag);
+
+
+    const removeBtn = document.querySelector(".details button");
+    removeBtn.addEventListener("click", () =>{
+        tags.length = 0;
+        sportDisplay.querySelectorAll("li").forEach(li => li.remove());
+    });
+    form.addEventListener('submit', (event) => {
+        const tagsInput = document.createElement("input");
+        tagsInput.setAttribute("type", "hidden");
+        tagsInput.setAttribute("name", "tags");
+        tagsInput.setAttribute("value", tags.join(","));
+        form.appendChild(tagsInput);
+        return true;
+    });
+</script>
 <script th:inline="javascript">
     /**
      * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.

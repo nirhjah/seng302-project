@@ -1,7 +1,9 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Spring Boot Controller class for the Create Team Form
@@ -32,6 +35,9 @@ public class CreateTeamFormController {
      * spaces. Must start with an alphabetical character
      */
     private final String countryCitySuburbNameRegex = "^\\p{L}+[\\- '\\p{L}]*$";
+
+    @Autowired
+    private SportService sportService;
 
     /** Addresses can have letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include
      * at least one alphanumeric character**/
@@ -88,6 +94,9 @@ public class CreateTeamFormController {
         model.addAttribute("postcodeRegex", postcodeRegex);
         model.addAttribute("teamNameUnicodeRegex", teamNameUnicodeRegex);
         model.addAttribute("sportUnicodeRegex", sportUnicodeRegex);
+
+        List<String> knownSports = sportService.getAllSportNames();
+        model.addAttribute("knownSports", knownSports);
         model.addAttribute("navTeams", teamService.getTeamList());
         return "createTeamForm";
     }
@@ -146,7 +155,12 @@ public class CreateTeamFormController {
             teamService.addTeam(team);
             teamID = team.getTeamId();
         }
-        
+
+        List<String> knownSports = sportService.getAllSportNames();
+        if (!knownSports.contains(sport)) {
+            sportService.addSport(new Sport(sport));
+        }
+
         return String.format("redirect:./profile?teamID=%s", team.getTeamId());
     }
 }
