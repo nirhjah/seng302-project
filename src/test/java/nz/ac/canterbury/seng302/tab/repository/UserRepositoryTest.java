@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.GenerateRandomUsers;
 
@@ -50,20 +51,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    void findByNameOrSport_whenParamsAreNull_returnAllUsers() throws IOException {
-        final int N_USERS = 10;
-        // Populate database
-        for (int i = 0; i < N_USERS; i++) {
-            userRepository.save(generateRandomUsers.createRandomUser());
-        }
-
-        Page<User> returnedUsers = userRepository.findAllFiltered(PageRequest.ofSize(N_USERS), List.of(), null);
-
-        assertEquals(N_USERS, returnedUsers.getSize());
-    }
-
-    @Test
-    void findByNameOrSport_whenFirstNameIsMatched_returnCorrectUsers() throws IOException {
+    void findByName_whenFirstNameIsMatched_returnCorrectUsers() throws IOException {
         final int N_VALID_USERS = 5;
         final int N_INVALID_USERS = 10;
         final String SEARCH = "TestUserTheThird";
@@ -85,7 +73,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    void findByNameOrSport_whenLastNameIsMatched_returnCorrectUsers() throws IOException {
+    void findByName_whenLastNameIsMatched_returnCorrectUsers() throws IOException {
         final int N_VALID_USERS = 5;
         final int N_INVALID_USERS = 10;
         final String SEARCH = "TestUserTheThird";
@@ -106,12 +94,28 @@ public class UserRepositoryTest {
         assertEquals(N_VALID_USERS, returnedUsers.getNumberOfElements());
     }
 
+    @Test
+    void findByName_whenNamesMatchNoOne_returnNoUsers() throws IOException {
+        final int N_INVALID_USERS = 10;
+        final String SEARCH = "1234567890";
+        User user;
+        // Populate database
+        for (int i = 0; i < N_INVALID_USERS; i++) {
+            user = generateRandomUsers.createRandomUser();
+            userRepository.save(user);
+        }
+
+        Page<User> returnedUsers = userRepository.findAllFiltered(PageRequest.ofSize(N_INVALID_USERS), List.of(), SEARCH);
+
+        assertEquals(0, returnedUsers.getNumberOfElements());
+    }
+
     /**
      * NOTE: Right now, the database doesn't care about name order.
      * e.g. searching "Davis Miles" matches User(Miles, Davis).
      * This test purposefully provides them in the correct order, so that isn't tested... */
     @Test
-    void findByNameOrSport_whenFirstOrLastNameIsMatched_returnCorrectUsers() throws IOException {
+    void findByName_whenFirstOrLastNameIsMatched_returnCorrectUsers() throws IOException {
         final int N_VALID_USERS = 3;
         final int N_INVALID_USERS = 10;
         final String FIRST_NAME = "TestUserTheThird";
@@ -135,7 +139,6 @@ public class UserRepositoryTest {
         correctUsersEmails.add(userRepository.save(user).getEmail());
         
 
-
         Page<User> returnedUsers = userRepository.findAllFiltered(PageRequest.ofSize(N_VALID_USERS + N_INVALID_USERS), List.of(), SEARCH);
 
         assertEquals(N_VALID_USERS, returnedUsers.getNumberOfElements());
@@ -143,5 +146,35 @@ public class UserRepositoryTest {
         for (int i = 0; i < correctUsersEmails.size(); i++) {
             assertEquals(correctUsersEmails.get(i), returnedUsersEmails.get(i));
         }
+    }
+
+    // @Test
+    // void findBySport_whenSportIsMatched_returnCorrectUsers() throws IOException {
+    //     User user;
+    //     final String CORRECT_SPORT = "Hockey";
+    //     Sport hockey = new Sport(CORRECT_SPORT);
+    //     sportRepository.save(hockey);
+    //     hockey = sportRepository.findSportByName(CORRECT_SPORT).get();
+    //     Sport rugby = new Sport("Rugby");
+    //     sportRepository.save(rugby);
+    //     rugby = sportRepository.findSportByName("Rugby").get();
+
+    //     // Generate users with rugby or hockey
+    //     final int N_VALID_USERS = 5;
+    //     final int N_INVALID_USERS = 10;
+    //     for (int i = 0; i < N_VALID_USERS; i++) {
+    //         user = generateRandomUsers.createRandomUser();
+    //         user.setFavoriteSports(List.of(rugby));
+    //         userRepository.save(user);
+    //     }
+    //     for (int i = 0; i < N_INVALID_USERS; i++) {
+    //         user = generateRandomUsers.createRandomUser();
+    //         user.setFavoriteSports(List.of(hockey));
+    //         userRepository.save(user);
+    //     }
+
+    //     Page<User> returnedUsers = userRepository.findAllFiltered(PageRequest.ofSize(N_VALID_USERS + N_INVALID_USERS), List.of(CORRECT_SPORT), "");
+
+    //     assertEquals(N_VALID_USERS, returnedUsers.getNumberOfElements());
     }
 }
