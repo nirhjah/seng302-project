@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -36,8 +37,6 @@ public class CreateTeamFormController {
     @Autowired
     private SportService sportService;
 
-    /** A team name can be alphanumeric, dots and curly braces **/
-    private final String teamNameUnicodeRegex = "^[\\p{L}\\s\\d\\.\\}\\{]+$";
     /** Addresses can have letters, numbers, spaces, commas, periods, hyphens, forward slashes and pound signs. Must
      * include at least one alphanumeric character **/
     private  final String addressRegex = "^[\\p{L}\\p{N}]+[\\- ,./#\\p{L}\\p{N}]*$";
@@ -93,7 +92,6 @@ public class CreateTeamFormController {
         model.addAttribute("postcodeRegex", postcodeRegex);
         model.addAttribute("teamNameUnicodeRegex", teamNameUnicodeRegex);
         model.addAttribute("sportUnicodeRegex", sportUnicodeRegex);
-        model.addAttribute("locationUnicodeRegex", locationUnicodeRegex);
 
         List<String> knownSports = sportService.getAllSportNames();
         model.addAttribute("knownSports", knownSports);

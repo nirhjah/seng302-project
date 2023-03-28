@@ -158,6 +158,8 @@ th:nth-child(4) {
 
 tr, .wrapper,.wrapper-profile,.wrapper-edit-profile {
     background-color: white;
+}
+
 /*th:not(:first-child) {*/
 /*    width: calc((100% - 10%) / 3);*/
 /*}*/
@@ -319,6 +321,8 @@ footer {
     font-weight: 600;
     font-size: 35px;
     color: #1B263B;
+}
+
 .team-info {
   font-family: "Noto Sans", sans-serif;
   font-weight: 600;
@@ -602,7 +606,7 @@ li.active a {
   color: white;
 }
 
-ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form,.wrapper-edit-profile, .wrapper-profile .user-info{
+ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form,.wrapper-edit-profile, .wrapper-profile .user-info
 .paginationContainer,
 .wrapper,
 .wrapper-profile .profile-pic,
