@@ -32,27 +32,35 @@ public class TeamServiceTest {
     @Autowired
     private TeamRepository teamRepository;
 
+    Location location;
+
     @BeforeEach
     public void beforeEach() {
+        location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
         teamRepository.deleteAll();
     }
 
-    Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
 
     @Test
     public void testGettingTeamList() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
-        Team team = new Team("test", "Hockey", location);
-        Team team2 = new Team("test2", "Netball", location);
-        Team team3 = new Team("test3", "Cricket", location);
-        List<Team> list = Arrays.asList(team, team2, team3);
-        teamRepository.save(team);
-        teamRepository.save(team2);
-        teamRepository.save(team3);
-        teamService.getTeamList();
+        Location location1 = new Location("add1", "add2", "sub" , "Christchurch", "8081", "NZ");
+        Location location2 = new Location("another", "test", "location" , "Christchurch", "8081", "NZ");
+        Location location3 = new Location("test", "location", "again" , "Christchurch", "8081", "NZ");
+        Team team = new Team("test", "Hockey", location1);
+        Team team2 = new Team("test2", "Netball", location2);
+        Team team3 = new Team("test3", "Cricket", location3);
 
-        assertEquals(list.toString(), teamService.getTeamList().toString());
+        teamService.addTeam(team);
+        teamService.addTeam(team2);
+        teamService.addTeam(team3);
+
+        List<Team> list = Arrays.asList(team, team2, team3);
+
+        List<Team> result = teamService.getTeamList();
+
+        assertEquals(list.toString(), result.toString());
     }
 
     @Test
@@ -60,7 +68,8 @@ public class TeamServiceTest {
         Team team = new Team("test", "Hockey", location);
         teamService.addTeam(team);
         assertEquals(team.getName(), teamRepository.findById(team.getTeamId()).get().getName());
-        assertEquals(team.getLocation(), teamRepository.findById(team.getTeamId()).get().getLocation());
+//        assertEquals(team.getLocation(), teamRepository.findById(team.getTeamId()).get().getLocation());
+        assertTrue(team.getLocation().equals(teamRepository.findById(team.getTeamId()).get().getLocation()));
         assertEquals(team.getSport(), teamRepository.findById(team.getTeamId()).get().getSport());
     }
 
