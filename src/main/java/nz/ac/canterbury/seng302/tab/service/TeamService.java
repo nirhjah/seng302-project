@@ -43,7 +43,7 @@ public class TeamService {
         return teamRepository.findAll(pageable);
     }
 
-    public Page<Team> findPaginatedTeamsByCity(Pageable pageable, List<String> searchedLocations) {
+    public Page<Team> findPaginatedTeamsByCity(Pageable pageable, List<String> searchedLocations, String name) {
 
         if (searchedLocations == null) {
             searchedLocations = List.of();
@@ -54,7 +54,7 @@ public class TeamService {
             searchedLocations.set(searchedLocations.indexOf(city), newCity);
         }
 
-        return teamRepository.findTeamByFilteredLocations(searchedLocations, pageable);
+        return teamRepository.findTeamByFilteredLocations(searchedLocations, pageable, name);
     }
 
 

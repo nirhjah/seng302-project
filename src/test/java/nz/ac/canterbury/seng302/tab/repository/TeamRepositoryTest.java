@@ -76,7 +76,7 @@ public class TeamRepositoryTest {
 
         ArrayList<String> filteredLocations = new ArrayList<>();
 
-        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10)).toList().toString());
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), "").toList().toString());
 
     }
 
@@ -98,7 +98,7 @@ public class TeamRepositoryTest {
         ArrayList<String> filteredLocations = new ArrayList<>();
         filteredLocations.add(WANTED_CITY);
 
-        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10)).toList().toString());
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), null).toList().toString());
 
     }
 
@@ -123,7 +123,7 @@ public class TeamRepositoryTest {
         filteredLocations.add(WANTED_CITY1);
         filteredLocations.add(WANTED_CITY2);
 
-        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10)).toList().toString());
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), "").toList().toString());
 
     }
 
@@ -153,7 +153,7 @@ public class TeamRepositoryTest {
         filteredLocations.add(WANTED_CITY2);
         filteredLocations.add(WANTED_CITY3);
 
-        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10)).toList().toString());
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), "").toList().toString());
 
     }
 }

@@ -40,7 +40,10 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
     public List<Location> findLocationsByName(@Param("name") String name);
 
     @Query("SELECT t FROM Team t " +
-            "WHERE (:#{#filteredLocations.size()} = 0 OR lower(t.location.city) in (:filteredLocations)) ")
-    public Page<Team> findTeamByFilteredLocations(@Param("filteredLocations") List<String> filteredLocations, Pageable pageable);
+            "WHERE (:#{#filteredLocations.size} = 0 OR lower(t.location.city) in (:filteredLocations)) " +
+            "AND (:name IS NOT NULL " +
+            "AND (lower(t.name) LIKE LOWER(CONCAT('%', :name, '%')))) " +
+            "ORDER BY LOWER(t.name) ASC, LOWER(t.location.city) ASC ")
+    public Page<Team> findTeamByFilteredLocations(@Param("filteredLocations") List<String> filteredLocations, Pageable pageable, String name);
 
 }
