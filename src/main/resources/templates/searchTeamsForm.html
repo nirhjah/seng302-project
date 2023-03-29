@@ -1,96 +1,100 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org" >
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
-  <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
-  <link th:href="@{/css/styles.css}" rel="stylesheet">
-  <title>search teams</title>
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <title>search teams</title>
 </head>
 <body class="Search-teams-background">
 <div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
-  <form id="search-form" th:action="@{/searchTeams(teamName=${teamName},page=1)}" method="get" class="search-bar">
-  <input class ="team-name-input" type="text" id="teamName" name="teamName" placeholder="Search Teams" />
-  <button class ="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
-  </form>
+<form id="search-form" th:action="@{/searchTeams(teamName=${teamName},page=1)}" method="get" class="search-bar">
+    <input class="team-name-input" type="text" id="teamName" name="teamName" placeholder="Search Teams"/>
+    <button class="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
+</form>
 
-  <p th:if="${error}">search must be at least 3 characters</p>
-  <script>
+<p th:if="${error}">search must be at least 3 characters</p>
+<script>
     // get search form and input element
     const form = document.getElementById('search-form');
     const input = document.getElementById('teamName');
 
     form.addEventListener('submit', (event) => {
-      // if the value is less than 3 characters, prevent form from submitting
-      if (input.value.length < 3) {
-        event.preventDefault();
+        // if the value is less than 3 characters, prevent form from submitting
+        if (input.value.length < 3) {
+            event.preventDefault();
 
-        // Remove existing error message
-        const existingErrorMessage = document.getElementById('search-error');
-        if(existingErrorMessage) {
-          existingErrorMessage.remove();
+            // Remove existing error message
+            const existingErrorMessage = document.getElementById('search-error');
+            if (existingErrorMessage) {
+                existingErrorMessage.remove();
+            }
+            // Display error message
+            const errorMessage = document.createElement('p');
+            errorMessage.setAttribute('id', 'search-error');
+            errorMessage.textContent = "search must be at least 3 characters";
+            form.appendChild(errorMessage);
         }
-        // Display error message
-        const errorMessage = document.createElement('p');
-        errorMessage.setAttribute('id', 'search-error');
-        errorMessage.textContent = "search must be at least 3 characters";
-        form.appendChild(errorMessage);
-      }
     });
-  </script>
+</script>
 </div>
 <div th:if="${not #lists.isEmpty(teams)}">
-  <h2 style="float: left">Search Results</h2>
+    <h2 style="float: left">Search Results</h2>
 
-  <br><br>
-  <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cityCheckbox')}" th:if="${not #lists.isEmpty(teams)}"></div>
-  <br><br>
-  <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sportsCheckbox')}" th:if="${not #lists.isEmpty(teams)}"></div>
-  <br><br>
-
-  <table id="teamTable">
-    <thread>
-      <tr>
-        <th>Profile Picture</th>
-        <th>Name</th>
-        <th>Sport</th>
-        <th>Location</th>
-      </tr>
-    </thread>
-    <tbody>
-      <tr th:each="team : ${teams}"
-          th:onclick="|window.location.href='/profile?teamID=${team.teamId}'|">
-        <td>
-          <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" width="50" height="50"/>
-        </td>
-        <td th:text="${team.name}"></td>
-        <td th:text="${team.sport}"></td>
-        <td th:text="${team.location}"></td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="pagination">
-    <div class="paginationContainer">
-      <ul>
-        <li th:if="${currentPage > 0}">
-          <a th:href="@{/searchTeams(teamName=${teamName},page=${currentPage-1})}" aria-label="Previous">
-            <span aria-hidden="true">&laquo;Prev</span>
-          </a>
-        </li>
-        <li th:each="page : ${#numbers.sequence(0, totalPages-1)}" th:class="${page == currentPage ? 'active' : ''}">
-          <a th:href="@{/searchTeams(teamName=${teamName},page=${page})}" th:text="${page+1}"></a>
-        </li>
-        <li th:if="${currentPage < totalPages-1}">
-          <a th:href="@{/searchTeams(teamName=${teamName},page=${currentPage+1})}" aria-label="Next">
-            <span aria-hidden="true">&raquo;Next</span>
-          </a>
-        </li>
-      </ul>
+    <div class="filter-boxes">
+        <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cityCheckbox')}"
+             th:if="${not #lists.isEmpty(teams)}"></div>
+        <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sportsCheckbox')}"
+             th:if="${not #lists.isEmpty(teams)}"></div>
     </div>
-  </div>
-  <footer>
-    <p>
-      Image by <a href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a> on Freepik
-    </p>
-  </footer>
+
+    <table id="teamTable">
+        <thread>
+            <tr>
+                <th>Profile Picture</th>
+                <th>Name</th>
+                <th>Sport</th>
+                <th>Location</th>
+            </tr>
+        </thread>
+        <tbody>
+        <tr th:each="team : ${teams}"
+            th:onclick="|window.location.href='/profile?teamID=${team.teamId}'|">
+            <td>
+                <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" width="50" height="50"/>
+            </td>
+            <td th:text="${team.name}"></td>
+            <td th:text="${team.sport}"></td>
+            <td th:text="${team.location}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="pagination">
+        <div class="paginationContainer">
+            <ul>
+                <li th:if="${currentPage > 0}">
+                    <a th:href="@{/searchTeams(teamName=${teamName},page=${currentPage-1})}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;Prev</span>
+                    </a>
+                </li>
+                <li th:each="page : ${#numbers.sequence(0, totalPages-1)}"
+                    th:class="${page == currentPage ? 'active' : ''}">
+                    <a th:href="@{/searchTeams(teamName=${teamName},page=${page})}" th:text="${page+1}"></a>
+                </li>
+                <li th:if="${currentPage < totalPages-1}">
+                    <a th:href="@{/searchTeams(teamName=${teamName},page=${currentPage+1})}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;Next</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <footer>
+        <p>
+            Image by <a
+                href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+            on Freepik
+        </p>
+    </footer>
 </div>
 <div th:if="${#lists.isEmpty(teams) and not (notSearch)}">The search results are empty!</div>
 </body>
