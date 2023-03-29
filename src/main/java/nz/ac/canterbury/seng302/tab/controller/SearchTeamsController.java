@@ -38,6 +38,7 @@ public class SearchTeamsController {
      *
      * @param teamName name of the team that has been searched for by the database
      * @param page return the page number
+     * @param filteredCities list of cities to filter teams by, selected by the user
      * @param model    (map-like) representation of teamID and teamFilter
      * @return thymeleaf searchTeamsForm
      */
@@ -50,7 +51,6 @@ public class SearchTeamsController {
         logger.info("cityCheckBox = {}", filteredCities);
         logger.info("teamName = {}", teamName);
         if (teamName != null ) {
-
             if (teamName.length() < 3) {
                 model.addAttribute("error", true);
                 model.addAttribute("teams", new ArrayList<Team>());
@@ -60,13 +60,6 @@ public class SearchTeamsController {
                 PageRequest pageRequest = PageRequest.of(page, pageSize);
                 Page<Team> teamPage = teamService.findPaginatedTeamsByCity(pageRequest, filteredCities, teamName);
                 List<Team> teams = teamPage.getContent();
-
-
-
-                System.out.println(teams);
-                System.out.println("filtered cities " + filteredCities);
-
-
                 //Gets cities to populate in dropdown
                 List<Location> locations = teamRepository.findLocationsByName(teamName);
                 List<String> cities = new ArrayList<>();
@@ -76,7 +69,6 @@ public class SearchTeamsController {
                         Collections.sort(cities);
                     }
                 }
-
                 int numPages = teamPage.getTotalPages();
                 model.addAttribute("teams", teams);
                 model.addAttribute("currentPage", page);
