@@ -188,12 +188,13 @@ public class RegisterController {
             RegisterForm registerForm, Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
         logger.info("GET /register");
         URL url = new URL(httpServletRequest.getRequestURL().toString());
+        String path = (url.getPath() + "/..");
         String protocolAndAuthority = String.format("%s://%s", url.getProtocol(), url.getAuthority());
 
         model.addAttribute("countryCitySuburbNameRegex", countryCitySuburbNameRegex);
         model.addAttribute("addressRegex", addressRegex);
         model.addAttribute("postcodeRegex", postcodeRegex);
-        model.addAttribute("protocolAndAuthority", protocolAndAuthority);
+        model.addAttribute("path", path);
         return "register";
     }
 

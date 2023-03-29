@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -65,10 +68,14 @@ public class CreateTeamFormController {
 
     @GetMapping("/createTeam")
     public String teamForm(@RequestParam(name = "edit", required = false) Long teamID,
-            @RequestParam(name = "invalid_input", defaultValue = "0") boolean invalidInput,
-            Model model) {
+                           @RequestParam(name = "invalid_input", defaultValue = "0") boolean invalidInput,
+                           Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
 
         logger.info("GET /createTeam");
+
+        URL url = new URL(httpServletRequest.getRequestURL().toString());
+        String path = (url.getPath() + "/..");
+        String protocolAndAuthority = String.format("%s://%s", url.getProtocol(), url.getAuthority());
 
         Team team;
         if (teamID != null) {
@@ -82,6 +89,7 @@ public class CreateTeamFormController {
                 model.addAttribute("country", team.getLocation().getCountry());
                 model.addAttribute("postcode", team.getLocation().getPostcode());
                 model.addAttribute("teamID", team.getTeamId());
+                model.addAttribute("path", path);
             } else {
                 model.addAttribute("invalid_team", "Invalid team ID, creating a new team instead.");
             }
