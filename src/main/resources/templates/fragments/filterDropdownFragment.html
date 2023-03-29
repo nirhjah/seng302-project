@@ -4,30 +4,42 @@ listItems: List<String> - The list of items shown in the dropdown
 optionName: String - What the dropdown is called "e.g. 'Filter by city'"
 dropdownName: String[opt.] - The parameter name sent to the controller on submit
 */ -->
-<div th:fragment="filterDropdownFragment(listItems, optionName, dropdownName)">
+<div th:fragment="filterDropdownFragment(listItems, optionName, dropdownName)"
+      th:with="dropdown_id=|checkbox-${dropdownName}|, select_all=|select_all-${dropdownName}|, toggle_dropdown=|toggle-${dropdownName}|">
 
 <div class="multipleSelection">
-  <div class="selectBox"
-       onclick="showCheckboxes()">
+  <div class="selectBox" onclick="showCheckboxes(this)">
     <select>
       <option th:text="${optionName}"></option>
     </select>
     <div class="overSelect"></div>
   </div>
-  <div id="checkBoxes">
-    <label for="select_all">
-      <input type="checkbox" id="select_all" onclick=selectAllCheckboxes(this) />
+  <div th:id="${dropdown_id}" class="checkbox">
+    <label th:for="${select_all}">
+      <input type="checkbox" th:id="${select_all}" onclick=selectAllCheckboxes(this) />
       Select all
     </label>
+    <th:block th:each="entry: ${listItems}">
+      <label>
+      <input type="checkbox" th:value="${entry}" th:name="${dropdownName}">
+        <th:block th:text="${entry}"></th:block>
+      </label>
+    </th:block>
   </div>
 </div>
   <script th:inline="javascript">
     var show = true;
-    var checkBoxname = /*[[${dropdownName}]]*/ "dropdownItem";
+    var checkBoxname = /*[[${dropdownName}]]*/ "";
     var listCities = /*[[${listItems}]]*/ [];
+    var dropdown_id = /*[[${dropdown_id}]]*/ ""
+    var select_all_id = /*[[${select_all}]]*/ ""
+    var toggle_dropdown = /*[[${toggle_dropdown}]]*/ ""
 
-    function showCheckboxes() {
-      var checkboxes = document.getElementById("checkBoxes");
+    /** @param {HTMLElement} elem*/
+    function showCheckboxes(elem) {
+      console.log("Look at me i'm goggling", elem);
+      var checkboxes = elem.parentElement.getElementsByClassName('checkbox')[0];
+      console.log(checkboxes)
 
       if (show) {
         checkboxes.style.display = "block";
@@ -40,10 +52,11 @@ dropdownName: String[opt.] - The parameter name sent to the controller on submit
 
     function init() {
       // Build the checkbox
+      // Pre-populate entries if they're in the query string.
       const currentURL = new URL(document.location.href);
       const preCheckedBoxes = new Set(currentURL.searchParams.getAll(checkBoxname));
-      var checkboxDiv = document.getElementById("checkBoxes");
-      var selectAllCheckbox = document.getElementById("select_all");
+      var checkboxDiv = document.getElementById(dropdown_id);
+      var selectAllCheckbox = document.getElementById(select_all_id);
       for (const entryName of listCities) {
         var checkBox = document.createElement("input");
         var label = document.createElement("label");
@@ -58,6 +71,12 @@ dropdownName: String[opt.] - The parameter name sent to the controller on submit
         label.appendChild(span)
         checkboxDiv.appendChild(label);
       }
+
+      // Finally, bind the dropdown event
+      console.log("Adding dropdown for", toggle_dropdown);
+      var elem = document.getElementById(toggle_dropdown);
+      console.log(elem);
+      elem.onclick = () => showCheckboxes(toggle_dropdown);
     }
 
     /* This function unchecks the `Select All` box if all checkboxes aren't checked, then
@@ -85,7 +104,7 @@ dropdownName: String[opt.] - The parameter name sent to the controller on submit
         }}
     }
 
-    init();
+    // init();
 
   </script>
 </div>

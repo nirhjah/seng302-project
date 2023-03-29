@@ -740,19 +740,19 @@ li.active a {
     bottom: 0;
 }
 
-#checkBoxes {
+.checkbox {
     display: none;
     max-height: 200px;
     overflow-y: scroll;
 }
 
-#checkBoxes label {
+.checkbox label {
     display: block;
     padding: 3px;
 
 }
 
-#checkBoxes label:hover {
+.checkbox label:hover {
     background-color: #4F615E;
 }
 
