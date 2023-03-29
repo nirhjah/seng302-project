@@ -707,7 +707,7 @@ li.active a {
 .filter-by-city-button {
   border: 0;
   width: 155px;
-  margin-left: 180px;
+  margin-left: 147px;
   text-decoration: none;
   font-size: 17px;
   font-weight: 500;
@@ -715,6 +715,7 @@ li.active a {
   border-radius: 20px;
   background-color: #415a77;
   color: white;
+  font-family: "Noto Sans", sans-serif;
 }
 
 
@@ -733,7 +734,8 @@ li.active a {
     position: absolute;
     display: inline-block;
     margin-left: 10px;
-    height: 27px;
+    height: 30px;
+    font-family: "Noto Sans", sans-serif;
 }
 
 .search-team-button-div {
@@ -747,15 +749,15 @@ li.active a {
 
 .selectBox select {
     width: 100%;
-    font-weight: bold;
     color: #ffffff;
     background: #415A77;
     border-radius: 20px;
-    font-size: 16px;
+    font-size: 17px;
     border: none;
     outline: 0;
     padding: .1em .5em;
     cursor: pointer;
+    font-family: "Noto Sans", sans-serif;
 }
 
 .overSelect {
