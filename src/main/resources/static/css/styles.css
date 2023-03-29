@@ -759,3 +759,22 @@ li.active a {
 ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form,.wrapper-edit-profile, .wrapper-profile .user-info{
     display: flex;
 }
+
+.filter-boxes div {
+  display: inline-block;
+  margin-right:10px;
+}
+
+.filter-boxes {
+  display: flex;
+  flex-wrap: wrap;
+  width:400px;
+}
+
+.filter-boxes div {
+  flex: 1;
+}
+
+
+
+
