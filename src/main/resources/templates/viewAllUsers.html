@@ -7,7 +7,7 @@
     <title>View All Users</title>
 </head>
 
-<div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+<div th:insert="~{homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
 
 <body class="view-users-background">
     <div>
@@ -15,7 +15,7 @@
         <form th:action="@{view-users}" method="get">
             <input type="text" placeholder="Search name" th:name="currentSearch" th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">
             <button class="search-user-button" type="submit"> Search </button>
-            <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>
+            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>
             <br><br>
         </form>
         
@@ -49,4 +49,11 @@
     </table>
 
     <div th:insert="fragments/pagination.html :: pagination(pageName='view-users')"></div>
+    <footer>
+        <p>
+            Image by <a
+                href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+            on Freepik
+        </p>
+    </footer>
 </body>

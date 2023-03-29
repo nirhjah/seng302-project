@@ -1,5 +1,5 @@
 # SENG302 TAB Project Overview
-Team Analytics Buddy (TAB) is an application designed for active individuals to access their team's game analytics. This application allows user to register, create teams and record their game statistics.
+Team Analytics Buddy (TAB) is an application designed for active individuals to access their team's game analytics. This application allows users to register an account, personalize their account and create teams. Users are able to view the profiles of other users, view teams and search and filter for specific teams and profiles. 
 
 ## Prerequisites
 - JDK >= 17 [click here to get the latest stable OpenJDK release (as of writing this README)](https://jdk.java.net/18/)
@@ -10,7 +10,9 @@ This project comes with some of the following:
 
 - Spring Boot
 - Thymeleaf
+- Thymeleaf Extras
 - Junit 5
+- Open Route API
 - Mockito (mocking unit tests)
 
 ## How to run
@@ -26,28 +28,28 @@ On Windows:
 ```
 gradlew bootRun
 ```
+ 
 
 By default, the application will run on local port 8080 [http://localhost:8080](http://localhost:8080)
 
 ### 2 - Using the application
-> You may want to include information here about how to use the application, notably:
-> - default user credentials if required
-> - link to home/login page
-> - disclosing known issues (and workarounds if applicable)
-> - ...
+> User need to have an account to access most functionality of the application.
+> - There are no default credentials provided
 > 
 
 ## How to run tests
-> Once you have some tests written make sure you detail how to run them, especially if there are special requirements.
+From the root directory ...
 
+On Linux:
+```
+./gradlew test
+```
 
-## Todo (Sprint 2)
-
-- Update team name into `build.gradle`
-- Update this README title
-- Update this README contributors
-- Set up Gitlab CI server (refer to the student guide on Scrumboard)
-- Decide on a LICENSE
+On Windows:
+```
+gradlew test
+```
+>Note: There are 7 disabled tests currently. 
 
 ## Contributors
 - Cameron Pearce

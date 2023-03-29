@@ -111,7 +111,7 @@
 </style>
 
 <body class="profile-background">
-<div th:insert="~{/homeForm.html::navbar}"></div>
+<div th:insert="~{homeForm.html::navbar}"></div>
     <div class="profile-form">
         <div class="wrapper-profile">
             <p th:if="${thisUser.isEmpty()}">
@@ -163,7 +163,13 @@
         </div>
     </div>
 </div>
-
+<footer>
+    <p>
+        Image by <a
+            href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+        on Freepik
+    </p>
+</footer>
   <script th:inline="javascript">
     // The AC only specifies a back button if we came from the view-users page.
     const legal_url = '/view-users';

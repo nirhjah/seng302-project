@@ -6,7 +6,7 @@
   <title>search teams</title>
 </head>
 <body class="Search-teams-background">
-<div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+<div th:insert="~{homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
   <form id="search-form" th:action="@{/searchTeams(teamName=${teamName},page=1)}" method="get" class="search-bar">
   <input class ="team-name-input" type="text" id="teamName" name="teamName" placeholder="Search Teams" />
   <button class ="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
@@ -166,5 +166,12 @@
   </footer>
 </div>
 <div th:if="${#lists.isEmpty(teams) and not (notSearch)}">The search results are empty!</div>
+<footer>
+  <p>
+    Image by <a
+          href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+    on Freepik
+  </p>
+</footer>
 </body>
 </html>

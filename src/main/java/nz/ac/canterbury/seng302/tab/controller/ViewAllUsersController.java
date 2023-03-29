@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import java.util.List;
 
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,10 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 
 @Controller
 public class ViewAllUsersController {
-    
+
+    @Autowired
+    TeamService teamService;
+
     @Autowired
     UserService userService;
 
@@ -57,6 +61,7 @@ public class ViewAllUsersController {
         model.addAttribute("listOfUsers", userList);
         model.addAttribute("listOfSports", sportService.getAllSports().stream().map(Sport::getName).toList());
         model.addAttribute("totalPages", userPage.getTotalPages());
+        model.addAttribute("navTeams", teamService.getTeamList());
         return "viewAllUsers";
     }
 
