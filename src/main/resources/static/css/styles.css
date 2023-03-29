@@ -614,10 +614,17 @@ li.active a {
 .search-team-button,
 .search-user-button {
   background-color: #415a77;
-  width: 6%;
+  width: 100%;
+  border-radius: 25px;
+  height: 41px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 1em;
+  color: #fff;
 }
 
-.search-team-button,
 .profile-pic .back-button,
 .submit-button button,
 .edit-button button,
@@ -682,11 +689,11 @@ li.active a {
 
 .search-bar button img {
   width: 25px;
-  padding-right: 4px;
+  padding-right: 3px;
   padding-top: 1px;
 }
 
-.search-bar button {
+.search-teams-button button {
   border: 0;
   border-radius: 50%;
   width: 40px;
@@ -695,6 +702,19 @@ li.active a {
   cursor: pointer;
   position: absolute;
   right: 3px;
+}
+
+.filter-by-city-button {
+  border: 0;
+  width: 155px;
+  margin-left: 180px;
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: 500;
+  padding: 4px 15px;
+  border-radius: 20px;
+  background-color: #415a77;
+  color: white;
 }
 
 
@@ -707,12 +727,18 @@ li.active a {
     font-family: "Noto Sans", sans-serif;
     font-size: 1em;
     color: #fff;
-    border-radius: 20px;
+    border-radius: 5px;
     border: none;
-    padding: .1em .5em;
     cursor: pointer;
     position: absolute;
     display: inline-block;
+    margin-left: 10px;
+    height: 27px;
+}
+
+.search-team-button-div {
+  width: 41px;
+  margin-right: -17px;
 }
 
 .selectBox {
@@ -744,11 +770,15 @@ li.active a {
     display: none;
     max-height: 200px;
     overflow-y: scroll;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background-color: #415a77;
 }
 
 #checkBoxes label {
     display: block;
-    padding: 3px;
+    padding: 7px;
 
 }
 

@@ -7,13 +7,18 @@
 </head>
 <body class="Search-teams-background">
 <div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
-  <form id="search-form" th:action="@{/searchTeams(teamName=${teamName},page=1)}" method="get" class="search-bar">
-  <input class ="team-name-input" type="text" id="teamName" name="teamName" th:value="${teamName}" placeholder="Search Teams" />
-  <button class ="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
-
-    <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cityCheckbox')}" th:if="${not #lists.isEmpty(teams)}"></div>
-    <button type="submit"> Filter by city </button>
-
+  <form id="search-form" th:action="@{/searchTeams(teamName=${teamName},page=1)}" method="get">
+    <div class="search-bar">
+      <input class ="team-name-input" type="text" id="teamName" name="teamName" th:value="${teamName}" placeholder="Search Teams" />
+      <div class="search-team-button-div">
+        <button class ="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
+      </div>
+    </div>
+    <div th:if="${not #lists.isEmpty(teams)}">
+      <h2 style="float: left">Search Results</h2>
+      <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cityCheckbox')}" th:if="${not #lists.isEmpty(teams)}"></div>
+      <button class="filter-by-city-button" type="submit">Apply Filters</button>
+    </div>
   </form>
 
   <p th:if="${error}">search must be at least 3 characters</p>
@@ -43,7 +48,6 @@
   </script>
 </div>
 <div th:if="${not #lists.isEmpty(teams)}">
-  <h2 style="float: left">Search Results</h2>
 
   <!--<form id="filter-form" th:action="@{/searchTeams(teamName=${teamName},page=1,filteredCities=${filteredCities})}" method="get">
     <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cityCheckbox')}" th:if="${not #lists.isEmpty(teams)}"></div>
