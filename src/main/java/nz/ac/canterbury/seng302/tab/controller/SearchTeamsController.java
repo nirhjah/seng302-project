@@ -82,6 +82,7 @@ public class SearchTeamsController {
         }
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("notSearch", notSearch);
+        model.addAttribute("navTeams", teamService.getTeamList());
         return "searchTeamsForm";
     }
 }
