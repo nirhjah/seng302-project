@@ -1,7 +1,11 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+
+import nz.ac.canterbury.seng302.tab.service.LocationService;
+import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Spring Boot Controller class for the Create Team Form
@@ -21,21 +26,26 @@ import java.io.IOException;
 public class CreateTeamFormController {
 
     Logger logger = LoggerFactory.getLogger(CreateTeamFormController.class);
+
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    private SportService sportService;
+
     //
     // @Value("${ops.api.key}")
     // private String apiKey;
 
     /**
-     * Countries and cities can have letters from all alphabets, with hyphens and
+     * Countries and cities can have letters from all alphabets, with hyphens, apostrophes and
      * spaces. Must start with an alphabetical character
      */
-    private final String countryCitySuburbNameRegex = "^\\p{L}+[\\- \\p{L}]*$";
+    private final String countryCitySuburbNameRegex = "^\\p{L}+[\\- '\\p{L}]*$";
 
-    /** Addresses can have letters, numbers, spaces, commas, periods, hyphens, forward slashes and pound signs. Must
-     * include at least one alphanumeric character **/
-    private  final String addressRegex = "^[\\p{L}\\p{N}]+[\\- ,./#\\p{L}\\p{N}]*$";
+    /** Addresses can have letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include
+     * at least one alphanumeric character**/
+    private  final String addressRegex = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
 
     /** Allow letters, numbers, forward slashes and hyphens. Must start with an alphanumeric character. */
     private final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
@@ -88,6 +98,9 @@ public class CreateTeamFormController {
         model.addAttribute("postcodeRegex", postcodeRegex);
         model.addAttribute("teamNameUnicodeRegex", teamNameUnicodeRegex);
         model.addAttribute("sportUnicodeRegex", sportUnicodeRegex);
+
+        List<String> knownSports = sportService.getAllSportNames();
+        model.addAttribute("knownSports", knownSports);
         model.addAttribute("navTeams", teamService.getTeamList());
         return "createTeamForm";
     }
@@ -141,12 +154,18 @@ public class CreateTeamFormController {
             team.setSport(sport);
             team.setLocation(location);
             team = teamService.updateTeam(team);
+            teamID = team.getTeamId();
         } else {
             team = new Team(name, sport, location);
-            teamService.addTeam(team);
+            team = teamService.addTeam(team);
             teamID = team.getTeamId();
         }
-        
-        return String.format("redirect:./profile?teamID=%s", team.getTeamId());
+
+        List<String> knownSports = sportService.getAllSportNames();
+        if (!knownSports.contains(sport)) {
+            sportService.addSport(new Sport(sport));
+        }
+
+        return String.format("redirect:./profile?teamID=%s", teamID);
     }
 }

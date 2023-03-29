@@ -2,15 +2,19 @@ package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -19,6 +23,7 @@ import java.util.List;
  */
 @Service
 public class TeamService {
+    Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private TeamRepository teamRepository;
 
@@ -44,27 +49,6 @@ public class TeamService {
     }
 
     /**
-     * Method that finds paginated teams by city, using a list of cities to filter by selected by the user
-     *
-     * @param pageable page object
-     * @param searchedLocations list of locations to filter by selected by the user
-     * @param name the team name query inputted by the use
-     * @return Page(s) of teams filtered by city/cities
-     */
-    public Page<Team> findPaginatedTeamsByCity(Pageable pageable, List<String> searchedLocations, String name) {
-
-        if (searchedLocations == null) {
-            searchedLocations = List.of();
-        }
-        for (String city : searchedLocations) {
-            String newCity = city.toLowerCase();
-            searchedLocations.set(searchedLocations.indexOf(city), newCity);
-        }
-        return teamRepository.findTeamByFilteredLocations(searchedLocations, pageable, name);
-    }
-
-
-    /**
      * Method which updates the picture by taking the MultipartFile type and updating the picture
      * stored in the team with id primary key.
      *
@@ -88,5 +72,24 @@ public class TeamService {
 
         //Saved the updated picture string in the database.
         teamRepository.save(team);
+    }
+
+    /**
+     * gets a page of teams filtered by their name and sport
+     *
+     * @param pageable a page object showing how the page should be shown
+     * @param filterSports List of sports to be filtered by
+     * @param nameSearch the search query
+     * @return a slice of teams that meet the name conditions and filter conditions
+     */
+    public Page<Team> findTeamsByNameOrSport(Pageable pageable, List<String> filterSports, String nameSearch)
+    {
+        if (filterSports == null) {
+            filterSports = List.of();
+        }
+        if (nameSearch != null && nameSearch.isEmpty()) {
+            nameSearch = null;
+        }
+        return teamRepository.findTeamByNameAndSportIn(pageable, filterSports, nameSearch);
     }
 }

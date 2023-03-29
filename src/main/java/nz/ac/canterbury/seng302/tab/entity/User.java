@@ -9,6 +9,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Base64;
+
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -18,47 +21,55 @@ public class User {
     public User() {
     }
 
-    public static User defaultDummyUser() throws IOException{
+    public static User defaultDummyUser() throws IOException {
         return new User(
                 "test",
                 "again",
                 new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "test@gmail.com",
                 "dfghjk",
-                new ArrayList<>());
+                new ArrayList<>(),
+                new Location(null,null,null,"Christchurch",null,"New Zealand"));
+
     }
 
     /**
      * TODO: Implement password hashing, probably via Bcrypt
      */
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports) throws IOException{
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports, Location location) throws IOException {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.hashedPassword = password;
         this.favoriteSports = favoriteSports;
+        this.location = location;
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
         this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
     }
 
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password) {
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location) throws IOException{
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.hashedPassword = password;
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        File file = resource.getFile();
+        this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
         this.favoriteSports = new ArrayList<>();
+        this.location = location;
     }
 
 
-    public User(String firstName, String lastName, String email, String password) {
+    public User(String firstName, String lastName, String email, String password, Location location) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.dateOfBirth = new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime();
         this.hashedPassword = password;
+        this.location = location;
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -78,9 +89,12 @@ public class User {
     @JoinTable(name="favSports")
     private List<Sport> favoriteSports;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_locationId", referencedColumnName = "locationId")
+    private Location location;
+
     @Column(columnDefinition = "MEDIUMBLOB")
     private String pictureString;
-
 
     @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
             flags = Pattern.Flag.CASE_INSENSITIVE)
@@ -102,6 +116,11 @@ public class User {
         this.firstName = firstName;
     }
 
+    public void setFullName(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public String getLastName() {
         return lastName;
     }
@@ -118,18 +137,6 @@ public class User {
         this.dateOfBirth = dateOfBirth;
     }
 
-    /**
-     * Returns the date as a string in a 'yyyy-MM-dd format, such that it can be directly parsed in an
-     * HTML date object
-     *
-     * @return date string
-     */
-    public String getDateOfBirthFormatted() {
-        SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String isoDate = isoDateFormat.format(dateOfBirth);
-        return isoDate;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -138,6 +145,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public String getPictureString() {

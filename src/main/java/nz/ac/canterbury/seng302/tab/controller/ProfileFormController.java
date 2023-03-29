@@ -46,11 +46,7 @@ public class ProfileFormController {
         List<Team> teamList = teamService.getTeamList();
         ProfileFormController.teamId = teamID;
 
-        Team selectedTeam = null;
-        String name = null;
-        String sport = null;
-        Location location = null;
-        String picture = null;
+        Team selectedTeam;
         if (teamID != null) {
             // Find the selected team by its id
             selectedTeam = teamList.stream()
