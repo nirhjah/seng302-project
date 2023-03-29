@@ -768,6 +768,7 @@ ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-prof
 .filter-boxes {
   display: flex;
   flex-wrap: wrap;
+  width:400px;
 }
 
 .filter-boxes div {
