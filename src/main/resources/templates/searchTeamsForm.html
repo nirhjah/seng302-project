@@ -6,7 +6,7 @@
   <title>search teams</title>
 </head>
 <body class="Search-teams-background">
-<div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+<div th:insert="~{homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
   <form id="search-form" th:action="@{/searchTeams(teamName=${teamName},page=1)}" method="get">
     <div class="search-bar">
       <input class ="team-name-input" type="text" id="teamName" name="teamName" th:value="${teamName}" placeholder="Search Teams" />
@@ -48,19 +48,7 @@
   </script>
 </div>
 <div th:if="${not #lists.isEmpty(teams)}">
-
-  <!--<form id="filter-form" th:action="@{/searchTeams(teamName=${teamName},page=1,filteredCities=${filteredCities})}" method="get">
-    <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cityCheckbox')}" th:if="${not #lists.isEmpty(teams)}"></div>
-
-
-    <button type="submit"> Filter by city </button>
-
-  </form>
--->
-<!--
-  <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cityCheckbox')}" th:if="${not #lists.isEmpty(teams)}"></div>
--->
-
+  <h2>Search Results</h2>
   <table id="teamTable">
     <thread>
       <tr>

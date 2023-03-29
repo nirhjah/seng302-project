@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Base64;
 
@@ -45,8 +46,8 @@ public class User {
         this.favoriteSports = favoriteSports;
         this.location = location;
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        File file = resource.getFile();
-        this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+        InputStream is = resource.getInputStream();
+        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
 
     public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location) throws IOException{
@@ -56,8 +57,8 @@ public class User {
         this.email = email;
         this.hashedPassword = password;
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        File file = resource.getFile();
-        this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+        InputStream is = resource.getInputStream();
+        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.favoriteSports = new ArrayList<>();
         this.location = location;
     }

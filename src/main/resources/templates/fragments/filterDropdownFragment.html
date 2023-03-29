@@ -53,7 +53,7 @@ dropdownName: String[opt.] - The parameter name sent to the controller on submit
         checkBox.name = checkBoxname;
         checkBox.checked = preCheckedBoxes.has(entryName);
         checkBox.onclick = function() { updateSelectAllCheckbox(selectAllCheckbox); };
-        span.appendChild(document.createTextNode(entryName));
+        span.appendChild(document.createTextNode(" " + entryName));
         label.appendChild(checkBox)
         label.appendChild(span)
         checkboxDiv.appendChild(label);
