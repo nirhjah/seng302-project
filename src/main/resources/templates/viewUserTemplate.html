@@ -174,7 +174,7 @@
   <script th:inline="javascript">
     // The AC only specifies a back button if we came from the view-users page.
     const legal_url = '/view-users';
-    const backButton = document.getElementById('backButton');
+    const backButton = document.getElementsByClassName('back-button')[0];
     const previousPage = document.referrer;
     if (previousPage.includes(legal_url)) {
       backButton.style.visibility = '';
