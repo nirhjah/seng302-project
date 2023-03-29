@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,9 @@ public class SearchTeamsController {
     @Autowired
     private TeamRepository teamRepository;
 
+    @Autowired
+    private SportService sportService;
+
     /**
      * Gets searchTeamsForm to be displayed
      *
@@ -42,9 +46,11 @@ public class SearchTeamsController {
      * @return thymeleaf searchTeamsForm
      */
     @GetMapping("/searchTeams")
-    public String searchTeams(@RequestParam(value = "teamName", required = false) String teamName,
-                              @RequestParam(value = "page", defaultValue = "0") int page,
+    public String searchTeams(@RequestParam(name = "teamName", required = false) String teamName,
+                              @RequestParam(name = "page", defaultValue = "0") int page,
+                              @RequestParam(name = "sportsCheckbox", required = false) List<String> sports,
                               Model model) {
+        model.addAttribute("sports", sportService.getAllSportNames());
         model.addAttribute("notSearch", false);
         if (teamName != null) {
             if (teamName.length() < 3) {

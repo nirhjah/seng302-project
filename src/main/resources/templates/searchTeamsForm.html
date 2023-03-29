@@ -40,7 +40,11 @@
 <div th:if="${not #lists.isEmpty(teams)}">
   <h2 style="float: left">Search Results</h2>
 
+  <br><br>
   <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cityCheckbox')}" th:if="${not #lists.isEmpty(teams)}"></div>
+  <br><br>
+  <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sportsCheckbox')}" th:if="${not #lists.isEmpty(teams)}"></div>
+  <br><br>
 
   <table id="teamTable">
     <thread>
