@@ -619,8 +619,8 @@ input:invalid + label:after {
   font-weight: 500;
 }
 
-.edit-button button:hover, .profile-pic .back-button:hover, .submit-button:hover, .file-label:hover, .file-label-border label:hover {
-    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+.edit-button button:hover, .profile-pic .back-button:hover, .submit-button:hover, .file-label-border:hover {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
     cursor: pointer;
 }
 

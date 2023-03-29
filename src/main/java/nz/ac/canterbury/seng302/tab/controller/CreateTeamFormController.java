@@ -53,7 +53,7 @@ public class CreateTeamFormController {
     /** A team name can be alphanumeric, dots and curly braces. Must start with on alphabetical character **/
     private final String teamNameUnicodeRegex = "^[\\p{L}\\p{N}]+[}{.\\p{L}\\p{N}]+$";
 
-    /** A sport can be letters, space, apostrophes or hyphens. Must include at least on alphabetical character**/
+    /** A sport can be letters, space, apostrophes or hyphens. Must start with on alphabetical character**/
     private final String sportUnicodeRegex = "^\\p{L}+[\\- '\\p{L}]*$";
 
     /**

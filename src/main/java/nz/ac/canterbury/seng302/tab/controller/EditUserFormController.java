@@ -4,6 +4,7 @@ import java.util.*;
 
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.service.SportService;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ public class EditUserFormController {
     private final Logger logger = LoggerFactory.getLogger(EditUserFormController.class);
 
     @Autowired
+    TeamService teamService;
+    @Autowired
     UserService userService;
 
     @Autowired
@@ -45,7 +48,7 @@ public class EditUserFormController {
         model.addAttribute("addressRegexMsg",UserFormValidators.INVALID_POSTCODE_MSG);
         model.addAttribute("countryCitySuburbNameRegex",UserFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
         model.addAttribute("countryCitySuburbNameRegexMsg",UserFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG);
-
+        model.addAttribute("navTeams", teamService.getTeamList());
     }
 
     @GetMapping("/editUser")
