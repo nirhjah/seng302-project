@@ -1,16 +1,13 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.service.LocationService;
-
-import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 
 /**
  * Spring Boot Controller class for the Home Form class.
@@ -20,9 +17,8 @@ public class HomeFormController {
     Logger logger = LoggerFactory.getLogger(HomeFormController.class);
 
     @Autowired
-    private LocationService locationService;
-    @Autowired
     private TeamService teamService;
+
 
     /**
      * Redirects GET default url '/' to '/home'

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <title>View All Teams</title>
+</head>
+<body class="view-teams-background">
+    <div>
+        <div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+        <table id="teamTable">
+            <tr>
+                <th>Profile Picture</th>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Sport</th>
+            </tr>
+            <tr th:each="team : ${displayTeams}"
+                th:onclick="|window.location.href='/profile?teamID=${team.teamId}'|">
+                <td>
+                    <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" width="50" height="50"/>
+                </td>
+                <td th:text="${team.name}"></td>
+                <td th:text="${team.location}"></td>
+                <td th:text="${team.sport}"></td>
+            </tr>
+        </table>
+        <div th:insert="fragments/pagination.html :: pagination(pageName='view-teams')"></div>
+    </div>
+    <footer>
+        <p>
+            Image by <a href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a> on Freepik
+        </p>
+    </footer>
+</body>
+</html>

@@ -1,7 +1,12 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.UserService;
+
+import nz.ac.canterbury.seng302.tab.service.SportService;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,6 +24,8 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -39,8 +47,16 @@ public class CreateTeamFormControllerTest {
     @MockBean
     private UserService mockUserService;
 
+    @MockBean
+    private TeamService mockTeamService;
+
+    @MockBean
+    private SportService mockSportService;
+
+    static final Long TEAM_ID = 1L;
+
     @BeforeEach
-    void beforeEach() {
+    void beforeEach() throws IOException {
         Date userDOB;
         try {
             // Have to catch a constant parse exception annoyingly
@@ -244,5 +260,22 @@ public class CreateTeamFormControllerTest {
                         .param("postcode", "56$%^fghj")
                         .param("suburb", "ilam")).andExpect(status().isFound())
                 .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
+    }
+
+    @Test
+    void whenSportIsNewAndValid_checkThatItWasSaved() throws Exception {
+        Team mockTeam = new Team("Test", "Test", "Test");
+        mockTeam.setTeamId(TEAM_ID);
+        when(mockTeamService.getTeam(TEAM_ID)).thenReturn(mockTeam);
+        when(mockTeamService.updateTeam(any())).thenReturn(mockTeam);
+
+        mockMvc.perform(post("/createTeam", 42L)
+                        .param("teamID", TEAM_ID.toString())
+                        .param("name", "{test.team 1}")
+                        .param("sport", "hockey-team a'b")
+                        .param("location", "christchurch"))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrlPattern("**/profile?teamID="+TEAM_ID));
+        verify(mockSportService, times(1)).addSport(any());
     }
 }

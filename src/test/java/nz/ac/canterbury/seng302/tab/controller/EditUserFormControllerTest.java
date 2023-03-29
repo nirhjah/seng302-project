@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -57,7 +58,7 @@ public class EditUserFormControllerTest {
     private static final String USER_PWORD = "super_insecure";
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach() throws IOException {
         Date userDOB;
         try {
             // Have to catch a constant parse exception annoyingly

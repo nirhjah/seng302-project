@@ -38,4 +38,12 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             "OR LOWER(t.location.country) LIKE LOWER(CONCAT('%', :name, '%')) " +
             "OR LOWER(t.location.city) LIKE LOWER(CONCAT('%', :name, '%')) ")
     public List<Location> findLocationsByName(@Param("name") String name);
+
+    @Query("SELECT t FROM Team t " +
+            "WHERE (:#{#searchedSports.size}=0 or t.sport in (:searchedSports))" +
+            "AND (:name IS NOT NULL " +
+            "AND (LOWER(t.name) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(t.location) LIKE LOWER(CONCAT('%', :name, '%')))) " +
+            "ORDER BY LOWER(t.name) ASC, LOWER(t.location) ASC ")
+    public Page<Team> findTeamByNameAndSportIn(Pageable pageable, @Param("searchedSports")  List<String> searchedSports, @Param("name") String name);
 }
