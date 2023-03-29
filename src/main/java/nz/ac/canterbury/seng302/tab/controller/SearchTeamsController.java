@@ -44,19 +44,31 @@ public class SearchTeamsController {
     @GetMapping("/searchTeams")
     public String searchTeams(@RequestParam(value = "teamName", required = false) String teamName,
                               @RequestParam(value = "page", defaultValue = "0") int page,
+                              @RequestParam(value = "cityCheckbox", required = false) List<String> filteredCities,
                               Model model) {
-        model.addAttribute("notSearch", false);
-        if (teamName != null) {
+        boolean notSearch = false;
+        logger.info("cityCheckBox = {}", filteredCities);
+        logger.info("teamName = {}", teamName);
+        if (teamName != null ) {
+
             if (teamName.length() < 3) {
                 model.addAttribute("error", true);
                 model.addAttribute("teams", new ArrayList<Team>());
-            } else {
+            }
+            else {
                 int pageSize = 10; // number of results per page
                 PageRequest pageRequest = PageRequest.of(page, pageSize);
-                Page<Team> teamPage = teamRepository.findTeamByName(teamName, pageRequest);
+                Page<Team> teamPage = teamService.findPaginatedTeamsByCity(pageRequest, filteredCities, teamName);
                 List<Team> teams = teamPage.getContent();
+
+
+
+                System.out.println(teams);
+                System.out.println("filtered cities " + filteredCities);
+
+
+                //Gets cities to populate in dropdown
                 List<Location> locations = teamRepository.findLocationsByName(teamName);
-                // Maybe make into dictionary
                 List<String> cities = new ArrayList<>();
                 for (Location location: locations) {
                     if (!cities.contains(location.getCity().toLowerCase())) {
@@ -64,6 +76,7 @@ public class SearchTeamsController {
                         Collections.sort(cities);
                     }
                 }
+
                 int numPages = teamPage.getTotalPages();
                 model.addAttribute("teams", teams);
                 model.addAttribute("currentPage", page);
@@ -73,9 +86,10 @@ public class SearchTeamsController {
             }
         } else {
             model.addAttribute("teams", new ArrayList<Team>());
-            model.addAttribute("notSearch", true);
+            notSearch = true;
         }
         model.addAttribute("navTeams", teamService.getTeamList());
+        model.addAttribute("notSearch", notSearch);
         return "searchTeamsForm";
     }
 }
