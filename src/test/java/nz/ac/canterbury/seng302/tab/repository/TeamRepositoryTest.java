@@ -8,8 +8,10 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -20,23 +22,19 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled
-@SpringBootTest
+
+@DataJpaTest
+@Import(TeamService.class)
 public class TeamRepositoryTest {
 
-    @MockBean
+    @Autowired
     private TeamRepository teamRepository;
 
-    @MockBean
+    @Autowired
     private LocationRepository locationRepository;
 
-    @MockBean
+    @Autowired
     private TeamService teamService;
-
-    @BeforeEach
-    public void beforeEach(){
-        teamRepository.deleteAll();
-    }
 
     @Test
     public void testGettingTeamById() throws IOException {
@@ -73,8 +71,8 @@ public class TeamRepositoryTest {
         assertTrue(teamService.getTeamList().isEmpty());
         Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
 
-        Team team = new Team("test", "Hockey", locationRepository.findById(testLocation.getLocationId()).get());
-        Team team2= new Team ("test2", "Netball", locationRepository.findById(testLocation.getLocationId()).get());
+        Team team = new Team("test", "Hockey", testLocation);
+        Team team2= new Team ("test2", "Netball", testLocation);
 
         List<Team> expectedTeamList = List.of(team); // We will filter the search by hockey so only the first team is expected
         teamRepository.save(team);
@@ -89,8 +87,8 @@ public class TeamRepositoryTest {
         assertTrue(teamService.getTeamList().isEmpty());
         Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
 
-        Team team = new Team("test", "Hockey", locationRepository.findById(testLocation.getLocationId()).get());
-        Team team2= new Team ("test2", "Netball", locationRepository.findById(testLocation.getLocationId()).get());
+        Team team = new Team("test", "Hockey", testLocation);
+        Team team2= new Team ("test2", "Netball", testLocation);
 
         List<Team> expectedTeamList = List.of(team, team2); // We will filter the search by hockey so only the first team is expected
         teamRepository.save(team);
@@ -105,9 +103,9 @@ public class TeamRepositoryTest {
         assertTrue(teamService.getTeamList().isEmpty());
         Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
 
-        Team team = new Team("test",  "Hockey", locationRepository.findById(testLocation.getLocationId()).get());
-        Team team2= new Team ("test2", "Netball", locationRepository.findById(testLocation.getLocationId()).get());
-        Team team3 = new Team("Team", "Hockey", locationRepository.findById(testLocation.getLocationId()).get());
+        Team team = new Team("test",  "Hockey", testLocation);
+        Team team2= new Team ("test2", "Netball", testLocation);
+        Team team3 = new Team("Team", "Hockey", testLocation);
 
         List<Team> expectedTeamList = List.of(team); // We will filter the search by hockey so only the first team is expected
         teamRepository.save(team);
@@ -122,9 +120,9 @@ public class TeamRepositoryTest {
         assertTrue(teamService.getTeamList().isEmpty());
         Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
 
-        Team team = new Team("test", "Hockey", locationRepository.findById(testLocation.getLocationId()).get());
-        Team team2= new Team ("test2", "Netball", locationRepository.findById(testLocation.getLocationId()).get());
-        Team team3 = new Team("Team", "Hockey", locationRepository.findById(testLocation.getLocationId()).get());
+        Team team = new Team("test", "Hockey", testLocation);
+        Team team2= new Team ("test2", "Netball", testLocation);
+        Team team3 = new Team("Team", "Hockey", testLocation);
 
         List<Team> expectedTeamList = List.of(team3, team, team2); // We will filter the search by hockey so only the first team is expected
         teamRepository.save(team);
@@ -133,23 +131,4 @@ public class TeamRepositoryTest {
         List<String> searchedSports = new ArrayList<>();
         assertEquals(expectedTeamList.toString(), teamRepository.findTeamByNameAndSportIn(PageRequest.of(0,10), searchedSports, "").toList().toString());
     }
-
-//    @Test
-//    public void filteringTeamsBySports_noSportsSelected_allSportsDisplayed() throws IOException {
-//        List<Team> teamList = teamService.getTeamList();
-//        assertTrue(teamList.isEmpty());
-//        Team team = new Team("test", "Christchurch", "Hockey");
-//        Team team2 = new Team("test2", "Auckland", "Netball");
-//        Team team3 = new Team("test3", "Dunedin", "Basketball");
-//        List<Team> list = Arrays.asList(team, team2, team3);
-//        teamRepository.save(team);
-//        teamRepository.save(team2);
-//        teamRepository.save(team3);
-//
-//        Page<Team> filteredTeams = teamRepository.findTeamByNameAndSportIn();
-//        assertEquals(list.toString(), filteredTeams.toString());
-//
-//        teamService.getTeamList();
-//    }
-
 }

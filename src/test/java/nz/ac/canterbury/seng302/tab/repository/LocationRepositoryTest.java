@@ -17,18 +17,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-@Disabled
-@ExtendWith(SpringExtension.class)
 @DataJpaTest
 public class LocationRepositoryTest {
 
-    @MockBean
+    @Autowired
     private LocationRepository locationRepository;
-
-    @BeforeEach
-    public void beforeEach(){
-        locationRepository.deleteAll();
-    }
 
     @Test
     public void testGettingLocationById(){

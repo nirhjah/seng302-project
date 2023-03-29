@@ -10,6 +10,7 @@ import nz.ac.canterbury.seng302.tab.service.SportService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -380,13 +381,13 @@ public class CreateTeamFormControllerTest {
     void whenSportIsNewAndValid_checkThatItWasSaved() throws Exception {
         mockMvc.perform(post("/createTeam", 42L)
                         .param("teamID", TEAM_ID.toString())
-                        .param("name", "{test.team 1}")
+                        .param("name", "test.{team1}")
                         .param("sport", "hockey-team a'b")
                         .param("addressLine1", "")
                         .param("addressLine2", "")
                         .param("city", "Christchurch")
                         .param("country", "New Zealand")
-                        .param("postcode", "7").param("suburb", ""))
+                        .param("postcode", "7897").param("suburb", ""))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrlPattern("**/profile?teamID="+TEAM_ID));
         verify(mockSportService, times(1)).addSport(any());

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
@@ -28,21 +29,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Disabled
-@ExtendWith(SpringExtension.class)
 @DataJpaTest
+@Import(TeamService.class)
 public class TeamServiceTest {
 
-    @MockBean
+    @Autowired
     private TeamService teamService;
 
-    @MockBean
+    @Autowired
     private TeamRepository teamRepository;
-
-    @BeforeEach
-    public void beforeEach() {
-        teamRepository.deleteAll();
-    }
 
     Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
     Location location2 = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");

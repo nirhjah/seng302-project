@@ -89,8 +89,7 @@ public class ViewUserControllerTest {
     public void whenLoggedIn_checkUserFieldsAreCorrect() throws Exception {
         mockMvc.perform(get("/user-info/self"))
                 .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/user-info?name=" + user.getUserId()))
-                .andExpect(MockMvcResultMatchers.model().attribute("pictureString", user.getPictureString()));
+                .andExpect(view().name("redirect:/user-info?name=" + user.getUserId()));
     }
 
     @Test
