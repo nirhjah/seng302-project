@@ -6,6 +6,7 @@ import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Base64;
 
@@ -38,8 +39,8 @@ public class Team {
         this.location = location;
         this.sport = sport;
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        File file = resource.getFile();
-        this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+        InputStream is = resource.getInputStream();
+        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
 
     /**
@@ -54,8 +55,8 @@ public class Team {
         this.location = new Location("address1", "address2", "suburb", "chch", "8052", "new zealand");
         this.sport = sport;
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        File file = resource.getFile();
-        this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+        InputStream is = resource.getInputStream();
+        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
 
     public Long getTeamId() {
