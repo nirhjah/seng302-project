@@ -21,6 +21,7 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -58,6 +59,8 @@ public class EditUserFormControllerTest {
         private static final String P_CITY = "city";
         private static final String P_COUNTRY = "country";
 
+        private static final String P_TAGS = "tags";
+
         // Default values
         private static final String USER_FNAME = "Test";
         private static final String USER_LNAME = "User";
@@ -71,6 +74,8 @@ public class EditUserFormControllerTest {
         private static final String USER_CITY = "Christchurch";
         private static final String USER_COUNTRY = "New Zealand";
 
+        private static final String USER_FAVSPORT = "Hockey";
+
         @BeforeEach
         void beforeEach() throws IOException {
                 Date userDOB;
@@ -81,7 +86,7 @@ public class EditUserFormControllerTest {
                         throw new RuntimeException(e);
                 }
                 Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY, USER_POSTCODE, USER_COUNTRY);
-                User testUser = new User(USER_FNAME, USER_LNAME, new Date(USER_DOB), USER_EMAIL, USER_PWORD, testLocation);
+                User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD, testLocation);
 
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
         when(mockUserService.emailIsInUse(anyString())).thenReturn(false);
@@ -250,7 +255,8 @@ public class EditUserFormControllerTest {
                                                 .param(P_FNAME, USER_FNAME)
                                                 .param(P_LNAME, USER_LNAME)
                                                 .param(P_EMAIL, "new@email.com")
-                                                .param(P_DOB, USER_DOB).param("tags", "")
+                                                .param(P_DOB, USER_DOB)
+                                                .param(P_TAGS, USER_FAVSPORT)
                                                 .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
                                                 .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
                                                 .param(P_SUBURB, USER_SUBURB)
@@ -276,7 +282,8 @@ public class EditUserFormControllerTest {
                                         .param(P_SUBURB, USER_SUBURB)
                                         .param(P_POSTCODE, USER_POSTCODE)
                                         .param(P_CITY, USER_CITY)
-                                        .param(P_COUNTRY, USER_COUNTRY))
+                                        .param(P_COUNTRY, USER_COUNTRY)
+                                        .param(P_TAGS, USER_FAVSPORT))
                         .andExpect(redirectedUrl("user-info/self"));
 
                 verify(mockUserService, times(1)).updateOrAddUser(any());
@@ -296,8 +303,9 @@ public class EditUserFormControllerTest {
                                         .param(P_SUBURB, USER_SUBURB)
                                         .param(P_POSTCODE, USER_POSTCODE)
                                         .param(P_CITY, USER_CITY)
-                                        .param(P_COUNTRY, USER_COUNTRY))
-                        .andExpect(redirectedUrl("user-info/self"));
+                                        .param(P_COUNTRY, USER_COUNTRY)
+                                        .param(P_TAGS, USER_FAVSPORT))
+                        .andExpect(redirectedUrl(null));
 
                 verify(mockUserService, times(0)).updateOrAddUser(any());
         }
@@ -314,9 +322,10 @@ public class EditUserFormControllerTest {
                                         .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
                                         .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
                                         .param(P_SUBURB, USER_SUBURB)
-                                        .param(P_POSTCODE, "12 34/56-A7")
+                                        .param(P_POSTCODE, "1234/56-A7")
                                         .param(P_CITY, USER_CITY)
-                                        .param(P_COUNTRY, USER_COUNTRY))
+                                        .param(P_COUNTRY, USER_COUNTRY)
+                                        .param(P_TAGS, USER_FAVSPORT))
                         .andExpect(redirectedUrl("user-info/self"));
 
                 verify(mockUserService, times(1)).updateOrAddUser(any());
@@ -336,8 +345,10 @@ public class EditUserFormControllerTest {
                                         .param(P_SUBURB, USER_SUBURB)
                                         .param(P_POSTCODE, "#$%^&*")
                                         .param(P_CITY, USER_CITY)
-                                        .param(P_COUNTRY, USER_COUNTRY))
-                        .andExpect(redirectedUrl("user-info/self"));
+                                        .param(P_COUNTRY, USER_COUNTRY)
+                                        .param(P_TAGS, USER_FAVSPORT)
+                                        .param(P_TAGS, USER_FAVSPORT))
+                        .andExpect(redirectedUrl(null));
 
                 verify(mockUserService, times(0)).updateOrAddUser(any());
         }
@@ -356,7 +367,8 @@ public class EditUserFormControllerTest {
                                         .param(P_SUBURB, "Suburbia-Place Burrow's")
                                         .param(P_POSTCODE, USER_POSTCODE)
                                         .param(P_CITY, USER_CITY)
-                                        .param(P_COUNTRY, USER_COUNTRY))
+                                        .param(P_COUNTRY, USER_COUNTRY)
+                                        .param(P_TAGS, USER_FAVSPORT))
                         .andExpect(redirectedUrl("user-info/self"));
 
                 verify(mockUserService, times(1)).updateOrAddUser(any());
@@ -376,8 +388,9 @@ public class EditUserFormControllerTest {
                                         .param(P_SUBURB, "#$%^&*")
                                         .param(P_POSTCODE, USER_POSTCODE)
                                         .param(P_CITY, USER_CITY)
-                                        .param(P_COUNTRY, USER_COUNTRY))
-                        .andExpect(redirectedUrl("user-info/self"));
+                                        .param(P_COUNTRY, USER_COUNTRY)
+                                        .param(P_TAGS, USER_FAVSPORT))
+                        .andExpect(redirectedUrl(null));
 
                 verify(mockUserService, times(0)).updateOrAddUser(any());
         }
@@ -396,7 +409,8 @@ public class EditUserFormControllerTest {
                                         .param(P_SUBURB, USER_SUBURB)
                                         .param(P_POSTCODE, USER_POSTCODE)
                                         .param(P_CITY, "City-Tower's N")
-                                        .param(P_COUNTRY, USER_COUNTRY))
+                                        .param(P_COUNTRY, USER_COUNTRY)
+                                        .param(P_TAGS, USER_FAVSPORT))
                         .andExpect(redirectedUrl("user-info/self"));
 
                 verify(mockUserService, times(1)).updateOrAddUser(any());
@@ -416,8 +430,10 @@ public class EditUserFormControllerTest {
                                         .param(P_SUBURB, USER_SUBURB)
                                         .param(P_POSTCODE, USER_POSTCODE)
                                         .param(P_CITY, "@#$%^&*")
-                                        .param(P_COUNTRY, USER_COUNTRY))
-                        .andExpect(redirectedUrl("user-info/self"));
+                                        .param(P_COUNTRY, USER_COUNTRY)
+                                        .param(P_TAGS, USER_FAVSPORT)
+                                        .param(P_TAGS, USER_FAVSPORT))
+                        .andExpect(redirectedUrl(null));
 
                 verify(mockUserService, times(0)).updateOrAddUser(any());
         }
@@ -436,8 +452,9 @@ public class EditUserFormControllerTest {
                                         .param(P_SUBURB, USER_SUBURB)
                                         .param(P_POSTCODE, USER_POSTCODE)
                                         .param(P_CITY, "")
-                                        .param(P_COUNTRY, USER_COUNTRY))
-                        .andExpect(redirectedUrl("user-info/self"));
+                                        .param(P_COUNTRY, USER_COUNTRY)
+                                        .param(P_TAGS, USER_FAVSPORT))
+                        .andExpect(redirectedUrl(null));
 
                 verify(mockUserService, times(0)).updateOrAddUser(any());
         }
@@ -456,7 +473,8 @@ public class EditUserFormControllerTest {
                                         .param(P_SUBURB, USER_SUBURB)
                                         .param(P_POSTCODE, USER_POSTCODE)
                                         .param(P_CITY, USER_COUNTRY)
-                                        .param(P_COUNTRY, "Country-of Pigs'"))
+                                        .param(P_COUNTRY, "Country-of Pigs'")
+                                        .param(P_TAGS, USER_FAVSPORT))
                         .andExpect(redirectedUrl("user-info/self"));
 
         verify(mockUserService, times(1)).updateOrAddUser(any());
@@ -477,6 +495,12 @@ public class EditUserFormControllerTest {
                 .param(P_LNAME, USER_LNAME)
                 .param(P_EMAIL, USER_EMAIL)
                 .param(P_DOB, USER_DOB)
+                .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                .param(P_SUBURB, USER_SUBURB)
+                .param(P_POSTCODE, USER_POSTCODE)
+                .param(P_CITY, USER_COUNTRY)
+                .param(P_COUNTRY, "Country-of Pigs'")
                 .param("tags","Hockey", "Football")).andExpect(redirectedUrl("user-info/self"));
         verify(mockUserService, times(1)).updateOrAddUser(any());
     }
@@ -488,6 +512,12 @@ public class EditUserFormControllerTest {
                 .param(P_LNAME, USER_LNAME)
                 .param(P_EMAIL, USER_EMAIL)
                 .param(P_DOB, USER_DOB)
+                .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                .param(P_SUBURB, USER_SUBURB)
+                .param(P_POSTCODE, USER_POSTCODE)
+                .param(P_CITY, USER_COUNTRY)
+                .param(P_COUNTRY, "Country-of Pigs'")
                 .param("tags","Hockey")).andExpect(redirectedUrl("user-info/self"));
         verify(mockUserService, times(1)).updateOrAddUser(any());
     }
@@ -499,6 +529,12 @@ public class EditUserFormControllerTest {
                 .param(P_LNAME, USER_LNAME)
                 .param(P_EMAIL, USER_EMAIL)
                 .param(P_DOB, USER_DOB)
+                .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                .param(P_SUBURB, USER_SUBURB)
+                .param(P_POSTCODE, USER_POSTCODE)
+                .param(P_CITY, USER_COUNTRY)
+                .param(P_COUNTRY, "Country-of Pigs'")
                 .param("tags","")).andExpect(redirectedUrl("user-info/self"));
         verify(mockUserService, times(1)).updateOrAddUser(any());
     }
@@ -510,6 +546,12 @@ public class EditUserFormControllerTest {
                 .param(P_LNAME, USER_LNAME)
                 .param(P_EMAIL, USER_EMAIL)
                 .param(P_DOB, USER_DOB)
+                .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                .param(P_SUBURB, USER_SUBURB)
+                .param(P_POSTCODE, USER_POSTCODE)
+                .param(P_CITY, USER_COUNTRY)
+                .param(P_COUNTRY, "Country-of Pigs'")
                 .param("tags","678")).andExpect(status().isFound()).andExpect(redirectedUrl("/editUser"));
         verify(mockUserService, times(0)).updateOrAddUser(any());
     }
@@ -521,6 +563,12 @@ public class EditUserFormControllerTest {
                 .param(P_LNAME, USER_LNAME)
                 .param(P_EMAIL, USER_EMAIL)
                 .param(P_DOB, USER_DOB)
+                .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                .param(P_SUBURB, USER_SUBURB)
+                .param(P_POSTCODE, USER_POSTCODE)
+                .param(P_CITY, USER_COUNTRY)
+                .param(P_COUNTRY, "Country-of Pigs'")
                 .param("tags","678", "%^&*")).andExpect(status().isFound()).andExpect(redirectedUrl("/editUser"));
         verify(mockUserService, times(0)).updateOrAddUser(any());
     }
@@ -539,7 +587,7 @@ public class EditUserFormControllerTest {
                                         .param(P_POSTCODE, USER_POSTCODE)
                                         .param(P_CITY, USER_CITY)
                                         .param(P_COUNTRY, "#$%^&*("))
-                        .andExpect(redirectedUrl("user-info/self"));
+                        .andExpect(redirectedUrl(null));
 
                 verify(mockUserService, times(0)).updateOrAddUser(any());
         }
@@ -559,7 +607,7 @@ public class EditUserFormControllerTest {
                                         .param(P_POSTCODE, USER_POSTCODE)
                                         .param(P_CITY, USER_CITY)
                                         .param(P_COUNTRY, ""))
-                        .andExpect(redirectedUrl("user-info/self"));
+                        .andExpect(redirectedUrl(null));
 
                 verify(mockUserService, times(0)).updateOrAddUser(any());
         }

@@ -6,6 +6,7 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,6 +26,9 @@ public class TeamRepositoryTest {
 
     @MockBean
     private TeamRepository teamRepository;
+
+    @MockBean
+    private LocationRepository locationRepository;
 
     @MockBean
     private TeamService teamService;

@@ -154,9 +154,10 @@ public class CreateTeamFormController {
             team.setSport(sport);
             team.setLocation(location);
             team = teamService.updateTeam(team);
+            teamID = team.getTeamId();
         } else {
             team = new Team(name, sport, location);
-            teamService.addTeam(team);
+            team = teamService.addTeam(team);
             teamID = team.getTeamId();
         }
 
@@ -165,6 +166,6 @@ public class CreateTeamFormController {
             sportService.addSport(new Sport(sport));
         }
 
-        return String.format("redirect:./profile?teamID=%s", team.getTeamId());
+        return String.format("redirect:./profile?teamID=%s", teamID);
     }
 }

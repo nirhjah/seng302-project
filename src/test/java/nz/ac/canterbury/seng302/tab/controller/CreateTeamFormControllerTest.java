@@ -9,10 +9,13 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.IOException;
@@ -22,12 +25,13 @@ import java.util.Date;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
 public class CreateTeamFormControllerTest {
     private static final String USER_FNAME = "Test";
     private static final String USER_LNAME = "User";
@@ -382,7 +386,7 @@ public class CreateTeamFormControllerTest {
                         .param("addressLine2", "")
                         .param("city", "Christchurch")
                         .param("country", "New Zealand")
-                        .param("postcode", "").param("suburb", ""))
+                        .param("postcode", "7").param("suburb", ""))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrlPattern("**/profile?teamID="+TEAM_ID));
         verify(mockSportService, times(1)).addSport(any());
