@@ -244,20 +244,25 @@ td {
   /*backdrop-filter: blur(20px);*/
 }
 
+.wrapper-edit-profile{
+    width: 500px;
+    height: 600px;
+}
+
 .login-form .wrapper {
-  width: 500px;
-  height: 440px;
-  /*backdrop-filter: blur(20px);*/
+    width: 500px;
+    height: 440px;
+    /*backdrop-filter: blur(20px);*/
 }
 
 .register-form .wrapper {
-  width: 650px;
-  height: 690px;
+    width: 650px;
+    height: 690px;
 }
 
 .team-form .wrapper {
-  width: 630px;
-  height: 570px;
+    width: 630px;
+    height: 570px;
 }
 
 .wrapper {
@@ -327,11 +332,13 @@ hr.solid {
     right: 0;
 }
 
-.file-label-border,
-.edit-button button,
-.profile-pic .back-button {
-  background-color: #415a77;
-  font-weight: 500;
+.file-upload {
+    padding: 5px 5px 5px 5px;
+}
+
+.file-label-border,.edit-button button, .profile-pic .back-button {
+    background-color: #415A77;
+    font-weight: 500;
 }
 
 .menu-items p {
@@ -415,7 +422,6 @@ footer {
 }
 
 
-
 .edit-button {
   float: right;
   margin-right: 50px;
@@ -425,8 +431,8 @@ footer {
 }
 
 .edit-button button {
-  width: 150%;
-  height: 40px;
+    width: 150%;
+    height: 40px;
 }
 
 .form-control-file {
@@ -434,26 +440,29 @@ footer {
 }
 
 .file-label-border {
-  width: 100%;
-  height: 35px;
-  white-space: nowrap;
-  text-align: center;
-  flex: 1;
+    width: 70%;
+    height: 25px;
+    white-space: nowrap;
+    text-align: center;
+    flex: 1;
 }
 
-.team-form .create-team,
-.user-form .user-header,
-.login-form .login-header,
+.edit-button button {
+    width: 100%;
+    height: 45px;
+}
+
+.team-form .create-team, .user-form .user-header, .login-form .login-header,
 .register-form .register-header{
-  font-family: "Noto Sans", sans-serif;
-  /*color: #0B1B2A;*/
-  text-align: center;
-  /*font-size: 30px;*/
-  font-size: 40px;
-  font-weight: 600;
-  color: #0d1b2a;
-  background-clip: text;
-  -webkit-background-clip: text;
+    font-family: "Noto Sans",sans-serif;
+    /*color: #0B1B2A;*/
+    text-align: center;
+    /*font-size: 30px;*/
+    font-size: 40px;
+    font-weight: 600;
+    color: #0D1B2A;
+    background-clip: text;
+    -webkit-background-clip: text;
 }
 
 
@@ -582,15 +591,13 @@ input:invalid + label:after {
   font-weight: 500;
 }
 
-.edit-button button:hover,
-.profile-pic .back-button:hover,
-.submit-button:hover,.file-label-border:hover{
-  box-shadow: 0 1px 16px 0 rgba(0, 0, 0, 0.24),
-    0 17px 50px 0 rgba(0, 0, 0, 0.19);
-  cursor: pointer;
+.edit-button button:hover, .profile-pic .back-button:hover, .submit-button:hover, .file-label:hover, .file-label-border label:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+    cursor: pointer;
 }
+
 .file-label{
-  cursor: pointer;
+    cursor: pointer;
 }
 
 
@@ -758,6 +765,61 @@ ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-prof
 .search-bar button img {
   width: 25px;
 }
+
+.multipleSelection {
+    background-color: #415A77;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 1em;
+    color: #fff;
+    border-radius: 20px;
+    border: none;
+    padding: .1em .5em;
+    cursor: pointer;
+    position: absolute;
+    display: inline-block;
+}
+
+.selectBox {
+    position: relative;
+}
+
+.selectBox select {
+    width: 100%;
+    font-weight: bold;
+    color: #ffffff;
+    background: #415A77;
+    border-radius: 20px;
+    font-size: 16px;
+    border: none;
+    outline: 0;
+    padding: .1em .5em;
+    cursor: pointer;
+}
+
+.overSelect {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+#checkBoxes {
+    display: none;
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
+#checkBoxes label {
+    display: block;
+    padding: 3px;
+
+}
+
+#checkBoxes label:hover {
+    background-color: #4F615E;
+}
+
 
 .search-bar button {
   border: 0;

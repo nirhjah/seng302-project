@@ -11,52 +11,36 @@
     totalPages : int,  The total number of pages in the pagination object.
 -->
 <div th:fragment="pagination" class="pagination">
+    <script>
+        function gotoPage(pageNum) {
+            const url = new URL(document.location.href);
+            url.searchParams.set('page', pageNum);
+            window.location.href = url.toString();
+        }
+    </script>
+
     <div class="paginationContainer">
         <div class="totalPages">
             Total Pages: [[${totalPages}]]
         </div>
 
-        <div>
-            <a th:unless="${page == 1}" th:href="@{'/' + ${pageName}(page=${1}, currentSearch=${currentSearch})}">
-                <button class = "paginationButton" th:disabled="${page == 1}">
-                    <span>< First</span>
-                </button>
-            </a>
-        </div>
-        <div>
-            <a th:unless="${page == 1}" th:href="@{'/' + ${pageName}(page=${page - 1}, currentSearch=${currentSearch})}">
-                <button class = "paginationButton" th:disabled="${page == 1}" >
-                    <span>< Prev</span>
-                </button>
-            </a>
-        </div>
+        <button th:unless="${page == 1}" class = "paginationButton" th:disabled="${page == 1}" th:onclick="|gotoPage(1)|">
+            <span>&leftarrow; First</span>
+        </button>
+        <button th:unless="${page == 1}" class = "paginationButton" th:disabled="${page == 1}" >
+            <span>&leftarrow; Prev</span>
+        </button>
 
-        <a th:unless="${(page - 1) <= 0}" th:href="@{'/' + ${pageName}(page=${page - 1}, currentSearch=${currentSearch})}">
-            <button class="paginationActive" th:text="${page - 1}"></button>
-        </a>
-        <a th:unless="${totalPages == 0}" th:href="@{'/' + ${pageName}(page=${page}, currentSearch=${currentSearch})}">
-            <button class="paginationActive" th:text="${page}"></button>
-        </a>
-        <a th:unless="${(page + 1) > totalPages}" th:href="@{'/' + ${pageName}(page=${page + 1}, currentSearch=${currentSearch})}">
-            <button class="paginationActive" th:text="${page+1}"></button>
-        </a>
-            <!--
-            "@{'/' + ${pageName}(page=${page - 1}, currentSearch=${currentSearch})}"
-            -->
-        <div>
-            <a th:unless="${page == totalPages}" th:href="@{'/' + ${pageName}(page=${page + 1}, currentSearch=${currentSearch})}">
-                <button class="paginationButton">
-                    Next >
-                </button>
-            </a>
-        </div>
+        <button th:unless="${(page - 1) <= 0}" class="paginationActive" th:text="${page - 1}" th:onclick="|gotoPage(${page - 1})|"></button>
+        <button th:unless="${totalPages == 0}" class="paginationActive" th:text="${page}"></button>
+        <button th:unless="${(page + 1) > totalPages}" th:onclick="|gotoPage(${page + 1})|" class="paginationActive" th:text="${page+1}"></button>
 
-        <div>
-            <a th:unless="${page == totalPages}" th:href="@{'/' + ${pageName}(page=${totalPages}, currentSearch=${currentSearch})}">
-                <button class="paginationButton" th:disabled="${page == totalPages}" >
-                    Last >
-                </button>
-            </a>
-        </div>
+        <button th:unless="${page == totalPages}" th:onclick="|gotoPage(${page + 1})|" class="paginationButton">
+            Next &rightarrow;
+        </button>
+
+        <button th:unless="${page == totalPages}" class="paginationButton" th:disabled="${page == totalPages}"  th:onclick="|gotoPage(${totalPages})|">
+            Last &rightarrow;
+        </button>
     </div>
 </div>

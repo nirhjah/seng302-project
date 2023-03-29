@@ -1,12 +1,17 @@
 package nz.ac.canterbury.seng302.tab.service;
 
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,10 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Base64;
-import java.util.Objects;
-import java.util.Optional;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 
 /**
  * Service class for User database entries, defined by the @link{Service} annotation.
@@ -25,8 +28,7 @@ import java.util.Optional;
  */
 @Service
 public class UserService {
-
-    final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private UserRepository userRepository;
@@ -34,20 +36,37 @@ public class UserService {
     /**
      * Gets a page of users.
      * 
-     * @param pageSize How many users are in a "page"
-     * @param pageNumber The page number (page 0 is the first page)
+     * @param pageable A page object showing how the page should be shown
+     *                  (Page size, page count, and [optional] sorting)
      * @return A slice of users returned from pagination
      */
     public Page<User> getPaginatedUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 
-    public Page<User> findUsersByName(Pageable pageable, String name) {
-        return userRepository.findAllByFirstNameIgnoreCaseContainingOrLastNameIgnoreCaseContaining(pageable, name, name);
-    }
-
-    public Page<User> findUsersByName(Pageable pageable, String firstName, String lastName) {
-        return userRepository.findAllByFirstNameIgnoreCaseContainingAndLastNameIgnoreCaseContaining(pageable, firstName, lastName);
+    /**
+     * Gets a page of users, filtered down by their name and sports interest
+     * 
+     * @param pageable A page object showing how the page should be shown
+     *                  (Page size, page count, and [optional] sorting)
+     * @param favouriteSports Includes all users who have <em>at least one</em>
+     *                          of these as their favourite sport
+     * @param nameSearch Includes all users where
+     *              <code>nameSearch</code> is a substring of <code>firstName+' '+lastName</code>
+     * @return A slice of users with the applied filters
+     */
+    public Page<User> findUsersByNameOrSport(Pageable pageable, @Nullable List<String> favouriteSports, @Nullable String nameSearch) {
+        logger.info("fav sports = {}", favouriteSports);
+        logger.info("nameSearch = {}", nameSearch);
+        if (favouriteSports == null) {
+            favouriteSports = List.of();
+        }
+        if (nameSearch != null && nameSearch.isEmpty()) {
+            nameSearch = null;
+        }
+        logger.info("...nameSearch = {}", nameSearch);
+        logger.info("...fav sports = {}", favouriteSports);
+        return userRepository.findAllFiltered(pageable, favouriteSports, nameSearch);
     }
 
     /**
@@ -150,7 +169,7 @@ public class UserService {
         //Gets the original file name as a string for validation
         String pictureString = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         if (pictureString.contains("..")) {
-            System.out.println("not a a valid file");
+            logger.info("not a a valid file");
         }
         try {
             //Encodes the file to a byte array and then convert it to string, then set it as the pictureString variable.
