@@ -172,11 +172,11 @@
 </div>
 
   <script th:inline="javascript">
-    // We don't want the button visible if we just signed up or logged in.
-    const illegal_urls = ['/login', '/register'];
+    // The AC only specifies a back button if we came from the view-users page.
+    const legal_url = '/view-users';
     const backButton = document.getElementById('backButton');
     const previousPage = document.referrer;
-    if (illegal_urls.every(url => !previousPage.includes(url))) {
+    if (previousPage.includes(legal_url)) {
       backButton.style.visibility = '';
     } else {
       backButton.remove();

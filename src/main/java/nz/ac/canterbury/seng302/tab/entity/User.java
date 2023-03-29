@@ -80,21 +80,22 @@ public class User {
     @Column(nullable = false)
     private Date dateOfBirth;
 
+    
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private String pictureString;
+    
+
+    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
+    flags = Pattern.Flag.CASE_INSENSITIVE)
+    @Column(nullable = false, unique = true)
+    private String email;
+    
+    @Column(nullable = false)
+    private String hashedPassword;
+    
     @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(name="favSports")
     private List<Sport> favoriteSports;
-
-    @Column(columnDefinition = "MEDIUMBLOB")
-    private String pictureString;
-
-
-    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
-            flags = Pattern.Flag.CASE_INSENSITIVE)
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false)
-    private String hashedPassword;
 
     public long getUserId() {
         return userId;
