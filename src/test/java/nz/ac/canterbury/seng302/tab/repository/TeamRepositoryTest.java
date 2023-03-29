@@ -76,7 +76,7 @@ public class TeamRepositoryTest {
 
         ArrayList<String> filteredLocations = new ArrayList<>();
 
-        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), "").toList().toString());
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), "team").toList().toString());
 
     }
 
@@ -98,7 +98,7 @@ public class TeamRepositoryTest {
         ArrayList<String> filteredLocations = new ArrayList<>();
         filteredLocations.add(WANTED_CITY);
 
-        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), "").toList().toString());
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), "team").toList().toString());
 
     }
 
@@ -123,8 +123,33 @@ public class TeamRepositoryTest {
         filteredLocations.add(WANTED_CITY1);
         filteredLocations.add(WANTED_CITY2);
 
-        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), "").toList().toString());
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), "team").toList().toString());
 
+    }
+    @Test
+    public void filteringTeamsByCities_twoCitiesSelectedAndTeamNamesDifferent_displayCitiesAndTeams() throws IOException {
+
+        final String WANTED_CITY1 = "Christchurch";
+        final String WANTED_CITY2 = "Dunedin";
+
+        List<Team> teamList = teamService.getTeamList();
+        assertTrue(teamList.isEmpty());
+        Team team1 = new Team("team1", "Hockey", new Location("123 Test1 road", "", "Suburb1", WANTED_CITY1, "1111", "NZ"));
+        Team team2 = new Team("team2", "Hockey", new Location("213 Test2 road", "", "Suburb2", WANTED_CITY1, "1111", "NZ"));
+        Team team3 = new Team("test3", "Hockey", new Location("321 Test3 road", "", "Suburb3", WANTED_CITY2, "1111", "NZ"));
+        Team team4 = new Team("test4", "Hockey", new Location("222 Test4 road", "", "Suburb4", WANTED_CITY2, "1111", "NZ"));
+
+        List<Team> expectedTeams = Arrays.asList(team1, team2);
+        teamRepository.save(team1);
+        teamRepository.save(team2);
+        teamRepository.save(team3);
+        teamRepository.save(team4);
+
+        ArrayList<String> filteredLocations = new ArrayList<>();
+        filteredLocations.add(WANTED_CITY1);
+        filteredLocations.add(WANTED_CITY2);
+
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), "team").toList().toString());
     }
 
     @Test
@@ -153,7 +178,7 @@ public class TeamRepositoryTest {
         filteredLocations.add(WANTED_CITY2);
         filteredLocations.add(WANTED_CITY3);
 
-        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), "").toList().toString());
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), "team").toList().toString());
 
     }
 }

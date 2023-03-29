@@ -39,14 +39,6 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             "OR LOWER(t.location.city) LIKE LOWER(CONCAT('%', :name, '%')) ")
     public List<Location> findLocationsByName(@Param("name") String name);
 
-//This was my idea for a potential way to solve the query?
-//@Query("SELECT distinct t "
-//        +"FROM Team t JOIN Location l on t.location = l "
-//        +"WHERE (:#{#filteredLocations.size}=0 OR t.location.city in (:filteredLocations)) "
-//        +"AND (:name is null OR "
-//        +"lower(:name) like lower(concat('%', t.name, '%')) OR lower(:name) like lower(concat('%', t.sport, '%')) "
-//        +")")
-
     @Query("SELECT t FROM Team t " +
             "WHERE (:#{#filteredLocations.size} = 0 OR (t.location.city) in (:filteredLocations)) " +
             "AND (:name IS NOT NULL " +
