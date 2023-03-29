@@ -12,12 +12,6 @@
  */
 
 /**
- * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
- * @type {string}
- */
-const ENDPOINT = '/geocode/autocomplete';
-
-/**
  * The delay time (in milliseconds) for debouncing the search input.
  * @type {number}
  */

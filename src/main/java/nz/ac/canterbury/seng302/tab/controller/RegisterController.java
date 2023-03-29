@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -183,11 +185,15 @@ public class RegisterController {
      */
     @GetMapping("/register")
     public String getRegisterPage(
-            RegisterForm registerForm, Model model) {
+            RegisterForm registerForm, Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
         logger.info("GET /register");
+        URL url = new URL(httpServletRequest.getRequestURL().toString());
+        String protocolAndAuthority = String.format("%s://%s", url.getProtocol(), url.getAuthority());
+
         model.addAttribute("countryCitySuburbNameRegex", countryCitySuburbNameRegex);
         model.addAttribute("addressRegex", addressRegex);
         model.addAttribute("postcodeRegex", postcodeRegex);
+        model.addAttribute("protocolAndAuthority", protocolAndAuthority);
         return "register";
     }
 
