@@ -1,5 +1,11 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.service.LocationService;
+
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +24,8 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 public class HomeFormController {
     Logger logger = LoggerFactory.getLogger(HomeFormController.class);
 
+    @Autowired
+    private LocationService locationService;
     @Autowired
     private TeamService teamService;
 
@@ -46,18 +54,6 @@ public class HomeFormController {
         logger.info("GET /homeForm");
         model.addAttribute("navTeams", teamService.getTeamList());
         return "homeForm";
-    }
-
-    /*
-    TODO: REMOVE FROM BRANCH ONCE ADDING SPORTS IS IMPLEMENTED
-    */
-    @GetMapping("/addSport")
-    public String addSport() {
-        Sport sport = new Sport("Hockey");
-
-        sportService.addSport(sport);
-        System.out.println(sportService.getAllSports());
-        return "redirect:./home";
     }
 }
 

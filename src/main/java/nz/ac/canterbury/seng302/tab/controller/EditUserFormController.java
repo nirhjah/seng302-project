@@ -11,13 +11,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.EditUserForm;
 import nz.ac.canterbury.seng302.tab.service.UserService;
@@ -39,6 +39,13 @@ public class EditUserFormController {
     private void prefillModel(Model model) {
         model.addAttribute("validNameRegex", UserFormValidators.VALID_NAME_REGEX);
         model.addAttribute("validNameMessage", UserFormValidators.INVALID_NAME_MSG);
+        model.addAttribute("postcodeRegex",UserFormValidators.VALID_POSTCODE_REGEX);
+        model.addAttribute("postcodeRegexMsg",UserFormValidators.INVALID_POSTCODE_MSG);
+        model.addAttribute("addressRegex",UserFormValidators.VALID_ADDRESS_REGEX);
+        model.addAttribute("addressRegexMsg",UserFormValidators.INVALID_POSTCODE_MSG);
+        model.addAttribute("countryCitySuburbNameRegex",UserFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
+        model.addAttribute("countryCitySuburbNameRegexMsg",UserFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG);
+
     }
 
     @GetMapping("/editUser")
@@ -61,7 +68,7 @@ public class EditUserFormController {
 
     @PostMapping("/editUser")
     public String submitEditUserForm(
-            @Valid EditUserForm editUserForm,
+            @Validated EditUserForm editUserForm,
             BindingResult bindingResult,
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
@@ -111,6 +118,12 @@ public class EditUserFormController {
         user.setLastName(editUserForm.getLastName());
         user.setEmail(editUserForm.getEmail());
         user.setDateOfBirth(editUserForm.getDateOfBirth());
+        user.getLocation().setAddressLine1(editUserForm.getAddressLine1());
+        user.getLocation().setAddressLine2(editUserForm.getAddressLine2());
+        user.getLocation().setCity(editUserForm.getCity());
+        user.getLocation().setCountry(editUserForm.getCountry());
+        user.getLocation().setSuburb(editUserForm.getSuburb());
+        user.getLocation().setPostcode(editUserForm.getPostcode());
 
         List<Sport> newFavSports = new ArrayList<>();
         List<String> knownSportNames = sportService.getAllSportNames();

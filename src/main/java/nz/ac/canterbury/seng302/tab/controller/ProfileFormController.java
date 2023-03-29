@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
@@ -28,84 +29,85 @@ public class ProfileFormController {
     private TeamService teamService;
 
     /**
-     * Gets form to be displayed, includes the ability to display results of previous form when linked to from POST form
+     * Gets form to be displayed, includes the ability to display results of
+     * previous form when linked to from POST form
+     *
      * @param teamID team for which the details are to be displayed
-     * @param model (map-like) representation of name, language and isJava boolean for use in thymeleaf
+     * @param model  (map-like) representation of name, language and isJava boolean
+     *               for use in thymeleaf
      * @return thymeleaf profileForm
      */
     @GetMapping("/profile")
     public String profileForm(Model model, @RequestParam(value = "teamID", required = false) Long teamID) {
         logger.info("GET /profileForm");
 
-
         // Retrieve the selected team from the list of available teams using the ID
         // If the name is null or empty, return null
         List<Team> teamList = teamService.getTeamList();
-        this.teamId= teamID;
+        ProfileFormController.teamId = teamID;
 
-        Team selectedTeam = null;
-        String teamName = null;
-        String teamLocation = null;
-        String teamSport = null;
-        String teamPicture = null;
+        Team selectedTeam;
         if (teamID != null) {
             // Find the selected team by its id
             selectedTeam = teamList.stream()
                     .filter(team -> team.getTeamId().equals(teamID))
                     .findFirst()
                     .orElse(null);
+        } else {
+            return "redirect:./home";
         }
 
         if (selectedTeam != null) {
-            teamName = selectedTeam.getName() ;
-            teamLocation = selectedTeam.getSport();
-            teamSport = selectedTeam.getLocation();
-            teamPicture = selectedTeam.getPictureString();
+            model.addAttribute("displayName", selectedTeam.getName());
+            model.addAttribute("displaySport", selectedTeam.getSport());
+            model.addAttribute("displayLocation", selectedTeam.getLocation());
+            model.addAttribute("displayPicture", selectedTeam.getPictureString());
+        } else {
+            return "redirect:./home";
         }
 
         model.addAttribute("navTeams", teamList);
         model.addAttribute("teamID", teamID);
-        model.addAttribute("displayName", teamName);
-        model.addAttribute("displaySport", teamLocation);
-        model.addAttribute("displayLocation", teamSport);
-        model.addAttribute("displayPicture", teamPicture);
 
         return "profileForm";
     }
 
     /**
-     * Gets the image file as a multipartfile and checks if it's a .jpg, .svg, or .png and within size limit. If no, an
-     * error message is displayed. Else, the file will be saved in the database as a Byte array.
-     * @param file uploaded MultipartFile file
+     * Gets the image file as a multipartfile and checks if it's a .jpg, .svg, or
+     * .png and within size limit. If no, an
+     * error message is displayed. Else, the file will be saved in the database as a
+     * Byte array.
+     *
+     * @param file               uploaded MultipartFile file
      * @param redirectAttributes
-     * @param model (map-like) representation of team id
+     * @param model              (map-like) representation of team id
      * @return
      */
     @PostMapping("/profile")
-    public RedirectView uploadPicture(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes, Model model)
-    {
+    public RedirectView uploadPicture(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
+            Model model) {
 
-        model.addAttribute("teamID", this.teamId);
-        if (!isSupportedContentType(file.getContentType())){
+        model.addAttribute("teamID", ProfileFormController.teamId);
+        if (!isSupportedContentType(file.getContentType())) {
             redirectAttributes.addFlashAttribute("typeError", true);
-            return new RedirectView("/profile?teamID=" + this.teamId, true);
-        }
-        else if (file.getSize()>10000000){
+            return new RedirectView("/profile?teamID=" + ProfileFormController.teamId, true);
+        } else if (file.getSize() > 10000000) {
             redirectAttributes.addFlashAttribute("sizeError", true);
-            return new RedirectView("/profile?teamID=" + this.teamId, true);
+            return new RedirectView("/profile?teamID=" + ProfileFormController.teamId, true);
         }
-        teamService.updatePicture(file,this.teamId );
-        return new RedirectView("/profile?teamID=" + this.teamId, true);
+        teamService.updatePicture(file, ProfileFormController.teamId);
+        return new RedirectView("/profile?teamID=" + ProfileFormController.teamId, true);
     }
 
     /**
-     * @param contentType The picture file type in string, e.g image/jpg, image/svg+xml etc
-     * @return Boolean type if the contentType parameter matches either the image/png, image/jpg, image/svg+xml or image/jpeg string
+     * @param contentType The picture file type in string, e.g image/jpg,
+     *                    image/svg+xml etc
+     * @return Boolean type if the contentType parameter matches either the
+     *         image/png, image/jpg, image/svg+xml or image/jpeg string
      */
-    private boolean isSupportedContentType(String contentType){
-        return contentType.equals("image/png")|| contentType.equals("image/jpg")||contentType.equals("image/svg+xml")|| contentType.equals("image/jpeg");
+    private boolean isSupportedContentType(String contentType) {
+        return contentType.equals("image/png") || contentType.equals("image/jpg") || contentType.equals("image/svg+xml")
+                || contentType.equals("image/jpeg");
     }
 
 }
-
-

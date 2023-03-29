@@ -4,75 +4,223 @@
 
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <head>
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Register</title>
 </head>
 
 <body class="background-image">
-    <!-- add navbar-->
-    <div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
-    <div class="team-form register">
-        <div class="create-team">
-            <h1>Register</h1>
-        </div>
-        <div class="wrapper">
-            <form th:action="@{register}" method="post" th:object="${registerForm}">
-                <div class="input-box">
-                    <input type="text" class="form-control" id="first-name" placeholder="" th:field="*{firstName}"
-                        data-cy="firstName" required autofocus>
-                    <label for="first-name"> First Name: </label>
-                </div>
-                <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message"></div>
-                <div class="input-box">
-                    <input type="text" class="form-control" id="last-name" placeholder="" th:field="*{lastName}"
-                        data-cy="lastName" required autofocus>
-                    <label for="last-name"> Last Name: </label>
-                </div>
-                <div th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error-message"></div>
-                <div class="input-box">
-                    <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
-                        data-cy="dateOfBirth" required autofocus>
-                    <label for="date-of-birth"> Date of Birth: </label>
-                </div>
-                <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
-                <div class="input-box">
-                    <input type="email" class="form-control" id="email" placeholder="" th:field="*{email}"
-                        data-cy="email" required autofocus>
-                    <label for="email"> Email: </label>
-                </div>
-                <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message"></div>
-                <div class="input-box">
-                    <input type="password" class="form-control" id="password" placeholder="" th:field="*{password}"
-                        data-cy="password" required autofocus>
-                    <label for="password"> Password: </label>
-                </div>
-                <div class="input-box">
-                    <input type="password" class="form-control" id="confirm-password" placeholder=""
-                        th:field="*{confirmPassword}" data-cy="confirmPassword" required autofocus>
-                    <label for="confirm-password"> Confirm Password: </label>
-                </div>
-                <div class="password-info">
-                <div th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error-message"></div>
-                <p>
-password must be at least <strong>8 characters</strong>, and MUST contain <strong>upper</strong> and <strong>lower</strong> case letters, <strong>numbers</strong> and <strong>symbols</strong>, and can NOT contain your <strong>name</strong> or <strong>email</strong></p>
-                </div>
-                <div class="submit-button">
-                    <button type="submit">Register</button>
-                </div>
-                <div class="cancel-link">
-                    <a th:href="@{login}">Login</a>
-                    <div class="cancel-link">
-                        <a th:href="@{home}">Cancel</a>
+<!-- add navbar-->
+<div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+<div class="register-form">
+    <div class="register-header">
+        <h1>Register</h1>
+    </div>
+    <div class="wrapper">
+        <form th:action="@{register}" method="post" th:object="${registerForm}">
+            <div class="register-inputs">
+                <div class="register-inputs-left">
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="first-name" placeholder="" th:field="*{firstName}"
+                               data-cy="firstName" required autofocus>
+                        <label for="first-name"> First Name <span class="required">*</span></label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message"></div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="last-name" placeholder="" th:field="*{lastName}"
+                               data-cy="lastName" required autofocus>
+                        <label for="last-name"> Last Name <span class="required">*</span></label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error-message"></div>
+                    <div class="input-box">
+                        <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
+                               data-cy="dateOfBirth" required autofocus>
+                        <label for="date-of-birth"> Date of Birth <span class="required">*</span></label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
+                    <div class="input-box">
+                        <input type="email" class="form-control" id="email" placeholder="" th:field="*{email}"
+                               data-cy="email" required autofocus>
+                        <label for="email"> Email <span class="required">*</span></label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message"></div>
+                    <div class="input-box">
+                        <input type="password" class="form-control" id="password" placeholder="" th:field="*{password}"
+                               data-cy="password" required autofocus>
+                        <label for="password"> Password <span class="required">*</span></label>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" class="form-control" id="confirm-password" placeholder=""
+                               th:field="*{confirmPassword}" data-cy="confirmPassword" required autofocus>
+                        <label for="confirm-password"> Confirm Password <span class="required">*</span></label>
+                    </div>
+                    <div class="password-info">
+                        <div th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error-message"></div>
+                        <p>Password must be at least <strong>8 characters</strong>, contain <strong>upper</strong> and <strong>lower</strong> case letters, <strong>numbers</strong> and <strong>symbols</strong>, and can't contain your <strong>name</strong> or <strong>email</strong></p>
                     </div>
                 </div>
-
-            </form>
-
-        </div>
+                <hr class="solid">
+                <div class="register-inputs-right">
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
+                               data-cy="location" th:pattern="${addressRegex}" autofocus placeholder="" autocomplete="off"
+                               title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
+                        <label for="address-line-1">Address Line 1</label>
+                        <div class="autocomplete-container" id="autocomplete-container"></div>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
+                               data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}"
+                               title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
+                        <label for="address-line-2">Address Line 2</label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="suburb" th:name="suburb"
+                               data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                               title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
+                        <label for="suburb">Suburb</label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="postcode" th:name="postcode"
+                               data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder=""
+                        title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">
+                        <label for="postcode">Postcode</label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="city" th:name="city"
+                               data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                               title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
+                        <label for="city">City <span class="required">*</span></label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="country" th:name="country"
+                               data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                               title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
+                        <label for="country">Country <span class="required">*</span></label>
+                    </div>
+                </div>
+                <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>
+            </div>
+            <div class="submit-button">
+                <button type="submit">Register</button>
+            </div>
+            <div class="cancel-link">
+                <a th:href="@{login}">Login</a>
+                <div class="cancel-link">
+                    <a th:href="@{home}">Cancel</a>
+                </div>
+            </div>
+        </form>
     </div>
+</div>
 </body>
+<script th:inline="javascript">
+    /**
+     * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
+     * @type {string}
+     */
+    const ENDPOINT = '/geocode/autocomplete';
 
+    /**
+     * The delay time (in milliseconds) for debouncing the search input.
+     * @type {number}
+     */
+    const DEBOUNCE_DELAY = 450; // set the debounce delay to 450ms
+
+    const searchBox = document.querySelector('#address-line-1');
+    const resultsContainer = document.querySelector('#autocomplete-container');
+    const countryInput = document.querySelector('#country');
+    const cityInput = document.querySelector('#city');
+    const suburbInput = document.querySelector('#suburb');
+    const postcodeInput = document.querySelector('#postcode');
+
+    let timeoutId;
+
+    /**
+     * Debounces the given function with the given delay time.
+     * @param {Function} fn - The function to be debounced.
+     * @param {number} delay - The delay time (in milliseconds) for debouncing.
+     * @returns {Function} The debounced function.
+     */
+    function debounce(fn, delay) {
+        return function () {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => fn.apply(this, arguments), delay);
+        }
+    }
+
+    /**
+     * Searches the OpenRouteService Geocoding API for autocomplete results based on the current search input value.
+     * Displays the results in the results container element.
+     */
+    function searchAutocomplete() {
+        const searchTerm = this.value.trim();
+
+        if (searchTerm.length >= 3) {
+            axios.get(ENDPOINT, {
+                params: {
+                    text: searchTerm,
+                    language: 'en'
+                }
+            })
+                .then(response => {
+                    const results = response.data.features.slice(0, 5);
+                    let html = '';
+                    if (results.length > 0) {
+                        html = '<ul class ="autocomplete-result">';
+                        results.forEach(result => {
+                            html += `<li class="location-autocomplete-value" data-country="${result.properties.country}" data-city="${result.properties.locality}" data-suburb="${result.properties.localadmin}" data-postcode="${result.properties.postalcode}" data-house-number="${result.properties.housenumber}" data-street="${result.properties.street}">${result.properties.label}</li>`;
+                        });
+                        html += '</ul>';
+                    } else {
+                        html = '<p>No results found</p>';
+                    }
+                    resultsContainer.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error(error);
+                    resultsContainer.innerHTML = '<p>Error fetching results</p>';
+                });
+        } else {
+            resultsContainer.innerHTML = '';
+        }
+    }
+
+    /**
+     * Adds an event listener to the search input element for debouncing the searchAutocomplete function.
+     */
+    searchBox.addEventListener('input', debounce(searchAutocomplete, DEBOUNCE_DELAY));
+
+    /**
+     * Adds an event listener to the results container element for handling the click event on an autocomplete result.
+     * Updates the search input and the selected address elements with the clicked result data.
+     */
+    resultsContainer.addEventListener('click', function (event) {
+        if (event.target.tagName === 'LI') {
+            let address = event.target.getAttribute('data-house-number') === "undefined" ? "" : event.target.getAttribute('data-house-number') + " ";
+            address += event.target.getAttribute('data-street') === "undefined" ? "" : event.target.getAttribute('data-street');
+            searchBox.value = address;
+            const country = event.target.getAttribute('data-country') === "undefined" ? "" : event.target.getAttribute('data-country');
+            const city = event.target.getAttribute('data-city') === "undefined" ? "" : event.target.getAttribute('data-city');
+            const suburb = event.target.getAttribute('data-suburb') === "undefined" ? "" : event.target.getAttribute('data-suburb');
+            const postcode = event.target.getAttribute('data-postcode') === "undefined" ? "" : event.target.getAttribute('data-postcode');
+            countryInput.value = country;
+            cityInput.value = suburb;
+            suburbInput.value = city;
+            postcodeInput.value = postcode;
+            resultsContainer.innerHTML = "";
+        }
+    });
+
+    document.addEventListener('click', function (event) {
+        if (resultsContainer.innerHTML !== '' && !resultsContainer.contains(event.target)) {
+            resultsContainer.innerHTML = "";
+        }
+    });
+
+</script>
 </html>

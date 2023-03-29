@@ -18,11 +18,11 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
 
-    @Column(nullable = false)
-    private String name;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Location location;
 
     @Column(nullable = false)
-    private String location;
+    private String name;
 
     @Column(nullable = false)
     private String sport;
@@ -33,23 +33,30 @@ public class Team {
     protected Team() {
     }
 
-    /**
-     * Team constructor method
-     * @param name The name of team
-     * @param location The location of team
-     * @param sport The sport that the team play
-     * @throws IOException
-     */
-    public Team(String name, String location, String sport) throws IOException {
+    public Team(String name, String sport, Location location) throws IOException {
         this.name = name;
         this.location = location;
         this.sport = sport;
-        //Retrieving the default profile image and converting it to byte array string to be stored in database
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
         this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
     }
 
+    /**
+     * Should be used for testing ONLY!
+     * TODO: Remove this constructor, use builder pattern. same for user
+     * @param name
+     * @param sport
+     */
+    public Team(String name, String sport) throws IOException {
+        this.name = name;
+        // create a dummy location
+        this.location = new Location("address1", "address2", "suburb", "chch", "8052", "new zealand");
+        this.sport = sport;
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        File file = resource.getFile();
+        this.pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+    }
 
     public Long getTeamId() {
         return this.teamId;
@@ -59,20 +66,20 @@ public class Team {
         return this.name;
     }
 
-    public String getLocation() {
-        return this.location;
-    }
-
     public String getSport() {
         return this.sport;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Location getLocation() {
+        return this.location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -88,14 +95,12 @@ public class Team {
         this.pictureString = pictureString;
     }
 
-    public void setTeamId(long teamId){
-        this.teamId=teamId;
+    public void setTeamId(long teamId) {
+        this.teamId = teamId;
     }
 
     public void setSport(String sport) {
         this.sport = sport;
     }
-
-
 
 }

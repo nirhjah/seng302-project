@@ -52,6 +52,11 @@ public class ViewUserController {
 
         // Thymeleaf has no special support for optionals
         model.addAttribute("thisUser", user);
+        model.addAttribute("firstName", user.get().getFirstName());
+        model.addAttribute("lastName", user.get().getLastName());
+        model.addAttribute("email", user.get().getEmail());
+        model.addAttribute("dateOfBirth", user.get().getDateOfBirth());
+        model.addAttribute("location", user.get().getLocation());
         model.addAttribute("displayPicture", userPicture);
 
         var curUser = userService.getCurrentUser();

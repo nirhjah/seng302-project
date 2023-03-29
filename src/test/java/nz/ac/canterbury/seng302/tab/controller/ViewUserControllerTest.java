@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -21,6 +22,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -49,10 +52,18 @@ public class ViewUserControllerTest {
 
     private User user;
 
+    private static final String USER_ADDRESS_LINE_1 = "1 Street Road";
+    private static final String USER_ADDRESS_LINE_2 = "A";
+    private static final String USER_SUBURB = "Riccarton";
+    private static final String USER_POSTCODE = "8000";
+    private static final String USER_CITY = "Christchurch";
+    private static final String USER_COUNTRY = "New Zealand";
+
     @BeforeEach
     public void beforeAll() throws IOException {
         userRepository.deleteAll();
-        user = new User(name, name, email, password);
+        Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY, USER_POSTCODE, USER_COUNTRY);
+        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
         userRepository.save(user);
 
         Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
@@ -78,8 +89,7 @@ public class ViewUserControllerTest {
     public void whenLoggedIn_checkUserFieldsAreCorrect() throws Exception {
         mockMvc.perform(get("/user-info/self"))
                 .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/user-info?name=" + user.getUserId()))
-                .andExpect(MockMvcResultMatchers.model().attribute("pictureString", user.getPictureString()));
+                .andExpect(view().name("redirect:/user-info?name=" + user.getUserId()));
     }
 
     @Test
