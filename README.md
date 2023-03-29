@@ -57,9 +57,9 @@ gradlew test
 - Sebastian Conaghan-Carr
 - Angela Yu
 - Andrew Hall
--  Oliver Garrett
--  Nirhjah Selvarajah
--  Amy Paull
+- Oliver Garrett
+- Nirhjah Selvarajah
+- Amy Paull
 
 ## References
 
