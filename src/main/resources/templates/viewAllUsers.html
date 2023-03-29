@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <title>View All Users</title>
+</head>
+
+<div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+
+<body class="view-users-background">
+    <div>
+        <p>
+        <form th:action="@{view-users}" method="get">
+            <input type="text" placeholder="Search name" th:name="currentSearch" th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">
+            <button class="search-user-button" type="submit"> Search </button>
+            <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>
+            <br><br>
+        </form>
+        
+        </p>
+    </div>
+
+    <!-- Can convert this table into a fragment if neccessary.
+        for now, embrace YAGNI -->
+    <table>
+        <tr th:if="${listOfUsers.empty}">
+            <td colspan="2"> No users </td>
+        </tr>
+
+        <tr th:unless="${listOfUsers.empty}">
+            <th> </th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Link</th>
+        </tr>
+
+        <tr th:each="user : ${listOfUsers}">
+            <td>
+                <img th:src="${'data:image/jpeg;base64,' + user.pictureString}" width="50" height="50"/>
+            </td>
+            <td> [[|${user.firstName} ${user.lastName}|]] </td>
+            <td th:text="${user.email}"> Email </td>
+            <td>
+                <a th:href="@{user-info(name=${user.userId})}"> Profile </a>
+            </td>
+        </tr>
+    </table>
+
+    <div th:insert="fragments/pagination.html :: pagination(pageName='view-users')"></div>
+</body>

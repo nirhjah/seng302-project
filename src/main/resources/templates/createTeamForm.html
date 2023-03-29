@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
 <head>
-    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <title th:inline="text">
         [[${teamID != null ? 'Edit' : 'Create'}]] Team</title>
 </head>
+
 <body class="team-form-background">
     <div th:insert="~{/homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
     <div class="team-form">
@@ -15,24 +18,66 @@
         <div class="wrapper">
             <form th:action="@{createTeam}" method="post">
                 <div th:if="${invalid_team != null}" th:text="${invalid_team}" class="invalid-team error-message"></div>
-                <input type="hidden" th:if="${teamID != null}" th:name="teamID" th:value="${teamID}"/>
-                <div class="input-box">
-                    <input type="text" class="form-control" id="name"
-                           th:name="name" th:value="*{name}" data-cy="name" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                    <label for="name"> Name: </label>
+                <input type="hidden" th:if="${teamID != null}" th:name="teamID" th:value="${teamID}" />
+                <div class="input-boxes">
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="name" th:name="name" th:value="*{name}"
+                               data-cy="name" required autofocus th:pattern="${teamNameUnicodeRegex}" placeholder=""
+                        title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
+                        <label for="name">Name <span class="required">*</span></label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="sport" th:name="sport" th:value="*{sport}"
+                               data-cy="sport" required autofocus th:pattern="${sportUnicodeRegex}" placeholder=""
+                        title="May include letters, spaces, apostrophes, and hyphens. Must start with letter">
+                        <label for="sport">Sport <span class="required">*</span></label>
+                    </div>
                 </div>
-                <div class="input-box">
-                    <input type="text" class="form-control" id="sport"
-                           th:name="sport" th:value="*{sport}" data-cy="sport" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                    <label for="sport"> Sport: </label>
+                <div class="input-boxes">
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
+                               th:value="*{addressLine1}" data-cy="location" th:pattern="${addressRegex}"
+                               autofocus placeholder="" autocomplete="off"
+                               title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include
+                                    at least one letter or number">
+                        <label for="address-line-1">Address Line 1</label>
+                        <div class="autocomplete-container" id="autocomplete-container"></div>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
+                               th:value="*{addressLine2}" data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}"
+                               title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include
+                                      at least one letter or number">
+                        <label for="address-line-2">Address Line 2</label>
+                    </div>
                 </div>
-                <div class="input-box">
-                    <input type="text" class="form-control" id="location"
-                           th:name="location" th:value="*{location}" data-cy="location" required
-                           autofocus th:pattern="${allUnicodeRegex}" placeholder="">
-                    <label for="location">Location:</label>
+                <div class="input-boxes">
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="suburb" th:name="suburb" th:value="*{suburb}"
+                               data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                               title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
+                        <label for="suburb">Suburb</label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="postcode" th:name="postcode" th:value="*{postcode}"
+                               data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder=""
+                           title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">
+                        <label for="postcode">Postcode</label>
+                    </div>
+                </div>
+                <div class="input-boxes">
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="city" th:name="city" th:value="*{city}"
+                               data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                           title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
+                        <label for="city">City <span class="required">*</span></label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="country" th:name="country" th:value="*{country}"
+                            data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                           title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
+                        <label for="country">Country <span class="required">*</span></label>
+                    </div>
                 </div>
                 <br/>
                 <div class="submit-button">
@@ -50,8 +95,117 @@
     </div>
     <footer>
         <p>
-            Image by <a href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a> on Freepik
+            Image by <a
+                href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+            on Freepik
         </p>
     </footer>
 </body>
+<script th:inline="javascript">
+    /**
+     * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
+     * @type {string}
+     */
+    const ENDPOINT = '/geocode/autocomplete';
+
+    /**
+     * The delay time (in milliseconds) for debouncing the search input.
+     * @type {number}
+     */
+    const DEBOUNCE_DELAY = 450; // set the debounce delay to 450ms
+
+    const searchBox = document.querySelector('#address-line-1');
+    const resultsContainer = document.querySelector('#autocomplete-container');
+    const countryInput = document.querySelector('#country');
+    const cityInput = document.querySelector('#city');
+    const suburbInput = document.querySelector('#suburb');
+    const postcodeInput = document.querySelector('#postcode');
+
+    let timeoutId;
+
+    /**
+     * Debounces the given function with the given delay time.
+     * @param {Function} fn - The function to be debounced.
+     * @param {number} delay - The delay time (in milliseconds) for debouncing.
+     * @returns {Function} The debounced function.
+     */
+    function debounce(fn, delay) {
+        return function () {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => fn.apply(this, arguments), delay);
+        }
+    }
+
+    /**
+     * Searches the OpenRouteService Geocoding API for autocomplete results based on the current search input value.
+     * Displays the results in the results container element.
+     */
+    function searchAutocomplete() {
+        const searchTerm = this.value.trim();
+
+        if (searchTerm.length >= 3) {
+            axios.get(ENDPOINT, {
+                params: {
+                    text: searchTerm,
+                    language: 'en'
+                }
+            })
+                .then(response => {
+                    const results = response.data.features.slice(0, 5);
+                    let html = '';
+                    if (results.length > 0) {
+                        html = '<ul class ="autocomplete-result">';
+                        results.forEach(result => {
+                            html += `<li class="location-autocomplete-value" data-country="${result.properties.country}" data-city="${result.properties.locality}" data-suburb="${result.properties.localadmin}" data-postcode="${result.properties.postalcode}" data-house-number="${result.properties.housenumber}" data-street="${result.properties.street}">${result.properties.label}</li>`;
+                        });
+                        html += '</ul>';
+                    } else {
+                        html = '<p>No results found</p>';
+                    }
+                    resultsContainer.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error(error);
+                    resultsContainer.innerHTML = '<p>Error fetching results</p>';
+                });
+        } else {
+            resultsContainer.innerHTML = '';
+        }
+    }
+
+    /**
+     * Adds an event listener to the search input element for debouncing the searchAutocomplete function.
+     */
+    searchBox.addEventListener('input', debounce(searchAutocomplete, DEBOUNCE_DELAY));
+
+
+    /**
+     * Adds an event listener to the results container element for handling the click event on an autocomplete result.
+     * Updates the search input and the selected address elements with the clicked result data.
+     */
+    resultsContainer.addEventListener('click', function (event) {
+        if (event.target.tagName === 'LI') {
+            let address = event.target.getAttribute('data-house-number') === "undefined" ? "" : event.target.getAttribute('data-house-number') + " ";
+            address += event.target.getAttribute('data-street') === "undefined" ? "" : event.target.getAttribute('data-street');
+            searchBox.value = address;
+            const country = event.target.getAttribute('data-country') === "undefined" ? "" : event.target.getAttribute('data-country');
+            const city = event.target.getAttribute('data-city') === "undefined" ? "" : event.target.getAttribute('data-city');
+            const suburb = event.target.getAttribute('data-suburb') === "undefined" ? "" : event.target.getAttribute('data-suburb');
+            const postcode = event.target.getAttribute('data-postcode') === "undefined" ? "" : event.target.getAttribute('data-postcode');
+            countryInput.value = country;
+            cityInput.value = suburb;
+            suburbInput.value = city;
+            postcodeInput.value = postcode;
+            resultsContainer.innerHTML = "";
+        }
+    });
+
+    document.addEventListener('click', function (event) {
+        if (resultsContainer.innerHTML !== '' && !resultsContainer.contains(event.target)) {
+            resultsContainer.innerHTML = "";
+        }
+    });
+
+</script>
+
 </html>

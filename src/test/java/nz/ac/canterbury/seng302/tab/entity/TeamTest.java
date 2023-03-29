@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
+import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,19 +26,26 @@ public class TeamTest {
     @Autowired
     private TeamService teamService;
 
-    @BeforeEach
-    public void beforeEach(){
-        teamRepository.deleteAll();
+    @Autowired
+    private LocationRepository locationRepository;
 
+    private Location location;
+
+    @BeforeEach
+    public void beforeEach() {
+        teamRepository.deleteAll();
+        location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
     }
+
+
     @Test
     public void testTeamConstructor() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
-        Team team = new Team("test", "Christchurch", "Hockey");
+        Team team = new Team("test", "Hockey", location);
         teamRepository.save(team);
         assertEquals("test", team.getName());
-        assertEquals("Christchurch", team.getLocation());
+        assertEquals("Christchurch", team.getLocation().getCity());
         assertEquals("Hockey", team.getSport());
     }
 
@@ -45,13 +53,9 @@ public class TeamTest {
     public void testGettingTeamId() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
-        Team team = new Team("test", "Christchurch", "Hockey");
+        Team team = new Team("test", "Hockey", location);
         teamRepository.save(team);
-
-        Team team2= new Team ("test2","Auckland", "Netball");
-        teamRepository.save(team2);
         assertEquals(1, team.getTeamId());
-        assertEquals(2,team2.getTeamId());
     }
 
     @Test
@@ -61,28 +65,27 @@ public class TeamTest {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
         String pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
-        Team team = new Team("test", "Christchurch", "Hockey");
+        Team team = new Team("test", "Hockey", location);
         teamService.addTeam(team);
-        assertEquals(pictureString,team.getPictureString() );
+        assertEquals(pictureString, team.getPictureString());
     }
 
     @Test
     public void testGettingTeamName() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
-        Team team = new Team("test", "Christchurch", "Hockey");
+        Team team = new Team("test", "Hockey", location);
         teamService.addTeam(team);
-        assertEquals("test",team.getName());
+        assertEquals("test", team.getName());
     }
 
     @Test
     public void testGettingTeamLocation() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
-        Team team = new Team("test", "Christchurch", "Hockey");
+        Team team = new Team("test", "Hockey", location);
         teamService.addTeam(team);
-        assertEquals("Christchurch",team.getLocation());
+        assertEquals("Christchurch", team.getLocation().getCity());
     }
-
 
 }

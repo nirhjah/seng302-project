@@ -2,15 +2,19 @@ package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -19,6 +23,7 @@ import java.util.List;
  */
 @Service
 public class TeamService {
+    Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private TeamRepository teamRepository;
 
@@ -42,6 +47,7 @@ public class TeamService {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         return teamRepository.findAll(pageable);
     }
+
     /**
      * Method which updates the picture by taking the MultipartFile type and updating the picture
      * stored in the team with id primary key.
@@ -55,7 +61,7 @@ public class TeamService {
         //Gets the original file name as a string for validation
         String pictureString = StringUtils.cleanPath(file.getOriginalFilename());
         if (pictureString.contains("..")) {
-            System.out.println("not a a valid file");
+            System.out.println("not a valid file");
         }
         try {
             //Encodes the file to a byte array and then convert it to string, then set it as the pictureString variable.
@@ -66,5 +72,24 @@ public class TeamService {
 
         //Saved the updated picture string in the database.
         teamRepository.save(team);
+    }
+
+    /**
+     * gets a page of teams filtered by their name and sport
+     *
+     * @param pageable a page object showing how the page should be shown
+     * @param filterSports List of sports to be filtered by
+     * @param nameSearch the search query
+     * @return a slice of teams that meet the name conditions and filter conditions
+     */
+    public Page<Team> findTeamsByNameOrSport(Pageable pageable, List<String> filterSports, String nameSearch)
+    {
+        if (filterSports == null) {
+            filterSports = List.of();
+        }
+        if (nameSearch != null && nameSearch.isEmpty()) {
+            nameSearch = null;
+        }
+        return teamRepository.findTeamByNameAndSportIn(pageable, filterSports, nameSearch);
     }
 }
