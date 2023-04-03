@@ -9,7 +9,7 @@
 
 <body class="team-form-background">
   <!-- add navbar-->
-  <div th:insert="~{homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+  <header th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></header>
   <div class="login-form">
     <div class="login-header">
       <h1>Login</h1>

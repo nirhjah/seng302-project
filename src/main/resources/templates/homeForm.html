@@ -1,65 +1,14 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
-    <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <title>Home</title>
-    <style>
-        @media only screen and (max-width: 100px) {
-            .hamburger {
-                display: block;
-                cursor: pointer;
-            }
-        }
-
-        .hamburger div {
-            width: 30px;
-            height: 2px;
-            margin: 6px 0;
-            background: #fff;
-        }
-    </style>
 </head>
 <body class="home-background">
-<div>
-    <div th:fragment="navbar" class="navbar">
-        <div class="menu-items">
-            <p>
-                <a th:href="@{home}">Home</a>
-                        <span class="auth-buttons" sec:authorize="isAnonymous()">
-                            <a th:href="@{login}">Login</a>
-                            <a th:href="@{register}">Register</a>
-                        </span>
-                <div class="hamburger">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
-            <!-- These buttons only make sense in the context of a logged in user -->
-            <span sec:authorize="isAuthenticated()">
-                        <a th:href="@{createTeam}">Create Team</a>
-                        <a th:href="@{searchTeams}">Search Teams</a>
-                        <a th:href="@{view-teams(page=1)}">See All Teams</a>
-                        <a th:href="@{view-users(page=1)}">View All Users</a>
-                        View Profile:
-                        <select class="form-control" id="dropDownList" name="teamSelector"
-                                onchange="if(this.value != '-1') window.location.href = '/profile?teamID=' + this.value;">
-                            <option value="-1" selected>Select a Team</option>
-                            <option th:each="team : ${navTeams}"
-                                    th:value="${team.teamId}"
-                                    th:text="${team}"
-                                    th:selected="${team.teamId.equals(teamID)}"> </option>
-                        </select>
-                    </span>
-            <span class="auth-buttons" sec:authorize="isAuthenticated()">
-                        <a th:href="@{user-info/self}">My Profile</a>
-                        <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
-                    </span>
-            <form id="logoutForm" th:action="@{logout}" method="POST"></form>
-            </p>
-        </div>
-    </div>
+ <header th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></header>
     <div class="Welcome-header">
         <h1>Welcome!</h1>
     </div>

@@ -111,7 +111,7 @@
 </style>
 
 <body class="profile-background">
-<div th:insert="~{homeForm.html::navbar}"></div>
+<header th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></header>
     <div class="profile-form">
         <div class="wrapper-profile">
             <p th:if="${thisUser.isEmpty()}">
