@@ -339,8 +339,10 @@ hr.solid {
 
 .menu-items p {
   font-size: 18px;
-  padding-left: 15px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
+
 
 .profile-form {
   min-height: 90vh;
@@ -495,7 +497,7 @@ a.enabled {
   width: 85%;
   height: 35px;
   border-bottom: 2px solid #162938;
-  margin: 30px 0;
+  margin: 40px 0;
   font-family: "Noto Sans", sans-serif;
 }
 
@@ -552,13 +554,14 @@ input:invalid + label:after {
 .input-box label {
   font-family: "Noto Sans", sans-serif;
   position: absolute;
-  top: 50%;
-  left: 5px;
+  top: 55%;
+  left: 1px;
   transform: translateY(-50%);
   font-size: 1em;
   font-weight: 500;
   pointer-events: none;
   transition: 0.5s;
+  color: #888888;
 }
 
 
@@ -569,7 +572,7 @@ input:invalid + label:after {
   font-size: 1em;
   color: #0d1b2a;
   font-weight: 500;
-  padding: 0 0 0 5px;
+  padding: 0 0 0 1px;
   border: none;
   outline: none;
   cursor: pointer;
@@ -645,6 +648,8 @@ input:invalid + label:after {
   padding: 1rem;
   background: linear-gradient(-30deg, #333 50%, white 50%);
   background-size: 400% 400%;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
+  border-radius: 9px;
 }
 
 .paginationContainer {
@@ -700,7 +705,12 @@ li.active a {
   font-family: "Noto Sans", sans-serif;
   font-size: 1em;
   color: #fff;
-  border-radius: 6px;
+  border-radius: 30px;
+  font-weight: bold;
+}
+
+.submit-button {
+  border-radius: 30px;
 }
 
 .menu-items p,
@@ -709,6 +719,8 @@ li.active a {
   font-family: "Noto Sans", sans-serif;
   color: white;
 }
+
+
 
 .paginationContainer,
 .wrapper,

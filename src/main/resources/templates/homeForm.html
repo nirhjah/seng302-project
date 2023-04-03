@@ -10,12 +10,12 @@
     <div>
         <div th:fragment="navbar" class="navbar">
             <div class="menu-items">
-                <span class="auth-buttons" sec:authorize="isAnonymous()">
-                    <a th:href="@{login}">Login</a>
-                    <a th:href="@{register}">Register</a>
-                </span>
                 <p>
                     <a th:href="@{home}">Home</a>
+                    <span class="auth-buttons" sec:authorize="isAnonymous()">
+                        <a th:href="@{login}">Login</a>
+                        <a th:href="@{register}">Register</a>
+                    </span>
                     <!-- These buttons only make sense in the context of a logged in user -->
                     <span sec:authorize="isAuthenticated()">
                         <a th:href="@{createTeam}">Create Team</a>

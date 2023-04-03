@@ -19,12 +19,12 @@
         <div class="input-box">
           <input type="email" class="form-control" id="username" placeholder="" th:name="username"
             th:value="*{username}" data-cy="username" required autofocus>
-          <label for="username"> Email: </label>
+          <label for="username">Email *</label>
         </div>
         <div class="input-box">
           <input type="password" class="form-control" id="password" placeholder="" th:name="password"
             th:value="*{password}" data-cy="password" required autofocus>
-          <label for="password"> Password: </label>
+          <label for="password">Password *</label>
         </div>
         <div class="error-message" th:text="${errorMessage}">
           <h6 th:text="${errorMessage}"></h6>
