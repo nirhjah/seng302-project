@@ -1,254 +1,65 @@
 <header th:fragment="navbar">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            text-decoration: none;
-            box-sizing: border-box;
-        }
+    <link th:href="@{/css/navbarstyle.css}" rel="stylesheet">
+    <div class="header-left">
+        <div class="hamburger">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+        <nav class="nav-bar">
+            <ul>
+                <li>
+                    <a class="active" th:href="@{home}">Home</a>
+                </li>
+                <li sec:authorize="isAnonymous()">
+                    <a th:href="@{login}">Login</a>
+                </li>
+                <li sec:authorize="isAnonymous()">
+                    <a th:href="@{register}">Register</a>
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                    <a th:href="@{createTeam}">Create Team</a>
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                    <a th:href="@{searchTeams}">Search Teams</a>
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                    <a th:href="@{view-teams(page=1)}">See All Teams</a>
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                    <a th:href="@{view-users(page=1)}">View All Users</a>
+                </li>
 
-        body {
-            background: #fefefe;
-        }
-
-        header {
-            width: 100%;
-            height: 80px;
-            background: #1b263b;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 100px;
-        }
-
-        .hamburger {
-            display: none;
-        }
-
-        .nav-bar ul {
-            display: flex;
-        }
-
-        .nav-bar ul li a {
-            display: block;
-            color: #fefefe;
-            font-size: 20px;
-            padding: 10px 25px;
-            border-radius: 50px;
-            transition: 0.2s;
-            margin: 5px;
-            font-family: "Noto Sans", sans-serif;
-        }
-
-        .nav-bar ul li a:hover {
-            color: #1b263b ;
-            background: #fefefe ;
-        }
-
-        .nav-bar ul li a.active {
-            color: #1b263b;
-            background: #fefefe;
-        }
-
-        .navbar-profile-picture {
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            background-color: white;
-            border: 2px solid #162938;
-            margin: 3px 10px 3px 3px;
-        }
-
-        .navbar-user-button {
-            position: relative;
-        }
-
-        .navbar-user-button a {
-            padding: 0 !important;
-            display: flex !important;
-            align-items: center !important;
-        }
-
-        .navbar-user-dropdown {
-            display: none;
-            position: absolute;
-            top: 102%;
-            right: 4px;
-            background-color: #415A77;
-            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
-            border-radius: 4px;
-            z-index: 2;
-        }
-
-        .navbar-user-dropdown.show{
-            display: block;
-        }
-
-        .navbar-user-dropdown a {
-            display: block !important;
-            text-decoration: none;
-            color: #444;
-            text-align: left;
-            padding: 0 68px 5px 5px !important;
-            border-radius: 4px !important;
-        }
-
-        .navbar-user-dropdown a:hover {
-            background-color: #f4f4f4;
-        }
-
-        .triangle {
-            display: inline-block;
-            width: 0;
-            height: 0;
-            margin-left: 10px;
-            margin-right: 10px;
-            border-style: solid;
-            border-width: 8px 8px 0 8px;
-            border-color: white transparent transparent transparent;
-            transition: 0.1s;
-        }
-
-        .triangle.up {
-            border-width: 0 8px 8px 8px;
-            border-color: transparent transparent white transparent;
-        }
-
-        .navbar-user-button a:hover {
-            cursor: pointer;
-        }
-
-        .navbar-user-button a:hover .triangle {
-            border-color: #1b263b transparent transparent transparent;
-        }
-
-        .navbar-user-button a:hover .triangle.up {
-            border-color: transparent transparent #1b263b transparent;
-        }
-
-
-        @media only screen and (max-width: 1320px) {
-            header {
-                padding: 0 50px;
-            }
-        }
-
-        @media only screen and (max-width: 1100px) {
-            header {
-                padding: 0 30px;
-            }
-        }
-
-        @media only screen and (max-width: 900px) {
-            .hamburger {
-                display: block;
-                cursor: pointer;
-            }
-
-            .hamburger .line {
-                width: 30px;
-                height: 3px;
-                background: #fefefe;
-                margin: 6px 0;
-            }
-
-            .nav-bar {
-                height: 0;
-                position: absolute;
-                top: 80px;
-                left: 0;
-                right: 0;
-                width: 100vw;
-                background: #1b263b;
-                transition: 0.2s;
-                overflow: hidden;
-            }
-
-            .nav-bar ul {
-                display: block;
-                width: fit-content;
-                margin: 80px auto 0 auto;
-                text-align: center;
-                transition: 0.5s;
-                opacity: 0;
-            }
-
-            .nav-bar ul li a {
-                margin-bottom: 12px;
-
-            }
-
-            .nav-bar.active {
-                height: 500px;
-                z-index: 2;
-            }
-
-            .nav-bar.active ul {
-                opacity: 1;
-            }
-
-        }
-
-    </style>
-    <div class="hamburger">
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-    </div>
-    <nav class="nav-bar">
-        <ul>
-            <li>
-                <a class="active" th:href="@{home}">Home</a>
-            </li>
-            <li sec:authorize="isAnonymous()">
-                <a th:href="@{login}">Login</a>
-            </li>
-            <li sec:authorize="isAnonymous()">
-                <a th:href="@{register}">Register</a>
-            </li>
-            <li sec:authorize="isAuthenticated()">
-                <a th:href="@{createTeam}">Create Team</a>
-            </li>
-            <li sec:authorize="isAuthenticated()">
-                <a th:href="@{searchTeams}">Search Teams</a>
-            </li>
-            <li sec:authorize="isAuthenticated()">
-                <a th:href="@{view-teams(page=1)}">See All Teams</a>
-            </li>
-            <li sec:authorize="isAuthenticated()">
-                <a th:href="@{view-users(page=1)}">View All Users</a>
-            </li>
-            <li class="navbar-user-button" sec:authorize="isAuthenticated()">
-                <div class="navbar-user-dropdown">
-                    <a th:href="@{user-info/self}">Profile</a>
-                    <a href="/logout">Log Out</a>
+                <div sec:authorize="isAuthenticated()" class="view-profile">
+                    View Profile:
+                    <select class="form-control" id="dropDownList" name="teamSelector"
+                            onchange="if(this.value != '-1') window.location.href = '/profile?teamID=' + this.value;">
+                        <option value="-1" selected>Select a Team</option>
+                        <option th:each="team : ${navTeams}"
+                                th:value="${team.teamId}"
+                                th:text="${team}"
+                                th:selected="${team.teamId.equals(teamID)}"></option>
+                    </select>
                 </div>
-                <a>
-                    <img class="navbar-profile-picture"
-                         th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
-                    <span th:text="${#strings.length(firstName + ' ' + lastName) &lt;= 20 ? firstName + ' ' + lastName : #strings.substring(firstName + ' ' + lastName, 0, 17) + '...'}"></span>
-                    <i class="triangle"></i>
-                </a>
-            </li>
-            <li sec:authorize="isAuthenticated()">
-                <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
-            </li>
-            <div sec:authorize="isAuthenticated()">
-                View Profile:
-                <select class="form-control" id="dropDownList" name="teamSelector"
-                        onchange="if(this.value != '-1') window.location.href = '/profile?teamID=' + this.value;">
-                    <option value="-1" selected>Select a Team</option>
-                    <option th:each="team : ${navTeams}"
-                            th:value="${team.teamId}"
-                            th:text="${team}"
-                            th:selected="${team.teamId.equals(teamID)}"></option>
-                </select>
-            </div>
-            <form id="logoutForm" th:action="@{logout}" method="POST"></form>
 
-        </ul>
-    </nav>
+            </ul>
+        </nav>
+    </div>
+    <div class="header-right">
+        <li class="navbar-user-button" sec:authorize="isAuthenticated()">
+            <div class="navbar-user-dropdown">
+                <a th:href="@{user-info/self}">Profile</a>
+                <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
+            </div>
+            <a>
+                <img class="navbar-profile-picture"
+                     th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
+                <span th:text="${#strings.length(firstName + ' ' + lastName) &lt;= 20 ? firstName + ' ' + lastName : #strings.substring(firstName + ' ' + lastName, 0, 17) + '...'}"></span>
+                <i class="triangle"></i>
+            </a>
+        </li>
+        <form id="logoutForm" th:action="@{logout}" method="POST"></form>
+    </div>
     <script>
         let hamburger = document.querySelector(".hamburger")
         hamburger.onclick = function () {
@@ -260,13 +71,13 @@
         let triangle = navbarUserButton.querySelector(".triangle");
         let navbarUserDropdown = navbarUserButton.querySelector(".navbar-user-dropdown");
 
-        navbarUserButton.addEventListener("click", function(event) {
+        navbarUserButton.addEventListener("click", function (event) {
             event.stopPropagation();
             navbarUserDropdown.classList.toggle("show");
             triangle.classList.toggle("up");
         });
 
-        document.addEventListener("click", function(event) {
+        document.addEventListener("click", function (event) {
             if (!navbarUserButton.contains(event.target)) {
                 navbarUserDropdown.classList.remove("show");
                 triangle.classList.remove("up");
