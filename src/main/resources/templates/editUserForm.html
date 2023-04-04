@@ -114,16 +114,9 @@
         font-family: "Noto Sans", sans-serif;
         margin-left: 6px;
     }
-
-    /*.error-message {*/
-    /*    position: absolute;*/
-    /*    top: -20px; !* adjust this value to position the label as needed *!*/
-    /*    left: 0;*/
-    /*}*/
-
 </style>
 <body class="edit-user-background">
-    <div th:insert="~{homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+<header th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></header>
     <div class="user-form">
         <div class="user-header">
             <h1 th:inline="text">Edit User</h1>

@@ -7,7 +7,7 @@
 </head>
 <body class="view-teams-background">
 <div>
-    <div th:insert="~{homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+    <header th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></header>
     <table id="teamTable">
         <tr>
             <th>Profile Picture</th>
