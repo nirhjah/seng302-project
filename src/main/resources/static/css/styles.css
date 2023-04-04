@@ -255,15 +255,6 @@ td {
   /*backdrop-filter: blur(20px);*/
 }
 
-/*.wrapper-profile {
-    position: absolute;
-    width: 814px;
-    height: 412px;
-    display: grid;
-    !*background: transparent;*!
-    !*backdrop-filter: blur(20px);*!
-}*/
-
 .wrapper-edit-profile{
     width: 500px;
     height: 600px;
@@ -325,18 +316,6 @@ hr.solid {
     border-radius: 20px;
 }
 
-/*
-.wrapper,
-.wrapper-profile .profile-pic,
-.wrapper-profile .team-info,
-.file-label-border ,.profile-form,.
-wrapper-edit-profile, .user-info  {
-    justify-content: center;
-    align-items: center;
-}
-*/
-
-
 .wrapper,
 .wrapper-profile .profile-pic,
 .file-label-border,
@@ -344,13 +323,6 @@ wrapper-edit-profile, .user-info  {
 .user-info, .team-info, .wrapper-edit-profile {
     justify-content: center;
     align-items: center;
-}
-
-.wrapper-profile .profile-pic, .wrapper-profile .team-info, .wrapper-profile .user-info {
-    position: absolute;
-    top: 0;
-    width: 400px;
-    height: 440px;
 }
 
 .wrapper-profile .profile-pic {
@@ -368,7 +340,6 @@ wrapper-edit-profile, .user-info  {
   right: 0px;
 }
 
-
 .wrapper-profile .team-info {
   position: absolute;
   top: 0;
@@ -378,16 +349,13 @@ wrapper-edit-profile, .user-info  {
   padding-right: 170px;
   padding-top: 51px;
 }
+
 .wrapper-profile .team-info, .wrapper-profile .user-info, footer {
     right: 0;
 }
 
 .wrapper-profile .profile-pic {
   left: 0;
-}
-
-.wrapper-profile .team-info, .wrapper-profile .user-info, footer {
-    right: 0;
 }
 
 .file-label-border,.edit-button button, .profile-pic .back-button {
@@ -482,13 +450,6 @@ footer {
   position: absolute;
   right: 20px;
   bottom: 30px;
-}
-
-.team-info h3, .user-info h3 {
-    font-family: "Noto Sans", sans-serif;
-    font-weight: 600;
-    font-size: 35px;
-    color: #1B263B;
 }
 
 .edit-button button {
@@ -754,20 +715,6 @@ li.active a {
   width: 6%;
 }
 
-/*.search-team-button,
-.search-user-button {
-    background-color: #415a77;
-    width: 100%;
-    border-radius: 25px;
-    height: 41px;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 1em;
-    color: #fff;
-}*/
-
 .profile-pic .back-button,
 .submit-button button,
 .edit-button button,
@@ -787,11 +734,6 @@ li.active a {
   font-family: "Noto Sans", sans-serif;
   color: white;
 }
-
-/*ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form,.wrapper-edit-profile, .wrapper-profile .user-info {
-  display: flex;
-}*/
-
 
 .paginationContainer,
 .wrapper,
@@ -821,22 +763,6 @@ li.active a {
   backdrop-filter: blur(4px) saturate(180%);
 }
 
-
-/*.search-bar {
-    margin: 10px auto;
-    width: 60%;
-    max-width: 500px;
-    background-color: rgba(255, 255, 255, 0.5);
-    display: flex;
-    align-items: center;
-    border: 2px solid #58629b;
-    border-radius: 60px;
-    padding: 10px 20px;
-    height: 25px;
-    backdrop-filter: blur(4px) saturate(180%);
-    background-color: white;
-}*/
-
 .search-bar input {
   background: transparent;
   flex: 1;
@@ -855,41 +781,6 @@ li.active a {
   width: 25px;
 
 }
-
-/*.search-bar button img {
-    width: 25px;
-    padding-right: 3px;
-    padding-top: 1px;
-}*/
-
-/*
-.search-teams-button button {
-  border: 0;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  background: #58629b;
-  cursor: pointer;
-  position: absolute;
-  right: 3px
-}
-*/
-
-
-/*
-.multipleSelection {
-    background-color: #415A77;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 1em;
-    color: #fff;
-    border-radius: 20px;
-    border: none;
-    padding: .1em .5em;
-    cursor: pointer;
-    position: absolute;
-    display: inline-block;
-}
-*/
 
 .multipleSelection {
     background-color: #415A77;
@@ -946,20 +837,6 @@ li.active a {
   cursor: pointer;
 
 }
-
-
-/*
-.search-bar button {
-    border: 0;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    background: #58629b;
-    cursor: pointer;
-    position: absolute;
-    right: 3px;
-}*/
-
 
 .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form{
     display: flex;
