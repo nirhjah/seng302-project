@@ -208,8 +208,18 @@ td {
   background-color: #1b263b;
   overflow: hidden;
   white-space: nowrap;
-  padding-right: 20px;
 }
+
+/*.navbar {
+    padding-top: 15px;
+    padding-bottom: 20px;
+    height: 20px;
+    background-color: #1b263b;
+    overflow: hidden;
+    white-space: nowrap;
+    padding-right: 20px;
+}*/
+
 
 .form-control {
   background: #415a77;
@@ -238,12 +248,21 @@ td {
 
 .wrapper-profile {
   position: absolute;
-  width: 814px;
-  height: 412px;
+  width: 850px;
+  height: 430px;
   display: grid;
   /*background: transparent;*/
   /*backdrop-filter: blur(20px);*/
 }
+
+/*.wrapper-profile {
+    position: absolute;
+    width: 814px;
+    height: 412px;
+    display: grid;
+    !*background: transparent;*!
+    !*backdrop-filter: blur(20px);*!
+}*/
 
 .wrapper-edit-profile{
     width: 500px;
@@ -306,7 +325,23 @@ hr.solid {
     border-radius: 20px;
 }
 
-.wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form,.wrapper-edit-profile, .user-info  {
+/*
+.wrapper,
+.wrapper-profile .profile-pic,
+.wrapper-profile .team-info,
+.file-label-border ,.profile-form,.
+wrapper-edit-profile, .user-info  {
+    justify-content: center;
+    align-items: center;
+}
+*/
+
+
+.wrapper,
+.wrapper-profile .profile-pic,
+.file-label-border,
+.profile-form,
+.user-info, .team-info, .wrapper-edit-profile {
     justify-content: center;
     align-items: center;
 }
@@ -453,13 +488,6 @@ footer {
     font-family: "Noto Sans", sans-serif;
     font-weight: 600;
     font-size: 35px;
-    color: #1B263B;
-}
-
-.team-display, .user-display {
-    padding: 20px 0 20px 0;
-    font-weight: 500;
-    font-family: "Noto Sans", sans-serif;
     color: #1B263B;
 }
 
@@ -723,16 +751,22 @@ li.active a {
 .search-team-button,
 .search-user-button {
   background-color: #415a77;
-  width: 100%;
-  border-radius: 25px;
-  height: 41px;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  font-family: "Noto Sans", sans-serif;
-  font-size: 1em;
-  color: #fff;
+  width: 6%;
 }
+
+/*.search-team-button,
+.search-user-button {
+    background-color: #415a77;
+    width: 100%;
+    border-radius: 25px;
+    height: 41px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 1em;
+    color: #fff;
+}*/
 
 .profile-pic .back-button,
 .submit-button button,
@@ -754,8 +788,19 @@ li.active a {
   color: white;
 }
 
-ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form,.wrapper-edit-profile, .wrapper-profile .user-info {
+/*ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form,.wrapper-edit-profile, .wrapper-profile .user-info {
   display: flex;
+}*/
+
+
+.paginationContainer,
+.wrapper,
+.wrapper-profile .profile-pic,
+.wrapper-profile .team-info,
+.file-label-border,
+.profile-form,
+.user-info {
+    display: flex;
 }
 
 .profile-form {
@@ -774,8 +819,23 @@ ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-prof
   padding: 10px 20px;
   height: 25px;
   backdrop-filter: blur(4px) saturate(180%);
-  background-color: white;
 }
+
+
+/*.search-bar {
+    margin: 10px auto;
+    width: 60%;
+    max-width: 500px;
+    background-color: rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    border: 2px solid #58629b;
+    border-radius: 60px;
+    padding: 10px 20px;
+    height: 25px;
+    backdrop-filter: blur(4px) saturate(180%);
+    background-color: white;
+}*/
 
 .search-bar input {
   background: transparent;
@@ -793,10 +853,16 @@ ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-prof
 
 .search-bar button img {
   width: 25px;
-  padding-right: 3px;
-  padding-top: 1px;
+
 }
 
+/*.search-bar button img {
+    width: 25px;
+    padding-right: 3px;
+    padding-top: 1px;
+}*/
+
+/*
 .search-teams-button button {
   border: 0;
   border-radius: 50%;
@@ -807,8 +873,10 @@ ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-prof
   position: absolute;
   right: 3px
 }
+*/
 
 
+/*
 .multipleSelection {
     background-color: #415A77;
     font-family: "Noto Sans", sans-serif;
@@ -820,6 +888,22 @@ ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-prof
     cursor: pointer;
     position: absolute;
     display: inline-block;
+}
+*/
+
+.multipleSelection {
+    background-color: #415A77;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 1em;
+    color: #fff;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    display: inline-block;
+    margin-left: 10px;
+    height: 30px;
+    font-family: "Noto Sans", sans-serif;
 }
 
 .selectBox {
@@ -853,17 +937,6 @@ ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-prof
     overflow-y: scroll;
 }
 
-#checkBoxes label {
-    display: block;
-    padding: 3px;
-
-}
-
-#checkBoxes label:hover {
-    background-color: #4F615E;
-}
-
-
 .search-bar button {
   border: 0;
   border-radius: 50%;
@@ -871,9 +944,22 @@ ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-prof
   height: 40px;
   background: #58629b;
   cursor: pointer;
-  position: absolute;
-  right: 3px;
+
 }
+
+
+/*
+.search-bar button {
+    border: 0;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    background: #58629b;
+    cursor: pointer;
+    position: absolute;
+    right: 3px;
+}*/
+
 
 .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form{
     display: flex;
@@ -893,21 +979,6 @@ ul, .paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-prof
     font-family: "Noto Sans", sans-serif;
     margin-top: -2px;
     margin-bottom: 3px;
-}
-
-.multipleSelection {
-    background-color: #415A77;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 1em;
-    color: #fff;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    position: absolute;
-    display: inline-block;
-    margin-left: 10px;
-    height: 30px;
-    font-family: "Noto Sans", sans-serif;
 }
 
 .search-team-button-div {

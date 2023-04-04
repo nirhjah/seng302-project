@@ -15,7 +15,6 @@
       </div>
     </div>
     <div th:if="${not #lists.isEmpty(teams)}">
-      <h2 style="float: left">Search Results</h2>
       <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cityCheckbox')}" th:if="${not #lists.isEmpty(teams)}"></div>
       <button class="filter-by-city-button" type="submit">Apply Filters</button>
     </div>
