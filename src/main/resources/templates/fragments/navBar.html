@@ -37,7 +37,7 @@
             padding: 10px 25px;
             border-radius: 50px;
             transition: 0.2s;
-            margin: 0 5px;
+            margin: 5px;
             font-family: "Noto Sans", sans-serif;
         }
 
@@ -50,6 +50,83 @@
             color: #1b263b;
             background: #fefefe;
         }
+
+        .navbar-profile-picture {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border: 2px solid #162938;
+            margin: 3px 10px 3px 3px;
+        }
+
+        .navbar-user-button {
+            position: relative;
+        }
+
+        .navbar-user-button a {
+            padding: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        .navbar-user-dropdown {
+            display: none;
+            position: absolute;
+            top: 102%;
+            right: 4px;
+            background-color: #415A77;
+            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            z-index: 2;
+        }
+
+        .navbar-user-dropdown.show{
+            display: block;
+        }
+
+        .navbar-user-dropdown a {
+            display: block !important;
+            text-decoration: none;
+            color: #444;
+            text-align: left;
+            padding: 0 68px 5px 5px !important;
+            border-radius: 4px !important;
+        }
+
+        .navbar-user-dropdown a:hover {
+            background-color: #f4f4f4;
+        }
+
+        .triangle {
+            display: inline-block;
+            width: 0;
+            height: 0;
+            margin-left: 10px;
+            margin-right: 10px;
+            border-style: solid;
+            border-width: 8px 8px 0 8px;
+            border-color: white transparent transparent transparent;
+            transition: 0.1s;
+        }
+
+        .triangle.up {
+            border-width: 0 8px 8px 8px;
+            border-color: transparent transparent white transparent;
+        }
+
+        .navbar-user-button a:hover {
+            cursor: pointer;
+        }
+
+        .navbar-user-button a:hover .triangle {
+            border-color: #1b263b transparent transparent transparent;
+        }
+
+        .navbar-user-button a:hover .triangle.up {
+            border-color: transparent transparent #1b263b transparent;
+        }
+
 
         @media only screen and (max-width: 1320px) {
             header {
@@ -104,6 +181,7 @@
 
             .nav-bar.active {
                 height: 500px;
+                z-index: 2;
             }
 
             .nav-bar.active ul {
@@ -141,8 +219,17 @@
             <li sec:authorize="isAuthenticated()">
                 <a th:href="@{view-users(page=1)}">View All Users</a>
             </li>
-            <li sec:authorize="isAuthenticated()">
-                <a th:href="@{user-info/self}">My Profile</a>
+            <li class="navbar-user-button" sec:authorize="isAuthenticated()">
+                <div class="navbar-user-dropdown">
+                    <a th:href="@{user-info/self}">Profile</a>
+                    <a href="/logout">Log Out</a>
+                </div>
+                <a>
+                    <img class="navbar-profile-picture"
+                         th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
+                    <span th:text="${#strings.length(firstName + ' ' + lastName) &lt;= 20 ? firstName + ' ' + lastName : #strings.substring(firstName + ' ' + lastName, 0, 17) + '...'}"></span>
+                    <i class="triangle"></i>
+                </a>
             </li>
             <li sec:authorize="isAuthenticated()">
                 <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
@@ -167,7 +254,31 @@
         hamburger.onclick = function () {
             navBar = document.querySelector(".nav-bar");
             navBar.classList.toggle("active");
+        };
 
-        }
+        let navbarUserButton = document.querySelector(".navbar-user-button");
+        let triangle = navbarUserButton.querySelector(".triangle");
+        let navbarUserDropdown = navbarUserButton.querySelector(".navbar-user-dropdown");
+
+        navbarUserButton.addEventListener("click", function(event) {
+            event.stopPropagation();
+            navbarUserDropdown.classList.toggle("show");
+            triangle.classList.toggle("up");
+        });
+
+        document.addEventListener("click", function(event) {
+            if (!navbarUserButton.contains(event.target)) {
+                navbarUserDropdown.classList.remove("show");
+                triangle.classList.remove("up");
+            }
+        });
+
+        // let navbarUserButton = document.querySelector(".navbar-user-button");
+        // let triangle = navbarUserButton.querySelector(".triangle");
+        //
+        // navbarUserButton.addEventListener("click", function() {
+        //     triangle.classList.toggle("up");
+        // });
+
     </script>
 </header>
