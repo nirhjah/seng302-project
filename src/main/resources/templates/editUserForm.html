@@ -102,7 +102,7 @@
         text-decoration: underline;
         cursor: pointer;
         position: absolute;
-        margin-left: 75px;
+        margin-left: 65px;
         margin-top: 3px;
     }
 
@@ -208,7 +208,7 @@
                     </div>
                 </div>
                 <br/>
-                <div class="submit-button">
+                <div class="submit-button" style="padding-top: 20px">
                     <label th:if="${errorMessage}" th:text="${errorMessage}" style="position: fixed;"></label>
                     <a th:href="@{home}">
                         <button type="submit" id="submit">Save</button>
@@ -221,7 +221,8 @@
             </form>
             <div class="content">
                 <label for="sport-list"  id="error-message"></label>
-                <ul><input type="text" spellcheck="false" list="sports" id="sport-list"></ul>
+                <ul><input type="text" spellcheck="false" list="sports" id="sport-list" pattern="^\p{L}+[\- '\p{L}]*$"></ul>
+                <label th:if="${errorMessage}" th:text="${errorMessage}" style="position: fixed;"></label>
                 <datalist id="sports">
                     <option th:each="sport : ${knownSports}" th:text="${sport}">
                 </datalist>
