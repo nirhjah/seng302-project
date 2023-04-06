@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
@@ -42,8 +43,9 @@ public class SearchTeamsController {
     @GetMapping("/searchTeams")
     public String searchTeams(@RequestParam(value = "teamName", required = false) String teamName,
                               @RequestParam(value = "page", defaultValue = "0") int page,
-                              Model model) {
+                              Model model, HttpServletRequest request) {
         model.addAttribute("notSearch", false);
+        model.addAttribute("httpServletRequest",request);
         if (teamName != null) {
             if (teamName.length() < 3) {
                 model.addAttribute("error", true);

@@ -9,25 +9,25 @@
         <nav class="nav-bar">
             <ul>
                 <li>
-                    <a class="active" th:href="@{home}">Home</a>
+                    <a th:href="@{home}" th:classappend="${httpServletRequest.requestURI == '/home' ? 'active' : ''}">Home</a>
                 </li>
                 <li sec:authorize="isAnonymous()">
-                    <a th:href="@{login}">Login</a>
+                    <a th:href="@{login}" th:classappend="${httpServletRequest.requestURI == '/login' ? 'active' : ''}">Login</a>
                 </li>
                 <li sec:authorize="isAnonymous()">
-                    <a th:href="@{register}">Register</a>
+                    <a th:href="@{register}" th:classappend="${httpServletRequest.requestURI == '/register' ? 'active' : ''}">Register</a>
                 </li>
                 <li sec:authorize="isAuthenticated()">
-                    <a th:href="@{createTeam}">Create Team</a>
+                    <a th:href="@{createTeam}" th:classappend="${httpServletRequest.requestURI == '/createTeam' ? 'active' : ''}">Create Team</a>
                 </li>
                 <li sec:authorize="isAuthenticated()">
-                    <a th:href="@{searchTeams}">Search Teams</a>
+                    <a th:href="@{searchTeams}" th:classappend="${httpServletRequest.requestURI == '/searchTeams' ? 'active' : ''}">Search Teams</a>
                 </li>
                 <li sec:authorize="isAuthenticated()">
-                    <a th:href="@{view-teams(page=1)}">See All Teams</a>
+                    <a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">See All Teams</a>
                 </li>
                 <li sec:authorize="isAuthenticated()">
-                    <a th:href="@{view-users(page=1)}">View All Users</a>
+                    <a th:href="@{view-users(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
                 </li>
 
                 <div sec:authorize="isAuthenticated()" class="view-profile">
@@ -68,28 +68,22 @@
         };
 
         let navbarUserButton = document.querySelector(".navbar-user-button");
-        let triangle = navbarUserButton.querySelector(".triangle");
-        let navbarUserDropdown = navbarUserButton.querySelector(".navbar-user-dropdown");
+        if (navbarUserButton !== null){
+            let triangle = navbarUserButton.querySelector(".triangle");
+            let navbarUserDropdown = navbarUserButton.querySelector(".navbar-user-dropdown");
+            navbarUserButton.addEventListener("click", function (event) {
+                event.stopPropagation();
+                navbarUserDropdown.classList.toggle("show");
+                triangle.classList.toggle("up");
+            });
 
-        navbarUserButton.addEventListener("click", function (event) {
-            event.stopPropagation();
-            navbarUserDropdown.classList.toggle("show");
-            triangle.classList.toggle("up");
-        });
-
-        document.addEventListener("click", function (event) {
-            if (!navbarUserButton.contains(event.target)) {
-                navbarUserDropdown.classList.remove("show");
-                triangle.classList.remove("up");
-            }
-        });
-
-        // let navbarUserButton = document.querySelector(".navbar-user-button");
-        // let triangle = navbarUserButton.querySelector(".triangle");
-        //
-        // navbarUserButton.addEventListener("click", function() {
-        //     triangle.classList.toggle("up");
-        // });
+            document.addEventListener("click", function (event) {
+                if (!navbarUserButton.contains(event.target)) {
+                    navbarUserDropdown.classList.remove("show");
+                    triangle.classList.remove("up");
+                }
+            });
+        }
 
     </script>
 </header>

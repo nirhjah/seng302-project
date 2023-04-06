@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
@@ -33,8 +34,8 @@ public class ViewAllTeamsController {
      */
     @GetMapping("/view-teams")
     public String findPaginated(@RequestParam(value = "page", defaultValue = "-1") int pageNo,
-                                Model model) {
-
+                                Model model, HttpServletRequest request) {
+        model.addAttribute("httpServletRequest",request);
         // If no teams exist in the database
         if (teamService.getTeamList().size() == 0) {
             return "redirect:/home";

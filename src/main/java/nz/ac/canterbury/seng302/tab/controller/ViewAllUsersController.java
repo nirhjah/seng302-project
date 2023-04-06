@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import java.util.List;
 
+import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +54,7 @@ public class ViewAllUsersController {
             @RequestParam(name="page", defaultValue = "1") int page,
             @RequestParam(name = "currentSearch", required = false) String currentSearch,
             @RequestParam(name = "sports", required=false) List<String> sports,
-            Model model) {
+            Model model, HttpServletRequest request) {
         Page<User> userPage = getUserPage(page, currentSearch, sports);
         List<User> userList = userPage.toList();
         model.addAttribute("currentSearch", currentSearch);
@@ -62,6 +63,8 @@ public class ViewAllUsersController {
         model.addAttribute("listOfSports", sportService.getAllSports().stream().map(Sport::getName).toList());
         model.addAttribute("totalPages", userPage.getTotalPages());
         model.addAttribute("navTeams", teamService.getTeamList());
+        model.addAttribute("httpServletRequest",request);
+        System.out.println("Request URI: " + request.getRequestURI());
         return "viewAllUsers";
     }
 

@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -38,13 +39,14 @@ public class ProfileFormController {
      * @return thymeleaf profileForm
      */
     @GetMapping("/profile")
-    public String profileForm(Model model, @RequestParam(value = "teamID", required = false) Long teamID) {
+    public String profileForm(Model model, @RequestParam(value = "teamID", required = false) Long teamID, HttpServletRequest request) {
         logger.info("GET /profileForm");
 
         // Retrieve the selected team from the list of available teams using the ID
         // If the name is null or empty, return null
         List<Team> teamList = teamService.getTeamList();
         ProfileFormController.teamId = teamID;
+        model.addAttribute("httpServletRequest",request);
 
         Team selectedTeam;
         if (teamID != null) {

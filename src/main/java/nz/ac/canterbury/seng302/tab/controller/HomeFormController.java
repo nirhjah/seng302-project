@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.LocationService;
@@ -50,8 +51,9 @@ public class HomeFormController {
      * @return thymeleaf homeForm
      */
     @GetMapping("/home")
-    public String getTemplate(Model model) {
+    public String getTemplate(Model model, HttpServletRequest request) {
         logger.info("GET /homeForm");
+        model.addAttribute("httpServletRequest", request);
         model.addAttribute("navTeams", teamService.getTeamList());
         return "homeForm";
     }
