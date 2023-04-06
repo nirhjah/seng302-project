@@ -10,7 +10,6 @@
 
 .register-form-form {
   width: 65%;
-  margin-top: 45px;
 }
 
 .user-form .wrapper {
@@ -48,10 +47,10 @@ ul.search {
 
 .register-form {
   display: grid;
-  grid-auto-rows: 700px;
+  grid-auto-rows: 750px;
   justify-content: center;
   align-items: center;
-  grid-template-rows: 130px;
+  grid-template-rows: 106px;
   height: 90vh;
 }
 
@@ -115,7 +114,72 @@ ul.search {
 
 .password-information-text {
   padding-left: 10px;
+}
 
+.password-information-text li {
+  list-style-type: disc;
+}
+
+.password-information-text ul li{
+  list-style-type: circle;
+  margin-left: 20px;
+}
+
+.progressbar {
+  overflow: hidden;
+  /*CSS counters to number the steps*/
+  counter-reset: step;
+  width: 100%;
+  margin: 30px 0 20px;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: bolder;
+}
+
+.progressbar li {
+  list-style-type: none;
+  text-transform: uppercase;
+  font-size: 15px;
+  width: 50%;
+  float: left;
+  position: relative;
+  text-align: center;
+  line-height: 30px;
+}
+.progressbar li:before {
+  content: counter(step);
+  counter-increment: step;
+  width: 26px;
+  line-height: 25px;
+  display: block;
+  font-size: 23px;
+  color: #333;
+  background: white;
+  border-radius: 70%;
+  margin: 0 auto 0px auto;
+  padding: 10px;
+  text-align: center;
+}
+
+.progressbar li:after {
+  content: '';
+  width: 80%;
+  height: 2px;
+  background: #415A77;
+  position: absolute;
+  left: -46%;
+  top: 20px;
+}
+.progressbar li:first-child:after {
+  content: none;
+}
+
+.progressbar li:before, .progressbar li:after{
+  border: #415A77 solid 3px;
+}
+
+.progressbar li.active:before,  .progressbar li.active:after{
+  background-color: #415A77;
+  color: white;
 }
 
 .input-box .autocomplete-container {
@@ -148,6 +212,10 @@ ul.search {
 .input-box .autocomplete-container ul li:last-child {
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
+}
+
+.previous-button {
+  display: none;
 }
 
 .user-form {
@@ -332,7 +400,7 @@ td {
 
 .register-form .wrapper {
   width: 590px;
-  height: 680px;
+  height: 720px;
 }
 
 @media (max-width: 655px) {
@@ -545,8 +613,11 @@ a.enabled {
   justify-content: space-between;
 }
 
-.register-inputs-r
-ight,
+.register-inputs-location {
+  display: none;
+}
+
+.register-inputs-right,
 .edit-inputs-right {
   margin-left: auto;
   margin-right: 0;
@@ -599,9 +670,10 @@ input:invalid + label:after {
   font-family: "Noto Sans", sans-serif;
 }
 
-.register-inputs .input-boxes .input-box {
+.register-inputs .input-boxes .input-box, .register-inputs-location .input-boxes .input-box {
   margin: 0 !important;
 }
+
 
 .input-box input:focus ~ label,
 .input-box input:not(:placeholder-shown) ~ label {
@@ -790,6 +862,15 @@ li.active a {
   height: 45px;
   background-color: #1b263b;
   font-weight: 500;
+}
+
+.register-form-form .submit-button {
+  display: flex;
+  justify-content: center;
+}
+
+.register-form-form .submit-button button {
+  margin: 0 10px;
 }
 
 .menu-items p,

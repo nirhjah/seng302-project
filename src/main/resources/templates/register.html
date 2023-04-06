@@ -21,6 +21,10 @@
     </div>
     <div class="wrapper">
         <form class="register-form-form" th:action="@{register}" method="post" th:object="${registerForm}">
+            <ul class="progressbar">
+                <li class="active">Account</li>
+                <li id="progressbar-location">Location</li>
+            </ul>
             <div class="register-inputs">
                 <div class="input-boxes">
                     <div class="input-box">
@@ -60,15 +64,15 @@
                     </div>
                     <div class="password-strength-text"></div>
                     <ul class="password-information-text">
-                        <li style="list-style-type: disc;">Password must be at least 8 characters</li>
-                        <li style="list-style-type: disc;">Must contain the following items</li>
+                        <li>Password must be at least 8 characters</li>
+                        <li>Must contain the following items</li>
                         <ul>
-                            <li style="list-style-type: circle; margin-left: 20px;">Uppercase letters</li>
-                            <li style="list-style-type: circle; margin-left: 20px;">Lowercase letters</li>
-                            <li style="list-style-type: circle; margin-left: 20px;">Numbers</li>
-                            <li style="list-style-type: circle; margin-left: 20px;">Symbols</li>
+                            <li>Uppercase letters</li>
+                            <li>Lowercase letters</li>
+                            <li>Numbers</li>
+                            <li>Symbols</li>
                         </ul>
-                        <li style="list-style-type: disc;">Mustn't contain your name or email</li>
+                        <li>Mustn't contain your name or email</li>
                     </ul>
                 </div>
                 <div class="input-box">
@@ -76,63 +80,63 @@
                            th:field="*{confirmPassword}" data-cy="confirmPassword" required autofocus>
                     <label for="confirm-password"> Confirm Password <span class="required">*</span></label>
                 </div>
-                <!--                    <p>Password must be at least <strong>8 characters</strong>, contain <strong>upper</strong> and <strong>lower</strong> case letters, <strong>numbers</strong> and <strong>symbols</strong>, and can't contain your <strong>name</strong> or <strong>email</strong></p>-->
-<!--            <div class="register-inputs-left">-->
-<!--            </div>-->
-            <!--                <hr class="solid">-->
-<!--                <div class="register-inputs-right">-->
-<!--                    <div class="input-box">-->
-<!--                        <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"-->
-<!--                               data-cy="location" th:pattern="${addressRegex}" autofocus placeholder="" autocomplete="off"-->
-<!--                               title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">-->
-<!--                        <label for="address-line-1">Address Line 1</label>-->
-<!--                        <div class="autocomplete-container" id="autocomplete-container"></div>-->
-<!--                    </div>-->
-<!--                    <div class="input-box">-->
-<!--                        <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"-->
-<!--                               data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}"-->
-<!--                               title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">-->
-<!--                        <label for="address-line-2">Address Line 2</label>-->
-<!--                    </div>-->
-<!--                    <div class="input-box">-->
-<!--                        <input type="text" class="form-control" id="suburb" th:name="suburb"-->
-<!--                               data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""-->
-<!--                               title="May include letters, hyphens, apostrophes and spaces. Must start with letter">-->
-<!--                        <label for="suburb">Suburb</label>-->
-<!--                    </div>-->
-<!--                    <div class="input-box">-->
-<!--                        <input type="text" class="form-control" id="postcode" th:name="postcode"-->
-<!--                               data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder=""-->
-<!--                        title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">-->
-<!--                        <label for="postcode">Postcode</label>-->
-<!--                    </div>-->
-<!--                    <div class="input-box">-->
-<!--                        <input type="text" class="form-control" id="city" th:name="city"-->
-<!--                               data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""-->
-<!--                               title="May include letters, hyphens, apostrophes and spaces. Must start with letter">-->
-<!--                        <label for="city">City <span class="required">*</span></label>-->
-<!--                    </div>-->
-<!--                    <div class="input-box">-->
-<!--                        <input type="text" class="form-control" id="country" th:name="country"-->
-<!--                               data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""-->
-<!--                               title="May include letters, hyphens, apostrophes and spaces. Must start with letter">-->
-<!--                        <label for="country">Country <span class="required">*</span></label>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <script type="text/javascript" th:inline="javascript">-->
-<!--                  /**-->
-<!--                  ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.-->
-<!--                   * @type {string}-->
-<!--                   */-->
-<!--                  const PROTOCOL_AND_AUTH = /*[[${protocolAndAuthority}]]*/ "";-->
-<!--                  const ENDPOINT = PROTOCOL_AND_AUTH + "/geocode/autocomplete";-->
-<!--                </script>-->
-<!--                <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>-->
             </div>
+                <div class="register-inputs-location">
+                    <div class="input-boxes">
+                        <div class="input-box">
+                            <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
+                                   data-cy="location" th:pattern="${addressRegex}" autofocus placeholder="" autocomplete="off"
+                                   title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
+                            <label for="address-line-1">Address Line 1</label>
+                            <div class="autocomplete-container" id="autocomplete-container"></div>
+                        </div>
+                        <div class="input-box">
+                            <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
+                                   data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}"
+                                   title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
+                            <label for="address-line-2">Address Line 2</label>
+                        </div>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="suburb" th:name="suburb"
+                               data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                               title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
+                        <label for="suburb">Suburb</label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="postcode" th:name="postcode"
+                               data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder=""
+                        title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">
+                        <label for="postcode">Postcode</label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="city" th:name="city"
+                               data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                               title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
+                        <label for="city">City <span class="required">*</span></label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="country" th:name="country"
+                               data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                               title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
+                        <label for="country">Country <span class="required">*</span></label>
+                    </div>
+                </div>
+                <script type="text/javascript" th:inline="javascript">
+                  /**
+                  ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
+                   * @type {string}
+                   */
+                  const PROTOCOL_AND_AUTH = /*[[${protocolAndAuthority}]]*/ "";
+                  const ENDPOINT = PROTOCOL_AND_AUTH + "/geocode/autocomplete";
+                </script>
+                <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>
             <div class="submit-button">
-                <button type="submit">Register</button>
+<!--                <button class="previous-button" type="submit">Previous</button>-->
+                <button class="previous-button">Previous</button>
+                <button class="next-button">Next</button>
             </div>
-<!--            <div class="cancel-link">-->
+            <!--            <div class="cancel-link">-->
 <!--                <a th:href="@{login}">Login</a>-->
 <!--                <div class="cancel-link">-->
 <!--                    <a th:href="@{home}">Cancel</a>-->
@@ -150,6 +154,30 @@
 </footer>
 </body>
 <script>
+    const prevButton = document.querySelector('.previous-button');
+    const nextButton = document.querySelector('.next-button');
+    const registerInputs = document.querySelector('.register-inputs');
+    const locationInputs = document.querySelector('.register-inputs-location');
+    const progressBarLocation = document.getElementById('progressbar-location');
+
+    nextButton.addEventListener("click", function() {
+        //TODO add in check for fields inputted before user can click next
+        locationInputs.style.display = 'block';
+        registerInputs.style.display = 'none';
+        progressBarLocation.classList.toggle('active');
+        prevButton.style.display = 'block';
+        nextButton.textContent = 'Register'
+        nextButton.type = 'submit'
+    });
+
+    prevButton.addEventListener("click", function() {
+        locationInputs.style.display = 'none';
+        registerInputs.style.display = 'block';
+        progressBarLocation.classList.remove('active');
+        prevButton.style.display = 'none';
+        nextButton.textContent = 'Next';
+        nextButton.removeAttribute('type');
+    });
     function checkPasswordStrength() {
         const password = document.getElementById("password").value;
         const email = document.getElementById("email").value;
