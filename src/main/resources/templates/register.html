@@ -25,13 +25,13 @@
                 <div class="input-boxes">
                     <div class="input-box">
                         <input type="text" class="form-control" id="first-name" placeholder="" th:field="*{firstName}"
-                               data-cy="firstName" required autofocus>
+                               data-cy="firstName" required autofocus onkeyup="checkPasswordStrength()">
                         <label for="first-name"> First Name <span class="required">*</span></label>
                     </div>
                     <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message"></div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="last-name" placeholder="" th:field="*{lastName}"
-                               data-cy="lastName" required autofocus>
+                               data-cy="lastName" required autofocus onkeyup="checkPasswordStrength()">
                         <label for="last-name"> Last Name <span class="required">*</span></label>
                     </div>
                     <div th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error-message"></div>
@@ -44,7 +44,7 @@
                 <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
                 <div class="input-box">
                     <input type="email" class="form-control" id="email" placeholder="" th:field="*{email}"
-                           data-cy="email" required autofocus>
+                           data-cy="email" required autofocus onkeyup="checkPasswordStrength()">
                     <label for="email"> Email <span class="required">*</span></label>
                 </div>
                 <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message"></div>
@@ -69,7 +69,6 @@
                             <li style="list-style-type: circle; margin-left: 20px;">Symbols</li>
                         </ul>
                         <li style="list-style-type: disc;">Mustn't contain your name or email</li>
-
                     </ul>
                 </div>
                 <div class="input-box">
@@ -120,15 +119,15 @@
 <!--                        <label for="country">Country <span class="required">*</span></label>-->
 <!--                    </div>-->
 <!--                </div>-->
-                <script type="text/javascript" th:inline="javascript">
-                  /**
-                  ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
-                   * @type {string}
-                   */
-                  const PROTOCOL_AND_AUTH = /*[[${protocolAndAuthority}]]*/ "";
-                  const ENDPOINT = PROTOCOL_AND_AUTH + "/geocode/autocomplete";
-                </script>
-                <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>
+<!--                <script type="text/javascript" th:inline="javascript">-->
+<!--                  /**-->
+<!--                  ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.-->
+<!--                   * @type {string}-->
+<!--                   */-->
+<!--                  const PROTOCOL_AND_AUTH = /*[[${protocolAndAuthority}]]*/ "";-->
+<!--                  const ENDPOINT = PROTOCOL_AND_AUTH + "/geocode/autocomplete";-->
+<!--                </script>-->
+<!--                <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>-->
             </div>
             <div class="submit-button">
                 <button type="submit">Register</button>
@@ -158,61 +157,56 @@
         const lastName = document.getElementById("last-name").value;
         const bar = document.querySelector(".password-strength-meter .bar");
         const headerText = document.querySelector(".password-strength-text");
-        const requirements = [
-            "Password must be at least 8 characters",
-            "Password must contain upper and lower case letters",
-            "Password must contain numbers",
-            "Password must contain symbols",
-            "Password can't contain your name or email"
-        ];
-        let strength = 0;
+        if (password) {
+            let strength = 0;
+            if (password.length >= 8) {
+                strength++;
+            }
+            if (/[A-Z]/.test(password)) {
+                strength++;
+            }
+            if (/[a-z]/.test(password)) {
+                strength++;
+            }
+            if (/\d/.test(password)) {
+                strength++;
+            }
+            if (/[^\w\s]/.test(password)) {
+                strength++;
+            }
+            if ((!firstName || !password.includes(firstName)) && (!lastName || !password.includes(lastName)) && (!email || !password.includes(email))) {
+                strength++;
+            }
 
-        if (password.length >= 8) {
-            strength++;
-        }
-        if (/[A-Z]/.test(password)) {
-            strength++;
-        }
-        if (/[a-z]/.test(password)) {
-            strength++;
-        }
-        if (/\d/.test(password)) {
-            strength++;
-        }
-        if (/[^\w\s]/.test(password)) {
-            strength++;
-        }
-        if (!password.includes(firstName) && !password.includes(lastName) && !password.includes(email)) {
-            strength++;
-        }
-
-        if (strength < 3) {
-            bar.classList.remove("medium");
-            bar.classList.remove("strong");
-            bar.classList.add("weak");
-            bar.style.width = "20%";
-            headerText.textContent = "Weak";
-            headerText.classList.remove("medium");
-            headerText.classList.remove("strong");
-            headerText.classList.add("weak");
-        } else if (strength < 6) {
-            bar.classList.remove("strong");
-            bar.classList.remove("weak");
-            bar.classList.add("medium");
-            bar.style.width = "50%";
-            headerText.textContent = "Medium";
-            headerText.classList.remove("weak");
-            headerText.classList.remove("strong");
-            headerText.classList.add("medium");
-        } else {
-            bar.classList.remove("medium");
-            bar.classList.remove("weak");
-            bar.classList.add("strong");
-            bar.style.width = "100%";
-            headerText.textContent = "Strong";
-            headerText.classList.remove("weak");
-            headerText.classList.remove("medium");
-            headerText.classList.add("strong");
+            if (strength < 3) {
+                bar.classList.remove("medium");
+                bar.classList.remove("strong");
+                bar.classList.add("weak");
+                bar.style.width = "20%";
+                headerText.textContent = "Weak";
+                headerText.classList.remove("medium");
+                headerText.classList.remove("strong");
+                headerText.classList.add("weak");
+            } else if (strength < 6) {
+                bar.classList.remove("strong");
+                bar.classList.remove("weak");
+                bar.classList.add("medium");
+                bar.style.width = "50%";
+                headerText.textContent = "Medium";
+                headerText.classList.remove("weak");
+                headerText.classList.remove("strong");
+                headerText.classList.add("medium");
+            } else {
+                bar.classList.remove("medium");
+                bar.classList.remove("weak");
+                bar.classList.add("strong");
+                bar.style.width = "100%";
+                headerText.textContent = "Strong";
+                headerText.classList.remove("weak");
+                headerText.classList.remove("medium");
+                headerText.classList.add("strong");
+            }
+            console.log(password)
         }
     }
 
