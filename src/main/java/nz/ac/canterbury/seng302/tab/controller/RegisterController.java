@@ -207,7 +207,7 @@ public class RegisterController {
     @PostMapping("/register")
     public String register(
             @Valid RegisterForm registerForm,
-            BindingResult bindingResult,
+            BindingResult bindingResult,Model model,
             HttpServletRequest request) throws IOException {
 
         // Run the custom validation methods
@@ -216,6 +216,7 @@ public class RegisterController {
         checkEmailIsNotInUse(registerForm, bindingResult);
         checkPasswordsMatch(registerForm, bindingResult);
         checkPasswordIsSecure(registerForm, bindingResult);
+        model.addAttribute("httpServletRequest",request);
 
         if (bindingResult.hasErrors()) {
             return "register";

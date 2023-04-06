@@ -54,8 +54,9 @@ public class EditUserFormController {
     @GetMapping("/editUser")
     public String getEditUserForm(
             EditUserForm editUserForm,
-            Model model) {
+            Model model,HttpServletRequest request) {
         prefillModel(model);
+        model.addAttribute("httpServletRequest",request);
         Optional<User> user = userService.getCurrentUser();
         if (user.isEmpty()) {
             return "redirect:/login";
@@ -77,7 +78,7 @@ public class EditUserFormController {
             HttpServletResponse httpServletResponse,
             @RequestParam("tags") List<String> tags,
             Model model, RedirectAttributes redirectAttributes) throws ServletException {
-
+        model.addAttribute("httpServletRequest",httpServletRequest);
         String invalidTags= "These are invalid sports: ";
         boolean first= true ,invalidSport=false;
         for (String tag : tags) {
