@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import java.util.Optional;
 
+import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public class ViewUserController {
     public String getTemplate(
             @RequestParam(name = "name", required = false, defaultValue = "-1") int userId,
             Model model,
-            HttpServletResponse httpServletResponse) {
+            HttpServletResponse httpServletResponse, HttpServletRequest request) {
         logger.info("GET /user-info");
 
         Optional<User> user = userService.findUserById(userId);
@@ -63,6 +64,7 @@ public class ViewUserController {
         model.addAttribute("location", user.get().getLocation());
         model.addAttribute("displayPicture", userPicture);
         model.addAttribute("navTeams", teamService.getTeamList());
+        model.addAttribute("httpServletRequest",request);
 
         var curUser = userService.getCurrentUser();
         boolean canEdit = curUser.filter(value -> value.getUserId() == userId).isPresent();

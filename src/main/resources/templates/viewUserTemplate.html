@@ -15,10 +15,6 @@
 </head>
 
 <style>
-    .multiply:before {
-        content: "\00D7";
-    }
-
     .sport-box {
         height: 50px;
         width: 280px;
@@ -62,11 +58,6 @@
         background: #778DA9;
     }
 
-    .content {
-        position: absolute;
-        bottom: 111px;
-    }
-
     .content input {
         width: 293px;
         height: 25px;
@@ -102,11 +93,6 @@
         cursor: pointer;
     }
 
-    /*.error-message {*/
-    /*    position: absolute;*/
-    /*    top: -20px; !* adjust this value to position the label as needed *!*/
-    /*    left: 0;*/
-    /*}*/
 
 </style>
 
@@ -174,11 +160,13 @@
     // The AC only specifies a back button if we came from the view-users page.
     const legal_url = '/view-users';
     const backButton = document.getElementById('backButton');
-    const previousPage = document.referrer;
-    if (previousPage.includes(legal_url)) {
-      backButton.style.visibility = '';
-    } else {
-      backButton.remove();
+    if (backButton !== null) {
+        const previousPage = document.referrer;
+        if (previousPage.includes(legal_url)) {
+            backButton.style.visibility = '';
+        } else {
+            backButton.remove();
+        }
     }
   </script>
 

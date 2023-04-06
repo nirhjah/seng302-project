@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
@@ -65,11 +66,11 @@ public class CreateTeamFormController {
 
     @GetMapping("/createTeam")
     public String teamForm(@RequestParam(name = "edit", required = false) Long teamID,
-            @RequestParam(name = "invalid_input", defaultValue = "0") boolean invalidInput,
-            Model model) {
+                           @RequestParam(name = "invalid_input", defaultValue = "0") boolean invalidInput,
+                           Model model, HttpServletRequest request) {
 
         logger.info("GET /createTeam");
-
+        model.addAttribute("httpServletRequest", request);
         Team team;
         if (teamID != null) {
             if ((team = teamService.getTeam(teamID)) != null) {

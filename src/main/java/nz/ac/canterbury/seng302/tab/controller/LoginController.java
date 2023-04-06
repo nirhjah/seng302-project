@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -17,7 +18,8 @@ public class LoginController {
      */
     @GetMapping("/login")
     public String form(@RequestParam(name="error", required = false, defaultValue = "false") String error,
-                       Model model) {
+                       Model model, HttpServletRequest request) {
+        model.addAttribute("httpServletRequest", request);
         if (error.equals("true"))
         {
             model.addAttribute("errorMessage", "Invalid Email or Password");

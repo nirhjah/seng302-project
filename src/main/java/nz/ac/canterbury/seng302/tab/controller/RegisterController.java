@@ -189,7 +189,7 @@ public class RegisterController {
         logger.info("GET /register");
         URL url = new URL(httpServletRequest.getRequestURL().toString());
         String protocolAndAuthority = String.format("%s://%s", url.getProtocol(), url.getAuthority());
-
+        model.addAttribute("httpServletRequest", httpServletRequest);
         model.addAttribute("countryCitySuburbNameRegex", countryCitySuburbNameRegex);
         model.addAttribute("addressRegex", addressRegex);
         model.addAttribute("postcodeRegex", postcodeRegex);
