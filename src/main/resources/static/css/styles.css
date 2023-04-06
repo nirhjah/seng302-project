@@ -8,6 +8,11 @@
     height: 770px;
 }
 
+.register-form-form {
+  width: 65%;
+  margin-top: 45px;
+}
+
 .user-form .wrapper {
     height: 490px;
 }
@@ -17,14 +22,6 @@ ul.search {
   list-style: none;
   margin: 0;
   padding: 0;
-}
-
-.password-info {
-  width: 240px;
-  font-style: italic;
-  font-size: small;
-  margin-top: -20px;
-  margin-bottom: 20px;
 }
 
 .auth-buttons {
@@ -51,11 +48,74 @@ ul.search {
 
 .register-form {
   display: grid;
-  grid-auto-rows: 730px;
+  grid-auto-rows: 700px;
   justify-content: center;
   align-items: center;
-  grid-template-rows: 140px;
+  grid-template-rows: 130px;
   height: 90vh;
+}
+
+.password-info {
+  width: 100%;
+  font-style: italic;
+  font-size: small;
+  margin-top: -20px;
+  font-family: "Noto Sans", sans-serif;
+}
+
+.password-strength-meter {
+  width: 100%;
+  height: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin: 10px 0;
+  position: relative;
+  overflow: hidden;
+  background-color: #f2f2f2;
+}
+
+.password-strength-meter .bar {
+  width: 0%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: width 0.3s ease;
+}
+
+.password-strength-meter .bar.weak {
+  background-color: #c03d3e;
+}
+
+.password-strength-meter .bar.medium {
+  background-color: #ffd700;
+}
+
+.password-strength-meter .bar.strong {
+  background-color: #008000;
+}
+
+.password-strength-text {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.password-strength-text.weak {
+  color: #c03d3e;
+}
+
+.password-strength-text.medium {
+  color: #ffd700;
+}
+
+.password-strength-text.strong {
+  color: #008000;
+}
+
+.password-information-text {
+  padding-left: 10px;
+
 }
 
 .input-box .autocomplete-container {
@@ -249,7 +309,7 @@ td {
 }
 
 .login-form-form {
-  width: 60%;
+  width: 65%;
 }
 
 .wrapper {
@@ -271,8 +331,14 @@ td {
 }
 
 .register-form .wrapper {
-  width: 650px;
-  height: 690px;
+  width: 590px;
+  height: 680px;
+}
+
+@media (max-width: 655px) {
+  .register-form .wrapper {
+    width: 90vw
+  }
 }
 
 .team-form .wrapper {
@@ -474,13 +540,13 @@ a.enabled {
   justify-content: space-between;
 }
 
-.register-inputs,
 .edit-inputs {
   display: flex;
   justify-content: space-between;
 }
 
-.register-inputs-right,
+.register-inputs-r
+ight,
 .edit-inputs-right {
   margin-left: auto;
   margin-right: 0;
@@ -508,7 +574,7 @@ a.enabled {
   width: 100%;
   height: 35px;
   border-bottom: 2px solid #162938;
-  margin: 40px 0;
+  margin: 35px 0;
   font-family: "Noto Sans", sans-serif;
 }
 
@@ -521,17 +587,20 @@ input:invalid + label:after {
 }
 
 
-.input-box .required {
-  color: red;
-}
+/*.input-box .required {*/
+/*  color: red;*/
+/*}*/
 
 
 .input-boxes .input-box {
-  width: 45%;
+  width: 48%;
   height: 35px;
   border-bottom: 2px solid #162938;
-  margin: 30px 0;
   font-family: "Noto Sans", sans-serif;
+}
+
+.register-inputs .input-boxes .input-box {
+  margin: 0 !important;
 }
 
 .input-box input:focus ~ label,
@@ -558,7 +627,7 @@ input:invalid + label:after {
 
 
 .input-box input {
-  width: 96%;
+  width: 99%;
   height: 100%;
   background: transparent;
   font-size: 1em;
@@ -569,6 +638,7 @@ input:invalid + label:after {
   outline: none;
   cursor: pointer;
 }
+
 
 
 .edit-button button:hover, .profile-pic .back-button:hover, .submit-button button:hover, .file-label-border:hover {
@@ -591,6 +661,9 @@ input:invalid + label:after {
   text-align: center;
   font-weight: 500;
   margin: 25px 0 10px;
+}
+
+.login-form-form .cancel-link {
   display: flex;
   justify-content: center;
 }
@@ -615,11 +688,12 @@ input:invalid + label:after {
 }
 
 .error-message {
-  font-size: 13px;
+  font-size: 15px;
   font-family: "Noto Sans", sans-serif;
   font-weight: 300;
   color: red;
   text-align: center;
+  height: 18px;
 }
 
 .profile-pic .back-button {
@@ -708,7 +782,7 @@ li.active a {
   border-radius: 30px;
   text-align: center;
   margin-bottom: 35px;
-  margin-top: 60px;
+  margin-top: 20px;
 }
 
 .submit-button button {
