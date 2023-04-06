@@ -75,28 +75,39 @@ public class EditUserFormController {
             BindingResult bindingResult,
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
-            @RequestParam("tags") List<String> tags,
+            @RequestParam(name = "tags", required = false) List<String> tags,
             Model model, RedirectAttributes redirectAttributes) throws ServletException {
 
-        String invalidTags= "These are invalid sports: ";
-        boolean first= true ,invalidSport=false;
-        for (String tag : tags) {
-            if (!tag.matches("^[\\p{L}\\s\\'\\-]+$")) {
-                invalidSport=true;
-                if (!first) {
-                    invalidTags += ", ";
-                } else {
-                    first = false;
+
+        if (tags != null) {
+
+            String invalidTags= "These are invalid sports: ";
+            boolean first= true ,invalidSport=false;
+            for (String tag : tags) {
+                if (!tag.matches("^[\\p{L}\\s\\'\\-]+$")) {
+                    invalidSport=true;
+                    if (!first) {
+                        invalidTags += ", ";
+                    } else {
+                        first = false;
+                    }
+                    invalidTags += tag;
                 }
-                invalidTags += tag;
             }
-        }
-        if (invalidSport) {
-            redirectAttributes.addFlashAttribute("errorMessage", invalidTags);
-            return "redirect:/editUser";
+            if (invalidSport) {
+                redirectAttributes.addFlashAttribute("errorMessage", invalidTags);
+                return "redirect:/editUser";
+            }
+
+            System.out.println(invalidTags);
+
+
         }
 
-        System.out.println(invalidTags);
+
+
+
+
         prefillModel(model);
         Optional<User> optUser = userService.getCurrentUser();
         if (optUser.isEmpty()) {
@@ -131,16 +142,25 @@ public class EditUserFormController {
         List<Sport> newFavSports = new ArrayList<>();
         List<String> knownSportNames = sportService.getAllSportNames();
         List<Sport> knownSports = sportService.getAllSports();
-        for (String tag : tags) {
-            if (knownSportNames.contains(tag)){
-                int index = knownSportNames.indexOf(tag);
-                newFavSports.add(knownSports.get(index));
-            } else {
-                newFavSports.add(new Sport(tag));
+
+        if (tags != null) {
+
+            for (String tag : tags) {
+                if (knownSportNames.contains(tag)){
+                    int index = knownSportNames.indexOf(tag);
+                    newFavSports.add(knownSports.get(index));
+                } else {
+                    newFavSports.add(new Sport(tag));
+                }
             }
+
+            user.setFavoriteSports(newFavSports);
+
+
         }
 
-        user.setFavoriteSports(newFavSports);
+
+
         userService.updateOrAddUser(user);
 
         if (shouldLogout) {
