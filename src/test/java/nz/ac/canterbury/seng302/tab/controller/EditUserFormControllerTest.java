@@ -249,7 +249,7 @@ public class EditUserFormControllerTest {
 
         @Test
         @WithMockUser(username = USER_EMAIL)
-        void givenUserChangesTheirEmail_ThenFormIsSaved_AndUserIsLoggedOut() throws Exception {
+        void givenUserChangesTheirEmail_ThenFormIsSaved_AndUserIsLoggedOutThenLoggedIn() throws Exception {
                 mockMvc.perform(
                                 post(URL)
                                                 .param(P_FNAME, USER_FNAME)
@@ -263,7 +263,7 @@ public class EditUserFormControllerTest {
                                                 .param(P_POSTCODE, USER_POSTCODE)
                                                 .param(P_CITY, USER_CITY)
                                                 .param(P_COUNTRY, USER_COUNTRY))
-                                .andExpect(redirectedUrl("login"));
+                                .andExpect(redirectedUrl("user-info/self"));
 
                 verify(mockUserService, times(1)).updateOrAddUser(any());
         }
