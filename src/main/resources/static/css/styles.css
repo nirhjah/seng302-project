@@ -202,7 +202,7 @@ ul.search {
   width: 100%;
 }
 
-.input-box .autocomplete-container:hover, .icon img:hover {
+.input-box .autocomplete-container:hover, .icon img:hover,password-toggle:hover {
   cursor: pointer;
 }
 
@@ -1075,5 +1075,12 @@ ul.autocomplete-result{
   top: 30px;
   right: 30px;
   object-fit: cover;
+}
+
+img.password-toggle{
+  max-height:20px;
+  max-width:20px;
+  position:absolute;
+  right:5px;
 }
 
