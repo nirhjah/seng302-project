@@ -131,13 +131,17 @@
               const ENDPOINT = PROTOCOL_AND_AUTH + "/geocode/autocomplete";
             </script>
             <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>
+            <div class="cancel-link">
+                <p>Aleady have an account? <a th:href="@{login}">Login</a></p>
+
+            </div>
             <div class="submit-button">
 <!--                <button class="previous-button" type="submit">Previous</button>-->
                 <button class="previous-button">Previous</button>
                 <button class="next-button">Next</button>
             </div>
-            <!--            <div class="cancel-link">-->
-<!--                <a th:href="@{login}">Login</a>-->
+
+<!--            <div class="cancel-link">-->
 <!--                <div class="cancel-link">-->
 <!--                    <a th:href="@{home}">Cancel</a>-->
 <!--                </div>-->
