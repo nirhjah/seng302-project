@@ -42,6 +42,7 @@ public class TeamServiceTest {
     Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
     Location location2 = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
     Location location3 = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
+
     @Test
     public void testGettingTeamList() throws IOException {
         List<Team> teamList = teamService.getTeamList();
@@ -63,7 +64,8 @@ public class TeamServiceTest {
         Team team = new Team("test", "Hockey", location);
         teamService.addTeam(team);
         assertEquals(team.getName(), teamRepository.findById(team.getTeamId()).get().getName());
-        assertEquals(team.getLocation().getAddressLine1(), teamRepository.findById(team.getTeamId()).get().getLocation().getAddressLine1());
+        assertEquals(team.getLocation().getAddressLine1(),
+                teamRepository.findById(team.getTeamId()).get().getLocation().getAddressLine1());
         assertEquals(team.getSport(), teamRepository.findById(team.getTeamId()).get().getSport());
     }
 
@@ -83,4 +85,25 @@ public class TeamServiceTest {
         }
     }
 
+/**
+     * test for the service validation
+     *
+     * 
+     **/
+    @Test
+    public void givenInvalidSport_WhenTeamEdited_ValidationReturnsFalse() throws IOException {
+
+        // call the service validation
+        String invalidSport = "%";
+        String validName = "";
+        String validCountry = "";
+        String validCity = "";
+        String validPostcode = "";
+        String validSuburb = "";
+        String validAddressLine1 = "";
+        String validAddressLine2 = "";
+
+        boolean isTestValid = TeamService.validateTeamRegistration(invalidSport, validName, validCountry, validCity, validPostcode, validSuburb, validAddressLine1, validAddressLine2);
+        assert(isTestValid, false);
+    }
 }

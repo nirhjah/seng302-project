@@ -19,7 +19,7 @@ import java.util.Base64;
 import java.util.List;
 
 /**
- *Spring Boot Service class for Team Service
+ * Spring Boot Service class for Team Service
  */
 @Service
 public class TeamService {
@@ -49,7 +49,8 @@ public class TeamService {
     }
 
     /**
-     * Method which updates the picture by taking the MultipartFile type and updating the picture
+     * Method which updates the picture by taking the MultipartFile type and
+     * updating the picture
      * stored in the team with id primary key.
      *
      * @param file MultipartFile file upload
@@ -58,32 +59,32 @@ public class TeamService {
     public void updatePicture(MultipartFile file, long id) {
         Team team = teamRepository.findById(id).get();
 
-        //Gets the original file name as a string for validation
+        // Gets the original file name as a string for validation
         String pictureString = StringUtils.cleanPath(file.getOriginalFilename());
         if (pictureString.contains("..")) {
             System.out.println("not a valid file");
         }
         try {
-            //Encodes the file to a byte array and then convert it to string, then set it as the pictureString variable.
+            // Encodes the file to a byte array and then convert it to string, then set it
+            // as the pictureString variable.
             team.setPictureString(Base64.getEncoder().encodeToString(file.getBytes()));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        //Saved the updated picture string in the database.
+        // Saved the updated picture string in the database.
         teamRepository.save(team);
     }
 
     /**
      * gets a page of teams filtered by their name and sport
      *
-     * @param pageable a page object showing how the page should be shown
+     * @param pageable     a page object showing how the page should be shown
      * @param filterSports List of sports to be filtered by
-     * @param nameSearch the search query
+     * @param nameSearch   the search query
      * @return a slice of teams that meet the name conditions and filter conditions
      */
-    public Page<Team> findTeamsByNameOrSport(Pageable pageable, List<String> filterSports, String nameSearch)
-    {
+    public Page<Team> findTeamsByNameOrSport(Pageable pageable, List<String> filterSports, String nameSearch) {
         if (filterSports == null) {
             filterSports = List.of();
         }
@@ -91,5 +92,14 @@ public class TeamService {
             nameSearch = null;
         }
         return teamRepository.findTeamByNameAndSportIn(pageable, filterSports, nameSearch);
+    }
+
+    /**
+     * Validates registrating a team
+     */
+    public boolean validateTeamRegistration(String sport, String name, String country, String city, String postCode,
+            String suburb, String addressline1, String addressline2) {
+
+        return false;
     }
 }
