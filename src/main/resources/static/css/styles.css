@@ -67,10 +67,11 @@ ul.search {
   height: 20px;
   border: 1px solid #ccc;
   border-radius: 10px;
-  margin: 10px 0;
+  margin: 30px 0 10px 0;
   position: relative;
   overflow: hidden;
   background-color: #f2f2f2;
+
 }
 
 .password-strength-meter .bar {
@@ -653,8 +654,12 @@ a.enabled {
   width: 100%;
   height: 35px;
   border-bottom: 2px solid #162938;
-  margin: 35px 0;
+  margin: 35px 0 0;
   font-family: "Noto Sans", sans-serif;
+}
+
+.input-box input.error {
+  border-bottom: 2px solid red;
 }
 
 input:invalid {
@@ -773,7 +778,10 @@ input:invalid + label:after {
   font-weight: 300;
   color: red;
   text-align: center;
-  height: 18px;
+}
+
+.register-form-form .error-message {
+  position: absolute;
 }
 
 .profile-pic .back-button {
@@ -861,8 +869,7 @@ li.active a {
 .submit-button {
   border-radius: 30px;
   text-align: center;
-  margin-bottom: 35px;
-  margin-top: 20px;
+  margin: 35px 0;
 }
 
 .submit-button button {

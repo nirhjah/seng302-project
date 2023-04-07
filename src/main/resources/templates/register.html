@@ -32,14 +32,13 @@
                                data-cy="firstName" required autofocus onkeyup="checkPasswordStrength()">
                         <label for="first-name"> First Name <span class="required">*</span></label>
                     </div>
-                    <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message"></div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="last-name" placeholder="" th:field="*{lastName}"
                                data-cy="lastName" required autofocus onkeyup="checkPasswordStrength()">
                         <label for="last-name"> Last Name <span class="required">*</span></label>
                     </div>
-                    <div th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error-message"></div>
                 </div>
+                <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message"></div>
                 <div class="input-box">
                     <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
                            data-cy="dateOfBirth" required autofocus>
@@ -58,7 +57,6 @@
                     <label for="password"> Password <span class="required">*</span></label>
                 </div>
                 <div class="password-info">
-                    <div th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error-message"></div>
                     <div class="password-strength-meter">
                         <div class="bar"></div>
                     </div>
@@ -74,11 +72,13 @@
                         </ul>
                         <li>Mustn't contain your name or email</li>
                     </ul>
+                    <div th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error-message"></div>
                 </div>
                 <div class="input-box">
                     <input type="password" class="form-control" id="confirm-password" placeholder=""
                            th:field="*{confirmPassword}" data-cy="confirmPassword" required autofocus>
                     <label for="confirm-password"> Confirm Password <span class="required">*</span></label>
+                    <div th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}" class="error-message"></div>
                 </div>
             </div>
             <div class="register-inputs-location">
