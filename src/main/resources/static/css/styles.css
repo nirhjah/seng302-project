@@ -878,7 +878,7 @@ li.active a {
   width: 85%;
   height: 45px;
   background-color: #1b263b;
-  font-weight: 500;
+  font-weight: bold;
 }
 
 .register-form-form .submit-button {
