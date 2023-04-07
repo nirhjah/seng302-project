@@ -75,7 +75,7 @@ public class EditUserFormController {
             BindingResult bindingResult,
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
-            @RequestParam(name = "tags", required = false) List<String> tags,
+            @RequestParam("tags") List<String> tags,
             Model model, RedirectAttributes redirectAttributes) throws ServletException {
 
             String invalidTags= "These are invalid sports: ";
