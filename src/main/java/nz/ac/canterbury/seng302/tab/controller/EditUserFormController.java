@@ -104,40 +104,12 @@ public class EditUserFormController {
 
         }
 
-
-
-
-
         prefillModel(model);
         Optional<User> optUser = userService.getCurrentUser();
         if (optUser.isEmpty()) {
             return "redirect:/login";
         }
         User user = optUser.get();
-
-        // Manual email uniqueness check
-        if (userService.emailIsUsedByAnother(user, editUserForm.getEmail())) {
-            bindingResult.addError(new FieldError("editUserForm", "email", "Email is already in use."));
-        }
-
-        if (bindingResult.hasErrors()) {
-            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return "editUserForm";
-        }
-
-        // Log-out if the user changes their email
-        boolean shouldLogout = !user.getEmail().equals(editUserForm.getEmail());
-
-        user.setFirstName(editUserForm.getFirstName());
-        user.setLastName(editUserForm.getLastName());
-        user.setEmail(editUserForm.getEmail());
-        user.setDateOfBirth(editUserForm.getDateOfBirth());
-        user.getLocation().setAddressLine1(editUserForm.getAddressLine1());
-        user.getLocation().setAddressLine2(editUserForm.getAddressLine2());
-        user.getLocation().setCity(editUserForm.getCity());
-        user.getLocation().setCountry(editUserForm.getCountry());
-        user.getLocation().setSuburb(editUserForm.getSuburb());
-        user.getLocation().setPostcode(editUserForm.getPostcode());
 
         List<Sport> newFavSports = new ArrayList<>();
         List<String> knownSportNames = sportService.getAllSportNames();
@@ -155,12 +127,33 @@ public class EditUserFormController {
             }
 
             user.setFavoriteSports(newFavSports);
-
-
         }
 
+        // Manual email uniqueness check
+        if (userService.emailIsUsedByAnother(user, editUserForm.getEmail())) {
+            bindingResult.addError(new FieldError("editUserForm", "email", "Email is already in use."));
+        }
 
+        if (bindingResult.hasErrors()) {
+            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            model.addAttribute("favouriteSports", user.getFavouriteSportNames());
+            return "editUserForm";
+        }
 
+        // Log-out if the user changes their email
+        boolean shouldLogout = !user.getEmail().equals(editUserForm.getEmail());
+
+        user.setFirstName(editUserForm.getFirstName());
+        user.setLastName(editUserForm.getLastName());
+        user.setEmail(editUserForm.getEmail());
+        user.setDateOfBirth(editUserForm.getDateOfBirth());
+        user.getLocation().setAddressLine1(editUserForm.getAddressLine1());
+        user.getLocation().setAddressLine2(editUserForm.getAddressLine2());
+        user.getLocation().setCity(editUserForm.getCity());
+        user.getLocation().setCountry(editUserForm.getCountry());
+        user.getLocation().setSuburb(editUserForm.getSuburb());
+        user.getLocation().setPostcode(editUserForm.getPostcode());
+        
         userService.updateOrAddUser(user);
 
         if (shouldLogout) {
