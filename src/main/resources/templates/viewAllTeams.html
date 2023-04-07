@@ -16,7 +16,7 @@
             <th>Location</th>
         </tr>
         <tr th:each="team : ${displayTeams}"
-            th:onclick="|window.location.href='/profile?teamID=${team.teamId}'|">
+            th:onclick="|window.location.href='@{profile(teamID=${team.teamId})}'|">
             <td>
                 <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" width="50" height="50"/>
             </td>

@@ -4,6 +4,14 @@
     <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <script th:inline="javascript">
+        function redirect(sel) {
+            if (sel.selectedIndex !== -1) {
+                const baseUrl = /*[[@{/profile}]]*/"";
+                location.href = baseUrl + "?teamID=" + sel.selectedIndex;
+            }
+        }
+    </script>
     <title>Home</title>
 </head>
 <body class ="home-background">
@@ -24,7 +32,7 @@
                         <a th:href="@{view-users(page=1)}">View All Users</a>
                         View Profile:
                         <select class="form-control" id="dropDownList" name="teamSelector"
-                                onchange="if(this.value != '-1') window.location.href = '/profile?teamID=' + this.value;">
+                                onchange="redirect(this)">
                             <option value="-1" selected>Select a Team</option>
                             <option th:each="team : ${navTeams}"
                                     th:value="${team.teamId}"
