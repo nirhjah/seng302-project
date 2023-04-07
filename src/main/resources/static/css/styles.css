@@ -131,7 +131,7 @@ ul.search {
   /*CSS counters to number the steps*/
   counter-reset: step;
   width: 100%;
-  margin: 5px 0 20px;
+  margin: 10px 0 20px;
   font-family: "Noto Sans", sans-serif;
   font-weight: bolder;
 }
@@ -473,14 +473,15 @@ hr.solid {
   justify-content: flex-start;
   align-items: center;
   padding-right: 170px;
-  padding-top: 51px;
+  padding-top: 50px;
+  left: 35%;
 }
 
 .wrapper-profile .profile-pic {
   left: 0;
 }
 
-.wrapper-profile .team-info, .wrapper-profile .user-info, footer {
+footer {
     right: 0;
 }
 
