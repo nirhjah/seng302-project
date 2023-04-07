@@ -78,9 +78,6 @@ public class EditUserFormController {
             @RequestParam(name = "tags", required = false) List<String> tags,
             Model model, RedirectAttributes redirectAttributes) throws ServletException {
 
-
-        if (tags != null) {
-
             String invalidTags= "These are invalid sports: ";
             boolean first= true ,invalidSport=false;
             for (String tag : tags) {
@@ -101,9 +98,6 @@ public class EditUserFormController {
 
             System.out.println(invalidTags);
 
-
-        }
-
         prefillModel(model);
         Optional<User> optUser = userService.getCurrentUser();
         if (optUser.isEmpty()) {
@@ -115,8 +109,6 @@ public class EditUserFormController {
         List<String> knownSportNames = sportService.getAllSportNames();
         List<Sport> knownSports = sportService.getAllSports();
 
-        if (tags != null) {
-
             for (String tag : tags) {
                 if (knownSportNames.contains(tag)){
                     int index = knownSportNames.indexOf(tag);
@@ -127,7 +119,6 @@ public class EditUserFormController {
             }
 
             user.setFavoriteSports(newFavSports);
-        }
 
         // Manual email uniqueness check
         if (userService.emailIsUsedByAnother(user, editUserForm.getEmail())) {
@@ -153,7 +144,7 @@ public class EditUserFormController {
         user.getLocation().setCountry(editUserForm.getCountry());
         user.getLocation().setSuburb(editUserForm.getSuburb());
         user.getLocation().setPostcode(editUserForm.getPostcode());
-        
+
         userService.updateOrAddUser(user);
 
         if (shouldLogout) {
