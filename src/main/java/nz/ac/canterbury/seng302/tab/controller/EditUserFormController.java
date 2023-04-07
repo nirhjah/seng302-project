@@ -39,6 +39,9 @@ public class EditUserFormController {
     @Autowired
     SportService sportService;
 
+    @Autowired
+    RegisterController registerController;
+
     private void prefillModel(Model model) {
         model.addAttribute("validNameRegex", UserFormValidators.VALID_NAME_REGEX);
         model.addAttribute("validNameMessage", UserFormValidators.INVALID_NAME_MSG);
@@ -149,7 +152,7 @@ public class EditUserFormController {
 
         if (shouldLogout) {
             httpServletRequest.logout();
-            return "redirect:login";
+            registerController.forceLogin(user, httpServletRequest);
         }
 
         return "redirect:user-info/self";
