@@ -65,8 +65,7 @@
                         <li>Password must be at least 8 characters</li>
                         <li>Must contain the following items</li>
                         <ul>
-                            <li>Uppercase letters</li>
-                            <li>Lowercase letters</li>
+                            <li>Uppercase letters and lowercase letters</li>
                             <li>Numbers</li>
                             <li>Symbols</li>
                         </ul>
@@ -131,16 +130,14 @@
               const ENDPOINT = PROTOCOL_AND_AUTH + "/geocode/autocomplete";
             </script>
             <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>
-            <div class="cancel-link">
-                <p>Aleady have an account? <a th:href="@{login}">Login</a></p>
-
-            </div>
             <div class="submit-button">
 <!--                <button class="previous-button" type="submit">Previous</button>-->
                 <button class="previous-button">Previous</button>
                 <button class="next-button">Next</button>
             </div>
-
+            <div class="cancel-link">
+                <p>Aleady have an account? <a th:href="@{login}">Login</a></p>
+            </div>
 <!--            <div class="cancel-link">-->
 <!--                <div class="cancel-link">-->
 <!--                    <a th:href="@{home}">Cancel</a>-->
@@ -168,7 +165,7 @@
         //TODO add in check for fields inputted before user can click next
         locationInputs.style.display = 'block';
         registerInputs.style.display = 'none';
-        progressBarLocation.classList.toggle('active');
+        progressBarLocation.classList.add('active');
         prevButton.style.display = 'block';
         nextButton.textContent = 'Register'
         nextButton.type = 'submit'

@@ -47,10 +47,10 @@ ul.search {
 
 .register-form {
   display: grid;
-  grid-auto-rows: 750px;
+  grid-auto-rows: 780px;
   justify-content: center;
   align-items: center;
-  grid-template-rows: 106px;
+  grid-template-rows: 105px;
   height: 90vh;
 }
 
@@ -131,7 +131,7 @@ ul.search {
   /*CSS counters to number the steps*/
   counter-reset: step;
   width: 100%;
-  margin: 30px 0 20px;
+  margin: 5px 0 20px;
   font-family: "Noto Sans", sans-serif;
   font-weight: bolder;
 }
@@ -199,6 +199,7 @@ ul.search {
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   margin-top: 2px;
+  width: 100%;
 }
 
 .input-box .autocomplete-container:hover {
@@ -211,7 +212,7 @@ ul.search {
   border-bottom: 1px solid #ccc; /* add a border to separate the list items */
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
-  width: 91%;
+  width: 100%;
 }
 
 .input-box .autocomplete-container ul li:hover {
@@ -409,7 +410,7 @@ td {
 
 .register-form .wrapper {
   width: 590px;
-  height: 740px;
+  height: 745px;
 }
 
 @media (max-width: 655px) {
@@ -745,7 +746,7 @@ input:invalid + label:after {
   font-size: 1em;
   text-align: center;
   font-weight: 500;
-  margin: 25px 0 10px;
+  margin: 0 0 10px;
 }
 
 .login-form-form .cancel-link {
@@ -869,7 +870,7 @@ li.active a {
 .submit-button {
   border-radius: 30px;
   text-align: center;
-  margin: 35px 0;
+  margin: 25px 0 20px;
 }
 
 .submit-button button {
