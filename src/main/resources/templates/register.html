@@ -21,6 +21,11 @@
     </div>
     <div class="wrapper">
         <form class="register-form-form" th:action="@{register}" method="post" th:object="${registerForm}">
+            <div class="icon">
+                <a th:href="@{home}">
+                    <img th:src="@{/image/icons/close.png}"/>
+                </a>
+            </div>
             <ul class="progressbar">
                 <li class="active">Details</li>
                 <li id="progressbar-location">Location</li>
@@ -77,14 +82,16 @@
                     <input type="password" class="form-control" id="confirm-password" placeholder=""
                            th:field="*{confirmPassword}" data-cy="confirmPassword" required autofocus>
                     <label for="confirm-password"> Confirm Password <span class="required">*</span></label>
-                    <div th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}" class="error-message"></div>
+                    <div th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}"
+                         class="error-message"></div>
                 </div>
             </div>
             <div class="register-inputs-location">
                 <div class="input-boxes">
                     <div class="input-box">
                         <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
-                               data-cy="location" th:pattern="${addressRegex}" autofocus placeholder="" autocomplete="off"
+                               data-cy="location" th:pattern="${addressRegex}" autofocus placeholder=""
+                               autocomplete="off"
                                title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
                         <label for="address-line-1">Address Line 1</label>
                         <div class="autocomplete-container" id="autocomplete-container"></div>
@@ -105,44 +112,45 @@
                 <div class="input-box">
                     <input type="text" class="form-control" id="postcode" th:name="postcode"
                            data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder=""
-                    title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">
+                           title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">
                     <label for="postcode">Postcode</label>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="city" th:name="city"
-                           data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                           data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}"
+                           placeholder=""
                            title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
                     <label for="city">City <span class="required">*</span></label>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="country" th:name="country"
-                           data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                           data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}"
+                           placeholder=""
                            title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
                     <label for="country">Country <span class="required">*</span></label>
                 </div>
             </div>
             <script type="text/javascript" th:inline="javascript">
-              /**
-              ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
-               * @type {string}
-               */
-              const PROTOCOL_AND_AUTH = /*[[${protocolAndAuthority}]]*/ "";
-              const ENDPOINT = PROTOCOL_AND_AUTH + "/geocode/autocomplete";
+                /**
+                 ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
+                 * @type {string}
+                 */
+                const PROTOCOL_AND_AUTH = /*[[${protocolAndAuthority}]]*/ "";
+                const ENDPOINT = PROTOCOL_AND_AUTH + "/geocode/autocomplete";
             </script>
-            <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>
+            <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"></script>
             <div class="submit-button">
-<!--                <button class="previous-button" type="submit">Previous</button>-->
                 <button class="previous-button">Previous</button>
                 <button class="next-button">Next</button>
             </div>
             <div class="cancel-link">
                 <p>Aleady have an account? <a th:href="@{login}">Login</a></p>
             </div>
-<!--            <div class="cancel-link">-->
-<!--                <div class="cancel-link">-->
-<!--                    <a th:href="@{home}">Cancel</a>-->
-<!--                </div>-->
-<!--            </div>-->
+            <!--            <div class="cancel-link">-->
+            <!--                <div class="cancel-link">-->
+            <!--                    <a th:href="@{home}">Cancel</a>-->
+            <!--                </div>-->
+            <!--            </div>-->
         </form>
     </div>
 </div>
@@ -161,7 +169,7 @@
     const locationInputs = document.querySelector('.register-inputs-location');
     const progressBarLocation = document.getElementById('progressbar-location');
 
-    nextButton.addEventListener("click", function() {
+    nextButton.addEventListener("click", function () {
         //TODO add in check for fields inputted before user can click next
         locationInputs.style.display = 'block';
         registerInputs.style.display = 'none';
@@ -171,7 +179,7 @@
         nextButton.type = 'submit'
     });
 
-    prevButton.addEventListener("click", function() {
+    prevButton.addEventListener("click", function () {
         locationInputs.style.display = 'none';
         registerInputs.style.display = 'block';
         progressBarLocation.classList.remove('active');
@@ -179,6 +187,7 @@
         nextButton.textContent = 'Next';
         nextButton.removeAttribute('type');
     });
+
     function checkPasswordStrength() {
         const password = document.getElementById("password").value;
         const email = document.getElementById("email").value;

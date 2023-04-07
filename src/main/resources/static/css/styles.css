@@ -202,7 +202,7 @@ ul.search {
   width: 100%;
 }
 
-.input-box .autocomplete-container:hover {
+.input-box .autocomplete-container:hover, .icon img:hover {
   cursor: pointer;
 }
 
@@ -1067,3 +1067,13 @@ li.active a {
 ul.autocomplete-result{
   display:block;
 }
+
+.icon img{
+  max-height:28px;
+  max-width:28px;
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  object-fit: cover;
+}
+
