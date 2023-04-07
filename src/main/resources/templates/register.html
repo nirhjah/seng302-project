@@ -22,7 +22,7 @@
     <div class="wrapper">
         <form class="register-form-form" th:action="@{register}" method="post" th:object="${registerForm}">
             <ul class="progressbar">
-                <li class="active">Account</li>
+                <li class="active">Details</li>
                 <li id="progressbar-location">Location</li>
             </ul>
             <div class="register-inputs">
@@ -81,56 +81,56 @@
                     <label for="confirm-password"> Confirm Password <span class="required">*</span></label>
                 </div>
             </div>
-                <div class="register-inputs-location">
-                    <div class="input-boxes">
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
-                                   data-cy="location" th:pattern="${addressRegex}" autofocus placeholder="" autocomplete="off"
-                                   title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
-                            <label for="address-line-1">Address Line 1</label>
-                            <div class="autocomplete-container" id="autocomplete-container"></div>
-                        </div>
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
-                                   data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}"
-                                   title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
-                            <label for="address-line-2">Address Line 2</label>
-                        </div>
+            <div class="register-inputs-location">
+                <div class="input-boxes">
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
+                               data-cy="location" th:pattern="${addressRegex}" autofocus placeholder="" autocomplete="off"
+                               title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
+                        <label for="address-line-1">Address Line 1</label>
+                        <div class="autocomplete-container" id="autocomplete-container"></div>
                     </div>
                     <div class="input-box">
-                        <input type="text" class="form-control" id="suburb" th:name="suburb"
-                               data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
-                               title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
-                        <label for="suburb">Suburb</label>
-                    </div>
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="postcode" th:name="postcode"
-                               data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder=""
-                        title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">
-                        <label for="postcode">Postcode</label>
-                    </div>
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="city" th:name="city"
-                               data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
-                               title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
-                        <label for="city">City <span class="required">*</span></label>
-                    </div>
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="country" th:name="country"
-                               data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
-                               title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
-                        <label for="country">Country <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
+                               data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}"
+                               title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
+                        <label for="address-line-2">Address Line 2</label>
                     </div>
                 </div>
-                <script type="text/javascript" th:inline="javascript">
-                  /**
-                  ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
-                   * @type {string}
-                   */
-                  const PROTOCOL_AND_AUTH = /*[[${protocolAndAuthority}]]*/ "";
-                  const ENDPOINT = PROTOCOL_AND_AUTH + "/geocode/autocomplete";
-                </script>
-                <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="suburb" th:name="suburb"
+                           data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                           title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
+                    <label for="suburb">Suburb</label>
+                </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="postcode" th:name="postcode"
+                           data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder=""
+                    title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">
+                    <label for="postcode">Postcode</label>
+                </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="city" th:name="city"
+                           data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                           title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
+                    <label for="city">City <span class="required">*</span></label>
+                </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="country" th:name="country"
+                           data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                           title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
+                    <label for="country">Country <span class="required">*</span></label>
+                </div>
+            </div>
+            <script type="text/javascript" th:inline="javascript">
+              /**
+              ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
+               * @type {string}
+               */
+              const PROTOCOL_AND_AUTH = /*[[${protocolAndAuthority}]]*/ "";
+              const ENDPOINT = PROTOCOL_AND_AUTH + "/geocode/autocomplete";
+            </script>
+            <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>
             <div class="submit-button">
 <!--                <button class="previous-button" type="submit">Previous</button>-->
                 <button class="previous-button">Previous</button>

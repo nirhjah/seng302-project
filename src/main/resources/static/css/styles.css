@@ -145,6 +145,7 @@ ul.search {
   text-align: center;
   line-height: 30px;
 }
+
 .progressbar li:before {
   content: counter(step);
   counter-increment: step;
@@ -158,26 +159,33 @@ ul.search {
   margin: 0 auto 0px auto;
   padding: 10px;
   text-align: center;
+  position: relative;
+  z-index: 2;
 }
 
-.progressbar li:after {
+
+.progressbar li::after {
   content: '';
-  width: 80%;
+  width: 71.3%;
   height: 2px;
-  background: #415A77;
   position: absolute;
-  left: -46%;
-  top: 20px;
+  top: 21px;
+  border: #ccc solid 3px;
+  background-color: #ccc;
+  right: 62.5%;
+  z-index: 1;
 }
+
 .progressbar li:first-child:after {
   content: none;
 }
 
-.progressbar li:before, .progressbar li:after{
-  border: #415A77 solid 3px;
+.progressbar li:before{
+  border: #ccc solid 3px;
 }
 
 .progressbar li.active:before,  .progressbar li.active:after{
+  border: #415A77 solid 3px;
   background-color: #415A77;
   color: white;
 }
@@ -400,7 +408,7 @@ td {
 
 .register-form .wrapper {
   width: 590px;
-  height: 720px;
+  height: 740px;
 }
 
 @media (max-width: 655px) {
