@@ -25,7 +25,7 @@
         width: 230px;
         display: flex;
         flex-wrap: wrap;
-        margin-top: 31px;
+        margin-top: 45px;
         border: 2px dashed #778DA9;
         border-bottom-left-radius: 11px;
         border-bottom-right-radius: 11px;
@@ -208,7 +208,7 @@
                     </div>
                 </div>
                 <br/>
-                <div class="submit-button" style="padding-top: 20px">
+                <div class="submit-button" style="margin-top: 20px;">
                     <label th:if="${errorMessage}" th:text="${errorMessage}" style="position: fixed;"></label>
                     <a th:href="@{home}">
                         <button type="submit" id="submit">Save</button>
@@ -269,8 +269,13 @@
             e.preventDefault();
             let tag = e.target.value.replace(/\s+/g, ' ');
             if(tag.length>0 && !tags.includes(tag)){
-                tags.push(tag);
-                createTag();
+                if(tag.match("([A-Za-z-'\\s]+)$")){
+                    tags.push(tag);
+                    createTag();
+                }
+                else {
+                    document.getElementById("error-message").innerText  ="Sport contains invalid characters";
+                }
             }
             else if (tag.length==0){
                 document.getElementById("error-message").innerText  ="Please enter a sport";
