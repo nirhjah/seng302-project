@@ -270,6 +270,7 @@
             let tag = e.target.value.replace(/\s+/g, ' ');
             if(tag.length>0 && !tags.includes(tag)){
                 if(tag.match("([A-Za-z-'\\s]+)$")){
+                    document.getElementById("error-message").innerText  ="";
                     tags.push(tag);
                     createTag();
                 }
