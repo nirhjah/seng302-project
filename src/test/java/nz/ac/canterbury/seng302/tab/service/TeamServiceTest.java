@@ -85,7 +85,7 @@ public class TeamServiceTest {
         }
     }
 
-/**
+    /**
      * test for the service validation
      *
      * 
@@ -103,7 +103,8 @@ public class TeamServiceTest {
         String validAddressLine1 = "";
         String validAddressLine2 = "";
 
-        boolean isTestValid = TeamService.validateTeamRegistration(invalidSport, validName, validCountry, validCity, validPostcode, validSuburb, validAddressLine1, validAddressLine2);
-        assert(isTestValid, false);
+        boolean isTestValid = teamService.validateTeamRegistration(invalidSport, validName, validCountry, validCity,
+                validPostcode, validSuburb, validAddressLine1, validAddressLine2);
+        assertEquals(isTestValid, false);
     }
 }

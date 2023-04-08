@@ -27,6 +27,38 @@ public class TeamService {
     @Autowired
     private TeamRepository teamRepository;
 
+    /**
+     * Countries and cities can have letters from all alphabets, with hyphens,
+     * apostrophes and
+     * spaces. Must start with an alphabetical character
+     */
+    private final String countryCitySuburbNameRegex = "^\\p{L}+[\\- '\\p{L}]*$";
+
+    /**
+     * Addresses can have letters, numbers, spaces, commas, periods, hyphens,
+     * forward slashes, apostrophes and pound signs. Must include
+     * at least one alphanumeric character
+     **/
+    private final String addressRegex = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
+
+    /**
+     * Allow letters, numbers, forward slashes and hyphens. Must start with an
+     * alphanumeric character.
+     */
+    private final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
+
+    /**
+     * A team name can be alphanumeric, dots and curly braces. Must start with on
+     * alphabetical character
+     **/
+    private final String teamNameUnicodeRegex = "^[\\p{L}\\p{N}]+[}{.\\p{L}\\p{N}]+$";
+
+    /**
+     * A sport can be letters, space, apostrophes or hyphens. Must start with on
+     * alphabetical character
+     **/
+    private final String sportUnicodeRegex = "^\\p{L}+[\\- '\\p{L}]*$";
+
     public List<Team> getTeamList() {
         return teamRepository.findAll();
     }
@@ -95,11 +127,78 @@ public class TeamService {
     }
 
     /**
-     * Validates registrating a team
+     * @param sport the sport that the user will input in the create teams/edit
+     *              teams page
+     * @return true if the sport is valid and matches the regex
      */
-    public boolean validateTeamRegistration(String sport, String name, String country, String city, String postCode,
+    private boolean isValidSport(String sport) {
+        return (sport.matches(sportUnicodeRegex));
+    }
+
+    /**
+     * @param name the team name that the user inputs in the create/edit teams page
+     * @return True if the team name matches the valid regex
+     */
+    private boolean isValidTeamName(String name) {
+
+        return (name.matches(teamNameUnicodeRegex));
+    }
+
+    /**
+     * @param location this could either be the city suburb or country that the user
+     *                 inputs for the create/edit teams
+     * @return true if the string matches the regex
+     */
+    private boolean isValidCountryCitySuburbName(String location) {
+
+        return (location.matches(countryCitySuburbNameRegex));
+    }
+
+    /**
+     * @param postcode the postcode for the team location
+     * @return true if the postcode has only letters numbers and slashes and starts
+     *         with an alphanumeric
+     */
+    private boolean isValidPostcode(String postcode) {
+
+        return (postcode.matches(postcodeRegex));
+    }
+
+    /**
+     * @param addressline either address line 1 or address line 2 from the
+     *                    create/edit teams page
+     * @return true if the address line matches the regex
+     */
+    private boolean isValidAddressLine(String addressline) {
+
+        return (addressline.matches(addressRegex));
+    }
+
+    /**
+     * @param country
+     * @param city
+     * @param postcode
+     * @param suburb
+     * @param addressline1
+     * @param addressline2
+     * @return true if all the params match their respective regex's
+     *
+     */
+    private boolean isValidLocation(String country, String city, String postcode, String suburb, String addressline1,
+            String addressline2) {
+        return isValidCountryCitySuburbName(country) && isValidCountryCitySuburbName(city)
+                && isValidCountryCitySuburbName(suburb) && isValidPostcode(postcode) && isValidAddressLine(addressline1)
+                && isValidAddressLine(addressline2);
+    }
+
+    /**
+     * Validates registering a team
+     */
+    public boolean validateTeamRegistration(String sport, String name, String country, String city,
+            String postcode,
             String suburb, String addressline1, String addressline2) {
 
-        return false;
+        return isValidSport(sport) && isValidTeamName(name)
+                && isValidLocation(country, city, postcode, suburb, addressline1, addressline2);
     }
 }
