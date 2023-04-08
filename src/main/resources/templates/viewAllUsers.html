@@ -10,27 +10,34 @@
 <div th:insert="~{homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
 
 <body class="view-users-background">
-    <div>
-        <p>
-        <form th:action="@{view-users}" method="get">
-            <input type="text" placeholder="Search name" th:name="currentSearch" th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">
-            <button class="search-user-button" type="submit"> Search </button>
-            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>
-            <br><br>
-        </form>
-        
-        </p>
-    </div>
+<div>
+    <p>
+    <form th:action="@{view-users}" method="get">
+        <div class="search-bar">
+            <input class="search-input" type="text" placeholder="Search name" th:name="currentSearch"
+                   th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">
+            <button class="search-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
+        </div>
+        <div class="filter-bar">
+            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}"
+                 th:if="${not #lists.isEmpty(listOfSports)}"></div>
 
-    <!-- Can convert this table into a fragment if neccessary.
-        for now, embrace YAGNI -->
+        </div>
+    </form>
+
+    </p>
+</div>
+
+<!-- Can convert this table into a fragment if neccessary.
+    for now, embrace YAGNI -->
+<div>
     <table>
         <tr th:if="${listOfUsers.empty}">
-            <td colspan="2"> No users </td>
+            <td colspan="2"> No users</td>
         </tr>
 
         <tr th:unless="${listOfUsers.empty}">
-            <th> </th>
+            <th></th>
             <th>Name</th>
             <th>Email</th>
             <th>Link</th>
@@ -40,20 +47,21 @@
             <td>
                 <img th:src="${'data:image/jpeg;base64,' + user.pictureString}" width="50" height="50"/>
             </td>
-            <td> [[|${user.firstName} ${user.lastName}|]] </td>
-            <td th:text="${user.email}"> Email </td>
+            <td> [[|${user.firstName} ${user.lastName}|]]</td>
+            <td th:text="${user.email}"> Email</td>
             <td>
                 <a th:href="@{user-info(name=${user.userId})}"> Profile </a>
             </td>
         </tr>
     </table>
+</div>
 
-    <div th:insert="fragments/pagination.html :: pagination(pageName='view-users')"></div>
-    <footer>
-        <p>
-            Image by <a
-                href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
-            on Freepik
-        </p>
-    </footer>
+<div th:insert="fragments/pagination.html :: pagination(pageName='view-users')"></div>
+<footer>
+    <p>
+        Image by <a
+            href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+        on Freepik
+    </p>
+</footer>
 </body>

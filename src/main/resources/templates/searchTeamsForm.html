@@ -8,8 +8,8 @@
 <body class="Search-teams-background">
 <div th:insert="~{homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
   <form id="search-form" th:action="@{/searchTeams(teamName=${teamName},page=1)}" method="get" class="search-bar">
-  <input class ="team-name-input" type="text" id="teamName" name="teamName" placeholder="Search Teams" />
-  <button class ="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
+  <input class ="search-input" type="text" id="teamName" name="teamName" placeholder="Search Teams" />
+  <button class ="search-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
   </form>
  <!-- <select class="form-control" id="dropDownList" name="citySelector">
     <option value="-1" selected>Filter by city</option>

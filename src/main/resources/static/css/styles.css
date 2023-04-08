@@ -677,19 +677,19 @@ li.active a {
   padding-left: 30px;
 }
 
-.team-name-input {
+.search-input {
   border-radius: 5px;
   padding-bottom: 4px;
   width: 15%;
 }
 
-.search-team-button,
+.search-button,
 .search-user-button {
   background-color: #415a77;
   width: 6%;
 }
 
-.search-team-button,
+.search-button,
 .profile-pic .back-button,
 .submit-button button,
 .edit-button button,
@@ -879,3 +879,13 @@ li.active a {
 ul.autocomplete-result{
   display:block;
 }
+.filter-bar{
+  width:100%;
+  height:35px;
+  display:flex;
+  /*justify-content: space-between;*/
+}
+
+
+
+
