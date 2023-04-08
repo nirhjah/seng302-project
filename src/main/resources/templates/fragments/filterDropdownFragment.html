@@ -14,7 +14,7 @@ dropdownName: String[opt.] - The parameter name sent to the controller on submit
       </select>
       <div class="overSelect"></div>
     </div>
-    <div th:id="${dropdown_id}" class="checkbox" style="display: block">
+    <div th:id="${dropdown_id}" class="checkbox" style="display: none">
       <label th:for="${select_all}">
         <input type="checkbox" th:id="${select_all}" th:data-target-checkbox="${dropdownName}" onclick="selectAllCheckboxes(this.checked, this.dataset.targetCheckbox)" />
         Select all
