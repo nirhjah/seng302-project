@@ -1,7 +1,11 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +34,9 @@ public class ViewAllUsersController {
     UserService userService;
 
     @Autowired
+    UserRepository userRepository;
+
+    @Autowired
     SportService sportService;
 
     final Logger logger = LoggerFactory.getLogger(getClass());
@@ -56,6 +63,16 @@ public class ViewAllUsersController {
             Model model) {
         Page<User> userPage = getUserPage(page, currentSearch, sports);
         List<User> userList = userPage.toList();
+
+//        List<Location> locations = userRepository.findLocationsByEmail(email);
+//        List<String> cities = new ArrayList<>();
+//        for (Location location: locations) {
+//            if (!cities.contains(location.getCity().toLowerCase())) {
+//                cities.add(location.getCity().toLowerCase());
+//                Collections.sort(cities);
+//            }
+//        }
+
         model.addAttribute("currentSearch", currentSearch);
         model.addAttribute("page", page);
         model.addAttribute("listOfUsers", userList);

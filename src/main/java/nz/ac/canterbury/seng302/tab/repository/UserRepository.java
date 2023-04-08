@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.repository;
 import java.util.List;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -47,5 +48,11 @@ public interface UserRepository extends CrudRepository<User, Long> {
             +")"
     )
     Page<User> findAllFiltered(Pageable pageable, @Param("searchedSports") List<String> searchedSports, @Param("name") String name);
+
+    @Query("SELECT u.location FROM UserEntity u " +
+            "WHERE LOWER(u.email) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(u.location.country) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(u.location.city) LIKE LOWER(CONCAT('%', :name, '%')) ")
+    public List<Location> findLocationsByEmail(@Param("name") String email);
 
 }
