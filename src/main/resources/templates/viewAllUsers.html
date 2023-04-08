@@ -40,18 +40,14 @@
             <th></th>
             <th>Name</th>
             <th>Email</th>
-            <th>Link</th>
         </tr>
-
-        <tr th:each="user : ${listOfUsers}">
+        <tr th:each="user : ${listOfUsers}"
+            th:onclick="|window.location.href='/user-info?name=${user.userId}'|">
             <td>
                 <img th:src="${'data:image/jpeg;base64,' + user.pictureString}" width="50" height="50"/>
             </td>
             <td> [[|${user.firstName} ${user.lastName}|]]</td>
             <td th:text="${user.email}"> Email</td>
-            <td>
-                <a th:href="@{user-info(name=${user.userId})}"> Profile </a>
-            </td>
         </tr>
     </table>
 </div>
