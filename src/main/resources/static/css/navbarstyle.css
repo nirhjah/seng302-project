@@ -90,7 +90,7 @@ header .header-left .hamburger div {
 
     header .header-left nav.active {
         top: 70px;
-        z-index: 2;
+        z-index: 1000;
     }
 
     header .header-left nav ul {

@@ -161,6 +161,7 @@ ul.search {
   padding: 10px;
   text-align: center;
   position: relative;
+  z-index: 2;
 }
 
 
@@ -355,6 +356,7 @@ td {
   padding: 0.1em 0.5em;
   cursor: pointer;
 }
+
 
 .menu-items a {
   text-decoration: none;
@@ -1082,5 +1084,10 @@ img.password-toggle{
   max-width:20px;
   position:absolute;
   right:5px;
+  margin: 8px 0 8px;
+}
+
+#password {
+  width: 92% !important;
 }
 
