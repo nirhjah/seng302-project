@@ -3,7 +3,9 @@ package nz.ac.canterbury.seng302.tab.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Spring Boot Controller class for the ProfileForm
@@ -28,6 +31,9 @@ public class ProfileFormController {
     public static long teamId;
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * Gets form to be displayed, includes the ability to display results of
@@ -68,6 +74,10 @@ public class ProfileFormController {
             return "redirect:./home";
         }
 
+        Optional<User> user = userService.getCurrentUser();
+        model.addAttribute("firstName", user.get().getFirstName());
+        model.addAttribute("lastName", user.get().getLastName());
+        model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("navTeams", teamList);
         model.addAttribute("teamID", teamID);
 

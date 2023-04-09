@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -57,6 +58,11 @@ public class ViewAllUsersController {
             Model model, HttpServletRequest request) {
         Page<User> userPage = getUserPage(page, currentSearch, sports);
         List<User> userList = userPage.toList();
+        Optional<User> user = userService.getCurrentUser();
+        model.addAttribute("firstName", user.get().getFirstName());
+        model.addAttribute("lastName", user.get().getLastName());
+        model.addAttribute("displayPicture", user.get().getPictureString());
+
         model.addAttribute("currentSearch", currentSearch);
         model.addAttribute("page", page);
         model.addAttribute("listOfUsers", userList);
