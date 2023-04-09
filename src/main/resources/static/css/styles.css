@@ -422,7 +422,12 @@ td {
 
 .team-form .wrapper {
   width: 630px;
-  height: 570px;
+  height: 600px;
+}
+
+.team-form .input-box {
+  margin: 35px 0 35px !important;
+  width: 46%;
 }
 
 .user-form .wrapper {
@@ -470,11 +475,10 @@ hr.solid {
 .wrapper-profile .team-info {
   position: absolute;
   top: 0;
-  width: 380px;
+  width: 46%;
   justify-content: flex-start;
   align-items: center;
-  padding-right: 170px;
-  padding-top: 50px;
+  padding-top: 5%;
   left: 35%;
 }
 

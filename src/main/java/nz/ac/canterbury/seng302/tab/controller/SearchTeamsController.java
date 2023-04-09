@@ -2,7 +2,10 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 
@@ -31,6 +35,9 @@ public class SearchTeamsController {
 
     @Autowired
     private TeamRepository teamRepository;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * Gets searchTeamsForm to be displayed
@@ -65,6 +72,10 @@ public class SearchTeamsController {
             model.addAttribute("teams", new ArrayList<Team>());
             model.addAttribute("notSearch", true);
         }
+        Optional<User> user = userService.getCurrentUser();
+        model.addAttribute("firstName", user.get().getFirstName());
+        model.addAttribute("lastName", user.get().getLastName());
+        model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
         return "searchTeamsForm";
     }

@@ -2,7 +2,9 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Spring Boot Controller for View Teams Form
@@ -25,6 +28,9 @@ public class ViewAllTeamsController {
 
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * Gets viewAllTeams doc with required attributes. Reroutes if page out of available range or no teams in database
@@ -53,6 +59,10 @@ public class ViewAllTeamsController {
 
         List<Team> listTeams = page.getContent();
 
+        Optional<User> user = userService.getCurrentUser();
+        model.addAttribute("firstName", user.get().getFirstName());
+        model.addAttribute("lastName", user.get().getLastName());
+        model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("page", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
