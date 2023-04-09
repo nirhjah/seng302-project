@@ -85,21 +85,38 @@ public class TeamServiceTest {
         }
     }
 
+    @Test
+    public void givenAllFieldsValid_WhenTeamEditedOrCreated_ValidationReturnsTrue() throws IOException {
+
+        // call the service validation
+        String validSport = "Rugby";
+        String validName = "All Blacks";
+        String validCountry = "New Zealand";
+        String validCity = "Christchurch";
+        String validPostcode = "8083";
+        String validSuburb = "Papauni";
+        String validAddressLine1 = "";
+        String validAddressLine2 = "";
+
+        boolean isTestValid = teamService.validateTeamRegistration(validSport, validName, validCountry, validCity,
+                validPostcode, validSuburb, validAddressLine1, validAddressLine2);
+        assertEquals(isTestValid, true);
+    }
+
     /**
-     * test for the service validation
-     *
+     * Tests the TeamService Validation with an invalid sport
      * 
      **/
     @Test
-    public void givenInvalidSport_WhenTeamEdited_ValidationReturnsFalse() throws IOException {
+    public void givenInvalidSportCharacter_WhenTeamEdited_ValidationReturnsFalse() throws IOException {
 
         // call the service validation
         String invalidSport = "%";
-        String validName = "";
-        String validCountry = "";
-        String validCity = "";
-        String validPostcode = "";
-        String validSuburb = "";
+        String validName = "All Blacks";
+        String validCountry = "New Zealand";
+        String validCity = "Christchurch";
+        String validPostcode = "8083";
+        String validSuburb = "Papauni";
         String validAddressLine1 = "";
         String validAddressLine2 = "";
 
