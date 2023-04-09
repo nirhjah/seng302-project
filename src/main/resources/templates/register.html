@@ -59,7 +59,7 @@
                 <div class="input-box">
                     <input type="password" class="form-control" id="password" placeholder="" th:field="*{password}"
                            data-cy="password" required autofocus onkeyup="checkPasswordStrength()">
-                    <img th:src="@{/image/icons/view.png}" class="password-toggle"/>
+                    <img th:src="@{/image/icons/hide.png}" class="password-toggle"/>
                     <label for="password"> Password <span class="required">*</span></label>
                 </div>
                 <div class="password-info">
@@ -254,14 +254,17 @@
 
         passwordToggle.addEventListener('mousedown', function () {
             passwordInput.type = 'text';
+            passwordToggle.src='/image/icons/view.png';
         });
 
         passwordToggle.addEventListener('mouseup', function () {
             passwordInput.type = 'password';
+            passwordToggle.src='/image/icons/hide.png';
         });
 
         passwordToggle.addEventListener('mouseout', function () {
             passwordInput.type = 'password';
+            passwordToggle.src='/image/icons/hide.png';
         });
     }
 
