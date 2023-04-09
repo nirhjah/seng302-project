@@ -23,7 +23,7 @@
         <form class="register-form-form" th:action="@{register}" method="post" th:object="${registerForm}">
             <div class="icon">
                 <a th:href="@{home}">
-                    <img th:src="@{/image/icons/close.png}"/>
+                    <img th:src="@{/image/icons/cross.svg}"/>
                 </a>
             </div>
             <ul class="progressbar">
@@ -59,7 +59,7 @@
                 <div class="input-box">
                     <input type="password" class="form-control" id="password" placeholder="" th:field="*{password}"
                            data-cy="password" required autofocus onkeyup="checkPasswordStrength()">
-                    <img th:src="@{/image/icons/hide.png}" class="password-toggle"/>
+                    <img th:src="@{/image/icons/email.svg}" class="password-toggle"/>
                     <label for="password"> Password <span class="required">*</span></label>
                 </div>
                 <div class="password-info">
