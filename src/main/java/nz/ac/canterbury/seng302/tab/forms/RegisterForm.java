@@ -25,6 +25,25 @@ public class RegisterForm {
     @UserFormValidators.EmailValidator
     String email;
 
+    @UserFormValidators.addressValidator
+    private String addressLine1;
+
+    @UserFormValidators.addressValidator
+    private String addressLine2;
+
+    @UserFormValidators.postcodeValidator
+    private String postcode;
+
+    @UserFormValidators.countryCityValidator
+    private String country;
+
+    @UserFormValidators.countryCityValidator
+    private String city;
+
+    @UserFormValidators.suburbValidator
+    private String suburb;
+
+
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     Date dateOfBirth;
@@ -82,6 +101,54 @@ public class RegisterForm {
 
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
+    }
+
+    public String getAddressLine1() {
+        return addressLine1;
+    }
+
+    public void setAddressLine1(String addressLine1) {
+        this.addressLine1 = addressLine1;
+    }
+
+    public String getAddressLine2() {
+        return addressLine2;
+    }
+
+    public void setAddressLine2(String addressLine2) {
+        this.addressLine2 = addressLine2;
+    }
+
+    public String getPostcode() {
+        return postcode;
+    }
+
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getSuburb() {
+        return suburb;
+    }
+
+    public void setSuburb(String suburb) {
+        this.suburb = suburb;
     }
 
 }

@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class GenerateRandomUsers {
         long startDate = new Date(1980, 1, 1).getTime();
         long endDate = new Date(2005, 12, 31).getTime();
         Date dob = new Date(random.nextLong(startDate, endDate));
-        return new User(firstName, lastName, dob, email, "abc123", List.of());
+        return new User(firstName, lastName, dob, email, "abc123", new Location(null, null, null, "Christchurch", null, "New Zealand"));
 
     }
 

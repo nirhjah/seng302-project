@@ -1,8 +1,11 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+
+import nz.ac.canterbury.seng302.tab.service.LocationService;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -27,22 +32,23 @@ public class CreateTeamFormController {
 
     @Autowired
     private TeamService teamService;
-    
+
     @Autowired
     private SportService sportService;
+
     //
     // @Value("${ops.api.key}")
     // private String apiKey;
 
     /**
-     * Countries and cities can have letters from all alphabets, with hyphens and
+     * Countries and cities can have letters from all alphabets, with hyphens, apostrophes and
      * spaces. Must start with an alphabetical character
      */
-    private final String countryCitySuburbNameRegex = "^\\p{L}+[\\- \\p{L}]*$";
+    private final String countryCitySuburbNameRegex = "^\\p{L}+[\\- '\\p{L}]*$";
 
-    /** Addresses can have letters, numbers, spaces, commas, periods, hyphens, forward slashes and pound signs. Must
-     * include at least one alphanumeric character **/
-    private  final String addressRegex = "^[\\p{L}\\p{N}]+[\\- ,./#\\p{L}\\p{N}]*$";
+    /** Addresses can have letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include
+     * at least one alphanumeric character**/
+    private  final String addressRegex = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
 
     /** Allow letters, numbers, forward slashes and hyphens. Must start with an alphanumeric character. */
     private final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
@@ -50,7 +56,7 @@ public class CreateTeamFormController {
     /** A team name can be alphanumeric, dots and curly braces. Must start with on alphabetical character **/
     private final String teamNameUnicodeRegex = "^[\\p{L}\\p{N}]+[}{.\\p{L}\\p{N}]+$";
 
-    /** A sport can be letters, space, apostrophes or hyphens. Must include at least on alphabetical character**/
+    /** A sport can be letters, space, apostrophes or hyphens. Must start with on alphabetical character**/
     private final String sportUnicodeRegex = "^\\p{L}+[\\- '\\p{L}]*$";
 
     /**
@@ -62,10 +68,14 @@ public class CreateTeamFormController {
 
     @GetMapping("/createTeam")
     public String teamForm(@RequestParam(name = "edit", required = false) Long teamID,
-            @RequestParam(name = "invalid_input", defaultValue = "0") boolean invalidInput,
-            Model model) {
+                           @RequestParam(name = "invalid_input", defaultValue = "0") boolean invalidInput,
+                           Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
 
         logger.info("GET /createTeam");
+
+        URL url = new URL(httpServletRequest.getRequestURL().toString());
+        String path = (url.getPath() + "/..");
+        String protocolAndAuthority = String.format("%s://%s", url.getProtocol(), url.getAuthority());
 
         Team team;
         if (teamID != null) {
@@ -79,6 +89,7 @@ public class CreateTeamFormController {
                 model.addAttribute("country", team.getLocation().getCountry());
                 model.addAttribute("postcode", team.getLocation().getPostcode());
                 model.addAttribute("teamID", team.getTeamId());
+                model.addAttribute("path", path);
             } else {
                 model.addAttribute("invalid_team", "Invalid team ID, creating a new team instead.");
             }
@@ -151,9 +162,10 @@ public class CreateTeamFormController {
             team.setSport(sport);
             team.setLocation(location);
             team = teamService.updateTeam(team);
+            teamID = team.getTeamId();
         } else {
             team = new Team(name, sport, location);
-            teamService.addTeam(team);
+            team = teamService.addTeam(team);
             teamID = team.getTeamId();
         }
 
@@ -162,6 +174,6 @@ public class CreateTeamFormController {
             sportService.addSport(new Sport(sport));
         }
 
-        return String.format("redirect:./profile?teamID=%s", team.getTeamId());
+        return String.format("redirect:./profile?teamID=%s", teamID);
     }
 }

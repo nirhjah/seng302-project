@@ -4,6 +4,7 @@ import java.util.*;
 
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.service.SportService;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ public class EditUserFormController {
     private final Logger logger = LoggerFactory.getLogger(EditUserFormController.class);
 
     @Autowired
+    TeamService teamService;
+    @Autowired
     UserService userService;
 
     @Autowired
@@ -39,6 +42,13 @@ public class EditUserFormController {
     private void prefillModel(Model model) {
         model.addAttribute("validNameRegex", UserFormValidators.VALID_NAME_REGEX);
         model.addAttribute("validNameMessage", UserFormValidators.INVALID_NAME_MSG);
+        model.addAttribute("postcodeRegex",UserFormValidators.VALID_POSTCODE_REGEX);
+        model.addAttribute("postcodeRegexMsg",UserFormValidators.INVALID_POSTCODE_MSG);
+        model.addAttribute("addressRegex",UserFormValidators.VALID_ADDRESS_REGEX);
+        model.addAttribute("addressRegexMsg",UserFormValidators.INVALID_POSTCODE_MSG);
+        model.addAttribute("countryCitySuburbNameRegex",UserFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
+        model.addAttribute("countryCitySuburbNameRegexMsg",UserFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG);
+        model.addAttribute("navTeams", teamService.getTeamList());
     }
 
     @GetMapping("/editUser")
@@ -111,6 +121,12 @@ public class EditUserFormController {
         user.setLastName(editUserForm.getLastName());
         user.setEmail(editUserForm.getEmail());
         user.setDateOfBirth(editUserForm.getDateOfBirth());
+        user.getLocation().setAddressLine1(editUserForm.getAddressLine1());
+        user.getLocation().setAddressLine2(editUserForm.getAddressLine2());
+        user.getLocation().setCity(editUserForm.getCity());
+        user.getLocation().setCountry(editUserForm.getCountry());
+        user.getLocation().setSuburb(editUserForm.getSuburb());
+        user.getLocation().setPostcode(editUserForm.getPostcode());
 
         List<Sport> newFavSports = new ArrayList<>();
         List<String> knownSportNames = sportService.getAllSportNames();

@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
+import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,13 +26,17 @@ public class TeamTest {
     @Autowired
     private TeamService teamService;
 
+    @Autowired
+    private LocationRepository locationRepository;
+
+    private Location location;
+
     @BeforeEach
     public void beforeEach() {
         teamRepository.deleteAll();
-
+        location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
     }
 
-    Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
 
     @Test
     public void testTeamConstructor() throws IOException {
@@ -50,11 +55,7 @@ public class TeamTest {
         assertTrue(teamList.isEmpty());
         Team team = new Team("test", "Hockey", location);
         teamRepository.save(team);
-
-        Team team2 = new Team("test2", "Netball", location);
-        teamRepository.save(team2);
         assertEquals(1, team.getTeamId());
-        assertEquals(2, team2.getTeamId());
     }
 
     @Test

@@ -42,31 +42,34 @@ public class SearchTeamsController {
      *
      * @param teamName name of the team that has been searched for by the database
      * @param page return the page number
+     * @param filteredCities list of cities to filter teams by, selected by the user
      * @param model    (map-like) representation of teamID and teamFilter
      * @return thymeleaf searchTeamsForm
      */
     @GetMapping("/searchTeams")
-    public String searchTeams(@RequestParam(name = "teamName", required = false) String teamName,
-                              @RequestParam(name = "page", defaultValue = "0") int page,
-                              @RequestParam(name = "sportsCheckbox", required = false) List<String> sports,
+    public String searchTeams(@RequestParam(value = "teamName", required = false) String teamName,
+                              @RequestParam(value = "page", defaultValue = "0") int page,
+                              @RequestParam(value = "cityCheckbox", required = false) List<String> filteredCities,
                               Model model) {
-        model.addAttribute("sports", sportService.getAllSportNames());
-        model.addAttribute("notSearch", false);
-        if (teamName != null) {
+        boolean notSearch = false;
+        logger.info("cityCheckBox = {}", filteredCities);
+        logger.info("teamName = {}", teamName);
+        if (teamName != null ) {
             if (teamName.length() < 3) {
                 model.addAttribute("error", true);
                 model.addAttribute("teams", new ArrayList<Team>());
-            } else {
+            }
+            else {
                 int pageSize = 10; // number of results per page
                 PageRequest pageRequest = PageRequest.of(page, pageSize);
-                Page<Team> teamPage = teamRepository.findTeamByName(teamName, pageRequest);
+                Page<Team> teamPage = teamService.findPaginatedTeamsByCity(pageRequest, filteredCities, teamName);
                 List<Team> teams = teamPage.getContent();
+                //Gets cities to populate in dropdown
                 List<Location> locations = teamRepository.findLocationsByName(teamName);
-                // Maybe make into dictionary
                 List<String> cities = new ArrayList<>();
                 for (Location location: locations) {
-                    if (!cities.contains(location.getCity())) {
-                        cities.add(location.getCity());
+                    if (!cities.contains(location.getCity().toLowerCase())) {
+                        cities.add(location.getCity().toLowerCase());
                         Collections.sort(cities);
                     }
                 }
@@ -79,8 +82,10 @@ public class SearchTeamsController {
             }
         } else {
             model.addAttribute("teams", new ArrayList<Team>());
-            model.addAttribute("notSearch", true);
+            notSearch = true;
         }
+        model.addAttribute("navTeams", teamService.getTeamList());
+        model.addAttribute("notSearch", notSearch);
         model.addAttribute("navTeams", teamService.getTeamList());
         return "searchTeamsForm";
     }

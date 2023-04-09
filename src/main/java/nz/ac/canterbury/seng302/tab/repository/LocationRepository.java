@@ -10,6 +10,5 @@ import java.util.Optional;
 @Repository
 public interface LocationRepository extends CrudRepository<Location, Long> {
     Optional<Location> findById(long id);
-
     List<Location> findAll();
 }
