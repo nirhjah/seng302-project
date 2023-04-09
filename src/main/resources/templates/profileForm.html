@@ -29,7 +29,6 @@
                     <div class="error-message" th:if="${typeError == true}">Please choose a .png, .jpg or .svg file
                     </div>
                 </div>
-                <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
             </form>
         </div>
         <div class="team-info">
@@ -40,15 +39,12 @@
                 <h3 th:text="'Location: ' + ${displayLocation}"></h3>
             </div>
         </div>
-        <div class="edit-button-div">
-            <form th:action="@{profile}" method="post">
-                <div class="edit-button">
-                    <a th:href="@{createTeam(edit=${teamID})}">
-                        <button type="button">Edit Profile</button>
-                    </a>
-                </div>
-            </form>
-        </div>
+        <form th:action="@{profile}"  class="profile-buttons" method="post">
+            <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+            <a class="edit-button" th:href="@{createTeam(edit=${teamID})}">
+                <button type="button">Edit Profile</button>
+            </a>
+        </form>
     </div>
     <footer>
         <p>

@@ -123,7 +123,6 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
                 </form>
             </div>
             <div class="team-info">
@@ -139,15 +138,16 @@
                     </div>
                 </div>
             </div>
+            <div class="profile-buttons">
+                <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
                 <div th:if="${canEdit}" class="edit-button">
                       <a th:href="@{editUser}">
-                        <button type="button">Edit Profile</button>
+                          <button type="button">Edit Profile</button>
                       </a>
                 </div>
             </div>
         </div>
     </div>
-</div>
 <footer>
     <p>
         Image by <a

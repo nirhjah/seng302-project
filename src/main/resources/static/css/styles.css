@@ -373,14 +373,7 @@ td {
   opacity: 1;
 }
 
-.wrapper-profile {
-  position: absolute;
-  width: 850px;
-  height: 430px;
-  display: grid;
-  /*background: transparent;*/
-  /*backdrop-filter: blur(20px);*/
-}
+
 
 .wrapper-edit-profile{
     width: 500px;
@@ -416,13 +409,51 @@ td {
 
 @media (max-width: 655px) {
   .register-form .wrapper {
-    width: 90vw
+    width: 90vw;
   }
+}
+
+.wrapper-profile {
+  position: absolute;
+  width: 850px;
+  height: 430px;
+  display: grid;
+  /*background: transparent;*/
+  /*backdrop-filter: blur(20px);*/
+}
+
+@media (max-width: 944px) {
+  .wrapper-profile {
+    width: 90vw;
+    display: block;
+  }
+
+  /*.team-info {*/
+  /*  position: unset;*/
+  /*}*/
+
+  /*.profile-pic {*/
+  /*  position: unset;*/
+  /*}*/
+
+  /*.profile-buttons {*/
+  /*  position: unset;*/
+  /*}*/
 }
 
 .team-form .wrapper {
   width: 630px;
   height: 600px;
+}
+
+.team-form .wrapper form {
+  width: 65%;
+}
+
+@media (max-width: 700px) {
+  .team-form .wrapper {
+    width: 90vw;
+  }
 }
 
 .team-form .input-box {
@@ -459,8 +490,9 @@ hr.solid {
 .wrapper-profile .profile-pic {
   position: absolute;
   top: 0;
+  left: 0;
   width: 300px;
-  height: 400px;
+  height: 350px;
 }
 
 .wrapper-profile .user-info {
@@ -482,15 +514,11 @@ hr.solid {
   left: 35%;
 }
 
-.wrapper-profile .profile-pic {
-  left: 0;
-}
-
 footer {
     right: 0;
 }
 
-.file-label-border,.edit-button button, .profile-pic .back-button {
+.file-label-border,.profile-buttons button, .profile-pic .back-button {
     background-color: #415A77;
     font-weight: 500;
 }
@@ -570,17 +598,28 @@ footer {
 }
 
 
-.edit-button {
+.profile-buttons {
   float: right;
-  margin-right: 50px;
   position: absolute;
-  right: 20px;
+  right: 40px;
   bottom: 30px;
+  display: flex;
+  left: 50px;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.edit-button button {
-    width: 150%;
-    height: 40px;
+
+.profile-buttons button {
+  width: 100%;
+  max-width: 100px;
+  padding: 5px;
+  min-width: 150px;
+  height: 40px;
+}
+
+.edit-button {
+  text-align: right;
 }
 
 .form-control-file {
@@ -589,11 +628,13 @@ footer {
 
 .file-label-border {
     width: 100%;
-    height: 35px;
+    height: 40px;
     white-space: nowrap;
     text-align: center;
     flex: 1;
 }
+
+
 
 .team-form .create-team, .user-form .user-header, .login-form .login-header,
 .register-form .register-header{
@@ -733,7 +774,7 @@ input:invalid + label:after {
 
 
 
-.edit-button button:hover, .profile-pic .back-button:hover, .submit-button button:hover, .file-label-border:hover {
+.profile-buttons button:hover, .wrapper-profile .back-button:hover, .submit-button button:hover, .file-label-border:hover {
     background-color: #415a77;
     cursor: pointer;
 }
@@ -791,10 +832,8 @@ input:invalid + label:after {
   position: absolute;
 }
 
-.profile-pic .back-button {
-  bottom: -48px;
-  width: 35%;
-  height: 35px;
+.profile-buttons .back-button {
+  min-width: 50px !important;
 }
 
 .Welcome-header {
@@ -861,7 +900,7 @@ li.active a {
 .search-team-button,
 .profile-pic .back-button,
 .submit-button button,
-.edit-button button,
+.profile-buttons button,
 .file-label-border {
   border: none;
   outline: none;
@@ -902,17 +941,6 @@ li.active a {
   color: white;
 }
 
-
-
-.paginationContainer,
-.wrapper,
-.wrapper-profile .profile-pic,
-.wrapper-profile .team-info,
-.file-label-border,
-.profile-form,
-.user-info {
-  display: flex;
-}
 
 .profile-form {
   flex-direction: column;
