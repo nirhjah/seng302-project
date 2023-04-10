@@ -32,32 +32,32 @@ public class TeamService {
      * apostrophes and
      * spaces. Must start with an alphabetical character
      */
-    private final String countryCitySuburbNameRegex = "^\\p{L}+[\\- '\\p{L}]*$";
+    public final String countryCitySuburbNameRegex = "^\\p{L}+[\\- '\\p{L}]*$";
 
     /**
      * Addresses can have letters, numbers, spaces, commas, periods, hyphens,
      * forward slashes, apostrophes and pound signs. Must include
      * at least one alphanumeric character
      **/
-    private final String addressRegex = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
+    public final String addressRegex = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
 
     /**
      * Allow letters, numbers, forward slashes and hyphens. Must start with an
      * alphanumeric character.
      */
-    private final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
+    public final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
 
     /**
      * A team name can be alphanumeric, dots and curly braces. Must start with on
      * alphabetical character
      **/
-    private final String teamNameUnicodeRegex = "^[\\p{L}\\p{N}\\s]+[}{.\\p{L}\\p{N}\\s]+$";
+    public final String teamNameUnicodeRegex = "^[\\p{L}\\p{N}\\s]+[}{.\\p{L}\\p{N}\\s]+$";
 
     /**
      * A sport can be letters, space, apostrophes or hyphens. Must start with on
      * alphabetical character
      **/
-    private final String sportUnicodeRegex = "^\\p{L}+[\\- '\\p{L}]*$";
+    public final String sportUnicodeRegex = "^\\p{L}+[\\- '\\p{L}]*$";
 
     public List<Team> getTeamList() {
         return teamRepository.findAll();
