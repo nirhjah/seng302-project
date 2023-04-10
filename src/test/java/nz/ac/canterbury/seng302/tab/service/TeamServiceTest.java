@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -238,6 +239,28 @@ public class TeamServiceTest {
                 validPostcode, validSuburb, validAddressLine1, validAddressLine2);
         assertEquals(true, isTestValid);
         assertEquals("Football", actualSportName);
+
+    }
+
+    @Test
+    public void givenAllInputsValid_whenTrimmingWhitespace_noInputschanged() throws IOException {
+
+        List<String> validInputs = new ArrayList<>();
+        validInputs.add("Football");
+        validInputs.add("Cams team");
+        validInputs.add("");
+        validInputs.add("Ice Hockey");
+        validInputs.add("rugby");
+        for (String item : validInputs) {
+            item = teamService.clipExtraWhitespace(item);
+        }
+        List<String> expectedInputs = new ArrayList<>();
+        expectedInputs.add("Football");
+        expectedInputs.add("Cams team");
+        expectedInputs.add("");
+        expectedInputs.add("Ice Hockey");
+        expectedInputs.add("rugby");
+        assertEquals(expectedInputs, validInputs);
 
     }
 }
