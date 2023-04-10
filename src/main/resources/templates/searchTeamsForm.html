@@ -14,8 +14,9 @@
         <button class ="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
       </div>
     </div>
-    <div th:if="${not #lists.isEmpty(teams)}">
+    <div th:if="${not #lists.isEmpty(teams)}" style="display: flex">
       <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cityCheckbox')}" th:if="${not #lists.isEmpty(teams)}"></div>
+      <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(teams)}"></div>
       <button class="filter-by-city-button" type="submit">Apply Filters</button>
     </div>
   </form>
@@ -69,66 +70,9 @@
       </tr>
     </tbody>
   </table>
-  <div class="pagination">
-    <div class="paginationContainer">
-      <ul>
-        <li th:if="${currentPage > 0}">
-          <a th:href="@{/searchTeams(teamName=${teamName},page=${currentPage-1})}" aria-label="Previous">
-            <span aria-hidden="true">&laquo;Prev</span>
-          </a>
-        </li>
-        <li th:each="page : ${#numbers.sequence(0, totalPages-1)}" th:class="${page == currentPage ? 'active' : ''}">
-          <a th:href="@{/searchTeams(teamName=${teamName},page=${page})}" th:text="${page+1}"></a>
-        </li>
-        <li th:if="${currentPage < totalPages-1}">
-          <a th:href="@{/searchTeams(teamName=${teamName},page=${currentPage+1})}" aria-label="Next">
-            <span aria-hidden="true">&raquo;Next</span>
-          </a>
-        </li>
-      </ul>
-    </div>
+  <!--/* Hey, maybe we should use fragment arguments instead of globally asking for these values */-->
+  <div th:with="page=${currentPage+1}" th:insert="~{fragments/pagination.html :: pagination}"></div>
 
-    <table id="teamTable">
-        <thread>
-            <tr>
-                <th>Profile Picture</th>
-                <th>Name</th>
-                <th>Sport</th>
-                <th>Location</th>
-            </tr>
-        </thread>
-        <tbody>
-        <tr th:each="team : ${teams}"
-            th:onclick="|window.location.href='/profile?teamID=${team.teamId}'|">
-            <td>
-                <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" width="50" height="50"/>
-            </td>
-            <td th:text="${team.name}"></td>
-            <td th:text="${team.sport}"></td>
-            <td th:text="${team.location}"></td>
-        </tr>
-        </tbody>
-    </table>
-    <div class="pagination">
-        <div class="paginationContainer">
-            <ul>
-                <li th:if="${currentPage > 0}">
-                    <a th:href="@{/searchTeams(teamName=${teamName},page=${currentPage-1})}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;Prev</span>
-                    </a>
-                </li>
-                <li th:each="page : ${#numbers.sequence(0, totalPages-1)}"
-                    th:class="${page == currentPage ? 'active' : ''}">
-                    <a th:href="@{/searchTeams(teamName=${teamName},page=${page})}" th:text="${page+1}"></a>
-                </li>
-                <li th:if="${currentPage < totalPages-1}">
-                    <a th:href="@{/searchTeams(teamName=${teamName},page=${currentPage+1})}" aria-label="Next">
-                        <span aria-hidden="true">&raquo;Next</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
     <footer>
         <p>
             Image by <a

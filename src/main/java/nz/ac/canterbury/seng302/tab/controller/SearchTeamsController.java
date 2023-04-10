@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
@@ -37,6 +36,8 @@ public class SearchTeamsController {
     @Autowired
     private SportService sportService;
 
+    private static final int PAGE_SIZE = 10;
+
     /**
      * Gets searchTeamsForm to be displayed
      *
@@ -50,6 +51,7 @@ public class SearchTeamsController {
     public String searchTeams(@RequestParam(value = "teamName", required = false) String teamName,
                               @RequestParam(value = "page", defaultValue = "0") int page,
                               @RequestParam(value = "cityCheckbox", required = false) List<String> filteredCities,
+                              @RequestParam(value = "sports", required = false) List<String> filteredSports,
                               Model model) {
         boolean notSearch = false;
         logger.info("cityCheckBox = {}", filteredCities);
@@ -60,20 +62,24 @@ public class SearchTeamsController {
                 model.addAttribute("teams", new ArrayList<Team>());
             }
             else {
-                int pageSize = 10; // number of results per page
-                PageRequest pageRequest = PageRequest.of(page, pageSize);
-                Page<Team> teamPage = teamService.findPaginatedTeamsByCity(pageRequest, filteredCities, teamName);
+                PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE);
+                Page<Team> teamPage = teamService.findPaginatedTeamsByCityAndSports(pageRequest, filteredCities, filteredSports, teamName);
                 List<Team> teams = teamPage.getContent();
-                //Gets cities to populate in dropdown
+                // Get all the sports of the given queried users
+                var sports = teamRepository.findTeamByName(teamName, PageRequest.of(0, Integer.MAX_VALUE)).stream()
+                        .map(team -> team.getSport().toLowerCase())
+                        .distinct()
+                        .sorted()
+                        .toList();
+                // Gets cities to populate in dropdown
                 List<Location> locations = teamRepository.findLocationsByName(teamName);
-                List<String> cities = new ArrayList<>();
-                for (Location location: locations) {
-                    if (!cities.contains(location.getCity().toLowerCase())) {
-                        cities.add(location.getCity().toLowerCase());
-                        Collections.sort(cities);
-                    }
-                }
+                List<String> cities = locations.stream()
+                        .map(location -> location.getCity().toLowerCase())
+                        .distinct()
+                        .sorted()
+                        .toList();
                 int numPages = teamPage.getTotalPages();
+                model.addAttribute("sports", sports);
                 model.addAttribute("teams", teams);
                 model.addAttribute("currentPage", page);
                 model.addAttribute("totalPages", numPages);
@@ -86,7 +92,6 @@ public class SearchTeamsController {
         }
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("notSearch", notSearch);
-        model.addAttribute("navTeams", teamService.getTeamList());
         return "searchTeamsForm";
     }
 }
