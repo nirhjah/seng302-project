@@ -51,7 +51,7 @@ public class TeamService {
      * A team name can be alphanumeric, dots and curly braces. Must start with on
      * alphabetical character
      **/
-    private final String teamNameUnicodeRegex = "^[\\p{L}\\p{N}]+[}{.\\p{L}\\p{N}]+$";
+    private final String teamNameUnicodeRegex = "^[\\p{L}\\p{N}\\s]+[}{.\\p{L}\\p{N}\\s]+$";
 
     /**
      * A sport can be letters, space, apostrophes or hyphens. Must start with on
@@ -211,5 +211,21 @@ public class TeamService {
 
         return isValidSport(sport) && isValidTeamName(name)
                 && isValidLocation(country, city, postcode, suburb, addressline1, addressline2);
+    }
+
+    /**
+     * clips extra whitespace off the end of the string and removes double ups of
+     * whitespace
+     * 
+     * @param string
+     * @return string that is stripped from double up whitespace and whitespace at
+     *         the end and start of the string
+     */
+    public String clipExtraWhitespace(String string) {
+
+        // checks if there is a double whitespace inside the string
+        String filtered = string.trim().replaceAll("\\s+", " ");
+        return filtered;
+
     }
 }
