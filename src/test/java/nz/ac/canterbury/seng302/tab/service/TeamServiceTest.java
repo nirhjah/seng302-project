@@ -107,7 +107,7 @@ public class TeamServiceTest {
                 validCity, validPostcode, validSuburb, validAddressLine1, validAddressLine2));
         boolean isTestValid = teamService.validateTeamRegistration(validSport, validName, validCountry, validCity,
                 validPostcode, validSuburb, validAddressLine1, validAddressLine2);
-        assertEquals(isTestValid, true);
+        assertEquals(true, isTestValid);
     }
 
     /**
@@ -129,7 +129,7 @@ public class TeamServiceTest {
 
         boolean isTestValid = teamService.validateTeamRegistration(invalidSport, validName, validCountry, validCity,
                 validPostcode, validSuburb, validAddressLine1, validAddressLine2);
-        assertEquals(isTestValid, false);
+        assertEquals(false, isTestValid);
     }
 
     /**
@@ -141,7 +141,7 @@ public class TeamServiceTest {
 
         // call the service validation
         String invalidSport = "Rugby";
-        String validName = "@llBlacks";
+        String validName = "@ll Blacks";
         String validCountry = "New Zealand";
         String validCity = "Christchurch";
         String validPostcode = "";
@@ -151,7 +151,7 @@ public class TeamServiceTest {
 
         boolean isTestValid = teamService.validateTeamRegistration(invalidSport, validName, validCountry, validCity,
                 validPostcode, validSuburb, validAddressLine1, validAddressLine2);
-        assertEquals(isTestValid, false);
+        assertEquals(false, isTestValid);
     }
 
     /**
@@ -163,7 +163,7 @@ public class TeamServiceTest {
 
         // call the service validation
         String invalidSport = "Rugby";
-        String validName = "AllBlacks";
+        String validName = "All Blacks";
         String validCountry = "New|Zealand";
         String validCity = "Christchurch";
         String validPostcode = "";
@@ -173,7 +173,7 @@ public class TeamServiceTest {
 
         boolean isTestValid = teamService.validateTeamRegistration(invalidSport, validName, validCountry, validCity,
                 validPostcode, validSuburb, validAddressLine1, validAddressLine2);
-        assertEquals(isTestValid, false);
+        assertEquals(false, isTestValid);
     }
 
     /**
@@ -185,7 +185,7 @@ public class TeamServiceTest {
 
         // call the service validation
         String invalidSport = "Rugby";
-        String validName = "AllBlacks";
+        String validName = "All Blacks";
         String validCountry = "New Zealand";
         String validCity = "#";
         String validPostcode = "";
@@ -195,7 +195,7 @@ public class TeamServiceTest {
 
         boolean isTestValid = teamService.validateTeamRegistration(invalidSport, validName, validCountry, validCity,
                 validPostcode, validSuburb, validAddressLine1, validAddressLine2);
-        assertEquals(isTestValid, false);
+        assertEquals(false, isTestValid);
     }
 
     /**
@@ -207,16 +207,37 @@ public class TeamServiceTest {
 
         // call the service validation
         String invalidSport = "Rugby";
-        String validName = "AllBlacks";
+        String validName = "All Blacks";
         String validCountry = "New Zealand";
         String validCity = "Christchurch";
         String validPostcode = "";
-        String validSuburb = "$";
+        String invalidSuburb = "$";
         String validAddressLine1 = "";
         String validAddressLine2 = "";
 
         boolean isTestValid = teamService.validateTeamRegistration(invalidSport, validName, validCountry, validCity,
+                validPostcode, invalidSuburb, validAddressLine1, validAddressLine2);
+        assertEquals(false, isTestValid);
+    }
+
+    @Test
+    public void givenSportWithTrailingWhitespace_WhenTeamSubmitted_TrailingWhitespaceRemovedAndValidationReturnsTrue()
+            throws IOException {
+        String validSportWithTrailingWhitespace = "Football   ";
+        String validTeamName = "All Whites";
+        String validCountry = "New Zealand";
+        String validCity = "Auckland";
+        String validPostcode = "";
+        String validSuburb = "";
+        String validAddressLine1 = "";
+        String validAddressLine2 = "";
+
+        String actualSportName = teamService.clipExtraWhitespace(validSportWithTrailingWhitespace);
+        boolean isTestValid = teamService.validateTeamRegistration(validSportWithTrailingWhitespace, validTeamName,
+                validCountry, validCity,
                 validPostcode, validSuburb, validAddressLine1, validAddressLine2);
-        assertEquals(isTestValid, false);
+        assertEquals(true, isTestValid);
+        assertEquals("Football", actualSportName);
+
     }
 }
