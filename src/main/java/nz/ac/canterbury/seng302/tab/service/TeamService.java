@@ -87,10 +87,6 @@ public class TeamService {
         if (searchedLocations == null) {
             searchedLocations = List.of();
         }
-        for (String city : searchedLocations) {
-            String newCity = city.toLowerCase();
-            searchedLocations.set(searchedLocations.indexOf(city), newCity);
-        }
         return teamRepository.findTeamByFilteredLocations(searchedLocations, pageable, name);
     }
 

@@ -64,8 +64,8 @@ public class SearchTeamsController {
                 List<Location> locations = teamRepository.findLocationsByName(teamName);
                 List<String> cities = new ArrayList<>();
                 for (Location location: locations) {
-                    if (!cities.contains(location.getCity().toLowerCase())) {
-                        cities.add(location.getCity().toLowerCase());
+                    if (!cities.contains(location.getCity())) {
+                        cities.add(location.getCity());
                         Collections.sort(cities);
                     }
                 }
