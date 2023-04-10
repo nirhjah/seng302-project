@@ -29,9 +29,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @DataJpaTest
 @Import(TeamService.class)
 public class TeamServiceTest {
+
+    Logger logger = LoggerFactory.getLogger(TeamServiceTest.class);
 
     @Autowired
     private TeamService teamService;
@@ -90,14 +95,16 @@ public class TeamServiceTest {
 
         // call the service validation
         String validSport = "Rugby";
-        String validName = "All Blacks";
+        String validName = "AllBlacks";
         String validCountry = "New Zealand";
         String validCity = "Christchurch";
-        String validPostcode = "8083";
+        String validPostcode = "";
         String validSuburb = "Papauni";
         String validAddressLine1 = "";
         String validAddressLine2 = "";
 
+        logger.info("should be true: " + teamService.validateTeamRegistration(validSport, validName, validCountry,
+                validCity, validPostcode, validSuburb, validAddressLine1, validAddressLine2));
         boolean isTestValid = teamService.validateTeamRegistration(validSport, validName, validCountry, validCity,
                 validPostcode, validSuburb, validAddressLine1, validAddressLine2);
         assertEquals(isTestValid, true);
@@ -112,10 +119,10 @@ public class TeamServiceTest {
 
         // call the service validation
         String invalidSport = "%";
-        String validName = "All Blacks";
+        String validName = "AllBlacks";
         String validCountry = "New Zealand";
         String validCity = "Christchurch";
-        String validPostcode = "8083";
+        String validPostcode = "";
         String validSuburb = "Papauni";
         String validAddressLine1 = "";
         String validAddressLine2 = "";

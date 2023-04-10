@@ -131,7 +131,7 @@ public class TeamService {
      *              teams page
      * @return true if the sport is valid and matches the regex
      */
-    private boolean isValidSport(String sport) {
+    public boolean isValidSport(String sport) {
         return (sport.matches(sportUnicodeRegex));
     }
 
@@ -139,19 +139,29 @@ public class TeamService {
      * @param name the team name that the user inputs in the create/edit teams page
      * @return True if the team name matches the valid regex
      */
-    private boolean isValidTeamName(String name) {
+    public boolean isValidTeamName(String name) {
 
         return (name.matches(teamNameUnicodeRegex));
     }
 
     /**
-     * @param location this could either be the city suburb or country that the user
+     * @param location this could either be the city or country that the user
      *                 inputs for the create/edit teams
      * @return true if the string matches the regex
      */
-    private boolean isValidCountryCitySuburbName(String location) {
+    public boolean isValidCountryCityName(String location) {
 
         return (location.matches(countryCitySuburbNameRegex));
+    }
+
+    /**
+     * @param location the suburb that the user
+     *                 inputs for the create/edit teams
+     * @return true if the string matches the regex
+     */
+    public boolean isValidSuburb(String suburb) {
+
+        return (suburb.matches(countryCitySuburbNameRegex) || suburb.isEmpty()); // suburbs can be empty
     }
 
     /**
@@ -159,9 +169,9 @@ public class TeamService {
      * @return true if the postcode has only letters numbers and slashes and starts
      *         with an alphanumeric
      */
-    private boolean isValidPostcode(String postcode) {
+    public boolean isValidPostcode(String postcode) {
 
-        return (postcode.matches(postcodeRegex));
+        return (postcode.matches(postcodeRegex) || postcode.isEmpty());
     }
 
     /**
@@ -169,9 +179,9 @@ public class TeamService {
      *                    create/edit teams page
      * @return true if the address line matches the regex
      */
-    private boolean isValidAddressLine(String addressline) {
+    public boolean isValidAddressLine(String addressline) {
 
-        return (addressline.matches(addressRegex));
+        return (addressline.matches(addressRegex) || addressline.isEmpty());
     }
 
     /**
@@ -184,11 +194,12 @@ public class TeamService {
      * @return true if all the params match their respective regex's
      *
      */
-    private boolean isValidLocation(String country, String city, String postcode, String suburb, String addressline1,
+    public boolean isValidLocation(String country, String city, String postcode, String suburb, String addressline1,
             String addressline2) {
-        return isValidCountryCitySuburbName(country) && isValidCountryCitySuburbName(city)
-                && isValidCountryCitySuburbName(suburb) && isValidPostcode(postcode) && isValidAddressLine(addressline1)
+        boolean isvalid = isValidCountryCityName(country) && isValidCountryCityName(city)
+                && isValidSuburb(suburb) && isValidPostcode(postcode) && isValidAddressLine(addressline1)
                 && isValidAddressLine(addressline2);
+        return isvalid;
     }
 
     /**
