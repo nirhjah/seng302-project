@@ -133,7 +133,7 @@ public class TeamServiceTest {
     }
 
     /**
-     * Tests the TeamService Validation with an invalid sport
+     * Tests the TeamService Validation with an invalid team name
      * 
      **/
     @Test
@@ -155,7 +155,7 @@ public class TeamServiceTest {
     }
 
     /**
-     * Tests the TeamService Validation with an invalid sport
+     * Tests the TeamService Validation with an invalid country
      * 
      **/
     @Test
@@ -177,7 +177,7 @@ public class TeamServiceTest {
     }
 
     /**
-     * Tests the TeamService Validation with an invalid sport
+     * Tests the TeamService Validation with an invalid city
      * 
      **/
     @Test
