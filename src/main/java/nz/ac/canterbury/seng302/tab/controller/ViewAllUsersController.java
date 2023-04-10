@@ -70,7 +70,6 @@ public class ViewAllUsersController {
         model.addAttribute("totalPages", userPage.getTotalPages());
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("httpServletRequest",request);
-        System.out.println("Request URI: " + request.getRequestURI());
         return "viewAllUsers";
     }
 
