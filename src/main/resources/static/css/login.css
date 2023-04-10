@@ -1,0 +1,28 @@
+.login-form {
+    display: grid;
+    grid-auto-rows: 87vh;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
+.login-form form {
+    width: 65%;
+}
+
+.login-form .wrapper {
+    width: 500px;
+    height: 440px;
+    /*backdrop-filter: blur(20px);*/
+}
+
+@media (max-width: 555px) {
+    .login-form .wrapper {
+        width: 90vw
+    }
+}
+
+.login-form form .cancel-link {
+    display: flex;
+    justify-content: center;
+}

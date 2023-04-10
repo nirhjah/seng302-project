@@ -3,6 +3,7 @@
 
 <head>
   <link th:href="@{/css/styles.css}" rel="stylesheet" />
+  <link th:href="@{/css/login.css}" rel="stylesheet" />
   <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
   <title>Login</title>
 </head>
@@ -15,10 +16,10 @@
 <!--      <h1>Login</h1>-->
 <!--    </div>-->
     <div class="wrapper">
-      <form class="login-form-form" th:action="@{login}" method="post">
+      <form  th:action="@{login}" method="post">
         <div class="icon">
           <a th:href="@{home}">
-            <img th:src="@{/image/icons/close.png}"/>
+            <img th:src="@{/image/icons/cross.svg}"/>
           </a>
         </div>
         <div class="input-box">
