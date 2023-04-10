@@ -1,0 +1,154 @@
+.register .wrapper {
+    height: 770px;
+}
+
+.register-form form {
+    width: 65%;
+}
+
+.register-form {
+    display: grid;
+    grid-auto-rows: 780px;
+    justify-content: center;
+    align-items: center;
+    grid-template-rows: 105px;
+    height: 90vh;
+}
+
+
+.password-info {
+    width: 100%;
+    font-style: italic;
+    font-size: small;
+    margin-top: -20px;
+    font-family: "Noto Sans", sans-serif;
+}
+
+.password-strength-meter {
+    width: 100%;
+    height: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin: 30px 0 10px 0;
+    position: relative;
+    overflow: hidden;
+    background-color: #f2f2f2;
+
+}
+
+.password-strength-meter .bar {
+    width: 0%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: width 0.3s ease;
+}
+
+.password-strength-meter .bar.weak {
+    background-color: #c03d3e;
+}
+
+.password-strength-meter .bar.medium {
+    background-color: #ffd700;
+}
+
+.password-strength-meter .bar.strong {
+    background-color: #008000;
+}
+
+.password-strength-text {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.password-strength-text.weak {
+    color: #c03d3e;
+}
+
+.password-strength-text.medium {
+    color: #ffd700;
+}
+
+.password-strength-text.strong {
+    color: #008000;
+}
+
+.password-information-text {
+    padding-left: 10px;
+}
+
+.password-information-text li {
+    list-style-type: disc;
+}
+
+.password-information-text ul li{
+    list-style-type: circle;
+    margin-left: 20px;
+}
+
+.progressbar {
+    overflow: hidden;
+    /*CSS counters to number the steps*/
+    counter-reset: step;
+    width: 100%;
+    margin: 10px 0 20px;
+    font-family: "Noto Sans", sans-serif;
+    font-weight: bolder;
+}
+
+.progressbar li {
+    list-style-type: none;
+    text-transform: uppercase;
+    font-size: 15px;
+    width: 50%;
+    float: left;
+    position: relative;
+    text-align: center;
+    line-height: 30px;
+}
+
+.progressbar li:before {
+    content: counter(step);
+    counter-increment: step;
+    width: 26px;
+    line-height: 25px;
+    display: block;
+    font-size: 23px;
+    color: #333;
+    background: white;
+    border-radius: 70%;
+    margin: 0 auto 0 auto;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+
+.progressbar li::after {
+    content: '';
+    width: 71.3%;
+    height: 2px;
+    position: absolute;
+    top: 21px;
+    border: #ccc solid 3px;
+    background-color: #ccc;
+    right: 62.5%;
+    z-index: 1;
+}
+
+.progressbar li:first-child:after {
+    content: none;
+}
+
+.progressbar li:before{
+    border: #ccc solid 3px;
+}
+
+.progressbar li.active:before,  .progressbar li.active:after{
+    border: #415A77 solid 3px;
+    background-color: #415A77;
+    color: white;
+}
