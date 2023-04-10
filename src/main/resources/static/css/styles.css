@@ -422,24 +422,30 @@ td {
   /*backdrop-filter: blur(20px);*/
 }
 
-@media (max-width: 944px) {
+.team-display {
+  width: 100%;
+}
+
+@media (max-width: 944px) and (min-width: 294px){
   .wrapper-profile {
     width: 90vw;
     display: block;
   }
-
-  /*.team-info {*/
-  /*  position: unset;*/
-  /*}*/
-
-  /*.profile-pic {*/
-  /*  position: unset;*/
-  /*}*/
-
-  /*.profile-buttons {*/
-  /*  position: unset;*/
-  /*}*/
 }
+
+/*@media (max-width: 294px) {*/
+/*  .team-info {*/
+/*    position: unset;*/
+/*  }*/
+
+/*  .profile-pic {*/
+/*    position: unset;*/
+/*  }*/
+
+/*  .profile-buttons {*/
+/*    position: unset;*/
+/*  }*/
+/*}*/
 
 .team-form .wrapper {
   width: 630px;
@@ -510,7 +516,7 @@ hr.solid {
   width: 46%;
   justify-content: flex-start;
   align-items: center;
-  padding-top: 5%;
+  padding-top: 43px;
   left: 35%;
 }
 
@@ -806,7 +812,6 @@ input:invalid + label:after {
   font-weight: 600;
   font-size: 16px;
   color: #1B263B;
-  margin-right: 6px;
 }
 
 .cancel-link a {
