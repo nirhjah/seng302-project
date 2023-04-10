@@ -131,4 +131,92 @@ public class TeamServiceTest {
                 validPostcode, validSuburb, validAddressLine1, validAddressLine2);
         assertEquals(isTestValid, false);
     }
+
+    /**
+     * Tests the TeamService Validation with an invalid sport
+     * 
+     **/
+    @Test
+    public void givenInvalidNameCharacter_WhenTeamEdited_ValidationReturnsFalse() throws IOException {
+
+        // call the service validation
+        String invalidSport = "Rugby";
+        String validName = "@llBlacks";
+        String validCountry = "New Zealand";
+        String validCity = "Christchurch";
+        String validPostcode = "";
+        String validSuburb = "Papauni";
+        String validAddressLine1 = "";
+        String validAddressLine2 = "";
+
+        boolean isTestValid = teamService.validateTeamRegistration(invalidSport, validName, validCountry, validCity,
+                validPostcode, validSuburb, validAddressLine1, validAddressLine2);
+        assertEquals(isTestValid, false);
+    }
+
+    /**
+     * Tests the TeamService Validation with an invalid sport
+     * 
+     **/
+    @Test
+    public void givenInvalidCountryCharacter_WhenTeamEdited_ValidationReturnsFalse() throws IOException {
+
+        // call the service validation
+        String invalidSport = "Rugby";
+        String validName = "AllBlacks";
+        String validCountry = "New|Zealand";
+        String validCity = "Christchurch";
+        String validPostcode = "";
+        String validSuburb = "Papauni";
+        String validAddressLine1 = "";
+        String validAddressLine2 = "";
+
+        boolean isTestValid = teamService.validateTeamRegistration(invalidSport, validName, validCountry, validCity,
+                validPostcode, validSuburb, validAddressLine1, validAddressLine2);
+        assertEquals(isTestValid, false);
+    }
+
+    /**
+     * Tests the TeamService Validation with an invalid sport
+     * 
+     **/
+    @Test
+    public void givenInvalidCityCharacter_WhenTeamEdited_ValidationReturnsFalse() throws IOException {
+
+        // call the service validation
+        String invalidSport = "Rugby";
+        String validName = "AllBlacks";
+        String validCountry = "New Zealand";
+        String validCity = "#";
+        String validPostcode = "";
+        String validSuburb = "Papauni";
+        String validAddressLine1 = "";
+        String validAddressLine2 = "";
+
+        boolean isTestValid = teamService.validateTeamRegistration(invalidSport, validName, validCountry, validCity,
+                validPostcode, validSuburb, validAddressLine1, validAddressLine2);
+        assertEquals(isTestValid, false);
+    }
+
+    /**
+     * Tests the TeamService Validation with an invalid suburb
+     * 
+     **/
+    @Test
+    public void givenInvalidSuburbCharacter_WhenTeamEdited_ValidationReturnsFalse() throws IOException {
+
+        // call the service validation
+        String invalidSport = "Rugby";
+        String validName = "AllBlacks";
+        String validCountry = "New Zealand";
+        String validCity = "Christchurch";
+        String validPostcode = "";
+        String validSuburb = "$";
+        String validAddressLine1 = "";
+        String validAddressLine2 = "";
+
+        boolean isTestValid = teamService.validateTeamRegistration(invalidSport, validName, validCountry, validCity,
+                validPostcode, validSuburb, validAddressLine1, validAddressLine2);
+        assertEquals(isTestValid, false);
+    }
 }
