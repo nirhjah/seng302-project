@@ -73,7 +73,6 @@ ul.search {
 /*  position: relative;*/
 /*  overflow: hidden;*/
 /*  background-color: #f2f2f2;*/
-
 /*}*/
 
 /*.password-strength-meter .bar {*/
@@ -532,11 +531,11 @@ footer {
     font-weight: 500;
 }
 
-.menu-items p {
-  font-size: 18px;
-  padding-left: 10px;
-  padding-right: 10px;
-}
+/*.menu-items p {*/
+/*  font-size: 18px;*/
+/*  padding-left: 10px;*/
+/*  padding-right: 10px;*/
+/*}*/
 
 
 .profile-form {
@@ -658,16 +657,16 @@ footer {
     -webkit-background-clip: text;
 }
 
+/* UNUSED CODE
+/*a.disabled {*/
+/*  pointer-events: none;*/
+/*  cursor: default;*/
+/*}*/
 
-a.disabled {
-  pointer-events: none;
-  cursor: default;
-}
-
-a.enabled {
-  pointer-events: auto;
-  cursor: pointer;
-}
+/*a.enabled {*/
+/*  pointer-events: auto;*/
+/*  cursor: pointer;*/
+/*}*/
 
 .input-boxes {
   display: flex;
@@ -884,10 +883,10 @@ li a {
 }
 
 
-li.active a {
-  background-color: #007bff;
-  color: #fff;
-}
+/*li.active a {*/
+/*  background-color: #007bff;*/
+/*  color: #fff;*/
+/*}*/
 
 .team-name-label {
   font-family: "Noto Sans", sans-serif;
@@ -937,6 +936,18 @@ li.active a {
 .menu-items p,
 .form-control,
 .menu-items a {
+.register-form-form .submit-button {
+  display: flex;
+  justify-content: center;
+}
+
+.register-form-form .submit-button button {
+  margin: 0 10px;
+}
+
+/*.menu-items p,*/
+/*.menu-items a*/
+.form-control {
   font-family: "Noto Sans", sans-serif;
   color: white;
 }

@@ -69,7 +69,7 @@ public class ProfileFormController {
             model.addAttribute("displayName", selectedTeam.getName());
             model.addAttribute("displaySport", selectedTeam.getSport());
             model.addAttribute("displayLocation", selectedTeam.getLocation());
-            model.addAttribute("displayPicture", selectedTeam.getPictureString());
+            model.addAttribute("displayTeamPicture", selectedTeam.getPictureString());
         } else {
             return "redirect:./home";
         }
@@ -96,19 +96,19 @@ public class ProfileFormController {
      * @return
      */
     @PostMapping("/profile")
-    public RedirectView uploadPicture(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
+    public String uploadPicture(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
             Model model) {
 
         model.addAttribute("teamID", ProfileFormController.teamId);
         if (!isSupportedContentType(file.getContentType())) {
             redirectAttributes.addFlashAttribute("typeError", true);
-            return new RedirectView("/profile?teamID=" + ProfileFormController.teamId, true);
+            return "redirect:./profile?teamID=" +ProfileFormController.teamId;
         } else if (file.getSize() > 10000000) {
             redirectAttributes.addFlashAttribute("sizeError", true);
-            return new RedirectView("/profile?teamID=" + ProfileFormController.teamId, true);
+            return "redirect:./profile?teamID=" +ProfileFormController.teamId;
         }
         teamService.updatePicture(file, ProfileFormController.teamId);
-        return new RedirectView("/profile?teamID=" + ProfileFormController.teamId, true);
+        return "redirect:./profile?teamID=" +ProfileFormController.teamId ;
     }
 
     /**
