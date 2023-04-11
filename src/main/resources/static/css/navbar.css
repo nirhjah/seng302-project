@@ -35,6 +35,11 @@ header .header-right li a, nav ul li a,.view-profile{
     transition: 0.2s;
     margin: 5px;
     font-family: "Noto Sans", sans-serif;
+    display: flex;
+}
+
+.view-profile #dropDownList {
+    margin-left: 5px;
 }
 
 nav ul li a:hover,
@@ -146,6 +151,10 @@ header .header-left .hamburger div {
 
 .navbar-user-dropdown a:hover {
     background-color: #58629b;
+}
+
+.view-profile {
+    display: flex;
 }
 
 .triangle {

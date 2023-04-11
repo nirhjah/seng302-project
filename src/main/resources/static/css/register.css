@@ -150,6 +150,10 @@
     z-index: 1;
 }
 
+.previous-button {
+    display: none;
+}
+
 .progressbar li:first-child:after {
     content: none;
 }
