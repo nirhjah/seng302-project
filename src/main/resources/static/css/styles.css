@@ -787,15 +787,16 @@ li.active a {
     font-family: "Noto Sans", sans-serif;
     font-size: 1em;
     color: #fff;
-    border-radius: 5px;
+    border-radius: 20px;
     border: none;
+    padding: .1em .5em;
     cursor: pointer;
     /* position: absolute; */
     display: table;
     margin-left: 10px;
     height: 30px;
-    font-family: "Noto Sans", sans-serif;
 }
+
 
 .selectBox {
     position: relative;
@@ -814,6 +815,7 @@ li.active a {
     cursor: pointer;
 }
 
+
 .overSelect {
     position: absolute;
     left: 0;
@@ -822,11 +824,45 @@ li.active a {
     bottom: 0;
 }
 
+
 #checkBoxes {
     display: none;
     max-height: 200px;
     overflow-y: scroll;
 }
+
+.checkbox {
+    display: none;
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
+.checkbox label {
+    display: block;
+    padding: 3px;
+
+}
+
+.checkbox label:hover {
+    background-color: #4F615E;
+}
+
+.filter-boxes div {
+    display: inline-block;
+    margin-right:10px;
+}
+
+.filter-boxes {
+    display: flex;
+    flex-wrap: wrap;
+    width:400px;
+}
+
+.filter-boxes div {
+    flex: 1;
+}
+
+
 
 .search-bar button {
   border: 0;

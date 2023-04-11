@@ -4,7 +4,7 @@ optionName: String - What the dropdown is called "e.g. 'Filter by city'"
 dropdownName: String[opt.] - The parameter name sent to the controller on submit
 */ -->
 <div th:fragment="filterDropdownFragment(listItems, optionName, dropdownName)"
-  th:with="dropdown_id=|checkbox-${dropdownName}|, select_all=|select_all-${dropdownName}|">
+     th:with="dropdown_id=|checkbox-${dropdownName}|, select_all=|select_all-${dropdownName}|">
   <!--/* We set custom ID names so we can use this fragment multiple times on the same page */-->
   <div class="multipleSelection">
     <div class="selectBox" th:data-dropdown="${dropdown_id}" onclick="showCheckboxes(this.dataset.dropdown)">

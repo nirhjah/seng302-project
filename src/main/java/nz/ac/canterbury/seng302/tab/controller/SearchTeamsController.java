@@ -74,7 +74,7 @@ public class SearchTeamsController {
                 // Gets cities to populate in dropdown
                 List<Location> locations = teamRepository.findLocationsByName(teamName);
                 List<String> cities = locations.stream()
-                        .map(location -> location.getCity().toLowerCase())
+                        .map(Location::getCity)
                         .distinct()
                         .sorted()
                         .toList();
