@@ -81,7 +81,7 @@ public class ProfileFormControllerTest {
                 .andExpect(MockMvcResultMatchers.model().attribute("teamID", team.getTeamId()))
                 .andExpect(MockMvcResultMatchers.model().attribute("displayName", team.getName()))
                 .andExpect(MockMvcResultMatchers.model().attribute("displaySport", team.getSport()))
-                .andExpect(MockMvcResultMatchers.model().attribute("displayPicture", team.getPictureString()));
+                .andExpect(MockMvcResultMatchers.model().attribute("displayTeamPicture", team.getPictureString()));
     }
 
     @Test
@@ -93,7 +93,7 @@ public class ProfileFormControllerTest {
                     file.getName(), "image/png", input.readAllBytes());
             mockMvc.perform(multipart("/profile?teamID={id}", team.getTeamId()).file(multipartFile))
                     .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl(String.format("/profile?teamID=%s", team.getTeamId())));
+                    .andExpect(redirectedUrl(String.format("./profile?teamID=%s", team.getTeamId())));
         }
 
     }
@@ -108,7 +108,7 @@ public class ProfileFormControllerTest {
             mockMvc.perform(multipart("/profile?teamID={id}", team.getTeamId()).file(multipartFile))
                     .andExpect(status().is3xxRedirection())
                     .andExpect(flash().attribute("typeError", true))
-                    .andExpect(redirectedUrl(String.format("/profile?teamID=%s", team.getTeamId())));
+                    .andExpect(redirectedUrl(String.format("./profile?teamID=%s", team.getTeamId())));
         }
     }
 
@@ -122,7 +122,7 @@ public class ProfileFormControllerTest {
             mockMvc.perform(multipart("/profile?teamID={id}", team.getTeamId()).file(multipartFile))
                     .andExpect(status().is3xxRedirection())
                     .andExpect(flash().attribute("sizeError", true))
-                    .andExpect(redirectedUrl(String.format("/profile?teamID=%s", team.getTeamId())));
+                    .andExpect(redirectedUrl(String.format("./profile?teamID=%s", team.getTeamId())));
         }
     }
 

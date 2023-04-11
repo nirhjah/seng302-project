@@ -30,15 +30,12 @@
         <button th:unless="${page == 1}" class = "paginationButton" th:disabled="${page == 1}" >
             <span>&leftarrow; Prev</span>
         </button>
-
         <button th:unless="${(page - 1) <= 0}" class="paginationActive" th:text="${page - 1}" th:onclick="|gotoPage(${page - 1})|"></button>
         <button th:unless="${totalPages == 0}" class="paginationActive" th:text="${page}"></button>
         <button th:unless="${(page + 1) > totalPages}" th:onclick="|gotoPage(${page + 1})|" class="paginationActive" th:text="${page+1}"></button>
-
         <button th:unless="${page == totalPages}" th:onclick="|gotoPage(${page + 1})|" class="paginationButton">
             Next &rightarrow;
         </button>
-
         <button th:unless="${page == totalPages}" class="paginationButton" th:disabled="${page == totalPages}"  th:onclick="|gotoPage(${totalPages})|">
             Last &rightarrow;
         </button>
