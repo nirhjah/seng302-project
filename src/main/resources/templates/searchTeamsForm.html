@@ -7,80 +7,25 @@
 </head>
 <body class="Search-teams-background">
 <div th:insert="~{homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
-  <form id="search-form" th:action="@{/searchTeams(teamName=${teamName},page=1)}" method="get" class="search-bar">
-  <input class ="team-name-input" type="text" id="teamName" name="teamName" placeholder="Search Teams" />
-  <button class ="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
+  <form id="search-form" th:action="@{/searchTeams(teamName=${teamName},page=1)}" method="get">
+    <div class="search-bar">
+      <input class ="team-name-input" type="text" id="teamName" name="teamName" th:value="${teamName}" placeholder="Search Teams" />
+      <div class="search-team-button-div">
+        <button class ="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
+      </div>
+    </div>
+    <div th:if="${not #lists.isEmpty(teams)}">
+      <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cityCheckbox')}" th:if="${not #lists.isEmpty(teams)}"></div>
+      <button class="filter-by-city-button" type="submit">Apply Filters</button>
+    </div>
   </form>
- <!-- <select class="form-control" id="dropDownList" name="citySelector">
-    <option value="-1" selected>Filter by city</option>
-  </select>-->
-
-
-<script>
-  var show = true;
-
-  function showCheckboxes() {
-    var checkboxes = document.getElementById("checkBoxes");
-    if (show) {
-      checkboxes.style.display = "block";
-      show = false;
-    } else {
-      checkboxes.style.display = "none";
-      show = true;
-    }
-  }
-
-  var cities = ["city 1", "city 2", "city 3", "city 4"]; //for testing purposes only, need to use locations api instead
-
-  var checkboxDiv = document.getElementById("checkBoxes");
-
-  for (var i = 0; i < cities.length; i++) {
-    var checkBox = document.createElement("input");
-    var label = document.createElement("label");
-    var span = document.createElement("span");
-    checkBox.type = "checkbox";
-    checkBox.value = cities[i];
-
-    span.appendChild(document.createTextNode(cities[i]));
-    label.appendChild(checkBox)
-    label.appendChild(span)
-    checkboxDiv.appendChild(label);
-
-  }
-
-  //currently not working
-  function selectAllCheckboxes(selectAllCheckbox) {
-
-   /* if (selectAllCheckbox.checked) {
-      $("#checkBoxes input:checkbox").prop("checked", true);
-
-    }*/
-
-
-    var checkboxes = document.querySelectorAll('#' + selectAllCheckbox + ' input[type="checkbox"]');
-    for(var i =0; i< checkboxes.length;i++){
-      var checkbox = checkboxes[i];
-      checkbox.checked = true;
-
-    }
-
-
-
-  }
-
-</script>
-
-
-
-
-
-
 
   <p th:if="${error}">search must be at least 3 characters</p>
   <script>
     // get search form and input element
     const form = document.getElementById('search-form');
     const input = document.getElementById('teamName');
+
 
     form.addEventListener('submit', (event) => {
       // if the value is less than 3 characters, prevent form from submitting
@@ -150,12 +95,5 @@
   </footer>
 </div>
 <div th:if="${#lists.isEmpty(teams) and not (notSearch)}">The search results are empty!</div>
-<footer>
-  <p>
-    Image by <a
-          href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
-    on Freepik
-  </p>
-</footer>
 </body>
 </html>
