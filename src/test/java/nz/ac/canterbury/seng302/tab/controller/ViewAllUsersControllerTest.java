@@ -72,7 +72,7 @@ public class ViewAllUsersControllerTest {
         sportRepository.deleteAll();
     }
 
-    @WithMockUser
+    @WithMockUser(username = "johndoe@example.com", password = "Password123!", roles = "USER")
     @Test
     public void testViewAllUsersReturns200() throws Exception {
         mockMvc.perform(get("/view-users"))
