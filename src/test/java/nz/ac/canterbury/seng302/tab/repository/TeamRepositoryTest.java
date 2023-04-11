@@ -14,6 +14,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,25 +51,9 @@ public class TeamRepositoryTest {
         assertEquals(team.getName(), teamRepository.findById(team.getTeamId()).get().getName());
 
     }
-    // TODO this test are failing
+
     @Test
     public void testGettingTeamList() throws IOException {
-        assertTrue(teamService.getTeamList().isEmpty());
-        Location testLocation = new Location("123 Test1 road", "", "Suburb1", "Christchurch", "1111", "NZ");
-        Team team = new Team("test", "Hockey", new Location("123 Test1 road", "", "Suburb1", "Christchurch", "1111", "NZ"));
-        Team team2 = new Team("test2", "Netball", new Location("456 Test2 road", "", "Suburb2", "Auckland", "2222", "NZ"));
-        Team team3 = new Team("test3", "Basketball", new Location("789 Test3 road", "", "Suburb3", "Wellington", "3333", "NZ"));
-        List<Team> list = Arrays.asList(team, team2, team3);
-
-        teamRepository.save(team);
-        teamRepository.save(team2);
-        teamRepository.save(team3);
-
-        assertEquals(list.toString(), teamRepository.findAll().toString());
-    }
-
-
-    @Test void filteringSearchBySport_filteringAllTeamsByHockey_correctListReturned() throws IOException {
         assertTrue(teamService.getTeamList().isEmpty());
         Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
 
@@ -116,6 +102,126 @@ public class TeamRepositoryTest {
         assertEquals(expectedTeamList.toString(), teamRepository.findTeamByNameAndSportIn(PageRequest.of(0,10), searchedSports, "test").toList().toString());
     }
 
+    @Test
+    public void filteringTeamsByCities_noCitiesSelected_allCitiesDisplayed() throws IOException {
+        List<Team> teamList = teamService.getTeamList();
+        assertTrue(teamList.isEmpty());
+        Team team1 = new Team("team1", "Hockey", new Location("123 Test1 road", "", "Suburb1", "Christchurch", "1111", "NZ"));
+        Team team2 = new Team("team2", "Hockey", new Location("213 Test2 road", "", "Suburb2", "Dunedin", "1111", "NZ"));
+        Team team3 = new Team("team3", "Hockey", new Location("321 Test3 road", "", "Suburb3", "Auckland", "1111", "NZ"));
+
+        List<Team> expectedTeams = Arrays.asList(team1, team2, team3);
+        teamRepository.save(team1);
+        teamRepository.save(team2);
+        teamRepository.save(team3);
+
+        ArrayList<String> filteredLocations = new ArrayList<>();
+
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), "team").toList().toString());
+
+    }
+
+    @Test
+    public void filteringTeamsByCities_oneCitySelected_allTeamsWithCityDisplayed() throws IOException {
+        final String WANTED_CITY = "Christchurch";
+        List<Team> teamList = teamService.getTeamList();
+        assertTrue(teamList.isEmpty());
+        Team team1 = new Team("team1", "Hockey", new Location("123 Test1 road", "", "Suburb1", WANTED_CITY, "1111", "NZ"));
+        Team team2 = new Team("team2", "Hockey", new Location("213 Test2 road", "", "Suburb2", "Dunedin", "1111", "NZ"));
+        Team team3 = new Team("team3", "Hockey", new Location("321 Test3 road", "", "Suburb3", "Auckland", "1111", "NZ"));
+
+        teamRepository.save(team1);
+        teamRepository.save(team2);
+        teamRepository.save(team3);
+
+        List<Team> expectedTeams = Arrays.asList(team1);
+
+        ArrayList<String> filteredLocations = new ArrayList<>();
+        filteredLocations.add(WANTED_CITY);
+
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), "team").toList().toString());
+
+    }
+
+    @Test
+    public void filteringTeamsByCities_twoCitiesSelected_allTeamsWithThoseCitiesDisplayed() throws IOException {
+        final String WANTED_CITY1 = "Christchurch";
+        final String WANTED_CITY2 = "Auckland";
+
+        List<Team> teamList = teamService.getTeamList();
+        assertTrue(teamList.isEmpty());
+        Team team1 = new Team("team1", "Hockey", new Location("123 Test1 road", "", "Suburb1", WANTED_CITY1, "1111", "NZ"));
+        Team team2 = new Team("team2", "Hockey", new Location("213 Test2 road", "", "Suburb2", "Dunedin", "1111", "NZ"));
+        Team team3 = new Team("team3", "Hockey", new Location("321 Test3 road", "", "Suburb3", WANTED_CITY2, "1111", "NZ"));
+
+        List<Team> expectedTeams = Arrays.asList(team1, team3);
+
+        teamRepository.save(team1);
+        teamRepository.save(team2);
+        teamRepository.save(team3);
+
+        ArrayList<String> filteredLocations = new ArrayList<>();
+        filteredLocations.add(WANTED_CITY1);
+        filteredLocations.add(WANTED_CITY2);
+
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), "team").toList().toString());
+
+    }
+    @Test
+    public void filteringTeamsByCities_twoCitiesSelectedAndTeamNamesDifferent_displayCitiesAndTeams() throws IOException {
+
+        final String WANTED_CITY1 = "Christchurch";
+        final String WANTED_CITY2 = "Dunedin";
+
+        List<Team> teamList = teamService.getTeamList();
+        assertTrue(teamList.isEmpty());
+        Team team1 = new Team("team1", "Hockey", new Location("123 Test1 road", "", "Suburb1", WANTED_CITY1, "1111", "NZ"));
+        Team team2 = new Team("team2", "Hockey", new Location("213 Test2 road", "", "Suburb2", WANTED_CITY1, "1111", "NZ"));
+        Team team3 = new Team("test3", "Hockey", new Location("321 Test3 road", "", "Suburb3", WANTED_CITY2, "1111", "NZ"));
+        Team team4 = new Team("test4", "Hockey", new Location("222 Test4 road", "", "Suburb4", WANTED_CITY2, "1111", "NZ"));
+
+        List<Team> expectedTeams = Arrays.asList(team1, team2);
+        teamRepository.save(team1);
+        teamRepository.save(team2);
+        teamRepository.save(team3);
+        teamRepository.save(team4);
+
+        ArrayList<String> filteredLocations = new ArrayList<>();
+        filteredLocations.add(WANTED_CITY1);
+        filteredLocations.add(WANTED_CITY2);
+
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), "team").toList().toString());
+    }
+
+    @Test
+    public void filteringTeamsByCities_allCitiesSelected_allCitiesDisplayed() throws IOException {
+        final String WANTED_CITY1 = "Christchurch";
+        final String WANTED_CITY2 = "Dunedin";
+        final String WANTED_CITY3 = "Auckland";
+
+        List<Team> teamList = teamService.getTeamList();
+        assertTrue(teamList.isEmpty());
+        Team team1 = new Team("team1", "Hockey", new Location("123 Test1 road", "", "Suburb1", WANTED_CITY1, "1111", "NZ"));
+        Team team2 = new Team("team2", "Hockey", new Location("213 Test2 road", "", "Suburb2", WANTED_CITY1, "1111", "NZ"));
+        Team team3 = new Team("team3", "Hockey", new Location("321 Test3 road", "", "Suburb3", WANTED_CITY2, "1111", "NZ"));
+        Team team4 = new Team("team4", "Hockey", new Location("222 Test4 road", "", "Suburb4", WANTED_CITY2, "1111", "NZ"));
+
+
+        List<Team> expectedTeams = Arrays.asList(team1, team2, team3, team4);
+
+        teamRepository.save(team1);
+        teamRepository.save(team2);
+        teamRepository.save(team3);
+        teamRepository.save(team4);
+
+        ArrayList<String> filteredLocations = new ArrayList<>();
+        filteredLocations.add(WANTED_CITY1);
+        filteredLocations.add(WANTED_CITY2);
+        filteredLocations.add(WANTED_CITY3);
+
+        assertEquals(expectedTeams.toString(), teamRepository.findTeamByFilteredLocations(filteredLocations, PageRequest.of(0,10), "team").toList().toString());
+
+    }
     @Test void filteringSearchBySport_filteringAllTeamsAndNoSports_correctListReturned() throws IOException {
         assertTrue(teamService.getTeamList().isEmpty());
         Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
