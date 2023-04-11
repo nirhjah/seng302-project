@@ -7,6 +7,7 @@
 
 <head>
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <link th:href="@{/css/register.css}" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,7 +22,7 @@
         <h1>Register</h1>
     </div>
     <div class="wrapper">
-        <form class="register-form-form" th:action="@{register}" method="post" th:object="${registerForm}">
+        <form th:action="@{register}" method="post" th:object="${registerForm}">
             <div class="icon">
                 <a th:href="@{home}">
                     <img th:src="@{/image/icons/cross.svg}"/>
