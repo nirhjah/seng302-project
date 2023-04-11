@@ -2,6 +2,17 @@
     height: 770px;
 }
 
+.register-form .wrapper {
+    width: 590px;
+    height: 745px;
+}
+
+@media (max-width: 655px) {
+  .register-form .wrapper {
+    width: 90vw;
+  }
+}
+
 .register-form form {
     width: 65%;
 }
@@ -37,7 +48,7 @@
 }
 
 .password-strength-meter .bar {
-    width: 0%;
+    width: 0;
     height: 100%;
     position: absolute;
     left: 0;
@@ -151,4 +162,29 @@
     border: #415A77 solid 3px;
     background-color: #415A77;
     color: white;
+}
+
+.register-form form .error-message {
+    position: absolute;
+}
+
+.register-form form .submit-button {
+    display: flex;
+    justify-content: center;
+}
+
+.register-form form .submit-button button {
+    margin: 0 10px;
+}
+
+img.password-toggle{
+    max-height:20px;
+    max-width:20px;
+    position:absolute;
+    right:5px;
+    margin: 8px 0 8px;
+}
+
+#password {
+    width: 92% !important;
 }
