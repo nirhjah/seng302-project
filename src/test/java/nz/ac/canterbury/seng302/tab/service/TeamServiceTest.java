@@ -3,19 +3,13 @@ package nz.ac.canterbury.seng302.tab.service;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -251,15 +245,10 @@ public class TeamServiceTest {
         validInputs.add("");
         validInputs.add("Ice Hockey");
         validInputs.add("rugby");
+        List<String> expectedInputs = validInputs;
         for (String item : validInputs) {
             item = teamService.clipExtraWhitespace(item);
         }
-        List<String> expectedInputs = new ArrayList<>();
-        expectedInputs.add("Football");
-        expectedInputs.add("Cams team");
-        expectedInputs.add("");
-        expectedInputs.add("Ice Hockey");
-        expectedInputs.add("rugby");
         assertEquals(expectedInputs, validInputs);
 
     }
