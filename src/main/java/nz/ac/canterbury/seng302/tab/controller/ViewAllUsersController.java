@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -56,6 +58,8 @@ public class ViewAllUsersController {
             Model model) {
         Page<User> userPage = getUserPage(page, currentSearch, sports);
         List<User> userList = userPage.toList();
+        List<String> cities = Arrays.asList("auckland", "christchurch", "dunedin");
+        model.addAttribute("cities",cities);
         model.addAttribute("currentSearch", currentSearch);
         model.addAttribute("page", page);
         model.addAttribute("listOfUsers", userList);

@@ -945,3 +945,11 @@ li.active a {
 ul.autocomplete-result{
   display:block;
 }
+
+.filter-bar{
+    width:100%;
+    height:35px;
+    display:flex;
+    /*justify-content: space-between;*/
+}
+
