@@ -181,12 +181,12 @@
     margin: 0 10px;
 }
 
-img.password-toggle{
-    max-height:20px;
-    max-width:20px;
-    position:absolute;
-    right:5px;
-    margin: 8px 0 8px;
+img.password-toggle {
+    max-height: 20px;
+    max-width: 20px;
+    position: absolute;
+    right: 5px;
+    margin-top: -24px;
 }
 
 #password {
