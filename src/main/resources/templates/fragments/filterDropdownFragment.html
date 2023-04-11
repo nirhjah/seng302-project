@@ -16,7 +16,7 @@ dropdownName: String[opt.] - The parameter name sent to the controller on submit
     </div>
     <div th:id="${dropdown_id}" class="checkbox" style="display: none">
       <label th:for="${select_all}">
-        <input type="checkbox" th:id="${select_all}" th:data-target-checkbox="${dropdownName}" onclick="selectAllCheckboxes(this.dataset.selectAllId, this.checked, this.dataset.targetCheckbox)" />
+        <input type="checkbox" th:id="${select_all}" th:data-target-checkbox="${dropdownName}" onclick="selectAllCheckboxes(this.checked, this.dataset.targetCheckbox)" />
         Select all
       </label>
       <th:block th:each="entry: ${listItems}">
@@ -29,6 +29,18 @@ dropdownName: String[opt.] - The parameter name sent to the controller on submit
     </div>
   </div>
   <script th:inline="javascript">
+
+    /** Pre-check any boxes checked when the page was last submitted. */
+    function init(checkboxName) {
+      // Read the query arguments to see what boxes were checked when last submitted
+      const currentURL = new URL(document.location.href);
+      const preCheckedBoxes = new Set(currentURL.searchParams.getAll(checkboxName));
+      // Then check them
+      const checkboxes = document.getElementsByName(checkboxName);
+      for (const check of checkboxes) {
+        check.checked = preCheckedBoxes.has(check.value);
+      }
+    }
 
     function showCheckboxes(dropdownId) {
       var checkboxes = document.getElementById(dropdownId);
@@ -58,12 +70,14 @@ dropdownName: String[opt.] - The parameter name sent to the controller on submit
 
     /* Set every value in the dropdown to the value of "select all".
     i.e. Setting "select all" will make every item ticked. Unsetting it deselects them.*/
-    function selectAllCheckboxes(selectAllCheckboxId, isChecked, checkboxName) {
+    function selectAllCheckboxes(isChecked, checkboxName) {
       let checkboxes = document.getElementsByName(checkboxName);
       for (const element of checkboxes) {
         if(element.type == 'checkbox')
           element.checked = isChecked;
       }
     }
+
+    init(/*[[${dropdownName}]]*/ "")
   </script>
 </div>
