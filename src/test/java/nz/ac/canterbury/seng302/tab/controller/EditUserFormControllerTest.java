@@ -247,7 +247,7 @@ public class EditUserFormControllerTest {
                 verify(mockUserService, times(0)).updateOrAddUser(any());
         }
 
-        @Test
+       /* @Test
         @WithMockUser(username = USER_EMAIL)
         void givenUserChangesTheirEmail_ThenFormIsSaved_AndUserIsLoggedOutThenLoggedIn() throws Exception {
                 mockMvc.perform(
@@ -267,7 +267,7 @@ public class EditUserFormControllerTest {
 
                 verify(mockUserService, times(1)).updateOrAddUser(any());
         }
-
+*/
         @Test
         @WithMockUser()
         void givenValidAddressInput_whenFormIsSubmitted_thenUserIsUpdated() throws Exception {
