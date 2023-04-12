@@ -102,7 +102,6 @@
 .progressbar {
     overflow: hidden;
     /*CSS counters to number the steps*/
-    counter-reset: step;
     width: 100%;
     margin: 10px 0 20px;
     font-family: "Noto Sans", sans-serif;
@@ -119,28 +118,37 @@
     text-align: center;
     line-height: 30px;
 }
+.progressbar li:nth-child(1):before {
+    background-image: url("../image/icons/filled-user.svg");
+}
+
+.progressbar li:nth-child(2):before {
+    /*temporary as I'm redoing the location icon*/
+    background-image: url("../image/icons/cross.svg");
+}
 
 .progressbar li:before {
-    content: counter(step);
-    counter-increment: step;
+    content:"";
     width: 26px;
-    line-height: 25px;
+    height: 26px;
+    line-height: 26px;
     display: block;
-    font-size: 23px;
     color: #333;
-    background: white;
     border-radius: 70%;
     margin: 0 auto 0 auto;
     padding: 10px;
     text-align: center;
     position: relative;
     z-index: 2;
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position:center;
 }
 
 
 .progressbar li::after {
     content: '';
-    width: 71.3%;
+    width: 76%;
     height: 2px;
     position: absolute;
     top: 21px;

@@ -19,7 +19,7 @@
 <header th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></header>
 <div class="register-form">
     <div class="register-header">
-        <h1>Register</h1>
+        <h1> <img th:src="@{/image/icons/adduser.svg}"/>Register</h1>
     </div>
     <div class="wrapper">
         <form th:action="@{register}" method="post" th:object="${registerForm}">
@@ -249,7 +249,6 @@
                 headerText.classList.remove("medium");
                 headerText.classList.add("strong");
             }
-            // console.log(password)
         }
         const passwordInput = document.getElementById('password');
         const passwordToggle = document.querySelector('.password-toggle');
