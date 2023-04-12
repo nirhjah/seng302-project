@@ -209,7 +209,8 @@ public class RegisterController {
     public String register(
             @Valid RegisterForm registerForm,
             BindingResult bindingResult,
-            HttpServletRequest request) throws IOException {
+            HttpServletRequest request,
+            Model model) throws IOException {
 
         // Run the custom validation methods
         // TODO: Move validators that might be reused into their own class
@@ -219,6 +220,9 @@ public class RegisterController {
         checkPasswordIsSecure(registerForm, bindingResult);
 
         if (bindingResult.hasErrors()) {
+            URL url = new URL(request.getRequestURL().toString());
+            String path = (url.getPath() + "/..");
+            model.addAttribute("path", path);
             return "register";
         }
 
