@@ -884,16 +884,17 @@ li a {
 /*  color: #fff;*/
 /*}*/
 
-.team-name-label {
-  font-family: "Noto Sans", sans-serif;
-  padding-left: 30px;
-}
+/* UNUSED css
+/*.team-name-label {*/
+/*  font-family: "Noto Sans", sans-serif;*/
+/*  padding-left: 30px;*/
+/*}*/
 
-.team-name-input {
-  border-radius: 5px;
-  padding-bottom: 4px;
-  width: 15%;
-}
+/*.team-name-input {*/
+/*  border-radius: 5px;*/
+/*  padding-bottom: 4px;*/
+/*  width: 15%;*/
+/*}*/
 
 /*.search-team-button,*/
 /*.search-user-button {*/

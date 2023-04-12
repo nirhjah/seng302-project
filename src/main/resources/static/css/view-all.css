@@ -68,3 +68,9 @@ th:nth-child(4) {
     display:flex;
     /*justify-content: space-between;*/
 }
+
+.search-input {
+    border-radius: 5px;
+    padding-bottom: 4px;
+    width: 15%;
+}
