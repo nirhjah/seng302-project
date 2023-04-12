@@ -56,6 +56,7 @@ public class CreateTeamFormController {
         URL url = new URL(httpServletRequest.getRequestURL().toString());
         String path = (url.getPath() + "/..");
         String protocolAndAuthority = String.format("%s://%s", url.getProtocol(), url.getAuthority());
+        model.addAttribute("path", path);
 
         Team team;
         if (teamID != null) {
@@ -114,7 +115,8 @@ public class CreateTeamFormController {
             @RequestParam(name = "country") String country,
             @RequestParam(name = "postcode") String postcode,
             @RequestParam(name = "suburb") String suburb,
-            Model model) throws IOException {
+            Model model,
+            HttpServletRequest httpServletRequest) throws IOException {
         logger.info("POST /createTeam");
 
         // client side validation
