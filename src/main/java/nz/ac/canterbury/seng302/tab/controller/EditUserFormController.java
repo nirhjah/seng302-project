@@ -78,47 +78,31 @@ public class EditUserFormController {
             @RequestParam("tags") List<String> tags,
             Model model, RedirectAttributes redirectAttributes) throws ServletException {
 
-            String invalidTags= "These are invalid sports: ";
-            boolean first= true ,invalidSport=false;
-            for (String tag : tags) {
-                if (!tag.matches("^[\\p{L}\\s\\'\\-]+$")) {
-                    invalidSport=true;
-                    if (!first) {
-                        invalidTags += ", ";
-                    } else {
-                        first = false;
-                    }
-                    invalidTags += tag;
+        String invalidTags= "These are invalid sports: ";
+        boolean first= true ,invalidSport=false;
+        for (String tag : tags) {
+            if (!tag.matches("^[\\p{L}\\s\\'\\-]+$")) {
+                invalidSport=true;
+                if (!first) {
+                    invalidTags += ", ";
+                } else {
+                    first = false;
                 }
+                invalidTags += tag;
             }
-            if (invalidSport) {
-                redirectAttributes.addFlashAttribute("errorMessage", invalidTags);
-                return "redirect:/editUser";
-            }
+        }
+        if (invalidSport) {
+            redirectAttributes.addFlashAttribute("errorMessage", invalidTags);
+            return "redirect:/editUser";
+        }
 
-            System.out.println(invalidTags);
-
+        System.out.println(invalidTags);
         prefillModel(model);
         Optional<User> optUser = userService.getCurrentUser();
         if (optUser.isEmpty()) {
             return "redirect:/login";
         }
         User user = optUser.get();
-
-        List<Sport> newFavSports = new ArrayList<>();
-        List<String> knownSportNames = sportService.getAllSportNames();
-        List<Sport> knownSports = sportService.getAllSports();
-
-            for (String tag : tags) {
-                if (knownSportNames.contains(tag)){
-                    int index = knownSportNames.indexOf(tag);
-                    newFavSports.add(knownSports.get(index));
-                } else {
-                    newFavSports.add(new Sport(tag));
-                }
-            }
-
-            user.setFavoriteSports(newFavSports);
 
         // Manual email uniqueness check
         if (userService.emailIsUsedByAnother(user, editUserForm.getEmail())) {
@@ -127,7 +111,6 @@ public class EditUserFormController {
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            model.addAttribute("favouriteSports", user.getFavouriteSportNames());
             return "editUserForm";
         }
 
@@ -145,6 +128,19 @@ public class EditUserFormController {
         user.getLocation().setSuburb(editUserForm.getSuburb());
         user.getLocation().setPostcode(editUserForm.getPostcode());
 
+        List<Sport> newFavSports = new ArrayList<>();
+        List<String> knownSportNames = sportService.getAllSportNames();
+        List<Sport> knownSports = sportService.getAllSports();
+        for (String tag : tags) {
+            if (knownSportNames.contains(tag)){
+                int index = knownSportNames.indexOf(tag);
+                newFavSports.add(knownSports.get(index));
+            } else {
+                newFavSports.add(new Sport(tag));
+            }
+        }
+
+        user.setFavoriteSports(newFavSports);
         userService.updateOrAddUser(user);
 
         if (shouldLogout) {
