@@ -107,11 +107,12 @@ public class TeamService {
     }
 
     /**
-     * Method that finds paginated teams by city, using a list of cities to filter by selected by the user
+     * Method that finds paginated teams by city, using a list of cities to filter
+     * by selected by the user
      *
-     * @param pageable page object
+     * @param pageable          page object
      * @param searchedLocations list of locations to filter by selected by the user
-     * @param name the team name query inputted by the use
+     * @param name              the team name query inputted by the use
      * @return Page(s) of teams filtered by city/cities
      */
     public Page<Team> findPaginatedTeamsByCity(Pageable pageable, List<String> searchedLocations, String name) {
@@ -169,8 +170,8 @@ public class TeamService {
     }
 
     /**
-     * @param location the suburb that the user
-     *                 inputs for the create/edit teams
+     * @param suburb the suburb that the user
+     *               inputs for the create/edit teams
      * @return true if the string matches the regex
      */
     public boolean isValidSuburb(String suburb) {
