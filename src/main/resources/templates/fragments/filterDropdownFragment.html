@@ -1,83 +1,92 @@
+
 <!-- /*
 listItems: List<String> - The list of items shown in the dropdown
 optionName: String - What the dropdown is called "e.g. 'Filter by city'"
 dropdownName: String[opt.] - The parameter name sent to the controller on submit
 */ -->
-<div th:fragment="filterDropdownFragment(listItems, optionName, dropdownName)"
-     th:with="dropdown_id=|checkbox-${dropdownName}|, select_all=|select_all-${dropdownName}|">
-  <!--/* We set custom ID names so we can use this fragment multiple times on the same page */-->
-  <div class="multipleSelection">
-    <div class="selectBox" th:data-dropdown="${dropdown_id}" onclick="showCheckboxes(this.dataset.dropdown)">
-      <!--/* The name shown at the top of the dropdown */-->
-      <select>
-        <option th:text="${optionName}"></option>
-      </select>
-      <div class="overSelect"></div>
-    </div>
-    <div th:id="${dropdown_id}" class="checkbox" style="display: none">
-      <label th:for="${select_all}">
-        <input type="checkbox" th:id="${select_all}" th:data-target-checkbox="${dropdownName}" onclick="selectAllCheckboxes(this.checked, this.dataset.targetCheckbox)" />
-        Select all
-      </label>
-      <th:block th:each="entry: ${listItems}">
-        <label>
-          <input type="checkbox" th:value="${entry}" th:name="${dropdownName}" th:data-select-all-id="${select_all}"
-                 onclick="updateSelectAllCheckbox(this.dataset.selectAllId, this.name)">
-          <th:block th:text="${entry}"></th:block>
-        </label>
-      </th:block>
-    </div>
+<div th:fragment="filterDropdownFragment(listItems, optionName, dropdownName)">
+
+<div class="multipleSelection">
+  <div class="selectBox"
+       onclick="showCheckboxes()">
+    <select>
+      <option th:text="${optionName}"></option>
+    </select>
+    <div class="overSelect"></div>
   </div>
+  <div id="checkBoxes">
+    <label for="select_all">
+      <input type="checkbox" id="select_all" onclick=selectAllCheckboxes(this) />
+      Select all
+    </label>
+  </div>
+</div>
   <script th:inline="javascript">
+    var show = true;
+    var checkBoxname = /*[[${dropdownName}]]*/ "dropdownItem";
+    var listCities = /*[[${listItems}]]*/ [];
 
-    /** Pre-check any boxes checked when the page was last submitted. */
-    function init(checkboxName) {
-      // Read the query arguments to see what boxes were checked when last submitted
-      const currentURL = new URL(document.location.href);
-      const preCheckedBoxes = new Set(currentURL.searchParams.getAll(checkboxName));
-      // Then check them
-      const checkboxes = document.getElementsByName(checkboxName);
-      for (const check of checkboxes) {
-        check.checked = preCheckedBoxes.has(check.value);
-      }
-    }
+    function showCheckboxes() {
+      var checkboxes = document.getElementById("checkBoxes");
 
-    function showCheckboxes(dropdownId) {
-      var checkboxes = document.getElementById(dropdownId);
-
-      if (checkboxes.style.display === "none") {
+      if (show) {
         checkboxes.style.display = "block";
-      } else if (checkboxes.style.display === "block") {
-        checkboxes.style.display = "none";
+        show = false;
       } else {
-        console.error("`checkboxes.style.display` was neither 'block' nor 'none', but a secret third thing:", checkboxes.style.display);
+        checkboxes.style.display = "none";
+        show = true;
       }
     }
 
+    function init() {
+      // Build the checkbox
+      const currentURL = new URL(document.location.href);
+      const preCheckedBoxes = new Set(currentURL.searchParams.getAll(checkBoxname));
+      var checkboxDiv = document.getElementById("checkBoxes");
+      var selectAllCheckbox = document.getElementById("select_all");
+      for (const entryName of listCities) {
+        var checkBox = document.createElement("input");
+        var label = document.createElement("label");
+        var span = document.createElement("span");
+        checkBox.type = "checkbox";
+        checkBox.value = entryName;
+        checkBox.name = checkBoxname;
+        checkBox.checked = preCheckedBoxes.has(entryName);
+        checkBox.onclick = function() { updateSelectAllCheckbox(selectAllCheckbox); };
+        span.appendChild(document.createTextNode(" " + entryName));
+        label.appendChild(checkBox)
+        label.appendChild(span)
+        checkboxDiv.appendChild(label);
+      }
+    }
 
     /* This function unchecks the `Select All` box if all checkboxes aren't checked, then
         re-checks it all of them are */
-    function updateSelectAllCheckbox(selectAllCheckboxId, otherCheckboxesName) {
-      const selectAll = document.getElementById(selectAllCheckboxId);
-      const checkboxes = Array.from(document.getElementsByName(otherCheckboxesName));
-      const areAllBoxesTicked = checkboxes.every(box => box.checked);
-      if (selectAll.checked && !areAllBoxesTicked) {
-        selectAll.checked = false;
-      } else if (!selectAll.checked && areAllBoxesTicked) {
-        selectAll.checked = true;
+    function updateSelectAllCheckbox(selectAllCheckbox) {
+      const checkboxes = Array.from(document.getElementsByName(checkBoxname));
+      const allBoxesTicked = checkboxes.every(box => box.checked);
+      if (selectAllCheckbox.checked && !allBoxesTicked) {
+        selectAllCheckbox.checked = false;
+      } else if (!selectAllCheckbox.checked && allBoxesTicked) {
+        selectAllCheckbox.checked = true;
       }
     }
 
-    /* Set every value in the dropdown to the value of "select all".
-    i.e. Setting "select all" will make every item ticked. Unsetting it deselects them.*/
-    function selectAllCheckboxes(isChecked, checkboxName) {
-      let checkboxes = document.getElementsByName(checkboxName);
-      for (const element of checkboxes) {
-        if(element.type == 'checkbox')
-          element.checked = isChecked;
-      }
+    function selectAllCheckboxes(selectAllCheckbox) {
+      var checkboxes = document.getElementsByName(checkBoxname);
+      if (selectAllCheckbox.checked) {
+        for (var i=0; i < checkboxes.length; i++) {
+          if(checkboxes[i].type == 'checkbox')
+            checkboxes[i].checked = true;
+        }} else {
+        for (var i=0; i < checkboxes.length; i++) {
+          if(checkboxes[i].type == 'checkbox')
+            checkboxes[i].checked = false;
+        }}
     }
 
-    init(/*[[${dropdownName}]]*/ "")
+    init();
+
   </script>
 </div>
+
