@@ -169,7 +169,7 @@ public class TeamService {
     }
 
     /**
-     * @param location the suburb that the user
+     * @param suburb the suburb that the user
      *                 inputs for the create/edit teams
      * @return true if the string matches the regex
      */
