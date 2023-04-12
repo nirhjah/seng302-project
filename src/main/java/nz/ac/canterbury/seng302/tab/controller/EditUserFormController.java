@@ -82,7 +82,7 @@ public class EditUserFormController {
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
             @RequestParam("tags") List<String> tags,
-            Model model, RedirectAttributes redirectAttributes) throws ServletException {
+            Model model, RedirectAttributes redirectAttributes) throws ServletException, MalformedURLException {
 
             String invalidTags= "These are invalid sports: ";
             boolean first= true ,invalidSport=false;
@@ -99,6 +99,9 @@ public class EditUserFormController {
             }
             if (invalidSport) {
                 redirectAttributes.addFlashAttribute("errorMessage", invalidTags);
+                URL url = new URL(httpServletRequest.getRequestURL().toString());
+                String path = (url.getPath() + "/..");
+                model.addAttribute("path", path);
                 return "redirect:/editUser";
             }
 
@@ -134,6 +137,9 @@ public class EditUserFormController {
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("favouriteSports", user.getFavouriteSportNames());
+            URL url = new URL(httpServletRequest.getRequestURL().toString());
+            String path = (url.getPath() + "/..");
+            model.addAttribute("path", path);
             return "editUserForm";
         }
 

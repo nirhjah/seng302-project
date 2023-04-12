@@ -76,6 +76,7 @@ public class CreateTeamFormController {
         URL url = new URL(httpServletRequest.getRequestURL().toString());
         String path = (url.getPath() + "/..");
         String protocolAndAuthority = String.format("%s://%s", url.getProtocol(), url.getAuthority());
+        model.addAttribute("path", path);
 
         Team team;
         if (teamID != null) {
@@ -134,7 +135,8 @@ public class CreateTeamFormController {
             @RequestParam(name = "country") String country,
             @RequestParam(name = "postcode") String postcode,
             @RequestParam(name = "suburb") String suburb,
-            Model model) throws IOException {
+            Model model,
+            HttpServletRequest httpServletRequest) throws IOException {
         logger.info("POST /createTeam");
 
         // client side validation
@@ -153,6 +155,9 @@ public class CreateTeamFormController {
         boolean postcodeValid = (postcode.matches(postcodeRegex)) || postcode == "";
         boolean suburbValid = (suburb.matches(countryCitySuburbNameRegex)) || suburb == "";
         if (!sportValid || !nameValid || !countryValid || !cityValid || !postcodeValid || !suburbValid || !addressLine1Valid || !addressLine2Valid) {
+            URL url = new URL(httpServletRequest.getRequestURL().toString());
+            String path = (url.getPath() + "/..");
+            model.addAttribute("path", path);
             return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
         }
         Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
