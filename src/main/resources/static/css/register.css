@@ -119,12 +119,16 @@
     line-height: 30px;
 }
 .progressbar li:nth-child(1):before {
-    background-image: url("../image/icons/filled-user.svg");
+    background-image: url("../image/icons/user.svg");
 }
 
 .progressbar li:nth-child(2):before {
     /*temporary as I'm redoing the location icon*/
-    background-image: url("../image/icons/cross.svg");
+    background-image: url("../image/icons/location.svg");
+}
+
+.progressbar li.active:nth-child(2):before {
+    background-image: url("../image/icons/white-location.svg");
 }
 
 .progressbar li:before {

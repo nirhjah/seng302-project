@@ -19,8 +19,11 @@
 <header th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></header>
 <div class="register-form">
     <div class="register-header">
-        <h1> <img th:src="@{/image/icons/adduser.svg}"/>Register</h1>
+        <h1>Register</h1>
     </div>
+<!--    <div class="register-header">-->
+<!--        <h1> <img th:src="@{/image/icons/adduser.svg}"/>Register</h1>-->
+<!--    </div>-->
     <div class="wrapper">
         <form th:action="@{register}" method="post" th:object="${registerForm}">
             <div class="icon">
