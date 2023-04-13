@@ -25,11 +25,20 @@ public class DateOfBirthCheck implements ConstraintValidator<DateOfBirthValidato
 
     @Override
     public boolean isValid(Date dateOfBirth, ConstraintValidatorContext context) {
-        LocalDate dateNow = LocalDate.now();
-        LocalDate localDateOfBirth = dateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        int ageInYears = Period.between(localDateOfBirth, dateNow).getYears();
-        return (ageInYears >= minimumAge);
+        if (dateOfBirth == null) {
+            return false;
+        }
+
+        else {
+
+            LocalDate dateNow = LocalDate.now();
+            LocalDate localDateOfBirth = dateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+            int ageInYears = Period.between(localDateOfBirth, dateNow).getYears();
+            return (ageInYears >= minimumAge);
+        }
+
 
     }
 }

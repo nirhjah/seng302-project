@@ -155,7 +155,7 @@
 
                         <div class="input-box">
                             <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
-                                   data-cy="dateOfBirth" required autofocus>
+                                   data-cy="dateOfBirth" autofocus>
                             <label for="date-of-birth">Date of Birth <span class="required">*</span></label>
                         </div>
                         <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
