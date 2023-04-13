@@ -234,33 +234,32 @@ ul.search {
   grid-template-rows: 250px;
 }
 
-.paginationActive {
+.pagination-button.active {
   background-color: #1b263b;
   color: white;
   border-radius: 1px;
 }
 
-.paginationButton,
-.paginationActive,
+.pagination-button,
 .totalPages {
   padding: 5px;
 }
 
-.paginationButton[disabled] {
+.pagination-button[disabled] {
   pointer-events: none; /* Disable pointer events */
 }
 
-.paginationButton[disabled] span {
+.pagination-button[disabled] span {
   opacity: 0.5; /* Set opacity to 50% */
 }
 
-.paginationContainer {
+.pagination-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
 
-.paginationContainer > div {
+.pagination-container > div {
   margin-right: 5px;
   margin-left: 5px;
 }
@@ -859,7 +858,7 @@ input:invalid + label:after {
   border-radius: 9px;
 }
 
-.paginationContainer {
+.pagination-container {
   justify-content: center;
 }
 
@@ -1049,7 +1048,7 @@ li a {
 }
 
 
-.paginationContainer, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form{
+.pagination-container, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form{
     display: flex;
 }
 
