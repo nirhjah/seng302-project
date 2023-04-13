@@ -13,9 +13,6 @@
 /*  width: 65%;*/
 /*}*/
 
-.user-form .wrapper {
-    height: 490px;
-}
 
 ul.search {
   display: flex;
@@ -344,13 +341,13 @@ td {
 /*}*/
 
 .form-control {
-  background: #415a77;
-  border-radius: 20px;
-  font-size: 16px;
-  border: none;
-  outline: 0;
-  padding: 0.1em 0.5em;
-  cursor: pointer;
+    background: #415a77;
+    border-radius: 20px;
+    font-size: 18px;
+    border: none;
+    outline: 0;
+    padding: 0.1em 0.6em;
+    cursor: pointer;
 }
 
 
@@ -371,10 +368,10 @@ td {
 
 
 
-.wrapper-edit-profile{
-    width: 500px;
-    height: 600px;
-}
+/*.wrapper-edit-profile{*/
+/*    width: 500px;*/
+/*    height: 600px;*/
+/*}*/
 
 /*.login-form form {*/
 /*  width: 65%;*/
@@ -464,17 +461,17 @@ td {
 /*}*/
 
 
-.user-form .wrapper {
-  width: 650px;
-  height: 610px;
-}
+/*.user-form .wrapper {*/
+/*  width: 650px;*/
+/*  height: 610px;*/
+/*}*/
 
-hr.solid {
-  margin-top: 30px;
-  margin-bottom: 15px;
-  border-left: 2px solid;
-  border-image: linear-gradient(to bottom, white, #415a77, #1b263b, #415a77, white) 1;
-}
+/*hr.solid {*/
+/*  margin-top: 30px;*/
+/*  margin-bottom: 15px;*/
+/*  border-left: 2px solid;*/
+/*  border-image: linear-gradient(to bottom, white, #415a77, #1b263b, #415a77, white) 1;*/
+/*}*/
 
 .wrapper,.wrapper-profile,.wrapper-edit-profile{
   box-shadow: 0 0 30px rgba(0, 0, 0, .5);
@@ -668,37 +665,34 @@ footer {
   justify-content: space-between;
 }
 
-.edit-inputs {
-  display: flex;
-  justify-content: space-between;
-}
+/*.edit-inputs {*/
+/*  display: flex;*/
+/*  justify-content: space-between;*/
+/*}*/
 
-.register-inputs-location {
-  display: none;
-}
+/*.register-inputs-location {*/
+/*  display: none;*/
+/*}*/
 
-.register-inputs-right,
-.edit-inputs-right {
-  margin-left: auto;
-  margin-right: 0;
-  width: 280px;
-}
+/*.edit-inputs-right {*/
+/*  margin-left: auto;*/
+/*  margin-right: 0;*/
+/*  width: 280px;*/
+/*}*/
 
-.register-inputs-left,
-.edit-inputs-left {
-  width: 280px;
-}
+/*.edit-inputs-left {*/
+/*  width: 280px;*/
+/*}*/
 
-.register-inputs-left .input-box,
-.edit-inputs-left .input-box {
-  width: 85%;
-  height: 35px;
-  border-bottom: 2px solid #162938;
-  margin: 40px 0;
-  font-family: "Noto Sans", sans-serif;
-  right: auto;
-  left: 40px;
-}
+/*.edit-inputs-left .input-box {*/
+/*  width: 85%;*/
+/*  height: 35px;*/
+/*  border-bottom: 2px solid #162938;*/
+/*  margin: 40px 0;*/
+/*  font-family: "Noto Sans", sans-serif;*/
+/*  right: auto;*/
+/*  left: 40px;*/
+/*}*/
 
 
 .input-box {

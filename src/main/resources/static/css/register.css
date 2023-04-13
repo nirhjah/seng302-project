@@ -166,6 +166,10 @@
     display: none;
 }
 
+.register-inputs-location {
+    display: none;
+}
+
 .progressbar li:first-child:after {
     content: none;
 }

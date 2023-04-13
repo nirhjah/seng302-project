@@ -11,111 +11,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+    <link th:href="@{/css/edit-user.css}" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:inline="text">Edit User</title>
-</head>
-<style>
-    .multiply:before {
-        content: "\00D7";
-    }
-
-    .sport-box {
-        height: 80px;
-        width: 225px;
-        display: flex;
-        flex-wrap: wrap;
-        margin-top: 31px;
-        border: 2px dashed #778DA9;
-        border-bottom-left-radius: 11px;
-        border-bottom-right-radius: 11px;
-        overflow-y: scroll;
-        max-height: 100px;
-        gap: 3px;
-        align-content: flex-start;
-        padding: 5px;
-    }
-
-    .sport-box li {
-        margin: 0;
-        list-style: none;
-        border-radius: 20px;
-        background: #778DA9;
-        padding-left: 5px;
-        border: 1px solid #1B263B;
-        display: inline-block;
-        white-space: nowrap;
-        font-size: 11px;
-        font-weight: 600;
-        font-family: "Noto Sans", sans-serif;
-        color: #FFFF;
-        text-align: center;
-    }
-
-    .sport-box li i {
-        color: #FFF;
-        margin-right: 8px;
-        margin-left: 5px;
-        font-size: 12px;
-        cursor: pointer;
-        border-radius: 50%;
-        background: #778DA9;
-    }
-
-    .content {
-        position: absolute;
-        bottom: 253px;
-        margin-left: -323px;
-    }
-
-    .content input {
-        width: 230px;
-        height: 25px;
-        border-top-left-radius: 11px;
-        border-top-right-radius: 11px;
-        border: 2px solid #778DA9;
-        padding-left: 5px;
-    }
-
-    .sport-box::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    .sport-box::-webkit-scrollbar-track {
-        background-color: #E0E1DD;
-    }
-
-    .sport-box::-webkit-scrollbar-thumb {
-        background-color: #415A77;
-        border-radius: 10px
-    }
-
-    .sport-box::-webkit-scrollbar-thumb:hover {
-        background-color: #0D1B2A;
-    }
-
-    .details button {
-        background: none;
-        border: none;
-        padding: 0;
-        font-family: "Noto Sans", sans-serif;
-        text-decoration: underline;
-        cursor: pointer;
-        position: absolute;
-        margin-left: 65px;
-        margin-top: 3px;
-    }
-
-    .sport-input-box {
-        margin-top: -15px
-    }
-
-    .sports-label {
-        font-family: "Noto Sans", sans-serif;
-        margin-left: 6px;
-    }
-</style>
 <body class="edit-user-background">
 <header th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></header>
     <div class="user-form">
