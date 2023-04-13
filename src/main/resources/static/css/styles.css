@@ -215,6 +215,7 @@ ul.search {
 
 .input-box .autocomplete-container ul li:hover {
   background-color: #007bff;
+    color: white;
 }
 
 .input-box .autocomplete-container ul li:last-child {
@@ -346,7 +347,7 @@ td {
     font-size: 18px;
     border: none;
     outline: 0;
-    padding: 0.1em 0.6em;
+    padding: 0.1em;
     cursor: pointer;
 }
 
