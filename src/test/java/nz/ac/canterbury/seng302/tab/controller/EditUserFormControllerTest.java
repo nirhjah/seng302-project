@@ -76,22 +76,26 @@ public class EditUserFormControllerTest {
 
         private static final String USER_FAVSPORT = "Hockey";
 
+        void setupUser(String email) throws IOException {
+            Date userDOB;
+            try {
+                    // Have to catch a constant parse exception annoyingly
+                    userDOB = new SimpleDateFormat("YYYY-mm-dd").parse(USER_DOB);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+            Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY, USER_POSTCODE, USER_COUNTRY);
+            User testUser = new User(USER_FNAME, USER_LNAME, userDOB, email, USER_PWORD, testLocation);
+
+            when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
+            when(mockUserService.emailIsInUse(anyString())).thenReturn(false);
+
+        }
+
         @BeforeEach
         void beforeEach() throws IOException {
-                Date userDOB;
-                try {
-                        // Have to catch a constant parse exception annoyingly
-                        userDOB = new SimpleDateFormat("YYYY-mm-dd").parse(USER_DOB);
-                } catch (ParseException e) {
-                        throw new RuntimeException(e);
-                }
-                Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY, USER_POSTCODE, USER_COUNTRY);
-                User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD, testLocation);
-
-        when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
-        when(mockUserService.emailIsInUse(anyString())).thenReturn(false);
-
-    }
+            setupUser(USER_EMAIL);
+        }
 
     @Test
     @WithMockUser()
@@ -248,13 +252,15 @@ public class EditUserFormControllerTest {
         }
 
         @Test
-        @WithMockUser(username = USER_EMAIL)
-        void givenUserChangesTheirEmail_ThenFormIsSaved_AndUserIsLoggedOut() throws Exception {
+        @WithMockUser()
+        void givenUserChangesTheirEmail_ThenFormIsSaved_AndUserIsLoggedOutThenLoggedIn() throws Exception {
+                setupUser("asdf@asdf.com");
+
                 mockMvc.perform(
                                 post(URL)
                                                 .param(P_FNAME, USER_FNAME)
                                                 .param(P_LNAME, USER_LNAME)
-                                                .param(P_EMAIL, "new@email.com")
+                                                .param(P_EMAIL, "asdf@asdf.com")
                                                 .param(P_DOB, USER_DOB)
                                                 .param(P_TAGS, USER_FAVSPORT)
                                                 .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
@@ -263,7 +269,7 @@ public class EditUserFormControllerTest {
                                                 .param(P_POSTCODE, USER_POSTCODE)
                                                 .param(P_CITY, USER_CITY)
                                                 .param(P_COUNTRY, USER_COUNTRY))
-                                .andExpect(redirectedUrl("login"));
+                                .andExpect(redirectedUrl("user-info/self"));
 
                 verify(mockUserService, times(1)).updateOrAddUser(any());
         }
