@@ -21,6 +21,9 @@
     <div class="register-header">
         <h1>Register</h1>
     </div>
+<!--    <div class="register-header">-->
+<!--        <h1> <img th:src="@{/image/icons/adduser.svg}"/>Register</h1>-->
+<!--    </div>-->
     <div class="wrapper">
         <form th:action="@{register}" method="post" th:object="${registerForm}">
             <div class="icon">
@@ -249,7 +252,6 @@
                 headerText.classList.remove("medium");
                 headerText.classList.add("strong");
             }
-            // console.log(password)
         }
         const passwordInput = document.getElementById('password');
         const passwordToggle = document.querySelector('.password-toggle');

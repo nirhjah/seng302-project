@@ -5,26 +5,30 @@
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <link th:href="@{/css/view-all.css}" rel="stylesheet">
     <title>View All Users</title>
 </head>
 
 <header th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></header>
 
 <body class="view-users-background">
-    <div>
-        <p>
-        <form th:action="@{view-users}" method="get">
-            <input type="text" placeholder="Search name" th:name="currentSearch" th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">
-            <button class="search-user-button" type="submit"> Search </button>
-            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>
-            <br><br>
-        </form>
-        
-        </p>
-    </div>
+    <form th:action="@{view-users}" method="get">
+        <div class="search-bar">
+            <input class="search-input" type="text" placeholder="Search name" th:name="currentSearch"
+                   th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">
+            <button class="search-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
+        </div>
+        <div class="filter-bar">
+            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}"
+                 th:if="${not #lists.isEmpty(listOfSports)}"></div>
+        </div>
+    </form>
 
-    <!-- Can convert this table into a fragment if neccessary.
-        for now, embrace YAGNI -->
+</div>
+
+
+<!-- Can convert this table into a fragment if neccessary.
+    for now, embrace YAGNI -->
     <table>
         <tr th:if="${listOfUsers.empty}">
             <td colspan="2"> No users </td>
@@ -34,18 +38,14 @@
             <th> </th>
             <th>Name</th>
             <th>Email</th>
-            <th>Link</th>
         </tr>
 
-        <tr th:each="user : ${listOfUsers}">
+        <tr th:each="user : ${listOfUsers}" th:onclick="|window.location.href='/user-info?name=${user.userId}'|">
             <td>
                 <img th:src="${'data:image/jpeg;base64,' + user.pictureString}" width="50" height="50"/>
             </td>
             <td> [[|${user.firstName} ${user.lastName}|]] </td>
             <td th:text="${user.email}"> Email </td>
-            <td>
-                <a th:href="@{user-info(name=${user.userId})}"> Profile </a>
-            </td>
         </tr>
     </table>
 
