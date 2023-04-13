@@ -5,13 +5,13 @@
   <link th:href="@{/css/styles.css}" rel="stylesheet" />
   <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
   <link th:href="@{/css/login.css}" rel="stylesheet" />
+  <link th:href="@{/css/preloader.css}" rel="stylesheet" />
   <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Login</title>
 </head>
 
 <body class="team-form-background">
-  <!-- add navbar-->
   <header th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></header>
   <div class="login-form">
 <!--    <div class="login-header">-->
@@ -29,6 +29,14 @@
             th:value="*{username}" data-cy="username" required autofocus>
           <label for="username">Email</label>
         </div>
+        <div class="preloader" id="preloader">
+          <div class="bounceball"></div>
+          <label class="loading">Loading
+            <span class="loading-dot">.</span>
+            <span class="loading-dot">.</span>
+            <span class="loading-dot">.</span>
+          </label>
+        </div>
         <div class="input-box">
           <input type="password" class="form-control" id="password" placeholder="" th:name="password"
             th:value="*{password}" data-cy="password" required autofocus>
@@ -45,12 +53,25 @@
           <p>New Here?</p>
           <a th:href="@{register}">Create Account</a>
         </div>
-<!--        <div class="cancel-link">-->
-<!--          <a th:href="@{home}">Cancel</a>-->
-<!--        </div>-->
       </form>
     </div>
   </div>
+  <script>
+    // Working on the preloader fragment for loading pages
+
+    window.onload = function() {
+        var preloader = document.getElementById("preloader");
+        preloader.style.display = "none";
+    }
+
+    // To see the preloader animation uncomment below and comment out above code
+    // window.onload = loader;
+    // function loader(){
+    //   setTimeout(function() {
+    //     document.getElementById("wrap").style.visibility = "hidden";
+    //   }, 3000);
+    // }
+  </script>
   <footer>
     <p>
       Image by <a
