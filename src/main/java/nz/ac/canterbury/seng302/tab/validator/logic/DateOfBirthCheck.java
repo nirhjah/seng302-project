@@ -27,7 +27,7 @@ public class DateOfBirthCheck implements ConstraintValidator<DateOfBirthValidato
     public boolean isValid(Date dateOfBirth, ConstraintValidatorContext context) {
 
         if (dateOfBirth == null) {
-            return false;
+            return true;
         }
 
         else {
