@@ -134,29 +134,33 @@
                     <div class="edit-inputs-left">
                         <div class="input-box">
                             <input type="text" class="form-control" id="first-name" th:name="firstName"
-                                   data-cy="firstName" autofocus placeholder="" th:pattern="${validNameRegex}" th:value="*{firstName}">
+                                   data-cy="firstName" autofocus placeholder="" th:value="*{firstName}">
                             <label for="first-name">First Name <span class="required">*</span></label>
-                            <p th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="errorMessage" />
                         </div>
+                        <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message"></div>
+
                         <div class="input-box">
                             <input type="text" class="form-control" id="last-name" th:name="lastName"
-                                   data-cy="lastName" autofocus placeholder="" th:pattern="${validNameRegex}" th:value="*{lastName}">
+                                   data-cy="lastName" autofocus placeholder="" th:value="*{lastName}">
                             <label for="last-name">Last Name <span class="required">*</span></label>
-                            <p th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="errorMessage" />
                         </div>
+                        <div th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error-message"></div>
+
                         <div class="input-box">
                             <input type="text" class="form-control" id="email" th:name="email"
                                    data-cy="email" autofocus placeholder="" th:value="*{email}">
                             <label for="email">Email <span class="required">*</span></label>
-                            <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="errorMessage" />
                         </div>
+                        <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message"></div>
+
                         <div class="input-box">
                             <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
-                                   data-cy="dateOfBirth" required autofocus>
+                                   data-cy="dateOfBirth" autofocus>
                             <label for="date-of-birth">Date of Birth <span class="required">*</span></label>
                         </div>
+                        <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
+
                         <div class="sport-input-box">
-                            <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
                             <div class="details">
                                 <label class="sports-label" for="sport-box">Favourite Sports</label>
                                 <button type="button">Clear</button>
@@ -285,6 +289,7 @@
                 }
                 else {
                     document.getElementById("error-message").innerText  ="Sport contains invalid characters";
+                    document.getElementById("error-message").className = "error-message";
                 }
             }
             else if (tag.length==0){
