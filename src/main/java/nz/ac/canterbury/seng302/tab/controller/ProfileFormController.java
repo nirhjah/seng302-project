@@ -84,12 +84,11 @@ public class ProfileFormController {
      * @return
      */
     @PostMapping("/profile")
-    public RedirectView uploadPicture(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
+    public String uploadPicture(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
             Model model) {
         model.addAttribute("teamID", ProfileFormController.teamId);
         teamService.updatePicture(file, ProfileFormController.teamId);
-        return new RedirectView("/profile?teamID=" + ProfileFormController.teamId, true);
+        return "redirect:/profile?teamID=" + ProfileFormController.teamId;
     }
-
 
 }
