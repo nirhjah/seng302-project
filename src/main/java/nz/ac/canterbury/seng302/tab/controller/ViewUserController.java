@@ -115,24 +115,24 @@ public class ViewUserController {
         User authUser = user.get();
         model.addAttribute("userId", userId);
 
-        if (!isSupportedContentType(file.getContentType())){
-            redirectAttributes.addFlashAttribute("typeError", true);
-            return "redirect:/user-info?name=" + authUser.getUserId();
-        }
-        else if (file.getSize()>10000000){
-            redirectAttributes.addFlashAttribute("sizeError", true);
-            return "redirect:/user-info?name=" + authUser.getUserId();
-        }
+//        if (!isSupportedContentType(file.getContentType())){
+//            redirectAttributes.addFlashAttribute("typeError", true);
+//            return "redirect:/user-info?name=" + authUser.getUserId();
+//        }
+//        else if (file.getSize()>10000000){
+//            redirectAttributes.addFlashAttribute("sizeError", true);
+//            return "redirect:/user-info?name=" + authUser.getUserId();
+//        }
         userService.updatePicture(file, userId);
         return "redirect:/user-info?name=" + authUser.getUserId();
     }
 
-    /**
-     * @param contentType The picture file type in string, e.g image/jpg, image/svg+xml etc
-     * @return Boolean type if the contentType parameter matches either the image/png, image/jpg, image/svg+xml or image/jpeg string
-     */
-    private boolean isSupportedContentType(String contentType){
-        return contentType.equals("image/png")|| contentType.equals("image/jpg")||contentType.equals("image/svg+xml")|| contentType.equals("image/jpeg");
-    }
+//    /**
+//     * @param contentType The picture file type in string, e.g image/jpg, image/svg+xml etc
+//     * @return Boolean type if the contentType parameter matches either the image/png, image/jpg, image/svg+xml or image/jpeg string
+//     */
+//    private boolean isSupportedContentType(String contentType){
+//        return contentType.equals("image/png")|| contentType.equals("image/jpg")||contentType.equals("image/svg+xml")|| contentType.equals("image/jpeg");
+//    }
 
 }
