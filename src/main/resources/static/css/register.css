@@ -4,7 +4,7 @@
 
 .register-form .wrapper {
     width: 590px;
-    height: 745px;
+    /*height: 745px;*/
 }
 
 @media (max-width: 655px) {
@@ -18,14 +18,21 @@
 }
 
 .register-form {
-    display: grid;
-    grid-auto-rows: 780px;
+    /*display: grid;*/
+    /*grid-auto-rows: 780px;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    /*grid-template-rows: 105px;*/
+    /*height: 90vh;*/
+
     justify-content: center;
+    display: grid;
     align-items: center;
-    grid-template-rows: 105px;
-    height: 90vh;
 }
 
+.register-header {
+    padding-bottom: 15px;
+}
 
 .password-info {
     width: 100%;
@@ -103,7 +110,7 @@
     overflow: hidden;
     /*CSS counters to number the steps*/
     width: 100%;
-    margin: 10px 0 20px;
+    margin: 20px 0 20px;
     font-family: "Noto Sans", sans-serif;
     font-weight: bolder;
 }
@@ -124,7 +131,7 @@
 
 .progressbar li:nth-child(2):before {
     /*temporary as I'm redoing the location icon*/
-    background-image: url("../image/icons/location.svg");
+    background-image: url("../image/icons/grey-location.svg");
 }
 
 .progressbar li.active:nth-child(2):before {
@@ -208,4 +215,8 @@ img.password-toggle {
 
 #password {
     width: 92% !important;
+}
+
+.register-form .cancel-link {
+    margin-bottom: 20px !important;
 }

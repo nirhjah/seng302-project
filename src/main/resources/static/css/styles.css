@@ -378,11 +378,11 @@ td {
 /*  width: 65%;*/
 /*}*/
 
-.wrapper {
-    width: 500px;
-    height: 780px;
-    /*backdrop-filter: blur(20px);*/
-}
+/*.wrapper {*/
+/*    width: 500px;*/
+/*    height: 780px;*/
+/*    !*backdrop-filter: blur(20px);*!*/
+/*}*/
 
 /*.login-form .wrapper {*/
 /*  width: 500px;*/
@@ -642,7 +642,6 @@ footer {
     font-family: "Noto Sans",sans-serif;
     /*color: #0B1B2A;*/
     text-align: center;
-    /*font-size: 30px;*/
     font-size: 40px;
     font-weight: 600;
     color: #0D1B2A;
