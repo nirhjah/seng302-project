@@ -260,4 +260,15 @@
         margin: 30px 0;
     }
 }
+.user-label{
+    display:flex;
+    align-items:center;
+}
+
+.user-label img{
+    max-height: 20px;
+    max-width: 20px;
+    margin-right:10px;
+}
+
 

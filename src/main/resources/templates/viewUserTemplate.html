@@ -50,9 +50,15 @@
                 <div class="team-display">
                     <h2>User Profile</h2>
                     <h3 th:text="|Name: *{firstName} *{lastName}|"></h3>
-                    <h3 th:text="|Email: *{email}|"></h3>
+                    <div class="user-label">
+                        <img th:src="@{/image/icons/email.svg}"/>
+                        <h3 th:text="|Email: *{email}|"></h3>
+                    </div>
                     <h3 th:text="|Date of Birth: *{#dates.format(dateOfBirth, 'dd-MM-yyyy')}|"></h3>
-                    <h3 th:text="|Location: *{location}|"></h3>
+                    <div class="user-label">
+                        <img  th:src="@{/image/icons/location.svg}"/>
+                        <h3 th:text="|Location: *{location}|"></h3>
+                    </div>
                     <h3>Favourite Sports:</h3>
                     <div class="sport-box" id="sport-box">
                         <li th:each="sport : ${favSportNames}" th:text="${sport}"></li>
