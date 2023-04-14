@@ -54,7 +54,6 @@
     font-weight: 700;
     font-size:40px;
     animation: dot 1s infinite;
-    text-shadow: 0 0 0 #1b263b;
 }
 
 .loading-dot:nth-child(1) {

@@ -29,14 +29,6 @@
             th:value="*{username}" data-cy="username" required autofocus>
           <label for="username">Email</label>
         </div>
-        <div class="preloader" id="preloader">
-          <div class="bounceball"></div>
-          <label class="loading">Loading
-            <span class="loading-dot">.</span>
-            <span class="loading-dot">.</span>
-            <span class="loading-dot">.</span>
-          </label>
-        </div>
         <div class="input-box">
           <input type="password" class="form-control" id="password" placeholder="" th:name="password"
             th:value="*{password}" data-cy="password" required autofocus>
@@ -56,22 +48,6 @@
       </form>
     </div>
   </div>
-  <script>
-    // Working on the preloader fragment for loading pages
-
-    window.onload = function() {
-        var preloader = document.getElementById("preloader");
-        preloader.style.display = "none";
-    }
-
-    // To see the preloader animation uncomment below and comment out above code
-    // window.onload = loader;
-    // function loader(){
-    //   setTimeout(function() {
-    //     document.getElementById("wrap").style.visibility = "hidden";
-    //   }, 3000);
-    // }
-  </script>
   <footer>
     <p>
       Image by <a
