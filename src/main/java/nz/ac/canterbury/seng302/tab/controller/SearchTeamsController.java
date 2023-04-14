@@ -66,8 +66,8 @@ public class SearchTeamsController {
                 Page<Team> teamPage = teamService.findPaginatedTeamsByCityAndSports(pageRequest, filteredCities, filteredSports, teamName);
                 List<Team> teams = teamPage.getContent();
                 // Get all the sports of the given queried users
-                var sports = teamRepository.findTeamByName(teamName, PageRequest.of(0, Integer.MAX_VALUE)).stream()
-                        .map(team -> team.getSport().toLowerCase())
+                var sports = teamRepository.findSportsByName(teamName).stream()
+                        .map(String::toLowerCase)
                         .distinct()
                         .sorted()
                         .toList();
