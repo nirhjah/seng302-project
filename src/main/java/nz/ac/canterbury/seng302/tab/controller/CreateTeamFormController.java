@@ -5,7 +5,6 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 
-import nz.ac.canterbury.seng302.tab.service.LocationService;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
@@ -41,25 +40,6 @@ public class CreateTeamFormController {
     // private String apiKey;
 
     /**
-     * Countries and cities can have letters from all alphabets, with hyphens, apostrophes and
-     * spaces. Must start with an alphabetical character
-     */
-    private final String countryCitySuburbNameRegex = "^\\p{L}+[\\- '\\p{L}]*$";
-
-    /** Addresses can have letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include
-     * at least one alphanumeric character**/
-    private  final String addressRegex = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
-
-    /** Allow letters, numbers, forward slashes and hyphens. Must start with an alphanumeric character. */
-    private final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
-
-    /** A team name can be alphanumeric, dots and curly braces. Must start with on alphabetical character **/
-    private final String teamNameUnicodeRegex = "^[\\p{L}\\p{N}]+[}{.\\p{L}\\p{N}]+$";
-
-    /** A sport can be letters, space, apostrophes or hyphens. Must start with on alphabetical character**/
-    private final String sportUnicodeRegex = "^\\p{L}+[\\- '\\p{L}]*$";
-
-    /**
      * Gets createTeamForm to be displayed and contains name, sport,
      * location and teamID model attributes to be added to html.
      *
@@ -68,14 +48,15 @@ public class CreateTeamFormController {
 
     @GetMapping("/createTeam")
     public String teamForm(@RequestParam(name = "edit", required = false) Long teamID,
-                           @RequestParam(name = "invalid_input", defaultValue = "0") boolean invalidInput,
-                           Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
+            @RequestParam(name = "invalid_input", defaultValue = "0") boolean invalidInput,
+            Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
 
         logger.info("GET /createTeam");
 
         URL url = new URL(httpServletRequest.getRequestURL().toString());
         String path = (url.getPath() + "/..");
         String protocolAndAuthority = String.format("%s://%s", url.getProtocol(), url.getAuthority());
+        model.addAttribute("path", path);
 
         Team team;
         if (teamID != null) {
@@ -101,11 +82,11 @@ public class CreateTeamFormController {
 
         // client side validation
 
-        model.addAttribute("addressRegex", addressRegex);
-        model.addAttribute("countryCitySuburbNameRegex", countryCitySuburbNameRegex);
-        model.addAttribute("postcodeRegex", postcodeRegex);
-        model.addAttribute("teamNameUnicodeRegex", teamNameUnicodeRegex);
-        model.addAttribute("sportUnicodeRegex", sportUnicodeRegex);
+        model.addAttribute("addressRegex", teamService.addressRegex);
+        model.addAttribute("countryCitySuburbNameRegex", teamService.countryCitySuburbNameRegex);
+        model.addAttribute("postcodeRegex", teamService.postcodeRegex);
+        model.addAttribute("teamNameUnicodeRegex", teamService.teamNameUnicodeRegex);
+        model.addAttribute("sportUnicodeRegex", teamService.sportUnicodeRegex);
 
         List<String> knownSports = sportService.getAllSportNames();
         model.addAttribute("knownSports", knownSports);
@@ -134,44 +115,50 @@ public class CreateTeamFormController {
             @RequestParam(name = "country") String country,
             @RequestParam(name = "postcode") String postcode,
             @RequestParam(name = "suburb") String suburb,
-            Model model) throws IOException {
+            Model model,
+            HttpServletRequest httpServletRequest) throws IOException {
         logger.info("POST /createTeam");
 
         // client side validation
-        model.addAttribute("countryOrCityNameRegex", countryCitySuburbNameRegex);
-        model.addAttribute("postcodeRegex", postcodeRegex);
-        model.addAttribute("teamNameUnicodeRegex", teamNameUnicodeRegex);
-        model.addAttribute("sportUnicodeRegex", sportUnicodeRegex);
+        model.addAttribute("countryOrCityNameRegex", teamService.countryCitySuburbNameRegex);
+        model.addAttribute("postcodeRegex", teamService.postcodeRegex);
+        model.addAttribute("teamNameUnicodeRegex", teamService.teamNameUnicodeRegex);
+        model.addAttribute("sportUnicodeRegex", teamService.sportUnicodeRegex);
 
-        // server side validation
-        boolean nameValid = (name.matches(teamNameUnicodeRegex));
-        boolean sportValid = (sport.matches(sportUnicodeRegex));
-        boolean countryValid = (country.matches(countryCitySuburbNameRegex));
-        boolean addressLine1Valid = (addressLine1.matches(addressRegex)) || addressLine1 == "";
-        boolean addressLine2Valid = (addressLine2.matches(addressRegex)) || addressLine2 == "";
-        boolean cityValid = (city.matches(countryCitySuburbNameRegex));
-        boolean postcodeValid = (postcode.matches(postcodeRegex)) || postcode == "";
-        boolean suburbValid = (suburb.matches(countryCitySuburbNameRegex)) || suburb == "";
-        if (!sportValid || !nameValid || !countryValid || !cityValid || !postcodeValid || !suburbValid || !addressLine1Valid || !addressLine2Valid) {
+        // trim all extra whitespace and trailing/leading whitespace
+        String trimmedName = teamService.clipExtraWhitespace(name);
+        String trimmedSport = teamService.clipExtraWhitespace(sport);
+        String trimmedCountry = teamService.clipExtraWhitespace(country);
+        String trimmedAddressLine1 = teamService.clipExtraWhitespace(addressLine1);
+        String trimmedAddressLine2 = teamService.clipExtraWhitespace(addressLine2);
+        String trimmedCity = teamService.clipExtraWhitespace(city);
+        String trimmedPostcode = teamService.clipExtraWhitespace(postcode);
+        String trimmedSuburb = teamService.clipExtraWhitespace(suburb);
+
+        // TeamService validation
+        if (!teamService.validateTeamRegistration(trimmedSport, trimmedName, trimmedCountry, trimmedCity,
+                trimmedPostcode, trimmedSuburb, trimmedAddressLine1, trimmedAddressLine2)) {
             return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
         }
-        Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
+
+        Location location = new Location(trimmedAddressLine1, trimmedAddressLine2, trimmedSuburb, trimmedCity,
+                trimmedPostcode, trimmedCountry);
         Team team;
         if ((team = teamService.getTeam(teamID)) != null) {
-            team.setName(name);
-            team.setSport(sport);
+            team.setName(trimmedName);
+            team.setSport(trimmedSport);
             team.setLocation(location);
             team = teamService.updateTeam(team);
             teamID = team.getTeamId();
         } else {
-            team = new Team(name, sport, location);
+            team = new Team(trimmedName, trimmedSport, location);
             team = teamService.addTeam(team);
             teamID = team.getTeamId();
         }
 
         List<String> knownSports = sportService.getAllSportNames();
-        if (!knownSports.contains(sport)) {
-            sportService.addSport(new Sport(sport));
+        if (!knownSports.contains(trimmedSport)) {
+            sportService.addSport(new Sport(trimmedSport));
         }
 
         return String.format("redirect:./profile?teamID=%s", teamID);
