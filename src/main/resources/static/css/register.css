@@ -173,6 +173,10 @@
     display: none;
 }
 
+.register-button {
+    display: none;
+}
+
 .register-inputs-location {
     display: none;
 }

@@ -62,14 +62,14 @@
         <form id="logoutForm" th:action="@{logout}" method="POST"></form>
     </div>
 
-<!--    <div class="preloader" id="preloader">-->
-<!--        <div class="bounceball"></div>-->
-<!--        <label class="loading">Loading-->
-<!--            <span class="loading-dot">.</span>-->
-<!--            <span class="loading-dot">.</span>-->
-<!--            <span class="loading-dot">.</span>-->
-<!--        </label>-->
-<!--    </div>-->
+    <div class="preloader" id="preloader">
+        <div class="bounceball"></div>
+        <label class="loading">Loading
+            <span class="loading-dot">.</span>
+            <span class="loading-dot">.</span>
+            <span class="loading-dot">.</span>
+        </label>
+    </div>
     <script>
         let hamburger = document.querySelector(".hamburger")
         hamburger.onclick = function () {
@@ -94,14 +94,15 @@
                 }
             });
         }
-        // preloader loading is only displayed if pages are taking a while to load
+
+        // // preloader loading is only displayed if pages are taking a while to load
         // window.onload = function() {
         //     var preloader = document.getElementById("preloader");
         //     preloader.style.display = "none";
         // }
 
 
-        // To see the preloader animation uncomment below and comment out above code
+        // // To see the preloader animation uncomment below and comment out above code
         // window.onload = loader;
         // function loader(){
         //   setTimeout(function() {

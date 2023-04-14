@@ -151,6 +151,7 @@
             <div class="submit-button">
                 <button class="previous-button">Previous</button>
                 <button class="next-button">Next</button>
+                <button class="register-button" type="submit">Register</button>
             </div>
             <div class="cancel-link">
                 <p>Aleady have an account? <a th:href="@{login}">Login</a></p>
@@ -174,36 +175,54 @@
 <script>
     const prevButton = document.querySelector('.previous-button');
     const nextButton = document.querySelector('.next-button');
+    const registerButton = document.querySelector('.register-button');
     const registerInputs = document.querySelector('.register-inputs');
     const locationInputs = document.querySelector('.register-inputs-location');
     const progressBarLocation = document.getElementById('progressbar-location');
 
+    const inputs = registerInputs.querySelectorAll('input[required]')
+
+    registerButton.addEventListener("click", function () {
+        // If empty values exist on the first page and the user goes to register then bring them back to first page
+        console.log(inputs)
+        for (let i = 0; i < inputs.length; i++) {
+            if (!inputs[i].checkValidity()) {
+                firstPageInitialisation();
+                break;
+            }
+        }
+    });
+
     nextButton.addEventListener("click", function () {
-        //TODO add in check for fields inputted before user can click next
+        // If empty values exist on the first page and the user goes to register then bring them back to first page
         locationInputs.style.display = 'block';
         registerInputs.style.display = 'none';
         progressBarLocation.classList.add('active');
         prevButton.style.display = 'block';
-        nextButton.textContent = 'Register'
-        nextButton.type = 'submit'
+        registerButton.style.display = 'block';
+        nextButton.style.display = 'none';
     });
 
     prevButton.addEventListener("click", function () {
+        firstPageInitialisation();
+    });
+
+    function firstPageInitialisation() {
         locationInputs.style.display = 'none';
         registerInputs.style.display = 'block';
         progressBarLocation.classList.remove('active');
         prevButton.style.display = 'none';
-        nextButton.textContent = 'Next';
-        nextButton.removeAttribute('type');
-    });
+        registerButton.style.display = 'none';
+        nextButton.style.display = 'block';
+    }
 
     function checkPasswordStrength() {
-        const password = document.getElementById("password").value;
-        const email = document.getElementById("email").value;
-        const firstName = document.getElementById("first-name").value;
-        const lastName = document.getElementById("last-name").value;
         const bar = document.querySelector(".password-strength-meter .bar");
         const headerText = document.querySelector(".password-strength-text");
+        const firstName = document.getElementById("first-name").value;
+        const lastName = document.getElementById("last-name").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
         if (password) {
             let strength = 0;
             if (password.length >= 8) {
@@ -253,6 +272,15 @@
                 headerText.classList.remove("medium");
                 headerText.classList.add("strong");
             }
+        } else {
+            bar.classList.remove("medium");
+            bar.classList.remove("strong");
+            bar.classList.remove("weak");
+            bar.style.width = "0%";
+            headerText.textContent = "";
+            headerText.classList.remove("medium");
+            headerText.classList.remove("strong");
+            headerText.classList.remove("weak");
         }
         const passwordInput = document.getElementById('password');
         const passwordToggle = document.querySelector('.password-toggle');
