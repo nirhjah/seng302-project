@@ -59,7 +59,7 @@ public class SearchTeamsController {
         if (teamName != null ) {
             if (teamName.length() < 3) {
                 model.addAttribute("error", true);
-                model.addAttribute("teams", new ArrayList<Team>());
+                model.addAttribute("teams", List.of());
             }
             else {
                 PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE);
@@ -67,7 +67,6 @@ public class SearchTeamsController {
                 List<Team> teams = teamPage.getContent();
                 // Get all the sports of the given queried users
                 var sports = teamRepository.findSportsByName(teamName).stream()
-                        .map(String::toLowerCase)
                         .distinct()
                         .sorted()
                         .toList();
@@ -87,7 +86,7 @@ public class SearchTeamsController {
                 model.addAttribute("cities", cities);
             }
         } else {
-            model.addAttribute("teams", new ArrayList<Team>());
+            model.addAttribute("teams", List.of());
             notSearch = true;
         }
         model.addAttribute("navTeams", teamService.getTeamList());
