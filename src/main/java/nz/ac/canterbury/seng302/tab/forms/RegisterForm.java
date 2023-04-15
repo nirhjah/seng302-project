@@ -38,6 +38,7 @@ public class RegisterForm {
     private String country;
 
     @UserFormValidators.cityValidator
+
     private String city;
 
     @UserFormValidators.suburbValidator
