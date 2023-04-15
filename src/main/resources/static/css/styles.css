@@ -223,15 +223,6 @@ ul.search {
   border-bottom-right-radius: 10px;
 }
 
-.user-form {
-  display: grid;
-  grid-auto-rows: 530px;
-  justify-content: center;
-  align-items: center;
-  height: 90vh;
-  grid-template-rows: 250px;
-}
-
 .pagination-button.active {
   background-color: #1b263b;
   color: white;

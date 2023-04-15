@@ -26,7 +26,12 @@
         <div class="wrapper">
             <form th:action="@{editUser}" method="post" th:object="${editUserForm}" id="editUserForm">
                 <div class="edit-inputs">
-                    <div class="edit-inputs-left">
+<!--                    <div class="edit-inputs-left">-->
+                    <div class="edit-user-header">
+                        <h2>Details</h2>
+                        <img th:src="@{/image/icons/dark-blue-user.svg}"/>
+                    </div>
+                    <div class="input-boxes">
                         <div class="input-box">
                             <input type="text" class="form-control" id="first-name" th:name="firstName"
                                    data-cy="firstName" autofocus placeholder="" th:pattern="${validNameRegex}" th:value="*{firstName}">
@@ -39,29 +44,38 @@
                             <label for="last-name">Last Name <span class="required">*</span></label>
                             <p th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="errorMessage" />
                         </div>
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="email" th:name="email"
-                                   data-cy="email" autofocus placeholder="" th:value="*{email}">
-                            <label for="email">Email <span class="required">*</span></label>
-                            <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="errorMessage" />
-                        </div>
-                        <div class="input-box">
-                            <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
-                                   data-cy="dateOfBirth" required autofocus>
-                            <label for="date-of-birth">Date of Birth <span class="required">*</span></label>
-                        </div>
-                        <div class="sport-input-box">
-                            <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
-                            <div class="details">
-                                <label class="sports-label" for="sport-box">Favourite Sports</label>
-                                <button type="button">Clear</button>
-                            </div>
-
-                            <div class="sport-box" id="sport-box"></div>
-                        </div>
                     </div>
-                    <hr class="solid">
-                    <div class="edit-inputs-right">
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="email" th:name="email"
+                               data-cy="email" autofocus placeholder="" th:value="*{email}">
+                        <label for="email">Email <span class="required">*</span></label>
+                        <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="errorMessage" />
+                    </div>
+                    <div class="input-box">
+                        <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
+                               data-cy="dateOfBirth" required autofocus>
+                        <label for="date-of-birth">Date of Birth <span class="required">*</span></label>
+                    </div>
+                    <div class="sport-input-box">
+                        <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
+                        <div class="details">
+                            <label class="sports-label" for="sport-box">Favourite Sports</label>
+                            <button type="button">Clear</button>
+                        </div>
+                        <div class="content">
+                            <label for="sport-list"  id="error-message"></label>
+                            <ul><input type="text" spellcheck="false" list="sports" id="sport-list"></ul>
+                            <datalist id="sports">
+                                <option th:each="sport : ${knownSports}" th:text="${sport}">
+                            </datalist>
+                        </div>
+                        <div class="sport-box" id="sport-box"></div>
+                    </div>
+                    <div class="edit-user-header">
+                        <h2>Location</h2>
+                        <img th:src="@{/image/icons/dark-blue-location.svg}"/>
+                    </div>
+                    <div class="input-boxes">
                         <div class="input-box">
                             <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
                                    data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}" autocomplete="off" th:value="*{addressLine1}"
@@ -75,34 +89,32 @@
                                    title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
                             <label for="address-line-2">Address Line 2</label>
                         </div>
-
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="suburb" th:name="suburb"
-                                   data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="" th:value="*{suburb}"
-                                   title="May include letters, hyphens, and spaces. Must start with letter">
-                            <label for="suburb">Suburb</label>
-                        </div>
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="postcode" th:name="postcode"
-                                   data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder="" th:value="*{postcode}"
-                                   title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">
-                            <label for="postcode">Postcode</label>
-                        </div>
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="city" th:name="city"
-                                   data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="" th:value="*{city}"
-                                   title="May include letters, hyphens, and spaces. Must start with letter">
-                            <label for="city">City <span class="required">*</span></label>
-                        </div>
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="country" th:name="country"
-                                   data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="" th:value="*{country}"
-                                   title="May include letters, hyphens, and spaces. Must start with letter">
-                            <label for="country">Country <span class="required">*</span></label>
-                        </div>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="suburb" th:name="suburb"
+                               data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="" th:value="*{suburb}"
+                               title="May include letters, hyphens, and spaces. Must start with letter">
+                        <label for="suburb">Suburb</label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="postcode" th:name="postcode"
+                               data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder="" th:value="*{postcode}"
+                               title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">
+                        <label for="postcode">Postcode</label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="city" th:name="city"
+                               data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="" th:value="*{city}"
+                               title="May include letters, hyphens, and spaces. Must start with letter">
+                        <label for="city">City <span class="required">*</span></label>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="country" th:name="country"
+                               data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder="" th:value="*{country}"
+                               title="May include letters, hyphens, and spaces. Must start with letter">
+                        <label for="country">Country <span class="required">*</span></label>
                     </div>
                 </div>
-                <br/>
                 <div class="submit-button">
                     <label th:if="${errorMessage}" th:text="${errorMessage}" style="position: fixed;"></label>
                     <a th:href="@{home}">
@@ -114,13 +126,6 @@
                     <a th:href="@{user-info/self}">Cancel</a>
                 </div>
             </form>
-            <div class="content">
-                <label for="sport-list"  id="error-message"></label>
-                <ul><input type="text" spellcheck="false" list="sports" id="sport-list"></ul>
-                <datalist id="sports">
-                    <option th:each="sport : ${knownSports}" th:text="${sport}">
-                </datalist>
-            </div>
         </div>
     <footer>
         <p>

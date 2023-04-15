@@ -132,6 +132,7 @@
 .progressbar li:nth-child(2):before {
     /*temporary as I'm redoing the location icon*/
     background-image: url("../image/icons/grey-location.svg");
+    background-color: white;
 }
 
 .progressbar li.active:nth-child(2):before {

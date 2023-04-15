@@ -1,43 +1,63 @@
-.wrapper-edit-profile{
-    width: 500px;
-    height: 600px;
-}
-
 .user-form .wrapper {
-    width: 650px;
-    height: 610px;
+    width: 590px;
 }
 
-hr.solid {
-    margin-top: 30px;
-    margin-bottom: 15px;
-    border-left: 2px solid;
-    border-image: linear-gradient(to bottom, white, #415a77, #1b263b, #415a77, white) 1;
+@media (max-width: 655px) {
+    .user-form .wrapper {
+        width: 90vw;
+    }
 }
 
-.edit-inputs {
+.user-form {
+    justify-content: center;
+    display: grid;
+    align-items: center;
+}
+
+.user-header {
+    padding-bottom: 10px;
+}
+
+.wrapper form {
+    width: 65%;
+}
+
+.edit-user-header {
     display: flex;
-    justify-content: space-between;
+    align-content: center;
+    width: 120%;
+    align-items: center;
+    margin-top: 35px;
+    margin-left: -10%;
 }
 
-.edit-inputs-right {
-    margin-left: auto;
-    margin-right: 0;
-    width: 280px;
-}
-
-.edit-inputs-left {
-    width: 280px;
-}
-
-.edit-inputs-left .input-box {
-    width: 85%;
-    height: 35px;
-    border-bottom: 2px solid #162938;
-    margin: 40px 0;
+.edit-user-header h2 {
     font-family: "Noto Sans", sans-serif;
-    right: auto;
-    left: 40px;
+    font-size: 25px;
+    color: #0b2239;
+}
+
+.edit-user-header img {
+    height: 30px;
+    margin: 0 5px;
+}
+.edit-user-header::before {
+    content: "";
+    border-top: 3px solid #0b2239;
+    width: 6%;
+    align-content: center;
+    display: flex;
+    text-align: center;
+    margin-right: 5px;
+}
+
+.edit-user-header::after {
+    content: "";
+    border-top: 3px solid #0b2239;
+    width: 67%;
+    align-content: center;
+    display: flex;
+    text-align: center;
 }
 
 .multiply:before {
@@ -46,10 +66,9 @@ hr.solid {
 
 .sport-box {
     height: 80px;
-    width: 225px;
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
-    margin-top: 31px;
     border: 2px dashed #778DA9;
     border-bottom-left-radius: 11px;
     border-bottom-right-radius: 11px;
@@ -58,6 +77,7 @@ hr.solid {
     gap: 3px;
     align-content: flex-start;
     padding: 5px;
+    margin-top: -2px;
 }
 
 .sport-box li {
@@ -76,6 +96,7 @@ hr.solid {
     text-align: center;
 }
 
+
 .sport-box li i {
     color: #FFF;
     margin-right: 8px;
@@ -86,14 +107,18 @@ hr.solid {
     background: #778DA9;
 }
 
-.content {
-    position: absolute;
-    bottom: 253px;
-    margin-left: -323px;
+.sport-input-box .details {
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
 }
 
-.content input {
-    width: 230px;
+.sport-input-box .content {
+    margin-top: 3px;
+}
+
+.sport-input-box .content input {
+    width: 100%;
     height: 25px;
     border-top-left-radius: 11px;
     border-top-right-radius: 11px;
@@ -118,24 +143,24 @@ hr.solid {
     background-color: #0D1B2A;
 }
 
-.details button {
+.sport-input-box .details button {
     background: none;
     border: none;
     padding: 0;
     font-family: "Noto Sans", sans-serif;
     text-decoration: underline;
     cursor: pointer;
-    position: absolute;
-    margin-left: 65px;
-    margin-top: 3px;
+    margin-right: 2px;
 }
 
 .sport-input-box {
-    margin-top: -15px
+    margin-top: 20px
 }
 
 .sports-label {
     font-family: "Noto Sans", sans-serif;
-    margin-left: 6px;
+    margin-left: 2px;
+    color: gray;
 }
+
 
