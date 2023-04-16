@@ -650,6 +650,15 @@ input:invalid + label:after {
   text-align: center;
 }
 
+.team-error-message {
+    font-size: 13px;
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 300;
+    color: red;
+    text-align: center;
+    width: 85%;
+}
+
 .profile-pic .back-button {
   bottom: -48px;
   width: 35%;

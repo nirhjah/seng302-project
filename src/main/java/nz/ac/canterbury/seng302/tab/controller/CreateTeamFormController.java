@@ -60,7 +60,7 @@ public class CreateTeamFormController {
     @GetMapping("/createTeam")
     public String teamForm(@RequestParam(name = "edit", required = false) Long teamID,
                            @RequestParam(name = "invalid_input", defaultValue = "0") boolean invalidInput,
-                           Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
+                           Model model, HttpServletRequest httpServletRequest, CreateAndEditTeamForm createAndEditTeamForm) throws MalformedURLException {
 
         logger.info("GET /createTeam");
         prefillModel(model);
@@ -143,7 +143,8 @@ public class CreateTeamFormController {
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
+            return "createTeamForm";
+            //return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
         }
 
 
