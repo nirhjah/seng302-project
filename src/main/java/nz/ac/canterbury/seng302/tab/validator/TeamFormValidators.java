@@ -5,6 +5,7 @@ import jakarta.validation.Payload;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import nz.ac.canterbury.seng302.tab.validator.logic.CountryCitySuburbCheck;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -73,18 +74,18 @@ public class TeamFormValidators {
 
     /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
     /**/@Retention(RUNTIME)
-    /**/@Constraint(validatedBy = {})
+    /**/@Constraint(validatedBy = CountryCitySuburbCheck.class)
     /**/@Documented
     @NotBlank(message = NOT_BLANK_MSG)
     @Size(max = 30)
-    @Pattern(regexp = VALID_COUNTRY_SUBURB_CITY_REGEX, message = INVALID_COUNTRY_SUBURB_CITY_MSG)
-    public @interface countryCityValidator {
+    public @interface countryCitySuburbValidator {
+
+        String regexMatch() default "^\\p{L}+[\\- '\\p{L}]*$";
         String message() default "";
 
         Class<?>[] groups() default {};
 
         Class<? extends Payload>[] payload() default {};
-
     }
 
     /**

@@ -18,10 +18,10 @@ public class CreateAndEditTeamForm {
     @TeamFormValidators.postcodeValidator
     private String postcode;
 
-    @TeamFormValidators.countryCityValidator
+    @TeamFormValidators.countryCitySuburbValidator(regexMatch = "^\\p{L}+[\\- '\\p{L}]*$", message = "May include letters, hyphens, apostrophes and spaces. Must start with letter")
     private String country;
 
-    @TeamFormValidators.countryCityValidator
+    @TeamFormValidators.countryCitySuburbValidator(regexMatch = "^\\p{L}+[\\- '\\p{L}]*$", message = "May include letters, hyphens, apostrophes and spaces. Must start with letter")
     private String city;
 
     @TeamFormValidators.suburbValidator
@@ -86,13 +86,5 @@ public class CreateAndEditTeamForm {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getsport() {
-        return sport;
-    }
-
-    public void setsport(String sport) {
-        this.sport = sport;
     }
 }
