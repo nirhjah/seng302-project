@@ -148,32 +148,13 @@ public class RegisterController {
 
         // Check #1: Password doesn't "contain any other field"
         String[] otherFields = new String[]{registerForm.getFirstName(), registerForm.getLastName(), registerForm.getEmail()};
-        for (String field : otherFields) {
-            if (password.toLowerCase().contains(field.toLowerCase())) {
-                bindingResult.addError(new FieldError("registerForm", "password", "Password can't contain values from other fields"));
-                break;
+        if(password.length() > 0) {
+            for (String field : otherFields) {
+                if (password.toLowerCase().contains(field.toLowerCase())) {
+                    bindingResult.addError(new FieldError("registerForm", "password", "Password can't contain values from other fields"));
+                    break;
+                }
             }
-        }
-        // Check #2: Does it contain a "variation of different characters"
-        boolean uppercase = false;
-        boolean lowercase = false;
-        boolean number = false;
-        boolean symbol = false;
-        for (char c : password.toCharArray()) {
-            if (Character.isDigit(c)) {
-                number = true;
-            } else if (Character.isUpperCase(c)) {
-                uppercase = true;
-            } else if (Character.isLowerCase(c)) {
-                lowercase = true;
-            } else {
-                symbol = true;
-            }
-        }
-
-        if (!uppercase || !lowercase || !number || !symbol) {
-            bindingResult.addError(new FieldError("registerForm", "password",
-                    "Password does not meet the requirements"));
         }
     }
 
@@ -214,7 +195,7 @@ public class RegisterController {
 
         // Run the custom validation methods
         // TODO: Move validators that might be reused into their own class
-        checkAgeOnRegister(registerForm, bindingResult);
+      //  checkAgeOnRegister(registerForm, bindingResult);
         checkEmailIsNotInUse(registerForm, bindingResult);
         checkPasswordsMatch(registerForm, bindingResult);
         checkPasswordIsSecure(registerForm, bindingResult);
