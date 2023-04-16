@@ -59,8 +59,6 @@ public class UserFormValidators {
     /**/@Constraint(validatedBy = { NameCheck.class })
     /**/@Documented
     @NotBlank(message = NOT_BLANK_MSG)
-   // @Size(max = 100)
-    //@Pattern(regexp = VALID_NAME_REGEX, message = INVALID_NAME_MSG)
     public @interface NameValidator {
         String message() default INVALID_NAME_MSG;
 
@@ -83,8 +81,6 @@ public class UserFormValidators {
     /**/@Constraint(validatedBy = { EmailCheck.class })
     /**/@Documented
     @NotBlank(message = NOT_BLANK_MSG)
-    //@Size(max = 100)
-   // @Email(message = WELL_FORMED_EMAIL, regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags = Pattern.Flag.CASE_INSENSITIVE)
     public @interface EmailValidator {
         String message() default WELL_FORMED_EMAIL;
 
@@ -143,7 +139,6 @@ public class UserFormValidators {
     }
 
 
-
     /**
      * Checks that the provided country is valid.
      * <ul>
@@ -157,8 +152,6 @@ public class UserFormValidators {
     /**/@Constraint(validatedBy = { CountryCheck.class })
     /**/@Documented
     @NotBlank(message = NOT_BLANK_MSG)
-   // @Size(max = 30)
-   // @Pattern(regexp = VALID_COUNTRY_SUBURB_CITY_REGEX, message = INVALID_COUNTRY_SUBURB_CITY_MSG)
     public @interface countryValidator {
         String message() default INVALID_COUNTRY_SUBURB_CITY_MSG;
 
@@ -181,8 +174,6 @@ public class UserFormValidators {
     /**/@Constraint(validatedBy = { CityCheck.class })
     /**/@Documented
     @NotBlank(message = NOT_BLANK_MSG)
-    //@Size(max = 30)
-   // @Pattern(regexp = VALID_COUNTRY_SUBURB_CITY_REGEX, message = INVALID_COUNTRY_SUBURB_CITY_MSG)
     public @interface cityValidator {
         String message() default INVALID_COUNTRY_SUBURB_CITY_MSG;
 
