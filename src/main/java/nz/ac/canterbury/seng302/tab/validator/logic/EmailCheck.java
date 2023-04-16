@@ -7,7 +7,7 @@ import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
 
 /**
  * <p>Implementation for the {@link UserFormValidators} annotation.</p>
- * Checks whether the provided date is at least <code>minimumAge()</code> years before now.
+ * Checks whether the provided email is well formed.
  */
 public class EmailCheck implements ConstraintValidator<UserFormValidators.EmailValidator, String> {
 

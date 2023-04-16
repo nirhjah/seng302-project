@@ -8,7 +8,7 @@ import org.springframework.validation.FieldError;
 
 /**
  * <p>Implementation for the {@link UserFormValidators} annotation.</p>
- * Checks password is valid
+ * Checks password meets all requirements
  */
 public class PasswordCheck implements ConstraintValidator<UserFormValidators.PasswordValidator, String> {
 
