@@ -144,7 +144,7 @@ public class CreateTeamFormControllerTest {
      * @throws Exception thrown if Mocking fails
      */
     @Test
-    void whenCityIsInvalid_return302() throws Exception {
+    void whenCityIsInvalid_return400() throws Exception {
         mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
                 .param("name", "test")
                 .param("sport", "hockey")
@@ -154,8 +154,8 @@ public class CreateTeamFormControllerTest {
                 .param("country", "New Zealand")
                 .param("postcode", "fghj")
                 .param("suburb", "ilam"))
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
+                .andExpect(status().isBadRequest())
+                .andExpect(view().name("createTeamForm"));
     }
 
     /**
@@ -211,7 +211,7 @@ public class CreateTeamFormControllerTest {
      * @throws Exception thrown if Mocking fails
      */
     @Test
-    void whenCityIsInvalidWithCharsValidForTeam__return302() throws Exception {
+    void whenCityIsInvalidWithCharsValidForTeam__return400() throws Exception {
         mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
                         .param("name", "test").param("sport", "hockey")                 .param("location", "abc123'{}.a")
                 .param("addressLine1", "abc123'{}.a1")
@@ -219,8 +219,8 @@ public class CreateTeamFormControllerTest {
                 .param("city", "Christchurch")
                 .param("country", "N^&*ew Zealand")
                 .param("postcode", "56fghj")
-                .param("suburb", "^&*ilam")).andExpect(status().isFound())
-                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
+                .param("suburb", "^&*ilam")).andExpect(status().isBadRequest())
+                .andExpect(view().name("createTeamForm"));
     }
 
     /**
@@ -230,7 +230,7 @@ public class CreateTeamFormControllerTest {
      * @throws Exception thrown if Mocking fails
      */
     @Test
-    void whenCountryIsInvalidWithCharsValidForTeam__return302() throws Exception {
+    void whenCountryIsInvalidWithCharsValidForTeam__return400() throws Exception {
         mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
                         .param("name", "test").param("sport", "hockey")
                         .param("addressLine1", "abc123'{}.a1")
@@ -238,8 +238,8 @@ public class CreateTeamFormControllerTest {
                         .param("city", "Christchurch")
                         .param("country", "45678New Zealand")
                         .param("postcode", "56fghj")
-                        .param("suburb", "ilam")).andExpect(status().isFound())
-                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
+                        .param("suburb", "ilam")).andExpect(status().isBadRequest())
+                .andExpect(view().name("createTeamForm"));
     }
 
     /**
@@ -248,7 +248,7 @@ public class CreateTeamFormControllerTest {
      * @throws Exception
      */
     @Test
-    void whenSuburbIsInvalidWithCharsValidForTeam__return302() throws Exception {
+    void whenSuburbIsInvalidWithCharsValidForTeam__return400() throws Exception {
         mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
                         .param("name", "test").param("sport", "hockey")
                         .param("addressLine1", "addressline1")
@@ -256,8 +256,8 @@ public class CreateTeamFormControllerTest {
                         .param("city", "Christchurch")
                         .param("country", "New Zealand")
                         .param("postcode", "56fghj")
-                        .param("suburb", "ilam^")).andExpect(status().isFound())
-                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
+                        .param("suburb", "ilam^")).andExpect(status().isBadRequest())
+                .andExpect(view().name("createTeamForm"));
     }
 
     /**
@@ -266,7 +266,7 @@ public class CreateTeamFormControllerTest {
      * @throws Exception
      */
     @Test
-    void whenPostcodeIsInvalidWithCharsValidForTeam__return302() throws Exception {
+    void whenPostcodeIsInvalidWithCharsValidForTeam__return400() throws Exception {
         mockMvc.perform(post("/createTeam", 42L).param("teamID", "1")
                         .param("name", "test")
                         .param("sport", "hockey")
@@ -275,8 +275,8 @@ public class CreateTeamFormControllerTest {
                         .param("city", "Christchurch")
                         .param("country", "New Zealand")
                         .param("postcode", "56$%^fghj")
-                        .param("suburb", "ilam")).andExpect(status().isFound())
-                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
+                        .param("suburb", "ilam")).andExpect(status().isBadRequest())
+                .andExpect(view().name("createTeamForm"));
     }
 
     /**
