@@ -21,7 +21,7 @@ public class NameCheck implements ConstraintValidator<UserFormValidators.NameVal
             return true;
         }
         else {
-            return name.matches(UserFormValidators.VALID_NAME_REGEX) && name.length() < 100;
+            return name.matches(UserFormValidators.VALID_NAME_REGEX) && name.length() <= 100;
         }
     }
 }

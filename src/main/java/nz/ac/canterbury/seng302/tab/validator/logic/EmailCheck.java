@@ -21,7 +21,7 @@ public class EmailCheck implements ConstraintValidator<UserFormValidators.EmailV
             return true;
         }
         else {
-            return (email.matches(UserFormValidators.VALID_EMAIL_REGEX) && email.length() < 100);
+            return (email.matches(UserFormValidators.VALID_EMAIL_REGEX) && email.length() <= 100);
         }
     }
 }

@@ -21,7 +21,7 @@ public class CountryCheck implements ConstraintValidator<UserFormValidators.coun
             return true;
         }
         else {
-            return (country.matches(UserFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX) && country.length() < 30);
+            return (country.matches(UserFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX) && country.length() <= 30);
         }
     }
 }
