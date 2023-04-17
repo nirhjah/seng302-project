@@ -107,22 +107,6 @@ public class TeamService {
     }
 
     /**
-     * Method that finds paginated teams by city, using a list of cities to filter by selected by the user
-     *
-     * @param pageable page object
-     * @param searchedLocations list of locations to filter by selected by the user
-     * @param name the team name query inputted by the use
-     * @return Page(s) of teams filtered by city/cities
-     */
-    public Page<Team> findPaginatedTeamsByCity(Pageable pageable, List<String> searchedLocations, String name) {
-
-        if (searchedLocations == null) {
-            searchedLocations = List.of();
-        }
-        return teamRepository.findTeamByFilteredLocations(searchedLocations, pageable, name);
-    }
-
-    /**
      * Method that finds paginated teams by city <strong>AND</strong> sports, using a list of both to filter by selected by the user
      *
      * @param pageable page object
