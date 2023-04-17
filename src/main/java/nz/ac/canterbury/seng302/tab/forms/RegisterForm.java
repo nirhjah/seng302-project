@@ -34,10 +34,11 @@ public class RegisterForm {
     @UserFormValidators.postcodeValidator
     private String postcode;
 
-    @UserFormValidators.countryCityValidator
+    @UserFormValidators.countryValidator
     private String country;
 
-    @UserFormValidators.countryCityValidator
+    @UserFormValidators.cityValidator
+
     private String city;
 
     @UserFormValidators.suburbValidator
