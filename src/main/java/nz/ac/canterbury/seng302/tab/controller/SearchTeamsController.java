@@ -1,23 +1,21 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.service.SportService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 
 /**
  * Spring Boot Controller class for Search Teams
@@ -32,9 +30,6 @@ public class SearchTeamsController {
 
     @Autowired
     private TeamRepository teamRepository;
-
-    @Autowired
-    private SportService sportService;
 
     private static final int PAGE_SIZE = 10;
 
@@ -56,38 +51,38 @@ public class SearchTeamsController {
         boolean notSearch = false;
         logger.info("cityCheckBox = {}", filteredCities);
         logger.info("teamName = {}", teamName);
-        if (teamName != null ) {
-            if (teamName.length() < 3) {
-                model.addAttribute("error", true);
-                model.addAttribute("teams", List.of());
-            }
-            else {
-                PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE);
-                Page<Team> teamPage = teamService.findPaginatedTeamsByCityAndSports(pageRequest, filteredCities, filteredSports, teamName);
-                List<Team> teams = teamPage.getContent();
-                // Get all the sports of the given queried users
-                var sports = teamRepository.findSportsByName(teamName).stream()
-                        .distinct()
-                        .sorted()
-                        .toList();
-                // Gets cities to populate in dropdown
-                List<Location> locations = teamRepository.findLocationsByName(teamName);
-                List<String> cities = locations.stream()
-                        .map(Location::getCity)
-                        .distinct()
-                        .sorted()
-                        .toList();
-                int numPages = teamPage.getTotalPages();
-                model.addAttribute("sports", sports);
-                model.addAttribute("teams", teams);
-                model.addAttribute("currentPage", page);
-                model.addAttribute("totalPages", numPages);
-                model.addAttribute("teamName", teamName);
-                model.addAttribute("cities", cities);
-            }
-        } else {
+        // If teamName isn't defined, we show them nothing.
+        // This is assumed to be the "hasn't started searching" state, so 
+        // we only show them the search bar.
+        if (teamName == null) {
             model.addAttribute("teams", List.of());
             notSearch = true;
+        // Searches are required to be at least 3 chars long
+        } else if (teamName.length() < 3) {
+            model.addAttribute("teams", List.of());
+            model.addAttribute("error", true);
+        } else {
+            PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE);
+            Page<Team> teamPage = teamService.findPaginatedTeamsByCityAndSports(pageRequest, filteredCities, filteredSports, teamName);
+            List<Team> teams = teamPage.getContent();
+            int numPages = teamPage.getTotalPages();
+            // Get all the sports of the given queried users to populdate the dropdown
+            var sports = teamRepository.findSportsByName(teamName).stream()
+                    .distinct()
+                    .sorted()
+                    .toList();
+            // Same as above, but for cities
+            List<String> cities = teamRepository.findLocationsByName(teamName).stream()
+                    .map(Location::getCity)
+                    .distinct()
+                    .sorted()
+                    .toList();
+            model.addAttribute("sports", sports);
+            model.addAttribute("teams", teams);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", numPages);
+            model.addAttribute("teamName", teamName);
+            model.addAttribute("cities", cities);
         }
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("notSearch", notSearch);
