@@ -43,7 +43,7 @@
                     <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
                     <div class="input-box">
                         <input type="email" class="form-control" id="email" placeholder="" th:field="*{email}"
-                               data-cy="email" autofocus novalidate formnovalidate>
+                               data-cy="email" autofocus>
                         <label for="email"> Email <span class="required">*</span></label>
                     </div>
                     <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message"></div>
@@ -118,7 +118,7 @@
                 <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>
             </div>
             <div class="submit-button">
-                <button type="submit">Register</button>
+                <button type="submit" formnovalidate>Register</button>
             </div>
             <div class="cancel-link">
                 <a th:href="@{login}">Login</a>
