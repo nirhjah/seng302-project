@@ -132,10 +132,41 @@ th:nth-child(4) {
     font-weight:500;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: "Noto Sans", sans-serif;
-    padding: 50px;
-    font-size: 18px;
+/*table {*/
+/*    width: 100%;*/
+/*    border-collapse: collapse;*/
+/*    font-family: "Noto Sans", sans-serif;*/
+/*    padding: 50px;*/
+/*    font-size: 18px;*/
+/*}*/
+.card-container {
+    display: flex;
+}
+
+.card-wrapper{
+    background:white;
+}
+
+.card img {
+    height: 200px;
+    width: 200px;
+    border-radius: 3px;
+}
+
+.card {
+    height: 200px;
+    margin: 50px 30px;
+    overflow: hidden;
+    background: white;
+    border-radius: 10px;
+    display: flex;
+}
+
+.card-body {
+    height: 100%;
+    width: 200px;
+    padding: 6px;
+    box-sizing: border-box;
+    background: rgba(27, 27, 27, 0.5);
+    color: white;
 }
