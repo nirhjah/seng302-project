@@ -180,7 +180,9 @@ public class User {
     public List<GrantedAuthority> getAuthorities()
     {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        this.userRoles.forEach(authority -> authorities.add(new SimpleGrantedAuthority(authority.getRole())));
+        if (userRoles != null) {
+            this.userRoles.forEach(authority -> authorities.add(new SimpleGrantedAuthority(authority.getRole())));
+        }
         return authorities;
     }
 

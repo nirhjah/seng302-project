@@ -332,6 +332,17 @@ td {
 /*  white-space: nowrap;*/
 /*}*/
 
+/*.navbar {
+    padding-top: 15px;
+    padding-bottom: 20px;
+    height: 20px;
+    background-color: #1b263b;
+    overflow: hidden;
+    white-space: nowrap;
+    padding-right: 20px;
+}*/
+
+
 .form-control {
     background: #415a77;
     border-radius: 20px;
@@ -470,13 +481,29 @@ td {
   border-radius: 20px;
 }
 
+.wrapper-edit-profile{
+    width: 500px;
+    height: 600px;
+}
+
+.wrapper {
+    width: 500px;
+    height: 440px;
+    /*backdrop-filter: blur(20px);*/
+}
+.wrapper,.wrapper-profile,.wrapper-edit-profile{
+    border: 2px solid rgba(255, 255, 255, .5);
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+    border-radius: 20px;
+}
+
 .wrapper,
 .wrapper-profile .profile-pic,
 .file-label-border,
 .profile-form,
 .user-info, .team-info, .wrapper-edit-profile {
-  justify-content: center;
-  align-items: center;
+    justify-content: center;
+    align-items: center;
 }
 
 /*.wrapper-profile .profile-pic {*/
@@ -811,6 +838,8 @@ input:invalid + label:after {
   font-weight: 300;
   color: red;
   text-align: center;
+  position: absolute;
+  margin-top: -26px;
 }
 
 /*.register-form form .error-message {*/
@@ -883,7 +912,6 @@ li a {
 /*  width: 6%;*/
 /*}*/
 
-.search-button,
 .profile-pic .back-button,
 .submit-button button,
 .profile-buttons button,
@@ -973,9 +1001,12 @@ li a {
     border: none;
     padding: .1em .5em;
     cursor: pointer;
-    position: absolute;
-    display: inline-block;
+    /* position: absolute; */
+    display: table;
+    margin-left: 10px;
+    height: 30px;
 }
+
 
 .selectBox {
     position: relative;
@@ -994,6 +1025,7 @@ li a {
     cursor: pointer;
 }
 
+
 .overSelect {
     position: absolute;
     left: 0;
@@ -1002,21 +1034,44 @@ li a {
     bottom: 0;
 }
 
+
 #checkBoxes {
     display: none;
     max-height: 200px;
     overflow-y: scroll;
 }
 
-#checkBoxes label {
+.checkbox {
+    display: none;
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
+.checkbox label {
     display: block;
     padding: 3px;
 
 }
 
-#checkBoxes label:hover {
+.checkbox label:hover {
     background-color: #4F615E;
 }
+
+.filter-boxes div {
+    display: inline-block;
+    margin-right:10px;
+}
+
+.filter-boxes {
+    display: flex;
+    flex-wrap: wrap;
+    width:400px;
+}
+
+.filter-boxes div {
+    flex: 1;
+}
+
 
 
 /*.search-bar button {*/
@@ -1028,21 +1083,29 @@ li a {
 /*  cursor: pointer;*/
 /*}*/
 
-
 .pagination-container, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form{
     display: flex;
 }
 
-.multipleSelection {
-    background-color: #415A77;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 1em;
-    color: #fff;
+.filter-by-city-button {
+    border: 0;
+    width: 140px;
+    margin-left: 147px;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: 500;
+    padding: 4px 7px;
     border-radius: 20px;
-    border: none;
-    padding: .1em .5em;
-    cursor: pointer;
-    position: absolute;
+    background-color: #415A77;
+    color: white;
+    font-family: "Noto Sans", sans-serif;
+    margin-top: -2px;
+    margin-bottom: 3px;
+}
+
+.search-team-button-div {
+  width: 41px;
+  margin-right: -17px;
 }
 
 .selectBox {
@@ -1057,17 +1120,23 @@ li a {
     bottom: 0;
 }
 
-#checkBoxes {
+.checkbox {
     display: none;
+    max-height: 200px;
+    overflow-y: scroll;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background-color: #415a77;
 }
 
-#checkBoxes label {
+.checkbox label {
     display: block;
-    padding: 3px;
+    padding: 7px;
 
 }
 
-#checkBoxes label:hover {
+.checkbox label:hover {
     background-color: #4F615E;
 }
 

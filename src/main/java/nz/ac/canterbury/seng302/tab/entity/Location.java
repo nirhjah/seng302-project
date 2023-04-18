@@ -114,4 +114,36 @@ public class Location {
         }
         return output;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Location location = (Location) o;
+
+        if (!Objects.equals(locationId, location.locationId)) return false;
+        if (getAddressLine1() != null ? !getAddressLine1().equals(location.getAddressLine1()) : location.getAddressLine1() != null)
+            return false;
+        if (getAddressLine2() != null ? !getAddressLine2().equals(location.getAddressLine2()) : location.getAddressLine2() != null)
+            return false;
+        if (getSuburb() != null ? !getSuburb().equals(location.getSuburb()) : location.getSuburb() != null)
+            return false;
+        if (getPostcode() != null ? !getPostcode().equals(location.getPostcode()) : location.getPostcode() != null)
+            return false;
+        if (getCity() != null ? !getCity().equals(location.getCity()) : location.getCity() != null) return false;
+        return getCountry() != null ? getCountry().equals(location.getCountry()) : location.getCountry() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = locationId != null ? locationId.hashCode() : 0;
+        result = 31 * result + (getAddressLine1() != null ? getAddressLine1().hashCode() : 0);
+        result = 31 * result + (getAddressLine2() != null ? getAddressLine2().hashCode() : 0);
+        result = 31 * result + (getSuburb() != null ? getSuburb().hashCode() : 0);
+        result = 31 * result + (getPostcode() != null ? getPostcode().hashCode() : 0);
+        result = 31 * result + (getCity() != null ? getCity().hashCode() : 0);
+        result = 31 * result + (getCountry() != null ? getCountry().hashCode() : 0);
+        return result;
+    }
 }

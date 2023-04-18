@@ -34,7 +34,8 @@ public class UserFormValidators {
     // Matches any language's alphabet, spaces, and hyphens
     // (e.g. 'van Beethoven', 'Taylor-Joy')...
     public static final String VALID_NAME_REGEX = "^[\\p{L}\\- ]+$";
-    public static final String NOT_BLANK_MSG = "Field can't be blank";
+    public static final String NOT_BLANK_MSG = "Field cannot be blank";
+    public static final String WELL_FORMED_EMAIL = "Must be a well-formed email";
     public static final String INVALID_NAME_MSG = "Names can only contain letters, spaces, and hyphens";
     public static final String VALID_COUNTRY_SUBURB_CITY_REGEX = "^\\p{L}+[\\- '\\p{L}]*$";
     public static final String INVALID_COUNTRY_SUBURB_CITY_MSG = "May include letters, hyphens, apostrophes and spaces. Must start with letter";
@@ -81,7 +82,7 @@ public class UserFormValidators {
     /**/@Documented
     @NotBlank(message = NOT_BLANK_MSG)
     @Size(max = 100)
-    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags = Pattern.Flag.CASE_INSENSITIVE)
+    @Email(message = WELL_FORMED_EMAIL, regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags = Pattern.Flag.CASE_INSENSITIVE)
     public @interface EmailValidator {
         String message() default "";
 
@@ -116,7 +117,7 @@ public class UserFormValidators {
     }
 
     /**
-     * Checks that the provided country, city or suburb is valid.
+     * Checks that the provided country is valid.
      * <ul>
      * <li>Must not be blank (At least 1 non-whitespace)</li>
      * <li>Can't be longer than 30 characters</li>
@@ -130,7 +131,7 @@ public class UserFormValidators {
     @NotBlank(message = NOT_BLANK_MSG)
     @Size(max = 30)
     @Pattern(regexp = VALID_COUNTRY_SUBURB_CITY_REGEX, message = INVALID_COUNTRY_SUBURB_CITY_MSG)
-    public @interface countryCityValidator {
+    public @interface countryValidator {
         String message() default "";
 
         Class<?>[] groups() default {};
@@ -140,7 +141,31 @@ public class UserFormValidators {
     }
 
     /**
-     * Checks that the provided country, city or suburb is valid.
+     * Checks that the provided city is valid.
+     * <ul>
+     * <li>Must not be blank (At least 1 non-whitespace)</li>
+     * <li>Can't be longer than 30 characters</li>
+     * <li>Can only contain letters, hyphens, and spaces</li>
+     * </ul>
+     */
+    /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
+    /**/@Retention(RUNTIME)
+    /**/@Constraint(validatedBy = {})
+    /**/@Documented
+    @NotBlank(message = NOT_BLANK_MSG)
+    @Size(max = 30)
+    @Pattern(regexp = VALID_COUNTRY_SUBURB_CITY_REGEX, message = INVALID_COUNTRY_SUBURB_CITY_MSG)
+    public @interface cityValidator {
+        String message() default "";
+
+        Class<?>[] groups() default {};
+
+        Class<? extends Payload>[] payload() default {};
+
+    }
+
+    /**
+     * Checks that the provided suburb is valid.
      * <ul>
      * <li>Must not be blank (At least 1 non-whitespace)</li>
      * <li>Can't be longer than 30 characters</li>

@@ -50,7 +50,7 @@
         </tr>
     </table>
 
-    <div th:insert="fragments/pagination.html :: pagination(pageName='view-users')"></div>
+    <div th:insert="~{fragments/pagination.html :: pagination(pageName='view-users')}"></div>
     <footer>
         <p>
             Image by <a

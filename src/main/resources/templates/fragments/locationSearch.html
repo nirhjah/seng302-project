@@ -10,7 +10,7 @@ countryCitySuburbNameRegex
 postCodeRegex
 
 -->
-<div th:fragment="locationInput">
+<div th:fragment="locationSearch">
 
   <div class="input-boxes">
     <div class="input-box">
@@ -56,13 +56,7 @@ postCodeRegex
       <label for="country">Country <span class="required">*</span></label>
     </div>
   </div>
-  <script type="text/javascript" th:inline="javascript">
-    /**
-    ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
-     * @type {string}
-     */
-    const path = /*[[${path}]]*/ "";
-    const ENDPOINT = path + "/geocode/autocomplete";
-  </script>
-  <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"></script>
+
+  <script type="text/javascript" th:src="@{/js/locationAPI.js}"> </script>
+
 </div>

@@ -103,13 +103,15 @@
         </p>
     </footer>
 </body>
+<script type="text/javascript" th:inline="javascript">
+  /**
+  ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
+   * @type {string}
+   */
+  const path = /*[[${path}]]*/ "";
+  const ENDPOINT = path + "/geocode/autocomplete";
+</script>
 <script th:inline="javascript">
-    /**
-     * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
-     * @type {string}
-     */
-    const ENDPOINT = '/geocode/autocomplete';
-
     /**
      * The delay time (in milliseconds) for debouncing the search input.
      * @type {number}

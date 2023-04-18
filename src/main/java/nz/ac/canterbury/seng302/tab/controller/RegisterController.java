@@ -188,12 +188,13 @@ public class RegisterController {
             RegisterForm registerForm, Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
         logger.info("GET /register");
         URL url = new URL(httpServletRequest.getRequestURL().toString());
+        String path = (url.getPath() + "/..");
         String protocolAndAuthority = String.format("%s://%s", url.getProtocol(), url.getAuthority());
         model.addAttribute("httpServletRequest", httpServletRequest);
         model.addAttribute("countryCitySuburbNameRegex", countryCitySuburbNameRegex);
         model.addAttribute("addressRegex", addressRegex);
         model.addAttribute("postcodeRegex", postcodeRegex);
-        model.addAttribute("protocolAndAuthority", protocolAndAuthority);
+        model.addAttribute("path", path);
         return "register";
     }
 
@@ -207,8 +208,9 @@ public class RegisterController {
     @PostMapping("/register")
     public String register(
             @Valid RegisterForm registerForm,
-            BindingResult bindingResult,Model model,
-            HttpServletRequest request) throws IOException {
+            BindingResult bindingResult,
+            HttpServletRequest request,
+            Model model) throws IOException {
 
         // Run the custom validation methods
         // TODO: Move validators that might be reused into their own class
@@ -219,6 +221,9 @@ public class RegisterController {
         model.addAttribute("httpServletRequest",request);
 
         if (bindingResult.hasErrors()) {
+            URL url = new URL(request.getRequestURL().toString());
+            String path = (url.getPath() + "/..");
+            model.addAttribute("path", path);
             return "register";
         }
 

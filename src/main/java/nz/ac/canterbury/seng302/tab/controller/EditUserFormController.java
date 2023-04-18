@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
 import nz.ac.canterbury.seng302.tab.entity.Sport;
@@ -39,6 +41,9 @@ public class EditUserFormController {
     @Autowired
     SportService sportService;
 
+    @Autowired
+    RegisterController registerController;
+
     private void prefillModel(Model model) {
         model.addAttribute("validNameRegex", UserFormValidators.VALID_NAME_REGEX);
         model.addAttribute("validNameMessage", UserFormValidators.INVALID_NAME_MSG);
@@ -54,7 +59,8 @@ public class EditUserFormController {
     @GetMapping("/editUser")
     public String getEditUserForm(
             EditUserForm editUserForm,
-            Model model,HttpServletRequest request) {
+            Model model,
+            HttpServletRequest request) throws MalformedURLException {
         prefillModel(model);
         model.addAttribute("httpServletRequest",request);
         Optional<User> user = userService.getCurrentUser();
@@ -70,6 +76,9 @@ public class EditUserFormController {
         model.addAttribute("knownSports", sportService.getAllSportNames());
         model.addAttribute("favouriteSports", u.getFavouriteSportNames());
         model.addAttribute("user", u);
+        URL url = new URL(request.getRequestURL().toString());
+        String path = (url.getPath() + "/..");
+        model.addAttribute("path", path);
         return "editUserForm";
     }
 
@@ -80,7 +89,8 @@ public class EditUserFormController {
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
             @RequestParam("tags") List<String> tags,
-            Model model, RedirectAttributes redirectAttributes) throws ServletException {
+            Model model,
+            RedirectAttributes redirectAttributes) throws ServletException, MalformedURLException {
         model.addAttribute("httpServletRequest",httpServletRequest);
         String invalidTags= "These are invalid sports: ";
         boolean first= true ,invalidSport=false;
@@ -94,19 +104,37 @@ public class EditUserFormController {
                 }
                 invalidTags += tag;
             }
+            if (invalidSport) {
+                redirectAttributes.addFlashAttribute("errorMessage", invalidTags);
+                URL url = new URL(httpServletRequest.getRequestURL().toString());
+                String path = (url.getPath() + "/..");
+                model.addAttribute("path", path);
+                return "redirect:/editUser";
+            }
         }
-        if (invalidSport) {
-            redirectAttributes.addFlashAttribute("errorMessage", invalidTags);
-            return "redirect:/editUser";
-        }
+            System.out.println(invalidTags);
 
-        System.out.println(invalidTags);
         prefillModel(model);
         Optional<User> optUser = userService.getCurrentUser();
         if (optUser.isEmpty()) {
             return "redirect:/login";
         }
         User user = optUser.get();
+
+        List<Sport> newFavSports = new ArrayList<>();
+        List<String> knownSportNames = sportService.getAllSportNames();
+        List<Sport> knownSports = sportService.getAllSports();
+
+            for (String tag : tags) {
+                if (knownSportNames.contains(tag)){
+                    int index = knownSportNames.indexOf(tag);
+                    newFavSports.add(knownSports.get(index));
+                } else {
+                    newFavSports.add(new Sport(tag));
+                }
+            }
+
+            user.setFavoriteSports(newFavSports);
 
         // Manual email uniqueness check
         if (userService.emailIsUsedByAnother(user, editUserForm.getEmail())) {
@@ -115,6 +143,10 @@ public class EditUserFormController {
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            model.addAttribute("favouriteSports", user.getFavouriteSportNames());
+            URL url = new URL(httpServletRequest.getRequestURL().toString());
+            String path = (url.getPath() + "/..");
+            model.addAttribute("path", path);
             return "editUserForm";
         }
 
@@ -132,24 +164,11 @@ public class EditUserFormController {
         user.getLocation().setSuburb(editUserForm.getSuburb());
         user.getLocation().setPostcode(editUserForm.getPostcode());
 
-        List<Sport> newFavSports = new ArrayList<>();
-        List<String> knownSportNames = sportService.getAllSportNames();
-        List<Sport> knownSports = sportService.getAllSports();
-        for (String tag : tags) {
-            if (knownSportNames.contains(tag)){
-                int index = knownSportNames.indexOf(tag);
-                newFavSports.add(knownSports.get(index));
-            } else {
-                newFavSports.add(new Sport(tag));
-            }
-        }
-
-        user.setFavoriteSports(newFavSports);
         userService.updateOrAddUser(user);
 
         if (shouldLogout) {
             httpServletRequest.logout();
-            return "redirect:login";
+            registerController.forceLogin(user, httpServletRequest);
         }
 
         return "redirect:user-info/self";
