@@ -55,7 +55,7 @@
             <a>
                 <img class="navbar-profile-picture"
                      th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
-                <span th:text="${#strings.length(firstName + ' ' + lastName) &lt;= 20 ? firstName + ' ' + lastName : #strings.substring(firstName + ' ' + lastName, 0, 17) + '...'}"></span>
+                <span th:text="${#strings.length(firstName + ' ' + lastName) &lt;= 24 ? firstName + ' ' + lastName : #strings.substring(firstName + ' ' + lastName, 0, 21) + '...'}"></span>
                 <i class="triangle"></i>
             </a>
         </li>

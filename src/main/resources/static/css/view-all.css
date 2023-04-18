@@ -24,13 +24,13 @@ th:nth-child(4) {
     margin: 10px auto;
     width: 60%;
     max-width: 500px;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255);
     display: flex;
     align-items: center;
     border: 2px solid #58629b;
     border-radius: 60px;
     padding: 10px 20px;
-    height: 40px;
+    height: 50px;
     backdrop-filter: blur(4px) saturate(180%);
 }
 
@@ -46,6 +46,7 @@ th:nth-child(4) {
 
 .search-bar button img {
     width: 25px;
+    margin-right: 2px;
 }
 
 .search-bar button {
@@ -55,6 +56,8 @@ th:nth-child(4) {
     height: 40px;
     background: #58629b;
     cursor: pointer;
+    position: relative;
+    right: -3.8%;
 }
 
 .search-button {
