@@ -143,8 +143,12 @@ th:nth-child(4) {
     display: flex;
 }
 
-.card-wrapper{
-    background:white;
+.card {
+    height: 250px;
+    margin: 50px 30px;
+    overflow: hidden;
+    border-radius: 10px;
+    display: flex;
 }
 
 .card img {
@@ -153,13 +157,10 @@ th:nth-child(4) {
     border-radius: 3px;
 }
 
-.card {
-    height: 200px;
-    margin: 50px 30px;
-    overflow: hidden;
-    background: white;
-    border-radius: 10px;
-    display: flex;
+.card-wrapper {
+    /*background: #415A77;*/
+    background: whitesmoke;
+    padding: 5px;
 }
 
 .card-body {
@@ -167,6 +168,11 @@ th:nth-child(4) {
     width: 200px;
     padding: 6px;
     box-sizing: border-box;
-    background: rgba(27, 27, 27, 0.5);
-    color: white;
+    color: black;
+    font-family: "Noto Sans", sans-serif;
 }
+
+.card img:hover {
+    cursor: pointer;
+}
+

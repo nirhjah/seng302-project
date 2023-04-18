@@ -35,12 +35,13 @@
         <div class="card-wrapper">
             <img th:src="${'data:image/jpeg;base64,' + user.pictureString}" class="card-img-top" alt="User image">
             <div class="card-body">
-                <h5 class="card-title"> [[|${user.firstName} ${user.lastName}|]]</h5>
+                <h5 class="card-title">[[|${user.firstName} ${user.lastName}|]]</h5>
                 <p class="card-text" th:text="${user.email}">User email</p>
             </div>
         </div>
     </div>
 </div>
+
 
 <div th:insert="~{fragments/pagination.html :: pagination(pageName='view-users')}"></div>
 <footer>
