@@ -86,11 +86,14 @@
     // The AC only specifies a back button if we came from the view-users page.
     const legal_url = '/view-users';
     const backButton = document.getElementsByClassName('back-button')[0];
+    const buttons = document.querySelector('.profile-buttons');
     const previousPage = document.referrer;
     if (previousPage.includes(legal_url)) {
-      backButton.style.visibility = '';
+        backButton.style.visibility = '';
+        buttons.style.display = 'flex';
     } else {
-      backButton.remove();
+        backButton.remove();
+        buttons.style.display = 'block'
     }
   </script>
 

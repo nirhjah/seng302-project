@@ -481,16 +481,6 @@ td {
   border-radius: 20px;
 }
 
-.wrapper-edit-profile{
-    width: 500px;
-    height: 600px;
-}
-
-.wrapper {
-    width: 500px;
-    height: 440px;
-    /*backdrop-filter: blur(20px);*/
-}
 .wrapper,.wrapper-profile,.wrapper-edit-profile{
     border: 2px solid rgba(255, 255, 255, .5);
     box-shadow: 0 0 30px rgba(0, 0, 0, .5);
@@ -571,6 +561,7 @@ footer {
     bottom: 0;
     padding: 10px;
     right: 0;
+    z-index: -1;
 }
 
 /*.team-info h3, .user-info h3 {*/
@@ -838,8 +829,6 @@ input:invalid + label:after {
   font-weight: 300;
   color: red;
   text-align: center;
-  position: absolute;
-  margin-top: -26px;
 }
 
 /*.register-form form .error-message {*/
@@ -1005,6 +994,7 @@ li a {
     display: table;
     margin-left: 10px;
     height: 30px;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
 }
 
 
@@ -1124,7 +1114,6 @@ li a {
     display: none;
     max-height: 200px;
     overflow-y: scroll;
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
     background-color: #415a77;

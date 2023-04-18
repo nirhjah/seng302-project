@@ -258,6 +258,7 @@
         position: static;
         width: 90%;
         margin: 30px 0;
+        display: revert;
     }
 }
 .user-label{

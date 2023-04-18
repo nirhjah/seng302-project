@@ -45,29 +45,6 @@
                             <label for="last-name">Last Name <span class="required">*</span></label>
                         </div>
                         <div th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error-message"></div>
-
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="email" th:name="email"
-                                   data-cy="email" autofocus placeholder="" th:value="*{email}">
-                            <label for="email">Email <span class="required">*</span></label>
-                        </div>
-                        <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message"></div>
-
-                        <div class="input-box">
-                            <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
-                                   data-cy="dateOfBirth" autofocus>
-                            <label for="date-of-birth">Date of Birth <span class="required">*</span></label>
-                        </div>
-                        <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
-
-                        <div class="sport-input-box">
-                            <div class="details">
-                                <label class="sports-label" for="sport-box">Favourite Sports</label>
-                                <button type="button">Clear</button>
-                            </div>
-
-                            <div class="sport-box" id="sport-box"></div>
-                        </div>
                     </div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="email" th:name="email"
@@ -79,21 +56,21 @@
                         <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
                                data-cy="dateOfBirth" required autofocus>
                         <label for="date-of-birth">Date of Birth <span class="required">*</span></label>
+                        <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
                     </div>
                     <div class="sport-input-box">
-                        <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
                         <div class="details">
                             <label class="sports-label" for="sport-box">Favourite Sports</label>
                             <button type="button">Clear</button>
                         </div>
                         <div class="content">
-                            <label for="sport-list"  id="error-message"></label>
                             <ul><input type="text" spellcheck="false" list="sports" id="sport-list"></ul>
                             <datalist id="sports">
                                 <option th:each="sport : ${knownSports}" th:text="${sport}">
                             </datalist>
                         </div>
                         <div class="sport-box" id="sport-box"></div>
+                        <label for="sport-list" id="error-message"></label>
                     </div>
                     <div class="edit-user-header">
                         <h2>Location</h2>
@@ -116,37 +93,33 @@
                             <label for="address-line-2">Address Line 2</label>
                         </div>
                         <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message"></div>
-
-
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="suburb" th:name="suburb"
-                                   data-cy="location" autofocus placeholder="" th:value="*{suburb}">
-                            <label for="suburb">Suburb</label>
-                        </div>
-                        <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
-
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="postcode" th:name="postcode"
-                                   data-cy="location" autofocus placeholder="" th:value="*{postcode}">
-                            <label for="postcode">Postcode</label>
-                        </div>
-                        <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
-
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="city" th:name="city"
-                                   data-cy="location" autofocus placeholder="" th:value="*{city}">
-                            <label for="city">City <span class="required">*</span></label>
-                        </div>
-                        <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
-
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="country" th:name="country"
-                                   data-cy="location" autofocus placeholder="" th:value="*{country}">
-                            <label for="country">Country <span class="required">*</span></label>
-                        </div>
-                        <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
-
                     </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="suburb" th:name="suburb"
+                               data-cy="location" autofocus placeholder="" th:value="*{suburb}">
+                        <label for="suburb">Suburb</label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="postcode" th:name="postcode"
+                               data-cy="location" autofocus placeholder="" th:value="*{postcode}">
+                        <label for="postcode">Postcode</label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
+
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="city" th:name="city"
+                               data-cy="location" autofocus placeholder="" th:value="*{city}">
+                        <label for="city">City <span class="required">*</span></label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
+
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="country" th:name="country"
+                               data-cy="location" autofocus placeholder="" th:value="*{country}">
+                        <label for="country">Country <span class="required">*</span></label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
                     <script type="text/javascript" th:inline="javascript">
                         /**
                          ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
@@ -167,14 +140,6 @@
                     <a th:href="@{user-info/self}">Cancel</a>
                 </div>
             </form>
-            <div class="content">
-                <label for="sport-list"  id="error-message"></label>
-                <ul><input type="text" spellcheck="false" list="sports" id="sport-list" pattern="^\p{L}+[\- '\p{L}]*$"></ul>
-                <label th:if="${errorMessage}" th:text="${errorMessage}" style="position: fixed;"></label>
-                <datalist id="sports">
-                    <option th:each="sport : ${knownSports}" th:text="${sport}">
-                </datalist>
-            </div>
         </div>
     <footer>
         <p>
