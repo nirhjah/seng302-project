@@ -18,9 +18,11 @@
       </div>
     </div>
     <div th:if="${not #lists.isEmpty(teams)}" style="display: flex">
-      <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cityCheckbox')}" th:if="${not #lists.isEmpty(teams)}"></div>
-      <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(teams)}"></div>
-      <button class="filter-by-city-button" type="submit">Apply Filters</button>
+      <div class="filter-bar">
+        <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cityCheckbox')}" th:if="${not #lists.isEmpty(teams)}"></div>
+        <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(teams)}"></div>
+        <button class="filter-by-city-button" type="submit">Apply Filters</button>
+      </div>
     </div>
   </form>
 
