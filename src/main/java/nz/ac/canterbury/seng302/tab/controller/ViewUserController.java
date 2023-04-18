@@ -115,14 +115,6 @@ public class ViewUserController {
         User authUser = user.get();
         model.addAttribute("userId", userId);
 
-        if (!isSupportedContentType(file.getContentType())){
-            redirectAttributes.addFlashAttribute("typeError", true);
-            return "redirect:/user-info?name=" + authUser.getUserId();
-        }
-        else if (file.getSize()>10000000){
-            redirectAttributes.addFlashAttribute("sizeError", true);
-            return "redirect:/user-info?name=" + authUser.getUserId();
-        }
         userService.updatePicture(file, userId);
         return "redirect:/user-info?name=" + authUser.getUserId();
     }
