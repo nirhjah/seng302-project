@@ -36,43 +36,43 @@ public class SearchTeamsController {
     /**
      * Gets searchTeamsForm to be displayed
      *
-     * @param teamName name of the team that has been searched for by the database
+     * @param searchQuery name of the team that has been searched for by the database
      * @param page return the page number
      * @param filteredCities list of cities to filter teams by, selected by the user
      * @param model    (map-like) representation of teamID and teamFilter
      * @return thymeleaf searchTeamsForm
      */
     @GetMapping("/searchTeams")
-    public String searchTeams(@RequestParam(value = "teamName", required = false) String teamName,
+    public String searchTeams(@RequestParam(value = "searchQuery", required = false) String searchQuery,
                               @RequestParam(value = "page", defaultValue = "0") int page,
                               @RequestParam(value = "cityCheckbox", required = false) List<String> filteredCities,
                               @RequestParam(value = "sports", required = false) List<String> filteredSports,
                               Model model) {
         boolean notSearch = false;
         logger.info("cityCheckBox = {}", filteredCities);
-        logger.info("teamName = {}", teamName);
-        // If teamName isn't defined, we show them nothing.
+        logger.info("searchQuery = {}", searchQuery);
+        // If searchQuery isn't defined, we show them nothing.
         // This is assumed to be the "hasn't started searching" state, so 
         // we only show them the search bar.
-        if (teamName == null) {
+        if (searchQuery == null) {
             model.addAttribute("teams", List.of());
             notSearch = true;
         // Searches are required to be at least 3 chars long
-        } else if (teamName.length() < 3) {
+        } else if (searchQuery.length() < 3) {
             model.addAttribute("teams", List.of());
             model.addAttribute("error", true);
         } else {
             PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE);
-            Page<Team> teamPage = teamService.findPaginatedTeamsByCityAndSports(pageRequest, filteredCities, filteredSports, teamName);
+            Page<Team> teamPage = teamService.findPaginatedTeamsByCityAndSports(pageRequest, filteredCities, filteredSports, searchQuery);
             List<Team> teams = teamPage.getContent();
             int numPages = teamPage.getTotalPages();
-            // Get all the sports of the given queried users to populdate the dropdown
-            var sports = teamRepository.findSportsByName(teamName).stream()
+            // Get all the sports of the given queried users to populate the dropdown
+            var sports = teamRepository.findSportsByName(searchQuery).stream()
                     .distinct()
                     .sorted()
                     .toList();
             // Same as above, but for cities
-            List<String> cities = teamRepository.findLocationsByName(teamName).stream()
+            List<String> cities = teamRepository.findLocationsByName(searchQuery).stream()
                     .map(Location::getCity)
                     .distinct()
                     .sorted()
@@ -81,7 +81,7 @@ public class SearchTeamsController {
             model.addAttribute("teams", teams);
             model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", numPages);
-            model.addAttribute("teamName", teamName);
+            model.addAttribute("searchQuery", searchQuery);
             model.addAttribute("cities", cities);
         }
         model.addAttribute("navTeams", teamService.getTeamList());

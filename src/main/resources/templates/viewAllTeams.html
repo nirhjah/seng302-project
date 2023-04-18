@@ -7,7 +7,7 @@
 </head>
 <body class="view-teams-background">
 <div>
-    <div th:insert="~{homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+    <div th:insert="~{homeForm.html::navbar(navTeams=${displayTeams})}"></div>
     <table id="teamTable">
         <tr>
             <th>Profile Picture</th>
@@ -26,7 +26,7 @@
         </tr>
     </table>
 
-    <div th:insert="fragments/pagination.html :: pagination(pageName='view-teams')"></div>
+    <div th:insert="~{fragments/pagination.html :: pagination(pageName = 'searchTeamsForm', page = ${page}, totalPages = ${totalPages})}"></div>
 </div>
 <footer>
     <p>
