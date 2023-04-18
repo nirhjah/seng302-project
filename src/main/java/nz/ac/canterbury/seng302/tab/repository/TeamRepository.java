@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.stereotype.Repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,7 +17,6 @@ import java.util.Optional;
 /**
  * Spring Boot Repository class for TeamRespository which extends Spring Data interface for generic CRUD operations.
  */
-@Repository
 public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSortingRepository<Team, Long> {
     Optional<Team> findById(long id);
 
@@ -46,11 +44,31 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             "OR LOWER(t.location.city) LIKE LOWER(CONCAT('%', :name, '%')) ")
     public List<Location> findLocationsByName(@Param("name") String name);
 
+    @Query("SELECT distinct(t.sport) FROM Team t " +
+            "WHERE LOWER(t.name) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(t.location.country) LIKE LOWER(CONCAT('%', :name, '%')) " +
+            "OR LOWER(t.location.city) LIKE LOWER(CONCAT('%', :name, '%')) ")
+    public List<String> findSportsByName(@Param("name") String name);
+
     @Query("SELECT t FROM Team t " +
-            "WHERE (:#{#filteredLocations.size} = 0 OR (t.location.city) in (:filteredLocations)) " +
+            "WHERE (:#{#filteredLocations.size} = 0 OR t.location.city in (:filteredLocations)) " +
             "AND (:name IS NOT NULL " +
             "AND (lower(t.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
             "OR (lower(t.location.city) like lower(concat('%', :name, '%')))) " +
             "ORDER BY LOWER(t.name) ASC, LOWER(t.location.city) ASC ")
     public Page<Team> findTeamByFilteredLocations(@Param("filteredLocations") List<String> filteredLocations, Pageable pageable, @Param("name") String name);
+
+    @Query("SELECT t FROM Team t " +
+            "WHERE (:#{#filteredLocations.size} = 0 OR lower(t.location.city) in (:filteredLocations)) " +
+            "AND (:#{#filteredSports.size} = 0 OR lower(t.sport) in (:filteredSports)) " +
+            "AND (:name IS NOT NULL " +
+            "AND (lower(t.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
+            "OR (lower(t.location.city) like lower(concat('%', :name, '%')))) " +
+            "ORDER BY LOWER(t.name) ASC, LOWER(t.location.city) ASC ")
+    public Page<Team> findTeamByFilteredLocationsAndSports(
+        Pageable pageable,
+        @Param("filteredLocations") List<String> filteredLocations,
+        @Param("filteredSports") List<String> filteredSports,
+        @Param("name") String name
+    );
 }

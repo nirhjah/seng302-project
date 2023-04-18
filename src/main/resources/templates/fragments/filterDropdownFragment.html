@@ -16,13 +16,14 @@ dropdownName: String[opt.] - The parameter name sent to the controller on submit
     </div>
     <div th:id="${dropdown_id}" class="checkbox" style="display: none">
       <label th:for="${select_all}">
-        <input type="checkbox" th:id="${select_all}" th:data-target-checkbox="${dropdownName}" onclick="selectAllCheckboxes(this.checked, this.dataset.targetCheckbox)" />
+        <input type="checkbox" th:id="${select_all}" th:data-target-checkbox="${dropdownName}"
+          onclick="selectAllCheckboxes(this.checked, this.dataset.targetCheckbox)" />
         Select all
       </label>
       <th:block th:each="entry: ${listItems}">
         <label>
           <input type="checkbox" th:value="${entry}" th:name="${dropdownName}" th:data-select-all-id="${select_all}"
-                 onclick="updateSelectAllCheckbox(this.dataset.selectAllId, this.name)">
+            onclick="updateSelectAllCheckbox(this.dataset.selectAllId, this.name)">
           <th:block th:text="${entry}"></th:block>
         </label>
       </th:block>
@@ -73,7 +74,7 @@ dropdownName: String[opt.] - The parameter name sent to the controller on submit
     function selectAllCheckboxes(isChecked, checkboxName) {
       let checkboxes = document.getElementsByName(checkboxName);
       for (const element of checkboxes) {
-        if(element.type == 'checkbox')
+        if (element.type == 'checkbox')
           element.checked = isChecked;
       }
     }
