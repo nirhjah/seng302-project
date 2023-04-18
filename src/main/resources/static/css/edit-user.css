@@ -41,6 +41,7 @@
     height: 30px;
     margin: 0 5px;
 }
+
 .edit-user-header::before {
     content: "";
     border-top: 3px solid #0b2239;
@@ -62,6 +63,14 @@
 
 .multiply:before {
     content: "\00D7";
+}
+
+.submit-button {
+    margin: 30px 0 20px !important;
+}
+
+.cancel-link {
+    margin: 0 0 20px !important;
 }
 
 .sport-box {

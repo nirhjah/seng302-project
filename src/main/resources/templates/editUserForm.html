@@ -121,7 +121,6 @@
                         <button type="submit" id="submit">Save</button>
                     </a>
                 </div>
-
                 <div class="cancel-link">
                     <a th:href="@{user-info/self}">Cancel</a>
                 </div>
@@ -193,6 +192,14 @@
         tagsInput.setAttribute("value", tags.join(","));
         form.appendChild(tagsInput);
         return true;
+    });
+
+    const inputBox = document.getElementById("sport-list");
+
+    inputBox.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // prevent form submission
+        }
     });
 
 

@@ -506,9 +506,6 @@ td {
 /*  left: 35%;*/
 /*}*/
 
-footer {
-    right: 0;
-}
 
 .file-label-border,.profile-buttons button, .profile-pic .back-button {
     background-color: #415A77;
@@ -543,9 +540,10 @@ footer {
 }
 
 footer {
-  position: absolute;
-  bottom: 0;
-  padding: 10px;
+    position: fixed;
+    bottom: 0;
+    padding: 10px;
+    right: 0;
 }
 
 /*.team-info h3, .user-info h3 {*/
@@ -903,7 +901,7 @@ li a {
 .submit-button {
   border-radius: 30px;
   text-align: center;
-  margin: 25px 0 20px;
+  margin: 30px 0 20px;
 }
 
 .submit-button button {

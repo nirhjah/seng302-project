@@ -237,7 +237,7 @@
             if (/\d/.test(password)) {
                 strength++;
             }
-            if (/[^\w\s]/.test(password)) {
+            if (/[\W_]/.test(password)) {
                 strength++;
             }
             if ((!firstName || !password.includes(firstName)) && (!lastName || !password.includes(lastName)) && (!email || !password.includes(email))) {
