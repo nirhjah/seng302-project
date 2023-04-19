@@ -53,6 +53,9 @@ public class ViewAllTeamsController {
                 .sorted()
                 .toList();
 
+        logger.info("cityCheckBox = {}", cities);
+        logger.info("searchQuery = {}", searchQuery);
+
         model.addAttribute("sports", sports);
         model.addAttribute("cities", cities);
     }
@@ -61,16 +64,15 @@ public class ViewAllTeamsController {
         return teamService.findPaginated(page, PAGE_SIZE);
     }
 
-    private void addParamatersToModel(Model model, List<String> filteredCities, List<String> filteredSports, String searchQuery, int pageNumber) {
+    private void addParametersToModel(Model model, List<String> filteredCities, List<String> filteredSports, String searchQuery, int pageNumber) {
         Page<Team> teamPage;
-        if (searchQuery == null || searchQuery.length() < 3) {
+        if (searchQuery == null) {
+            teamPage = getAllTeams(pageNumber);
+        } else if (searchQuery.length() < 3) {
+            model.addAttribute("searchTooShortError", true);
             teamPage = getAllTeams(pageNumber);
         } else {
             teamPage = getTeams(filteredCities, filteredSports, searchQuery, pageNumber);
-        }
-
-        if (searchQuery.length() < 3) {
-            // TODO: denote error here. Perhaps talk to Angela?
         }
 
         populateDropdowns(model, searchQuery);
@@ -99,7 +101,7 @@ public class ViewAllTeamsController {
     {
         logger.info("GET /view-teams");
 
-        addParamatersToModel(model, filteredCities, filteredSports, searchQuery, pageNo);
+        addParametersToModel(model, filteredCities, filteredSports, searchQuery, pageNo);
 
         model.addAttribute("navTeams", teamService.getTeamList());
         return "viewAllTeams";
