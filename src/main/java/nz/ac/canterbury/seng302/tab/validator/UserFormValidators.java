@@ -128,6 +128,7 @@ public class UserFormValidators {
     /**/@Retention(RUNTIME)
     /**/@Constraint(validatedBy = PasswordCheck.class)
     /**/@Documented
+    @Size(min=8, max=100)
     @NotNull(message = NOT_BLANK_MSG)
     public @interface PasswordValidator {
 
