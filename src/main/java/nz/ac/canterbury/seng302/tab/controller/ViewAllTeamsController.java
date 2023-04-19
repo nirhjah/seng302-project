@@ -1,11 +1,14 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,45 +21,87 @@ import java.util.List;
  */
 @Controller
 public class ViewAllTeamsController {
-
-    private static int maxPageSize = 10;
+    private static final int PAGE_SIZE = 10;
     Logger logger = LoggerFactory.getLogger(ViewAllTeamsController.class);
 
     @Autowired
     private TeamService teamService;
 
+    @Autowired
+    private TeamRepository teamRepository;
+
+    private Page<Team> getTeams(List<String> filteredCities, List<String> filteredSports, String searchQuery, int pageNumber) {
+        PageRequest pageRequest = PageRequest.of(pageNumber, PAGE_SIZE);
+        return teamService.findPaginatedTeamsByCityAndSports(pageRequest, filteredCities, filteredSports, searchQuery);
+    }
+
+    /**
+     * Populates the sports and cities dropdowns with the appropriate sports and cities
+     * for the searchQuery.
+     * @param model
+     * @param searchQuery the current team name search
+     */
+    private void populateDropdowns(Model model, String searchQuery) {
+        var sports = teamRepository.findSportsByName(searchQuery).stream()
+                .distinct()
+                .sorted()
+                .toList();
+
+        List<String> cities = teamRepository.findLocationsByName(searchQuery).stream()
+                .map(Location::getCity)
+                .distinct()
+                .sorted()
+                .toList();
+
+        model.addAttribute("sports", sports);
+        model.addAttribute("cities", cities);
+    }
+
+    private Page<Team> getAllTeams(int page) {
+        return teamService.findPaginated(page, PAGE_SIZE);
+    }
+
+    private void addParamatersToModel(Model model, List<String> filteredCities, List<String> filteredSports, String searchQuery, int pageNumber) {
+        Page<Team> teamPage;
+        if (searchQuery == null || searchQuery.length() < 3) {
+            teamPage = getAllTeams(pageNumber);
+        } else {
+            teamPage = getTeams(filteredCities, filteredSports, searchQuery, pageNumber);
+        }
+
+        if (searchQuery.length() < 3) {
+            // TODO: denote error here. Perhaps talk to Angela?
+        }
+
+        populateDropdowns(model, searchQuery);
+
+        var teams = teamPage.getContent();
+        model.addAttribute("searchQuery", searchQuery);
+        model.addAttribute("page", pageNumber);
+        model.addAttribute("teams", teams);
+        model.addAttribute("totalPages", teamPage.getTotalPages());
+    }
+
     /**
      * Gets viewAllTeams doc with required attributes. Reroutes if page out of available range or no teams in database
      * @param pageNo integer corresponding page to be displayed
      * @param model  (map-like) representation of name, language and isJava boolean for use in thymeleaf
+     * @param searchQuery The current search. This represents a team name.
      * @return thymeleaf viewAllTeams
      */
     @GetMapping("/view-teams")
-    public String findPaginated(@RequestParam(value = "page", defaultValue = "-1") int pageNo,
-                                Model model) {
-
-        // If no teams exist in the database
-        if (teamService.getTeamList().size() == 0) {
-            return "redirect:/home";
-        }
-
-        // If page number outside of page then reloads page with appropriate number
-        if (pageNo < 1 || pageNo > teamService.findPaginated(pageNo, maxPageSize).getTotalPages() && teamService.findPaginated(pageNo, maxPageSize).getTotalPages() > 0) {
-            pageNo = pageNo < 1 ? 1: teamService.findPaginated(pageNo, maxPageSize).getTotalPages();
-            return "redirect:/view-teams?page=" + pageNo;
-        }
-
+    public String findPaginated(
+            @RequestParam(value = "searchQuery", required = false) String searchQuery,
+            @RequestParam(value = "page", defaultValue = "-1") int pageNo,
+            @RequestParam(value = "cityCheckbox", required = false) List<String> filteredCities,
+            @RequestParam(value = "sports", required = false) List<String> filteredSports,
+            Model model)
+    {
         logger.info("GET /view-teams");
 
-        Page<Team> page = teamService.findPaginated(pageNo, maxPageSize);
-
-        List<Team> listTeams = page.getContent();
+        addParamatersToModel(model, filteredCities, filteredSports, searchQuery, pageNo);
 
         model.addAttribute("navTeams", teamService.getTeamList());
-        model.addAttribute("page", pageNo);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("totalItems", page.getTotalElements());
-        model.addAttribute("displayTeams", listTeams);
         return "viewAllTeams";
     }
 }
