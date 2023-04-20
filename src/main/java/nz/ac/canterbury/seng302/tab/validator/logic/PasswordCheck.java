@@ -3,8 +3,6 @@ package nz.ac.canterbury.seng302.tab.validator.logic;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
-import org.springframework.validation.FieldError;
-
 
 /**
  * <p>Implementation for the {@link UserFormValidators} annotation.</p>
@@ -39,7 +37,7 @@ public class PasswordCheck implements ConstraintValidator<UserFormValidators.Pas
                 }
             }
 
-            return ( !(!uppercase || !lowercase || !number || !symbol)  && !(password.length() <= 8 || password.length() >= 100));
+            return (!(!uppercase || !lowercase || !number || !symbol)  && (((password.length() >= 8) && (password.length() <= 100))));
 
         }
     }
