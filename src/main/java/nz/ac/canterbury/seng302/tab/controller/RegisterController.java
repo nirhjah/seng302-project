@@ -150,10 +150,12 @@ public class RegisterController {
         String[] otherFields = new String[]{registerForm.getFirstName(), registerForm.getLastName(), registerForm.getEmail()};
         if(password.length() > 0) {
             for (String field : otherFields) {
-                if (password.toLowerCase().contains(field.toLowerCase())) {
-                    bindingResult.addError(new FieldError("registerForm", "password", "Password can't contain values from other fields"));
-                    break;
-                }
+                if (field != "") {
+                    if (password.toLowerCase().contains(field.toLowerCase())) {
+                        bindingResult.addError(new FieldError("registerForm", "password", "Password can't contain values from other fields"));
+                        break;
+                    }
+            }
             }
         }
     }

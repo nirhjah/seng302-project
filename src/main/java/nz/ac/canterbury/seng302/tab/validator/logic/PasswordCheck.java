@@ -39,7 +39,7 @@ public class PasswordCheck implements ConstraintValidator<UserFormValidators.Pas
                 }
             }
 
-            return ( !(!uppercase || !lowercase || !number || !symbol) );
+            return ( !(!uppercase || !lowercase || !number || !symbol)  && !(password.length() <= 8 || password.length() >= 100));
 
         }
     }
