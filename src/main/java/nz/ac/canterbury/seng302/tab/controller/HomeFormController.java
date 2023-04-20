@@ -25,8 +25,6 @@ public class HomeFormController {
     Logger logger = LoggerFactory.getLogger(HomeFormController.class);
 
     @Autowired
-    private LocationService locationService;
-    @Autowired
     private TeamService teamService;
 
     @Autowired

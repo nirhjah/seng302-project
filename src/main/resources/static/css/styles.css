@@ -801,8 +801,10 @@ li.active a {
     border: none;
     padding: .1em .5em;
     cursor: pointer;
-    position: absolute;
-    display: inline-block;
+    /* position: absolute; */
+    display: table;
+    margin-left: 10px;
+    height: 30px;
 }
 
 
@@ -932,7 +934,7 @@ li.active a {
     bottom: 0;
 }
 
-#checkBoxes {
+.checkbox {
     display: none;
     max-height: 200px;
     overflow-y: scroll;
@@ -942,16 +944,35 @@ li.active a {
     background-color: #415a77;
 }
 
-#checkBoxes label {
+.checkbox label {
     display: block;
     padding: 7px;
 
 }
 
-#checkBoxes label:hover {
+.checkbox label:hover {
     background-color: #4F615E;
 }
 
 ul.autocomplete-result{
   display:block;
 }
+
+.filter-boxes div {
+  display: inline-block;
+  margin-right:10px;
+}
+
+.filter-boxes {
+  display: flex;
+  flex-wrap: wrap;
+  width:400px;
+}
+
+.filter-boxes div {
+  flex: 1;
+}
+
+
+
+
