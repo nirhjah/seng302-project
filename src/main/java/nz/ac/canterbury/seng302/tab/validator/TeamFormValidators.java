@@ -30,48 +30,11 @@ public class TeamFormValidators {
 
     public static final String INVALID_POSTCODE_MSG = "May include letters, numbers, forward slashes, and hyphens. Must start with letter or number";
 
-//    public static final String sportUnicodeRegex = "^\\p{L}+[\\- '\\p{L}]*$";
-//
-//    public static final String InvalidSportMSG = "May only include letters, spaces, apostrophes and dashes";
-//
-//    public static final String teamNameUnicodeRegex = "^[\\p{L}\\p{N}\\s]+[}{.\\p{L}\\p{N}\\s]+$";
-//
-//    public static final String InvalidTeamNameMSG = "May only include letters, numbers, spaces, dots and curly brackets";
 
-
-
-//    /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
-//    /**/@Retention(RUNTIME)
-//    /**/@Constraint(validatedBy = {})
-//    /**/@Documented
-//    @NotBlank(message = NOT_BLANK_MSG)
-//    @Size(max = 30)
-//    @Pattern(regexp = sportUnicodeRegex, message = InvalidSportMSG)
-//    public @interface sportNameValidator {
-//        String message() default "";
-//
-//        Class<?>[] groups() default {};
-//
-//        Class<? extends Payload>[] payload() default {};
-//
-//    }
-//
-//    /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
-//    /**/@Retention(RUNTIME)
-//    /**/@Constraint(validatedBy = {})
-//    /**/@Documented
-//    @NotBlank(message = NOT_BLANK_MSG)
-//    @Size(max = 30)
-//    @Pattern(regexp = teamNameUnicodeRegex, message = InvalidSportMSG)
-//    public @interface teamNameValidator {
-//        String message() default "";
-//
-//        Class<?>[] groups() default {};
-//
-//        Class<? extends Payload>[] payload() default {};
-//
-//    }
-
+    /**
+     * Checks the country and city is not blank, as well matches
+     * the regex of valid cities and countries
+     */
     /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
     /**/@Retention(RUNTIME)
     /**/@Constraint(validatedBy = CountryCitySuburbCheck.class)
@@ -90,11 +53,8 @@ public class TeamFormValidators {
 
     /**
      * Checks that the provided address line is valid.
-     * <ul>
-     * <li>Must not be blank (At least 1 non-whitespace)</li>
-     * <li>Can't be longer than 30 characters</li>
-     * <li>Can only contain letters, hyphens, and spaces</li>
-     * </ul>
+     * Can't be longer than 30 characters</li>
+     * Can only contain letters, hyphens, and spaces</li>
      */
     /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
     /**/@Retention(RUNTIME)
@@ -111,6 +71,10 @@ public class TeamFormValidators {
 
     }
 
+    /**
+     * Checks that the provided suburb line is valid.
+     * Can't be longer than 30 characters</li>
+     */
     /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
     /**/@Retention(RUNTIME)
     /**/@Constraint(validatedBy = {})
@@ -128,11 +92,9 @@ public class TeamFormValidators {
 
     /**
      * Checks that the provided postcode line is valid.
-     * <ul>
-     * <li>Must not be blank (At least 1 non-whitespace)</li>
-     * <li>Can't be longer than 30 characters</li>
-     * <li>Can only contain letters, hyphens, and spaces</li>
-     * </ul>
+     * <Must not be blank (At least 1 non-whitespace)</li>
+     * Can't be longer than 30 characters</li>
+     * Can only contain letters, hyphens, and spaces</li>
      */
     /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
     /**/@Retention(RUNTIME)

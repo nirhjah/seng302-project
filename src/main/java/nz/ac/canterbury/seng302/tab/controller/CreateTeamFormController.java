@@ -10,7 +10,6 @@ import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
-import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
