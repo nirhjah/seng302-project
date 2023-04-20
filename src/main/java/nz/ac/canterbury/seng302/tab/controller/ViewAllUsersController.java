@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
-import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.LocationService;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
@@ -61,12 +59,13 @@ public class ViewAllUsersController {
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "currentSearch", required = false) String currentSearch,
             @RequestParam(name = "sports", required = false) List<String> sports,
+            @RequestParam(name = "cities", required = false) List<String> cities,
             Model model) {
-        Page<User> userPage = getUserPage(page, currentSearch, sports);
+        Page<User> userPage = getUserPage(page, currentSearch, sports, cities);
         List<User> userList = userPage.toList();
 
         List<Location> locations = locationService.getLocationList();
-        List<String> cities = locations.stream()
+        List<String> listOfCities = locations.stream()
                 .map(Location::getCity)
                 .distinct()
                 .sorted()
@@ -75,7 +74,7 @@ public class ViewAllUsersController {
         model.addAttribute("page", page);
         model.addAttribute("listOfUsers", userList);
         model.addAttribute("listOfSports", sportService.getAllSports().stream().map(Sport::getName).toList());
-        model.addAttribute("listOfCities", cities);
+        model.addAttribute("listOfCities", listOfCities);
         model.addAttribute("totalPages", userPage.getTotalPages());
         model.addAttribute("navTeams", teamService.getTeamList());
         return "viewAllUsers";
@@ -90,7 +89,8 @@ public class ViewAllUsersController {
      *                  as their fav
      * @return List of users matching the nameQuery
      */
-    private Page<User> getUserPage(int page, @Nullable String nameQuery, @Nullable List<String> favSports) {
+    private Page<User> getUserPage(int page, @Nullable String nameQuery, @Nullable List<String> favSports,
+            @Nullable List<String> favCities) {
         if (page <= 0) { // We want the user to think "Page 1" is the first page, even though Java starts
                          // at 0.
             logger.info("Invalid page no., returning empty list");
@@ -102,16 +102,19 @@ public class ViewAllUsersController {
         if (favSports == null) {
             favSports = List.of();
         }
+        if (favCities == null) {
+            favCities = List.of();
+        }
         var pageable = PageRequest.of(page - 1, PAGE_SIZE, SORT_BY_LAST_AND_FIRST_NAME);
 
-        if (nameQuery.isEmpty() && favSports.isEmpty()) {
-            logger.info("Empty query string AND empty sports list, returning all users...");
+        if (nameQuery.isEmpty() && favSports.isEmpty() && favCities.isEmpty()) {
+            logger.info("Empty query string, empty sports list AND empty city list, returning all users...");
             return userService.getPaginatedUsers(pageable);
         } else {
-            // TODO: Patch in the 'favourite sports' check once that's working
             logger.info("Query string: {}", nameQuery);
             logger.info("Sports: {}", favSports);
-            return userService.findUsersByNameOrSport(pageable, favSports, nameQuery);
+            logger.info("cities: {}", favCities);
+            return userService.findUsersByNameOrSportOrCity(pageable, favSports, favCities, nameQuery);
         }
     }
 }
