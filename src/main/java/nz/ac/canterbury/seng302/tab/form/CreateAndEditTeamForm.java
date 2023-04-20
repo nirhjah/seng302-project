@@ -18,10 +18,10 @@ public class CreateAndEditTeamForm {
     @TeamFormValidators.postcodeValidator
     private String postcode;
 
-    @TeamFormValidators.countryCitySuburbValidator(regexMatch = "^\\p{L}+[\\- '\\p{L}]*$", message = "May include letters, hyphens, apostrophes and spaces. Must start with letter")
+    @TeamFormValidators.countryCitySuburbValidator(regexMatch = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
     private String country;
 
-    @TeamFormValidators.countryCitySuburbValidator(regexMatch = "^\\p{L}+[\\- '\\p{L}]*$", message = "May include letters, hyphens, apostrophes and spaces. Must start with letter")
+    @TeamFormValidators.countryCitySuburbValidator(regexMatch = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
     private String city;
 
     @TeamFormValidators.suburbValidator
