@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
@@ -450,6 +449,58 @@ public class UserRepositoryTest {
     }
 
     @Test
+    void findByLocationAndSport_whenMultipleSportMatchAndLocationMatch_returnCorrectUser() throws IOException {
+        Location nelson = new Location(null, null, null, "Nelson", null, "NZ");
+        locationRepository.save(nelson);
+        User nelsonRugby = generateRandomUsers.createRandomUser();
+        nelsonRugby.setLocation(nelson);
+        nelsonRugby.setFavoriteSports(List.of(new Sport("Rugby")));
+        User nelsonHockey = generateRandomUsers.createRandomUser();
+        nelsonHockey.setLocation(nelson);
+        nelsonHockey.setFavoriteSports(List.of(new Sport("Hockey")));
+        User aucklandHockey = generateRandomUsers.createRandomUser();
+        Location auckland = new Location(null, null, null, "Auckland", null, "NZ");
+        aucklandHockey.setLocation(auckland);
+        aucklandHockey.setFavoriteSports(List.of(new Sport("Hockey")));
+        User christchurchHockey = generateRandomUsers.createRandomUser();
+        christchurchHockey.setFavoriteSports(List.of(new Sport("Hockey")));
+
+        userRepository.save(nelsonHockey);
+        userRepository.save(nelsonRugby);
+        userRepository.save(aucklandHockey);
+        userRepository.save(christchurchHockey);
+
+        Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(nelson.getCity()), List.of("Hockey", "Rugby"), "");
+        assertEquals(List.of(nelsonHockey, nelsonRugby), returnedUsers.toList());
+    }
+
+    @Test
+    void findByLocationAndSport_whenSportMatchAndMultipleLocationMatch_returnCorrectUser() throws IOException {
+        Location nelson = new Location(null, null, null, "Nelson", null, "NZ");
+        locationRepository.save(nelson);
+        User nelsonRugby = generateRandomUsers.createRandomUser();
+        nelsonRugby.setLocation(nelson);
+        nelsonRugby.setFavoriteSports(List.of(new Sport("Rugby")));
+        User nelsonHockey = generateRandomUsers.createRandomUser();
+        nelsonHockey.setLocation(nelson);
+        nelsonHockey.setFavoriteSports(List.of(new Sport("Hockey")));
+        User aucklandHockey = generateRandomUsers.createRandomUser();
+        Location auckland = new Location(null, null, null, "Auckland", null, "NZ");
+        aucklandHockey.setLocation(auckland);
+        aucklandHockey.setFavoriteSports(List.of(new Sport("Hockey")));
+        User christchurchHockey = generateRandomUsers.createRandomUser();
+        christchurchHockey.setFavoriteSports(List.of(new Sport("Hockey")));
+
+        userRepository.save(nelsonHockey);
+        userRepository.save(nelsonRugby);
+        userRepository.save(aucklandHockey);
+        userRepository.save(christchurchHockey);
+
+        Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(nelson.getCity(), auckland.getCity()), List.of("Hockey"), "");
+        assertEquals(List.of(nelsonHockey, aucklandHockey), returnedUsers.toList());
+    }
+
+    @Test
     void findByLocationAndSport_whenSportMatchButNotLocationMatch_returnNoUser() throws IOException {
         Location nelson = new Location(null, null, null, "Nelson", null, "NZ");
         User nelsonHockey = generateRandomUsers.createRandomUser();
@@ -532,6 +583,34 @@ public class UserRepositoryTest {
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(nelson.getCity()), List.of("Rugby"), "NelsonRugby");
         assertEquals(List.of(nelsonRugby), returnedUsers.toList());
+    }
+
+    @Test
+    void findByLocationAndSportAndName_whenMultipleSportMatchAndLocationMatchAndName_returnCorrectUser() throws IOException {
+        Location nelson = new Location(null, null, null, "Nelson", null, "NZ");
+        locationRepository.save(nelson);
+        User nelsonRugby = generateRandomUsers.createRandomUser();
+        nelsonRugby.setLocation(nelson);
+        nelsonRugby.setFavoriteSports(List.of(new Sport("Rugby")));
+        nelsonRugby.setFirstName("NelsonSport");
+        User nelsonHockey = generateRandomUsers.createRandomUser();
+        nelsonHockey.setLocation(nelson);
+        nelsonHockey.setFavoriteSports(List.of(new Sport("Hockey")));
+        nelsonHockey.setFirstName("NelsonSport");
+        User aucklandHockey = generateRandomUsers.createRandomUser();
+        Location auckland = new Location(null, null, null, "Auckland", null, "NZ");
+        aucklandHockey.setLocation(auckland);
+        aucklandHockey.setFavoriteSports(List.of(new Sport("Hockey")));
+        User christchurchHockey = generateRandomUsers.createRandomUser();
+        christchurchHockey.setFavoriteSports(List.of(new Sport("Hockey")));
+
+        userRepository.save(nelsonHockey);
+        userRepository.save(nelsonRugby);
+        userRepository.save(aucklandHockey);
+        userRepository.save(christchurchHockey);
+
+        Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(nelson.getCity()), List.of("Rugby", "Hockey"), "NelsonSport");
+        assertEquals(List.of(nelsonHockey, nelsonRugby), returnedUsers.toList());
     }
 
     @Test
