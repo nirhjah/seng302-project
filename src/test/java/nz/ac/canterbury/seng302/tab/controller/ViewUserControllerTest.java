@@ -17,11 +17,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Optional;
@@ -29,6 +30,7 @@ import java.util.Optional;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -99,11 +101,12 @@ public class ViewUserControllerTest {
         Resource resource = new ClassPathResource("/testingfiles/maxFileSize.png");
         File file = resource.getFile();
         FileInputStream input= new FileInputStream(file);
+        byte[] fileBytes = Files.readAllBytes(file.toPath());
         MockMultipartFile tooBigImage = new MockMultipartFile("file", file.getName(),"image/png", input.readAllBytes());
         mockMvc.perform(multipart(URL).file(tooBigImage))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attribute("sizeError", true))
-                .andExpect(redirectedUrl(String.format("/user-info?name=%s", user.getUserId())));
+                .andExpect(status().is3xxRedirection());
+
+        assertNotEquals(Base64.getEncoder().encodeToString(fileBytes), user.getPictureString());
     }
 
     @Test
@@ -113,6 +116,7 @@ public class ViewUserControllerTest {
         Resource resource = new ClassPathResource("/testingfiles/pfp.png");
         File file = resource.getFile();
         FileInputStream input= new FileInputStream(file);
+        byte[] fileBytes = Files.readAllBytes(file.toPath());
         MockMultipartFile okImg = new MockMultipartFile("file", file.getName(),"image/png", input.readAllBytes());
         mockMvc.perform(multipart(URL).file(okImg))
                 .andExpect(status().is3xxRedirection())

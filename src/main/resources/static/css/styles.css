@@ -15,10 +15,10 @@
 
 
 ul.search {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 /* Can't find the usage for this
@@ -190,37 +190,37 @@ ul.search {
 /*}*/
 
 .input-box .autocomplete-container {
-  background-color: white;
-  z-index: 1;
-  position: absolute;
-  border: #888888;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  margin-top: 2px;
-  width: 100%;
+    background-color: white;
+    z-index: 1;
+    position: absolute;
+    border: #888888;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin-top: 2px;
+    width: 100%;
 }
 
 .input-box .autocomplete-container:hover, .icon img:hover,password-toggle:hover {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .input-box .autocomplete-container ul li {
-  display: inline-block;
-  padding: 10px; /* add padding to the list items */
-  border-bottom: 1px solid #ccc; /* add a border to separate the list items */
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
-  width: 100%;
+    display: inline-block;
+    padding: 10px; /* add padding to the list items */
+    border-bottom: 1px solid #ccc; /* add a border to separate the list items */
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    width: 100%;
 }
 
 .input-box .autocomplete-container ul li:hover {
-  background-color: #007bff;
+    background-color: #007bff;
     color: white;
 }
 
 .input-box .autocomplete-container ul li:last-child {
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 /*.pagination-button.active {*/
@@ -296,22 +296,22 @@ tr,
 .wrapper,
 .wrapper-profile,
 .wrapper-edit-profile {
-  background-color: white;
+    background-color: white;
 }
 
 
 tr:hover {
-  background-color: #e0e1dd;
-  cursor: pointer;
+    background-color: #e0e1dd;
+    cursor: pointer;
 }
 
 th:hover {
-  cursor: default;
+    cursor: default;
 }
 
 td {
-  padding: 8px;
-  border-bottom: 1px solid #ddd;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
 }
 
 /*.navbar,*/
@@ -320,7 +320,7 @@ td {
 .input-box,
 .profile-pic .back-button,
 .Welcome-header, .wrapper-edit-profile {
-  position: relative;
+    position: relative;
 }
 
 /*.navbar {*/
@@ -414,8 +414,8 @@ td {
 /*  width: 850px;*/
 /*  height: 430px;*/
 /*  display: grid;*/
-  /*background: transparent;*/
-  /*backdrop-filter: blur(20px);*/
+/*background: transparent;*/
+/*backdrop-filter: blur(20px);*/
 /*}*/
 
 /*.team-display {*/
@@ -477,8 +477,8 @@ td {
 /*}*/
 
 .wrapper,.wrapper-profile,.wrapper-edit-profile{
-  box-shadow: 0 0 30px rgba(0, 0, 0, .5);
-  border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+    border-radius: 20px;
 }
 
 .wrapper,.wrapper-profile,.wrapper-edit-profile{
@@ -631,7 +631,7 @@ footer {
 /*}*/
 
 .form-control-file {
-  display: none;
+    display: none;
 }
 
 .file-label-border {
@@ -668,8 +668,8 @@ footer {
 /*}*/
 
 .input-boxes {
-  display: flex;
-  justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
 }
 
 /*.edit-inputs {*/
@@ -703,23 +703,23 @@ footer {
 
 
 .input-box {
-  width: 100%;
-  height: 35px;
-  border-bottom: 2px solid #162938;
-  margin: 35px 0 0;
-  font-family: "Noto Sans", sans-serif;
+    width: 100%;
+    height: 35px;
+    border-bottom: 2px solid #162938;
+    margin: 35px 0 0;
+    font-family: "Noto Sans", sans-serif;
 }
 
 .input-box input.error {
-  border-bottom: 2px solid red;
+    border-bottom: 2px solid red;
 }
 
 input:invalid {
-  width: calc(100% - 2.5em);
+    width: calc(100% - 2.5em);
 }
 
 input:invalid + label:after {
-  width: 2.5em;
+    width: 2.5em;
 }
 
 
@@ -729,50 +729,50 @@ input:invalid + label:after {
 
 
 .input-boxes .input-box {
-  width: 48%;
-  height: 35px;
-  border-bottom: 2px solid #162938;
-  font-family: "Noto Sans", sans-serif;
+    width: 48%;
+    height: 35px;
+    border-bottom: 2px solid #162938;
+    font-family: "Noto Sans", sans-serif;
 }
 
 .register-inputs .input-boxes .input-box, .register-inputs-location .input-boxes .input-box {
-  margin: 0 !important;
+    margin: 0 !important;
 }
 
 
 .input-box input:focus ~ label,
 .input-box input:not(:placeholder-shown) ~ label {
-  top: -5px;
+    top: -5px;
 }
 
 .input-box input[type="date"] {
-  width: 100%;
+    width: 100%;
 }
 
 .input-box label {
-  font-family: "Noto Sans", sans-serif;
-  position: absolute;
-  top: 55%;
-  left: 1px;
-  transform: translateY(-50%);
-  font-size: 1em;
-  font-weight: 500;
-  pointer-events: none;
-  transition: 0.5s;
-  color: #888888;
+    font-family: "Noto Sans", sans-serif;
+    position: absolute;
+    top: 55%;
+    left: 1px;
+    transform: translateY(-50%);
+    font-size: 1em;
+    font-weight: 500;
+    pointer-events: none;
+    transition: 0.5s;
+    color: #888888;
 }
 
 
 .input-box input {
-  width: 99%;
-  height: 100%;
-  background: transparent;
-  font-size: 1em;
-  color: #0d1b2a;
-  font-weight: 500;
-  border: none;
-  outline: none;
-  cursor: pointer;
+    width: 99%;
+    height: 100%;
+    background: transparent;
+    font-size: 1em;
+    color: #0d1b2a;
+    font-weight: 500;
+    border: none;
+    outline: none;
+    cursor: pointer;
 }
 
 
@@ -788,15 +788,15 @@ input:invalid + label:after {
 
 
 .image-styling img {
-  border-radius: 20px;
-  border: 4px solid #1b263b;
+    border-radius: 20px;
+    border: 4px solid #1b263b;
 }
 
 .cancel-link {
-  font-size: 1em;
-  text-align: center;
-  font-weight: 500;
-  margin: 0 0 10px;
+    font-size: 1em;
+    text-align: center;
+    font-weight: 500;
+    margin: 0 0 10px;
 }
 
 /*.login-form-form .cancel-link {*/
@@ -805,30 +805,30 @@ input:invalid + label:after {
 /*}*/
 
 .cancel-link p {
-  font-family: "Noto Sans", sans-serif;
-  font-weight: 600;
-  font-size: 16px;
-  color: #1B263B;
-  margin-right: 5px;
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: #1B263B;
+    margin-right: 5px;
 }
 
 .cancel-link a {
-  font-family: "Noto Sans", sans-serif;
-  color: #415a77;
-  text-decoration: none;
-  font-weight: 600;
+    font-family: "Noto Sans", sans-serif;
+    color: #415a77;
+    text-decoration: none;
+    font-weight: 600;
 }
 
 .cancel-link a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 .error-message {
-  font-size: 15px;
-  font-family: "Noto Sans", sans-serif;
-  font-weight: 300;
-  color: red;
-  text-align: center;
+    font-size: 15px;
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 300;
+    color: red;
+    text-align: center;
 }
 
 /*.register-form form .error-message {*/
@@ -840,41 +840,41 @@ input:invalid + label:after {
 /*}*/
 
 .Welcome-header {
-  overflow: hidden;
-  height: 90vh;
+    overflow: hidden;
+    height: 90vh;
 }
 
 .Welcome-header h1 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 7rem;
-  color: #0d1b2a;
-  padding: 1rem;
-  background: linear-gradient(-30deg, #333 50%, white 50%);
-  background-size: 400% 400%;
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
-  border-radius: 9px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 7rem;
+    color: #0d1b2a;
+    padding: 1rem;
+    background: linear-gradient(-30deg, #333 50%, white 50%);
+    background-size: 400% 400%;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
+    border-radius: 9px;
 }
 
 .pagination-container {
-  justify-content: center;
+    justify-content: center;
 }
 
 ul {
-  list-style: none;
+    list-style: none;
 }
 
 *, li, ul {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 li a {
-  display: block;
-  padding: 0.5em;
-  text-align: center;
+    display: block;
+    padding: 0.5em;
+    text-align: center;
 }
 
 
@@ -905,32 +905,32 @@ li a {
 .submit-button button,
 .profile-buttons button,
 .file-label-border {
-  border: none;
-  outline: none;
-  cursor: pointer;
-  font-family: "Noto Sans", sans-serif;
-  font-size: 1em;
-  color: #fff;
-  border-radius: 30px;
-  font-weight: bold;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 1em;
+    color: #fff;
+    border-radius: 30px;
+    font-weight: bold;
 }
 
 .submit-button {
-  border-radius: 30px;
-  text-align: center;
-  margin: 30px 0 20px;
+    border-radius: 30px;
+    text-align: center;
+    margin: 30px 0 20px;
 }
 
 .submit-button button {
-  width: 85%;
-  height: 45px;
-  background-color: #1b263b;
-  font-weight: bold;
+    width: 85%;
+    height: 45px;
+    background-color: #1b263b;
+    font-weight: bold;
 }
 
 .form-control{
-  display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
 }
 
 /*.register-form-form .submit-button button {*/
@@ -940,8 +940,8 @@ li a {
 /*.menu-items p,*/
 /*.menu-items a*/
 .form-control {
-  font-family: "Noto Sans", sans-serif;
-  color: white;
+    font-family: "Noto Sans", sans-serif;
+    color: white;
 }
 
 
@@ -974,7 +974,7 @@ li a {
 /*}*/
 
 ::placeholder {
-  color: black;
+    color: black;
 }
 
 /*.search-bar button img {*/
@@ -1094,8 +1094,8 @@ li a {
 }
 
 .search-team-button-div {
-  width: 41px;
-  margin-right: -17px;
+    width: 41px;
+    margin-right: -17px;
 }
 
 .selectBox {
@@ -1130,16 +1130,16 @@ li a {
 }
 
 ul.autocomplete-result{
-  display:block;
+    display:block;
 }
 
 .icon img{
-  max-height:28px;
-  max-width:28px;
-  position: absolute;
-  top: 30px;
-  right: 30px;
-  object-fit: cover;
+    max-height:28px;
+    max-width:28px;
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    object-fit: cover;
 }
 
 /*img.password-toggle {*/
@@ -1154,3 +1154,25 @@ ul.autocomplete-result{
 /*  width: 92% !important;*/
 /*}*/
 
+.team-error-message {
+    font-size: 13px;
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 300;
+    color: red;
+    text-align: center;
+    width: 85%;
+}
+
+.password-error-message {
+    font-size: 13px;
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 300;
+    color: red;
+
+}
+
+.profile-pic .back-button {
+    bottom: -48px;
+    width: 35%;
+    height: 35px;
+}

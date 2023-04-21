@@ -36,12 +36,7 @@
                                 <label for="file" class="file-label">
                                     Edit Profile Picture </label>
                             </div>
-                            <input type="file" name="file" class="form-control-file" id="file" onchange="form.submit()">
-                        </div>
-                        <div class="file-upload">
-                            <div class="error-message" th:if="${sizeError == true}">Image must be less than 10MB</div>
-                            <div class="error-message" th:if="${typeError == true}">Please choose a .png, .jpg or .svg file
-                            </div>
+                            <input type="file" name="file" class="form-control-file" id="file">
                         </div>
                     </div>
                 </form>
@@ -75,6 +70,25 @@
             </div>
         </div>
     </div>
+</div>
+<script>
+    const input = document.getElementById('file');
+
+    input.addEventListener('change', () => {
+        const file = input.files[0];
+        if (file.size > 10000000) {
+            alert('File size must be less than 10MB');
+            return;
+        }
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml','image/jpg'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('File type must be jpeg, png or svg');
+            return;
+        }
+        document.getElementById('upload-picture').submit();
+    });
+
+</script>
 <footer>
     <p>
         Image by <a

@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import jakarta.validation.constraints.*;
-import nz.ac.canterbury.seng302.tab.validator.logic.DateOfBirthCheck;
+import nz.ac.canterbury.seng302.tab.validator.logic.*;
 
 /**
  * A collection of validation annotation groups relating to user forms (registration, editing, ...)
@@ -36,6 +36,8 @@ public class UserFormValidators {
     public static final String VALID_NAME_REGEX = "^[\\p{L}\\- ]+$";
     public static final String NOT_BLANK_MSG = "Field cannot be blank";
     public static final String WELL_FORMED_EMAIL = "Must be a well-formed email";
+
+    public static final String VALID_EMAIL_REGEX = "(?i)[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}";
     public static final String INVALID_NAME_MSG = "Names can only contain letters, spaces, and hyphens";
     public static final String VALID_COUNTRY_SUBURB_CITY_REGEX = "^\\p{L}+[\\- '\\p{L}]*$";
     public static final String INVALID_COUNTRY_SUBURB_CITY_MSG = "May include letters, hyphens, apostrophes and spaces. Must start with letter";
@@ -54,13 +56,11 @@ public class UserFormValidators {
      */
     /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
     /**/@Retention(RUNTIME)
-    /**/@Constraint(validatedBy = {})
+    /**/@Constraint(validatedBy = { NameCheck.class })
     /**/@Documented
     @NotBlank(message = NOT_BLANK_MSG)
-    @Size(max = 100)
-    @Pattern(regexp = VALID_NAME_REGEX, message = INVALID_NAME_MSG)
     public @interface NameValidator {
-        String message() default "";
+        String message() default INVALID_NAME_MSG;
 
         Class<?>[] groups() default {};
 
@@ -78,13 +78,11 @@ public class UserFormValidators {
      */
     /**/ @Target({ METHOD, FIELD, ANNOTATION_TYPE })
     /**/@Retention(RUNTIME)
-    /**/@Constraint(validatedBy = {})
+    /**/@Constraint(validatedBy = { EmailCheck.class })
     /**/@Documented
     @NotBlank(message = NOT_BLANK_MSG)
-    @Size(max = 100)
-    @Email(message = WELL_FORMED_EMAIL, regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags = Pattern.Flag.CASE_INSENSITIVE)
     public @interface EmailValidator {
-        String message() default "";
+        String message() default WELL_FORMED_EMAIL;
 
         Class<?>[] groups() default {};
 
@@ -116,6 +114,31 @@ public class UserFormValidators {
         Class<? extends Payload>[] payload() default {};
     }
 
+
+    /**
+     * Check that password is valid
+     * <ul>
+     * <li>Must not be null</li>
+     * <li>Must meet requirements </li>
+     * <li>Must not be in any other field </li>
+     * </ul>
+     * The implementation is at {@link PasswordCheck}
+     */
+    /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
+    /**/@Retention(RUNTIME)
+    /**/@Constraint(validatedBy = PasswordCheck.class)
+    /**/@Documented
+    @NotNull(message = NOT_BLANK_MSG)
+    public @interface PasswordValidator {
+
+        String message() default "Password does not meet the requirements";
+
+        Class<?>[] groups() default {};
+
+        Class<? extends Payload>[] payload() default {};
+    }
+
+
     /**
      * Checks that the provided country is valid.
      * <ul>
@@ -126,13 +149,11 @@ public class UserFormValidators {
      */
     /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
     /**/@Retention(RUNTIME)
-    /**/@Constraint(validatedBy = {})
+    /**/@Constraint(validatedBy = { CountryCheck.class })
     /**/@Documented
     @NotBlank(message = NOT_BLANK_MSG)
-    @Size(max = 30)
-    @Pattern(regexp = VALID_COUNTRY_SUBURB_CITY_REGEX, message = INVALID_COUNTRY_SUBURB_CITY_MSG)
     public @interface countryValidator {
-        String message() default "";
+        String message() default INVALID_COUNTRY_SUBURB_CITY_MSG;
 
         Class<?>[] groups() default {};
 
@@ -150,13 +171,11 @@ public class UserFormValidators {
      */
     /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
     /**/@Retention(RUNTIME)
-    /**/@Constraint(validatedBy = {})
+    /**/@Constraint(validatedBy = { CityCheck.class })
     /**/@Documented
     @NotBlank(message = NOT_BLANK_MSG)
-    @Size(max = 30)
-    @Pattern(regexp = VALID_COUNTRY_SUBURB_CITY_REGEX, message = INVALID_COUNTRY_SUBURB_CITY_MSG)
     public @interface cityValidator {
-        String message() default "";
+        String message() default INVALID_COUNTRY_SUBURB_CITY_MSG;
 
         Class<?>[] groups() default {};
 

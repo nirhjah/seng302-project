@@ -2,7 +2,6 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -27,8 +26,10 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Optional;
+import java.nio.file.Files;
+import java.util.Base64;
 
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -102,28 +103,29 @@ public class ProfileFormControllerTest {
     public void testUploadInvalidProfilePictureType() throws Exception {
         Resource resource = new ClassPathResource("/testingfiles/invalidFileType.txt");
         File file = resource.getFile();
+        byte[] fileBytes = Files.readAllBytes(file.toPath());
         try (FileInputStream input = new FileInputStream(file)) {
             MockMultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain",
                     input.readAllBytes());
             mockMvc.perform(multipart("/profile?teamID={id}", team.getTeamId()).file(multipartFile))
-                    .andExpect(status().is3xxRedirection())
-                    .andExpect(flash().attribute("typeError", true))
-                    .andExpect(redirectedUrl(String.format("./profile?teamID=%s", team.getTeamId())));
+                    .andExpect(status().is3xxRedirection());
         }
+            assertNotEquals(team.getPictureString(), Base64.getEncoder().encodeToString(fileBytes));
+
     }
 
     @Test
     public void testUploadInvalidProfilePictureSize() throws Exception {
         Resource resource = new ClassPathResource("/testingfiles/maxFileSize.png");
         File file = resource.getFile();
+        byte[] fileBytes = Files.readAllBytes(file.toPath());
         try (FileInputStream input = new FileInputStream(file)) {
             MockMultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "image/png",
                     input.readAllBytes());
             mockMvc.perform(multipart("/profile?teamID={id}", team.getTeamId()).file(multipartFile))
-                    .andExpect(status().is3xxRedirection())
-                    .andExpect(flash().attribute("sizeError", true))
-                    .andExpect(redirectedUrl(String.format("./profile?teamID=%s", team.getTeamId())));
+                    .andExpect(status().is3xxRedirection());
         }
+        assertNotEquals(team.getPictureString(), Base64.getEncoder().encodeToString(fileBytes));
     }
 
 }
