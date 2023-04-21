@@ -42,12 +42,19 @@ From the root directory ...
 
 On Linux:
 ```
-./gradlew test
+./gradlew test              #runs unit tests
+./gradlew integration       #runs integration tests
+./gradlew end2end           #runs end-to-end tests
+./gradlew check             #runs all tests
 ```
+
 
 On Windows:
 ```
 gradlew test
+gradlew integration
+gradlew end2end
+gradlew check
 ```
 >Note: There are 7 disabled tests currently. 
 
