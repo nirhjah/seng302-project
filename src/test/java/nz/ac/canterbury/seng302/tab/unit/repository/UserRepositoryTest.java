@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.tab.repository;
+package nz.ac.canterbury.seng302.tab.unit.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

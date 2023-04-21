@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.tab.controller;
+package nz.ac.canterbury.seng302.tab.unit.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;

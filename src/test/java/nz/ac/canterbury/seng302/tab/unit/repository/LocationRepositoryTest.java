@@ -1,6 +1,7 @@
-package nz.ac.canterbury.seng302.tab.repository;
+package nz.ac.canterbury.seng302.tab.unit.repository;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
