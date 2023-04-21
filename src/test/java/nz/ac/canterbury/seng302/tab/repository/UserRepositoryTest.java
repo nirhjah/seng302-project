@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -37,7 +38,8 @@ public class UserRepositoryTest {
             userRepository.save(generateRandomUsers.createRandomUser());
         }
 
-        Page<User> returnedUsers = userRepository.findAllFiltered(PageRequest.ofSize(N_USERS), List.of(), "");
+
+        Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(N_USERS),new ArrayList<>(), new ArrayList<>(), "");
 
         assertEquals(N_USERS, returnedUsers.getSize());
     }
@@ -59,7 +61,7 @@ public class UserRepositoryTest {
             userRepository.save(user);
         }
 
-        Page<User> returnedUsers = userRepository.findAllFiltered(PageRequest.ofSize(N_VALID_USERS + N_INVALID_USERS), List.of(), SEARCH);
+        Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(N_VALID_USERS + N_INVALID_USERS), new ArrayList<>(), new ArrayList<>(), SEARCH);
 
         assertEquals(N_VALID_USERS, returnedUsers.getNumberOfElements());
     }
@@ -81,7 +83,7 @@ public class UserRepositoryTest {
             userRepository.save(user);
         }
 
-        Page<User> returnedUsers = userRepository.findAllFiltered(PageRequest.ofSize(N_VALID_USERS + N_INVALID_USERS), List.of(), SEARCH);
+        Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(N_VALID_USERS + N_INVALID_USERS), List.of(), List.of(), SEARCH);
 
         assertEquals(N_VALID_USERS, returnedUsers.getNumberOfElements());
     }
@@ -97,7 +99,7 @@ public class UserRepositoryTest {
             userRepository.save(user);
         }
 
-        Page<User> returnedUsers = userRepository.findAllFiltered(PageRequest.ofSize(N_INVALID_USERS), List.of(), SEARCH);
+        Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(N_INVALID_USERS), List.of(), List.of(), SEARCH);
 
         assertEquals(0, returnedUsers.getNumberOfElements());
     }
@@ -131,7 +133,7 @@ public class UserRepositoryTest {
         correctUsersEmails.add(userRepository.save(user).getEmail());
         
 
-        Page<User> returnedUsers = userRepository.findAllFiltered(PageRequest.ofSize(N_VALID_USERS + N_INVALID_USERS), List.of(), SEARCH);
+        Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(N_VALID_USERS + N_INVALID_USERS), List.of(), List.of(), SEARCH);
 
         assertEquals(N_VALID_USERS, returnedUsers.getNumberOfElements());
         var returnedUsersEmails = returnedUsers.stream().map(User::getEmail).toList();
@@ -155,7 +157,7 @@ public class UserRepositoryTest {
         userRepository.save(hockeyPlayer);
         userRepository.save(rugbyPlayer);
 
-        Page<User> returnedUsers = userRepository.findAllFiltered(PageRequest.ofSize(5), List.of(CORRECT_SPORT), "");
+        Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(5), List.of(), List.of(CORRECT_SPORT), "");
 
         assertEquals(1, returnedUsers.getNumberOfElements());
     }
@@ -183,7 +185,7 @@ public class UserRepositoryTest {
             userRepository.save(user);
         }
 
-        Page<User> returnedUsers = userRepository.findAllFiltered(PageRequest.ofSize(500), List.of(S_RUGBY), "");
+        Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(), List.of(S_RUGBY), "");
 
         assertEquals(N_HOCKEY_AND_RUGBY , returnedUsers.getNumberOfElements());
     }
@@ -209,7 +211,7 @@ public class UserRepositoryTest {
             userRepository.save(user);
         }
         // Search with an additional sport that no one has.
-        Page<User> returnedUsers = userRepository.findAllFiltered(PageRequest.ofSize(500), List.of(S_RUGBY, S_HOCKEY), "");
+        Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(), List.of(S_RUGBY, S_HOCKEY), "");
 
         assertEquals(N_RUGBY , returnedUsers.getNumberOfElements());
     }
@@ -233,7 +235,7 @@ public class UserRepositoryTest {
         user.setFavoriteSports(List.of(rugby));
         userRepository.save(user);
         // Search with an additional sport that no one has.
-        Page<User> returnedUsers = userRepository.findAllFiltered(PageRequest.ofSize(500), List.of(S_HOCKEY), SEARCH_NAME);
+        Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of() ,List.of(S_HOCKEY), SEARCH_NAME);
 
         assertEquals(1, returnedUsers.getNumberOfElements());
     }
@@ -261,7 +263,7 @@ public class UserRepositoryTest {
         user.setFavoriteSports(List.of(rugby));
         userRepository.save(user);
         // Search with an additional sport that no one has.
-        Page<User> returnedUsers = userRepository.findAllFiltered(PageRequest.ofSize(500), List.of(S_HOCKEY), SEARCH_NAME);
+        Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(), List.of(S_HOCKEY), SEARCH_NAME);
 
         assertEquals(2, returnedUsers.getNumberOfElements());
     }
@@ -281,7 +283,7 @@ public class UserRepositoryTest {
         user.setFavoriteSports(List.of(rugby));
         userRepository.save(user);
         // Search with an additional sport that no one has.
-        Page<User> returnedUsers = userRepository.findAllFiltered(PageRequest.ofSize(500), List.of(S_HOCKEY), SEARCH_NAME);
+        Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(), List.of(S_HOCKEY), SEARCH_NAME);
 
         assertEquals(0, returnedUsers.getNumberOfElements());
     }
@@ -301,7 +303,7 @@ public class UserRepositoryTest {
         userRepository.save(user);
 
         // Search with an additional sport that no one has.
-        Page<User> returnedUsers = userRepository.findAllFiltered(PageRequest.ofSize(500), List.of(S_RUGBY), SEARCH_NAME);
+        Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(), List.of(S_RUGBY), SEARCH_NAME);
 
         assertEquals(0, returnedUsers.getNumberOfElements());
     }
