@@ -4,6 +4,7 @@ stages:
   - test
   - sonarqube
   - deploy
+  - e2eTests
 
 tag-checker:
   stage: tagChecking
