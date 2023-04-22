@@ -11,23 +11,39 @@
 <body class="view-teams-background">
 <div>
     <header th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></header>
-    <table id="teamTable">
-        <tr>
-            <th>Profile Picture</th>
-            <th>Name</th>
-            <th>Sport</th>
-            <th>Location</th>
-        </tr>
-        <tr th:each="team : ${displayTeams}"
-            th:onclick="|window.location.href='@{profile(teamID=${team.teamId})}'|">
-            <td>
-                <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" width="50" height="50"/>
-            </td>
-            <td th:text="${team.name}"></td>
-            <td th:text="${team.sport}"></td>
-            <td th:text="${team.location}"></td>
-        </tr>
-    </table>
+
+    <div class="card-container">
+        <div th:each="team : ${displayTeams}" class ="card"
+             th:onclick="|window.location.href='@{profile(teamID=${team.teamId})}'|">
+            <div class="card-wrapper">
+                <div class="card-image">
+                    <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" class="card-img-top" alt="User image">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">[[|${team.name} |]]</h5>
+                    <p class="card-text" th:text="${'Sport: ' + team.sport}">Team sport</p>
+                    <p class="card-text" th:text="${'Location: ' + team.location}">Team location</p>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--    <table id="teamTable">-->
+<!--        <tr>-->
+<!--            <th>Profile Picture</th>-->
+<!--            <th>Name</th>-->
+<!--            <th>Sport</th>-->
+<!--            <th>Location</th>-->
+<!--        </tr>-->
+<!--        <tr th:each="team : ${displayTeams}"-->
+<!--            th:onclick="|window.location.href='@{profile(teamID=${team.teamId})}'|">-->
+<!--            <td>-->
+<!--                <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" width="50" height="50"/>-->
+<!--            </td>-->
+<!--            <td th:text="${team.name}"></td>-->
+<!--            <td th:text="${team.sport}"></td>-->
+<!--            <td th:text="${team.location}"></td>-->
+<!--        </tr>-->
+<!--    </table>-->
     <div th:insert="fragments/pagination.html :: pagination(pageName='view-teams')"></div>
     <footer>
         <p>

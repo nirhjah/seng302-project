@@ -33,7 +33,9 @@
     <div th:each="user : ${listOfUsers}" class="card"
          th:onclick="|window.location.href='/user-info?name=${user.userId}'|">
         <div class="card-wrapper">
-            <img th:src="${'data:image/jpeg;base64,' + user.pictureString}" class="card-img-top" alt="User image">
+            <div class="card-image">
+                <img th:src="${'data:image/jpeg;base64,' + user.pictureString}" class="card-img-top" alt="User image">
+            </div>
             <div class="card-body">
                 <h5 class="card-title">[[|${user.firstName} ${user.lastName}|]]</h5>
                 <p class="card-text" th:text="${user.email}">User email</p>
