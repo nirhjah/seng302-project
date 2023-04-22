@@ -64,7 +64,8 @@ public class ViewAllUsersController {
         Page<User> userPage = getUserPage(page, currentSearch, sports, cities);
         List<User> userList = userPage.toList();
 
-        List<Location> locations = locationService.getLocationList();
+        // get all the cities that populate the dropdown
+        List<Location> locations = userService.findLocationBysearch(currentSearch);
         List<String> listOfCities = locations.stream()
                 .map(Location::getCity)
                 .distinct()
