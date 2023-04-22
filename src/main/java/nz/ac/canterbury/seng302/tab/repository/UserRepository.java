@@ -67,4 +67,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
                         + "OR lower(u.lastName) like LOWER(concat('%', :name, '%')) ")
         public List<Location> findLocationByUser(@Param("name") String name);
 
+        @Query("SELECT distinct u.location FROM UserEntity u")
+        public List<Location> findAllUserLocations();
+
 }
