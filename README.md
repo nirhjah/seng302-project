@@ -44,7 +44,7 @@ On Linux:
 ```
 ./gradlew test              #runs unit tests
 ./gradlew integration       #runs integration tests
-./gradlew end2end           #runs end-to-end tests
+./gradlew end2end           #runs end-to-end tests (if running locally, application must be running)
 ./gradlew check             #runs all tests
 ```
 
