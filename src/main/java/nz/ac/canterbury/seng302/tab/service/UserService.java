@@ -23,6 +23,7 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import nz.ac.canterbury.seng302.tab.service.LocationService;
 
 /**
  * Service class for User database entries, defined by the @link{Service}
@@ -36,6 +37,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private LocationService locationService;
 
     /**
      * Gets a page of users.
@@ -87,13 +91,18 @@ public class UserService {
     /**
      * returns a list of the locations that are relevant to the current search, this
      * means that we can populate the filter buttons with locations that only appear
-     * in the results table
+     * in the results table.
+     * if the search is empty, all the users will be displayed and so we will return
+     * all locations
      * 
      * @param name The current query, this is the current search in the search bar
      * @return a list of the locations that is relevant to the users that were
      *         returned from the search
      **/
     public List<Location> findLocationBysearch(String name) {
+        if (name == null || name.isEmpty()) {
+            return userRepository.findAllUserLocations();
+        }
         List<Location> listOfLocations = userRepository.findLocationByUser(name);
         return listOfLocations;
     }
