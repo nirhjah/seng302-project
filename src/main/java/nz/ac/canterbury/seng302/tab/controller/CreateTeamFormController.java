@@ -158,6 +158,7 @@ public class CreateTeamFormController {
         model.addAttribute("postcodeRegex", teamService.postcodeRegex);
         model.addAttribute("teamNameUnicodeRegex", teamService.teamNameUnicodeRegex);
         model.addAttribute("sportUnicodeRegex", teamService.sportUnicodeRegex);
+        model.addAttribute("httpServletRequest", httpServletRequest);
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);

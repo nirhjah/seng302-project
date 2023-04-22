@@ -95,7 +95,7 @@ public class ProfileFormControllerTest {
                     file.getName(), "image/png", input.readAllBytes());
             mockMvc.perform(multipart("/profile?teamID={id}", team.getTeamId()).file(multipartFile))
                     .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl(String.format("./profile?teamID=%s", team.getTeamId())));
+                    .andExpect(redirectedUrl(String.format("/profile?teamID=%s", team.getTeamId())));
         }
 
     }
