@@ -10,6 +10,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.entity.Location;
 
 /**
  * FormResult repository accessor using Spring's @link{CrudRepository}.
@@ -58,4 +59,12 @@ public interface UserRepository extends CrudRepository<User, Long> {
                         @Param("filteredLocations") List<String> filteredLocations,
                         @Param("filteredSports") List<String> filteredSports,
                         @Param("name") String name);
+
+        @Query("SELECT u.location FROM UserEntity u "
+                        + "WHERE lower(:name) like lower(concat('%', u.firstName, '%')) "
+                        + "OR lower(:name) like lower(concat('%', u.lastName, '%')) "
+                        + "OR lower(u.firstName) like lower(concat('%', :name, '%')) "
+                        + "OR lower(u.lastName) like LOWER(concat('%', :name, '%')) ")
+        public List<Location> findLocationByUser(@Param("name") String name);
+
 }
