@@ -98,28 +98,9 @@ public class ProfileFormController {
     @PostMapping("/profile")
     public String uploadPicture(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
             Model model) {
-
         model.addAttribute("teamID", ProfileFormController.teamId);
-        if (!isSupportedContentType(file.getContentType())) {
-            redirectAttributes.addFlashAttribute("typeError", true);
-            return "redirect:./profile?teamID=" +ProfileFormController.teamId;
-        } else if (file.getSize() > 10000000) {
-            redirectAttributes.addFlashAttribute("sizeError", true);
-            return "redirect:./profile?teamID=" +ProfileFormController.teamId;
-        }
         teamService.updatePicture(file, ProfileFormController.teamId);
-        return "redirect:./profile?teamID=" +ProfileFormController.teamId ;
-    }
-
-    /**
-     * @param contentType The picture file type in string, e.g image/jpg,
-     *                    image/svg+xml etc
-     * @return Boolean type if the contentType parameter matches either the
-     *         image/png, image/jpg, image/svg+xml or image/jpeg string
-     */
-    private boolean isSupportedContentType(String contentType) {
-        return contentType.equals("image/png") || contentType.equals("image/jpg") || contentType.equals("image/svg+xml")
-                || contentType.equals("image/jpeg");
+        return "redirect:/profile?teamID=" + ProfileFormController.teamId;
     }
 
 }

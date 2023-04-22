@@ -8,6 +8,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
+import static nz.ac.canterbury.seng302.tab.validator.UserFormValidators.INVALID_NAME_MSG;
+
 /**
  * The form provided to the user when registering for the website.
  * 
@@ -45,15 +47,15 @@ public class RegisterForm {
     private String suburb;
 
 
-    @NotNull
+    @UserFormValidators.DateOfBirthValidator(minimumAge = 13, message = "You must be at least 13 years old")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     Date dateOfBirth;
 
-    @NotBlank
-    @Size(min=8, max=100)
+    @UserFormValidators.PasswordValidator
+    @NotBlank(message = UserFormValidators.NOT_BLANK_MSG)
     String password;
 
-    @NotBlank
+    @NotBlank(message = UserFormValidators.NOT_BLANK_MSG)
     String confirmPassword;
 
     public String getFirstName() {

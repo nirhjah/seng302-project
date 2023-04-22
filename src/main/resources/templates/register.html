@@ -29,40 +29,45 @@
                 <div class="register-inputs-left">
                     <div class="input-box">
                         <input type="text" class="form-control" id="first-name" placeholder="" th:field="*{firstName}"
-                               data-cy="firstName" required autofocus>
+                               data-cy="firstName" autofocus>
                         <label for="first-name"> First Name <span class="required">*</span></label>
                     </div>
                     <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message"></div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="last-name" placeholder="" th:field="*{lastName}"
-                               data-cy="lastName" required autofocus>
+                               data-cy="lastName" autofocus>
                         <label for="last-name"> Last Name <span class="required">*</span></label>
                     </div>
                     <div th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error-message"></div>
                     <div class="input-box">
                         <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
-                               data-cy="dateOfBirth" required autofocus>
+                               data-cy="dateOfBirth" autofocus>
                         <label for="date-of-birth"> Date of Birth <span class="required">*</span></label>
                     </div>
                     <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
                     <div class="input-box">
                         <input type="email" class="form-control" id="email" placeholder="" th:field="*{email}"
-                               data-cy="email" required autofocus>
+                               data-cy="email" autofocus>
                         <label for="email"> Email <span class="required">*</span></label>
                     </div>
                     <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message"></div>
                     <div class="input-box">
                         <input type="password" class="form-control" id="password" placeholder="" th:field="*{password}"
-                               data-cy="password" required autofocus>
+                               data-cy="password" autofocus>
                         <label for="password"> Password <span class="required">*</span></label>
                     </div>
                     <div class="input-box">
                         <input type="password" class="form-control" id="confirm-password" placeholder=""
-                               th:field="*{confirmPassword}" data-cy="confirmPassword" required autofocus>
+                               th:field="*{confirmPassword}" data-cy="confirmPassword" autofocus>
                         <label for="confirm-password"> Confirm Password <span class="required">*</span></label>
+
+
+                        <ul>
+                            <li th:each="err : ${#fields.errors('password')}" th:text="${err}" class="password-error-message" />
+                        </ul>
+
                     </div>
                     <div class="password-info">
-                        <div th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error-message"></div>
                         <p>Password must be at least <strong>8 characters</strong>, contain <strong>upper</strong> and <strong>lower</strong> case letters, <strong>numbers</strong> and <strong>symbols</strong>, and can't contain your <strong>name</strong> or <strong>email</strong></p>
                     </div>
                 </div>
@@ -122,7 +127,7 @@
                 <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>
             </div>
             <div class="submit-button">
-                <button type="submit">Register</button>
+                <button type="submit" formnovalidate>Register</button>
             </div>
             <div class="cancel-link">
                 <a th:href="@{login}">Login</a>
