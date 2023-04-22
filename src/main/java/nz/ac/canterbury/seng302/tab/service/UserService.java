@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 
 /**
@@ -80,6 +82,20 @@ public class UserService {
         logger.info("...fav city = {}", favouriteCities);
         return userRepository.findUserByFilteredLocationsAndSports(pageable, favouriteCities, favouriteSports,
                 nameSearch);
+    }
+
+    /**
+     * returns a list of the locations that are relevant to the current search, this
+     * means that we can populate the filter buttons with locations that only appear
+     * in the results table
+     * 
+     * @param name The current query, this is the current search in the search bar
+     * @return a list of the locations that is relevant to the users that were
+     *         returned from the search
+     **/
+    public List<Location> findLocationBysearch(String name) {
+        List<Location> listOfLocations = userRepository.findLocationByUser(name);
+        return listOfLocations;
     }
 
     /**
