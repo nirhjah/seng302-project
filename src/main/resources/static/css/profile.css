@@ -258,7 +258,8 @@
         position: static;
         width: 90%;
         margin: 30px 0;
-        display: revert;
+        display: flex;
+        justify-content: space-between;
     }
 }
 .user-label{
