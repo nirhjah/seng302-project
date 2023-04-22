@@ -41,31 +41,41 @@
                     </div>
                 </form>
             </div>
-            <div class="team-info">
-                <div class="team-display">
-                    <h2>User Profile</h2>
-                    <h3 th:text="|Name: *{firstName} *{lastName}|"></h3>
-                    <div class="user-label">
-                        <img th:src="@{/image/icons/email.svg}"/>
-                        <h3 th:text="|Email: *{email}|"></h3>
-                    </div>
-                    <h3 th:text="|Date of Birth: *{#dates.format(dateOfBirth, 'dd-MM-yyyy')}|"></h3>
-                    <div class="user-label">
-                        <img  th:src="@{/image/icons/location.svg}"/>
-                        <h3 th:text="|Location: *{location}|"></h3>
-                    </div>
-                    <h3>Favourite Sports:</h3>
-                    <div class="sport-box" id="sport-box">
-                        <li th:each="sport : ${favSportNames}" th:text="${sport}"></li>
+                <div class="team-info">
+                    <div class="team-display">
+                        <h2>User Profile</h2>
+                        <div class="user-label">
+                            <img th:src="@{/image/icons/name.svg}"/>
+                            <h3 th:text="|Name: *{firstName} *{lastName}|"></h3>
+                        </div>
+                        <div class="user-label">
+                            <img th:src="@{/image/icons/email.svg}"/>
+                            <h3 th:text="|Email: *{email}|"></h3>
+                        </div>
+                        <div class="user-label">
+                            <img  th:src="@{/image/icons/date-of-birth.svg}"/>
+                            <h3 th:text="|Date of Birth: *{#dates.format(dateOfBirth, 'dd-MM-yyyy')}|"></h3>
+                        </div>
+                        <div class="user-label">
+                            <img  th:src="@{/image/icons/location.svg}"/>
+                            <h3 th:text="|Location: *{location}|"></h3>
+                        </div>
+                        <div class="user-label">
+                            <img  th:src="@{/image/icons/sports.svg}"/>
+                            <h3>Favourite Sports:</h3>
+                        </div>
+                        <div class="sport-box" id="sport-box">
+                            <li th:each="sport : ${favSportNames}" th:text="${sport}"></li>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="profile-buttons">
-                <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
-                <div th:if="${canEdit}" class="edit-button">
-                      <a th:href="@{editUser}">
-                          <button type="button">Edit Profile</button>
-                      </a>
+                <div class="profile-buttons">
+                    <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+                    <div th:if="${canEdit}" class="edit-button">
+                        <a th:href="@{editUser}">
+                            <button type="button">Edit Profile</button>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
