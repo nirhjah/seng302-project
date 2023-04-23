@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import java.util.List;
 
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,9 @@ public class ViewAllUsersController {
 
     @Autowired
     SportService sportService;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     LocationService locationService;
@@ -74,7 +78,7 @@ public class ViewAllUsersController {
         model.addAttribute("currentSearch", currentSearch);
         model.addAttribute("page", page);
         model.addAttribute("listOfUsers", userList);
-        model.addAttribute("listOfSports", sportService.getAllSports().stream().map(Sport::getName).toList());
+        model.addAttribute("listOfSports", userService.findSportBysearch(currentSearch).stream().map(Sport::getName).toList()); //nirhjah
         model.addAttribute("listOfCities", listOfCities);
         model.addAttribute("totalPages", userPage.getTotalPages());
         model.addAttribute("navTeams", teamService.getTeamList());
