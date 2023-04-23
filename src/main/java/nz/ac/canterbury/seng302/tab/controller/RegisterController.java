@@ -117,65 +117,43 @@ public class RegisterController {
     }
 
     /**
-     * Checks if the passwords match
-     * 
+     * Checks if the passwords match and is secure enough (doesn't contain any other fields)
+     *  The ACs state three vague security criteria (The PO didn't clarify beyond "Use common sense"):
+     *   <ol>
+     *          <li>At least 8 characters long (Jakarta annotations already handles this)</li>
+     *          <li>Password doesn't "contain any other field", interpreted as your name can't be in the password.</li>
+     *          <li>Password must "contain a variation of different character types", interpreted as at least one [lowercase, uppercase, digit, and symbol] each.</li>
+     *   </ol>
+     *
      * @param registerForm  The user form containing the password
      * @param bindingResult The object we'll attach errors to if it fails
      */
-    private void checkPasswordsMatch(RegisterForm registerForm, BindingResult bindingResult) {
+    private void checkPasswordsMatchAndIsSecure(RegisterForm registerForm, BindingResult bindingResult) {
         String password = registerForm.getPassword();
         String confirmPassword = registerForm.getConfirmPassword();
-        if (!password.equals(confirmPassword)) {
+        // Check #1: Passwords match
+        if (password.equals(confirmPassword)) {
+
+            // Check #2: Password doesn't "contain any other field"
+            String[] otherFields = new String[]{registerForm.getFirstName(), registerForm.getLastName(), registerForm.getEmail()};
+            if(password.length() > 0) {
+                for (String field : otherFields) {
+                    if (field != "") {
+                        if (password.toLowerCase().contains(field.toLowerCase())) {
+                            bindingResult.addError(new FieldError("registerForm", "password", "Password can't contain values from other fields"));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        else {
             bindingResult.addError(new FieldError("registerForm", "password", "Passwords do not match"));
+
         }
     }
 
-    /**
-     * <p>Checks if the password is secure enough.</p>
-     * 
-     * The ACs state three vague security criteria (The PO didn't clarify beyond "Use common sense"):
-     * <ol>
-     *      <li>At least 8 characters long (Jakarta annotations already handles this)</li>
-     *      <li>Password doesn't "contain any other field", interpreted as your name can't be in the password.</li>
-     *      <li>Password must "contain a variation of different character types", interpreted as at least one [lowercase, uppercase, digit, and symbol] each.</li>
-     * </ol>
-     * 
-     * @param registerForm The user form containing the password
-     * @param bindingResult The object we'll attach errors to if it fails
-     */
-    private void checkPasswordIsSecure(RegisterForm registerForm, BindingResult bindingResult) {
-        String password = registerForm.getPassword();
 
-        // Check #1: Password doesn't "contain any other field"
-        String[] otherFields = new String[]{registerForm.getFirstName(), registerForm.getLastName(), registerForm.getEmail()};
-        for (String field : otherFields) {
-            if (password.toLowerCase().contains(field.toLowerCase())) {
-                bindingResult.addError(new FieldError("registerForm", "password", "Password can't contain values from other fields"));
-                break;
-            }
-        }
-        // Check #2: Does it contain a "variation of different characters"
-        boolean uppercase = false;
-        boolean lowercase = false;
-        boolean number = false;
-        boolean symbol = false;
-        for (char c : password.toCharArray()) {
-            if (Character.isDigit(c)) {
-                number = true;
-            } else if (Character.isUpperCase(c)) {
-                uppercase = true;
-            } else if (Character.isLowerCase(c)) {
-                lowercase = true;
-            } else {
-                symbol = true;
-            }
-        }
-
-        if (!uppercase || !lowercase || !number || !symbol) {
-            bindingResult.addError(new FieldError("registerForm", "password",
-                    "Password does not meet the requirements"));
-        }
-    }
 
     /**
      * Gets form to be displayed
@@ -214,10 +192,8 @@ public class RegisterController {
 
         // Run the custom validation methods
         // TODO: Move validators that might be reused into their own class
-        checkAgeOnRegister(registerForm, bindingResult);
         checkEmailIsNotInUse(registerForm, bindingResult);
-        checkPasswordsMatch(registerForm, bindingResult);
-        checkPasswordIsSecure(registerForm, bindingResult);
+        checkPasswordsMatchAndIsSecure(registerForm, bindingResult);
 
         if (bindingResult.hasErrors()) {
             URL url = new URL(request.getRequestURL().toString());
