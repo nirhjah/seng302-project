@@ -106,6 +106,9 @@ public class ViewAllTeamsController {
     }
 
     private Page<Team> getAllTeams(int page) {
+        if (page <= 0) {
+            return Page.empty();
+        }
         return teamService.findPaginated(page, PAGE_SIZE);
     }
 
@@ -126,6 +129,7 @@ public class ViewAllTeamsController {
         model.addAttribute("searchQuery", searchQuery);
         model.addAttribute("page", pageNumber);
         model.addAttribute("teams", teams);
+        logger.info("totalPages = {}", teamPage.getTotalPages());
         model.addAttribute("totalPages", teamPage.getTotalPages());
     }
 
