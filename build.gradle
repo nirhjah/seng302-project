@@ -28,8 +28,57 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+
+	implementation "io.cucumber:cucumber-spring:7.5.0"
+	implementation "io.cucumber:cucumber-java:7.5.0"
+	implementation "com.microsoft.playwright:playwright:1.32.0"
+
+}
+
+configurations {
+	cucumberRuntime {
+		extendsFrom testImplementation
+	}
+}
+
+tasks.register('integration') {
+	dependsOn assemble, testClasses
+	group = "verification"
+	doLast {
+		javaexec {
+			main = "io.cucumber.core.cli.Main"
+			classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+			args = [
+					'--plugin', 'pretty',
+					'--plugin', 'html:target/integration-report.html',
+					'--glue', 'nz/ac/canterbury/seng302/tab/integration',
+					'src/test/resources/features/integration'
+			]
+		}
+	}
+}
+
+tasks.register('end2end') {
+	dependsOn assemble, testClasses
+	group = "verification"
+	doLast {
+		javaexec {
+			main = "io.cucumber.core.cli.Main"
+			classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+			args = [
+					'--plugin', 'pretty',
+					'--plugin', 'html:target/end2end-report.html',
+					'--glue', 'nz/ac/canterbury/seng302/tab/end2end', // points to step definitions and Cucumber config. The root for this is the src/test/java package.
+					'src/test/resources/features/end2end' // points to the feature files. The root for this is the project root.
+			]
+		}
+	}
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.named("check") {
+	dependsOn test, end2end, integration
 }
