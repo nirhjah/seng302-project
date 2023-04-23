@@ -8,8 +8,7 @@ import nz.ac.canterbury.seng302.tab.TabApplication;
 /**
  * Implementation from Playwright Example Repository provided by teaching team
  *
- * Integration tests as the {@link VotingFeature} example shows, tests the applications function, including the
- * application context.
+ * Integration tests test the applications function, including the application context.
  * The annotations on this file tell cucumber how the context of the integration tests are to be setup. You do not need
  * to know how they work, just that they set up the application to run in the tests.
  * The @CucumberContextConfiguration annotation is required to provide the context of the tests, in this case the spring
