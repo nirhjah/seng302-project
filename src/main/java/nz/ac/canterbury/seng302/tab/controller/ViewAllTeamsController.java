@@ -148,6 +148,11 @@ public class ViewAllTeamsController {
             @RequestParam(value = "sports", required = false) List<String> filteredSports,
             Model model)
     {
+        if (teamService.getTeamList().size() == 0) {
+            // redirect to home if there aren't any teams.
+            return "redirect:/home";
+        }
+
         logger.info("GET /view-teams");
 
         addParametersToModel(model, filteredCities, filteredSports, searchQuery, pageNo);
