@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.repository;
 import java.util.List;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.entity.Sport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -60,6 +61,15 @@ public interface UserRepository extends CrudRepository<User, Long> {
                         @Param("filteredSports") List<String> filteredSports,
                         @Param("name") String name);
 
+
+        @Query("SELECT u.favoriteSports FROM UserEntity u "
+                + "WHERE lower(:name) like lower(concat('%', u.firstName, '%')) "
+                + "OR lower(:name) like lower(concat('%', u.lastName, '%')) "
+                + "OR lower(u.firstName) like lower(concat('%', :name, '%')) "
+                + "OR lower(u.lastName) like LOWER(concat('%', :name, '%')) ")
+        public List<Sport> findSportByUser(@Param("name") String name);
+
+
         @Query("SELECT u.location FROM UserEntity u "
                         + "WHERE lower(:name) like lower(concat('%', u.firstName, '%')) "
                         + "OR lower(:name) like lower(concat('%', u.lastName, '%')) "
@@ -70,4 +80,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
         @Query("SELECT distinct u.location FROM UserEntity u")
         public List<Location> findAllUserLocations();
 
+
+        @Query("SELECT distinct u.favoriteSports FROM UserEntity u")
+        public List<Sport> findAllUserSports();
 }
