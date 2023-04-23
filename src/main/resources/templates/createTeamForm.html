@@ -22,15 +22,19 @@
                 <div class="input-boxes">
                     <div class="input-box">
                         <input type="text" class="form-control" id="name" th:name="name" th:value="${name}"
-                               data-cy="name" required autofocus th:pattern="${teamNameUnicodeRegex}" placeholder=""
+                               data-cy="name" autofocus placeholder=""
                         title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
                         <label for="name">Name <span class="required">*</span></label>
+                        <div th:each="err : ${#fields.errors('name')}" th:text="${err}" class="team-error-message"></div>
                     </div>
+
                     <div class="input-box">
                         <input type="text" class="form-control" id="sport" th:name="sport" th:value="${sport}"
-                               data-cy="sport" required autofocus th:pattern="${sportUnicodeRegex}" placeholder=""
+                               data-cy="sport" autofocus placeholder=""
                         title="May include letters, spaces, apostrophes, and hyphens. Must start with letter">
                         <label for="sport">Sport <span class="required">*</span></label>
+                        <div th:each="err : ${#fields.errors('sport')}" th:text="${err}" class="team-error-message"></div>
+
                     </div>
                 </div>
                 <div class="input-boxes">
