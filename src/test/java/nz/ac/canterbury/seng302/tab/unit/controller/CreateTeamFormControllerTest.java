@@ -116,8 +116,8 @@ public class CreateTeamFormControllerTest {
                         .param("country", "New Zealand")
                         .param("postcode", "fghj")
                         .param("suburb", "ilam"))
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
+                .andExpect(status().isBadRequest())
+                .andExpect(view().name("createTeamForm"));
     }
 
     /**
@@ -136,8 +136,8 @@ public class CreateTeamFormControllerTest {
                         .param("country", "New Zealand")
                         .param("postcode", "fghj")
                         .param("suburb", "ilam"))
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
+                .andExpect(status().isBadRequest())
+                .andExpect(view().name("createTeamForm"));
     }
 
     /**
@@ -179,8 +179,8 @@ public class CreateTeamFormControllerTest {
                 .param("country", "New Zealand")
                 .param("postcode", "fghj")
                 .param("suburb", "ilam"))
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
+                .andExpect(status().isBadRequest())
+                .andExpect(view().name("createTeamForm"));
     }
 
     /**
@@ -202,8 +202,8 @@ public class CreateTeamFormControllerTest {
                 .param("country", "New Zealand")
                 .param("postcode", "fghj")
                 .param("suburb", "ilam"))
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:./createTeam?invalid_input=1&edit=1"));
+                .andExpect(status().isBadRequest())
+                .andExpect(view().name("createTeamForm"));
     }
 
     /**
