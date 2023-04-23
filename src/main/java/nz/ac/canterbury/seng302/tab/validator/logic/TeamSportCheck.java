@@ -3,8 +3,6 @@ package nz.ac.canterbury.seng302.tab.validator.logic;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
-import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
-
 
 /**
  * <p>Implementation for the {@link TeamFormValidators} annotation.</p>
