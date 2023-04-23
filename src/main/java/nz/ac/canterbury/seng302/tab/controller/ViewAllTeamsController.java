@@ -1,7 +1,10 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
+import nz.ac.canterbury.seng302.tab.repository.SportRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Spring Boot Controller for View Teams Form
@@ -30,9 +34,58 @@ public class ViewAllTeamsController {
     @Autowired
     private TeamRepository teamRepository;
 
+    @Autowired
+    private SportRepository sportRepository;
+
+    @Autowired
+    private LocationRepository locationRepository;
+
     private Page<Team> getTeams(List<String> filteredCities, List<String> filteredSports, String searchQuery, int pageNumber) {
         PageRequest pageRequest = PageRequest.of(pageNumber, PAGE_SIZE);
         return teamService.findPaginatedTeamsByCityAndSports(pageRequest, filteredCities, filteredSports, searchQuery);
+    }
+
+    /**
+     * Gets sports that should populate the dropdown
+     * @param searchQuery the current team search
+     * @return list of sports, as strings
+     */
+    private List<String> getSportsForDropdown(String searchQuery) {
+        boolean hasSearch = Objects.isNull(searchQuery) || searchQuery.length() > 0;
+        if (hasSearch) {
+            return teamRepository.findSportsByName(searchQuery).stream()
+                    .distinct()
+                    .sorted()
+                    .toList();
+        } else {
+            return sportRepository
+                    .findAll()
+                    .stream()
+                    .map(Sport::getName)
+                    .toList();
+        }
+    }
+
+    /**
+     * Gets cities that should populate the dropdown
+     * @param searchQuery the current team search
+     * @return list of sports, as strings
+     */
+    private List<String> getCitiesForDropDown(String searchQuery) {
+        boolean hasSearch = Objects.isNull(searchQuery) || searchQuery.length() > 0;
+        if (hasSearch) {
+            return teamRepository.findLocationsByName(searchQuery).stream()
+                    .map(Location::getCity)
+                    .distinct()
+                    .sorted()
+                    .toList();
+        } else {
+            return locationRepository
+                    .findAll()
+                    .stream()
+                    .map(Location::getCity)
+                    .toList();
+        }
     }
 
     /**
@@ -42,18 +95,10 @@ public class ViewAllTeamsController {
      * @param searchQuery the current team name search
      */
     private void populateDropdowns(Model model, String searchQuery) {
-        var sports = teamRepository.findSportsByName(searchQuery).stream()
-                .distinct()
-                .sorted()
-                .toList();
-
-        List<String> cities = teamRepository.findLocationsByName(searchQuery).stream()
-                .map(Location::getCity)
-                .distinct()
-                .sorted()
-                .toList();
-
-        logger.info("cityCheckBox = {}", cities);
+        var sports = getSportsForDropdown(searchQuery);
+        var cities = getCitiesForDropDown(searchQuery);
+        logger.info("city checkbox pop = {}", cities);
+        logger.info("sport checkbox pop = {}", sports);
         logger.info("searchQuery = {}", searchQuery);
 
         model.addAttribute("sports", sports);
