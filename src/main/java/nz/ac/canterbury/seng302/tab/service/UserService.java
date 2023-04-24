@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.entity.Sport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +106,26 @@ public class UserService {
         }
         List<Location> listOfLocations = userRepository.findLocationByUser(name);
         return listOfLocations;
+    }
+
+    /**
+     * returns a list of the sports that are relevant to the current search, this
+     * means that we can populate the filter buttons with sports that only appear
+     * in the results table.
+     * if the search is empty, all the users will be displayed and so we will return
+     * all sports
+     *
+     * @param name The current query, this is the current search in the search bar
+     * @return a list of the sports that is relevant to the users that were
+     *         returned from the search
+     **/
+    public List<Sport> findSportBysearch(String name) {
+        if (name == null || name.isEmpty()) {
+            return  userRepository.findAllUserSports(); //find ALL sports if search is blank
+        }
+        List<Sport> listOfUserSports = userRepository.findSportByUser(name);
+        return listOfUserSports;
+
     }
 
     /**
