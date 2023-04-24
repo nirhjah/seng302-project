@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.LocationService;
 
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
@@ -51,6 +52,7 @@ public class HomeFormController {
     public String getTemplate(Model model) {
         logger.info("GET /homeForm");
         model.addAttribute("navTeams", teamService.getTeamList());
+        System.out.println("Check generated token" + User.generateToken());
         return "homeForm";
     }
 }

@@ -257,4 +257,12 @@ public class UserService {
         // Saved the updated picture string in the database.
         userRepository.save(user);
     }
+
+    public String getUniqueToken() {
+        String token = User.generateToken();
+        while (userRepository.findByToken(token).isPresent()) {
+            token = User.generateToken();
+        }
+        return token;
+    }
 }

@@ -105,6 +105,9 @@ public class User {
     @Column(nullable = false)
     private String hashedPassword;
 
+    @Column
+    private String token;
+
     public long getUserId() {
         return userId;
     }
@@ -144,6 +147,8 @@ public class User {
 
     public String getPassword() {return hashedPassword; }
 
+    public String getToken() {return this.token;}
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -163,6 +168,8 @@ public class User {
     public void setPictureString(String pictureString) {
         this.pictureString = pictureString;
     }
+
+    public void setToken(String token) { this.token = token;}
 
     @Column()
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -244,4 +251,9 @@ public class User {
         }
         return sport;
     }
+
+    public static String generateToken() {
+        return UUID.randomUUID().toString().substring(0,12);
+    }
+
 }
