@@ -29,7 +29,7 @@ th:nth-child(4) {
     align-items: center;
     border: 3px solid #58629b;
     border-radius: 60px;
-    padding: 10px 20px;
+    padding: 10px 2px 10px 20px;
     height: 50px;
     backdrop-filter: blur(4px) saturate(180%);
 }
@@ -58,7 +58,6 @@ th:nth-child(4) {
     background: #58629b;
     cursor: pointer;
     position: relative;
-    right: -3.8%;
 }
 
 .search-button {
@@ -152,7 +151,8 @@ table {
     padding:12px 16px;
     border-radius:8px;
     background-color:#ccc;
-    border:2px solid #ccc
+    border:2px solid #ccc;
+    cursor: pointer;
 }
 
 .pagination-container button:hover{

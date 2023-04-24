@@ -9,7 +9,7 @@
   <title>Search Teams</title>
 </head>
 <body class="Search-teams-background">
-  <header th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></header>
+  <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
   <form id="search-form" th:action="@{/searchTeams(teamName=${teamName},page=1)}" method="get">
     <div class="search-bar">
       <input class ="team-name-input" type="text" id="teamName" name="teamName" th:value="${teamName}" placeholder="Search Teams" />
