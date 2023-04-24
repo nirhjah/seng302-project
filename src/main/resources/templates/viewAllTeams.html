@@ -9,7 +9,7 @@
 <div>
     <div th:insert="~{homeForm.html::navbar(navTeams=${displayTeams})}"></div>
 
-    <form id="search-form" th:action="@{/view-teams(searchQuery=${searchQuery},page=1)}" method="get">
+    <form id="search-form" th:action="@{/view-teams(page=1, searchQuery=${searchQuery})}" method="get">
         <div class="search-bar">
             <input class ="team-name-input" type="text" id="searchQuery" name="searchQuery" th:value="${searchQuery}" placeholder="Search Teams" />
             <div class="search-team-button-div">
@@ -30,7 +30,7 @@
 
         form.addEventListener('submit', (event) => {
             // if the value is less than 3 characters, prevent form from submitting
-            if (input.value.length < 3) {
+            if (input.value.length > 0 && input.value.length < 3) {
                 event.preventDefault();
 
                 // Remove existing error message

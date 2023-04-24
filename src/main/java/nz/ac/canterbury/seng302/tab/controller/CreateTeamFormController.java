@@ -106,7 +106,6 @@ public class CreateTeamFormController {
 
     /**
      * Posts a form response with team name, sport and location
-     *
      * @param name  name if user
      * @param sport users team sport
      * @param model (map-like) representation of name, language and isJava boolean

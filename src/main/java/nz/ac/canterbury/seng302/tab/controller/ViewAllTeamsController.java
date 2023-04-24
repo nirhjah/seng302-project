@@ -142,8 +142,8 @@ public class ViewAllTeamsController {
      */
     @GetMapping("/view-teams")
     public String findPaginated(
-            @RequestParam(value = "searchQuery", required = false) String searchQuery,
             @RequestParam(value = "page", defaultValue = "-1") int pageNo,
+            @RequestParam(value = "searchQuery", required = false) String searchQuery,
             @RequestParam(value = "cityCheckbox", required = false) List<String> filteredCities,
             @RequestParam(value = "sports", required = false) List<String> filteredSports,
             Model model)
