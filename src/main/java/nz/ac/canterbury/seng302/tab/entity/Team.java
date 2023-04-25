@@ -9,12 +9,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Base64;
+import java.util.UUID;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
  */
 @Entity
 public class Team {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
@@ -31,6 +33,9 @@ public class Team {
     @Column(columnDefinition = "MEDIUMBLOB")
     private String pictureString;
 
+    @Column
+    private String token;
+
     protected Team() {
     }
 
@@ -41,11 +46,13 @@ public class Team {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
+        this.token = generateToken();
     }
 
     /**
      * Should be used for testing ONLY!
      * TODO: Remove this constructor, use builder pattern. same for user
+     * 
      * @param name
      * @param sport
      */
@@ -102,6 +109,25 @@ public class Team {
 
     public void setSport(String sport) {
         this.sport = sport;
+    }
+
+    public String getToken() {
+        return this.token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    /**
+     * U24/AC1 states that the token must consist of letters and numbers, the UUID
+     * method will generate '-'s aswell so we replace all occurances with the empty
+     * string
+     * 
+     * @return new random token only containing characters and numbers
+     */
+    public static String generateToken() {
+        return UUID.randomUUID().toString().replaceAll("\\-*", "").substring(0, 12);
     }
 
 }

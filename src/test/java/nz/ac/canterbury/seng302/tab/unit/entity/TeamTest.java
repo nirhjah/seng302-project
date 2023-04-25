@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,6 @@ public class TeamTest {
     @Autowired
     private TeamService teamService;
 
-    @Autowired
-    private LocationRepository locationRepository;
-
     private Location location;
 
     @BeforeEach
@@ -38,7 +36,6 @@ public class TeamTest {
         teamRepository.deleteAll();
         location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
     }
-
 
     @Test
     public void testTeamConstructor() throws IOException {
@@ -88,6 +85,29 @@ public class TeamTest {
         Team team = new Team("test", "Hockey", location);
         teamService.addTeam(team);
         assertEquals("Christchurch", team.getLocation().getCity());
+    }
+
+    /**
+     * U24/AC5 states that a token must be 12 characters long
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void givenCreatingANewUser_WhenTokenIsGenerated_TokenIs12CharactersLong() throws IOException {
+        String token = Team.generateToken();
+        assertEquals(token.length(), 12);
+    }
+
+    /**
+     * U24/AC5 states that a token must a combination of letters and numbers
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void givenCreatingANewUser_WhenTokenIsGenerated_TokenIsMadeOfOnlyCharactersAndNumbers()
+            throws IOException {
+        String token = Team.generateToken();
+        assertTrue(token.matches("^[a-zA-Z0-9]*$"));
     }
 
 }
