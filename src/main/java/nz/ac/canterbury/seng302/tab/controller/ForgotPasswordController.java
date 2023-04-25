@@ -35,7 +35,6 @@ public class ForgotPasswordController {
             HttpServletResponse httpServletResponse
     ) {
 
-
         model.addAttribute("email", email);
 
         if (bindingResult.hasErrors()) {
@@ -43,7 +42,9 @@ public class ForgotPasswordController {
             return "forgotPassword";
         }
 
-        return "redirect:./home";
+        logger.info("email submitted");
+
+        return "forgotPassword";
     }
 
 
