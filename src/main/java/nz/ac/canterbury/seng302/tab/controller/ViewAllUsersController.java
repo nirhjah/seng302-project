@@ -36,9 +36,6 @@ public class ViewAllUsersController {
     SportService sportService;
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
     LocationService locationService;
 
     final Logger logger = LoggerFactory.getLogger(getClass());

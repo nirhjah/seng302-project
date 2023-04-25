@@ -12,6 +12,7 @@
 <div th:fragment="pagination(pageName, page, totalPages)" class="pagination">
     <script>
         function gotoPage(pageNum) {
+            pageNum = pageNum || 1;
             const url = new URL(document.location.href);
             url.searchParams.set('page', pageNum);
             window.location.href = url.toString();

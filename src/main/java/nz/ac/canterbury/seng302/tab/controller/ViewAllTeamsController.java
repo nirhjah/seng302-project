@@ -51,7 +51,7 @@ public class ViewAllTeamsController {
      * @return list of sports, as strings
      */
     private List<String> getSportsForDropdown(String searchQuery) {
-        boolean hasSearch = Objects.isNull(searchQuery) || searchQuery.length() > 0;
+        boolean hasSearch = !Objects.isNull(searchQuery) && searchQuery.length() >= 3;
         if (hasSearch) {
             return teamRepository.findSportsByName(searchQuery).stream()
                     .distinct()
@@ -72,18 +72,18 @@ public class ViewAllTeamsController {
      * @return list of sports, as strings
      */
     private List<String> getCitiesForDropDown(String searchQuery) {
-        boolean hasSearch = Objects.isNull(searchQuery) || searchQuery.length() > 0;
-        if (hasSearch) {
-            return teamRepository.findLocationsByName(searchQuery).stream()
-                    .map(Location::getCity)
-                    .distinct()
-                    .sorted()
-                    .toList();
-        } else {
+        boolean emptySearch = Objects.isNull(searchQuery) || searchQuery.length() < 3;
+        if (emptySearch) {
             return locationRepository
                     .findAll()
                     .stream()
                     .map(Location::getCity)
+                    .toList();
+        } else {
+            return teamRepository.findLocationsByName(searchQuery).stream()
+                    .map(Location::getCity)
+                    .distinct()
+                    .sorted()
                     .toList();
         }
     }
@@ -115,13 +115,13 @@ public class ViewAllTeamsController {
     private void addParametersToModel(Model model, List<String> filteredCities, List<String> filteredSports, String searchQuery, int pageNumber) {
         Page<Team> teamPage;
         if (searchQuery == null) {
-            teamPage = getAllTeams(pageNumber);
+            searchQuery = "";
         } else if (searchQuery.length() < 3) {
             model.addAttribute("searchTooShortError", true);
-            teamPage = getAllTeams(pageNumber);
-        } else {
-            teamPage = getTeams(filteredCities, filteredSports, searchQuery, pageNumber);
+            searchQuery = "";
         }
+
+        teamPage = getTeams(filteredCities, filteredSports, searchQuery, pageNumber);
 
         populateDropdowns(model, searchQuery);
 
@@ -142,7 +142,7 @@ public class ViewAllTeamsController {
      */
     @GetMapping("/view-teams")
     public String findPaginated(
-            @RequestParam(value = "page", defaultValue = "-1") int pageNo,
+            @RequestParam(value = "page", defaultValue = "1") int pageNo,
             @RequestParam(value = "searchQuery", required = false) String searchQuery,
             @RequestParam(value = "cityCheckbox", required = false) List<String> filteredCities,
             @RequestParam(value = "sports", required = false) List<String> filteredSports,

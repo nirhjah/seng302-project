@@ -9,7 +9,7 @@
 <div>
     <div th:insert="~{homeForm.html::navbar(navTeams=${displayTeams})}"></div>
 
-    <form id="search-form" th:action="@{/view-teams(page=1, searchQuery=${searchQuery})}" method="get">
+    <form id="search-form" th:action="@{view-teams}" method="get">
         <div class="search-bar">
             <input class ="team-name-input" type="text" id="searchQuery" name="searchQuery" th:value="${searchQuery}" placeholder="Search Teams" />
             <div class="search-team-button-div">
