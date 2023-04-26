@@ -1,5 +1,6 @@
-package nz.ac.canterbury.seng302.tab.controller;
+package nz.ac.canterbury.seng302.tab.unit.controller;
 
+import nz.ac.canterbury.seng302.tab.controller.ProfileFormController;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;

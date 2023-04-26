@@ -10,6 +10,8 @@
     <title>View All Users</title>
 </head>
 
+<div th:insert="~{homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+
 <body class="view-users-background">
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 <form th:action="@{view-users}" method="get">
@@ -19,29 +21,20 @@
         <button class="search-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
     </div>
     <div class="filter-bar">
-        <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}"
-             th:if="${not #lists.isEmpty(listOfSports)}"></div>
+        <div th:if="${not #lists.isEmpty(listOfUsers)}" style="display: flex">
+            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>
+            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfCities}, 'Filter by city', 'cities')}" th:if="${not #lists.isEmpty(listOfCities)}"></div>
+            <button class="filter-by-city-button" type="submit">Apply Filters</button>
+        </div>
     </div>
 </form>
 
-<div th:if="${listOfUsers.empty}">
-    <p>No users</p>
-</div>
-
-<div th:unless="${listOfUsers.empty}" class="card-container">
-    <div th:each="user : ${listOfUsers}" class="card"
-         th:onclick="|window.location.href='/user-info?name=${user.userId}'|">
-        <div class="card-wrapper">
-            <div class="card-image">
-                <img th:src="${'data:image/jpeg;base64,' + user.pictureString}" class="card-img-top" alt="User image">
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">[[|${user.firstName} ${user.lastName}|]]</h5>
-                <p class="card-text" th:text="${user.email}">User email</p>
-            </div>
-        </div>
-    </div>
-</div>
+    <!-- Can convert this table into a fragment if neccessary.
+        for now, embrace YAGNI -->
+    <table>
+        <tr th:if="${listOfUsers.empty}">
+            <td colspan="2"> No users </td>
+        </tr>
 
 
 <div th:insert="~{fragments/pagination.html :: pagination(pageName='view-users')}"></div>

@@ -1,5 +1,6 @@
-package nz.ac.canterbury.seng302.tab.entity;
+package nz.ac.canterbury.seng302.tab.unit.entity;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -5,10 +5,11 @@ import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
 public class CreateAndEditTeamForm {
 
-    private String sport;
-
+    @TeamFormValidators.teamNameValidator(message = TeamFormValidators.INVALID_TEAM_NAME_MSG)
     private String name;
 
+    @TeamFormValidators.teamSportValidator(message = TeamFormValidators.INVALID_TEAM_SPORT_MSG)
+    private String sport;
     @TeamFormValidators.addressValidator
     private String addressLine1;
 
@@ -86,5 +87,13 @@ public class CreateAndEditTeamForm {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSport() {
+        return sport;
+    }
+
+    public void setSport(String sport) {
+        this.sport = sport;
     }
 }

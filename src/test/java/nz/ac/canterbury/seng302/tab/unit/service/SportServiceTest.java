@@ -1,7 +1,8 @@
-package nz.ac.canterbury.seng302.tab.service;
+package nz.ac.canterbury.seng302.tab.unit.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.repository.SportRepository;
+import nz.ac.canterbury.seng302.tab.service.SportService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

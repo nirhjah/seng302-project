@@ -1,5 +1,7 @@
-package nz.ac.canterbury.seng302.tab.entity;
+package nz.ac.canterbury.seng302.tab.unit.entity;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
