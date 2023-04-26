@@ -50,7 +50,7 @@ public class UserService {
      * @return A slice of users returned from pagination
      */
     public Page<User> getPaginatedUsers(Pageable pageable) {
-        return userRepository.findAll(pageable);
+        return userRepository.findAllByOrderByLastNameAsc(pageable);
     }
 
     /**

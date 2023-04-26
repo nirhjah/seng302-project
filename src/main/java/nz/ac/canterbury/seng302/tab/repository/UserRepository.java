@@ -6,6 +6,7 @@ import java.util.Optional;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -30,7 +31,9 @@ public interface UserRepository extends CrudRepository<User, Long> {
         @Query("SELECT u FROM UserEntity u WHERE u.email = :email and u.hashedPassword = :password")
         User getUserByEmailAndPassword(@Param("email") String email, @Param("password") String password);
 
-        Page<User> findAll(Pageable pageable);
+        //Page<User> findAll(Pageable pageable, Sort.by(Sort.Direction.ASC "lastName"));
+
+        Page<User> findAllByOrderByLastNameAsc(Pageable pageable);
 
         /*
          * Query Logic:
@@ -47,15 +50,16 @@ public interface UserRepository extends CrudRepository<User, Long> {
          * "Carpenter".
          * So, we ALSO check if the first name or last name is in the search string.
          */
-        @Query("SELECT distinct u "
-                        + "FROM UserEntity u LEFT JOIN u.favoriteSports s "
-                        + "WHERE (:#{#filteredLocations.size} = 0 OR (u.location.city) in (:filteredLocations)) "
-                        + "AND (:#{#filteredSports.size}=0 OR s.name in (:filteredSports)) "
-                        + "AND (:name is null OR "
-                        + "lower(:name) like lower(concat('%', u.firstName, '%')) "
-                        + "OR lower(:name) like lower(concat('%', u.lastName, '%')) "
-                        + "OR lower(u.firstName) like lower(concat('%', :name, '%')) "
-                        + "OR lower(u.lastName) like LOWER(concat('%', :name, '%'))) ")
+        @Query("SELECT DISTINCT u "
+                + "FROM UserEntity u LEFT JOIN u.favoriteSports s "
+                + "WHERE (:#{#filteredLocations.size} = 0 OR (u.location.city) in (:filteredLocations)) "
+                + "AND (:#{#filteredSports.size}=0 OR s.name in (:filteredSports)) "
+                + "AND (:name is null OR "
+                + "lower(:name) like lower(concat('%', u.firstName, '%')) "
+                + "OR (lower(:name) like lower(concat('%', u.lastName, '%'))) "
+                + "OR (lower(u.firstName) like lower(concat('%', :name, '%'))) "
+                + "OR (lower(u.lastName) like lower(concat('%', :name, '%')))) "
+                + "ORDER BY lower(u.lastName) ASC")
         Page<User> findUserByFilteredLocationsAndSports(Pageable pageable,
                         @Param("filteredLocations") List<String> filteredLocations,
                         @Param("filteredSports") List<String> filteredSports,

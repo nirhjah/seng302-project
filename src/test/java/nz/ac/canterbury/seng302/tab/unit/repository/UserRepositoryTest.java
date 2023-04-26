@@ -499,7 +499,7 @@ public class UserRepositoryTest {
         userRepository.save(christchurchHockey);
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(nelson.getCity(), auckland.getCity()), List.of("Hockey"), "");
-        assertEquals(List.of(nelsonHockey, aucklandHockey), returnedUsers.toList());
+        assertEquals(List.of(aucklandHockey, nelsonHockey), returnedUsers.toList());
     }
 
     @Test
