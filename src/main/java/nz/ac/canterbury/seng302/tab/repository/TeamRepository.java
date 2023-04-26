@@ -2,6 +2,8 @@ package nz.ac.canterbury.seng302.tab.repository;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.helper.tokens.JoinTeamToken;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
@@ -20,7 +22,7 @@ import java.util.Optional;
 public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSortingRepository<Team, Long> {
     Optional<Team> findById(long id);
 
-    public Optional<Team> findByToken(String token);
+    public Optional<Team> findByToken(JoinTeamToken token);
 
     List<Team> findAll();
 
