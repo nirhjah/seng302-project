@@ -61,8 +61,8 @@ public class ViewAllTeamsController {
             return sportRepository
                     .findAll()
                     .stream()
-                    .distinct()
                     .map(Sport::getName)
+                    .distinct()
                     .toList();
         }
     }
@@ -78,8 +78,8 @@ public class ViewAllTeamsController {
             return locationRepository
                     .findAll()
                     .stream()
-                    .distinct()
                     .map(Location::getCity)
+                    .distinct()
                     .toList();
         } else {
             return teamRepository.findLocationsByName(searchQuery).stream()
