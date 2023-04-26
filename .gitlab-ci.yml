@@ -35,14 +35,13 @@ branch-build:
 deploy-staging:
   stage: deploy
   script:
-    - echo "spring.datasource.username=$DATABASE_USERNAME" >> ./src/main/resources/application.properties
-    - echo "spring.datasource.password=$DATABASE_PASSWORD" >> ./src/main/resources/application.properties
     - ./gradlew bootJar
     - rm -rf /home/gitlab-runner/staging/ || true
     - mkdir /home/gitlab-runner/staging/
     - cp -r ./build/libs /home/gitlab-runner/staging
     - cp runner-scripts/staging.sh /home/gitlab-runner/staging.sh
     - chmod u+x /home/gitlab-runner/staging.sh
+    - (echo "export MARIADB_USERNAME=${MARIADB_USERNAME}" & echo "export MARIADB_PASSWORD=${MARIADB_PASSWORD}") > /home/gitlab-runner/staging/env.sh
     - sudo systemctl restart staging-tab
   artifacts:
     paths:
@@ -59,6 +58,7 @@ deploy-production:
     - cp -r ./build/libs /home/gitlab-runner/production
     - cp runner-scripts/production.sh /home/gitlab-runner/production.sh
     - chmod u+x /home/gitlab-runner/production.sh
+    - (echo "export MARIADB_USERNAME=${MARIADB_USERNAME}" & echo "export MARIADB_PASSWORD=${MARIADB_PASSWORD}") > /home/gitlab-runner/production/env.sh
     - sudo systemctl restart production-tab
   artifacts:
     paths:
