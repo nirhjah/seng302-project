@@ -43,7 +43,7 @@ public class ForgotPasswordController {
             return "forgotPassword";
         }
 
-        model.addAttribute("submitted_form", "submitted");
+        model.addAttribute("submitted_form_message", "If your email is registered with our system, you will receive a link to reset your password shortly.");
 
         logger.info("email submitted");
 
