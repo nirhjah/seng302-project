@@ -61,6 +61,7 @@ public class ViewAllTeamsController {
             return sportRepository
                     .findAll()
                     .stream()
+                    .distinct()
                     .map(Sport::getName)
                     .toList();
         }
@@ -77,6 +78,7 @@ public class ViewAllTeamsController {
             return locationRepository
                     .findAll()
                     .stream()
+                    .distinct()
                     .map(Location::getCity)
                     .toList();
         } else {
@@ -103,13 +105,6 @@ public class ViewAllTeamsController {
 
         model.addAttribute("sports", sports);
         model.addAttribute("cities", cities);
-    }
-
-    private Page<Team> getAllTeams(int page) {
-        if (page <= 0) {
-            return Page.empty();
-        }
-        return teamService.findPaginated(page, PAGE_SIZE);
     }
 
     private void addParametersToModel(Model model, List<String> filteredCities, List<String> filteredSports, String searchQuery, int pageNumber) {
