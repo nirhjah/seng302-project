@@ -42,6 +42,9 @@ public class ViewAllTeamsController {
 
     private Page<Team> getTeams(List<String> filteredCities, List<String> filteredSports, String searchQuery, int pageNumber) {
         PageRequest pageRequest = PageRequest.of(pageNumber, PAGE_SIZE);
+        if (searchQuery == null) {
+            return teamService.findPaginatedTeamsByCityAndSports(pageRequest, filteredCities, filteredSports);
+        }
         return teamService.findPaginatedTeamsByCityAndSports(pageRequest, filteredCities, filteredSports, searchQuery);
     }
 
@@ -109,11 +112,9 @@ public class ViewAllTeamsController {
 
     private void addParametersToModel(Model model, List<String> filteredCities, List<String> filteredSports, String searchQuery, int pageNumber) {
         Page<Team> teamPage;
-        if (searchQuery == null) {
-            searchQuery = "";
-        } else if (searchQuery.length() < 3) {
+        if (searchQuery != null && searchQuery.length() < 3) {
+            searchQuery = null;
             model.addAttribute("searchTooShortError", true);
-            searchQuery = "";
         }
 
         teamPage = getTeams(filteredCities, filteredSports, searchQuery, pageNumber);

@@ -71,4 +71,14 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
         @Param("filteredSports") List<String> filteredSports,
         @Param("name") String name
     );
+
+    @Query("SELECT t FROM Team t " +
+            "WHERE (:#{#filteredLocations.size} = 0 OR lower(t.location.city) in (:filteredLocations)) " +
+            "AND (:#{#filteredSports.size} = 0 OR lower(t.sport) in (:filteredSports)) " +
+            "ORDER BY LOWER(t.name) ASC, LOWER(t.location.city) ASC ")
+    public Page<Team> findTeamByFilteredLocationsAndSports(
+            Pageable pageable,
+            @Param("filteredLocations") List<String> filteredLocations,
+            @Param("filteredSports") List<String> filteredSports
+    );
 }
