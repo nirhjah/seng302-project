@@ -20,6 +20,9 @@
     .team-form .wrapper {
         width: 90vw;
     }
+    .create-team {
+        width: 90vw;
+    }
 }
 
 .team-form .input-box {
