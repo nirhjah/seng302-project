@@ -35,14 +35,15 @@ public class User {
     }
 
     /**
-     * TODO: Implement password hashing, probably via Bcrypt
+     * <strong>WARNING:</strong> Passwords are NOT hashed here. You have to provide a hashed password
+     * (By Autowiring a <code>PasswordEncoder</code>)
      */
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports, Location location) throws IOException {
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String hashedPassword, List<Sport> favoriteSports, Location location) throws IOException {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
-        this.hashedPassword = password;
+        this.hashedPassword = hashedPassword;
         this.favoriteSports = favoriteSports;
         this.location = location;
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
@@ -50,12 +51,16 @@ public class User {
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
 
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location) throws IOException{
+    /**
+     * <strong>WARNING:</strong> Passwords are NOT hashed here. You have to provide a hashed password
+     * (By Autowiring a <code>PasswordEncoder</code>)
+     */
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String hashedPasswords, Location location) throws IOException{
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
-        this.hashedPassword = password;
+        this.hashedPassword = hashedPasswords;
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
@@ -63,13 +68,16 @@ public class User {
         this.location = location;
     }
 
-
-    public User(String firstName, String lastName, String email, String password, Location location) {
+    /**
+     * <strong>WARNING:</strong> Passwords are NOT hashed here. You have to provide a hashed password
+     * (By Autowiring a <code>PasswordEncoder</code>)
+     */
+    public User(String firstName, String lastName, String email, String hashedPassword, Location location) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.dateOfBirth = new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime();
-        this.hashedPassword = password;
+        this.hashedPassword = hashedPassword;
         this.location = location;
     }
     @Id

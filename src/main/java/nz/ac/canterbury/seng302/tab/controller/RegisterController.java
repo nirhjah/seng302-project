@@ -14,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,6 +40,9 @@ public class RegisterController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -71,17 +75,19 @@ public class RegisterController {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getEmail(),
                 user.getPassword(), user.getAuthorities());
         // Authenticate the token properly with the CustomAuthenticationProvider
+        // NOTE: To the person handling this spike, this fails because it
+        // expects the raw password to compare against, however we only have
+        // the hashed version. So this will silently throw an exception, and no
+        // code after this is run.
         Authentication authentication = authenticationManager.authenticate(token);
         // Check if the authentication is actually authenticated (in this example any
         // username/password is accepted so this should never be false)
-        if (authentication.isAuthenticated()) {
-            // Add the authentication to the current security context (Stateful)
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            // Add the token to the request session (needed so the authentication can be
-            // properly used)
-            request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                    SecurityContextHolder.getContext());
-        }
+        // Add the authentication to the current security context (Stateful)
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        // Add the token to the request session (needed so the authentication can be
+        // properly used)
+        request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                SecurityContextHolder.getContext());
     }
 
     /**
@@ -132,24 +138,19 @@ public class RegisterController {
         String password = registerForm.getPassword();
         String confirmPassword = registerForm.getConfirmPassword();
         // Check #1: Passwords match
-        if (password.equals(confirmPassword)) {
+        if (!password.equals(confirmPassword)) {
+            bindingResult.addError(new FieldError("registerForm", "password", "Passwords do not match"));
+        }
 
-            // Check #2: Password doesn't "contain any other field"
-            String[] otherFields = new String[]{registerForm.getFirstName(), registerForm.getLastName(), registerForm.getEmail()};
-            if(password.length() > 0) {
-                for (String field : otherFields) {
-                    if (field != "") {
-                        if (password.toLowerCase().contains(field.toLowerCase())) {
-                            bindingResult.addError(new FieldError("registerForm", "password", "Password can't contain values from other fields"));
-                            break;
-                        }
-                    }
+        // Check #2: Password doesn't "contain any other field"
+        String[] otherFields = new String[]{registerForm.getFirstName(), registerForm.getLastName(), registerForm.getEmail()};
+        if (!password.isEmpty()) {
+            for (String field : otherFields) {
+                if (!field.isEmpty() && password.toLowerCase().contains(field.toLowerCase())) {
+                    bindingResult.addError(new FieldError("registerForm", "password", "Password can't contain values from other fields"));
+                    break;
                 }
             }
-        }
-        else {
-            bindingResult.addError(new FieldError("registerForm", "password", "Passwords do not match"));
-
         }
     }
 
@@ -208,8 +209,9 @@ public class RegisterController {
 //        List<Sport> fav = new ArrayList<>();
 //        fav.add(s);
 //        fav.add(h);
+        String hashedPassword = passwordEncoder.encode(registerForm.getPassword());
         User user = new User(registerForm.getFirstName(), registerForm.getLastName(), registerForm.getDateOfBirth(),
-                registerForm.getEmail(), registerForm.getPassword(), new ArrayList<>(),
+                registerForm.getEmail(), hashedPassword, List.of(),
                 new Location(registerForm.getAddressLine1(), registerForm.getAddressLine2(), registerForm.getSuburb(),
                         registerForm.getCity(), registerForm.getPostcode(), registerForm.getCountry()));
 

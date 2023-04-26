@@ -205,17 +205,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    /**
-     * Finds a user by their email and password
-     * 
-     * @param email    the users email
-     * @param password the users password
-     * @return the user matching the parameters
-     */
-    public User getUserByEmailAndPassword(String email, String password) {
-        return userRepository.getUserByEmailAndPassword(email, password);
-    }
-
     public Optional<User> getCurrentUser() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
