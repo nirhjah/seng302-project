@@ -10,7 +10,6 @@
     <title>View All Users</title>
 </head>
 
-<div th:insert="~{homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
 
 <body class="view-users-background">
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
@@ -29,12 +28,29 @@
     </div>
 </form>
 
-    <!-- Can convert this table into a fragment if neccessary.
-        for now, embrace YAGNI -->
+<!--Really need to fix this error message-->
     <table>
         <tr th:if="${listOfUsers.empty}">
             <td colspan="2"> No users </td>
         </tr>
+
+    </table>
+
+<div th:unless="${listOfUsers.empty}" class="card-container">
+    <div th:each="user : ${listOfUsers}" class="card"
+         th:onclick="|window.location.href='/user-info?name=${user.userId}'|">
+        <div class="card-wrapper">
+            <div class="card-image">
+                <img th:src="${'data:image/jpeg;base64,' + user.pictureString}" class="card-img-top" alt="User image">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">[[|${user.firstName} ${user.lastName}|]]</h5>
+                <p class="card-text" th:text="${user.email}">User email</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <div th:insert="~{fragments/pagination.html :: pagination(pageName='view-users')}"></div>

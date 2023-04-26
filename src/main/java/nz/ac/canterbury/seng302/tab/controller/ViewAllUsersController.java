@@ -65,8 +65,8 @@ public class ViewAllUsersController {
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "currentSearch", required = false) String currentSearch,
             @RequestParam(name = "sports", required=false) List<String> sports,
-            Model model, HttpServletRequest request,@RequestParam(name = "sports", required = false) List<String> sports,
-            @RequestParam(name = "cities", required = false) List<String> cities) {
+            @RequestParam(name = "cities", required = false) List<String> cities,
+            Model model, HttpServletRequest request) {
         Page<User> userPage = getUserPage(page, currentSearch, sports,cities);
         List<User> userList = userPage.toList();
         Optional<User> user = userService.getCurrentUser();
