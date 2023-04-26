@@ -35,6 +35,8 @@ branch-build:
 deploy-staging:
   stage: deploy
   script:
+    - echo "spring.datasource.username=$DATABASE_USERNAME" >> ./src/main/resources/application.properties
+    - echo "spring.datasource.password=$DATABASE_PASSWORD" >> ./src/main/resources/application.properties
     - ./gradlew bootJar
     - rm -rf /home/gitlab-runner/staging/ || true
     - mkdir /home/gitlab-runner/staging/
