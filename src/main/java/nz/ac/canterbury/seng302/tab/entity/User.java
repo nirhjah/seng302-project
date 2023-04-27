@@ -22,8 +22,7 @@ import java.util.*;
 public class User {
 
     public User() {
-        super();
-        this.enabled=false;
+
     }
 
     public static User defaultDummyUser() throws IOException {
@@ -109,8 +108,6 @@ public class User {
     @Column(nullable = false)
     private String hashedPassword;
 
-    @Column
-    private boolean enabled;
 
     public long getUserId() {
         return userId;
@@ -172,9 +169,6 @@ public class User {
         this.pictureString = pictureString;
     }
 
-    public void setEnabled(){
-        this.enabled=true;
-    }
 
     @Column()
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
