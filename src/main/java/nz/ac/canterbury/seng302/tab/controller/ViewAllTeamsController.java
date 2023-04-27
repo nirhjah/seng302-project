@@ -43,7 +43,8 @@ public class ViewAllTeamsController {
     private Page<Team> getTeams(List<String> filteredCities, List<String> filteredSports, String searchQuery, int pageNumber) {
         PageRequest pageRequest = PageRequest.of(pageNumber, PAGE_SIZE);
         if (searchQuery == null) {
-            return teamService.findPaginatedTeamsByCityAndSports(pageRequest, filteredCities, filteredSports);
+            return teamRepository.findAll(pageRequest);
+        //    return teamService.findPaginatedTeamsByCityAndSports(pageRequest, filteredCities, filteredSports);
         }
         return teamService.findPaginatedTeamsByCityAndSports(pageRequest, filteredCities, filteredSports, searchQuery);
     }
