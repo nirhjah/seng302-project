@@ -1,18 +1,13 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
-import nz.ac.canterbury.seng302.tab.helper.GenerateToken;
-import nz.ac.canterbury.seng302.tab.helper.tokens.JoinTeamToken;
 
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.Base64;
 import java.util.UUID;
 
@@ -124,15 +119,24 @@ public class Team {
         this.token = token;
     }
 
+    private static String generateToken(){
+        final int TEAM_TOKEN_SIZE = 12;
+        return UUID.randomUUID().toString().replaceAll("\\-*", "").substring(0, TEAM_TOKEN_SIZE);
+    }
+
     /**
      * U24/AC1 states that the token must consist of letters and numbers, the UUID
      * method will generate '-'s aswell so we replace all occurances with the empty
      * string
-     * 
+     *
      * @return new random token only containing characters and numbers
      */
-    public static String generateToken() {
-        return UUID.randomUUID().toString().replaceAll("\\-*", "").substring(0, 12);
+    public void generateToken(TeamService teamService) {
+        String token = generateToken();
+        while (teamService.findByToken(token).isPresent()) {
+            token = generateToken();
+        }
+        setToken(token);
     }
 
 }

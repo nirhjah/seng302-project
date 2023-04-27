@@ -7,7 +7,6 @@ import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
-import nz.ac.canterbury.seng302.tab.helper.GenerateToken;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
@@ -170,7 +169,7 @@ public class CreateTeamFormController {
             team.setName(trimmedName);
             team.setSport(trimmedSport);
             team.setLocation(location);
-            team.setToken(GenerateToken.generateTokenForTeam(teamService));
+            team.generateToken(teamService);
             team = teamService.updateTeam(team);
             teamID = team.getTeamId();
         } else {

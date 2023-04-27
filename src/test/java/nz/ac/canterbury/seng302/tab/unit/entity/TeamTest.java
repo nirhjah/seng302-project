@@ -94,8 +94,9 @@ public class TeamTest {
      */
     @Test
     public void givenCreatingANewUser_WhenTokenIsGenerated_TokenIs12CharactersLong() throws IOException {
-        String token = Team.generateToken();
-        assertEquals(token.length(), 12);
+        Team t = new Team("abc", "soccer");
+        t.generateToken(teamService);
+        assertEquals(t.getToken().length(), 12);
     }
 
     /**
@@ -106,8 +107,8 @@ public class TeamTest {
     @Test
     public void givenCreatingANewUser_WhenTokenIsGenerated_TokenIsMadeOfOnlyCharactersAndNumbers()
             throws IOException {
-        String token = Team.generateToken();
-        assertTrue(token.matches("^[a-zA-Z0-9]*$"));
+        Team t = new Team("abc", "soccer");
+        t.generateToken(teamService);
+        assertTrue(t.getToken().matches("^[a-zA-Z0-9]*$"));
     }
-
 }
