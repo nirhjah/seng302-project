@@ -144,6 +144,8 @@ public class User {
 
     public String getPassword() {return hashedPassword; }
 
+    public void setPassword(String hashedPassword) { this.hashedPassword = hashedPassword; }
+
     public void setEmail(String email) {
         this.email = email;
     }

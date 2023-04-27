@@ -15,6 +15,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
@@ -28,10 +29,13 @@ public class UpdatePasswordController {
     @Autowired
     UserService userService;
 
+    Optional<User> testUser;
+    User currentUser;
+
 
     private void checkPasswordsMatchAndIsSecure(UpdatePasswordForm updatePasswordForm, BindingResult bindingResult) {
-        Optional<User> testUser = userService.findUserByEmail("test@gmail.com");
-        User currentUser = testUser.get();
+        testUser = userService.findUserByEmail("test@gmail.com");
+        currentUser = testUser.get();
 
         String password = updatePasswordForm.getPassword();
         String confirmPassword = updatePasswordForm.getConfirmPassword();
@@ -56,6 +60,11 @@ public class UpdatePasswordController {
         }
     }
 
+    /**
+     * Gets update password form to be displayed
+     * @param model
+     * @return
+     */
     @GetMapping("/update-password")
     public String updatePasswordForm(Model model) {
         model.addAttribute("updatePasswordForm", new UpdatePasswordForm());
@@ -64,14 +73,14 @@ public class UpdatePasswordController {
 
     @PostMapping("/update-password")
     public String submitEmail(
+            @RequestParam("password") String password,
             @Validated UpdatePasswordForm updatePasswordForm,
             BindingResult bindingResult,
             Model model,
-            HttpServletResponse httpServletResponse
-    ) {
+            HttpServletResponse httpServletResponse) {
 
         checkPasswordsMatchAndIsSecure(updatePasswordForm, bindingResult);
-        
+
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("submitted_form", null);
@@ -79,8 +88,11 @@ public class UpdatePasswordController {
         }
 
 
+        currentUser.setPassword(password);
+        userService.updateOrAddUser(currentUser);
 
-        return "updatePassword";
+
+        return "login";
     }
 
 
