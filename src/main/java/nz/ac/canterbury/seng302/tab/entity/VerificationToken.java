@@ -69,12 +69,20 @@ public class VerificationToken {
      * @param verificationTokenRepository the repository used to check if the token is already in use
      * @return a unique verification token
      */
-    public String generateUniqueToken(VerificationTokenRepository verificationTokenRepository) {
+    public void generateUniqueToken(VerificationTokenRepository verificationTokenRepository) {
         String token = generateToken();
         while (verificationTokenRepository.findByToken(token)==null) {
             token = generateToken();
         }
-        return token;
+         setToken(token);
+    }
+
+    public void setToken(String token){
+        this.token= token;
+    }
+
+    public String getToken(){
+        return this.token;
     }
 
 
