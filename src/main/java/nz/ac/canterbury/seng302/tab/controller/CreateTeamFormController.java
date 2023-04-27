@@ -164,19 +164,22 @@ public class CreateTeamFormController {
 
         Location location = new Location(trimmedAddressLine1, trimmedAddressLine2, trimmedSuburb, trimmedCity,
                 trimmedPostcode, trimmedCountry);
-        Team team;
-        if ((team = teamService.getTeam(teamID)) != null) {
+
+        Team team = teamService.getTeam(teamID);
+        boolean teamExists = team != null;
+        if (teamExists) {
+            // edit existing team
             team.setName(trimmedName);
             team.setSport(trimmedSport);
             team.setLocation(location);
-            team.generateToken(teamService);
             team = teamService.updateTeam(team);
-            teamID = team.getTeamId();
         } else {
+            // We need to create a new team.
             team = new Team(trimmedName, trimmedSport, location);
+            team.generateToken(teamService);
             team = teamService.addTeam(team);
-            teamID = team.getTeamId();
         }
+        teamID = team.getTeamId();
 
         List<String> knownSports = sportService.getAllSportNames();
         if (!knownSports.contains(trimmedSport)) {
