@@ -644,7 +644,7 @@ footer {
 
 
 
-.team-form .create-team, .user-form .user-header, .login-form .login-header,
+.team-form .create-team, .user-form .user-header,.login-header,
 .register-form .register-header{
     font-family: "Noto Sans",sans-serif;
     /*color: #0B1B2A;*/

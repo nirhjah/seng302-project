@@ -20,7 +20,7 @@
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">[[|${team.name} |]]</h5>
-                    <p class="card-text" th:text="${'Sport: ' + team.sport}">Team sport</p>
+                    <p class="card-text" th:text="'Sport: '+${team.sport}">Team sport</p>
                     <p class="card-text" th:if="${team.location}"  th:text="'Location: ' + ${team.location}">Team location</p>
 
                 </div>

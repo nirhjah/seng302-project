@@ -1,32 +1,44 @@
-.login-form {
+.login-form ,.forgotPassword-form{
     display: grid;
-    grid-auto-rows: 87vh;
     justify-content: center;
     align-items: center;
     height: 90vh;
 }
+.login-form{
+    grid-auto-rows: 87vh;
+}
 
-.login-form form {
+.forgotPassword-form{
+    grid-auto-rows: 33vh;
+}
+
+
+.login-form form, .forgotPassword-form form {
     width: 65%;
 }
 
-.login-form .wrapper {
+.login-form .wrapper, .forgotPassword-form .wrapper {
     width: 500px;
     height: 440px;
-    /*backdrop-filter: blur(20px);*/
 }
 
 @media (max-width: 555px) {
-    .login-form .wrapper {
+    .login-form .wrapper, .forgotPassword-form .wrapper {
+        width: 500px;
         width: 90vw
     }
 }
 
-.login-form form .cancel-link {
+.login-form form .cancel-link, .forgotPassword-form form .cancel-link {
+    width: 335px;
     display: flex;
     justify-content: center;
 }
 
 .error-message{
     margin-top:-13px;
+}
+
+.login-header{
+    margin:auto;
 }
