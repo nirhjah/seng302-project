@@ -66,6 +66,16 @@ public class Team {
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
 
+    /**
+     * Returns true is user is a manager, false otherwise
+     * @param user The user in question
+     * @return true if user manages team, false otherwise
+     */
+    public boolean isManager(User user) {
+        // TODO: this is a facade and needs to be implemented
+        return true;
+    }
+
     public Long getTeamId() {
         return this.teamId;
     }

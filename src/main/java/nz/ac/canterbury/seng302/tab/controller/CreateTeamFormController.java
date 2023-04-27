@@ -9,6 +9,7 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,10 @@ public class CreateTeamFormController {
     @Autowired
     private SportService sportService;
 
+    @Autowired
+    private UserService userService;
+
+
     /**
      * Gets createTeamForm to be displayed and contains name, sport,
      * location and teamID model attributes to be added to html.
@@ -53,6 +58,20 @@ public class CreateTeamFormController {
         model.addAttribute("addressRegexMsg",TeamFormValidators.INVALID_POSTCODE_MSG);
         model.addAttribute("countryCitySuburbNameRegex",TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
         model.addAttribute("countryCitySuburbNameRegexMsg",TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG);
+    }
+
+    @PostMapping("/generateTeamToken")
+    public String generateTeamToken(@RequestParam(name = "teamID") Long teamID, Model model) {
+        var team = teamService.getTeam(teamID);
+        if (team != null) {
+            var user = userService.getCurrentUser();
+            if (user.isPresent() && team.isManager(user.get())) {
+                team.generateToken(teamService);
+                teamService.updateTeam(team);
+                logger.info("POST /generateTeamToken, new token: " + team.getToken());
+            }
+        }
+        return String.format("redirect:./createTeam?teamID=%s", teamID);
     }
 
     @GetMapping("/createTeam")
