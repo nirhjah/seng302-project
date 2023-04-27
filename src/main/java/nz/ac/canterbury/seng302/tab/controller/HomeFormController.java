@@ -52,7 +52,6 @@ public class HomeFormController {
     public String getTemplate(Model model) {
         logger.info("GET /homeForm");
         model.addAttribute("navTeams", teamService.getTeamList());
-        System.out.println("Check generated token" + User.generateToken());
         return "homeForm";
     }
 }

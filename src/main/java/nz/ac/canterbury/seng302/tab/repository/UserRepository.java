@@ -23,8 +23,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
         Optional<User> findByEmail(String email);
 
-        Optional<User> findByToken(String sessionUUID);
-
         Page<User> findAll();
 
         boolean existsByEmail(String email);

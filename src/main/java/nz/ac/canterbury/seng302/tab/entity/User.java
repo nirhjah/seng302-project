@@ -1,7 +1,9 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email; import jakarta.validation.constraints.Pattern; import org.springframework.core.io.ClassPathResource;
+import jakarta.validation.constraints.Email; import jakarta.validation.constraints.Pattern;
+import nz.ac.canterbury.seng302.tab.service.UserService;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,6 +22,8 @@ import java.util.*;
 public class User {
 
     public User() {
+        super();
+        this.enabled=false;
     }
 
     public static User defaultDummyUser() throws IOException {
@@ -106,7 +110,7 @@ public class User {
     private String hashedPassword;
 
     @Column
-    private String token;
+    private boolean enabled;
 
     public long getUserId() {
         return userId;
@@ -147,7 +151,6 @@ public class User {
 
     public String getPassword() {return hashedPassword; }
 
-    public String getToken() {return this.token;}
 
     public void setEmail(String email) {
         this.email = email;
@@ -169,7 +172,9 @@ public class User {
         this.pictureString = pictureString;
     }
 
-    public void setToken(String token) { this.token = token;}
+    public void setEnabled(){
+        this.enabled=true;
+    }
 
     @Column()
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -252,8 +257,5 @@ public class User {
         return sport;
     }
 
-    public static String generateToken() {
-        return UUID.randomUUID().toString().substring(0,12);
-    }
 
 }
