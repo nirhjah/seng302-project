@@ -71,7 +71,7 @@ public class CreateTeamFormController {
                 logger.info("POST /generateTeamToken, new token: " + team.getToken());
             }
         }
-        return String.format("redirect:./createTeam?teamID=%s", teamID);
+        return String.format("redirect:./profile?teamID=%s", teamID);
     }
 
     @GetMapping("/createTeam")

@@ -39,16 +39,10 @@
                 <h4 th:text="'Sport: ' + ${displaySport}"></h4>
                 <h4 th:text="'Location: ' + ${displayLocation}"></h4>
                 <h4 th:text="'Join Token: ' + ${displayToken}"></h4>
-
-                <!--
-                <form action="#" th:action="@{'/delete/{id}'(id=${foo.id})}" th:method="delete" >
-                    <input type="hidden" name="_method" value="delete" />
-                    <button type="submit" id="submitButton"> </button>
-                </form>
-                -->
-
+            </div>
+            <div class="edit-button">
                 <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}" th:method="post">
-                    <button type="submit" class="edit-button">
+                    <button type="submit">
                         Regenerate token
                     </button>
                 </form>
