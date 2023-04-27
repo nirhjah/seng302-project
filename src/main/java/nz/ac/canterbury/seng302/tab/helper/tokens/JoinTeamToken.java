@@ -14,9 +14,6 @@ public class JoinTeamToken extends Token {
 
     public void generateNewUniqueTeamTokenValue() {
         this.generateToken();
-        while (teamRepository.findByToken(this).isPresent()) {
-            this.generateToken();
-        }
     }
 
 }

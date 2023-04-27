@@ -1,8 +1,11 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
+import nz.ac.canterbury.seng302.tab.helper.GenerateToken;
 import nz.ac.canterbury.seng302.tab.helper.tokens.JoinTeamToken;
 
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -36,7 +39,7 @@ public class Team {
     private String pictureString;
 
     @Column
-    private JoinTeamToken token;
+    private String token;
 
     protected Team() {
     }

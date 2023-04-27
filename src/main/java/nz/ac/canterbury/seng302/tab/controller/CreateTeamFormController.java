@@ -7,6 +7,7 @@ import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
+import nz.ac.canterbury.seng302.tab.helper.GenerateToken;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
@@ -46,7 +47,6 @@ public class CreateTeamFormController {
      *
      * @return thymeleaf createTeamForm
      */
-
     public void prefillModel(Model model) {
         model.addAttribute("postcodeRegex", TeamFormValidators.VALID_POSTCODE_REGEX);
         model.addAttribute("postcodeRegexMsg",TeamFormValidators.INVALID_POSTCODE_MSG);
@@ -170,6 +170,7 @@ public class CreateTeamFormController {
             team.setName(trimmedName);
             team.setSport(trimmedSport);
             team.setLocation(location);
+            team.setToken(GenerateToken.generateTokenForTeam(teamService));
             team = teamService.updateTeam(team);
             teamID = team.getTeamId();
         } else {

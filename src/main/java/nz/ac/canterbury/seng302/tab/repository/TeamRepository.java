@@ -22,7 +22,7 @@ import java.util.Optional;
 public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSortingRepository<Team, Long> {
     Optional<Team> findById(long id);
 
-    public Optional<Team> findByToken(JoinTeamToken token);
+    Optional<Team> findByToken(String token);
 
     List<Team> findAll();
 

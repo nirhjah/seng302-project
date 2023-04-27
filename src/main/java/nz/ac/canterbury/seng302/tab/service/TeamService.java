@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Spring Boot Service class for Team Service
@@ -147,6 +148,10 @@ public class TeamService {
             nameSearch = null;
         }
         return teamRepository.findTeamByNameAndSportIn(pageable, filterSports, nameSearch);
+    }
+
+    public Optional<Team> findByToken(String token) {
+        return teamRepository.findByToken(token);
     }
 
     /**
