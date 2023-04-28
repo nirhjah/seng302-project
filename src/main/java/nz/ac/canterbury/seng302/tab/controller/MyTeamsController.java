@@ -23,6 +23,7 @@ import java.util.Optional;
 @Controller
 public class MyTeamsController {
 
+    private static int maxPageSize = 10;
 
     Logger logger = LoggerFactory.getLogger(ViewAllTeamsController.class);
 
@@ -37,6 +38,41 @@ public class MyTeamsController {
     public String myTeamsForm(@RequestParam(value = "page", defaultValue = "-1") int pageNo,
                                 Model model, HttpServletRequest request) {
         model.addAttribute("httpServletRequest",request);
+
+
+        // If the user has no teams show a message
+        if (teamService.getTeamList().size() == 0) {
+            //pass through a flag in the model to say this so we can show a message + the join button
+            model.addAttribute("noTeamsFlag", "You are not a member of any teams.");
+            return "myTeams";
+
+            //return "redirect:/home";
+        }
+
+        model.addAttribute("noTeamsFlag", null);
+
+        // If page number outside of page then reloads page with appropriate number
+        if (pageNo < 1 || pageNo > teamService.findPaginated(pageNo, maxPageSize).getTotalPages() && teamService.findPaginated(pageNo, maxPageSize).getTotalPages() > 0) {
+            pageNo = pageNo < 1 ? 1: teamService.findPaginated(pageNo, maxPageSize).getTotalPages();
+            return "redirect:/my-teams?page=" + pageNo;
+        }
+
+        logger.info("GET /my-teams");
+
+        Page<Team> page = teamService.findPaginated(pageNo, maxPageSize);
+
+        List<Team> listTeams = page.getContent();
+
+        Optional<User> user = userService.getCurrentUser();
+        model.addAttribute("firstName", user.get().getFirstName());
+        model.addAttribute("lastName", user.get().getLastName());
+        model.addAttribute("displayPicture", user.get().getPictureString());
+        model.addAttribute("navTeams", teamService.getTeamList());
+        model.addAttribute("page", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("displayTeams", listTeams);
+
 
 
         return "myTeams";
