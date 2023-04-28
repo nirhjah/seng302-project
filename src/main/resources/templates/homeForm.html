@@ -8,7 +8,16 @@
 </head>
 <body class ="home-background">
     <div>
+
         <div th:fragment="navbar" class="navbar">
+
+          <!-- my profile dropdown <div class="dropdown">
+                <button class="dropbtn">My Profile</button>
+                <div class="dropdown-content">
+                    <a th:href="@{myTeams}">My Teams</a>
+                </div>
+            </div>-->
+
             <div class="menu-items">
                 <span class="auth-buttons" sec:authorize="isAnonymous()">
                     <a th:href="@{login}">Login</a>
@@ -40,12 +49,21 @@
                             }
                          </script>
                     </span>
+
+
+
                     <span class="auth-buttons" sec:authorize="isAuthenticated()">
+
+                        <a th:href="@{my-teams}">My Teams</a>
+
+
                         <a th:href="@{user-info/self}">My Profile</a>
                         <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
                     </span>
+
                     <form id="logoutForm" th:action="@{logout}" method="POST"></form>
                 </p>
+
             </div>
         </div>
         <div class="Welcome-header">
