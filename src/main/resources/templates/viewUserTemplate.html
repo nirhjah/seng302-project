@@ -9,109 +9,15 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 
 <head>
-  <link th:href="@{/css/styles.css}" rel="stylesheet"/>
-  <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
-  <title>View User</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+    <link th:href="@{/css/profile.css}" rel="stylesheet">
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
+    <title>View User</title>
 </head>
-
-<style>
-    .multiply:before {
-        content: "\00D7";
-    }
-
-    .sport-box {
-        height: 50px;
-        width: 280px;
-        display: flex;
-        flex-wrap: wrap;
-        padding: 7px;
-        margin: 5px 0;
-        border: 2px dashed #778DA9;
-        border-bottom-left-radius: 11px;
-        border-bottom-right-radius: 11px;
-        overflow-y: scroll;
-        max-height: 100px;
-        gap: 3px;
-        align-content: flex-start;
-    }
-
-    .sport-box li {
-        margin: 0;
-        list-style: none;
-        border-radius: 20px;
-        background: #778DA9;
-        padding-left: 5px;
-        padding-right: 5px;
-        border: 1px solid #1B263B;
-        display: inline-block;
-        white-space: nowrap;
-        font-size: 11px;
-        font-weight: 600;
-        font-family: "Noto Sans", sans-serif;
-        color: #FFFF;
-        text-align: center;
-    }
-
-    .sport-box li i {
-        color: #FFF;
-        margin-right: 8px;
-        margin-left: 5px;
-        font-size: 12px;
-        cursor: pointer;
-        border-radius: 50%;
-        background: #778DA9;
-    }
-
-    .content {
-        position: absolute;
-        bottom: 111px;
-    }
-
-    .content input {
-        width: 293px;
-        height: 25px;
-        border-bottom-left-radius: 11px;
-        border-bottom-right-radius: 11px;
-        border: 2px solid #778DA9;
-        border-top: none;
-    }
-
-    .sport-box::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    .sport-box::-webkit-scrollbar-track {
-        background-color: #E0E1DD;
-    }
-
-    .sport-box::-webkit-scrollbar-thumb {
-        background-color: #415A77;
-        border-radius: 10px
-    }
-
-    .sport-box::-webkit-scrollbar-thumb:hover {
-        background-color: #0D1B2A;
-    }
-
-    .details button {
-        background: none;
-        border: none;
-        padding: 0;
-        font-family: "Noto Sans", sans-serif;
-        text-decoration: underline;
-        cursor: pointer;
-    }
-
-    /*.error-message {*/
-    /*    position: absolute;*/
-    /*    top: -20px; !* adjust this value to position the label as needed *!*/
-    /*    left: 0;*/
-    /*}*/
-
-</style>
-
 <body class="profile-background">
-<div th:insert="~{homeForm.html::navbar}"></div>
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
     <div class="profile-form">
         <div class="wrapper-profile">
             <p th:if="${thisUser.isEmpty()}">
@@ -133,26 +39,43 @@
                             <input type="file" name="file" class="form-control-file" id="file">
                         </div>
                     </div>
-                    <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
                 </form>
             </div>
-            <div class="team-info">
-                <div class="team-display">
-                    <h2>User Profile</h2>
-                    <h3 th:text="|Name: *{firstName} *{lastName}|"></h3>
-                    <h3 th:text="|Email: *{email}|"></h3>
-                    <h3 th:text="|Date of Birth: *{#dates.format(dateOfBirth, 'dd-MM-yyyy')}|"></h3>
-                    <h3 th:text="|Location: *{location}|"></h3>
-                    <h3>Favourite Sports:</h3>
-                    <div class="sport-box" id="sport-box">
-                        <li th:each="sport : ${favSportNames}" th:text="${sport}"></li>
+                <div class="team-info">
+                    <div class="team-display">
+                        <h2>User Profile</h2>
+                        <div class="user-label">
+                            <img th:src="@{/image/icons/name.svg}"/>
+                            <h3 th:text="|Name: *{firstName} *{lastName}|"></h3>
+                        </div>
+                        <div class="user-label">
+                            <img th:src="@{/image/icons/email.svg}"/>
+                            <h3 th:text="|Email: *{email}|"></h3>
+                        </div>
+                        <div class="user-label">
+                            <img  th:src="@{/image/icons/date-of-birth.svg}"/>
+                            <h3 th:text="|Date of Birth: *{#dates.format(dateOfBirth, 'dd-MM-yyyy')}|"></h3>
+                        </div>
+                        <div class="user-label">
+                            <img  th:src="@{/image/icons/location.svg}"/>
+                            <h3 th:text="|Location: *{location}|"></h3>
+                        </div>
+                        <div class="user-label">
+                            <img th:src="@{/image/icons/sports.svg}" style="height: 45px;width: 45px;"/>
+                            <h3>Favourite Sports:</h3>
+                        </div>
+                        <div class="sport-box" id="sport-box">
+                            <li th:each="sport : ${favSportNames}" th:text="${sport}"></li>
+                        </div>
                     </div>
                 </div>
-            </div>
-                <div th:if="${canEdit}" class="edit-button">
-                      <a th:href="@{editUser}">
-                        <button type="button">Edit Profile</button>
-                      </a>
+                <div class="profile-buttons">
+                    <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+                    <div th:if="${canEdit}" class="edit-button">
+                        <a th:href="@{editUser}">
+                            <button type="button">Edit Profile</button>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -187,11 +110,14 @@
     // The AC only specifies a back button if we came from the view-users page.
     const legal_url = '/view-users';
     const backButton = document.getElementsByClassName('back-button')[0];
+    const buttons = document.querySelector('.profile-buttons');
     const previousPage = document.referrer;
     if (previousPage.includes(legal_url)) {
-      backButton.style.visibility = '';
+        backButton.style.visibility = '';
+        buttons.style.display = 'flex';
     } else {
-      backButton.remove();
+        backButton.remove();
+        buttons.style.display = 'block'
     }
   </script>
 
