@@ -39,7 +39,7 @@ public class Team {
     private Date creationDate;
 
     @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name="user")
+    @JoinTable(name = "`user`")
     private List<User> teamMembers;
 
     protected Team() {
