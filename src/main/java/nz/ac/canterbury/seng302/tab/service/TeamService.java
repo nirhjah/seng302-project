@@ -251,4 +251,8 @@ public class TeamService {
         return filtered;
 
     }
+
+    public List<String> getAllTeamNames() {
+        return teamRepository.getAllTeamNames();
+    }
 }

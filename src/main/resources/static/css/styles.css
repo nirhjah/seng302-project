@@ -39,7 +39,7 @@ ul.search {
   height: 90vh;
 }
 
-.team-form {
+.team-form, activity-form {
   display: grid;
   grid-auto-rows: 570px;
   justify-content: center;
@@ -388,7 +388,7 @@ hr.solid {
 .Search-teams-background,
 .edit-user-background,
 .background-image,
-.user-form {
+.user-form, .create-activity-background {
     background-image: url("../image/landscape.jpeg");
     background-size: cover;
     background-repeat: no-repeat;
@@ -470,7 +470,7 @@ footer {
 }
 
 .team-form .create-team, .user-form .user-header, .login-form .login-header,
-.register-form .register-header{
+.register-form .register-header, .activity-form{
     font-family: "Noto Sans",sans-serif;
     /*color: #0B1B2A;*/
     text-align: center;
@@ -483,6 +483,9 @@ footer {
     -webkit-background-clip: text;
 }
 
+.activity-form .wrapper {
+    font-size: 15px;
+}
 
 a.disabled {
   pointer-events: none;

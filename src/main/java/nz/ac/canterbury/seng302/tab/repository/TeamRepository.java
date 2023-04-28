@@ -71,4 +71,7 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
         @Param("filteredSports") List<String> filteredSports,
         @Param("name") String name
     );
+
+    @Query("SELECT t.name FROM Team t")
+    public List<String> getAllTeamNames();
 }

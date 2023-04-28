@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
 <head>
     <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
@@ -22,6 +22,7 @@
                         <a th:href="@{searchTeams}">Search Teams</a>
                         <a th:href="@{view-teams(page=1)}">See All Teams</a>
                         <a th:href="@{view-users(page=1)}">View All Users</a>
+                        <a th:href="@{createActivity}">Create Activity</a>
                         View Profile:
                         <select class="form-control" id="dropDownList" name="teamSelector"
                                 onchange="redirect(this)">
