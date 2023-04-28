@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Base64;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
@@ -35,6 +35,9 @@ public class Team {
     @Column(nullable = true)
     private Date creationDate;
 
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TeamRole> teamRoles;
+
     protected Team() {
     }
 
@@ -51,6 +54,7 @@ public class Team {
     /**
      * Should be used for testing ONLY!
      * TODO: Remove this constructor, use builder pattern. same for user
+     * 
      * @param name
      * @param sport
      */
@@ -110,6 +114,8 @@ public class Team {
         this.sport = sport;
     }
 
-    public Date getCreationDate() {return creationDate;}
+    public Date getCreationDate() {
+        return creationDate;
+    }
 
 }

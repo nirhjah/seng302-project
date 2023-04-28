@@ -1,21 +1,17 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email; import jakarta.validation.constraints.Pattern;
-import nz.ac.canterbury.seng302.tab.service.UserService;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.Base64;
 
-
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Entity(name = "UserEntity")
@@ -33,14 +29,15 @@ public class User {
                 "test@gmail.com",
                 "dfghjk",
                 new ArrayList<>(),
-                new Location(null,null,null,"Christchurch",null,"New Zealand"));
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
 
     }
 
     /**
      * TODO: Implement password hashing, probably via Bcrypt
      */
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports, Location location) throws IOException {
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password,
+            List<Sport> favoriteSports, Location location) throws IOException {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -53,7 +50,8 @@ public class User {
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
 
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location) throws IOException{
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location)
+            throws IOException {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -66,7 +64,6 @@ public class User {
         this.location = location;
     }
 
-
     public User(String firstName, String lastName, String email, String password, Location location) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -75,6 +72,7 @@ public class User {
         this.hashedPassword = password;
         this.location = location;
     }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
@@ -89,8 +87,8 @@ public class User {
     @Column(nullable = false)
     private Date dateOfBirth;
 
-    @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name="favSports")
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "favSports")
     private List<Sport> favoriteSports;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -100,14 +98,15 @@ public class User {
     @Column(columnDefinition = "MEDIUMBLOB")
     private String pictureString;
 
-    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
-            flags = Pattern.Flag.CASE_INSENSITIVE)
+    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags = Pattern.Flag.CASE_INSENSITIVE)
     @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
     private String hashedPassword;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TeamRole> teamRoles;
 
     public long getUserId() {
         return userId;
@@ -146,8 +145,9 @@ public class User {
         return email;
     }
 
-    public String getPassword() {return hashedPassword; }
-
+    public String getPassword() {
+        return hashedPassword;
+    }
 
     public void setEmail(String email) {
         this.email = email;
@@ -169,22 +169,19 @@ public class User {
         this.pictureString = pictureString;
     }
 
-
     @Column()
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "Id")
     private List<Authority> userRoles;
 
-    public void grantAuthority(String authority)
-    {
+    public void grantAuthority(String authority) {
         if (userRoles == null) {
             userRoles = new ArrayList<Authority>();
         }
         userRoles.add(new Authority(authority));
     }
 
-    public List<GrantedAuthority> getAuthorities()
-    {
+    public List<GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         if (userRoles != null) {
             this.userRoles.forEach(authority -> authorities.add(new SimpleGrantedAuthority(authority.getRole())));
@@ -213,8 +210,10 @@ public class User {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         User user = (User) o;
 
@@ -224,7 +223,8 @@ public class User {
             return false;
         if (getDateOfBirth() != null ? !getDateOfBirth().equals(user.getDateOfBirth()) : user.getDateOfBirth() != null)
             return false;
-        if (getEmail() != null ? !getEmail().equals(user.getEmail()) : user.getEmail() != null) return false;
+        if (getEmail() != null ? !getEmail().equals(user.getEmail()) : user.getEmail() != null)
+            return false;
         if (!Objects.equals(hashedPassword, user.hashedPassword))
             return false;
         return Objects.equals(userRoles, user.userRoles);
@@ -241,15 +241,12 @@ public class User {
         return result;
     }
 
-    public List<String> getFavouriteSportNames ()
-    {
+    public List<String> getFavouriteSportNames() {
         List<String> sport = new ArrayList<>();
-        for (Sport s : favoriteSports)
-        {
+        for (Sport s : favoriteSports) {
             sport.add(s.getName());
         }
         return sport;
     }
-
 
 }
