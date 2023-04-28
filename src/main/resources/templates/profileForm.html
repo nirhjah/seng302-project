@@ -40,7 +40,7 @@
                 <h4 th:text="'Location: ' + ${displayLocation}"></h4>
             </div>
 
-            <label th:text="'Join Token' + "></label>
+            <label> Join Token </label>
             <div class="inputBox">
                 <span class ="tokenInput" th:text="${displayToken}"></span>
                 <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}" th:method="post">
