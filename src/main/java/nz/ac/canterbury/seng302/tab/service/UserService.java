@@ -206,6 +206,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    /**
+     * Checks who the logged in user of this session is.
+     * <p>
+     * Note: If the current user is authenticated, but their username isn't in the
+     * database (e.g. it got deleted), it'll also return empty
+     * </p>
+     * 
+     * @return The currently logged in user, otherwise empty.
+     */
     public Optional<User> getCurrentUser() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
