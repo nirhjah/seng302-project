@@ -1,0 +1,278 @@
+.register .wrapper {
+    height: 770px;
+}
+
+.register-form .wrapper {
+    width: 650px;
+    height: 690px;
+}
+
+.register-inputs,
+.edit-inputs {
+  display: flex;
+  justify-content: space-between;
+}
+
+.register-inputs-right,
+.edit-inputs-right {
+  margin-left: auto;
+  margin-right: 0;
+  width: 280px;
+}
+
+.register-inputs-left,
+.edit-inputs-left {
+  width: 280px;
+}
+
+.input-box .required {
+    color: red;
+  }
+  
+
+.register-inputs-left .input-box,
+.edit-inputs-left .input-box {
+  width: 85%;
+  height: 35px;
+  border-bottom: 2px solid #162938;
+  margin: 30px 0;
+  font-family: "Noto Sans", sans-serif;
+}
+
+.register-inputs-right .input-box,
+.edit-inputs-right .input-box {
+  width: 85%;
+  height: 35px;
+  border-bottom: 2px solid #162938;
+  margin: 30px 0;
+  font-family: "Noto Sans", sans-serif;
+  right: auto;
+  left: 40px;
+}
+
+
+
+@media (max-width: 655px) {
+  .register-form .wrapper {
+    width: 90vw;
+  }
+}
+
+.register-form form {
+    width: 65%;
+}
+
+.register-form {
+    display: grid;
+    grid-auto-rows: 730px;
+    justify-content: center;
+    align-items: center;
+    grid-template-rows: 140px;
+    height: 90vh;
+  }
+
+  hr.solid {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    border-left: 2px solid;
+    border-image: linear-gradient(to bottom, white, #415a77, #1b263b, #415a77, white) 1;
+  }
+ 
+
+.register-header {
+    padding-bottom: 15px;
+    margin:auto;
+}
+
+.password-info {
+    width: 100%;
+    font-style: italic;
+    font-size: small;
+    margin-top: -20px;
+    font-family: "Noto Sans", sans-serif;
+}
+
+.password-strength-meter {
+    width: 100%;
+    height: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin: 30px 0 10px 0;
+    position: relative;
+    overflow: hidden;
+    background-color: #f2f2f2;
+
+}
+
+.password-strength-meter .bar {
+    width: 0;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: width 0.3s ease;
+}
+
+.password-strength-meter .bar.weak {
+    background-color: #c03d3e;
+}
+
+.password-strength-meter .bar.medium {
+    background-color: #ffd700;
+}
+
+.password-strength-meter .bar.strong {
+    background-color: #008000;
+}
+
+.password-strength-text {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.password-strength-text.weak {
+    color: #c03d3e;
+}
+
+.password-strength-text.medium {
+    color: #ffd700;
+}
+
+.password-strength-text.strong {
+    color: #008000;
+}
+
+.password-information-text {
+    padding-left: 10px;
+}
+
+.password-information-text li {
+    list-style-type: disc;
+}
+
+.password-information-text ul li{
+    list-style-type: circle;
+    margin-left: 20px;
+}
+
+.progressbar {
+    overflow: hidden;
+    /*CSS counters to number the steps*/
+    width: 100%;
+    margin: 20px 0 20px;
+    font-family: "Noto Sans", sans-serif;
+    font-weight: bolder;
+}
+
+.progressbar li {
+    list-style-type: none;
+    text-transform: uppercase;
+    font-size: 15px;
+    width: 50%;
+    float: left;
+    position: relative;
+    text-align: center;
+    line-height: 30px;
+}
+.progressbar li:nth-child(1):before {
+    background-image: url("../image/icons/user.svg");
+}
+
+.progressbar li:nth-child(2):before {
+    /*temporary as I'm redoing the location icon*/
+    background-image: url("../image/icons/grey-location.svg");
+    background-color: white;
+}
+
+.progressbar li.active:nth-child(2):before {
+    background-image: url("../image/icons/white-location.svg");
+}
+
+.progressbar li:before {
+    content:"";
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
+    display: block;
+    color: #333;
+    border-radius: 70%;
+    margin: 0 auto 0 auto;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position:center;
+}
+
+
+.progressbar li::after {
+    content: '';
+    width: 76%;
+    height: 2px;
+    position: absolute;
+    top: 21px;
+    border: #ccc solid 3px;
+    background-color: #ccc;
+    right: 62.5%;
+    z-index: 1;
+}
+
+.previous-button {
+    display: none;
+}
+
+.register-button {
+    display: none;
+}
+
+.register-inputs-location {
+    display: none;
+}
+
+.progressbar li:first-child:after {
+    content: none;
+}
+
+.progressbar li:before{
+    border: #ccc solid 3px;
+}
+
+.progressbar li.active:before,  .progressbar li.active:after{
+    border: #415A77 solid 3px;
+    background-color: #415A77;
+    color: white;
+}
+
+.register-form form .error-message {
+    position: absolute;
+    margin-top: -31px;
+}
+
+.register-form form .submit-button {
+    display: flex;
+    justify-content: center;
+}
+
+.register-form form .submit-button button {
+    margin: 0 10px;
+}
+
+img.password-toggle {
+    max-height: 20px;
+    max-width: 20px;
+    position: absolute;
+    right: 5px;
+    margin-top: -24px;
+    cursor: pointer;
+}
+
+#password {
+    width: 92% !important;
+}
+
+.register-form .cancel-link {
+    margin-bottom: 20px !important;
+}

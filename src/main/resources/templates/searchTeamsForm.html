@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
-    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
-    <link th:href="@{/css/styles.css}" rel="stylesheet">
-    <title>search teams</title>
+  <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
+  <link th:href="@{/css/styles.css}" rel="stylesheet">
+  <link th:href="@{/css/view-all.css}" rel="stylesheet">
+  <title>Search Teams</title>
 </head>
 <body class="Search-teams-background">
-<div th:insert="~{homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+  <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
   <form id="search-form" th:action="@{/searchTeams(teamName=${teamName},page=1)}" method="get">
     <div class="search-bar">
       <input class ="team-name-input" type="text" id="teamName" name="teamName" th:value="${teamName}" placeholder="Search Teams" />
@@ -15,9 +18,11 @@
       </div>
     </div>
     <div th:if="${not #lists.isEmpty(teams)}" style="display: flex">
-      <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cityCheckbox')}" th:if="${not #lists.isEmpty(teams)}"></div>
-      <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(teams)}"></div>
-      <button class="filter-by-city-button" type="submit">Apply Filters</button>
+      <div class="filter-bar">
+        <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cityCheckbox')}" th:if="${not #lists.isEmpty(teams)}"></div>
+        <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(teams)}"></div>
+        <button class="filter-by-city-button" type="submit">Apply Filters</button>
+      </div>
     </div>
   </form>
 
