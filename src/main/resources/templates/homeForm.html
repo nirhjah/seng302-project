@@ -8,6 +8,12 @@
 </head>
 <body class ="home-background">
     <div>
+        <div class="dropdown">
+            <button class="dropbtn">My Profile</button>
+            <div class="dropdown-content">
+                <a th:href="@{my-teams}">My Teams</a>
+            </div>
+        </div>
 
         <div th:fragment="navbar" class="navbar">
 
@@ -52,9 +58,11 @@
 
 
 
+
                     <span class="auth-buttons" sec:authorize="isAuthenticated()">
 
                         <a th:href="@{my-teams}">My Teams</a>
+
 
 
                         <a th:href="@{user-info/self}">My Profile</a>
