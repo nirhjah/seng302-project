@@ -1,7 +1,9 @@
 package nz.ac.canterbury.seng302.tab.unit.entity;
 
+import nz.ac.canterbury.seng302.tab.controller.ForgotPasswordController;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -16,9 +18,7 @@ import org.springframework.core.io.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -96,6 +96,23 @@ public class TeamTest {
     public void checkCreationDateIsToday() throws IOException {
         Team t = new Team("Test", "Sport");
         Assertions.assertEquals(new Date(), t.getCreationDate());
+    }
+
+    @Test
+    public void testAddUserToTeam() throws IOException {
+
+        User user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", new Location(null, null, null, "dunedin", null, "nz"));
+        Team team = new Team("test", "Hockey", location);
+        teamService.addTeam(team);
+
+        List<User> expectedUsersInTeam = new ArrayList<User>();
+        List<User> outputUsersInTeam =  team.getTeamMembers();
+
+        expectedUsersInTeam.add(user);
+        outputUsersInTeam.add(user);
+
+
+        assertEquals(expectedUsersInTeam, outputUsersInTeam);
     }
 
 }
