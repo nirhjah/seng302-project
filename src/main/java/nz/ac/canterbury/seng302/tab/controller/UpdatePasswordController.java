@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -66,8 +67,10 @@ public class UpdatePasswordController {
      * @return
      */
     @GetMapping("/update-password")
-    public String updatePasswordForm(Model model) {
+    public String updatePasswordForm(Model model, HttpServletRequest request) {
         model.addAttribute("updatePasswordForm", new UpdatePasswordForm());
+        model.addAttribute("httpServletRequest",request);
+
         return "updatePassword";
     }
 
@@ -77,9 +80,12 @@ public class UpdatePasswordController {
             @Validated UpdatePasswordForm updatePasswordForm,
             BindingResult bindingResult,
             Model model,
-            HttpServletResponse httpServletResponse) {
+            HttpServletResponse httpServletResponse,
+            HttpServletRequest request) {
 
         checkPasswordsMatchAndIsSecure(updatePasswordForm, bindingResult);
+        model.addAttribute("httpServletRequest",request);
+
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
