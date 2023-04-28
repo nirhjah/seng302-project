@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
+import io.cucumber.java.bs.I;
 import jakarta.persistence.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -8,8 +9,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
@@ -35,6 +38,10 @@ public class Team {
     @Column(nullable = true)
     private Date creationDate;
 
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="user")
+    private List<User> teamMembers;
+
     protected Team() {
     }
 
@@ -46,6 +53,7 @@ public class Team {
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.creationDate = new Date();
+        this.teamMembers = new ArrayList<User>();
     }
 
     /**
@@ -111,5 +119,14 @@ public class Team {
     }
 
     public Date getCreationDate() {return creationDate;}
+
+    public List<User> getTeamMembers() {
+        return this.teamMembers;
+    }
+
+    public void setTeamMembers(List<User> teamMembers) {
+        this.teamMembers = teamMembers;
+    }
+
 
 }
