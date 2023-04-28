@@ -13,7 +13,7 @@
         <div class="profile-pic">
             <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
                 <div class="image-styling">
-                    <img th:src="*{'data:image/jpeg;base64,'+{displayPicture}}" width="200" height="200"/>
+                    <img th:src="*{'data:image/jpeg;base64,'+${displayPicture}}" width="200" height="200"/>
                     </br>
                 </div>
                 </br>
@@ -38,12 +38,14 @@
                 <h4 th:text="'Name: ' + ${displayName}"></h4>
                 <h4 th:text="'Sport: ' + ${displaySport}"></h4>
                 <h4 th:text="'Location: ' + ${displayLocation}"></h4>
-                <h4 th:text="'Join Token: ' + ${displayToken}"></h4>
             </div>
-            <div class="edit-button">
+
+            <label th:text="'Join Token' + "></label>
+            <div class="inputBox">
+                <span class ="tokenInput" th:text="${displayToken}"></span>
                 <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}" th:method="post">
                     <button type="submit">
-                        Regenerate token
+                        Generate token
                     </button>
                 </form>
             </div>
