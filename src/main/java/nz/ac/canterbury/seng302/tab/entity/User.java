@@ -105,6 +105,10 @@ public class User {
     @Column(nullable = false)
     private String hashedPassword;
 
+    @ManyToMany(mappedBy = "teamMembers")
+    private List<Team> joinedTeams;
+
+
     public long getUserId() {
         return userId;
     }
@@ -244,4 +248,13 @@ public class User {
         }
         return sport;
     }
+
+    public List<Team> getJoinedTeams() {
+        return this.joinedTeams;
+    }
+
+    public void setJoinedTeams(List<Team> teamMembers) {
+        this.joinedTeams = joinedTeams;
+    }
+
 }

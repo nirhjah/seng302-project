@@ -38,9 +38,13 @@ public class Team {
     @Column(nullable = true)
     private Date creationDate;
 
-    @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name = "teamMembers")
+    @ManyToMany
+    @JoinTable(
+            name = "team_members",
+            joinColumns = @JoinColumn(name = "teamId"),
+            inverseJoinColumns = @JoinColumn(name = "userId"))
     private List<User> teamMembers;
+
 
     protected Team() {
     }
