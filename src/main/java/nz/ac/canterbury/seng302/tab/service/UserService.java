@@ -108,7 +108,6 @@ public class UserService {
         return listOfLocations;
     }
 
-
     /**
      * returns a list of the sports that are relevant to the current search, this
      * means that we can populate the filter buttons with sports that only appear
@@ -258,5 +257,4 @@ public class UserService {
         // Saved the updated picture string in the database.
         userRepository.save(user);
     }
-
 }
