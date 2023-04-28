@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Base64;
+import java.util.Date;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
@@ -31,6 +32,9 @@ public class Team {
     @Column(columnDefinition = "MEDIUMBLOB")
     private String pictureString;
 
+    @Column(nullable = true)
+    private Date creationDate;
+
     protected Team() {
     }
 
@@ -41,6 +45,7 @@ public class Team {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
+        this.creationDate = new Date();
     }
 
     /**
@@ -57,6 +62,7 @@ public class Team {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
+        this.creationDate = new Date();
     }
 
     public Long getTeamId() {
@@ -103,5 +109,7 @@ public class Team {
     public void setSport(String sport) {
         this.sport = sport;
     }
+
+    public Date getCreationDate() {return creationDate;}
 
 }

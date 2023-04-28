@@ -11,119 +11,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+    <link th:href="@{/css/edit-user.css}" rel="stylesheet"/>
+    <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:inline="text">Edit User</title>
-</head>
-<style>
-    .multiply:before {
-        content: "\00D7";
-    }
-
-    .sport-box {
-        height: 80px;
-        width: 230px;
-        display: flex;
-        flex-wrap: wrap;
-        margin-top: 45px;
-        border: 2px dashed #778DA9;
-        border-bottom-left-radius: 11px;
-        border-bottom-right-radius: 11px;
-        overflow-y: scroll;
-        max-height: 100px;
-        gap: 3px;
-        align-content: flex-start;
-        padding-left: 5px;
-    }
-
-    .sport-box li {
-        margin: 0;
-        list-style: none;
-        border-radius: 20px;
-        background: #778DA9;
-        padding-left: 5px;
-        border: 1px solid #1B263B;
-        display: inline-block;
-        white-space: nowrap;
-        font-size: 11px;
-        font-weight: 600;
-        font-family: "Noto Sans", sans-serif;
-        color: #FFFF;
-        text-align: center;
-    }
-
-    .sport-box li i {
-        color: #FFF;
-        margin-right: 8px;
-        margin-left: 5px;
-        font-size: 12px;
-        cursor: pointer;
-        border-radius: 50%;
-        background: #778DA9;
-    }
-
-    .content {
-        position: absolute;
-        bottom: 243px;
-        margin-left: -325px;
-    }
-
-    .content input {
-        width: 230px;
-        height: 25px;
-        border-top-left-radius: 11px;
-        border-top-right-radius: 11px;
-        border: 2px solid #778DA9;
-        padding-left: 5px;
-    }
-
-    .sport-box::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    .sport-box::-webkit-scrollbar-track {
-        background-color: #E0E1DD;
-    }
-
-    .sport-box::-webkit-scrollbar-thumb {
-        background-color: #415A77;
-        border-radius: 10px
-    }
-
-    .sport-box::-webkit-scrollbar-thumb:hover {
-        background-color: #0D1B2A;
-    }
-
-    .details button {
-        background: none;
-        border: none;
-        padding: 0;
-        font-family: "Noto Sans", sans-serif;
-        text-decoration: underline;
-        cursor: pointer;
-        position: absolute;
-        margin-left: 65px;
-        margin-top: 3px;
-    }
-
-    .sport-input-box {
-        margin-top: -15px
-    }
-
-    .sports-label {
-        font-family: "Noto Sans", sans-serif;
-        margin-left: 6px;
-    }
-
-    /*.error-message {*/
-    /*    position: absolute;*/
-    /*    top: -20px; !* adjust this value to position the label as needed *!*/
-    /*    left: 0;*/
-    /*}*/
-
-</style>
 <body class="edit-user-background">
-    <div th:insert="~{homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
     <div class="user-form">
         <div class="user-header">
             <h1 th:inline="text">Edit User</h1>
@@ -131,7 +26,12 @@
         <div class="wrapper">
             <form th:action="@{editUser}" method="post" th:object="${editUserForm}" id="editUserForm">
                 <div class="edit-inputs">
-                    <div class="edit-inputs-left">
+<!--                    <div class="edit-inputs-left">-->
+                    <div class="edit-user-header">
+                        <h2>Details</h2>
+                        <img th:src="@{/image/icons/dark-blue-user.svg}"/>
+                    </div>
+                    <div class="input-boxes">
                         <div class="input-box">
                             <input type="text" class="form-control" id="first-name" th:name="firstName"
                                    data-cy="firstName" autofocus placeholder="" th:value="*{firstName}">
@@ -145,32 +45,38 @@
                             <label for="last-name">Last Name <span class="required">*</span></label>
                         </div>
                         <div th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error-message"></div>
-
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="email" th:name="email"
-                                   data-cy="email" autofocus placeholder="" th:value="*{email}">
-                            <label for="email">Email <span class="required">*</span></label>
-                        </div>
-                        <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message"></div>
-
-                        <div class="input-box">
-                            <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
-                                   data-cy="dateOfBirth" autofocus>
-                            <label for="date-of-birth">Date of Birth <span class="required">*</span></label>
-                        </div>
-                        <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
-
-                        <div class="sport-input-box">
-                            <div class="details">
-                                <label class="sports-label" for="sport-box">Favourite Sports</label>
-                                <button type="button">Clear</button>
-                            </div>
-
-                            <div class="sport-box" id="sport-box"></div>
-                        </div>
                     </div>
-                    <hr class="solid">
-                    <div class="edit-inputs-right">
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="email" th:name="email"
+                               data-cy="email" autofocus placeholder="" th:value="*{email}">
+                        <label for="email">Email <span class="required">*</span></label>
+                        <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="errorMessage" />
+                    </div>
+                    <div class="input-box">
+                        <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
+                               data-cy="dateOfBirth" required autofocus>
+                        <label for="date-of-birth">Date of Birth <span class="required">*</span></label>
+                        <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
+                    </div>
+                    <div class="sport-input-box">
+                        <div class="details">
+                            <label class="sports-label" for="sport-box">Favourite Sports</label>
+                            <button type="button">Clear</button>
+                        </div>
+                        <div class="content">
+                            <ul><input type="text" spellcheck="false" list="sports" id="sport-list"></ul>
+                            <datalist id="sports">
+                                <option th:each="sport : ${knownSports}" th:text="${sport}">
+                            </datalist>
+                        </div>
+                        <div class="sport-box" id="sport-box"></div>
+                        <label for="sport-list" id="error-message"></label>
+                    </div>
+                    <div class="edit-user-header">
+                        <h2>Location</h2>
+                        <img th:src="@{/image/icons/dark-blue-location.svg}"/>
+                    </div>
+                    <div class="input-boxes">
                         <div class="input-box">
                             <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
                                    data-cy="location" autofocus placeholder="" autocomplete="off" th:value="*{addressLine1}"
@@ -187,37 +93,33 @@
                             <label for="address-line-2">Address Line 2</label>
                         </div>
                         <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message"></div>
-
-
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="suburb" th:name="suburb"
-                                   data-cy="location" autofocus placeholder="" th:value="*{suburb}">
-                            <label for="suburb">Suburb</label>
-                        </div>
-                        <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
-
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="postcode" th:name="postcode"
-                                   data-cy="location" autofocus placeholder="" th:value="*{postcode}">
-                            <label for="postcode">Postcode</label>
-                        </div>
-                        <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
-
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="city" th:name="city"
-                                   data-cy="location" autofocus placeholder="" th:value="*{city}">
-                            <label for="city">City <span class="required">*</span></label>
-                        </div>
-                        <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
-
-                        <div class="input-box">
-                            <input type="text" class="form-control" id="country" th:name="country"
-                                   data-cy="location" autofocus placeholder="" th:value="*{country}">
-                            <label for="country">Country <span class="required">*</span></label>
-                        </div>
-                        <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
-
                     </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="suburb" th:name="suburb"
+                               data-cy="location" autofocus placeholder="" th:value="*{suburb}">
+                        <label for="suburb">Suburb</label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="postcode" th:name="postcode"
+                               data-cy="location" autofocus placeholder="" th:value="*{postcode}">
+                        <label for="postcode">Postcode</label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
+
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="city" th:name="city"
+                               data-cy="location" autofocus placeholder="" th:value="*{city}">
+                        <label for="city">City <span class="required">*</span></label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
+
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="country" th:name="country"
+                               data-cy="location" autofocus placeholder="" th:value="*{country}">
+                        <label for="country">Country <span class="required">*</span></label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
                     <script type="text/javascript" th:inline="javascript">
                         /**
                          ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
@@ -228,26 +130,16 @@
                     </script>
                     <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>
                 </div>
-                <br/>
-                <div class="submit-button" style="margin-top: 20px;">
+                <div class="submit-button">
                     <label th:if="${errorMessage}" th:text="${errorMessage}" style="position: fixed;"></label>
                     <a th:href="@{home}">
                         <button type="submit" id="submit" formnovalidate>Save</button>
                     </a>
                 </div>
-
                 <div class="cancel-link">
                     <a th:href="@{user-info/self}">Cancel</a>
                 </div>
             </form>
-            <div class="content">
-                <label for="sport-list"  id="error-message"></label>
-                <ul><input type="text" spellcheck="false" list="sports" id="sport-list" pattern="^\p{L}+[\- '\p{L}]*$"></ul>
-                <label th:if="${errorMessage}" th:text="${errorMessage}" style="position: fixed;"></label>
-                <datalist id="sports">
-                    <option th:each="sport : ${knownSports}" th:text="${sport}">
-                </datalist>
-            </div>
         </div>
     <footer>
         <p>
@@ -322,6 +214,14 @@
         tagsInput.setAttribute("value", tags.join(","));
         form.appendChild(tagsInput);
         return true;
+    });
+
+    const inputBox = document.getElementById("sport-list");
+
+    inputBox.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // prevent form submission
+        }
     });
 
 

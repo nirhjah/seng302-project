@@ -1,7 +1,9 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email; import jakarta.validation.constraints.Pattern; import org.springframework.core.io.ClassPathResource;
+import jakarta.validation.constraints.Email; import jakarta.validation.constraints.Pattern;
+import nz.ac.canterbury.seng302.tab.service.UserService;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,6 +22,7 @@ import java.util.*;
 public class User {
 
     public User() {
+
     }
 
     public static User defaultDummyUser() throws IOException {
@@ -113,6 +116,7 @@ public class User {
     @Column(nullable = false)
     private String hashedPassword;
 
+
     public long getUserId() {
         return userId;
     }
@@ -152,6 +156,7 @@ public class User {
 
     public String getPassword() {return hashedPassword; }
 
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -171,6 +176,7 @@ public class User {
     public void setPictureString(String pictureString) {
         this.pictureString = pictureString;
     }
+
 
     @Column()
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -252,4 +258,6 @@ public class User {
         }
         return sport;
     }
+
+
 }
