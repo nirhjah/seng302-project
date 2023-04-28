@@ -43,6 +43,7 @@ public class SecurityConfiguration {
         return authenticationManagerBuilder.build();
     }
 
+
     /**
      * filters requests being made on the website
      * @param http http security config
