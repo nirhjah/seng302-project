@@ -21,60 +21,6 @@ import java.util.*;
 @Entity(name = "UserEntity")
 public class User {
 
-    public User() {
-
-    }
-
-    public static User defaultDummyUser() throws IOException {
-        return new User(
-                "test",
-                "again",
-                new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
-                "test@gmail.com",
-                "dfghjk",
-                new ArrayList<>(),
-                new Location(null,null,null,"Christchurch",null,"New Zealand"));
-
-    }
-
-    /**
-     * TODO: Implement password hashing, probably via Bcrypt
-     */
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports, Location location) throws IOException {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.dateOfBirth = dateOfBirth;
-        this.email = email;
-        this.hashedPassword = password;
-        this.favoriteSports = favoriteSports;
-        this.location = location;
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
-    }
-
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location) throws IOException{
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.dateOfBirth = dateOfBirth;
-        this.email = email;
-        this.hashedPassword = password;
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
-        this.favoriteSports = new ArrayList<>();
-        this.location = location;
-    }
-
-
-    public User(String firstName, String lastName, String email, String password, Location location) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.dateOfBirth = new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime();
-        this.hashedPassword = password;
-        this.location = location;
-    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
@@ -108,6 +54,66 @@ public class User {
     @Column(nullable = false)
     private String hashedPassword;
 
+    @Column
+    private boolean emailConfirmed;
+
+    public User() {
+
+    }
+
+    public static User defaultDummyUser() throws IOException {
+        return new User(
+                "test",
+                "again",
+                new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
+                "test@gmail.com",
+                "dfghjk",
+                new ArrayList<>(),
+                new Location(null,null,null,"Christchurch",null,"New Zealand"));
+
+    }
+
+    /**
+     * TODO: Implement password hashing, probably via Bcrypt
+     */
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports, Location location) throws IOException {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.email = email;
+        this.hashedPassword = password;
+        this.favoriteSports = favoriteSports;
+        this.location = location;
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        InputStream is = resource.getInputStream();
+        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
+        this.emailConfirmed = false;
+    }
+
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location) throws IOException{
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.email = email;
+        this.hashedPassword = password;
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        InputStream is = resource.getInputStream();
+        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
+        this.favoriteSports = new ArrayList<>();
+        this.location = location;
+        this.emailConfirmed = false;
+    }
+
+
+    public User(String firstName, String lastName, String email, String password, Location location) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.dateOfBirth = new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime();
+        this.hashedPassword = password;
+        this.location = location;
+        this.emailConfirmed = false;
+    }
 
     public long getUserId() {
         return userId;
@@ -170,6 +176,13 @@ public class User {
     }
 
 
+    /**
+     * Confirms the user's email
+     */
+    public void confirmEmail() {
+        this.emailConfirmed = true;
+    }
+
     @Column()
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "Id")
@@ -203,7 +216,7 @@ public class User {
     /**
      * TODO: IMPLEMENT. There shouldn't be a way to see the password, only to check
      * if it's right.
-     * 
+     *
      * @param password The password provided by the user that we're checking
      * @return true/false if the provided password is the same one we've stored
      */
