@@ -12,16 +12,18 @@ import java.util.GregorianCalendar;
 @Component
 public class AdminAccount implements CommandLineRunner {
     private final UserRepository userRepository;
+
     @Autowired
     public AdminAccount(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
     @Override
     public void run(String... args) throws Exception {
         Location location = new Location("admin", "admin", "admin", "admin", "admin", "admin");
 
-        User admin = new User("Admin", "Admin", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "admin@gmail.com", "1", location);
+        User admin = new User("Admin", "Admin", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
+                "admin@gmail.com", "1", location);
         userRepository.save(admin);
     }
 }
-

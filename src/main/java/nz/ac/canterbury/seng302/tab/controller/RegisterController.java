@@ -1,20 +1,16 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.forms.RegisterForm;
-import nz.ac.canterbury.seng302.tab.service.UserService;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,15 +18,13 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Optional;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.forms.RegisterForm;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 
 @Controller
 public class RegisterController {
@@ -57,54 +51,6 @@ public class RegisterController {
 
     /** Allow letters, numbers, forward slashes and hyphens. Must start with an alphanumeric character. */
     private final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
-
-    /**
-     * Logs the given user in.
-     * Because our logins are entirely handled through the security chain, we have
-     * to hack together
-     * a login if we can't go through it.
-     * 
-     * @param user The user who'll be logged in.
-     * @param request Your controller's request object, we bind the login to this.
-     */
-    public void forceLogin(User user, HttpServletRequest request) {
-        // Create a new Authentication with Username and Password (authorities here are
-        // optional as the following function fetches these anyway)
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getEmail(),
-                user.getPassword(), user.getAuthorities());
-        // Authenticate the token properly with the CustomAuthenticationProvider
-        // NOTE: To the person handling this spike, this fails because it
-        // expects the raw password to compare against, however we only have
-        // the hashed version. So this will silently throw an exception, and no
-        // code after this is run.
-        Authentication authentication = authenticationManager.authenticate(token);
-        // Check if the authentication is actually authenticated (in this example any
-        // username/password is accepted so this should never be false)
-        // Add the authentication to the current security context (Stateful)
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        // Add the token to the request session (needed so the authentication can be
-        // properly used)
-        request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                SecurityContextHolder.getContext());
-    }
-
-    /**
-     * Checks if user is 13 years or older in order to use the app
-     * 
-     * @param registerForm  The user form containing the age
-     * @param bindingResult The object we'll attach errors to if it fails
-     */
-    private void checkAgeOnRegister(RegisterForm registerForm, BindingResult bindingResult) {
-        Date dateOfBirth = registerForm.getDateOfBirth();
-        LocalDate dateNow = LocalDate.now();
-        LocalDate localDateOfBirth = dateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-        int age = Period.between(localDateOfBirth, dateNow).getYears();
-        if (age < 13) {
-            bindingResult.addError(
-                    new FieldError("registerForm", "dateOfBirth", "You must be at least 13 years old to register"));
-        }
-    }
 
     /**
      * Checks if the email already exists
@@ -181,13 +127,14 @@ public class RegisterController {
      * @param bindingResult Errors are stored here
      * @param request The controller's request object, we bind the login to this.
      * @return user page or register (if there are errors)
+     * @throws ServletException This is thrown if login fails, which should never happen.
      */
     @PostMapping("/register")
     public String register(
             @Valid RegisterForm registerForm,
             BindingResult bindingResult,
             HttpServletRequest request,
-            Model model) throws IOException {
+            Model model) throws IOException, ServletException {
 
         // Run the custom validation methods
         // TODO: Move validators that might be reused into their own class
@@ -218,7 +165,7 @@ public class RegisterController {
         user = userService.updateOrAddUser(user);
 
         // Auto-login when registering
-        forceLogin(user, request);
+        request.login(user.getEmail(), registerForm.getPassword());
 
         return "redirect:/user-info?name=" + user.getUserId();
 
