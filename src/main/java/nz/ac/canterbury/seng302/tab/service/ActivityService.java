@@ -43,4 +43,23 @@ public class ActivityService {
      * @return The stored activity entity
      */
     public Activity updateOrAddActivity(Activity activity) {return activityRepository.save(activity); }
+
+    /**
+     * Checks that the activity is scheduled for after a team's creation.
+     * @param activity the activity
+     * @return true if activity is scheduled after team creation
+     */
+    public boolean validateActivityDateTime(Activity activity) {
+        return activity.getTeam().getCreationDate().isBefore(activity.getActivityStart()) &&
+                activity.getTeam().getCreationDate().isBefore(activity.getActivityEnd());
+    }
+
+    /**
+     * Checks that the start of activity is before the end of the activity
+     * @param activity - the activity
+     * @return true if the end of activity is after the start
+     */
+    public boolean validateStartAndEnd(Activity activity) {
+        return activity.getActivityStart().isBefore(activity.getActivityEnd());
+    }
 }

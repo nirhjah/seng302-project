@@ -4,12 +4,10 @@ import jakarta.persistence.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.Base64;
-import java.util.Date;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
@@ -32,8 +30,8 @@ public class Team {
     @Column(columnDefinition = "MEDIUMBLOB")
     private String pictureString;
 
-    @Column(nullable = true)
-    private Date creationDate;
+    @Column()
+    private LocalDateTime creationDate;
 
     protected Team() {
     }
@@ -45,14 +43,14 @@ public class Team {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
-        this.creationDate = new Date();
+        this.creationDate = LocalDateTime.now();
     }
 
     /**
      * Should be used for testing ONLY!
      * TODO: Remove this constructor, use builder pattern. same for user
-     * @param name
-     * @param sport
+     * @param name - team name
+     * @param sport - sport name
      */
     public Team(String name, String sport) throws IOException {
         this.name = name;
@@ -62,7 +60,7 @@ public class Team {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
-        this.creationDate = new Date();
+        this.creationDate = LocalDateTime.now();
     }
 
     public Long getTeamId() {
@@ -110,6 +108,6 @@ public class Team {
         this.sport = sport;
     }
 
-    public Date getCreationDate() {return creationDate;}
+    public LocalDateTime getCreationDate() {return creationDate;}
 
 }

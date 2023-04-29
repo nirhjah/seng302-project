@@ -13,7 +13,7 @@ public class Activity {
     /**
      * Enum of all possible activity types
      */
-    enum ActivityType {
+    public enum ActivityType {
         Game,
         Friendly,
         Training,
@@ -65,5 +65,21 @@ public class Activity {
         this.activityStart = activityStart;
         this.activityEnd = activityEnd;
         this.activityOwner = creator;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    public LocalDateTime getActivityStart() {
+        return activityStart;
+    }
+
+    public LocalDateTime getActivityEnd() {
+        return activityEnd;
     }
 }

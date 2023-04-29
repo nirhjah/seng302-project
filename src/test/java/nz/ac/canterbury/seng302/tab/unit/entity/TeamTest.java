@@ -16,8 +16,8 @@ import org.springframework.core.io.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.Base64;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -95,7 +95,7 @@ public class TeamTest {
     @Test
     public void checkCreationDateIsToday() throws IOException {
         Team t = new Team("Test", "Sport");
-        Assertions.assertEquals(new Date(), t.getCreationDate());
+        Assertions.assertEquals(LocalDateTime.now(), t.getCreationDate());
     }
 
 }
