@@ -38,6 +38,7 @@ public class ForgotPasswordController {
     ) {
 
         model.addAttribute("email", email);
+        model.addAttribute("httpServletRequest",request);
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
