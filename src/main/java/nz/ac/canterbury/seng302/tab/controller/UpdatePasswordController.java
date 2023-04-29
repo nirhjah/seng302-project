@@ -31,13 +31,18 @@ public class UpdatePasswordController {
     @Autowired
     UserService userService;
 
-    Optional<User> testUser;
+    Optional<User> user;
     User currentUser;
 
+    String currentToken;
 
-    private void checkPasswordsMatchAndIsSecure(UpdatePasswordForm updatePasswordForm, BindingResult bindingResult) {
-        testUser = userService.findUserByEmail("test@gmail.com");
-        currentUser = testUser.get();
+
+    private void checkPasswordsMatchAndIsSecure(UpdatePasswordForm updatePasswordForm, BindingResult bindingResult, String token) {
+        /*testUser = userService.findUserByEmail("test@gmail.com");
+        currentUser = testUser.get();*/
+
+        user = userService.findByToken(currentToken);
+        currentUser = user.get();
 
         String password = updatePasswordForm.getPassword();
         String confirmPassword = updatePasswordForm.getConfirmPassword();
@@ -72,6 +77,13 @@ public class UpdatePasswordController {
         model.addAttribute("updatePasswordForm", new UpdatePasswordForm());
         model.addAttribute("httpServletRequest",request);
 
+        user = userService.findByToken(token);
+        currentUser = user.get();
+
+        System.out.println(token);
+        System.out.println(currentUser.getEmail());
+
+        currentToken = token;
         return "updatePassword";
     }
 
@@ -84,7 +96,15 @@ public class UpdatePasswordController {
             HttpServletResponse httpServletResponse,
             HttpServletRequest request, @PathVariable String token) {
 
-        checkPasswordsMatchAndIsSecure(updatePasswordForm, bindingResult);
+
+        System.out.println("this is the token we are using");
+        System.out.println(currentToken);
+
+        user = userService.findByToken(currentToken);
+        currentUser = user.get();
+
+
+        checkPasswordsMatchAndIsSecure(updatePasswordForm, bindingResult, token);
         model.addAttribute("httpServletRequest",request);
 
 
@@ -94,7 +114,6 @@ public class UpdatePasswordController {
             return "updatePassword";
 
         }
-
 
         currentUser.setPassword(password);
         userService.updateOrAddUser(currentUser);

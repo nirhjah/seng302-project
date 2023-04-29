@@ -25,7 +25,9 @@ import java.util.Optional;
 @Controller
 public class ForgotPasswordController {
 
+    Optional<User> user;
 
+    User currentUser;
 
     @Autowired
     UserService userService;
@@ -60,14 +62,23 @@ public class ForgotPasswordController {
 
         logger.info("email submitted");
 
-        Optional<User> user = userService.findUserByEmail(email);
+        user = userService.findUserByEmail(email);
 
 
-        if (!user.isEmpty()) {
-            User currentUser = user.get();
+        if (user.isPresent()) {
+            currentUser = user.get();
 
             currentUser.generateToken(userService, 1);
+
             logger.info("current token is " + currentUser.getToken());
+            userService.updateOrAddUser(currentUser);
+
+          //  currentUser.setToken(currentUser.getToken());
+
+
+          /*  user = userService.findByToken(currentUser.getToken());
+            currentUser = user.get();*/
+
 
         }
 
