@@ -114,18 +114,20 @@ public class TeamTest {
         User user1 = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", new Location(null, null, null, "dunedin", null, "nz"));
         User user2 = new User("Alice", "Smith", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "alice@example.com", "Password123!", new Location(null, null, null, "auckland", null, "nz"));
 
-        Set<Team> teamsToJoinUser1 = new HashSet<>(); //teams to join for user1
-        teamsToJoinUser1.add(team1);
-        teamsToJoinUser1.add(team2);
+        //expected
+        Set<Team> user1ExpectedTeams = new HashSet<>();
+        Set<Team> user2ExpectedTeams = new HashSet<>();
+        user1ExpectedTeams.add(team1);
+        user1ExpectedTeams.add(team2);
+        user2ExpectedTeams.add(team2);
 
-        Set<Team> teamsToJoinUser2 = new HashSet<>(); //teams to join for user2
-        teamsToJoinUser2.add(team2);
+        //output
+        user1.joinTeam(team1);
+        user1.joinTeam(team2);
+        user2.joinTeam(team2);
 
-        user1.setJoinedTeams(teamsToJoinUser1); //user is joining teams
-        user2.setJoinedTeams(teamsToJoinUser2);
-
-        assertEquals(teamsToJoinUser1, user1.getJoinedTeams());
-        assertEquals(teamsToJoinUser2, user2.getJoinedTeams());
+        assertEquals(user1ExpectedTeams, user1.getJoinedTeams());
+        assertEquals(user2ExpectedTeams, user2.getJoinedTeams());
 
     }
 

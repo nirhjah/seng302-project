@@ -41,7 +41,7 @@ public class Team {
             joinColumns = @JoinColumn(name = "team_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<User> teamMembers;
+    private Set<User> teamMembers = new HashSet<User>();
 
     protected Team() {
     }

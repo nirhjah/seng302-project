@@ -106,7 +106,7 @@ public class User {
     private String hashedPassword;
 
     @ManyToMany(mappedBy = "teamMembers")
-    private Set<Team> joinedTeams;
+    private Set<Team> joinedTeams = new HashSet<Team>();
 
 
     public long getUserId() {
@@ -247,6 +247,17 @@ public class User {
             sport.add(s.getName());
         }
         return sport;
+    }
+
+
+    public void joinTeam(Team team) {
+        this.joinedTeams.add(team);
+        team.getTeamMembers().add(this);
+    }
+
+    public void leaveTeam(Team team) {
+        this.joinedTeams.remove(team);
+        team.getTeamMembers().remove(this);
     }
 
     public Set<Team> getJoinedTeams() {
