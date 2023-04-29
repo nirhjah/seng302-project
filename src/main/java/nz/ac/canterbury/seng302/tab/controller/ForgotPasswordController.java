@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import nz.ac.canterbury.seng302.tab.form.ForgotPasswordForm;
@@ -21,8 +22,9 @@ public class ForgotPasswordController {
     Logger logger = LoggerFactory.getLogger(ForgotPasswordController.class);
 
     @GetMapping("/forgot-password")
-    public String forgotPasswordForm(Model model) {
+    public String forgotPasswordForm(Model model,HttpServletRequest request) {
         model.addAttribute("forgotPasswordForm", new ForgotPasswordForm());
+        model.addAttribute("httpServletRequest",request);
         return "forgotPassword";
     }
 
@@ -32,10 +34,11 @@ public class ForgotPasswordController {
             @Validated ForgotPasswordForm forgotPasswordForm,
             BindingResult bindingResult,
             Model model,
-            HttpServletResponse httpServletResponse
+            HttpServletResponse httpServletResponse, HttpServletRequest request
     ) {
 
         model.addAttribute("email", email);
+        model.addAttribute("httpServletRequest",request);
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
