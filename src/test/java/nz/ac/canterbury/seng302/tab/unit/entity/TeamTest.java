@@ -2,10 +2,12 @@ package nz.ac.canterbury.seng302.tab.unit.entity;
 
 import nz.ac.canterbury.seng302.tab.controller.ForgotPasswordController;
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +29,8 @@ public class TeamTest {
     @Autowired
     private TeamRepository teamRepository;
 
+    @Autowired
+    UserRepository userRepository;
     @Autowired
     private TeamService teamService;
 
@@ -99,20 +103,33 @@ public class TeamTest {
     }
 
     @Test
-    public void testAddUserToTeam() throws IOException {
+    public void testAddTeamsToUser() throws IOException {
 
-        User user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", new Location(null, null, null, "dunedin", null, "nz"));
-        Team team = new Team("test", "Hockey", location);
-        teamService.addTeam(team);
+        Team team1 = new Team("team1", "cricket");
+       Team team2 = new Team("team2", "hockey");
 
-        List<User> expectedUsersInTeam = new ArrayList<User>();
-        List<User> outputUsersInTeam =  team.getTeamMembers();
+        teamRepository.save(team1);
+        teamRepository.save(team2);
 
-        expectedUsersInTeam.add(user);
-        outputUsersInTeam.add(user);
+        User user1 = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", new Location(null, null, null, "dunedin", null, "nz"));
+        User user2 = new User("Alice", "Smith", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "alice@example.com", "Password123!", new Location(null, null, null, "auckland", null, "nz"));
 
+        Set<Team> teamsToJoinUser1 = new HashSet<>(); //teams to join for user1
+        teamsToJoinUser1.add(team1);
+        teamsToJoinUser1.add(team2);
 
-        assertEquals(expectedUsersInTeam, outputUsersInTeam);
+        Set<Team> teamsToJoinUser2 = new HashSet<>(); //teams to join for user2
+        teamsToJoinUser2.add(team2);
+
+        user1.setJoinedTeams(teamsToJoinUser1); //user is joining teams
+        user2.setJoinedTeams(teamsToJoinUser2);
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        assertEquals(teamsToJoinUser1, user1.getJoinedTeams());
+        assertEquals(teamsToJoinUser2, user2.getJoinedTeams());
+
     }
 
 }

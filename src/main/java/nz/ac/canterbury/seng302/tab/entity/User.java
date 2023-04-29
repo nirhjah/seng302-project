@@ -106,7 +106,7 @@ public class User {
     private String hashedPassword;
 
     @ManyToMany(mappedBy = "teamMembers")
-    private List<Team> joinedTeams;
+    private Set<Team> joinedTeams;
 
 
     public long getUserId() {
@@ -249,12 +249,12 @@ public class User {
         return sport;
     }
 
-    public List<Team> getJoinedTeams() {
+    public Set<Team> getJoinedTeams() {
         return this.joinedTeams;
     }
 
-    public void setJoinedTeams(List<Team> teamMembers) {
-        this.joinedTeams = joinedTeams;
+    public void setJoinedTeams(Set<Team> teams) {
+        this.joinedTeams = teams;
     }
 
 }

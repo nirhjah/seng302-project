@@ -9,10 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
@@ -41,10 +38,10 @@ public class Team {
     @ManyToMany
     @JoinTable(
             name = "team_members",
-            joinColumns = @JoinColumn(name = "teamId"),
-            inverseJoinColumns = @JoinColumn(name = "userId"))
-    private List<User> teamMembers;
-
+            joinColumns = @JoinColumn(name = "team_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> teamMembers;
 
     protected Team() {
     }
@@ -57,7 +54,6 @@ public class Team {
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.creationDate = new Date();
-        this.teamMembers = new ArrayList<User>();
     }
 
     /**
@@ -124,13 +120,12 @@ public class Team {
 
     public Date getCreationDate() {return creationDate;}
 
-    public List<User> getTeamMembers() {
-        return this.teamMembers;
+    public Set<User> getTeamMembers() {
+        return teamMembers;
     }
 
-    public void setTeamMembers(List<User> teamMembers) {
+    public void setTeamMembers(Set<User> teamMembers) {
         this.teamMembers = teamMembers;
     }
-
 
 }
