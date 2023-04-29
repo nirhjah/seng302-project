@@ -35,7 +35,7 @@ public class Team {
     @Column(nullable = true)
     private Date creationDate;
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<TeamRole> teamRoles;
 
     protected Team() {

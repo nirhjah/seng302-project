@@ -108,7 +108,7 @@ public class User {
     @Column(nullable = false)
     private String hashedPassword;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<TeamRole> teamRoles;
 
     @Column
