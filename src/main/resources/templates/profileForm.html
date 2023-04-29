@@ -20,18 +20,13 @@
                         </br>
                     </div>
                     </br>
-                    <div class="file-upload">
+                    <div class="file-upload" th:if="${isUserManager}">
                         <div class="file-label-border">
                             <label for="file" class="file-label">
                                 Edit Profile Picture </label>
                         </div>
                             <input type="file" name="file" class="form-control-file" id="file">
                     </div>
-    <!--                <div class="file-upload">-->
-    <!--                    <div class="error-message" th:if="${sizeError == true}">Image must be less than 10MB</div>-->
-    <!--                    <div class="error-message" th:if="${typeError == true}">Please choose a .png, .jpg or .svg file-->
-    <!--                    </div>-->
-    <!--                </div>-->
                 </form>
             </div>
             <div class="team-info">
