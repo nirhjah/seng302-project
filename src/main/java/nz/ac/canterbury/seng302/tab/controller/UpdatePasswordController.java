@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -66,22 +67,22 @@ public class UpdatePasswordController {
      * @param model
      * @return
      */
-    @GetMapping("/update-password")
-    public String updatePasswordForm(Model model, HttpServletRequest request) {
+    @GetMapping("/update-password/{token}")
+    public String updatePasswordForm(Model model, HttpServletRequest request, @PathVariable String token) {
         model.addAttribute("updatePasswordForm", new UpdatePasswordForm());
         model.addAttribute("httpServletRequest",request);
 
         return "updatePassword";
     }
 
-    @PostMapping("/update-password")
+    @PostMapping("/update-password/{token}")
     public String submitEmail(
             @RequestParam("password") String password,
             @Validated UpdatePasswordForm updatePasswordForm,
             BindingResult bindingResult,
             Model model,
             HttpServletResponse httpServletResponse,
-            HttpServletRequest request) {
+            HttpServletRequest request, @PathVariable String token) {
 
         checkPasswordsMatchAndIsSecure(updatePasswordForm, bindingResult);
         model.addAttribute("httpServletRequest",request);
@@ -91,6 +92,7 @@ public class UpdatePasswordController {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("submitted_form", null);
             return "updatePassword";
+
         }
 
 
@@ -98,7 +100,7 @@ public class UpdatePasswordController {
         userService.updateOrAddUser(currentUser);
 
 
-        return "login";
+        return "redirect:/login";
     }
 
 
