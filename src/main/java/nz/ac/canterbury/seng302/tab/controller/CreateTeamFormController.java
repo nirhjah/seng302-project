@@ -8,7 +8,6 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.service.LocationService;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
@@ -161,8 +160,6 @@ public class CreateTeamFormController {
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "createTeamForm";
-            // return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" +
-            // teamID : "");
         }
 
         // trim all extra whitespace and trailing/leading whitespace
