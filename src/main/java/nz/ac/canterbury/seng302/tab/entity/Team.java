@@ -145,4 +145,21 @@ public class Team {
         return creationDate;
     }
 
+    /**
+     * @param user, the
+     * @param role
+     */
+    public void setRole(User user, Role role) {
+
+        TeamRole teamRole = new TeamRole();
+        teamRole.setUser(user);
+        teamRole.setRole(role);
+        teamRole.setTeam(this);
+        this.teamRoles.add(teamRole);
+    }
+
+    public List<TeamRole> getTeamRoleList() {
+        return this.teamRoles;
+    }
+
 }

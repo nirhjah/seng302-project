@@ -44,7 +44,7 @@
             </div>
             <form th:action="@{profile}"  class="profile-buttons" method="post">
                 <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
-                <a class="edit-button" th:href="@{createTeam(edit=${teamID})}">
+                <a class="edit-button" th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
                     <button type="button">Edit Profile</button>
                 </a>
             </form>

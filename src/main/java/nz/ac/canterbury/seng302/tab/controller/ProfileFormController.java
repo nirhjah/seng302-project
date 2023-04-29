@@ -45,14 +45,15 @@ public class ProfileFormController {
      * @return thymeleaf profileForm
      */
     @GetMapping("/profile")
-    public String profileForm(Model model, @RequestParam(value = "teamID", required = false) Long teamID, HttpServletRequest request) {
+    public String profileForm(Model model, @RequestParam(value = "teamID", required = false) Long teamID,
+            HttpServletRequest request) {
         logger.info("GET /profileForm");
 
         // Retrieve the selected team from the list of available teams using the ID
         // If the name is null or empty, return null
         List<Team> teamList = teamService.getTeamList();
         ProfileFormController.teamId = teamID;
-        model.addAttribute("httpServletRequest",request);
+        model.addAttribute("httpServletRequest", request);
 
         Team selectedTeam;
         if (teamID != null) {
@@ -80,6 +81,9 @@ public class ProfileFormController {
         model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("navTeams", teamList);
         model.addAttribute("teamID", teamID);
+        model.addAttribute("isUserManager", teamService.isUserManagerOfTeam(user.get().getUserId(), teamId));
+
+        logger.info("boolean manager is: " + teamService.isUserManagerOfTeam(user.get().getUserId(), teamId));
 
         return "profileForm";
     }
