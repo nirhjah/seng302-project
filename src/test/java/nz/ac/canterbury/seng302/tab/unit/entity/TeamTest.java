@@ -124,9 +124,6 @@ public class TeamTest {
         user1.setJoinedTeams(teamsToJoinUser1); //user is joining teams
         user2.setJoinedTeams(teamsToJoinUser2);
 
-        userRepository.save(user1);
-        userRepository.save(user2);
-
         assertEquals(teamsToJoinUser1, user1.getJoinedTeams());
         assertEquals(teamsToJoinUser2, user2.getJoinedTeams());
 
