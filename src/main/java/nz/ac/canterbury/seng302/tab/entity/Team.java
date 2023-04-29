@@ -1,6 +1,8 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
+import nz.ac.canterbury.seng302.tab.enums.Role;
+
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -47,6 +49,33 @@ public class Team {
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.creationDate = new Date();
+    }
+
+    /**
+     * constructor that sets the manager
+     * 
+     * @param name
+     * @param sport
+     * @param location
+     * @param manager
+     * @throws IOException
+     */
+    public Team(String name, String sport, Location location, User manager) throws IOException {
+        this.name = name;
+        this.location = location;
+        this.sport = sport;
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        InputStream is = resource.getInputStream();
+        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
+        this.creationDate = new Date();
+        // set the manager
+        this.teamRoles = new ArrayList<>();
+        TeamRole managerRole = new TeamRole();
+        managerRole.setTeam(this);
+        managerRole.setUser(manager);
+        managerRole.setRole(Role.MANAGER);
+        this.teamRoles.add(managerRole);
+
     }
 
     /**
