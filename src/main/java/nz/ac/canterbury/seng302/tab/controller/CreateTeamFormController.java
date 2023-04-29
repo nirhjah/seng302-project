@@ -159,6 +159,7 @@ public class CreateTeamFormController {
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            logger.info("bad request");
             return "createTeamForm";
         }
 
@@ -182,6 +183,7 @@ public class CreateTeamFormController {
                 trimmedPostcode, trimmedCountry);
         Team team;
         if ((team = teamService.getTeam(teamID)) != null) {
+            logger.info("editing team details");
             team.setName(trimmedName);
             team.setSport(trimmedSport);
             team.setLocation(location);
