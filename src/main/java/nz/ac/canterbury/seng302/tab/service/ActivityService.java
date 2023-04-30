@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,5 +62,19 @@ public class ActivityService {
      */
     public boolean validateStartAndEnd(Activity activity) {
         return activity.getActivityStart().isBefore(activity.getActivityEnd());
+    }
+
+    /**
+     * Checks that the team selection based on what activity type is selected
+     * @param type the type of activity
+     * @param team the team selected
+     * @return true if the type is game or friendly and there is a team, or if type is anything but game and friendly
+     */
+    public boolean validateTeamSelection(Activity.ActivityType type, Team team) {
+        if ((type == Activity.ActivityType.Game || type== Activity.ActivityType.Friendly) && team==null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
