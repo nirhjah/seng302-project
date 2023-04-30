@@ -10,6 +10,10 @@ public class EmailDetails {
     private String subject;
     private String attachment;
 
+    public static final String UPDATE_PASSWORD_BODY = "Your password has been updated.";
+
+    public static final String UPDATE_PASSWORD_HEADER = "Password Updated";
+
     public EmailDetails(String recipient, String msgBody, String subject, String attachment) {
         this.recipient = recipient;
         this.msgBody = msgBody;

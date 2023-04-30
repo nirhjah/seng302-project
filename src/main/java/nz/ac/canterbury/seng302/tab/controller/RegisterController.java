@@ -5,8 +5,6 @@ import jakarta.validation.Valid;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.forms.RegisterForm;
-import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
-import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,9 +37,6 @@ public class RegisterController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private EmailService emailService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -205,12 +200,6 @@ public class RegisterController {
             return "register";
         }
 
-        //TODO REMOVE DEFAULT SPORTS - UNCOMMENT TO SEE THE SPORTS ON VIEW USER
-//        Sport s = new Sport("Hockey");
-//        Sport h = new Sport("Hacky Sack");
-//        List<Sport> fav = new ArrayList<>();
-//        fav.add(s);
-//        fav.add(h);
         User user = new User(registerForm.getFirstName(), registerForm.getLastName(), registerForm.getDateOfBirth(),
                 registerForm.getEmail(), registerForm.getPassword(), new ArrayList<>(),
                 new Location(registerForm.getAddressLine1(), registerForm.getAddressLine2(), registerForm.getSuburb(),
@@ -221,10 +210,6 @@ public class RegisterController {
 
         // Auto-login when registering
         forceLogin(user, request);
-
-        EmailDetails details = new EmailDetails(user.getEmail(), "Hello World", "Email Test");
-        String outcome = emailService.sendSimpleMail(details);
-        logger.info(outcome);
 
         return "redirect:/user-info?name=" + user.getUserId();
 
