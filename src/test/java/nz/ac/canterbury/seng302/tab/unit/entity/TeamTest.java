@@ -2,7 +2,8 @@ package nz.ac.canterbury.seng302.tab.unit.entity;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
+import nz.ac.canterbury.seng302.tab.entity.TeamRole;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.junit.jupiter.api.Assertions;
@@ -17,7 +18,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,9 +33,6 @@ public class TeamTest {
     @Autowired
     private TeamService teamService;
 
-    @Autowired
-    private LocationRepository locationRepository;
-
     private Location location;
 
     @BeforeEach
@@ -40,7 +40,6 @@ public class TeamTest {
         teamRepository.deleteAll();
         location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
     }
-
 
     @Test
     public void testTeamConstructor() throws IOException {
@@ -96,6 +95,18 @@ public class TeamTest {
     public void checkCreationDateIsToday() throws IOException {
         Team t = new Team("Test", "Sport");
         Assertions.assertEquals(new Date(), t.getCreationDate());
+    }
+
+    @Test
+    public void GivenATeamIsCreated_WhenIgetTheRoleList_TheListWillContainTheManger() throws Exception {
+        User user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
+                "johndoe@example.com", "Password123!", location);
+
+        Team team = new Team("test", "Sport", location, user);
+        List<TeamRole> roleList = team.getTeamRoleList();
+        TeamRole managerRole = roleList.get(0);
+        // assertEquals(managerRole.getTeam(), team);
+        assertEquals(managerRole.getUser(), user);
     }
 
 }

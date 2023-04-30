@@ -49,6 +49,7 @@ public class Team {
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.creationDate = new Date();
+        this.teamRoles = new ArrayList<>();
     }
 
     /**
@@ -70,11 +71,7 @@ public class Team {
         this.creationDate = new Date();
         // set the manager
         this.teamRoles = new ArrayList<>();
-        TeamRole managerRole = new TeamRole();
-        managerRole.setTeam(this);
-        managerRole.setUser(manager);
-        managerRole.setRole(Role.MANAGER);
-        this.teamRoles.add(managerRole);
+        this.setRole(manager, Role.MANAGER);
 
     }
 
@@ -94,6 +91,7 @@ public class Team {
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.creationDate = new Date();
+        this.teamRoles = new ArrayList<>();
     }
 
     public Long getTeamId() {
