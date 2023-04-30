@@ -1,0 +1,114 @@
+<header th:fragment="navbar">
+    <link th:href="@{/css/navbar.css}" rel="stylesheet">
+    <link th:href="@{/css/preloader.css}" rel="stylesheet">
+    <div class="header-left">
+        <div class="hamburger">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+        <nav class="nav-bar">
+            <ul>
+                <li>
+                    <a th:href="@{home}" th:classappend="${httpServletRequest.requestURI == '/home' ? 'active' : ''}">Home</a>
+                </li>
+                <li sec:authorize="isAnonymous()">
+                    <a th:href="@{login}" th:classappend="${httpServletRequest.requestURI == '/login' ? 'active' : ''}">Login</a>
+                </li>
+                <li sec:authorize="isAnonymous()">
+                    <a th:href="@{register}" th:classappend="${httpServletRequest.requestURI == '/register' ? 'active' : ''}">Register</a>
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                    <a th:href="@{createTeam}" th:classappend="${httpServletRequest.requestURI == '/createTeam' ? 'active' : ''}">Create Team</a>
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                    <a th:href="@{searchTeams}" th:classappend="${httpServletRequest.requestURI == '/searchTeams' ? 'active' : ''}">Search Teams</a>
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                    <a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">See All Teams</a>
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                    <a th:href="@{view-users(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
+                </li>
+
+                <div sec:authorize="isAuthenticated()" class="view-profile">
+                    View Profile:
+                    <select class="form-control" id="dropDownList" name="teamSelector"
+                            onchange="if(this.value != '-1') window.location.href = '/profile?teamID=' + this.value;">
+                        <option value="-1" selected>Select a Team</option>
+                        <option th:each="team : ${navTeams}"
+                                th:value="${team.teamId}"
+                                th:text="${team}"
+                                th:selected="${team.teamId.equals(teamID)}"></option>
+                    </select>
+                </div>
+
+            </ul>
+        </nav>
+    </div>
+    <div class="header-right">
+        <li class="navbar-user-button" sec:authorize="isAuthenticated()">
+            <div class="navbar-user-dropdown">
+                <a th:href="@{user-info/self}">Profile</a>
+                <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
+            </div>
+            <a>
+                <img class="navbar-profile-picture"
+                     th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
+                <span th:text="${#strings.length(firstName + ' ' + lastName) &lt;= 24 ? firstName + ' ' + lastName : #strings.substring(firstName + ' ' + lastName, 0, 21) + '...'}"></span>
+                <i class="triangle"></i>
+            </a>
+        </li>
+        <form id="logoutForm" th:action="@{logout}" method="POST"></form>
+    </div>
+
+<!--    <div class="preloader" id="preloader">-->
+<!--        <div class="bounceball"></div>-->
+<!--        <label class="loading">Loading-->
+<!--            <span class="loading-dot">.</span>-->
+<!--            <span class="loading-dot">.</span>-->
+<!--            <span class="loading-dot">.</span>-->
+<!--        </label>-->
+<!--    </div>-->
+    <script>
+        let hamburger = document.querySelector(".hamburger")
+        hamburger.onclick = function () {
+            navBar = document.querySelector(".nav-bar");
+            navBar.classList.toggle("active");
+        };
+
+        let navbarUserButton = document.querySelector(".navbar-user-button");
+        if (navbarUserButton !== null){
+            let triangle = navbarUserButton.querySelector(".triangle");
+            let navbarUserDropdown = navbarUserButton.querySelector(".navbar-user-dropdown");
+            navbarUserButton.addEventListener("click", function (event) {
+                event.stopPropagation();
+                navbarUserDropdown.classList.toggle("show");
+                triangle.classList.toggle("up");
+            });
+
+            document.addEventListener("click", function (event) {
+                if (!navbarUserButton.contains(event.target)) {
+                    navbarUserDropdown.classList.remove("show");
+                    triangle.classList.remove("up");
+                }
+            });
+        }
+
+        // // preloader loading is only displayed if pages are taking a while to load
+        // window.onload = function() {
+        //     var preloader = document.getElementById("preloader");
+        //     preloader.style.display = "none";
+        // }
+
+
+        // // To see the preloader animation uncomment below and comment out above code
+        // window.onload = loader;
+        // function loader(){
+        //   setTimeout(function() {
+        //     document.getElementById("preloader").style.visibility = "hidden";
+        //   }, 3000);
+        // }
+
+    </script>
+</header>
