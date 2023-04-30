@@ -53,6 +53,11 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
+    public Optional<User> findByToken(String token) {
+        return userRepository.findByToken(token);
+    }
+
+
     /**
      * Gets a page of users, filtered down by their name and sports interest
      * 
@@ -107,6 +112,7 @@ public class UserService {
         List<Location> listOfLocations = userRepository.findLocationByUser(name);
         return listOfLocations;
     }
+
 
     /**
      * returns a list of the sports that are relevant to the current search, this
@@ -269,4 +275,5 @@ public class UserService {
         String outcome = emailService.sendSimpleMail(details);
         logger.info(outcome);
     }
+
 }

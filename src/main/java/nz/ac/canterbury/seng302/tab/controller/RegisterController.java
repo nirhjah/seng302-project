@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.forms.RegisterForm;
+import nz.ac.canterbury.seng302.tab.form.RegisterForm;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -166,7 +166,7 @@ public class RegisterController {
         URL url = new URL(httpServletRequest.getRequestURL().toString());
         String path = (url.getPath() + "/..");
         String protocolAndAuthority = String.format("%s://%s", url.getProtocol(), url.getAuthority());
-
+        model.addAttribute("httpServletRequest", httpServletRequest);
         model.addAttribute("countryCitySuburbNameRegex", countryCitySuburbNameRegex);
         model.addAttribute("addressRegex", addressRegex);
         model.addAttribute("postcodeRegex", postcodeRegex);
@@ -192,6 +192,7 @@ public class RegisterController {
         // TODO: Move validators that might be reused into their own class
         checkEmailIsNotInUse(registerForm, bindingResult);
         checkPasswordsMatchAndIsSecure(registerForm, bindingResult);
+        model.addAttribute("httpServletRequest",request);
 
         if (bindingResult.hasErrors()) {
             URL url = new URL(request.getRequestURL().toString());

@@ -15,7 +15,7 @@ public class RegisterFeature {
 
     @When("I hit the button to register")
     public void i_hit_the_register_button() {
-
+        PlaywrightBrowser.page.locator(".hamburger").click();
         PlaywrightBrowser.page.locator("text=Register").click();
     }
 

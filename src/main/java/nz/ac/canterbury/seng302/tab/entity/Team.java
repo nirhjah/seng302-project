@@ -4,10 +4,9 @@ import jakarta.persistence.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.Base64;
 
 /**
@@ -31,6 +30,9 @@ public class Team {
     @Column(columnDefinition = "MEDIUMBLOB")
     private String pictureString;
 
+    @Column()
+    private LocalDateTime creationDate;
+
     protected Team() {
     }
 
@@ -41,13 +43,14 @@ public class Team {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
+        this.creationDate = LocalDateTime.now();
     }
 
     /**
      * Should be used for testing ONLY!
      * TODO: Remove this constructor, use builder pattern. same for user
-     * @param name
-     * @param sport
+     * @param name - team name
+     * @param sport - sport name
      */
     public Team(String name, String sport) throws IOException {
         this.name = name;
@@ -57,6 +60,7 @@ public class Team {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
+        this.creationDate = LocalDateTime.now();
     }
 
     public Long getTeamId() {
@@ -103,5 +107,7 @@ public class Team {
     public void setSport(String sport) {
         this.sport = sport;
     }
+
+    public LocalDateTime getCreationDate() {return creationDate;}
 
 }
