@@ -17,7 +17,7 @@ public class Activity {
         Game,
         Friendly,
         Training,
-        Competiton,
+        Competition,
         Other
     }
     @Id
