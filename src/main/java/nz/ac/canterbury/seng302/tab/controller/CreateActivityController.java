@@ -22,6 +22,7 @@ public class CreateActivityController {
     public String activityForm(CreateActivityForm createActivityForm,
                                         Model model,
                                         HttpServletRequest httpServletRequest) {
+        model.addAttribute("httpServletRequest", httpServletRequest);
         logger.info("GET /createActivity");
         model.addAttribute("teamList", teamService.getAllTeamNames());
         return "createActivity";
