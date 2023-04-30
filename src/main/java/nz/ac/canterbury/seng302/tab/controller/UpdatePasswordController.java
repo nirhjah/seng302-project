@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
@@ -94,7 +95,8 @@ public class UpdatePasswordController {
             BindingResult bindingResult,
             Model model,
             HttpServletResponse httpServletResponse,
-            HttpServletRequest request, @PathVariable String token) {
+            HttpServletRequest request, @PathVariable String token,
+            RedirectAttributes redirectAttributes) {
 
 
         System.out.println("this is the token we are using");
@@ -114,6 +116,9 @@ public class UpdatePasswordController {
             return "updatePassword";
 
         }
+
+        redirectAttributes.addFlashAttribute("passwordUpdatedMessage", "Password updated successfully.");
+
 
         currentUser.setPassword(password);
         userService.updateOrAddUser(currentUser);

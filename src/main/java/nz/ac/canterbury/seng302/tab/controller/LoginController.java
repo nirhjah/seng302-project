@@ -20,6 +20,10 @@ public class LoginController {
     public String form(@RequestParam(name="error", required = false, defaultValue = "false") String error,
                        Model model, HttpServletRequest request) {
         model.addAttribute("httpServletRequest", request);
+
+        model.addAttribute("passwordUpdatedMessage", (String)model.asMap().get("passwordUpdatedMessage"));
+
+
         if (error.equals("true"))
         {
             model.addAttribute("errorMessage", "Invalid Email or Password");
