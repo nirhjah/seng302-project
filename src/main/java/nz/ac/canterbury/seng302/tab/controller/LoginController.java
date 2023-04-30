@@ -23,6 +23,8 @@ public class LoginController {
 
         model.addAttribute("passwordUpdatedMessage", (String)model.asMap().get("passwordUpdatedMessage"));
 
+        model.addAttribute("invalidTokenMessage", (String)model.asMap().get("invalidTokenMessage"));
+
 
         if (error.equals("true"))
         {

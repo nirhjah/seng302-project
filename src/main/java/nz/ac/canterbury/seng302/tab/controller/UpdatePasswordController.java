@@ -74,11 +74,16 @@ public class UpdatePasswordController {
      * @return
      */
     @GetMapping("/update-password/{token}")
-    public String updatePasswordForm(Model model, HttpServletRequest request, @PathVariable String token) {
+    public String updatePasswordForm(Model model, HttpServletRequest request, @PathVariable String token, RedirectAttributes redirectAttributes) {
         model.addAttribute("updatePasswordForm", new UpdatePasswordForm());
         model.addAttribute("httpServletRequest",request);
 
         user = userService.findByToken(token);
+        if (user.isEmpty()) {
+            redirectAttributes.addFlashAttribute("invalidTokenMessage", "Token is invalid or expired.");
+            return "redirect:/login";
+        }
+
         currentUser = user.get();
 
         System.out.println(token);
