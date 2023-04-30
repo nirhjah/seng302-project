@@ -1,8 +1,10 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +53,7 @@ public class ViewAllUsersController {
 
     /**
      * Takes user to the view all users page
-     * 
+     *
      * @param page          page number
      * @param currentSearch the search query param
      * @param model         map representation of information to be passed to
@@ -62,11 +64,16 @@ public class ViewAllUsersController {
     public String viewPageOfUsers(
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "currentSearch", required = false) String currentSearch,
-            @RequestParam(name = "sports", required = false) List<String> sports,
+            @RequestParam(name = "sports", required=false) List<String> sports,
             @RequestParam(name = "cities", required = false) List<String> cities,
-            Model model) {
-        Page<User> userPage = getUserPage(page, currentSearch, sports, cities);
+            Model model, HttpServletRequest request) {
+        Page<User> userPage = getUserPage(page, currentSearch, sports,cities);
         List<User> userList = userPage.toList();
+        Optional<User> user = userService.getCurrentUser();
+        model.addAttribute("firstName", user.get().getFirstName());
+        model.addAttribute("lastName", user.get().getLastName());
+        model.addAttribute("displayPicture", user.get().getPictureString());
+
 
         // get all the cities that populate the dropdown
         List<Location> locations = userService.findLocationBysearch(currentSearch);
@@ -82,12 +89,13 @@ public class ViewAllUsersController {
         model.addAttribute("listOfCities", listOfCities);
         model.addAttribute("totalPages", userPage.getTotalPages());
         model.addAttribute("navTeams", teamService.getTeamList());
+        model.addAttribute("httpServletRequest",request);
         return "viewAllUsers";
     }
 
     /**
      * Gets page of users matching a search query
-     * 
+     *
      * @param page      page number
      * @param nameQuery search query param
      * @param favSports list of sports, the user should have at least one of these
