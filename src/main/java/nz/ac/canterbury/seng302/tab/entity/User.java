@@ -19,6 +19,48 @@ import java.util.*;
 @Entity(name = "UserEntity")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "Id")
+    private long userId;
+
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
+
+    @Column(nullable = false)
+    private Date dateOfBirth;
+
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="favSports")
+    private List<Sport> favoriteSports;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_locationId", referencedColumnName = "locationId")
+    private Location location;
+
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private String pictureString;
+
+    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
+            flags = Pattern.Flag.CASE_INSENSITIVE)
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String hashedPassword;
+
+    @Column
+    private boolean emailConfirmed;
+
+    @Column
+    private Date expiryDate;
+
+    @Column
+    private String token;
+
     public User() {
 
     }
@@ -73,45 +115,6 @@ public class User {
         this.hashedPassword = password;
         this.location = location;
     }
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id")
-    private long userId;
-
-    @Column(nullable = false)
-    private String firstName;
-
-    @Column(nullable = false)
-    private String lastName;
-
-    @Column(nullable = false)
-    private Date dateOfBirth;
-
-    @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name="favSports")
-    private List<Sport> favoriteSports;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_locationId", referencedColumnName = "locationId")
-    private Location location;
-
-    @Column(columnDefinition = "MEDIUMBLOB")
-    private String pictureString;
-
-    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
-            flags = Pattern.Flag.CASE_INSENSITIVE)
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false)
-    private String hashedPassword;
-
-    @Column
-    private Date expiryDate;
-
-    @Column
-    private String token;
-
 
     public long getUserId() {
         return userId;
@@ -190,6 +193,13 @@ public class User {
     }
 
 
+    /**
+     * Confirms the user's email
+     */
+    public void confirmEmail() {
+        this.emailConfirmed = true;
+    }
+
     @Column()
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "Id")
@@ -223,7 +233,7 @@ public class User {
     /**
      * TODO: IMPLEMENT. There shouldn't be a way to see the password, only to check
      * if it's right.
-     * 
+     *
      * @param password The password provided by the user that we're checking
      * @return true/false if the provided password is the same one we've stored
      */
