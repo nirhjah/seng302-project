@@ -71,14 +71,12 @@ public class Team {
         this.creationDate = new Date();
         // set the manager
         this.teamRoles = new ArrayList<>();
-        // this.setRole(manager, Role.MANAGER);
         this.setManager(manager);
 
     }
 
     /**
      * Should be used for testing ONLY!
-     * TODO: Remove this constructor, use builder pattern. same for user
      * 
      * @param name
      * @param sport
