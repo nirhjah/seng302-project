@@ -204,6 +204,13 @@ public class User {
         this.emailConfirmed = true;
     }
 
+    /**
+     * Confirms the user's email
+     */
+    public void confirmEmail() {
+        this.emailConfirmed = true;
+    }
+
     @Column()
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "Id")
@@ -237,7 +244,7 @@ public class User {
     /**
      * TODO: IMPLEMENT. There shouldn't be a way to see the password, only to check
      * if it's right.
-     * 
+     *
      * @param password The password provided by the user that we're checking
      * @return true/false if the provided password is the same one we've stored
      */
