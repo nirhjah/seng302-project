@@ -41,9 +41,7 @@ public class UserService {
     @Autowired
     private LocationService locationService;
 
-
-//    private EmailVerification emailVerification;
-
+    @Autowired
     private TaskScheduler taskScheduler;
 
     /**
@@ -213,7 +211,6 @@ public class UserService {
      * @return the saved user object
      */
     public User updateOrAddUser(User user) {
-//        emailVerification.deleteUserIfEmailUnconfirmed(user);
         Instant executionTime = Instant.now().plus(Duration.ofHours(2));
         taskScheduler.schedule(new EmailVerification(user, userRepository), executionTime);
         return userRepository.save(user);
