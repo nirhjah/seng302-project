@@ -57,6 +57,11 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
+    public Optional<User> findByToken(String token) {
+        return userRepository.findByToken(token);
+    }
+
+
     /**
      * Gets a page of users, filtered down by their name and sports interest
      * 
