@@ -9,6 +9,7 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -218,7 +222,29 @@ public class RegisterController {
         // Auto-login when registering
         forceLogin(user, request);
 
+
+        // This url will be added to the email
+        String confirmationUrl = request.getRequestURL().toString().replace(request.getServletPath(), "")
+                + "/confirm?token=" + user.getToken();
+
+        System.out.println(confirmationUrl);
+        logger.info(confirmationUrl);
+
+
+
         return "redirect:/user-info?name=" + user.getUserId();
 
+    }
+
+    @GetMapping("/confirm")
+    public String confirmEmail(@RequestParam("token") String token, RedirectAttributes redirectAttributes) {
+        User user = userService.findByToken(token).get();
+        if (user == null) {
+            // Not sure if this will display the 404 page
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        user.confirmEmail();
+        redirectAttributes.addFlashAttribute("message", "Your email has been confirmed successfully!");
+        return "redirect:/login";
     }
 }
