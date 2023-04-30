@@ -71,6 +71,11 @@ public class ForgotPasswordController {
             currentUser.generateToken(userService, 1);
 
             logger.info("current token is " + currentUser.getToken());
+
+            String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "") + "/update-password/" + currentUser.getToken();
+
+            logger.info("Link to update password: " + tokenVerificationLink);
+
             userService.updateOrAddUser(currentUser);
 
           //  currentUser.setToken(currentUser.getToken());
