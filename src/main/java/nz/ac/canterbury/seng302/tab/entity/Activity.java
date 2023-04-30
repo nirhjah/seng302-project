@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Activity Entity
@@ -67,6 +68,10 @@ public class Activity {
         this.activityOwner = creator;
     }
 
+    public long getId() {
+        return id;
+    }
+
     public Team getTeam() {
         return team;
     }
@@ -81,5 +86,18 @@ public class Activity {
 
     public LocalDateTime getActivityEnd() {
         return activityEnd;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Activity activity = (Activity) o;
+        return id == activity.id && activityType == activity.activityType && Objects.equals(team, activity.team) && Objects.equals(description, activity.description) && Objects.equals(activityStart, activity.activityStart) && Objects.equals(activityEnd, activity.activityEnd) && Objects.equals(activityOwner, activity.activityOwner);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, activityType, team, description, activityStart, activityEnd, activityOwner);
     }
 }
