@@ -71,7 +71,8 @@ public class Team {
         this.creationDate = new Date();
         // set the manager
         this.teamRoles = new ArrayList<>();
-        this.setRole(manager, Role.MANAGER);
+        // this.setRole(manager, Role.MANAGER);
+        this.setManager(manager);
 
     }
 
@@ -158,6 +159,18 @@ public class Team {
 
     public List<TeamRole> getTeamRoleList() {
         return this.teamRoles;
+    }
+
+    public void setMember(User user) {
+        this.setRole(user, Role.MEMBER);
+    }
+
+    public void setCoach(User user) {
+        this.setRole(user, Role.COACH);
+    }
+
+    public void setManager(User user) {
+        this.setRole(user, Role.MANAGER);
     }
 
 }
