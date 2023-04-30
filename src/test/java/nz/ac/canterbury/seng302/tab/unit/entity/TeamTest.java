@@ -98,15 +98,32 @@ public class TeamTest {
     }
 
     @Test
-    public void GivenATeamIsCreated_WhenIgetTheRoleList_TheListWillContainTheManger() throws Exception {
+    public void GivenATeamIsCreated_WhenIgetTheRoleList_thenTheListWillContainTheManger() throws Exception {
         User user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "johndoe@example.com", "Password123!", location);
 
         Team team = new Team("test", "Sport", location, user);
         List<TeamRole> roleList = team.getTeamRoleList();
         TeamRole managerRole = roleList.get(0);
-        // assertEquals(managerRole.getTeam(), team);
-        assertEquals(managerRole.getUser(), user);
+        assertEquals(user, managerRole.getUser());
+    }
+
+    @Test
+    public void GivenIAddAMember_whenICallGetTeamRoleList_thenTheListWillContainTheMember() throws Exception {
+        User user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
+                "johndoe@example.com", "Password123!", location);
+
+        Team team = new Team("test", "Sport", location, user);
+
+        User member = new User("Jane", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
+                "JaneDoe@example.com", "Password123!", location);
+        team.setMember(user);
+        List<TeamRole> roleList = team.getTeamRoleList();
+        assertEquals(2, roleList.size());
+        TeamRole memberRole = roleList.get(1);
+
+        assertEquals(member.getUserId(), memberRole.getUser().getUserId());
+
     }
 
 }
