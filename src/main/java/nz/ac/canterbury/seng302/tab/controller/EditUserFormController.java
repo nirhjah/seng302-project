@@ -163,6 +163,7 @@ public class EditUserFormController {
         user.getLocation().setCountry(editUserForm.getCountry());
         user.getLocation().setSuburb(editUserForm.getSuburb());
         user.getLocation().setPostcode(editUserForm.getPostcode());
+        //TODO set emailConfirmed to true
 
         userService.updateOrAddUser(user);
 

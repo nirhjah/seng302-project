@@ -1,11 +1,11 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import java.io.IOException;
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
 
+import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,9 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import nz.ac.canterbury.seng302.tab.service.LocationService;
 
 /**
  * Service class for User database entries, defined by the @link{Service}
@@ -41,6 +40,11 @@ public class UserService {
 
     @Autowired
     private LocationService locationService;
+
+
+//    private EmailVerification emailVerification;
+
+    private TaskScheduler taskScheduler;
 
     /**
      * Gets a page of users.
@@ -197,12 +201,16 @@ public class UserService {
     }
 
     /**
-     * Saves a user to persistence
+     * Saves a user to persistence. Starts a timer for two hours whereupon the user will be
+     * deleted if they have not verified their email
      * 
      * @param user User to save to persistence
      * @return the saved user object
      */
     public User updateOrAddUser(User user) {
+//        emailVerification.deleteUserIfEmailUnconfirmed(user);
+        Instant executionTime = Instant.now().plus(Duration.ofHours(2));
+        taskScheduler.schedule(new EmailVerification(user, userRepository), executionTime);
         return userRepository.save(user);
     }
 
