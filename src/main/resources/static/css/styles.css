@@ -155,10 +155,6 @@ footer {
     -webkit-background-clip: text;
 }
 
-.activity-form .wrapper {
-    font-size: 15px;
-}
-
 .input-boxes {
     display: flex;
     justify-content: space-between;
