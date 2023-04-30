@@ -55,6 +55,12 @@ public class User {
     @Column
     private boolean emailConfirmed;
 
+    @Column
+    private Date expiryDate;
+
+    @Column
+    private String token;
+
     public User() {
 
     }
@@ -85,7 +91,6 @@ public class User {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
-        this.emailConfirmed = false;
     }
 
     public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location) throws IOException{
@@ -99,7 +104,6 @@ public class User {
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.favoriteSports = new ArrayList<>();
         this.location = location;
-        this.emailConfirmed = false;
     }
 
 
@@ -110,7 +114,6 @@ public class User {
         this.dateOfBirth = new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime();
         this.hashedPassword = password;
         this.location = location;
-        this.emailConfirmed = false;
     }
 
     public long getUserId() {
