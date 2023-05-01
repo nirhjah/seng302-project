@@ -210,8 +210,6 @@ public class RegisterController {
                 new Location(registerForm.getAddressLine1(), registerForm.getAddressLine2(), registerForm.getSuburb(),
                         registerForm.getCity(), registerForm.getPostcode(), registerForm.getCountry()));
 
-        user.grantAuthority("ROLE_USER");
-
         user.generateToken(userService,2);
         user = userService.updateOrAddUser(user);
         logger.info("The user token: " +user.getToken());
@@ -236,13 +234,16 @@ public class RegisterController {
 
     @GetMapping("/confirm")
     public String confirmEmail(@RequestParam("token") String token, RedirectAttributes redirectAttributes) {
-        User user = userService.findByToken(token).get();
+        var opt = userService.findByToken(token);
 
-        if (user == null) {
+        if (opt.isEmpty()) {
             // Not sure if this will display the 404 page
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
+
+        var user = opt.get();
         user.confirmEmail();
+        user.grantAuthority("ROLE_USER");
         logger.info("Check user email is confirmed " + user.getConfirmEmail() );
         redirectAttributes.addFlashAttribute("message", "Your email has been confirmed successfully!");
         return "redirect:/login";
