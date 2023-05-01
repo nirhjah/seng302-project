@@ -32,6 +32,9 @@ public class MyTeamsController {
 
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    private TeamRepository teamRepository;
     
     @Autowired
     private UserService userService;
@@ -46,7 +49,10 @@ public class MyTeamsController {
         User currentUser = user.get();
 
         // If the user has no teams show a message
-        if (teamService.getTeamList().size() == 0) {
+
+
+        if (teamRepository.findTeamsWithUser_List(currentUser).size() == 0) {
+
             //pass through a flag in the model to say this so we can show a message + the join button
             model.addAttribute("noTeamsFlag", "You are not a member of any teams.");
             return "myTeams";
