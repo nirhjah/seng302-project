@@ -40,6 +40,11 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             "ORDER BY LOWER(t.name) ASC, (t.location) ASC")
     public Page<Team> findTeamsWithUser(@Param("user") User user, Pageable pageable);
 
+    @Query("SELECT t FROM Team t LEFT JOIN t.teamMembers tm " +
+            "WHERE (:user) in (tm) " +
+            "ORDER BY LOWER(t.name) ASC, (t.location) ASC")
+    public List<Team> findTeamsWithUser_List(@Param("user") User user);
+
 
     @Query("SELECT t FROM Team t " +
             "WHERE (:#{#searchedSports.size}=0 or t.sport in (:searchedSports))" +

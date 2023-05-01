@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <link th:href="@{/css/view-all.css}" rel="stylesheet">
+    <title>My Teams</title>
+</head>
+<body class="view-teams-background">
+<div>
+    <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+
+
+    <div class="noTeamsBox" th:if="${noTeamsFlag != null}">
+        <h6 id="reset-password-info" class="reset-password-info"
+            th:text="${noTeamsFlag}"></h6>
+
+
+        <div class="submit-button">
+            <button type="submit" class="registerLoginButton">Join Team by Token</button>
+        </div>
+
+    </div>
+
+    <div class="card-container">
+        <div th:each="team : ${displayTeams}" class ="card"
+             th:onclick="|window.location.href='@{profile(teamID=${team.teamId})}'|">
+            <div class="card-wrapper">
+                <div class="card-image">
+                    <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" class="card-img-top" alt="User image">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">[[|${team.name} |]]</h5>
+                    <p class="card-text" th:text="'Sport: '+${team.sport}">Team sport</p>
+                    <p class="card-text" th:if="${team.location}"  th:text="'Location: ' + ${team.location}">Team location</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div th:if="${displayTeams != null}" th:insert="fragments/pagination.html :: pagination(pageName='my-teams')"></div>
+
+    <footer>
+        <p>
+            Image by <a href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a> on Freepik
+        </p>
+    </footer>
+</div>
+</body>
+</html>
