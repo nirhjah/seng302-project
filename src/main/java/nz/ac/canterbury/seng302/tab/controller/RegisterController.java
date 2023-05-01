@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.RegisterForm;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,9 @@ import java.util.Optional;
 @Controller
 public class RegisterController {
     Logger logger = LoggerFactory.getLogger(RegisterController.class);
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private UserService userService;
@@ -223,7 +227,7 @@ public class RegisterController {
         System.out.println(confirmationUrl);
         logger.info(confirmationUrl);
 
-        userService.confirmationEmail(user, confirmationUrl);
+        emailService.confirmationEmail(user, confirmationUrl);
 
         redirectAttributes.addFlashAttribute("message", "Your email has been confirmed successfully!");
         return "redirect:/login";
