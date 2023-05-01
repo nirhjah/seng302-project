@@ -132,6 +132,8 @@ public class UpdatePasswordController {
         userService.updateOrAddUser(currentUser);
 
 
+        userService.updatePassword(currentUser);
+
         return "redirect:/login";
     }
 
