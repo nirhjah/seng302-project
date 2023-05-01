@@ -204,13 +204,6 @@ public class User {
         this.emailConfirmed = true;
     }
 
-    /**
-     * Confirms the user's email
-     */
-    public void confirmEmail() {
-        this.emailConfirmed = true;
-    }
-
     @Column()
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "Id")
