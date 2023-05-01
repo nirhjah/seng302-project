@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.RegisterForm;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,11 +34,15 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
 public class RegisterController {
     Logger logger = LoggerFactory.getLogger(RegisterController.class);
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private UserService userService;
@@ -140,7 +145,7 @@ public class RegisterController {
             String[] otherFields = new String[]{registerForm.getFirstName(), registerForm.getLastName(), registerForm.getEmail()};
             if(password.length() > 0) {
                 for (String field : otherFields) {
-                    if (field != "") {
+                    if (!Objects.equals(field, "")) {
                         if (password.toLowerCase().contains(field.toLowerCase())) {
                             bindingResult.addError(new FieldError("registerForm", "password", "Password can't contain values from other fields"));
                             break;
@@ -223,7 +228,7 @@ public class RegisterController {
         System.out.println(confirmationUrl);
         logger.info(confirmationUrl);
 
-        userService.confirmationEmail(user, confirmationUrl);
+        emailService.confirmationEmail(user, confirmationUrl);
 
         redirectAttributes.addFlashAttribute("message", "Your email has been confirmed successfully!");
         return "redirect:/login";
@@ -233,20 +238,23 @@ public class RegisterController {
     }
 
     @GetMapping("/confirm")
-    public String confirmEmail(@RequestParam("token") String token, RedirectAttributes redirectAttributes) {
+    public String confirmEmail(@RequestParam("token") String token, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         var opt = userService.findByToken(token);
+        logger.info("inside /confirm");
 
         if (opt.isEmpty()) {
             // Not sure if this will display the 404 page
+            logger.info("errror time");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
 
         var user = opt.get();
         user.confirmEmail();
         user.grantAuthority("ROLE_USER");
+        forceLogin(user, request);
+
         logger.info("Email confirmed ",user.getConfirmEmail());
         user = userService.updateOrAddUser(user);
-        logger.info("Check user email is confirmed " + user.getConfirmEmail() );
         redirectAttributes.addFlashAttribute("message", "Your email has been confirmed successfully!");
         return "redirect:/login";
     }
