@@ -59,7 +59,7 @@
     width: 60%;
     justify-content: flex-start;
     align-items: center;
-    padding-top: 3%;
+    padding-top: 5%;
     left: 35%;
     transition: 0.5s;
 }
@@ -90,21 +90,33 @@
     font-size: 22px;
 }
 
-.team-display .user-display {
-    padding: 20px 0 20px 0;
+.wrapper-profile {
     font-weight: 500;
     font-family: "Noto Sans", sans-serif;
     color: #1b263b;
-    margin-bottom: 100px;
+}
+
+.team-display .user-display {
+    padding: 20px 0 20px 0;
+   margin-bottom: 100px;
     width: 100%;
 }
 
 
+
+.join-token {
+    position: absolute;
+    right: 0;
+    display: flex;
+    align-items: center;
+}
+
+
 .join-token-box {
-    width: 300px;
+    width: 220px;
     padding: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    background: #1d2b3a;
+    border: 4px solid #1B263B;
+    background: #1b263b;
     border-radius: 5px;
     outline: none;
     color: #fff;
@@ -112,12 +124,23 @@
     transition: 0.5s;
     display: flex;
     align-items: center;
+    border-bottom-right-radius: 50px;
+    border-top-right-radius: 50px;
+}
+}
+
+
+.join-token label {
+    margin-right: 10px;
+    white-space: nowrap;
+    font-size: 20px;
 }
 
 .join-token-box button {
     display: inline-block;
     margin-right: 5%;
-    background-color: #aaaaaa;
+    background: none;
+    border: none;
     /*
     background-image: url('../image/icons/reload.svg');
     background-size: contain;
@@ -126,6 +149,11 @@
     */
     width: 20%;
     height: 90%;
+
+}
+
+.join-token-box img {
+    width: 40px;
 }
 
 .join-token-box .token-value {

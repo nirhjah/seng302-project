@@ -34,15 +34,9 @@
     <!--                </div>-->
                 </form>
             </div>
-            <div class="team-info">
-                <div class="team-display">
-                    <h2>Team Profile</h2>
-                    <h3 th:text="'Name: ' + ${displayName}"></h3>
-                    <h3 th:text="'Sport: ' + ${displaySport}"></h3>
-                    <h3 th:text="'Location: ' + ${displayLocation}"></h3>
-                </div>
 
-                <label> Join Token </label>
+            <div class="join-token">
+                <label> Join Token:</label>
                 <div class="join-token-box">
                     <span class ="token-value" th:text="${displayToken}"></span>
                     <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}" th:method="post">
@@ -51,6 +45,16 @@
                         </button>
                     </form>
                 </div>
+            </div>
+
+            <div class="team-info">
+                <div class="team-display">
+                    <h2>Team Profile</h2>
+                    <h3 th:text="'Name: ' + ${displayName}"></h3>
+                    <h3 th:text="'Sport: ' + ${displaySport}"></h3>
+                    <h3 th:text="'Location: ' + ${displayLocation}"></h3>
+                </div>
+
             </div>
             <form th:action="@{profile}"  class="profile-buttons" method="post">
                 <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
