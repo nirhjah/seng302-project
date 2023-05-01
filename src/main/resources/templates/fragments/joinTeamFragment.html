@@ -1,0 +1,60 @@
+<div th:fragment="joinTeamByToken">
+
+    <div class="submit-button">
+        <button id="joinTeamByTokenModalBtn" type="button" class="registerLoginButton">Join Team by Token</button>
+    </div>
+
+
+    <div id="joinTeamModal" class="modal">
+
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h4> Join Team By Token </h4>
+
+            <div class="input-box">
+                <input type="text" class="form-control" id="token" placeholder=""
+                       data-cy="token" autofocus>
+                <label for="token"> Token: <span class="required">*</span></label>
+            </div>
+
+
+<!--
+            <div th:each="err : ${#fields.errors('token')}" th:text="${err}" class="error-message"></div>
+-->
+
+
+            <div class="submit-button">
+                <button id="joinTeam" type="submit" class="registerLoginButton">Join Team</button>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+        var modal = document.getElementById("joinTeamModal");
+
+        var btn = document.getElementById("joinTeamByTokenModalBtn");
+
+        var span = document.getElementsByClassName("close")[0];
+
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
+
+</div>
+
+

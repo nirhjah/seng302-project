@@ -18,9 +18,11 @@
             th:text="${noTeamsFlag}"></h6>
 
 
-        <div class="submit-button">
-            <button type="submit" class="registerLoginButton">Join Team by Token</button>
-        </div>
+        <!--
+        fragment here-->
+
+        <div th:insert="~{fragments/joinTeamFragment.html}"></div>
+
 
     </div>
 
