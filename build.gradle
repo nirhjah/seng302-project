@@ -24,6 +24,7 @@ dependencies {
 	implementation "org.springframework.boot:spring-boot-starter-security"
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 	implementation 'org.springframework.boot:spring-boot-starter-validation:3.0.4'
+	implementation "org.springframework.boot:spring-boot-starter-mail"
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -32,6 +33,7 @@ dependencies {
 	implementation "io.cucumber:cucumber-spring:7.5.0"
 	implementation "io.cucumber:cucumber-java:7.5.0"
 	implementation "com.microsoft.playwright:playwright:1.32.0"
+
 
 }
 
