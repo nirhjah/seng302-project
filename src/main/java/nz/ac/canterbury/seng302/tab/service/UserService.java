@@ -7,6 +7,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import nz.ac.canterbury.seng302.tab.entity.Sport;
+import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import nz.ac.canterbury.seng302.tab.service.LocationService;
 
 /**
  * Service class for User database entries, defined by the @link{Service}
@@ -40,7 +40,7 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private LocationService locationService;
+    private EmailService emailService;
 
     /**
      * Gets a page of users.
@@ -262,6 +262,18 @@ public class UserService {
 
         // Saved the updated picture string in the database.
         userRepository.save(user);
+    }
+
+    /**
+     * Creates and sends email informing the user that their password has been updated.
+     * TODO add the update functionality to this method as well.
+     * @param user the user whose password was updated
+     * @return the outcome of the email sending
+     */
+    public void updatePassword(User user) {
+        EmailDetails details = new EmailDetails(user.getEmail(), EmailDetails.UPDATE_PASSWORD_BODY, EmailDetails.UPDATE_PASSWORD_HEADER);
+        String outcome = emailService.sendSimpleMail(details);
+        logger.info(outcome);
     }
 
 }

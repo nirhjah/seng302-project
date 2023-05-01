@@ -2,12 +2,12 @@ package nz.ac.canterbury.seng302.tab.unit.entity;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
+import nz.ac.canterbury.seng302.tab.entity.TeamRole;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,8 +17,9 @@ import org.springframework.core.io.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,9 +32,6 @@ public class TeamTest {
     @Autowired
     private TeamService teamService;
 
-    @Autowired
-    private LocationRepository locationRepository;
-
     private Location location;
 
     @BeforeEach
@@ -41,7 +39,6 @@ public class TeamTest {
         teamRepository.deleteAll();
         location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
     }
-
 
     @Test
     public void testTeamConstructor() throws IOException {
@@ -91,6 +88,56 @@ public class TeamTest {
         Team team = new Team("test", "Hockey", location);
         teamService.addTeam(team);
         assertEquals("Christchurch", team.getLocation().getCity());
+    }
+
+    @Test
+    public void GivenATeamIsCreated_WhenIgetTheRoleList_thenTheListWillContainTheManger() throws Exception {
+        User user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
+                "johndoe@example.com", "Password123!", location);
+
+        Team team = new Team("test", "Sport", location, user);
+        List<TeamRole> roleList = team.getTeamRoleList();
+        TeamRole managerRole = roleList.get(0);
+        assertEquals(user, managerRole.getUser());
+        assertEquals(Role.MANAGER, managerRole.getRole());
+    }
+
+    @Test
+    public void GivenIAddAMember_whenICallGetTeamRoleList_thenTheListWillContainTheMember() throws Exception {
+        User user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
+                "johndoe@example.com", "Password123!", location);
+
+        Team team = new Team("test", "Sport", location, user);
+
+        User member = new User("Jane", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
+                "JaneDoe@example.com", "Password123!", location);
+        team.setMember(user);
+        List<TeamRole> roleList = team.getTeamRoleList();
+        assertEquals(2, roleList.size());
+        TeamRole memberRole = roleList.get(1);
+
+        assertEquals(member.getUserId(), memberRole.getUser().getUserId());
+        assertEquals(Role.MEMBER, memberRole.getRole());
+
+    }
+
+    @Test
+    public void GivenIAddACoach_whenICallGetTeamRoleList_thenTheListWillContainTheCoach() throws Exception {
+        User user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
+                "johndoe@example.com", "Password123!", location);
+
+        Team team = new Team("test", "Sport", location, user);
+
+        User coach = new User("Jane", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
+                "JaneDoe@example.com", "Password123!", location);
+        team.setCoach(user);
+        List<TeamRole> roleList = team.getTeamRoleList();
+        assertEquals(2, roleList.size());
+        TeamRole coachRole = roleList.get(1);
+
+        assertEquals(coach.getUserId(), coachRole.getUser().getUserId());
+        assertEquals(Role.COACH, coachRole.getRole());
+
     }
 
 }
