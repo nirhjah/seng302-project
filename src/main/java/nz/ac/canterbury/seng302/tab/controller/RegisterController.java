@@ -218,19 +218,17 @@ public class RegisterController {
 
         user.grantAuthority("ROLE_USER");
         user = userService.updateOrAddUser(user);
+        user.generateToken(userService,2);
+        logger.info("The user token: " +user.getToken());
 
         // Auto-login when registering
         forceLogin(user, request);
-
-
         // This url will be added to the email
         String confirmationUrl = request.getRequestURL().toString().replace(request.getServletPath(), "")
                 + "/confirm?token=" + user.getToken();
 
         System.out.println(confirmationUrl);
         logger.info(confirmationUrl);
-
-
 
         return "redirect:/user-info?name=" + user.getUserId();
 

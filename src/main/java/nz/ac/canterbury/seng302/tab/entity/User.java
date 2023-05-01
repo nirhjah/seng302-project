@@ -291,7 +291,7 @@ public class User {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Timestamp(calendar.getTime().getTime()));
         calendar.add(Calendar.HOUR, expiryTimeInHours);
-        this.expiryDate= new Date(calendar.getTime().getTime());
+        setExpiryDate(new Date(calendar.getTime().getTime()));
     }
 
     /**
