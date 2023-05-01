@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -208,6 +210,12 @@ public class CreateTeamFormController {
         if (!knownSports.contains(trimmedSport)) {
             sportService.addSport(new Sport(trimmedSport));
         }
+
+      //adding user to team here just to test because currently there's no join team button
+        Optional<User> user = userService.getCurrentUser();
+        User currentUser = user.get();
+        currentUser.joinTeam(team);
+        userService.updateOrAddUser(currentUser);
 
         return String.format("redirect:./profile?teamID=%s", teamID);
     }
