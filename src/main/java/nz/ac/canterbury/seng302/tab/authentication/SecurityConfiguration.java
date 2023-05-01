@@ -59,7 +59,7 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2/**"),AntPathRequestMatcher.antMatcher("/geocode/autocomplete")))
                 .authorizeHttpRequests()
                 // Allow "/", "/register", and "/login" to anyone (permitAll)
-                .requestMatchers("/", "/register", "/login", "/demo", "/populate_database", "/home", "/geocode/autocomplete", "/forgot-password")
+                .requestMatchers("/", "/register", "/login","/confirm", "/demo", "/populate_database", "/home", "/geocode/autocomplete", "/forgot-password")
                 .permitAll()
                 // Only allow admins to reach the "/admin" page
                 .requestMatchers("/admin")

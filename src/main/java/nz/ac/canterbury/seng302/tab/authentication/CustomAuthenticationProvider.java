@@ -41,6 +41,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         {
             throw new BadCredentialsException("Invalid username or password");
         }
+
+        if (!u.getConfirmEmail()){
+            throw new BadCredentialsException("User need to confirm registration");
+        }
         return new UsernamePasswordAuthenticationToken(u.getEmail(), null, u.getAuthorities());
     }
 

@@ -251,7 +251,7 @@ public class RegisterController {
         var user = opt.get();
         user.confirmEmail();
         user.grantAuthority("ROLE_USER");
-        forceLogin(user, request);
+//        forceLogin(user, request);
 
         logger.info("Email confirmed ",user.getConfirmEmail());
         user = userService.updateOrAddUser(user);
