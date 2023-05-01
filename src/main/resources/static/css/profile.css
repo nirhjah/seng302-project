@@ -117,11 +117,15 @@
 .join-token-box button {
     display: inline-block;
     margin-right: 5%;
+    background-color: #aaaaaa;
+    /*
     background-image: url('../image/icons/reload.svg');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;
-
+    */
+    width: 20%;
+    height: 90%;
 }
 
 .join-token-box .token-value {

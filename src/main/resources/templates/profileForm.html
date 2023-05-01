@@ -42,11 +42,13 @@
                     <h3 th:text="'Location: ' + ${displayLocation}"></h3>
                 </div>
 
+                <label> Join Token </label>
                 <div class="join-token-box">
-                    <label> Join Token </label>
                     <span class ="token-value" th:text="${displayToken}"></span>
                     <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}" th:method="post">
-                        <button type="submit"></button>
+                        <button type="submit">
+                            <img width="40px" th:src="@{image/icons/reload.svg}">
+                        </button>
                     </form>
                 </div>
             </div>
