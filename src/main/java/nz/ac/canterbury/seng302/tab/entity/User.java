@@ -1,7 +1,8 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email; import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -10,69 +11,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import java.sql.Timestamp;
 import java.util.Base64;
-
 
 import java.util.*;
 
 @Entity(name = "UserEntity")
 public class User {
 
-    public User() {
-
-    }
-
-    public static User defaultDummyUser() throws IOException {
-        return new User(
-                "test",
-                "again",
-                new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
-                "test@gmail.com",
-                "dfghjk",
-                new ArrayList<>(),
-                new Location(null,null,null,"Christchurch",null,"New Zealand"));
-
-    }
-
-    /**
-     * TODO: Implement password hashing, probably via Bcrypt
-     */
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, List<Sport> favoriteSports, Location location) throws IOException {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.dateOfBirth = dateOfBirth;
-        this.email = email;
-        this.hashedPassword = password;
-        this.favoriteSports = favoriteSports;
-        this.location = location;
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
-    }
-
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location) throws IOException{
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.dateOfBirth = dateOfBirth;
-        this.email = email;
-        this.hashedPassword = password;
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
-        this.favoriteSports = new ArrayList<>();
-        this.location = location;
-    }
-
-
-    public User(String firstName, String lastName, String email, String password, Location location) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.dateOfBirth = new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime();
-        this.hashedPassword = password;
-        this.location = location;
-    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
@@ -107,11 +54,72 @@ public class User {
     private String hashedPassword;
 
     @Column
+    private boolean emailConfirmed;
+
+    @Column
     private Date expiryDate;
 
     @Column
     private String token;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<TeamRole> teamRoles;
+
+    public User() {
+
+    }
+
+    public static User defaultDummyUser() throws IOException {
+        return new User(
+                "test",
+                "again",
+                new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
+                "test@gmail.com",
+                "dfghjk",
+                new ArrayList<>(),
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+
+    }
+
+    /**
+     * TODO: Implement password hashing, probably via Bcrypt
+     */
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password,
+            List<Sport> favoriteSports, Location location) throws IOException {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.email = email;
+        this.hashedPassword = password;
+        this.favoriteSports = favoriteSports;
+        this.location = location;
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        InputStream is = resource.getInputStream();
+        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
+    }
+
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location)
+            throws IOException {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.email = email;
+        this.hashedPassword = password;
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        InputStream is = resource.getInputStream();
+        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
+        this.favoriteSports = new ArrayList<>();
+        this.location = location;
+    }
+
+    public User(String firstName, String lastName, String email, String password, Location location) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.dateOfBirth = new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime();
+        this.hashedPassword = password;
+        this.location = location;
+    }
 
     public long getUserId() {
         return userId;
@@ -174,38 +182,43 @@ public class User {
         this.pictureString = pictureString;
     }
 
-    public void setToken(String token){
-        this.token= token;
+    public void setToken(String token) {
+        this.token = token;
     }
 
-    public String getToken(){
+    public String getToken() {
         return this.token;
     }
 
-    public void setExpiryDate(Date expiryDate){
-        this.expiryDate=expiryDate;
+    public void setExpiryDate(Date expiryDate) {
+        this.expiryDate = expiryDate;
     }
 
-    public Date getExpiryDate(){
+    public Date getExpiryDate() {
         return this.expiryDate;
     }
 
+
+    /**
+     * Confirms the user's email
+     */
+    public void confirmEmail() {
+        this.emailConfirmed = true;
+    }
 
     @Column()
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "Id")
     private List<Authority> userRoles;
 
-    public void grantAuthority(String authority)
-    {
+    public void grantAuthority(String authority) {
         if (userRoles == null) {
             userRoles = new ArrayList<Authority>();
         }
         userRoles.add(new Authority(authority));
     }
 
-    public List<GrantedAuthority> getAuthorities()
-    {
+    public List<GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         if (userRoles != null) {
             this.userRoles.forEach(authority -> authorities.add(new SimpleGrantedAuthority(authority.getRole())));
@@ -234,8 +247,10 @@ public class User {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         User user = (User) o;
 
@@ -245,7 +260,8 @@ public class User {
             return false;
         if (getDateOfBirth() != null ? !getDateOfBirth().equals(user.getDateOfBirth()) : user.getDateOfBirth() != null)
             return false;
-        if (getEmail() != null ? !getEmail().equals(user.getEmail()) : user.getEmail() != null) return false;
+        if (getEmail() != null ? !getEmail().equals(user.getEmail()) : user.getEmail() != null)
+            return false;
         if (!Objects.equals(hashedPassword, user.hashedPassword))
             return false;
         return Objects.equals(userRoles, user.userRoles);
@@ -262,27 +278,26 @@ public class User {
         return result;
     }
 
-    public List<String> getFavouriteSportNames ()
-    {
+    public List<String> getFavouriteSportNames() {
         List<String> sport = new ArrayList<>();
-        for (Sport s : favoriteSports)
-        {
+        for (Sport s : favoriteSports) {
             sport.add(s.getName());
         }
         return sport;
     }
 
     /**
-     * Calculates the expiry date of the verification token based on the current time and the specified expiry time in hours.
+     * Calculates the expiry date of the verification token based on the current
+     * time and the specified expiry time in hours.
      *
      * @param expiryTimeInHours the expiry time in hours
-     * set the expiry date of the verification token
+     *                          set the expiry date of the verification token
      */
-    private void calculateExpiryDate(int expiryTimeInHours){
+    private void calculateExpiryDate(int expiryTimeInHours) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Timestamp(calendar.getTime().getTime()));
         calendar.add(Calendar.HOUR, expiryTimeInHours);
-        this.expiryDate= new Date(calendar.getTime().getTime());
+        this.expiryDate = new Date(calendar.getTime().getTime());
     }
 
     /**
@@ -291,16 +306,18 @@ public class User {
      * @return a randomly generated verification token
      */
 
-    private static String generateToken(){
+    private static String generateToken() {
         final int USER_TOKEN_SIZE = 12;
         return UUID.randomUUID().toString().replaceAll("\\-*", "").substring(0, USER_TOKEN_SIZE);
     }
 
     /**
-     * Generates a unique verification token and set the token and expiryDate columns
+     * Generates a unique verification token and set the token and expiryDate
+     * columns
      *
-     * @param userService the service is used to check if the token is already in use
-     * @param expiryHour an integer which is the hours till the token is expired
+     * @param userService the service is used to check if the token is already in
+     *                    use
+     * @param expiryHour  an integer which is the hours till the token is expired
      *
      */
 
@@ -312,7 +329,6 @@ public class User {
         setToken(token);
         calculateExpiryDate(expiryHour);
     }
-
 
 }
 

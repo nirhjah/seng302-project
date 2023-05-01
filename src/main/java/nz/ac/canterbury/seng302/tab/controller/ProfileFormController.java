@@ -1,7 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,14 +43,15 @@ public class ProfileFormController {
      * @return thymeleaf profileForm
      */
     @GetMapping("/profile")
-    public String profileForm(Model model, @RequestParam(value = "teamID", required = false) Long teamID, HttpServletRequest request) {
+    public String profileForm(Model model, @RequestParam(value = "teamID", required = false) Long teamID,
+            HttpServletRequest request) {
         logger.info("GET /profileForm");
 
         // Retrieve the selected team from the list of available teams using the ID
         // If the name is null or empty, return null
         List<Team> teamList = teamService.getTeamList();
         ProfileFormController.teamId = teamID;
-        model.addAttribute("httpServletRequest",request);
+        model.addAttribute("httpServletRequest", request);
 
         Team selectedTeam;
         if (teamID != null) {
@@ -80,6 +79,9 @@ public class ProfileFormController {
         model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("navTeams", teamList);
         model.addAttribute("teamID", teamID);
+        model.addAttribute("isUserManager", teamService.isUserManagerOfTeam(user.get().getUserId(), teamId));
+
+        logger.info("boolean manager is: " + teamService.isUserManagerOfTeam(user.get().getUserId(), teamId));
 
         return "profileForm";
     }
