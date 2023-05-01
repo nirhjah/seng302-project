@@ -6,7 +6,9 @@ import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +18,7 @@ import org.springframework.core.io.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 
@@ -89,7 +92,7 @@ public class TeamTest {
 
     /**
      * U24/AC5 states that a token must be 12 characters long
-     * 
+     *
      * @throws IOException
      */
     @Test
@@ -101,7 +104,7 @@ public class TeamTest {
 
     /**
      * U24/AC5 states that a token must a combination of letters and numbers
-     * 
+     *
      * @throws IOException
      */
     @Test

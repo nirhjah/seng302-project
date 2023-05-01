@@ -1,25 +1,68 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email; import jakarta.validation.constraints.Pattern; import org.springframework.core.io.ClassPathResource;
+import jakarta.validation.constraints.Email; import jakarta.validation.constraints.Pattern;
+import nz.ac.canterbury.seng302.tab.service.UserService;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
+import java.sql.Timestamp;
 import java.util.Base64;
 
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Entity(name = "UserEntity")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "Id")
+    private long userId;
+
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
+
+    @Column(nullable = false)
+    private Date dateOfBirth;
+
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="favSports")
+    private List<Sport> favoriteSports;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_locationId", referencedColumnName = "locationId")
+    private Location location;
+
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private String pictureString;
+
+    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
+            flags = Pattern.Flag.CASE_INSENSITIVE)
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String hashedPassword;
+
+    @Column
+    private boolean emailConfirmed;
+
+    @Column
+    private Date expiryDate;
+
+    @Column
+    private String token;
+
     public User() {
+
     }
 
     public static User defaultDummyUser() throws IOException {
@@ -72,38 +115,6 @@ public class User {
         this.hashedPassword = password;
         this.location = location;
     }
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id")
-    private long userId;
-
-    @Column(nullable = false)
-    private String firstName;
-
-    @Column(nullable = false)
-    private String lastName;
-
-    @Column(nullable = false)
-    private Date dateOfBirth;
-
-    @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name="favSports")
-    private List<Sport> favoriteSports;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_locationId", referencedColumnName = "locationId")
-    private Location location;
-
-    @Column(columnDefinition = "MEDIUMBLOB")
-    private String pictureString;
-
-    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
-            flags = Pattern.Flag.CASE_INSENSITIVE)
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false)
-    private String hashedPassword;
 
     public long getUserId() {
         return userId;
@@ -144,6 +155,7 @@ public class User {
 
     public String getPassword() {return hashedPassword; }
 
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -162,6 +174,30 @@ public class User {
 
     public void setPictureString(String pictureString) {
         this.pictureString = pictureString;
+    }
+
+    public void setToken(String token){
+        this.token= token;
+    }
+
+    public String getToken(){
+        return this.token;
+    }
+
+    public void setExpiryDate(Date expiryDate){
+        this.expiryDate=expiryDate;
+    }
+
+    public Date getExpiryDate(){
+        return this.expiryDate;
+    }
+
+
+    /**
+     * Confirms the user's email
+     */
+    public void confirmEmail() {
+        this.emailConfirmed = true;
     }
 
     @Column()
@@ -197,7 +233,7 @@ public class User {
     /**
      * TODO: IMPLEMENT. There shouldn't be a way to see the password, only to check
      * if it's right.
-     * 
+     *
      * @param password The password provided by the user that we're checking
      * @return true/false if the provided password is the same one we've stored
      */
@@ -244,4 +280,47 @@ public class User {
         }
         return sport;
     }
+
+    /**
+     * Calculates the expiry date of the verification token based on the current time and the specified expiry time in hours.
+     *
+     * @param expiryTimeInHours the expiry time in hours
+     * set the expiry date of the verification token
+     */
+    private void calculateExpiryDate(int expiryTimeInHours){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Timestamp(calendar.getTime().getTime()));
+        calendar.add(Calendar.HOUR, expiryTimeInHours);
+        this.expiryDate= new Date(calendar.getTime().getTime());
+    }
+
+    /**
+     * Generates a random string of characters to be used as a verification token.
+     *
+     * @return a randomly generated verification token
+     */
+
+    private static String generateToken(){
+        final int USER_TOKEN_SIZE = 12;
+        return UUID.randomUUID().toString().replaceAll("\\-*", "").substring(0, USER_TOKEN_SIZE);
+    }
+
+    /**
+     * Generates a unique verification token and set the token and expiryDate columns
+     *
+     * @param userService the service is used to check if the token is already in use
+     * @param expiryHour an integer which is the hours till the token is expired
+     *
+     */
+
+    public void generateToken(UserService userService, int expiryHour) {
+        String token = generateToken();
+        while (userService.findByToken(token).isPresent()) {
+            token = generateToken();
+        }
+        setToken(token);
+        calculateExpiryDate(expiryHour);
+    }
+
+
 }

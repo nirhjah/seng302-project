@@ -8,6 +8,7 @@ import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.UUID;
 
@@ -36,6 +37,9 @@ public class Team {
     @Column
     private String token;
 
+    @Column()
+    private LocalDateTime creationDate;
+
     protected Team() {
     }
 
@@ -47,12 +51,13 @@ public class Team {
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.token = generateToken();
+        this.creationDate = LocalDateTime.now();
     }
 
     /**
      * Should be used for testing ONLY!
      * TODO: Remove this constructor, use builder pattern. same for user
-     * 
+     *
      * @param name
      * @param sport
      */
@@ -64,6 +69,7 @@ public class Team {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
+        this.creationDate = LocalDateTime.now();
     }
 
     /**
@@ -120,6 +126,8 @@ public class Team {
     public void setSport(String sport) {
         this.sport = sport;
     }
+
+    public LocalDateTime getCreationDate() {return creationDate;}
 
     public String getToken() {
         return this.token;
