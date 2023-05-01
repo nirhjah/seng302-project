@@ -334,6 +334,10 @@ public class User {
     }
 
 
+    /**
+     * Adds user to given team and sets their role as a Member.
+     * @param team team to add user to
+     */
     public void joinTeam(Team team) {
         this.joinedTeams.add(team);
         team.getTeamMembers().add(this);
