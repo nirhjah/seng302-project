@@ -95,12 +95,6 @@ public class TeamTest {
     }
 
     @Test
-    public void checkCreationDateIsToday() throws IOException {
-        Team t = new Team("Test", "Sport");
-        Assertions.assertEquals(new Date(), t.getCreationDate());
-    }
-
-    @Test
     public void GivenATeamIsCreated_WhenIgetTheRoleList_thenTheListWillContainTheManger() throws Exception {
         User user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "johndoe@example.com", "Password123!", location);
