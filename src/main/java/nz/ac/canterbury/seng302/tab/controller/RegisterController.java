@@ -215,7 +215,7 @@ public class RegisterController {
         logger.info("The user token: " +user.getToken());
 
         // Auto-login when registering
-        forceLogin(user, request);
+//        forceLogin(user, request);
         // This url will be added to the email
         String confirmationUrl = request.getRequestURL().toString().replace(request.getServletPath(), "")
                 + "/confirm?token=" + user.getToken();
@@ -244,6 +244,8 @@ public class RegisterController {
         var user = opt.get();
         user.confirmEmail();
         user.grantAuthority("ROLE_USER");
+        logger.info("Email confirmed ",user.getConfirmEmail());
+        user = userService.updateOrAddUser(user);
         logger.info("Check user email is confirmed " + user.getConfirmEmail() );
         redirectAttributes.addFlashAttribute("message", "Your email has been confirmed successfully!");
         return "redirect:/login";
