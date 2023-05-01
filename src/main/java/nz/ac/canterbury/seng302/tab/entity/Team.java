@@ -9,7 +9,7 @@ import org.springframework.core.io.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.Base64;
+import java.util.*;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
@@ -48,7 +48,6 @@ public class Team {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
-        this.creationDate = new Date();
         this.teamRoles = new ArrayList<>();
         this.creationDate = LocalDateTime.now();
     }
@@ -69,7 +68,6 @@ public class Team {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
-        this.creationDate = new Date();
         // set the manager
         this.teamRoles = new ArrayList<>();
         this.setManager(manager);
@@ -79,7 +77,8 @@ public class Team {
     /**
      * Should be used for testing ONLY!
      * TODO: Remove this constructor, use builder pattern. same for user
-     * @param name - team name
+     * 
+     * @param name  - team name
      * @param sport - sport name
      */
     public Team(String name, String sport) throws IOException {
@@ -90,7 +89,6 @@ public class Team {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
-        this.creationDate = new Date();
         this.creationDate = LocalDateTime.now();
         this.teamRoles = new ArrayList<>();
     }
@@ -140,7 +138,7 @@ public class Team {
         this.sport = sport;
     }
 
-    public Date getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
@@ -172,7 +170,5 @@ public class Team {
     public void setManager(User user) {
         this.setRole(user, Role.MANAGER);
     }
-
-    public LocalDateTime getCreationDate() {return creationDate;}
 
 }
