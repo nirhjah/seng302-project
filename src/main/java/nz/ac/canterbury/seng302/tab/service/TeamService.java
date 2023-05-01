@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,6 +148,18 @@ public class TeamService {
             nameSearch = null;
         }
         return teamRepository.findTeamByNameAndSportIn(pageable, filterSports, nameSearch);
+    }
+
+
+    /**
+     * gets a page of all teams the given user is a member of
+     * @param pageable      a page object showing how the page should be shown
+     * @param user          user to filter teams by
+     * @return              all teams the user is apart of
+     */
+    public Page<Team> findTeamsByUser(Pageable pageable, User user) {
+
+        return teamRepository.findTeamsWithUser(user, pageable);
     }
 
     /**

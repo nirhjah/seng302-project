@@ -438,19 +438,16 @@ public class TeamRepositoryTest {
 
 
     @Test
-    public void testGettingUserInTeams() throws IOException {
+    public void findTeamsWithUser_MultipleUsersJoiningMultipleTeams() throws IOException {
 
         var pageable = PageRequest.of(0, 10);
 
         Team team1 = new Team("team1", "cricket");
         Team team2 = new Team("team2", "hockey");
-
-        teamRepository.save(team1);
-        teamRepository.save(team2);
-
         User user1 = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", new Location(null, null, null, "dunedin", null, "nz"));
         User user2 = new User("Alice", "Smith", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "alice@example.com", "Password123!", new Location(null, null, null, "auckland", null, "nz"));
-
+        teamRepository.save(team1);
+        teamRepository.save(team2);
         userRepository.save(user1);
         userRepository.save(user2);
 
@@ -462,14 +459,17 @@ public class TeamRepositoryTest {
         Page<Team> teamsWithUser1 = teamRepository.findTeamsWithUser(user1, pageable);
         Page<Team> teamsWithUser2 = teamRepository.findTeamsWithUser(user2, pageable);
 
-        System.out.println("user1 teams");
-        System.out.println(teamsWithUser1.toList());
-        System.out.println("user2 teams");
-        System.out.println(teamsWithUser2.toList());
-
         assertEquals("[team1, team2]", teamsWithUser1.toList().toString());
         assertEquals("[team2]", teamsWithUser2.toList().toString());
+    }
 
+    @Test
+    public void findTeamsWithUser_UserIsPartOfZeroTeams() throws IOException {
+        var pageable = PageRequest.of(0, 10);
+        User user1 = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", new Location(null, null, null, "dunedin", null, "nz"));
+        userRepository.save(user1);
+        Page<Team> teamsWithUser1 = teamRepository.findTeamsWithUser(user1, pageable);
+        assertEquals("[]", teamsWithUser1.toList().toString());
     }
 
 }
