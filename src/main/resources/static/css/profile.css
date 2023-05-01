@@ -99,6 +99,39 @@
     width: 100%;
 }
 
+
+.join-token-box {
+    width: 300px;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: #1d2b3a;
+    border-radius: 5px;
+    outline: none;
+    color: #fff;
+    font-size: 1em;
+    transition: 0.5s;
+    display: flex;
+    align-items: center;
+}
+
+.join-token-box button {
+    display: inline-block;
+    margin-right: 5%;
+    background-image: url('../image/icons/reload.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+}
+
+.join-token-box .token-value {
+    width: 75%;
+    margin: 0;
+    display: inline-block;
+}
+
+
+
 .user-info h3 {
     font-family: "Noto Sans", sans-serif;
     font-weight: 600;
