@@ -276,4 +276,12 @@ public class UserService {
         logger.info(outcome);
     }
 
+
+    public void confirmationEmail(User user, String url){
+        EmailDetails details = new EmailDetails(user.getEmail(),url, EmailDetails.CONFIRMATION_EMAIL_HEADER );
+        String outcome= emailService.sendSimpleMail(details);
+        logger.info(outcome);
+
+    }
+
 }

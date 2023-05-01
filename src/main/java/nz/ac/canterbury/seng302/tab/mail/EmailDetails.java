@@ -14,6 +14,8 @@ public class EmailDetails {
 
     public static final String UPDATE_PASSWORD_HEADER = "Password Updated";
 
+    public static final String CONFIRMATION_EMAIL_HEADER="Confirm your registration";
+
     public EmailDetails(String recipient, String msgBody, String subject, String attachment) {
         this.recipient = recipient;
         this.msgBody = msgBody;

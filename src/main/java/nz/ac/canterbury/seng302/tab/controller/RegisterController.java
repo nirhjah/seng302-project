@@ -190,7 +190,7 @@ public class RegisterController {
             @Valid RegisterForm registerForm,
             BindingResult bindingResult,
             HttpServletRequest request,
-            Model model) throws IOException {
+            Model model,RedirectAttributes redirectAttributes) throws IOException {
 
         // Run the custom validation methods
         // TODO: Move validators that might be reused into their own class
@@ -211,8 +211,9 @@ public class RegisterController {
                         registerForm.getCity(), registerForm.getPostcode(), registerForm.getCountry()));
 
         user.grantAuthority("ROLE_USER");
-        user = userService.updateOrAddUser(user);
+
         user.generateToken(userService,2);
+        user = userService.updateOrAddUser(user);
         logger.info("The user token: " +user.getToken());
 
         // Auto-login when registering
@@ -224,18 +225,25 @@ public class RegisterController {
         System.out.println(confirmationUrl);
         logger.info(confirmationUrl);
 
-        return "redirect:/user-info?name=" + user.getUserId();
+        userService.confirmationEmail(user, confirmationUrl);
+
+        redirectAttributes.addFlashAttribute("message", "Your email has been confirmed successfully!");
+        return "redirect:/login";
+
+//        return "redirect:/user-info?name=" + user.getUserId();
 
     }
 
     @GetMapping("/confirm")
     public String confirmEmail(@RequestParam("token") String token, RedirectAttributes redirectAttributes) {
         User user = userService.findByToken(token).get();
+
         if (user == null) {
             // Not sure if this will display the 404 page
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
         user.confirmEmail();
+        logger.info("Check user email is confirmed " + user.getConfirmEmail() );
         redirectAttributes.addFlashAttribute("message", "Your email has been confirmed successfully!");
         return "redirect:/login";
     }
