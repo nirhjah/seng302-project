@@ -337,6 +337,7 @@ public class User {
     public void joinTeam(Team team) {
         this.joinedTeams.add(team);
         team.getTeamMembers().add(this);
+        team.setMember(this);
     }
 
     public void leaveTeam(Team team) {
