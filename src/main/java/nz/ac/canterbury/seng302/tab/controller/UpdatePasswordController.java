@@ -85,16 +85,24 @@ public class UpdatePasswordController {
         }
 
         currentUser = user.get();
-
-        System.out.println(token);
-        System.out.println(currentUser.getEmail());
-
         currentToken = token;
         return "updatePassword";
     }
 
+    /**
+     * Updates/resets a user's password upon valid password entered
+     * @param password             user's new password
+     * @param updatePasswordForm   update password form
+     * @param bindingResult        binding result
+     * @param model                 model
+     * @param httpServletResponse   httpServerletResponse
+     * @param request               request
+     * @param token                 user's unique token to access their update password page
+     * @param redirectAttributes    stores messages to be displayed to user on login page
+     * @return
+     */
     @PostMapping("/update-password/{token}")
-    public String submitEmail(
+    public String updatePassword(
             @RequestParam("password") String password,
             @Validated UpdatePasswordForm updatePasswordForm,
             BindingResult bindingResult,
@@ -102,10 +110,6 @@ public class UpdatePasswordController {
             HttpServletResponse httpServletResponse,
             HttpServletRequest request, @PathVariable String token,
             RedirectAttributes redirectAttributes) {
-
-
-        System.out.println("this is the token we are using");
-        System.out.println(currentToken);
 
         user = userService.findByToken(currentToken);
         currentUser = user.get();
@@ -123,7 +127,6 @@ public class UpdatePasswordController {
         }
 
         redirectAttributes.addFlashAttribute("passwordUpdatedMessage", "Password updated successfully.");
-
 
         currentUser.setPassword(password);
         userService.updateOrAddUser(currentUser);

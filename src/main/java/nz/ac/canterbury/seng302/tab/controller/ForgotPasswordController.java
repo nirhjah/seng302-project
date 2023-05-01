@@ -40,6 +40,16 @@ public class ForgotPasswordController {
         return "forgotPassword";
     }
 
+    /**
+     *
+     * @param email                 email for the update password token link to be sent to
+     * @param forgotPasswordForm    forgot password form
+     * @param bindingResult         errors attatched to this
+     * @param model                 model to store model attributes
+     * @param httpServletResponse   httpServerletResponse
+     * @param request               request
+     * @return
+     */
     @PostMapping("/forgot-password")
     public String submitEmail(
             @RequestParam("email") String email,
@@ -60,8 +70,6 @@ public class ForgotPasswordController {
 
         model.addAttribute("submitted_form_message", "If your email is registered with our system, you will receive a link to reset your password shortly.");
 
-        logger.info("email submitted");
-
         user = userService.findUserByEmail(email);
 
 
@@ -70,20 +78,11 @@ public class ForgotPasswordController {
 
             currentUser.generateToken(userService, 1);
 
-            logger.info("current token is " + currentUser.getToken());
-
             String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "") + "/update-password/" + currentUser.getToken();
 
             logger.info("Link to update password: " + tokenVerificationLink);
 
             userService.updateOrAddUser(currentUser);
-
-          //  currentUser.setToken(currentUser.getToken());
-
-
-          /*  user = userService.findByToken(currentUser.getToken());
-            currentUser = user.get();*/
-
 
         }
 
