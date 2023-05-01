@@ -33,6 +33,7 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -140,7 +141,7 @@ public class RegisterController {
             String[] otherFields = new String[]{registerForm.getFirstName(), registerForm.getLastName(), registerForm.getEmail()};
             if(password.length() > 0) {
                 for (String field : otherFields) {
-                    if (field != "") {
+                    if (!Objects.equals(field, "")) {
                         if (password.toLowerCase().contains(field.toLowerCase())) {
                             bindingResult.addError(new FieldError("registerForm", "password", "Password can't contain values from other fields"));
                             break;
@@ -215,7 +216,6 @@ public class RegisterController {
         logger.info("The user token: " +user.getToken());
 
         // Auto-login when registering
-        forceLogin(user, request);
         // This url will be added to the email
         String confirmationUrl = request.getRequestURL().toString().replace(request.getServletPath(), "")
                 + "/confirm?token=" + user.getToken();
@@ -233,17 +233,21 @@ public class RegisterController {
     }
 
     @GetMapping("/confirm")
-    public String confirmEmail(@RequestParam("token") String token, RedirectAttributes redirectAttributes) {
+    public String confirmEmail(@RequestParam("token") String token, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         var opt = userService.findByToken(token);
+        logger.info("inside /confirm");
 
         if (opt.isEmpty()) {
             // Not sure if this will display the 404 page
+            logger.info("errror time");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
 
         var user = opt.get();
         user.confirmEmail();
         user.grantAuthority("ROLE_USER");
+        forceLogin(user, request);
+
         logger.info("Check user email is confirmed " + user.getConfirmEmail() );
         redirectAttributes.addFlashAttribute("message", "Your email has been confirmed successfully!");
         return "redirect:/login";
