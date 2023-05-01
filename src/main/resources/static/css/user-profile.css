@@ -1,0 +1,36 @@
+/* width is ~ current width / 90 * 100 */
+@media (max-width: 944px) {
+    .wrapper-profile {
+        width: 90vw !important;
+        display: block !important;
+    }
+}
+
+@media (max-width: 800px) {
+    .wrapper-profile {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 90vw !important;
+        height: unset !important;
+    }
+
+    .wrapper-profile .profile-pic {
+        width: 100% !important;
+        position: static !important;
+    }
+
+    .wrapper-profile .team-info {
+        width: 90% !important;
+        position: static !important;
+        padding-top: 0 !important;
+    }
+
+    .wrapper-profile .profile-buttons {
+        position: static !important;
+        width: 90% !important;
+        margin: 20px 0 !important;
+    }
+
+}

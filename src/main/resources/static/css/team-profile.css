@@ -1,0 +1,114 @@
+.team-profile-form .wrapper-profile {
+    height: 430px;
+    width: 900px;
+}
+
+.team-profile-form .wrapper-profile .team-info {
+    left: 33%;
+}
+
+/* width is ~ current width / 90 * 100 */
+@media (max-width: 1000px) {
+    .wrapper-profile {
+        width: 90vw !important;
+        display: block !important;
+    }
+}
+
+@media (max-width: 960px) {
+    .wrapper-profile {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 90vw !important;
+        height: unset !important;
+    }
+
+    .wrapper-profile .profile-pic {
+        width: 100% !important;
+        position: static !important;
+    }
+
+    .wrapper-profile .team-info {
+        width: 90% !important;
+        position: static !important;
+        padding-top: 0 !important;
+    }
+
+    .wrapper-profile .profile-buttons {
+        position: static !important;
+        width: 90% !important;
+        margin: 20px 0 !important;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .wrapper-profile .join-token {
+        position: static !important;
+        width: 90% !important;
+        margin: 20px 0 !important;
+    }
+
+}
+
+
+.join-token {
+    position: absolute;
+    right: 2%;
+    display: flex;
+    align-items: center;
+    padding-top: 5%;
+}
+
+
+.join-token-box {
+    width: 220px;
+    padding: 10px;
+    border: 5px solid #1B263B;
+    outline: none;
+    font-size: 1.2em;
+    transition: 0.5s;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(to right, #fff 75%, #1b263b 25%);
+    height: 50px;
+    border-radius: 10px 50px 50px 10px;
+    font-weight: 600;
+}
+
+.join-token label {
+    color: #1b263b;
+    font-size: 20px;
+    font-weight: 600;
+    margin-right: 10px;
+    white-space: nowrap;
+}
+
+.join-token-box button {
+    display: inline-block;
+    background: none;
+    border: none;
+    height: 30px;
+    margin: 0 2px 0 21px;
+    cursor: pointer;
+}
+
+.join-token-box img {
+    width: 30px;
+    transition: 0.2s
+}
+
+.join-token-box img:hover {
+    transform: rotate(45deg);
+}
+
+.join-token-box .token-value {
+    width: 75%;
+    margin: 0;
+    display: inline-block;
+}
+
+.join-token-box form {
+    height: 30px;
+}
