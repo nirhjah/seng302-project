@@ -1,8 +1,8 @@
 
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Page Not Found</title>
+  <title th:text="${pageName}"></title>
   <style>
     body {
       background-color: #f2f2f2;
@@ -26,16 +26,8 @@
   </style>
 </head>
 <body>
-<h1>404</h1>
-<p>Sorry, the page you requested could not be found.</p>
-<p>Please check the URL and try again or go back to the <a href="/">homepage</a>.</p>
+<h1 th:text="${pageName}"></h1>
+<p th:text="${errorMessage}"></p>
+<p>Back to the homepage: <a href="/">homepage</a>.</p>
 </body>
 </html>
-This code creates a centered 404 error message on a light gray background. The message includes a large, stylized "404" heading, a short error message, and a link back to the homepage. You can modify the styles to suit your own preferences or branding.
-
-
-
-
-
-
-
