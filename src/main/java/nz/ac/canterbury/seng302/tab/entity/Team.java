@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.nio.file.Files;
+import java.util.*;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
@@ -38,6 +40,14 @@ public class Team {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<TeamRole> teamRoles;
 
+    @ManyToMany
+    @JoinTable(
+            name = "team_members",
+            joinColumns = @JoinColumn(name = "team_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> teamMembers = new HashSet<User>();
+
     protected Team() {
     }
 
@@ -54,7 +64,7 @@ public class Team {
 
     /**
      * constructor that sets the manager
-     * 
+     *
      * @param name
      * @param sport
      * @param location
@@ -77,7 +87,7 @@ public class Team {
     /**
      * Should be used for testing ONLY!
      * TODO: Remove this constructor, use builder pattern. same for user
-     * 
+     *
      * @param name  - team name
      * @param sport - sport name
      */
@@ -169,6 +179,14 @@ public class Team {
 
     public void setManager(User user) {
         this.setRole(user, Role.MANAGER);
+    }
+
+    public Set<User> getTeamMembers() {
+        return teamMembers;
+    }
+
+    public void setTeamMembers(Set<User> teamMembers) {
+        this.teamMembers = teamMembers;
     }
 
 }
