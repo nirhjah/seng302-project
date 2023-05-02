@@ -1,11 +1,11 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import java.io.IOException;
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
 
+import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,6 +42,9 @@ public class UserService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private TaskScheduler taskScheduler;
 
     /**
      * Gets a page of users.
@@ -112,7 +116,6 @@ public class UserService {
         List<Location> listOfLocations = userRepository.findLocationByUser(name);
         return listOfLocations;
     }
-
 
     /**
      * returns a list of the sports that are relevant to the current search, this
@@ -202,12 +205,15 @@ public class UserService {
     }
 
     /**
-     * Saves a user to persistence
+     * Saves a user to persistence. Starts a timer for two hours whereupon the user will be
+     * deleted if they have not verified their email
      * 
      * @param user User to save to persistence
      * @return the saved user object
      */
     public User updateOrAddUser(User user) {
+        Instant executionTime = Instant.now().plus(Duration.ofHours(2));
+        taskScheduler.schedule(new EmailVerification(user, userRepository), executionTime);
         return userRepository.save(user);
     }
 

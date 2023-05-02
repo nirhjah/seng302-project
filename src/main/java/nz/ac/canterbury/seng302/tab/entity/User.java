@@ -121,6 +121,9 @@ public class User {
         this.location = location;
     }
 
+    @ManyToMany(mappedBy = "teamMembers")
+    private Set<Team> joinedTeams = new HashSet<Team>();
+
     public long getUserId() {
         return userId;
     }
@@ -198,6 +201,9 @@ public class User {
         return this.expiryDate;
     }
 
+    public boolean getEmailConfirmed() {
+        return emailConfirmed;
+    }
 
     /**
      * Confirms the user's email
@@ -330,5 +336,33 @@ public class User {
         calculateExpiryDate(expiryHour);
     }
 
+
+    /**
+     * Adds user to given team and sets their role as a Member.
+     * @param team team to add user to
+     */
+    public void joinTeam(Team team) {
+        this.joinedTeams.add(team);
+        team.getTeamMembers().add(this);
+        team.setMember(this);
+    }
+
+    public void leaveTeam(Team team) {
+        this.joinedTeams.remove(team);
+        team.getTeamMembers().remove(this);
+    }
+
+    public Set<Team> getJoinedTeams() {
+        return this.joinedTeams;
+    }
+
+    public void setJoinedTeams(Set<Team> teams) {
+        this.joinedTeams = teams;
+    }
+
+
 }
+
+
+
 
