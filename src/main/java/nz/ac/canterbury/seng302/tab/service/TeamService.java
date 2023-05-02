@@ -1,6 +1,10 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.TeamRole;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.Role;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,15 +111,17 @@ public class TeamService {
     }
 
     /**
-     * Method that finds paginated teams by city <strong>AND</strong> sports, using a list of both to filter by selected by the user
+     * Method that finds paginated teams by city <strong>AND</strong> sports, using
+     * a list of both to filter by selected by the user
      *
-     * @param pageable page object
+     * @param pageable          page object
      * @param searchedLocations list of locations to filter by selected by the user
-     * @param searchedSports list of sports to filter by selected by the user
-     * @param name the team name query inputted by the use
+     * @param searchedSports    list of sports to filter by selected by the user
+     * @param name              the team name query inputted by the use
      * @return Page(s) of teams filtered by city/cities and sport/sports
      */
-    public Page<Team> findPaginatedTeamsByCityAndSports(Pageable pageable, List<String> searchedLocations, List<String> searchedSports, String name) {
+    public Page<Team> findPaginatedTeamsByCityAndSports(Pageable pageable, List<String> searchedLocations,
+            List<String> searchedSports, String name) {
 
         if (searchedLocations == null) {
             searchedLocations = List.of();
@@ -149,6 +155,18 @@ public class TeamService {
         return teamRepository.findTeamByNameAndSportIn(pageable, filterSports, nameSearch);
     }
 
+
+    /**
+     * gets a page of all teams the given user is a member of
+     * @param pageable      a page object showing how the page should be shown
+     * @param user          user to filter teams by
+     * @return              all teams the user is apart of
+     */
+    public Page<Team> findTeamsByUser(Pageable pageable, User user) {
+
+        return teamRepository.findTeamsWithUser(user, pageable);
+    }
+
     /**
      * @param sport the sport that the user will input in the create teams/edit
      *              teams page
@@ -179,7 +197,7 @@ public class TeamService {
 
     /**
      * @param suburb the suburb that the user
-     *                 inputs for the create/edit teams
+     *               inputs for the create/edit teams
      * @return true if the string matches the regex
      */
     public boolean isValidSuburb(String suburb) {
@@ -250,5 +268,29 @@ public class TeamService {
         String filtered = string.trim().replaceAll("\\s+", " ");
         return filtered;
 
+    }
+
+    public void setTeamMember(Team team, User user) {
+        Role memberRole = Role.MEMBER;
+        team.setRole(user, memberRole);
+        teamRepository.save(team);
+        // updateTeam(team);
+    }
+
+    public User getTeamManager(Long teamId) {
+        TeamRole manager = teamRepository.findTeamManager(teamId, Role.MANAGER);
+        return manager != null ? manager.getUser() : null;
+    }
+
+    public boolean isUserManagerOfTeam(Long userId, Long teamId) {
+        Team team = teamRepository.findById(teamId).orElse(null);
+        if (team == null) {
+            return false;
+        }
+        User manager = getTeamManager(teamId);
+        if (manager == null) {
+            return false;
+        }
+        return manager.getUserId() == userId;
     }
 }
