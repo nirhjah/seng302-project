@@ -59,9 +59,6 @@ public class HomeFormController {
         }
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("navTeams", teamService.getTeamList());
-//        if (true) {
-//            throw new RuntimeException("bleh");
-//        }
         return "homeForm";
     }
 }
