@@ -20,6 +20,9 @@ import java.util.*;
 @Entity(name = "UserEntity")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "Id")
     private long userId;
 
     @Column(nullable = false)
