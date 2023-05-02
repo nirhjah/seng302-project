@@ -2,8 +2,10 @@ package nz.ac.canterbury.seng302.tab.unit.repository;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -20,10 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,6 +33,9 @@ public class TeamRepositoryTest {
 
     @Autowired
     private TeamRepository teamRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private LocationRepository locationRepository;
@@ -433,4 +435,41 @@ public class TeamRepositoryTest {
         assertEquals(3, output.size());
         assertEquals(Set.of(team1, team3, team5), output);
     }
+
+
+    @Test
+    public void findTeamsWithUser_MultipleUsersJoiningMultipleTeams() throws IOException {
+
+        var pageable = PageRequest.of(0, 10);
+
+        Team team1 = new Team("team1", "cricket");
+        Team team2 = new Team("team2", "hockey");
+        User user1 = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", new Location(null, null, null, "dunedin", null, "nz"));
+        User user2 = new User("Alice", "Smith", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "alice@example.com", "Password123!", new Location(null, null, null, "auckland", null, "nz"));
+        teamRepository.save(team1);
+        teamRepository.save(team2);
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        //actual
+        user1.joinTeam(team1);
+        user1.joinTeam(team2);
+        user2.joinTeam(team2);
+
+        Page<Team> teamsWithUser1 = teamRepository.findTeamsWithUser(user1, pageable);
+        Page<Team> teamsWithUser2 = teamRepository.findTeamsWithUser(user2, pageable);
+
+        assertEquals("[team1, team2]", teamsWithUser1.toList().toString());
+        assertEquals("[team2]", teamsWithUser2.toList().toString());
+    }
+
+    @Test
+    public void findTeamsWithUser_UserIsPartOfZeroTeams() throws IOException {
+        var pageable = PageRequest.of(0, 10);
+        User user1 = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", new Location(null, null, null, "dunedin", null, "nz"));
+        userRepository.save(user1);
+        Page<Team> teamsWithUser1 = teamRepository.findTeamsWithUser(user1, pageable);
+        assertEquals("[]", teamsWithUser1.toList().toString());
+    }
+
 }

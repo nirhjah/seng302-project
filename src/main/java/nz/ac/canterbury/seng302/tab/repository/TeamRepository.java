@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.repository;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 
 import org.springframework.data.domain.Page;
@@ -33,6 +34,12 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             "OR (t.location.city) LIKE LOWER(CONCAT('%', :name, '%')) " +
             "ORDER BY LOWER(t.name) ASC, (t.location) ASC ")
     public Page<Team> findTeamByName(@Param("name") String name, Pageable pageable);
+
+    @Query("SELECT t FROM Team t LEFT JOIN t.teamMembers tm " +
+            "WHERE (:user) in (tm) " +
+            "ORDER BY LOWER(t.name) ASC, (t.location) ASC")
+    public Page<Team> findTeamsWithUser(@Param("user") User user, Pageable pageable);
+
 
     @Query("SELECT t FROM Team t " +
             "WHERE (:#{#searchedSports.size}=0 or t.sport in (:searchedSports))" +

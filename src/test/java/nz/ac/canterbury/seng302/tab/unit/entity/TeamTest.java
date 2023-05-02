@@ -1,11 +1,16 @@
 package nz.ac.canterbury.seng302.tab.unit.entity;
 
+import nz.ac.canterbury.seng302.tab.controller.ForgotPasswordController;
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +26,7 @@ import java.util.Base64;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,6 +34,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TeamTest {
     @Autowired
     private TeamRepository teamRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     private TeamService teamService;
@@ -137,6 +146,35 @@ public class TeamTest {
 
         assertEquals(coach.getUserId(), coachRole.getUser().getUserId());
         assertEquals(Role.COACH, coachRole.getRole());
+
+    }
+
+    @Test
+    public void testAddTeamsToUser() throws IOException {
+
+        Team team1 = new Team("team1", "cricket");
+       Team team2 = new Team("team2", "hockey");
+
+        teamRepository.save(team1);
+        teamRepository.save(team2);
+
+        User user1 = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", new Location(null, null, null, "dunedin", null, "nz"));
+        User user2 = new User("Alice", "Smith", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "alice@example.com", "Password123!", new Location(null, null, null, "auckland", null, "nz"));
+
+        //expected
+        Set<Team> user1ExpectedTeams = new HashSet<>();
+        Set<Team> user2ExpectedTeams = new HashSet<>();
+        user1ExpectedTeams.add(team1);
+        user1ExpectedTeams.add(team2);
+        user2ExpectedTeams.add(team2);
+
+        //output
+        user1.joinTeam(team1);
+        user1.joinTeam(team2);
+        user2.joinTeam(team2);
+
+        assertEquals(user1ExpectedTeams, user1.getJoinedTeams());
+        assertEquals(user2ExpectedTeams, user2.getJoinedTeams());
 
     }
 
