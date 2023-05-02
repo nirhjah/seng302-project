@@ -1,10 +1,7 @@
 <!--/* User Registration Page
-
        */-->
-
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
-
 <head>
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
@@ -14,127 +11,151 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Register</title>
 </head>
-
-
 <body class="background-image">
 <!-- add navbar-->
-<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+<header th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></header>
 <div class="register-form">
     <div class="register-header">
         <h1>Register</h1>
     </div>
+    <!--    <div class="register-header">-->
+    <!--        <h1> <img th:src="@{/image/icons/adduser.svg}"/>Register</h1>-->
+    <!--    </div>-->
     <div class="wrapper">
         <form th:action="@{register}" method="post" th:object="${registerForm}">
+            <div class="icon">
+                <a th:href="@{home}">
+                    <img th:src="@{/image/icons/cross.svg}"/>
+                </a>
+            </div>
+            <ul class="progressbar">
+                <li class="active">Details</li>
+                <li id="progressbar-location">Location</li>
+            </ul>
             <div class="register-inputs">
-                <div class="register-inputs-left">
+                <div class="input-boxes">
                     <div class="input-box">
                         <input type="text" class="form-control" id="first-name" placeholder="" th:field="*{firstName}"
-                               data-cy="firstName" autofocus>
+                               data-cy="firstName" required autofocus onkeyup="checkPasswordStrength()">
                         <label for="first-name"> First Name <span class="required">*</span></label>
                     </div>
-                    <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message"></div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="last-name" placeholder="" th:field="*{lastName}"
-                               data-cy="lastName" autofocus>
+                               data-cy="lastName" required autofocus onkeyup="checkPasswordStrength()">
                         <label for="last-name"> Last Name <span class="required">*</span></label>
                     </div>
-                    <div th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error-message"></div>
-                    <div class="input-box">
-                        <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
-                               data-cy="dateOfBirth" autofocus>
-                        <label for="date-of-birth"> Date of Birth <span class="required">*</span></label>
-                    </div>
-                    <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
-                    <div class="input-box">
-                        <input type="email" class="form-control" id="email" placeholder="" th:field="*{email}"
-                               data-cy="email" autofocus>
-                        <label for="email"> Email <span class="required">*</span></label>
-                    </div>
-                    <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message"></div>
-                    <div class="input-box">
-                        <input type="password" class="form-control" id="password" placeholder="" th:field="*{password}"
-                               data-cy="password" autofocus>
-                        <label for="password"> Password <span class="required">*</span></label>
-                    </div>
-                    <div class="input-box">
-                        <input type="password" class="form-control" id="confirm-password" placeholder=""
-                               th:field="*{confirmPassword}" data-cy="confirmPassword" autofocus>
-                        <label for="confirm-password"> Confirm Password <span class="required">*</span></label>
-
-
-                        <ul>
-                            <li th:each="err : ${#fields.errors('password')}" th:text="${err}" class="password-error-message" />
-                        </ul>
-
-                    </div>
-                    <div class="password-info">
-                        <p>Password must be at least <strong>8 characters</strong>, contain <strong>upper</strong> and <strong>lower</strong> case letters, <strong>numbers</strong> and <strong>symbols</strong>, and can't contain your <strong>name</strong> or <strong>email</strong></p>
-                    </div>
                 </div>
-                <hr class="solid">
-                <div class="register-inputs-right">
+                <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message"></div>
+                <div class="input-box">
+                    <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
+                           data-cy="dateOfBirth" required autofocus>
+                    <label for="date-of-birth"> Date of Birth <span class="required">*</span></label>
+                </div>
+                <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
+                <div class="input-box">
+                    <input type="email" class="form-control" id="email" placeholder="" th:field="*{email}"
+                           data-cy="email" required autofocus onkeyup="checkPasswordStrength()">
+                    <label for="email"> Email <span class="required">*</span></label>
+                </div>
+                <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message"></div>
+                <div class="input-box">
+                    <input type="password" class="form-control" id="password" placeholder="" th:field="*{password}"
+                           data-cy="password" required autofocus onkeyup="checkPasswordStrength()">
+                    <img th:src="@{/image/icons/hide.png}" class="password-toggle"/>
+                    <label for="password"> Password <span class="required">*</span></label>
+                </div>
+                <div class="password-info">
+                    <div class="password-strength-meter">
+                        <div class="bar"></div>
+                    </div>
+                    <div class="password-strength-text"></div>
+                    <ul class="password-information-text">
+                        <li>Password must be at least 8 characters</li>
+                        <li>Must contain the following items</li>
+                        <ul>
+                            <li>Uppercase and lowercase letters</li>
+                            <li>Numbers</li>
+                            <li>Symbols</li>
+                        </ul>
+                        <li>Mustn't contain your name or email</li>
+                    </ul>
+                    <div th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error-message"></div>
+                </div>
+                <div class="input-box">
+                    <input type="password" class="form-control" id="confirm-password" placeholder=""
+                           th:field="*{confirmPassword}" data-cy="confirmPassword" required autofocus>
+                    <!--                    <img th:src="@{/image/icons/view.png}" class="password-toggle"/>-->
+                    <label for="confirm-password"> Confirm Password <span class="required">*</span></label>
+                    <div th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}"
+                         class="error-message"></div>
+                </div>
+            </div>
+            <div class="register-inputs-location">
+                <div class="input-boxes">
                     <div class="input-box">
                         <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
-                               data-cy="location" autofocus placeholder="" autocomplete="off">
+                               data-cy="location" th:pattern="${addressRegex}" autofocus placeholder=""
+                               autocomplete="off"
+                               title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
                         <label for="address-line-1">Address Line 1</label>
                         <div class="autocomplete-container" id="autocomplete-container"></div>
                     </div>
-                    <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="error-message"></div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
-                               data-cy="location" autofocus placeholder="">
+                               data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}"
+                               title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
                         <label for="address-line-2">Address Line 2</label>
                     </div>
-                    <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message"></div>
-
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="suburb" th:name="suburb"
-                               data-cy="location" autofocus placeholder="">
-                        <label for="suburb">Suburb</label>
-                    </div>
-                    <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
-
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="postcode" th:name="postcode"
-                               data-cy="location" autofocus placeholder="">
-                        <label for="postcode">Postcode</label>
-                    </div>
-                    <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
-
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="city" th:name="city"
-                               data-cy="location" autofocus placeholder="">
-                        <label for="city">City <span class="required">*</span></label>
-                    </div>
-                    <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
-
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="country" th:name="country"
-                               data-cy="location" autofocus placeholder="">
-                        <label for="country">Country <span class="required">*</span></label>
-                    </div>
-                    <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
-
                 </div>
-                <script type="text/javascript" th:inline="javascript">
-                  /**
-                  ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
-                   * @type {string}
-                   */
-                  const path = /*[[${path}]]*/ "";
-                  const ENDPOINT = path + "/geocode/autocomplete";
-                </script>
-                <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="suburb" th:name="suburb"
+                           data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                           title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
+                    <label for="suburb">Suburb</label>
+                </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="postcode" th:name="postcode"
+                           data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder=""
+                           title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">
+                    <label for="postcode">Postcode</label>
+                </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="city" th:name="city"
+                           data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}"
+                           placeholder=""
+                           title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
+                    <label for="city">City <span class="required">*</span></label>
+                </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="country" th:name="country"
+                           data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}"
+                           placeholder=""
+                           title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
+                    <label for="country">Country <span class="required">*</span></label>
+                </div>
             </div>
+            <script type="text/javascript" th:inline="javascript">
+                /**
+                 ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
+                 * @type {string}
+                 */
+                const PROTOCOL_AND_AUTH = /*[[${protocolAndAuthority}]]*/ "";
+                const ENDPOINT = PROTOCOL_AND_AUTH + "/geocode/autocomplete";
+            </script>
+            <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"></script>
             <div class="submit-button">
-                <button type="submit" formnovalidate>Register</button>
+                <button class="previous-button" type="button">Previous</button>
+                <button class="next-button" type="button">Next</button>
+                <button class="register-button" type="submit">Register</button>
             </div>
             <div class="cancel-link">
-                <a th:href="@{login}">Login</a>
-                <div class="cancel-link">
-                    <a th:href="@{home}">Cancel</a>
-                </div>
+                <p>Aleady have an account? <a th:href="@{login}">Login</a></p>
             </div>
+            <!--            <div class="cancel-link">-->
+            <!--                <div class="cancel-link">-->
+            <!--                    <a th:href="@{home}">Cancel</a>-->
+            <!--                </div>-->
+            <!--            </div>-->
         </form>
     </div>
 </div>
