@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -43,7 +44,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         }
 
         if (!u.getConfirmEmail()){
-            throw new BadCredentialsException("User need to confirm registration");
+            throw new DisabledException("User need to confirm registration");
         }
         return new UsernamePasswordAuthenticationToken(u.getEmail(), null, u.getAuthorities());
     }

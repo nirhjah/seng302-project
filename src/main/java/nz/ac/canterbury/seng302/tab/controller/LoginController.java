@@ -3,6 +3,10 @@ package nz.ac.canterbury.seng302.tab.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,21 +21,28 @@ public class LoginController {
      * @return thymeleaf register
      */
     @GetMapping("/login")
-    public String form(@RequestParam(name="error", required = false, defaultValue = "false") String error,
+    public String form(@RequestParam(name="error", required=false, defaultValue="false") String error,
                        Model model, HttpServletRequest request) {
         model.addAttribute("httpServletRequest", request);
-        if (error.equals("true"))
-        {
-            model.addAttribute("errorMessage", "Invalid Email or Password");
-        }
-        else
-        {
+
+        if (error.equals("true")) {
+            String errorMessage = "";
+            Object exception = request.getSession().getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+
+            if (exception instanceof BadCredentialsException) {
+                errorMessage = "Invalid Email or Password";
+            } else if (exception instanceof DisabledException) {
+                errorMessage = "Account is not confirmed.";
+            }
+            model.addAttribute("errorMessage", errorMessage);
+        } else {
             model.addAttribute("errorMessage", "");
         }
-        logger.info("GET /login");
 
+        logger.info("GET /login");
         return "login";
     }
+
 
     /**
      * Takes the user to the home page if they don't want to login

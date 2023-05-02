@@ -230,7 +230,7 @@ public class RegisterController {
 
         emailService.confirmationEmail(user, confirmationUrl);
 
-        redirectAttributes.addFlashAttribute("message", "Your email has been confirmed successfully!");
+        redirectAttributes.addFlashAttribute("emailSentMessage", "Your email has been confirmed successfully!");
         return "redirect:/login";
 
 //        return "redirect:/user-info?name=" + user.getUserId();
@@ -255,7 +255,7 @@ public class RegisterController {
 
         logger.info("Email confirmed ",user.getConfirmEmail());
         user = userService.updateOrAddUser(user);
-        redirectAttributes.addFlashAttribute("message", "Your email has been confirmed successfully!");
+        redirectAttributes.addFlashAttribute("confirmationMessage", "Your email has been confirmed successfully!");
         return "redirect:/login";
     }
 }
