@@ -190,8 +190,7 @@ public class RegisterController {
      * @param request The controller's request object, we bind the login to this.
      * @return user page or register (if there are errors)
      */
-    @PostMapping("/register")
-    public String register(
+    @PostMapping("/register") public String register(
             @Valid RegisterForm registerForm,
             BindingResult bindingResult,
             HttpServletRequest request,
