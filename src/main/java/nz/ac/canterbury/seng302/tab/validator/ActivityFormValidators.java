@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import nz.ac.canterbury.seng302.tab.validator.logic.ActivityDescriptionCheck;
+import nz.ac.canterbury.seng302.tab.validator.logic.ActivityTeamCheck;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -79,7 +80,7 @@ public class ActivityFormValidators {
     /**/@Retention(RUNTIME)
     /**/@Constraint(validatedBy = {})
     /**/@Documented
-    @NotBlank(message = ACTIVITY_TYPE_MSG)
+    @NotNull(message = ACTIVITY_TYPE_MSG)
     public @interface activityTypeValidator {
         String message() default "";
 
@@ -93,7 +94,7 @@ public class ActivityFormValidators {
      */
     /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
     /**/@Retention(RUNTIME)
-    /**/@Constraint(validatedBy = {})
+    /**/@Constraint(validatedBy = {ActivityTeamCheck.class})
     /**/@Documented
     public @interface teamSelectionValidator {
         String message() default TEAM_REQUIRED_MSG;

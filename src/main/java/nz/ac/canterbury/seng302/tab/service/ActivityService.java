@@ -6,6 +6,7 @@ import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,9 +51,8 @@ public class ActivityService {
      * @param activity the activity
      * @return true if activity is scheduled after team creation
      */
-    public boolean validateActivityDateTime(Activity activity) {
-        return activity.getTeam().getCreationDate().isBefore(activity.getActivityStart()) &&
-                activity.getTeam().getCreationDate().isBefore(activity.getActivityEnd());
+    public boolean validateActivityDateTime(LocalDateTime teamCreation, LocalDateTime startActivity, LocalDateTime endActivity) {
+        return teamCreation.isBefore(startActivity) && teamCreation.isBefore(endActivity);
     }
 
     /**
@@ -60,8 +60,8 @@ public class ActivityService {
      * @param activity - the activity
      * @return true if the end of activity is after the start
      */
-    public boolean validateStartAndEnd(Activity activity) {
-        return activity.getActivityStart().isBefore(activity.getActivityEnd());
+    public boolean validateStartAndEnd(LocalDateTime startActivity, LocalDateTime endActivity) {
+        return startActivity.isBefore(endActivity);
     }
 
     /**

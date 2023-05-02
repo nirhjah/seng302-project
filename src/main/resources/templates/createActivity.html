@@ -15,19 +15,15 @@
         <div class="wrapper">
             <form th:action="@{createActivity}" th:object="${CreateActivityForm}" id="CreateActivityForm" method="post">
                 <div class="input-box">
-                    <select name="type" id="type">
-                        <option value="game">Game</option>
-                        <option value="friendly">Friendly</option>
-                        <option value="training">Training</option>
-                        <option value="competition">Competition</option>
-                        <option value="other">Other</option>
+                    <select name="activityType" id="activityType">
+                        <option th:each="activity : ${activityTypes}" th:value="${activity}" th:text="${activity}">
                     </select>
-                    <label for="type">Choose An Activity Type</label>
+                    <label for="activityType">Choose An Activity Type</label>
                 </div>
                 <div class="input-box">
                     <select name="team" id="team">
-                        <option value="!noTeam">      </option>
-                        <option th:each="team : ${teamList}" th:text="${team}">
+                        <option value="-1">      </option>
+                        <option th:each="team : ${teamList}" th:value="${team.getTeamId()}" th:text="${team.getName()}">
                     </select>
                     <label for="team">Select Team For Activity</label>
                 </div>
@@ -36,8 +32,12 @@
                     <label for="description">Description:</label>
                 </div>
                 <div class="input-box">
-                    <input type="datetime-local" id="time" name="time">
-                    <label for="time">Date and time of activity:</label>
+                    <input type="datetime-local" id="startDateTime" name="startDateTime">
+                    <label for="startDateTime">Start date and time of activity:</label>
+                </div>
+                <div class="input-box">
+                    <input type="datetime-local" id="endDateTime" name="endDateTime">
+                    <label for="endDateTime">End date and time of activity:</label>
                 </div>
                 <div class="submit-button">
                     <a th:href="@{home}">
