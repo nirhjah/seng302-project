@@ -32,7 +32,7 @@ public class CustomErrorController extends ResponseEntityExceptionHandler {
     @ExceptionHandler({ ResponseStatusException.class })
     public String handleAccessDeniedException(
             Exception ex) {
-        return "error";
+        return "customError";
     }
 }
 
