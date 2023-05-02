@@ -27,13 +27,9 @@ public class ActivityServiceTest {
      */
     @Test
     public void ifStartDateIsBeforeEnd_returnTrue() throws IOException {
-        Team team = new Team("TeamName", "Sport");
-        User creator = new User("Test", "Account", "test@test.com", "Password1!",
-                new Location(null, null, null, "Christchurch", "New Zealand", null));
-        Activity activity = new Activity(Activity.ActivityType.Game, team, "A random activity",
-                LocalDateTime.of(2023, 1,1,6,30),
-                LocalDateTime.of(2023, 1,1,8,30), creator);
-        Assertions.assertTrue(activityService.validateStartAndEnd(activity));
+        LocalDateTime start =   LocalDateTime.of(2023, 1,1,6,30);
+        LocalDateTime end = LocalDateTime.of(2023, 1,1,8,30);
+        Assertions.assertTrue(activityService.validateStartAndEnd(start, end));
     }
 
     /**
@@ -41,13 +37,9 @@ public class ActivityServiceTest {
      */
     @Test
     public void ifStartDateIsAfterEnd_returnFalse() throws IOException {
-        Team team = new Team("TeamName", "Sport");
-        User creator = new User("Test", "Account", "test@test.com", "Password1!",
-                new Location(null, null, null, "Christchurch", "New Zealand", null));
-        Activity activity = new Activity(Activity.ActivityType.Game, team, "A random activity",
-                LocalDateTime.of(2023, 1,1,10,30),
-                LocalDateTime.of(2023, 1,1,8,30), creator);
-        Assertions.assertFalse(activityService.validateStartAndEnd(activity));
+        LocalDateTime start =   LocalDateTime.of(2023, 1,1,6,30);
+        LocalDateTime end = LocalDateTime.of(2023, 1,1,4,30);
+        Assertions.assertFalse(activityService.validateStartAndEnd(start, end));
     }
 
     /**
@@ -56,13 +48,10 @@ public class ActivityServiceTest {
      */
     @Test
     public void ifStartDateIsBeforeTeamCreation_returnFalse() throws IOException {
-        Team team = new Team("TeamName", "Sport");
-        User creator = new User("Test", "Account", "test@test.com", "Password1!",
-                new Location(null, null, null, "Christchurch", "New Zealand", null));
-        Activity activity = new Activity(Activity.ActivityType.Game, team, "A random activity",
-                LocalDateTime.of(2020, 1,1,10,30),
-                LocalDateTime.of(2023, 1,1,8,30), creator);
-        Assertions.assertFalse(activityService.validateActivityDateTime(activity));
+        LocalDateTime teamCreation = LocalDateTime.of(2022, 1,1, 10, 30);
+        LocalDateTime start = LocalDateTime.of(2021, 1,1,10,30);
+        LocalDateTime end = LocalDateTime.of(2023, 1,1,8,30);
+        Assertions.assertFalse(activityService.validateActivityDateTime(teamCreation, start, end));
     }
 
     /**
@@ -71,13 +60,10 @@ public class ActivityServiceTest {
      */
     @Test
     public void ifStartAndEndDateIsAfterTeamCreation_returnTrue() throws IOException {
-        Team team = new Team("TeamName", "Sport");
-        User creator = new User("Test", "Account", "test@test.com", "Password1!",
-                new Location(null, null, null, "Christchurch", "New Zealand", null));
-        Activity activity = new Activity(Activity.ActivityType.Game, team, "A random activity",
-                LocalDateTime.of(2023, 1,1,10,30),
-                LocalDateTime.of(2023, 1,1,8,30), creator);
-        Assertions.assertFalse(activityService.validateActivityDateTime(activity));
+        LocalDateTime teamCreation = LocalDateTime.of(2022, 1,1, 10, 30);
+        LocalDateTime start = LocalDateTime.of(2023, 1,1,10,30);
+        LocalDateTime end = LocalDateTime.of(2023, 1,1,8,30);
+        Assertions.assertTrue(activityService.validateActivityDateTime(teamCreation, start, end));
     }
 
 
@@ -87,13 +73,9 @@ public class ActivityServiceTest {
      */
     @Test
     public void ifEndDateIsBeforeTeamCreation_returnFalse() throws IOException {
-        Team team = new Team("TeamName", "Sport");
-        User creator = new User("Test", "Account", "test@test.com", "Password1!",
-                new Location(null, null, null, "Christchurch", "New Zealand", null));
-        Activity activity = new Activity(Activity.ActivityType.Game, team, "A random activity",
-                LocalDateTime.of(2023, 1,1,10,30),
-                LocalDateTime.of(2020, 1,1,8,30), creator);
-        Assertions.assertFalse(activityService.validateActivityDateTime(activity));
+        LocalDateTime teamCreation = LocalDateTime.of(2022, 1,1, 10, 30);
+        LocalDateTime start = LocalDateTime.of(2021, 1,1,6,30);
+        LocalDateTime end = LocalDateTime.of(2021, 1,1,8,30);
     }
 
 }
