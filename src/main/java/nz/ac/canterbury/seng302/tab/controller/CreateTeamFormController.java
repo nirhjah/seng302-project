@@ -211,12 +211,6 @@ public class CreateTeamFormController {
             sportService.addSport(new Sport(trimmedSport));
         }
 
-      //adding user to team here just to test because currently there's no join team button
-        Optional<User> user = userService.getCurrentUser();
-        User currentUser = user.get();
-        currentUser.joinTeam(team);
-        userService.updateOrAddUser(currentUser);
-
         return String.format("redirect:./profile?teamID=%s", teamID);
     }
 }

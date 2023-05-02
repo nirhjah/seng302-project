@@ -10,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,7 +37,6 @@ public class MyTeamsController {
     @Autowired
     private UserService userService;
 
-
     @GetMapping("/my-teams")
     public String myTeamsForm(@RequestParam(value = "page", defaultValue = "-1") int pageNo,
                                 Model model, HttpServletRequest request) {
@@ -48,16 +45,16 @@ public class MyTeamsController {
         Optional<User> user = userService.getCurrentUser();
         User currentUser = user.get();
 
+        model.addAttribute("firstName", user.get().getFirstName());
+        model.addAttribute("lastName", user.get().getLastName());
+        model.addAttribute("displayPicture", user.get().getPictureString());
+        model.addAttribute("navTeams", teamService.getTeamList());
+        model.addAttribute("page", pageNo);
+
         // If the user has no teams show a message
-
-
         if (teamRepository.findTeamsWithUser_List(currentUser).size() == 0) {
-
-            //pass through a flag in the model to say this so we can show a message + the join button
             model.addAttribute("noTeamsFlag", "You are not a member of any teams.");
             return "myTeams";
-
-            //return "redirect:/home";
         }
 
         model.addAttribute("noTeamsFlag", null);
@@ -75,11 +72,7 @@ public class MyTeamsController {
 
         List<Team> listTeams = page.getContent();
 
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
-        model.addAttribute("navTeams", teamService.getTeamList());
-        model.addAttribute("page", pageNo);
+
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
         model.addAttribute("displayTeams", listTeams);
