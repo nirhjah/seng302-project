@@ -3,7 +3,14 @@
 }
 
 .register-form .wrapper {
-    width: 650px;
+    width: 590px;
+}
+
+.register-form {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
 }
 
 .edit-inputs {
@@ -60,26 +67,8 @@
     width: 65%;
 }
 
-.register-form {
-    display: grid;
-    grid-auto-rows: 730px;
-    justify-content: center;
-    align-items: center;
-    grid-template-rows: 140px;
-    height: 90vh;
-  }
-
-  hr.solid {
-    margin-top: 30px;
-    margin-bottom: 15px;
-    border-left: 2px solid;
-    border-image: linear-gradient(to bottom, white, #415a77, #1b263b, #415a77, white) 1;
-  }
- 
-
 .register-header {
     padding-bottom: 15px;
-    margin:auto;
 }
 
 .password-info {
