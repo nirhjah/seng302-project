@@ -204,6 +204,12 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
+    private static final Duration TOKEN_EXPIRY_TIME = Duration.ofSeconds(2);
+
+    public static Duration getEmailTokenExpiry() {
+        return TOKEN_EXPIRY_TIME;
+    }
+
     /**
      * Saves a user to persistence. Starts a timer for two hours whereupon the user will be
      * deleted if they have not verified their email
@@ -212,8 +218,10 @@ public class UserService {
      * @return the saved user object
      */
     public User updateOrAddUser(User user) {
-        Instant executionTime = Instant.now().plus(Duration.ofHours(2));
-        taskScheduler.schedule(new EmailVerification(user, userRepository), executionTime);
+        if (!user.getEmailConfirmed()) {
+            Instant executionTime = Instant.now().plus(TOKEN_EXPIRY_TIME);
+            taskScheduler.schedule(new EmailVerification(user, userRepository), executionTime);
+        }
         return userRepository.save(user);
     }
 
