@@ -48,7 +48,7 @@ public class ProfileFormControllerTest {
 
     @MockBean
     private UserService mockUserService;
-    
+
     @Autowired
     private TeamRepository teamRepository;
 
@@ -68,8 +68,10 @@ public class ProfileFormControllerTest {
         teamRepository.save(team);
         ProfileFormController.teamId = team.getTeamId();
 
-        Location testLocation = new Location("23 test street", "24 test street", "surburb", "city", "8782", "New Zealand");
-        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
+        Location testLocation = new Location("23 test street", "24 test street", "surburb", "city", "8782",
+                "New Zealand");
+        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
+                "johndoe@example.com", "Password123!", testLocation);
         userRepository.save(user);
 
         Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
@@ -112,7 +114,7 @@ public class ProfileFormControllerTest {
             mockMvc.perform(multipart("/profile?teamID={id}", team.getTeamId()).file(multipartFile))
                     .andExpect(status().is3xxRedirection());
         }
-            assertNotEquals(team.getPictureString(), Base64.getEncoder().encodeToString(fileBytes));
+        assertNotEquals(team.getPictureString(), Base64.getEncoder().encodeToString(fileBytes));
 
     }
 

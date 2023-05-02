@@ -7,6 +7,8 @@ import java.util.*;
 
 import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
+import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,7 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private LocationService locationService;
+    private EmailService emailService;
 
     @Autowired
     private TaskScheduler taskScheduler;
@@ -114,7 +116,6 @@ public class UserService {
         List<Location> listOfLocations = userRepository.findLocationByUser(name);
         return listOfLocations;
     }
-
 
     /**
      * returns a list of the sports that are relevant to the current search, this
@@ -267,6 +268,18 @@ public class UserService {
 
         // Saved the updated picture string in the database.
         userRepository.save(user);
+    }
+
+    /**
+     * Creates and sends email informing the user that their password has been updated.
+     * TODO add the update functionality to this method as well.
+     * @param user the user whose password was updated
+     * @return the outcome of the email sending
+     */
+    public void updatePassword(User user) {
+        EmailDetails details = new EmailDetails(user.getEmail(), EmailDetails.UPDATE_PASSWORD_BODY, EmailDetails.UPDATE_PASSWORD_HEADER);
+        String outcome = emailService.sendSimpleMail(details);
+        logger.info(outcome);
     }
 
 }
