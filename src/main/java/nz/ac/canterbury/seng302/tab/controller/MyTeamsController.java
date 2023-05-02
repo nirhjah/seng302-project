@@ -51,6 +51,13 @@ public class MyTeamsController {
         // If the user has no teams show a message
 
 
+        model.addAttribute("firstName", user.get().getFirstName());
+        model.addAttribute("lastName", user.get().getLastName());
+        model.addAttribute("displayPicture", user.get().getPictureString());
+        model.addAttribute("navTeams", teamService.getTeamList());
+        model.addAttribute("page", pageNo);
+
+
         if (teamRepository.findTeamsWithUser_List(currentUser).size() == 0) {
 
             //pass through a flag in the model to say this so we can show a message + the join button
@@ -75,14 +82,10 @@ public class MyTeamsController {
 
         List<Team> listTeams = page.getContent();
 
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
-        model.addAttribute("navTeams", teamService.getTeamList());
-        model.addAttribute("page", pageNo);
+
+        model.addAttribute("displayTeams", listTeams);
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
-        model.addAttribute("displayTeams", listTeams);
 
         return "myTeams";
     }
