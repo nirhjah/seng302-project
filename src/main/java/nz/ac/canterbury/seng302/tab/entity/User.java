@@ -202,6 +202,9 @@ public class User {
         return this.expiryDate;
     }
 
+    public boolean getEmailConfirmed() {
+        return emailConfirmed;
+    }
 
     /**
      * Confirms the user's email
