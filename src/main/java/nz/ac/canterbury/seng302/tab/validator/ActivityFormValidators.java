@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import nz.ac.canterbury.seng302.tab.validator.logic.ActivityDescriptionCheck;
-import nz.ac.canterbury.seng302.tab.validator.logic.ActivityTeamCheck;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -33,7 +32,7 @@ public class ActivityFormValidators {
 
     public static final String END_BEFORE_START_MSG = "Start date and time must be before end date and time";
 
-    public static final String ACTIVITY_BEFORE_TEAM_CREATION = "Activity must be after creation date of team";
+    public static final String ACTIVITY_BEFORE_TEAM_CREATION = "Activity must be after creation date of team: ";
 
     /**
      * Regex taken from <a href="https://stackoverflow.com/a/56276700">...</a>
@@ -94,7 +93,7 @@ public class ActivityFormValidators {
      */
     /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
     /**/@Retention(RUNTIME)
-    /**/@Constraint(validatedBy = {ActivityTeamCheck.class})
+    /**/@Constraint(validatedBy = {})
     /**/@Documented
     public @interface teamSelectionValidator {
         String message() default TEAM_REQUIRED_MSG;

@@ -1,7 +1,6 @@
 package nz.ac.canterbury.seng302.tab.form;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
 
 import java.time.LocalDateTime;
@@ -11,8 +10,7 @@ public class CreateActivityForm {
     @ActivityFormValidators.activityTypeValidator
     private Activity.ActivityType activityType;
 
-    @ActivityFormValidators.teamSelectionValidator
-    private Team team;
+    private long teamId;
 
     @ActivityFormValidators.descriptionValidator
     private String description;
@@ -31,12 +29,12 @@ public class CreateActivityForm {
         this.activityType = activityType;
     }
 
-    public Team getTeam() {
-        return team;
+    public long getTeam() {
+        return teamId;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
+    public void setTeam(long team) {
+        this.teamId = team;
     }
 
     public String getDescription() {
