@@ -21,6 +21,7 @@ public class AdminAccount implements CommandLineRunner {
         Location location = new Location("admin", "admin", "admin", "admin", "admin", "admin");
 
         User admin = new User("Admin", "Admin", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "admin@gmail.com", "1", location);
+        admin.confirmEmail();
         userRepository.save(admin);
     }
 }
