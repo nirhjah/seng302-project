@@ -12,17 +12,19 @@
 <div>
     <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 
-
-    <div class="noTeamsBox" th:if="${noTeamsFlag != null}">
-        <h6 id="reset-password-info" class="reset-password-info"
-            th:text="${noTeamsFlag}"></h6>
-
-
-        <div class="submit-button">
-            <button type="submit" class="registerLoginButton">Join Team by Token</button>
+    <div style="padding-top: 300px" th:if="${noTeamsFlag != null}">
+        <div class="noTeamsBox">
+            <h4 id="reset-password-info" class="reset-password-info"
+                th:text="${noTeamsFlag}"></h4>
+            <div class="submit-button">
+                <button type="submit" class="registerLoginButton">Join Team by Token</button>
+            </div>
         </div>
-
     </div>
+
+
+
+
 
     <div class="card-container">
         <div th:each="team : ${displayTeams}" class ="card"
