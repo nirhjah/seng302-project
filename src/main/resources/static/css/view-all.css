@@ -243,7 +243,6 @@ table {
 }
 
 .noTeamsBox {
-    display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
@@ -251,10 +250,9 @@ table {
     box-shadow: 0 0 30px rgba(0, 0, 0, .5);
     border-radius: 20px;
     background-color: white;
-    margin-top: 300px;
-    margin-bottom: 100px;
-    margin-left: 700px;
-    width: 400px;
+    margin: auto;
+    padding: 20px;
+    width: 20%;
 }
 
 
