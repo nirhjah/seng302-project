@@ -11,6 +11,7 @@
     justify-content: center;
     align-items: center;
     width: 65%;
+    margin: auto;
 }
 
 .activity-form form {
@@ -20,4 +21,13 @@
 .activity-form .wrapper {
     width: 500px;
     height: 440px;
+}
+
+.activity-form select {
+    text-align: center;
+    width: 30%;
+}
+
+.select-box {
+    text-align: right;
 }
