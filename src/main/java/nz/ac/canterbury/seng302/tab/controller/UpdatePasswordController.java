@@ -9,6 +9,7 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,6 +37,9 @@ public class UpdatePasswordController {
     User currentUser;
 
     String currentToken;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     private void checkPasswordsMatchAndIsSecure(UpdatePasswordForm updatePasswordForm, BindingResult bindingResult, String token) {
@@ -128,9 +132,8 @@ public class UpdatePasswordController {
 
         redirectAttributes.addFlashAttribute("passwordUpdatedMessage", "Password updated successfully.");
 
-        currentUser.setPassword(password);
+        currentUser.setPassword(passwordEncoder.encode(password));
         userService.updateOrAddUser(currentUser);
-
 
         return "redirect:/login";
     }
