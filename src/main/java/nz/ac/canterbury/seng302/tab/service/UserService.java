@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
@@ -275,5 +276,17 @@ public class UserService {
         String outcome = emailService.sendSimpleMail(details);
         logger.info(outcome);
     }
+
+
+    public void resetPasswordEmail(User user, HttpServletRequest request) {
+
+        user.generateToken(this, 1);
+        updateOrAddUser(user);
+        String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "") + "/update-password/" + user.getToken();
+        EmailDetails details = new EmailDetails(user.getEmail(), tokenVerificationLink, EmailDetails.RESET_PASSWORD_HEADER);
+        String outcome = emailService.sendSimpleMail(details);
+        logger.info(outcome);
+    }
+
 
 }
