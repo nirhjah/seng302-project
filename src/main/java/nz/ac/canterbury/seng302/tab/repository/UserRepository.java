@@ -29,11 +29,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
         boolean existsByEmail(String email);
 
-        @Query("SELECT u FROM UserEntity u WHERE u.email = :email and u.hashedPassword = :password")
-        User getUserByEmailAndPassword(@Param("email") String email, @Param("password") String password);
-
-        User getUserByEmail(@Param("email") String email);
-
         Page<User> findAll(Pageable pageable);
 
         /*
