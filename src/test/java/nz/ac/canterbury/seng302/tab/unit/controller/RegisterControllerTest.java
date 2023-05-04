@@ -8,16 +8,13 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -25,8 +22,8 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @SpringBootTest
@@ -39,16 +36,15 @@ class RegisterControllerTest {
     @Autowired
     private TeamService teamService;
 
-    @MockBean
-    private UserService mockUserService;
-
+    @Autowired
+    private UserService userService;
 
     private Team team;
 
     @Autowired
     private UserRepository userRepository;
 
-    private Optional<User> user;
+    private Optional<User> optionalUser;
 
     @BeforeEach
     public void beforeAll() throws IOException {
@@ -60,11 +56,11 @@ class RegisterControllerTest {
 
     private RegisterForm getDummyRegisterForm() {
         var form =  new RegisterForm();
-        form.setCity("chch");
-        form.setCountry("new Zealand");
+        form.setCity("Christchurch");
+        form.setCountry("New Zealand");
         form.setEmail(EMAIL);
-        form.setFirstName("bob");
-        form.setLastName("johnson");
+        form.setFirstName("Bobby");
+        form.setLastName("Johnson");
         form.setPassword(PASSWORD);
         form.setConfirmPassword(PASSWORD);
         var d = new Date(2002-1900, Calendar.JULY, 5);
@@ -73,8 +69,8 @@ class RegisterControllerTest {
     }
 
     private void ensureUserConfirmed(boolean isConfirmed) {
-        assertTrue(user.isPresent());
-        assertEquals(isConfirmed, user.get().getEmailConfirmed());
+        assertTrue(optionalUser.isPresent());
+        assertEquals(isConfirmed, optionalUser.get().getEmailConfirmed());
     }
 
     /*
@@ -94,6 +90,7 @@ class RegisterControllerTest {
                     .append('=')
                     .append(URLEncoder.encode(params[i+1], StandardCharsets.UTF_8));
         }
+        System.out.println(result.toString());
         return result.toString();
     }
 
@@ -125,20 +122,19 @@ class RegisterControllerTest {
             params.addAll(List.of("suburb", form.getSuburb()));
         }
 
-        mockMvc.perform(post("/some/super/secret/url")
+        mockMvc.perform(post("/register")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .content(buildUrlEncodedFormEntity(
                     params.toArray(String[]::new)
             )));
     }
 
-
     @Test
     public void whenRegister_expectUnconfirmedUserInDb() throws Exception {
         var form = getDummyRegisterForm();
         postRegisterForm(form);
 
-        user = userRepository.findByEmail(EMAIL);
+        optionalUser = userRepository.findByEmail(EMAIL);
         ensureUserConfirmed(false);
     }
 
@@ -147,10 +143,23 @@ class RegisterControllerTest {
         var form = getDummyRegisterForm();
         postRegisterForm(form);
 
-        user = userRepository.findByEmail(EMAIL);
+        optionalUser = userRepository.findByEmail(EMAIL);
         ensureUserConfirmed(false);
 
-        mockMvc.perform(post("/confirm?")
-                .requestAttr("token", user.get().getToken()));
+        mockMvc.perform(get("/confirm?")
+                .requestAttr("token", optionalUser.get().getToken()));
+
+        ensureUserConfirmed(true);
+    }
+
+    @Test
+    public void whenConfirmUnknownURL_expect404() throws Exception {
+        var form = getDummyRegisterForm();
+        postRegisterForm(form);
+
+        optionalUser = userRepository.findByEmail(EMAIL);
+        mockMvc.perform(get("/confirm?")
+                .requestAttr("token", optionalUser.get().getToken()))
+                .andExpect(status().isNotFound());
     }
 }
