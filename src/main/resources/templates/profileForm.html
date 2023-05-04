@@ -42,6 +42,9 @@
                 <a class="edit-button" th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
                     <button type="button">Edit Profile</button>
                 </a>
+                <a class="edit-button" th:href="@{editTeamRole(edit=${teamID})}" th:if="${isUserManager}">
+                    <button type="button">Edit Team Roles</button>
+                </a>
             </form>
         </div>
         <script>
