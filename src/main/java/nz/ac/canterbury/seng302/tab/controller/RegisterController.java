@@ -1,12 +1,5 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.form.RegisterForm;
-import nz.ac.canterbury.seng302.tab.mail.EmailService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -25,7 +18,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -36,17 +28,8 @@ import jakarta.validation.Valid;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.RegisterForm;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
 
 @Controller
 public class RegisterController {
@@ -68,14 +51,14 @@ public class RegisterController {
      * Countries and cities can have letters from all alphabets, with hyphens and
      * spaces. Must start with an alphabetical character
      */
-    private final String countryCitySuburbNameRegex = "^\\p{L}+[\\- \\p{L}]*$";
+    private static final String countryCitySuburbNameRegex = "^\\p{L}+[\\- \\p{L}]*$";
 
     /** Addresses can have letters, numbers, spaces, commas, periods, hyphens, forward slashes and pound signs. Must
      * include at least one alphanumeric character **/
-    private  final String addressRegex = "^[\\p{L}\\p{N}]+[\\- ,./#\\p{L}\\p{N}]*$";
+    private static final String addressRegex = "^[\\p{L}\\p{N}]+[\\- ,./#\\p{L}\\p{N}]*$";
 
     /** Allow letters, numbers, forward slashes and hyphens. Must start with an alphanumeric character. */
-    private final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
+    private static final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
 
     /**
      * Checks if the email already exists
