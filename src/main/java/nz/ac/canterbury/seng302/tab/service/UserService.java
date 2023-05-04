@@ -1,18 +1,21 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import java.io.IOException;
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
 
+import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
+import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,9 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import nz.ac.canterbury.seng302.tab.service.LocationService;
 
 /**
  * Service class for User database entries, defined by the @link{Service}
@@ -40,7 +41,10 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private LocationService locationService;
+    private EmailService emailService;
+
+    @Autowired
+    private TaskScheduler taskScheduler;
 
     /**
      * Gets a page of users.
@@ -52,6 +56,11 @@ public class UserService {
     public Page<User> getPaginatedUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
+
+    public Optional<User> findByToken(String token) {
+        return userRepository.findByToken(token);
+    }
+
 
     /**
      * Gets a page of users, filtered down by their name and sports interest
@@ -196,26 +205,27 @@ public class UserService {
     }
 
     /**
-     * Saves a user to persistence
+     * Saves a user to persistence. Starts a timer for two hours whereupon the user will be
+     * deleted if they have not verified their email
      * 
      * @param user User to save to persistence
      * @return the saved user object
      */
     public User updateOrAddUser(User user) {
+        Instant executionTime = Instant.now().plus(Duration.ofHours(2));
+        taskScheduler.schedule(new EmailVerification(user, userRepository), executionTime);
         return userRepository.save(user);
     }
 
     /**
-     * Finds a user by their email and password
+     * Checks who the logged in user of this session is.
+     * <p>
+     * Note: If the current user is authenticated, but their username isn't in the
+     * database (e.g. it got deleted), it'll also return empty
+     * </p>
      * 
-     * @param email    the users email
-     * @param password the users password
-     * @return the user matching the parameters
+     * @return The currently logged in user, otherwise empty.
      */
-    public User getUserByEmailAndPassword(String email, String password) {
-        return userRepository.getUserByEmailAndPassword(email, password);
-    }
-
     public Optional<User> getCurrentUser() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -257,4 +267,17 @@ public class UserService {
         // Saved the updated picture string in the database.
         userRepository.save(user);
     }
+
+    /**
+     * Creates and sends email informing the user that their password has been updated.
+     * TODO add the update functionality to this method as well.
+     * @param user the user whose password was updated
+     * @return the outcome of the email sending
+     */
+    public void updatePassword(User user) {
+        EmailDetails details = new EmailDetails(user.getEmail(), EmailDetails.UPDATE_PASSWORD_BODY, EmailDetails.UPDATE_PASSWORD_HEADER);
+        String outcome = emailService.sendSimpleMail(details);
+        logger.info(outcome);
+    }
+
 }

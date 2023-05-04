@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
+import nz.ac.canterbury.seng302.tab.authentication.AutoLogin;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -42,7 +43,7 @@ public class EditUserFormController {
     SportService sportService;
 
     @Autowired
-    RegisterController registerController;
+    private AutoLogin autoLogin;
 
     private void prefillModel(Model model) {
         model.addAttribute("validNameRegex", UserFormValidators.VALID_NAME_REGEX);
@@ -60,8 +61,9 @@ public class EditUserFormController {
     public String getEditUserForm(
             EditUserForm editUserForm,
             Model model,
-            HttpServletRequest httpServletRequest) throws MalformedURLException {
+            HttpServletRequest request) throws MalformedURLException {
         prefillModel(model);
+        model.addAttribute("httpServletRequest",request);
         Optional<User> user = userService.getCurrentUser();
         if (user.isEmpty()) {
             return "redirect:/login";
@@ -69,10 +71,13 @@ public class EditUserFormController {
         User u = user.get();
         editUserForm.prepopulate(u);
         Set<String> sports = new HashSet<>(sportService.getAllSportNames());
+        model.addAttribute("firstName", user.get().getFirstName());
+        model.addAttribute("lastName", user.get().getLastName());
+        model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("knownSports", sportService.getAllSportNames());
         model.addAttribute("favouriteSports", u.getFavouriteSportNames());
         model.addAttribute("user", u);
-        URL url = new URL(httpServletRequest.getRequestURL().toString());
+        URL url = new URL(request.getRequestURL().toString());
         String path = (url.getPath() + "/..");
         model.addAttribute("path", path);
         return "editUserForm";
@@ -85,20 +90,20 @@ public class EditUserFormController {
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
             @RequestParam("tags") List<String> tags,
-            Model model, RedirectAttributes redirectAttributes) throws ServletException, MalformedURLException {
-
-            String invalidTags= "These are invalid sports: ";
-            boolean first= true ,invalidSport=false;
-            for (String tag : tags) {
-                if (!tag.matches("^[\\p{L}\\s\\'\\-]+$")) {
-                    invalidSport=true;
-                    if (!first) {
-                        invalidTags += ", ";
-                    } else {
-                        first = false;
-                    }
-                    invalidTags += tag;
+            Model model,
+            RedirectAttributes redirectAttributes) throws ServletException, MalformedURLException {
+        model.addAttribute("httpServletRequest",httpServletRequest);
+        String invalidTags= "These are invalid sports: ";
+        boolean first= true ,invalidSport=false;
+        for (String tag : tags) {
+            if (!tag.matches("^[\\p{L}\\s\\'\\-]+$")) {
+                invalidSport=true;
+                if (!first) {
+                    invalidTags += ", ";
+                } else {
+                    first = false;
                 }
+                invalidTags += tag;
             }
             if (invalidSport) {
                 redirectAttributes.addFlashAttribute("errorMessage", invalidTags);
@@ -107,7 +112,7 @@ public class EditUserFormController {
                 model.addAttribute("path", path);
                 return "redirect:/editUser";
             }
-
+        }
             System.out.println(invalidTags);
 
         prefillModel(model);
@@ -159,12 +164,13 @@ public class EditUserFormController {
         user.getLocation().setCountry(editUserForm.getCountry());
         user.getLocation().setSuburb(editUserForm.getSuburb());
         user.getLocation().setPostcode(editUserForm.getPostcode());
+        //TODO set emailConfirmed to true
 
         userService.updateOrAddUser(user);
 
         if (shouldLogout) {
             httpServletRequest.logout();
-            registerController.forceLogin(user, httpServletRequest);
+            autoLogin.forceLogin(user.getEmail(), user.getAuthorities(), httpServletRequest);
         }
 
         return "redirect:user-info/self";

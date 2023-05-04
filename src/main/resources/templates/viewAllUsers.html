@@ -3,61 +3,62 @@
 
 <head>
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <link th:href="@{/css/view-all.css}" rel="stylesheet">
     <title>View All Users</title>
 </head>
 
-<div th:insert="~{homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
 
 <body class="view-users-background">
-    <div>
-        <p>
-        <form th:action="@{view-users}" method="get">
-            <input type="text" placeholder="Search name" th:name="currentSearch" th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">
-            <button class="search-user-button" type="submit"> Search </button>
-            <div th:if="${not #lists.isEmpty(listOfUsers)}" style="display: flex">
-                <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>
-                <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfCities}, 'Filter by city', 'cities')}" th:if="${not #lists.isEmpty(listOfCities)}"></div>
-                <button class="filter-by-city-button" type="submit">Apply Filters</button>
-            </div>
-            <br><br>
-        </form>
-        
-        </p>
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+<form th:action="@{view-users}" method="get">
+    <div class="search-bar">
+        <input class="search-input" type="text" placeholder="Search name" th:name="currentSearch"
+               th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">
+        <button class="search-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
     </div>
+    <div class="filter-bar">
+        <div th:if="${not #lists.isEmpty(listOfUsers)}" style="display: flex">
+            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>
+            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfCities}, 'Filter by city', 'cities')}" th:if="${not #lists.isEmpty(listOfCities)}"></div>
+            <button class="filter-by-city-button" type="submit">Apply Filters</button>
+        </div>
+    </div>
+</form>
 
-    <!-- Can convert this table into a fragment if neccessary.
-        for now, embrace YAGNI -->
+<!--Really need to fix this error message-->
     <table>
         <tr th:if="${listOfUsers.empty}">
             <td colspan="2"> No users </td>
         </tr>
 
-        <tr th:unless="${listOfUsers.empty}">
-            <th> </th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Link</th>
-        </tr>
-
-        <tr th:each="user : ${listOfUsers}">
-            <td>
-                <img th:src="${'data:image/jpeg;base64,' + user.pictureString}" width="50" height="50"/>
-            </td>
-            <td> [[|${user.firstName} ${user.lastName}|]] </td>
-            <td th:text="${user.email}"> Email </td>
-            <td>
-                <a th:href="@{user-info(name=${user.userId})}"> Profile </a>
-            </td>
-        </tr>
     </table>
 
-    <div th:insert="~{fragments/pagination.html :: pagination(pageName='view-users')}"></div>
-    <footer>
-        <p>
-            Image by <a
-                href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
-            on Freepik
-        </p>
-    </footer>
+<div th:unless="${listOfUsers.empty}" class="card-container">
+    <div th:each="user : ${listOfUsers}" class="card"
+         th:onclick="|window.location.href='/user-info?name=${user.userId}'|">
+        <div class="card-wrapper">
+            <div class="card-image">
+                <img th:src="${'data:image/jpeg;base64,' + user.pictureString}" class="card-img-top" alt="User image">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">[[|${user.firstName} ${user.lastName}|]]</h5>
+                <p class="card-text" th:text="'Location: ' + ${user.location.country} + ', ' + ${user.location.city}">User location</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div th:insert="~{fragments/pagination.html :: pagination(pageName='view-users')}"></div>
+<footer>
+    <p>
+        Image by <a
+            href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+        on Freepik
+    </p>
+</footer>
 </body>

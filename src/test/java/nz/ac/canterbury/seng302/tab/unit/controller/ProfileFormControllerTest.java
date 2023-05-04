@@ -3,12 +3,15 @@ package nz.ac.canterbury.seng302.tab.unit.controller;
 import nz.ac.canterbury.seng302.tab.controller.ProfileFormController;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +25,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Optional;
 import java.nio.file.Files;
 import java.util.Base64;
 
@@ -42,19 +48,33 @@ public class ProfileFormControllerTest {
 
     @MockBean
     private UserService mockUserService;
-    
+
     @Autowired
     private TeamRepository teamRepository;
 
     private Team team;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    private User user;
+
     @BeforeEach
     public void beforeAll() throws IOException {
         teamRepository.deleteAll();
+        userRepository.deleteAll();
         Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
         team = new Team("test", "Hockey", location);
         teamRepository.save(team);
         ProfileFormController.teamId = team.getTeamId();
+
+        Location testLocation = new Location("23 test street", "24 test street", "surburb", "city", "8782",
+                "New Zealand");
+        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
+                "johndoe@example.com", "Password123!", testLocation);
+        userRepository.save(user);
+
+        Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
     }
 
     @Test
@@ -66,7 +86,7 @@ public class ProfileFormControllerTest {
                 .andExpect(MockMvcResultMatchers.model().attribute("teamID", team.getTeamId()))
                 .andExpect(MockMvcResultMatchers.model().attribute("displayName", team.getName()))
                 .andExpect(MockMvcResultMatchers.model().attribute("displaySport", team.getSport()))
-                .andExpect(MockMvcResultMatchers.model().attribute("displayPicture", team.getPictureString()));
+                .andExpect(MockMvcResultMatchers.model().attribute("displayTeamPicture", team.getPictureString()));
     }
 
     @Test
@@ -94,7 +114,7 @@ public class ProfileFormControllerTest {
             mockMvc.perform(multipart("/profile?teamID={id}", team.getTeamId()).file(multipartFile))
                     .andExpect(status().is3xxRedirection());
         }
-            assertNotEquals(team.getPictureString(), Base64.getEncoder().encodeToString(fileBytes));
+        assertNotEquals(team.getPictureString(), Base64.getEncoder().encodeToString(fileBytes));
 
     }
 
