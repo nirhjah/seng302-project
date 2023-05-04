@@ -13,6 +13,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -95,7 +97,7 @@ class RegisterControllerTest {
 
     private static final String REGISTER_URL = "/register";
 
-    private void postRegisterForm(RegisterForm form) throws Exception {
+    private ResultActions postRegisterForm(RegisterForm form) throws Exception {
         var dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         var dateString = dateFormat.format(form.getDateOfBirth());
 
@@ -123,7 +125,7 @@ class RegisterControllerTest {
             params.addAll(List.of("suburb", form.getSuburb()));
         }
 
-        mockMvc.perform(post(REGISTER_URL)
+        return mockMvc.perform(post(REGISTER_URL)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .content(buildUrlEncodedFormEntity(
                     params.toArray(String[]::new)
@@ -133,7 +135,7 @@ class RegisterControllerTest {
     @Test
     public void whenRegister_expectUnconfirmedUserInDb() throws Exception {
         var form = getDummyRegisterForm();
-        postRegisterForm(form);
+        postRegisterForm(form).andExpect(status().isOk());
 
         optionalUser = userRepository.findByEmail(EMAIL);
         ensureUserConfirmed(false);
@@ -144,7 +146,8 @@ class RegisterControllerTest {
     @Test
     public void whenRegisterAndConfirmToken_expectConfirmedUserInDb() throws Exception {
         var form = getDummyRegisterForm();
-        postRegisterForm(form);
+        postRegisterForm(form).andExpect(status().isOk());
+
         optionalUser = userRepository.findByEmail(EMAIL);
         ensureUserConfirmed(false);
 
@@ -157,7 +160,7 @@ class RegisterControllerTest {
     @Test
     public void whenConfirmUnknownURL_expect404() throws Exception {
         var form = getDummyRegisterForm();
-        postRegisterForm(form);
+        postRegisterForm(form).andExpect(status().isNotFound());
 
         optionalUser = userRepository.findByEmail(EMAIL);
         mockMvc.perform(get(CONFIRM_URL)
