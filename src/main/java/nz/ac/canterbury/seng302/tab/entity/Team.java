@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.entity;
 import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
