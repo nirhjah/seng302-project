@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
@@ -7,68 +7,110 @@
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <link th:href="@{/css/profile.css}" rel="stylesheet">
+    <link th:href="@{/css/team-profile.css}" rel="stylesheet">
     <title>Profile</title>
 </head>
 <body class="profile-background">
-    <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
-    <div class="profile-form">
-        <div class="wrapper-profile">
-            <div class="profile-pic">
-                <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
-                    <div class="image-styling">
-                        <img th:src="*{'data:image/jpeg;base64,'+{displayTeamPicture}}" width="200" height="200"/>
-                        </br>
-                    </div>
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+<div class="team-profile-form">
+    <div class="wrapper-profile">
+        <div class="profile-pic">
+            <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
+                <div class="image-styling">
+                    <img th:src="'data:image/png;base64,' + ${displayPicture}" width="200" height="200"/>
                     </br>
-                    <div class="file-upload" th:if="${isUserManager}">
-                        <div class="file-label-border">
-                            <label for="file" class="file-label">
-                                Edit Profile Picture </label>
-                        </div>
-                            <input type="file" name="file" class="form-control-file" id="file">
-                    </div>
-                </form>
-            </div>
-            <div class="team-info">
-                <div class="team-display">
-                    <h2>Team Profile</h2>
-                    <h3 th:text="'Name: ' + ${displayName}"></h3>
-                    <h3 th:text="'Sport: ' + ${displaySport}"></h3>
-                    <h3 th:text="'Location: ' + ${displayLocation}"></h3>
                 </div>
-            </div>
-            <form th:action="@{profile}"  class="profile-buttons" method="post">
-                <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
-                <a class="edit-button" th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
-                    <button type="button">Edit Profile</button>
-                </a>
+                </br>
+                <div class="file-upload">
+                    <div class="file-label-border">
+                        <label for="file" class="file-label">
+                            Edit Profile Picture </label>
+                    </div>
+                    <input type="file" name="file" class="form-control-file" id="file">
+                </div>
             </form>
         </div>
-        <script>
-            const input = document.getElementById('file');
 
-            input.addEventListener('change', () => {
-                const file = input.files[0];
-                if (file.size > 10000000) {
-                    alert('File size must be less than 10MB');
-                    return;
-                }
-                const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml','image/jpg'];
-                if (!allowedTypes.includes(file.type)) {
-                    alert('File type must be jpeg, png or svg');
-                    return;
-                }
-                document.getElementById('upload-picture').submit();
-            });
+            <div class="join-token">
+                <label> Join Token</label>
+                <div class="join-token-box">
+                    <span class="token-value" th:text="${displayToken}"></span>
+                    <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}" th:method="post">
+                        <button type="submit">
+                            <img th:src="@{image/icons/reload.svg}">
+                        </button>
+                    </form>
 
-        </script>
-        <footer>
-            <p>
-                Image by <a
-                    href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
-                on Freepik
-            </p>
-        </footer>
+                </div>
+                    <a href="#" class="copy-token">Copy</a>
+            </div>
+
+        <div class="team-info">
+            <div class="team-display">
+                <h2>Team Profile</h2>
+                <div class="user-label">
+                    <img th:src="@{/image/icons/name.svg}"/>
+                    <h3 th:text="|Name: *{displayName}|"></h3>
+                </div>
+                <div class="user-label">
+                    <img th:src="@{/image/icons/sports.svg}"/>
+                    <h3 th:text="|Sport: *{displaySport}|"></h3>
+                </div>
+                <div class="user-label">
+                    <img th:src="@{/image/icons/location.svg}"/>
+                    <h3 th:text="|Location: *{displayLocation}|"></h3>
+                </div>
+            </div>
+
+        </div>
+        <form th:action="@{profile}" class="profile-buttons" method="post">
+            <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+            <a class="edit-button" th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
+                <button type="button">Edit Profile</button>
+            </a>
+        </form>
     </div>
+
+    <script>
+        const input = document.getElementById('file');
+
+        input.addEventListener('change', () => {
+            const file = input.files[0];
+            if (file.size > 10000000) {
+                alert('File size must be less than 10MB');
+                return;
+            }
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/jpg'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('File type must be jpeg, png or svg');
+                return;
+            }
+            document.getElementById('upload-picture').submit();
+        });
+        const copyButton = document.querySelector('.copy-token');
+        const tokenValue = document.querySelector('.token-value');
+
+        copyButton.addEventListener('click', () => {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(tokenValue);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            document.execCommand('copy');
+            selection.removeAllRanges();
+            copyButton.textContent = 'Copied';
+            setTimeout(() => {
+                copyButton.textContent = 'Copy';
+            }, 3000);
+        });
+    </script>
+    <footer>
+        <p>
+            Image by <a
+                href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+            on Freepik
+        </p>
+    </footer>
+</div>
 </body>
 </html>

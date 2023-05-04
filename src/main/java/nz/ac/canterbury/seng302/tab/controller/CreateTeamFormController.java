@@ -48,9 +48,6 @@ public class CreateTeamFormController {
     @Autowired
     private UserService userService;
 
-    //
-    // @Value("${ops.api.key}")
-    // private String apiKey;
 
     /**
      * Gets createTeamForm to be displayed and contains name, sport,
@@ -58,7 +55,6 @@ public class CreateTeamFormController {
      *
      * @return thymeleaf createTeamForm
      */
-
     public void prefillModel(Model model) {
         model.addAttribute("postcodeRegex", TeamFormValidators.VALID_POSTCODE_REGEX);
         model.addAttribute("postcodeRegexMsg", TeamFormValidators.INVALID_POSTCODE_MSG);
@@ -66,6 +62,20 @@ public class CreateTeamFormController {
         model.addAttribute("addressRegexMsg", TeamFormValidators.INVALID_POSTCODE_MSG);
         model.addAttribute("countryCitySuburbNameRegex", TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
         model.addAttribute("countryCitySuburbNameRegexMsg", TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG);
+    }
+
+    @PostMapping("/generateTeamToken")
+    public String generateTeamToken(@RequestParam(name = "teamID") Long teamID) {
+        var team = teamService.getTeam(teamID);
+        if (team != null) {
+            var user = userService.getCurrentUser();
+            if (user.isPresent() && team.isManager(user.get())) {
+                team.generateToken(teamService);
+                teamService.updateTeam(team);
+                logger.info("POST /generateTeamToken, new token: " + team.getToken());
+            }
+        }
+        return String.format("redirect:./profile?teamID=%s", teamID);
     }
 
     @GetMapping("/createTeam")
@@ -151,6 +161,7 @@ public class CreateTeamFormController {
             HttpServletRequest httpServletRequest) throws IOException {
         logger.info("POST /createTeam");
 
+
         prefillModel(model);
         // client side validation
         model.addAttribute("countryOrCityNameRegex", teamService.countryCitySuburbNameRegex);
@@ -163,7 +174,9 @@ public class CreateTeamFormController {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             logger.info("bad request");
             return "createTeamForm";
+            //return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
         }
+
 
         // trim all extra whitespace and trailing/leading whitespace
         String trimmedName = teamService.clipExtraWhitespace(name);
@@ -183,14 +196,15 @@ public class CreateTeamFormController {
 
         Location location = new Location(trimmedAddressLine1, trimmedAddressLine2, trimmedSuburb, trimmedCity,
                 trimmedPostcode, trimmedCountry);
-        Team team;
-        if ((team = teamService.getTeam(teamID)) != null) {
-            logger.info("editing team details");
+
+        Team team = teamService.getTeam(teamID);
+        boolean teamExists = team != null;
+        if (teamExists) {
+            // edit existing team
             team.setName(trimmedName);
             team.setSport(trimmedSport);
             team.setLocation(location);
             team = teamService.updateTeam(team);
-            teamID = team.getTeamId();
         } else {
             // create a new team
             logger.info("creating new user ");
@@ -202,9 +216,10 @@ public class CreateTeamFormController {
                 logger.info("creating new user without manager");
                 team = new Team(trimmedName, trimmedSport, location);
             }
+            team.generateToken(teamService);
             team = teamService.addTeam(team);
-            teamID = team.getTeamId();
         }
+        teamID = team.getTeamId();
 
         List<String> knownSports = sportService.getAllSportNames();
         if (!knownSports.contains(trimmedSport)) {
