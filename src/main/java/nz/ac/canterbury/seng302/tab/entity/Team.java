@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
 
+import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -11,8 +12,7 @@ import java.io.InputStream;
 
 import java.time.LocalDateTime;
 
-import java.util.Base64;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
