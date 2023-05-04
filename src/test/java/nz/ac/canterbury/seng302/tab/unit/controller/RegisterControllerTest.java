@@ -48,7 +48,7 @@ class RegisterControllerTest {
     @Autowired
     private UserRepository userRepository;
 
-    private User user;
+    private Optional<User> user;
 
     @BeforeEach
     public void beforeAll() throws IOException {
@@ -73,8 +73,8 @@ class RegisterControllerTest {
     }
 
     private void ensureUserConfirmed(boolean isConfirmed) {
-        assertNotNull(user);
-        assertEquals(isConfirmed, user.getEmailConfirmed());
+        assertTrue(user.isPresent());
+        assertEquals(isConfirmed, user.get().getEmailConfirmed());
     }
 
     /*
@@ -138,22 +138,19 @@ class RegisterControllerTest {
         var form = getDummyRegisterForm();
         postRegisterForm(form);
 
-        Thread.sleep(100);
-
-        user = userRepository.getUserByEmail(EMAIL);
+        user = userRepository.findByEmail(EMAIL);
         ensureUserConfirmed(false);
     }
 
     @Test
     public void whenRegisterAndConfirmToken_expectConfirmedUserInDb() throws Exception {
         var form = getDummyRegisterForm();
-        mockMvc.perform(post("/register?")
-                .requestAttr("registerForm", form));
+        postRegisterForm(form);
 
-        user = userRepository.getUserByEmail(EMAIL);
+        user = userRepository.findByEmail(EMAIL);
         ensureUserConfirmed(false);
 
         mockMvc.perform(post("/confirm?")
-                .requestAttr("token", user.getToken()));
+                .requestAttr("token", user.get().getToken()));
     }
 }
