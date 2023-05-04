@@ -65,7 +65,7 @@ public class CreateTeamFormController {
     }
 
     @PostMapping("/generateTeamToken")
-    public String generateTeamToken(@RequestParam(name = "teamID") Long teamID, Model model) {
+    public String generateTeamToken(@RequestParam(name = "teamID") Long teamID) {
         var team = teamService.getTeam(teamID);
         if (team != null) {
             var user = userService.getCurrentUser();
