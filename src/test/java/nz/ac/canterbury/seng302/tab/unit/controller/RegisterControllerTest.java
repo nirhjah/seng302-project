@@ -132,7 +132,6 @@ class RegisterControllerTest {
             )));
     }
 
-
     @Test
     public void whenRegister_expectUnconfirmedUserInDb() throws Exception {
         var form = getDummyRegisterForm();

@@ -331,8 +331,9 @@ public class User {
      */
 
     public void generateToken(UserService userService, int expiryHour) {
-        String token = generateToken();
+        String token = generateToken(); // generate random token
         while (userService.findByToken(token).isPresent()) {
+            // if this token is already taken, generate another one.  (Code will likely never get here)
             token = generateToken();
         }
         setToken(token);
