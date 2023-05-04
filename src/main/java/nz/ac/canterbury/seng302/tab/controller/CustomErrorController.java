@@ -10,23 +10,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  * This controller handles errors thrown by our program.
  * (for example, 404s)
  */
-
-/*
-
-@Controller
-public class CustomErrorController implements ErrorController {
-    Logger logger = LoggerFactory.getLogger(CustomErrorController.class);
-
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public String handle404Error() {
-        logger.info("inside the handler.");
-        return "error";
-    }
-}
-
- */
-
-
 @ControllerAdvice
 public class CustomErrorController extends ResponseEntityExceptionHandler {
     private void populateModel(Model model, String pageName, String errorMessage) {
@@ -37,13 +20,13 @@ public class CustomErrorController extends ResponseEntityExceptionHandler {
     @ExceptionHandler({ ResponseStatusException.class })
     public String handleAccessDeniedException(Model model, Exception ex) {
         populateModel(model, "404 Page not found", "Sorry, the page you requested could not be found.");
-        return "customError";
+        return "error";
     }
 
     @ExceptionHandler({Exception.class})
     public String handleGenericException(Model model, Exception ex) {
         populateModel(model, "Error", "Uh oh, an unknown error has occured!");
-        return "customError";
+        return "error";
     }
 }
 

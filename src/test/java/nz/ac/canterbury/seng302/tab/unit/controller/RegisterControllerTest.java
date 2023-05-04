@@ -90,9 +90,10 @@ class RegisterControllerTest {
                     .append('=')
                     .append(URLEncoder.encode(params[i+1], StandardCharsets.UTF_8));
         }
-        System.out.println(result.toString());
         return result.toString();
     }
+
+    private static final String REGISTER_URL = "/register";
 
     private void postRegisterForm(RegisterForm form) throws Exception {
         var dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -122,7 +123,7 @@ class RegisterControllerTest {
             params.addAll(List.of("suburb", form.getSuburb()));
         }
 
-        mockMvc.perform(post("/register")
+        mockMvc.perform(post(REGISTER_URL)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .content(buildUrlEncodedFormEntity(
                     params.toArray(String[]::new)
@@ -138,15 +139,16 @@ class RegisterControllerTest {
         ensureUserConfirmed(false);
     }
 
+    private static final String CONFIRM_URL = "/confirm";
+
     @Test
     public void whenRegisterAndConfirmToken_expectConfirmedUserInDb() throws Exception {
         var form = getDummyRegisterForm();
         postRegisterForm(form);
-
         optionalUser = userRepository.findByEmail(EMAIL);
         ensureUserConfirmed(false);
 
-        mockMvc.perform(get("/confirm?")
+        mockMvc.perform(get(CONFIRM_URL)
                 .requestAttr("token", optionalUser.get().getToken()));
 
         ensureUserConfirmed(true);
@@ -158,7 +160,7 @@ class RegisterControllerTest {
         postRegisterForm(form);
 
         optionalUser = userRepository.findByEmail(EMAIL);
-        mockMvc.perform(get("/confirm?")
+        mockMvc.perform(get(CONFIRM_URL)
                 .requestAttr("token", optionalUser.get().getToken()))
                 .andExpect(status().isNotFound());
     }
