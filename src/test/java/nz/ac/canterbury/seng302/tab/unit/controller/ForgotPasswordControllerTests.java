@@ -66,5 +66,5 @@ public class ForgotPasswordControllerTests {
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("forgotPassword"));
     }
-    
+
 }

@@ -39,8 +39,6 @@ public class UpdatePasswordController {
 
 
     private void checkPasswordsMatchAndIsSecure(UpdatePasswordForm updatePasswordForm, BindingResult bindingResult, String token) {
-        /*testUser = userService.findUserByEmail("test@gmail.com");
-        currentUser = testUser.get();*/
 
         user = userService.findByToken(currentToken);
         currentUser = user.get();
@@ -111,6 +109,8 @@ public class UpdatePasswordController {
             HttpServletRequest request, @PathVariable String token,
             RedirectAttributes redirectAttributes) {
 
+
+
         user = userService.findByToken(currentToken);
         currentUser = user.get();
 
@@ -133,7 +133,6 @@ public class UpdatePasswordController {
 
 
         userService.updatePassword(currentUser);
-
         return "redirect:/login";
     }
 
