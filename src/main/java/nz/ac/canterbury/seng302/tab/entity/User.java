@@ -82,7 +82,8 @@ public class User {
     }
 
     /**
-     * TODO: Implement password hashing, probably via Bcrypt
+     * <strong>WARNING:</strong> Passwords are NOT hashed here. You have to provide a hashed password
+     * (By Autowiring a <code>PasswordEncoder</code>)
      */
     public User(String firstName, String lastName, Date dateOfBirth, String email, String password,
             List<Sport> favoriteSports, Location location) throws IOException {
@@ -98,6 +99,10 @@ public class User {
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
 
+    /**
+     * <strong>WARNING:</strong> Passwords are NOT hashed here. You have to provide a hashed password
+     * (By Autowiring a <code>PasswordEncoder</code>)
+     */
     public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location)
             throws IOException {
         this.firstName = firstName;
@@ -112,6 +117,10 @@ public class User {
         this.location = location;
     }
 
+    /**
+     * <strong>WARNING:</strong> Passwords are NOT hashed here. You have to provide a hashed password
+     * (By Autowiring a <code>PasswordEncoder</code>)
+     */
     public User(String firstName, String lastName, String email, String password, Location location) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -238,17 +247,6 @@ public class User {
 
     public void setFavoriteSports(List<Sport> favoriteSports) {
         this.favoriteSports = favoriteSports;
-    }
-
-    /**
-     * TODO: IMPLEMENT. There shouldn't be a way to see the password, only to check
-     * if it's right.
-     *
-     * @param password The password provided by the user that we're checking
-     * @return true/false if the provided password is the same one we've stored
-     */
-    public boolean checkPassword(String password) {
-        throw new RuntimeException("NOT IMPLEMENTED!!!");
     }
 
     @Override
