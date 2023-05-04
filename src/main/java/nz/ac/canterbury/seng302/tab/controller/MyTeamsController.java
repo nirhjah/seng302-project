@@ -116,7 +116,8 @@ public class MyTeamsController {
         userService.updateOrAddUser(user);
         
 
-        return "myTeams";
+        return "redirect:/my-teams?page=1";
+
     }
 
 
