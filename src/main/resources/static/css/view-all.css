@@ -251,5 +251,10 @@ table {
     background-color: white;
     margin: auto;
     padding: 20px;
-    width: 20%;
+    width: 318px;
+}
+
+.reset-password-info {
+    font-family: "Noto Sans", sans-serif;
+
 }

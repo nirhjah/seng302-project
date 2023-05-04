@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Spring Boot Controller for View Teams Form
+ * Spring Boot Controller for My Teams Page
  */
 @Controller
 public class MyTeamsController {
@@ -37,6 +37,13 @@ public class MyTeamsController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Gets the page of teams the user has joined
+     * @param pageNo  integer corresponding page to be displayed
+     * @param model   representation of data for thymeleaf display
+     * @param request required for the navbar implementation
+     * @return my teams page
+     */
     @GetMapping("/my-teams")
     public String myTeamsForm(@RequestParam(value = "page", defaultValue = "-1") int pageNo,
                                 Model model, HttpServletRequest request) {
@@ -51,7 +58,6 @@ public class MyTeamsController {
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("page", pageNo);
 
-        // If the user has no teams show a message
         if (teamRepository.findTeamsWithUser_List(currentUser).size() == 0) {
             model.addAttribute("noTeamsFlag", "You are not a member of any teams.");
             return "myTeams";
@@ -59,7 +65,6 @@ public class MyTeamsController {
 
         model.addAttribute("noTeamsFlag", null);
 
-        // If page number outside of page then reloads page with appropriate number
         if (pageNo < 1 || pageNo > teamService.findTeamsByUser(pageNo, maxPageSize, currentUser).getTotalPages() && teamService.findTeamsByUser(pageNo, maxPageSize, currentUser).getTotalPages() > 0) {
             pageNo = pageNo < 1 ? 1: teamService.findTeamsByUser(pageNo, maxPageSize, currentUser).getTotalPages();
             return "redirect:/my-teams?page=" + pageNo;
@@ -69,7 +74,6 @@ public class MyTeamsController {
 
 
         Page<Team> page = teamService.findTeamsByUser(pageNo, maxPageSize, currentUser);
-
         List<Team> listTeams = page.getContent();
 
 
