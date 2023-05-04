@@ -99,7 +99,7 @@ td {
 
 
 .file-label-border,.profile-buttons button, .profile-pic .back-button {
-    background-color: #415A77;
+    background-color: #0b2239;
     font-weight: 500;
 }
 
@@ -447,18 +447,14 @@ li a {
 
 .filter-by-city-button {
     border: 0;
-    width: 140px;
-    margin-left: 147px;
     text-decoration: none;
     font-size: 17px;
     font-weight: 500;
-    padding: 4px 7px;
+    padding: 0 15px;
     border-radius: 20px;
     background-color: #415A77;
     color: white;
     font-family: "Noto Sans", sans-serif;
-    margin-top: -2px;
-    margin-bottom: 3px;
 }
 
 .search-team-button-div {
