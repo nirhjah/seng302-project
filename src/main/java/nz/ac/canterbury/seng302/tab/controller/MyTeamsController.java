@@ -114,17 +114,15 @@ public class MyTeamsController {
             return "redirect:/my-teams?page=1";
         }
 
-
-
-
-        //test code to force team join
-        Team team = new Team("test", "Hockey", new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"));
-        teamService.addTeam(team);
         User user = userService.getCurrentUser().get();
-        user.joinTeam(team);
-        userService.updateOrAddUser(user);
-        
+        Optional<Team> team = teamService.findByToken(token);
 
+        if(team.isPresent()) {
+            Team teamToJoin =  team.get();
+            user.joinTeam(teamToJoin);
+            userService.updateOrAddUser(user);
+        }
+        
         return "redirect:/my-teams?page=1";
 
     }
