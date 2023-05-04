@@ -71,17 +71,10 @@ public class ForgotPasswordController {
         model.addAttribute("submitted_form_message", "If your email is registered with our system, you will receive a link to reset your password shortly.");
 
         user = userService.findUserByEmail(email);
-
-
         if (user.isPresent()) {
             currentUser = user.get();
-
-
-
             userService.resetPasswordEmail(currentUser, request);
-
         }
-
         return "forgotPassword";
     }
 
