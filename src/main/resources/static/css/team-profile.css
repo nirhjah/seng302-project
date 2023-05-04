@@ -57,6 +57,7 @@
     position: absolute;
     right: 2%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     padding-top: 5%;
 }
@@ -71,6 +72,7 @@
     transition: 0.5s;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     background: linear-gradient(to right, #fff 75%, #1b263b 25%);
     height: 50px;
     border-radius: 10px 50px 50px 10px;
@@ -111,4 +113,15 @@
 
 .join-token-box form {
     height: 30px;
+    margin:0;
+}
+.copy-token {
+    text-decoration: underline;
+    margin-right: 10px;
+    font-weight:700;
+    font-size:14px;
+    color: #1b263b;
+    padding: 10px;
+    cursor: pointer;
+    z-index:1;
 }
