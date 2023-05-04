@@ -31,6 +31,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
@@ -63,6 +66,28 @@ public class U27CreateActivityFeature {
     private TeamService teamService;
 
     private User user;
+
+    private String buildUrlEncodedFormEntity(String... params) {
+        if( (params.length % 2) > 0 ) {
+            throw new IllegalArgumentException("Need to give an even number of parameters");
+        }
+        StringBuilder result = new StringBuilder();
+        for (int i=0; i<params.length; i+=2) {
+            if( i > 0 ) {
+                result.append('&');
+            }
+            try {
+                result.
+                        append(URLEncoder.encode(params[i], StandardCharsets.UTF_8.name())).
+                        append('=').
+                        append(URLEncoder.encode(params[i+1], StandardCharsets.UTF_8.name()));
+            }
+            catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return result.toString();
+    }
 
     @BeforeAll
     public void beforeAll() throws IOException {
@@ -121,8 +146,9 @@ public class U27CreateActivityFeature {
         createActivityForm.setEndDateTime(LocalDateTime.parse(end, formatter));
         Assertions.assertNotNull(teamService.getTeam(teamId));
 
-        mockMvc.perform(post("/createActivity", 42L).contentType(MediaType.APPLICATION_FORM_URLENCODED).content()));
-
+        mockMvc.perform(post("/createActivity").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .content(buildUrlEncodedFormEntity("activityType", activityType, "team",
+                        String.valueOf(teamId), "description", desc, "startDateTime", start, "endDateTime", end))).andExpect(status().isOk());
     }
 
     @Then("An activity is created")
