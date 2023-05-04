@@ -162,7 +162,9 @@ public class TeamService {
      * @param user          user to filter teams by
      * @return              all teams the user is apart of
      */
-    public Page<Team> findTeamsByUser(Pageable pageable, User user) {
+    public Page<Team> findTeamsByUser(int pageNo, int pageSize, User user) {
+
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
 
         return teamRepository.findTeamsWithUser(user, pageable);
     }
