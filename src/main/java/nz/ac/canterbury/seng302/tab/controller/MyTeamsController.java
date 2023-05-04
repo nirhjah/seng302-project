@@ -93,19 +93,24 @@ public class MyTeamsController {
             @Validated JoinTeamForm joinTeamForm,
             BindingResult bindingResult,
             Model model,
-            HttpServletResponse httpServletResponse, HttpServletRequest request
-    ) throws IOException {
+            HttpServletResponse httpServletResponse, HttpServletRequest request) throws IOException {
 
         model.addAttribute("token", token);
-        model.addAttribute("httpServletRequest",request);
+        model.addAttribute("httpServletRequest", request);
 
+
+        //model.addAttribute("token_invalid", "valid");
+
+        logger.info("no errors " + bindingResult.getAllErrors());
         if (bindingResult.hasErrors()) {
-            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            model.addAttribute("submitted_form", null);
-            //wsend a flag here in order for the modal to still be showing if there is an error then show error on the modal
-            return "myTeams";
+            model.addAttribute("token_invalid", null);
 
+            logger.info("there are errors " + bindingResult.getAllErrors());
+            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return "redirect:/my-teams?page=1";
         }
+
+
 
 
         //test code to force team join
