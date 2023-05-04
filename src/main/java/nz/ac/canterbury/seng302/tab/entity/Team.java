@@ -1,7 +1,6 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
-import nz.ac.canterbury.seng302.tab.enums.Role;
 
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.springframework.core.io.ClassPathResource;
@@ -9,18 +8,18 @@ import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+import java.time.LocalDateTime;
+
 import java.util.Base64;
 import java.util.UUID;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.nio.file.Files;
-import java.util.*;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
  */
 @Entity
 public class Team {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
@@ -64,9 +63,9 @@ public class Team {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
+        this.token = generateToken();
         this.teamRoles = new ArrayList<>();
         this.creationDate = LocalDateTime.now();
-        this.token = generateToken();
     }
 
     /**
@@ -168,6 +167,8 @@ public class Team {
         this.sport = sport;
     }
 
+    public LocalDateTime getCreationDate() {return creationDate;}
+
     public String getToken() {
         return this.token;
     }
@@ -196,9 +197,6 @@ public class Team {
         setToken(token);
     }
 
-    public LocalDateTime getCreationDate() {
-        return creationDate;
-    }
 
     /**
      * @param user, the
