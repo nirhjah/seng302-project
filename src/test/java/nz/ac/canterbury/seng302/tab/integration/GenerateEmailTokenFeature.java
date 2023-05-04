@@ -1,37 +1,54 @@
 package nz.ac.canterbury.seng302.tab.integration;
 
-import io.cucumber.java.Before;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.cucumber.spring.CucumberContextConfiguration;
-import nz.ac.canterbury.seng302.tab.TabApplication;
+import nz.ac.canterbury.seng302.tab.form.RegisterForm;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ContextConfiguration(classes = TabApplication.class)
-@AutoConfigureMockMvc
-@CucumberContextConfiguration
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class GenerateEmailTokenFeature {
 
     @Autowired
     private UserRepository userRepository;
+
+    private static final String URL = "/register";
+
+    @Autowired
+    private MockMvc mockMvc;
 
     @BeforeEach
     public void beforeAll() throws IOException {
         userRepository.deleteAll();
     }
     @Given("I submit a fully valid registration form")
-    public void i_submit_a_fully_valid_registration_form() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+    public void i_submit_a_fully_valid_registration_form() throws Exception {
+        RegisterForm registerForm = new RegisterForm();
+        registerForm.setCity("chch");
+        registerForm.setCountry("new Zealand");
+        registerForm.setEmail("test@gmail.com");
+        registerForm.setFirstName("bob");
+        registerForm.setLastName("johnson");
+        registerForm.setPassword("Hello123$");
+        registerForm.setConfirmPassword("Hello123$");
+        Date d = new Date(2002-1900, Calendar.JULY, 5);
+        registerForm.setDateOfBirth(d);
+        mockMvc.perform(post("/register"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(registerForm))
+                .andExpect(status().isOk());
     }
 
     @When("I click on register")
