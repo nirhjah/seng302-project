@@ -48,7 +48,7 @@ Feature: U1 - Register
     Then I see an error message on the register page telling me the email is already in use
 
 
-  Scenario: AC7 - AC7: Given I am on the registration form, and I enter two different passwords, when I hit the register button, then an error message tells me the passwords do not match
+  Scenario: AC7 - Given I am on the registration form, and I enter two different passwords, when I hit the register button, then an error message tells me the passwords do not match
     Given I have connected to the system's main URL
     And I hit the button to register
     And I see a registration form
