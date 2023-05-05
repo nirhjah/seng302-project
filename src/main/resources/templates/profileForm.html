@@ -106,7 +106,11 @@
             selection.removeAllRanges();
             tokenValue.innerHTML = 'Copied...';
             setTimeout(() => {
-                tokenValue.innerHTML = token;
+                tokenValue.style.opacity = 0;
+                setTimeout(() => {
+                    tokenValue.style.opacity = 1;
+                    tokenValue.innerHTML = token;
+                }, 500);
             }, 1000);
         });
     </script>
