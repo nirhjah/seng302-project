@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import nz.ac.canterbury.seng302.tab.validator.logic.CountryCitySuburbCheck;
 import nz.ac.canterbury.seng302.tab.validator.logic.TeamNameCheck;
 import nz.ac.canterbury.seng302.tab.validator.logic.TeamSportCheck;
+import nz.ac.canterbury.seng302.tab.validator.logic.UserIdToRoleCheck;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -154,6 +155,26 @@ public class TeamFormValidators {
         Class<?>[] groups() default {};
 
         Class<? extends Payload>[] payload() default {};
-
     }
+
+    /**
+     * Checks the team sport is not blank and matches
+     * the regex of valid sports
+     */
+    /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
+    /**/@Retention(RUNTIME)
+    /**/@Constraint(validatedBy = {UserIdToRoleCheck.class})
+    /**/@Documented
+    @NotBlank(message = NOT_BLANK_MSG)
+    @Size(max = 30)
+    public @interface teamUserIdToRoleValidator {
+
+        String regexMatch() default VALID_TEAM_SPORT_REGEX;
+        String message() default "";
+
+        Class<?>[] groups() default {};
+
+        Class<? extends Payload>[] payload() default {};
+    }
+
 }

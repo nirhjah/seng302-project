@@ -6,4 +6,5 @@ public class EditTeamRolesForm {
     /**
      * TODO: Put stuff here.
      */
+    Map<String, String> userIdToRoleEnum;
 }
