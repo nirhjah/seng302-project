@@ -33,7 +33,6 @@ public class UpdatePasswordController {
     UserService userService;
 
     Optional<User> user;
-    User currentUser;
 
     String currentToken;
 
@@ -41,14 +40,13 @@ public class UpdatePasswordController {
     private void checkPasswordsMatchAndIsSecure(UpdatePasswordForm updatePasswordForm, BindingResult bindingResult, String token) {
 
         user = userService.findByToken(currentToken);
-        currentUser = user.get();
 
         String password = updatePasswordForm.getPassword();
         String confirmPassword = updatePasswordForm.getConfirmPassword();
         // Check #1: Passwords match
         if (password.equals(confirmPassword)) {
             // Check #2: Password doesn't "contain any other field"
-            String[] otherFields = new String[]{currentUser.getFirstName(), currentUser.getLastName(), currentUser.getEmail()};
+            String[] otherFields = new String[]{user.get().getFirstName(), user.get().getLastName(), user.get().getEmail()};
             if(password.length() > 0) {
                 for (String field : otherFields) {
                     if (field != "") {
@@ -82,7 +80,6 @@ public class UpdatePasswordController {
             return "redirect:/login";
         }
 
-        currentUser = user.get();
         currentToken = token;
         return "updatePassword";
     }
@@ -111,8 +108,9 @@ public class UpdatePasswordController {
 
 
 
+        Optional<User> user1 = userService.findByToken(currentToken);
+
         user = userService.findByToken(currentToken);
-        currentUser = user.get();
 
 
         checkPasswordsMatchAndIsSecure(updatePasswordForm, bindingResult, token);
@@ -128,11 +126,11 @@ public class UpdatePasswordController {
 
         redirectAttributes.addFlashAttribute("passwordUpdatedMessage", "Password updated successfully.");
 
-        currentUser.setPassword(password);
-        userService.updateOrAddUser(currentUser);
+        user.get().setPassword(password);
+        userService.updateOrAddUser(user.get());
 
 
-        userService.updatePassword(currentUser);
+        userService.updatePassword(user.get());
         return "redirect:/login";
     }
 

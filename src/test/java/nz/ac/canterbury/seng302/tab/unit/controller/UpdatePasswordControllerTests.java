@@ -72,11 +72,7 @@ public class UpdatePasswordControllerTests {
 
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
         when(mockUserService.emailIsInUse(anyString())).thenReturn(false);
-
-
         when(mockUserService.findByToken(token)).thenReturn(Optional.of(testUser));
-
-      // doReturn(Optional.of(Optional.of(testUser).get())).when(mockUserService).findByToken(token);
 
     }
 
@@ -103,16 +99,9 @@ public class UpdatePasswordControllerTests {
     void whenPasswordIsInvalid_return302() throws
             Exception {
         String URL = "/update-password/" + token;
-
-
         mockMvc.perform(post(URL)
                         .param("password", "a"))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("updatePassword"));
     }
-
-
-
-
-
 }
