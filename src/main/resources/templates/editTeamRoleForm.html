@@ -21,15 +21,19 @@
                   <div class="card-body">
                     <h5 class="card-title">[[|${teamRole.getUser().getFirstName()} ${teamRole.getUser().getLastName()} |]]</h5>
                     <p> Team Member Role: </p>
-                    <select name="teamRole" id="teamRole">
-                      <option th:each="role : ${possibleRoles}" th:value="${role}" th:text="${role}" th:selected="${role.toString() == teamRole.role.toString()}"></option>
+                    <select name="teamRole" id="teamRole" class="teamRole">
+                      <option th:each="role : ${possibleRoles}" th:value="${role}" th:text="${role.toString()}" th:selected="${role.toString() == teamRole.role.toString()}"></option>
                       
                     </select>
                   </div>
               </div>
           </div>
       </div>
-      <!-- <div th:insert="~{fragments/pagination.html :: pagination(pageName='editTeamRole')}"></div> -->
+    <div class="submit-footer">
+        <div class="submit-button">
+            <button type="submit" class="registerLoginButton">Submit Changes</button>
+        </div>
+    </div>
         <footer>
             <p>
                 Image by <a

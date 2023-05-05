@@ -242,3 +242,7 @@ table {
     cursor: pointer;
 }
 
+
+.teamRole {
+    border-radius: 10px;
+}
