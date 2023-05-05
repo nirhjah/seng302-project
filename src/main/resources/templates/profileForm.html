@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
     <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
@@ -17,7 +17,7 @@
         <div class="profile-pic">
             <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
                 <div class="image-styling">
-                    <img th:src="'data:image/png;base64,' + ${displayPicture}" width="200" height="200"/>
+                    <img th:src="'data:image/png;base64,' + ${displayTeamPicture}" width="200" height="200"/>
                     </br>
                 </div>
                 </br>
@@ -67,6 +67,9 @@
             <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
             <a class="edit-button" th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
                 <button type="button">Edit Profile</button>
+            </a>
+            <a class="edit-button" th:href="@{editTeamRole(edit=${teamID})}" th:if="${isUserManager}">
+                <button type="button">Edit Team Roles</button>
             </a>
         </form>
     </div>
