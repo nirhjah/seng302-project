@@ -129,21 +129,15 @@
 }
 
 .copy-token img {
-    height: 30px;
-    margin: 5px 5px 5px 5px;
-    cursor: pointer;
-    transition: 0.1s;
-}
-
-.copy-token img:hover {
     height: 32px;
     margin: 4px 2px 2px 2px;
+    cursor: pointer;
+    /*transition: 0.1s ease-in;*/
 }
 
 .copy-token img:active {
     height: 30px;
     margin: 5px 5px 5px 5px;
-    transition: 0s;
 }
 
 .join-token-box-outer {
