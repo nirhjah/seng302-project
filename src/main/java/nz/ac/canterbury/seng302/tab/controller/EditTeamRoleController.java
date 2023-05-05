@@ -19,7 +19,7 @@ import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 
 /**
- * Spring Boot Controller class for the Home Form class.
+ * Spring Boot Controller class for the edit team role class
  */
 @Controller
 public class EditTeamRoleController {
@@ -29,15 +29,18 @@ public class EditTeamRoleController {
   private TeamService teamService;
 
   /**
-   * Redirects GET default url '/' to '/home'
-   *
-   * @return redirect to /home
+   * Takes the user to the edit ream roles page
+   * @return the edit team role page
    */
   @GetMapping("/editTeamRole")
   public String home(@RequestParam(name = "edit", required = true) Long teamID, Model model, HttpServletRequest request)
       throws Exception {
     logger.info("GET /EditTeamRole");
 
+    /**
+     * This is dummy data for the front end for testing
+     * TODO remove when the backend is implemented
+     */
     User user1 = new User("john", "doe", "1test@test.com", "Password1",
         new Location(null, null, null, "chch", null, "nz"));
     User user2 = new User("dave", "doe", "2test@test.com", "Password1",
