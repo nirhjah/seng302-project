@@ -34,8 +34,8 @@ public class User {
     @Column(nullable = false)
     private Date dateOfBirth;
 
-    @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name="favSports")
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "favSports")
     private List<Sport> favoriteSports;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -45,8 +45,7 @@ public class User {
     @Column(columnDefinition = "MEDIUMBLOB")
     private String pictureString;
 
-    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
-            flags = Pattern.Flag.CASE_INSENSITIVE)
+    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags = Pattern.Flag.CASE_INSENSITIVE)
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -82,7 +81,9 @@ public class User {
     }
 
     /**
-     * TODO: Implement password hashing, probably via Bcrypt
+     * <strong>WARNING:</strong> Passwords are NOT hashed here. You have to provide
+     * a hashed password
+     * (By Autowiring a <code>PasswordEncoder</code>)
      */
     public User(String firstName, String lastName, Date dateOfBirth, String email, String password,
             List<Sport> favoriteSports, Location location) throws IOException {
@@ -98,6 +99,11 @@ public class User {
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
 
+    /**
+     * <strong>WARNING:</strong> Passwords are NOT hashed here. You have to provide
+     * a hashed password
+     * (By Autowiring a <code>PasswordEncoder</code>)
+     */
     public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location)
             throws IOException {
         this.firstName = firstName;
@@ -112,13 +118,21 @@ public class User {
         this.location = location;
     }
 
-    public User(String firstName, String lastName, String email, String password, Location location) {
+    /**
+     * <strong>WARNING:</strong> Passwords are NOT hashed here. You have to provide
+     * a hashed password
+     * (By Autowiring a <code>PasswordEncoder</code>)
+     */
+    public User(String firstName, String lastName, String email, String password, Location location) throws Exception {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.dateOfBirth = new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime();
         this.hashedPassword = password;
         this.location = location;
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        InputStream is = resource.getInputStream();
+        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
 
     @ManyToMany(mappedBy = "teamMembers")
@@ -240,17 +254,6 @@ public class User {
         this.favoriteSports = favoriteSports;
     }
 
-    /**
-     * TODO: IMPLEMENT. There shouldn't be a way to see the password, only to check
-     * if it's right.
-     *
-     * @param password The password provided by the user that we're checking
-     * @return true/false if the provided password is the same one we've stored
-     */
-    public boolean checkPassword(String password) {
-        throw new RuntimeException("NOT IMPLEMENTED!!!");
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -336,9 +339,9 @@ public class User {
         calculateExpiryDate(expiryHour);
     }
 
-
     /**
      * Adds user to given team and sets their role as a Member.
+     *
      * @param team team to add user to
      */
     public void joinTeam(Team team) {
@@ -360,9 +363,4 @@ public class User {
         this.joinedTeams = teams;
     }
 
-
 }
-
-
-
-

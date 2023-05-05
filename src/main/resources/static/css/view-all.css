@@ -202,6 +202,7 @@ table {
 .card-image{
     border-radius: 10px;
     background:whitesmoke;
+    height:200px;
 }
 .card:hover{
     transform:scale(1.10);
@@ -242,3 +243,23 @@ table {
     cursor: pointer;
 }
 
+.noTeamsBox {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 2px solid rgba(255, 255, 255, .5);
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+    border-radius: 20px;
+    background-color: white;
+    margin: auto;
+    padding: 20px;
+    width: 318px;
+}
+
+.reset-password-info {
+    font-family: "Noto Sans", sans-serif;
+
+}
+.teamRole {
+    border-radius: 10px;
+}

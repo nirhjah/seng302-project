@@ -219,16 +219,14 @@ public class UserService {
     }
 
     /**
-     * Finds a user by their email and password
+     * Checks who the logged in user of this session is.
+     * <p>
+     * Note: If the current user is authenticated, but their username isn't in the
+     * database (e.g. it got deleted), it'll also return empty
+     * </p>
      * 
-     * @param email    the users email
-     * @param password the users password
-     * @return the user matching the parameters
+     * @return The currently logged in user, otherwise empty.
      */
-    public User getUserByEmailAndPassword(String email, String password) {
-        return userRepository.getUserByEmailAndPassword(email, password);
-    }
-
     public Optional<User> getCurrentUser() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
