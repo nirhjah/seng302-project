@@ -99,7 +99,7 @@ public class RegisterFeature {
 
     @Then("I see an error message on the register page telling me the email is already in use")
     public void iSeeAnErrorMessageOnTheRegisterPageTellingMeTheEmailIsAlreadyInUse() {
-
+        PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         Assertions.assertEquals(PlaywrightBrowser.page.locator(".error-message").count() > 0, true);
 
     }
@@ -113,6 +113,7 @@ public class RegisterFeature {
 
     @Then("I get an error message on the register page telling me the passwords do not match")
     public void iGetAnErrorMessageOnTheRegisterPageTellingMeThePasswordsDoNotMatch() {
+        PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         Assertions.assertEquals(PlaywrightBrowser.page.locator(".error-message").count() > 0, true);
     }
 }
