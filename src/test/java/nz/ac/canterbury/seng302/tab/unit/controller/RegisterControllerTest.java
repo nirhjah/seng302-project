@@ -11,20 +11,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -93,14 +93,15 @@ class RegisterControllerTest {
             .param("addressLine2", form.getAddressLine2())
             .param("postcode", form.getPostcode())
             .param("suburb", form.getSuburb())
-
         );
     }
 
     @Test
     public void whenRegister_expectUnconfirmedUserInDb() throws Exception {
         var form = getDummyRegisterForm();
-        postRegisterForm(form).andExpect(status().isOk());
+        postRegisterForm(form).andExpect(
+                MockMvcResultMatchers.redirectedUrl("/login")
+        );
 
         optionalUser = userRepository.findByEmail(EMAIL);
         ensureUserConfirmed(false);
@@ -111,25 +112,34 @@ class RegisterControllerTest {
     @Test
     public void whenRegisterAndConfirmToken_expectConfirmedUserInDb() throws Exception {
         var form = getDummyRegisterForm();
-        postRegisterForm(form).andExpect(status().isOk());
+        postRegisterForm(form).andExpect(
+                MockMvcResultMatchers.redirectedUrl("/login")
+        );
 
         optionalUser = userRepository.findByEmail(EMAIL);
         ensureUserConfirmed(false);
 
         mockMvc.perform(get(CONFIRM_URL)
-                .requestAttr("token", optionalUser.get().getToken()));
+                .param("token", optionalUser.get().getToken()))
+                .andExpect(
+                        MockMvcResultMatchers.redirectedUrl("/login")
+                );
 
+        optionalUser = userRepository.findByEmail(EMAIL);
         ensureUserConfirmed(true);
     }
 
     @Test
     public void whenConfirmUnknownURL_expect404() throws Exception {
         var form = getDummyRegisterForm();
-        postRegisterForm(form).andExpect(status().isOk());
+        postRegisterForm(form).andExpect(
+                MockMvcResultMatchers.redirectedUrl("/login")
+        );
 
+        var BAD_TOKEN = "abcdefg12345";
         optionalUser = userRepository.findByEmail(EMAIL);
         mockMvc.perform(get(CONFIRM_URL)
-                .param("token", optionalUser.get().getToken()))
+                .param("token", BAD_TOKEN))
                 .andExpect(status().isNotFound());
     }
 }

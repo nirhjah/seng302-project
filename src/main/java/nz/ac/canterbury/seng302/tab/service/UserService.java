@@ -204,7 +204,7 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    private static final Duration TOKEN_EXPIRY_TIME = Duration.ofSeconds(2);
+    private static final Duration TOKEN_EXPIRY_TIME = Duration.ofHours(2);
 
     public static Duration getEmailTokenExpiry() {
         return TOKEN_EXPIRY_TIME;

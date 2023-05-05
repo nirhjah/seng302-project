@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,13 +20,15 @@ public class CustomErrorController extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({ ResponseStatusException.class })
-    public String handleAccessDeniedException(Model model, Exception ex) {
+    public String handleAccessDeniedException(Model model, Exception ex, HttpServletResponse response) {
+        response.setStatus(404);
         populateModel(model, "404 Page not found", "Sorry, the page you requested could not be found.");
         return "error";
     }
 
     @ExceptionHandler({Exception.class})
-    public String handleGenericException(Model model, Exception ex) {
+    public String handleGenericException(Model model, Exception ex, HttpServletResponse response) {
+        response.setStatus(500);
         populateModel(model, "Error", "Uh oh, an unknown error has occured!");
         return "error";
     }
