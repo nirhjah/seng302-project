@@ -75,61 +75,26 @@ class RegisterControllerTest {
         assertEquals(isConfirmed, optionalUser.get().getEmailConfirmed());
     }
 
-    /*
-      Taken from:
-      https://stackoverflow.com/questions/36568518/testing-form-posts-through-mockmvc
-     */
-    private String buildUrlEncodedFormEntity(String[] params) {
-        if( (params.length % 2) > 0 ) {
-            throw new IllegalArgumentException("Need to give an even number of parameters");
-        }
-        StringBuilder result = new StringBuilder();
-        for (int i=0; i<params.length; i+=2) {
-            if( i > 0 ) {
-                result.append('&');
-            }
-            result.append(URLEncoder.encode(params[i], StandardCharsets.UTF_8))
-                    .append('=')
-                    .append(URLEncoder.encode(params[i+1], StandardCharsets.UTF_8));
-        }
-        return result.toString();
-    }
-
-    private static final String REGISTER_URL = "/register";
-
     private ResultActions postRegisterForm(RegisterForm form) throws Exception {
         var dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         var dateString = dateFormat.format(form.getDateOfBirth());
+        
+        return mockMvc.perform(post("/register")
+            .param("firstName", form.getFirstName())
+            .param("lastName", form.getLastName())
+            .param("email", form.getEmail())
+            .param("country", form.getCountry())
+            .param("city", form.getCity())
+            .param("password", form.getPassword())
+            .param("confirmPassword", form.getConfirmPassword())
+            .param("dateOfBirth", dateString)
 
-        List<String> params = new ArrayList<>(List.of(
-            "firstName", form.getFirstName(),
-            "lastName", form.getLastName(),
-            "email", form.getEmail(),
-            "country", form.getCountry(),
-            "city", form.getCity(),
-            "password", form.getPassword(),
-            "confirmPassword", form.getConfirmPassword(),
-            "dateOfBirth", dateString
-        ));
+            .param("addressLine1", form.getAddressLine1())
+            .param("addressLine2", form.getAddressLine2())
+            .param("postcode", form.getPostcode())
+            .param("suburb", form.getSuburb())
 
-        if (form.getAddressLine1() != null) {
-            params.addAll(List.of("addressLine1", form.getAddressLine1()));
-        }
-        if (form.getAddressLine2() != null) {
-            params.addAll(List.of("addressLine2", form.getAddressLine2()));
-        }
-        if (form.getPostcode() != null) {
-            params.addAll(List.of("postcode", form.getPostcode()));
-        }
-        if (form.getSuburb() != null) {
-            params.addAll(List.of("suburb", form.getSuburb()));
-        }
-
-        return mockMvc.perform(post(REGISTER_URL)
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .content(buildUrlEncodedFormEntity(
-                    params.toArray(String[]::new)
-            )));
+        );
     }
 
     @Test
@@ -160,11 +125,11 @@ class RegisterControllerTest {
     @Test
     public void whenConfirmUnknownURL_expect404() throws Exception {
         var form = getDummyRegisterForm();
-        postRegisterForm(form).andExpect(status().isNotFound());
+        postRegisterForm(form).andExpect(status().isOk());
 
         optionalUser = userRepository.findByEmail(EMAIL);
         mockMvc.perform(get(CONFIRM_URL)
-                .requestAttr("token", optionalUser.get().getToken()))
+                .param("token", optionalUser.get().getToken()))
                 .andExpect(status().isNotFound());
     }
 }
