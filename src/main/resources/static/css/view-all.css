@@ -260,3 +260,6 @@ table {
     font-family: "Noto Sans", sans-serif;
 
 }
+.teamRole {
+    border-radius: 10px;
+}
