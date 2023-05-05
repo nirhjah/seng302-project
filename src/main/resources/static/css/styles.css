@@ -92,6 +92,7 @@ td {
 .wrapper-profile .profile-pic,
 .file-label-border,
 .profile-form,
+.team-profile-form,
 .user-info, .team-info, .wrapper-edit-profile {
     justify-content: center;
     align-items: center;
@@ -441,7 +442,7 @@ li a {
     flex: 1;
 }
 
-.pagination-container, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form{
+.pagination-container, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form, .team-profile-form{
     display: flex;
 }
 

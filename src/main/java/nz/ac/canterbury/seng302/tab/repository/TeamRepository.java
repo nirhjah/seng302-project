@@ -25,6 +25,8 @@ import nz.ac.canterbury.seng302.tab.enums.Role;
 public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSortingRepository<Team, Long> {
     Optional<Team> findById(long id);
 
+    Optional<Team> findByToken(String token);
+
     List<Team> findAll();
 
     Page<Team> findAll(Pageable pageable);

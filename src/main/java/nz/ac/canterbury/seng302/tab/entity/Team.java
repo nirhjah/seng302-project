@@ -1,16 +1,17 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
-import nz.ac.canterbury.seng302.tab.enums.Role;
 
+import nz.ac.canterbury.seng302.tab.enums.Role;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import java.time.LocalDateTime;
-import java.util.*;
-import java.nio.file.Files;
+
 import java.util.*;
 
 /**
@@ -18,6 +19,7 @@ import java.util.*;
  */
 @Entity
 public class Team {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
@@ -33,6 +35,9 @@ public class Team {
 
     @Column(columnDefinition = "MEDIUMBLOB")
     private String pictureString;
+
+    @Column
+    private String token;
 
     @Column()
     private LocalDateTime creationDate;
@@ -58,12 +63,16 @@ public class Team {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
+        this.token = generateToken();
         this.teamRoles = new ArrayList<>();
         this.creationDate = LocalDateTime.now();
     }
 
     /**
      * constructor that sets the manager
+     *
+     * Should be used for testing ONLY!
+     * TODO: Remove this constructor, use builder pattern. same for user
      *
      * @param name
      * @param sport
@@ -101,6 +110,16 @@ public class Team {
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.creationDate = LocalDateTime.now();
         this.teamRoles = new ArrayList<>();
+    }
+
+    /**
+     * Returns true is user is a manager, false otherwise
+     * @param user The user in question
+     * @return true if user manages team, false otherwise
+     */
+    public boolean isManager(User user) {
+        // TODO: this is a facade and needs to be implemented
+        return true;
     }
 
     public Long getTeamId() {
@@ -148,9 +167,36 @@ public class Team {
         this.sport = sport;
     }
 
-    public LocalDateTime getCreationDate() {
-        return creationDate;
+    public LocalDateTime getCreationDate() {return creationDate;}
+
+    public String getToken() {
+        return this.token;
     }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    private static String generateToken(){
+        final int TEAM_TOKEN_SIZE = 12;
+        return UUID.randomUUID().toString().replaceAll("\\-*", "").substring(0, TEAM_TOKEN_SIZE);
+    }
+
+    /**
+     * U24/AC1 states that the token must consist of letters and numbers, the UUID
+     * method will generate '-'s aswell so we replace all occurances with the empty
+     * string
+     *
+     * @return new random token only containing characters and numbers
+     */
+    public void generateToken(TeamService teamService) {
+        String token = generateToken();
+        while (teamService.findByToken(token).isPresent()) {
+            token = generateToken();
+        }
+        setToken(token);
+    }
+
 
     /**
      * @param user, the
