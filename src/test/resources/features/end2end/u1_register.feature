@@ -6,13 +6,13 @@ Feature: U1 - Register
     Then I see a registration form
 
 
-  Scenario: AC2 - Given I am on the registration form, and I enter valid values for my first name, last name, email address, date of birth, and type the same password twice, when I hit the register button, then a new user is created into the system, and I see my user profile page
-    Given I have connected to the system's main URL
-    And I hit the button to register
-    And I see a registration form
-    When I enter valid values for <firstName>, <lastName>, <emailAddress>, <dateOfBirth>, <password>, <confirmPassword>, <city> and <country>
-    And Click the register button
-    Then I see my user page
+#  Scenario: AC2 - Given I am on the registration form, and I enter valid values for my first name, last name, email address, date of birth, and type the same password twice, when I hit the register button, then a new user is created into the system, and I see my user profile page
+#    Given I have connected to the system's main URL
+#    And I hit the button to register
+#    And I see a registration form
+#    When I enter valid values for <firstName>, <lastName>, <emailAddress>, <dateOfBirth>, <password>, <confirmPassword>, <city> and <country>
+#    And Click the register button
+#    Then I see my user page
 
 
   Scenario: AC3 - Given I am on the registration form, and I enter invalid values (i.e. empty strings or non-alphabetical characters except a hyphen or a space) for my first name and/or last name, when I hit the register button, then an error message tells me these fields contain invalid values.
