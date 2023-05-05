@@ -19,7 +19,7 @@
             <h4 id="reset-password-info" class="reset-password-info"
                 th:text="${noTeamsFlag}"></h4>
 
-            <div th:insert="~{fragments/joinTeamFragment.html::joinTeamByToken(${joinTeamForm}, ${token_invalid})}"></div>
+            <div th:insert="~{fragments/joinTeamFragment.html::joinTeamByToken(${joinTeamForm}, ${tokenInvalid})}"></div>
 
 
 
@@ -27,7 +27,7 @@
     </div>
 
 
-    <div style="width: 20%; float: right" th:if="${displayTeams != null}" th:insert="~{fragments/joinTeamFragment.html::joinTeamByToken(${joinTeamForm}, ${token_invalid})}"></div>
+    <div style="width: 20%; float: right" th:if="${displayTeams != null}" th:insert="~{fragments/joinTeamFragment.html::joinTeamByToken(${joinTeamForm}, ${tokenInvalid})}"></div>
 
 
     <div class="card-container">

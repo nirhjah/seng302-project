@@ -20,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
@@ -97,25 +98,25 @@ public class MyTeamsController {
             @Validated JoinTeamForm joinTeamForm,
             BindingResult bindingResult,
             Model model,
-            HttpServletResponse httpServletResponse, HttpServletRequest request) throws IOException {
+            HttpServletResponse httpServletResponse, HttpServletRequest request,
+            RedirectAttributes redirectAttributes) throws IOException {
 
         model.addAttribute("token", token);
         model.addAttribute("httpServletRequest", request);
 
+        User user = userService.getCurrentUser().get();
+        Optional<Team> team = teamService.findByToken(token);
 
-        //model.addAttribute("token_invalid", "valid");
 
-        logger.info("no errors " + bindingResult.getAllErrors());
+        if(team.isEmpty()) {
+            redirectAttributes.addFlashAttribute("tokenInvalid", "Token is null");
+        }
+
         if (bindingResult.hasErrors()) {
-            model.addAttribute("token_invalid", null);
-
-            logger.info("there are errors " + bindingResult.getAllErrors());
+            redirectAttributes.addFlashAttribute("tokenInvalid", "Token is null");
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "redirect:/my-teams?page=1";
         }
-
-        User user = userService.getCurrentUser().get();
-        Optional<Team> team = teamService.findByToken(token);
 
         if(team.isPresent()) {
             Team teamToJoin =  team.get();
@@ -124,10 +125,5 @@ public class MyTeamsController {
         }
         
         return "redirect:/my-teams?page=1";
-
     }
-
-
-
-
 }

@@ -1,4 +1,4 @@
-<div th:fragment="joinTeamByToken(joinTeamForm, token_invalid)">
+<div th:fragment="joinTeamByToken(joinTeamForm, tokenInvalid)">
 
     <form id="forgot-password-form" th:action="@{my-teams}" method="post" th:object="${joinTeamForm}">
 
@@ -8,7 +8,7 @@
     </div>
 
 
-    <div id="joinTeamModal" class="modal" th:style="${token_invalid != null ? 'display:block' : 'display:none'}">
+    <div id="joinTeamModal" class="modal" th:style="${tokenInvalid != null ? 'display:block' : 'display:none'}">
 
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -21,7 +21,6 @@
             </div>
 
             <div th:each="err : ${#fields.errors('token')}" th:text="${err}" class="error-message"></div>
-
 
 
             <div class="submit-button">

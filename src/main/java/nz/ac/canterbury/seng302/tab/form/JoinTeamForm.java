@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 public class JoinTeamForm {
 
-    @NotBlank(message = "BLANK")
+    @NotBlank(message = "Field cannot be blank")
     private String token;
 
     public String getToken() {
