@@ -69,6 +69,7 @@ public class ProfileFormController {
             model.addAttribute("displaySport", selectedTeam.getSport());
             model.addAttribute("displayLocation", selectedTeam.getLocation());
             model.addAttribute("displayTeamPicture", selectedTeam.getPictureString());
+            model.addAttribute("displayToken", selectedTeam.getToken());
         } else {
             return "redirect:./home";
         }
