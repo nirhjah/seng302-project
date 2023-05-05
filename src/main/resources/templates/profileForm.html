@@ -30,19 +30,21 @@
                 </div>
             </form>
         </div>
-
             <div class="join-token">
                 <label> Join Token</label>
-                <div class="join-token-box">
-                    <span class="token-value" th:text="${displayToken}"></span>
-                    <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}" th:method="post">
-                        <button type="submit">
-                            <img th:src="@{image/icons/reload.svg}">
-                        </button>
-                    </form>
-
+                <div class="join-token-box-outer">
+                    <a href="#" class="copy-token">
+                        <img th:src="@{image/icons/copy.svg}">
+                    </a>
+                    <div class="join-token-box">
+                        <span class="token-value" th:text="${displayToken}"></span>
+                        <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}" th:method="post">
+                            <button type="submit">
+                                <img th:src="@{image/icons/reload.svg}">
+                            </button>
+                        </form>
+                    </div>
                 </div>
-                    <a href="#" class="copy-token">Copy</a>
             </div>
 
         <div class="team-info">
@@ -92,6 +94,7 @@
         });
         const copyButton = document.querySelector('.copy-token');
         const tokenValue = document.querySelector('.token-value');
+        const token = tokenValue.innerHTML;
 
         copyButton.addEventListener('click', () => {
             const selection = window.getSelection();
@@ -101,10 +104,10 @@
             selection.addRange(range);
             document.execCommand('copy');
             selection.removeAllRanges();
-            copyButton.textContent = 'Copied';
+            tokenValue.innerHTML = 'Copied...';
             setTimeout(() => {
-                copyButton.textContent = 'Copy';
-            }, 3000);
+                tokenValue.innerHTML = token;
+            }, 1000);
         });
     </script>
     <footer>
