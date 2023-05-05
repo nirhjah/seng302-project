@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class EmailService {
-    Logger logger = LoggerFactory.getLogger(EmailService.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private JavaMailSender javaMailSender;

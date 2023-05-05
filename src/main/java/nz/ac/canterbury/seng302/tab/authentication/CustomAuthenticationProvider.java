@@ -45,15 +45,17 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         Optional<User> matchingUser = userService.findUserByEmail(email);
         // This filter sweeps both "Username not in database" and "Passwords don't
         // match" into the same error message.
-        if (matchingUser.isPresent() && passwordEncoder.matches(password, matchingUser.get().getPassword())) {
-            User user = matchingUser.get();
-            if (!user.getConfirmEmail()) {
-                throw new DisabledException("User need to confirm registration");
-            }
-            return new UsernamePasswordAuthenticationToken(
-                    user.getEmail(), null, user.getAuthorities());
+        if (matchingUser.isEmpty() || passwordEncoder.matches(password, matchingUser.get().getPassword())) {
+            throw new BadCredentialsException("Invalid username or password");
         }
-        throw new BadCredentialsException("Invalid username or password");
+        // You haven't confirmed your registration via email
+        User user = matchingUser.get();
+        if (!user.getConfirmEmail()) {
+            throw new DisabledException("User need to confirm registration");
+        }
+        return new UsernamePasswordAuthenticationToken(
+                user.getEmail(), null, user.getAuthorities());
+
     }
 
     @Override

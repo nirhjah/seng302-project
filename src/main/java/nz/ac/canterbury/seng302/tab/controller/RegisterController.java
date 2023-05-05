@@ -175,8 +175,14 @@ public class RegisterController {
         return "redirect:/login";
     }
 
+    /**
+     * This is the URL you'll click on after getting your confirmation email
+     * @param token Your unique token
+     * @param redirectAttributes
+     * @return
+     */
     @GetMapping("/confirm")
-    public String confirmEmail(@RequestParam("token") String token, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    public String confirmEmail(@RequestParam("token") String token, RedirectAttributes redirectAttributes) {
         var opt = userService.findByToken(token);
 
         if (opt.isEmpty()) {
