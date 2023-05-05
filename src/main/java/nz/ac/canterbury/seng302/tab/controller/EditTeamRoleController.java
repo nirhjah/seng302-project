@@ -21,6 +21,7 @@ import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Spring Boot Controller class for the Home Form class.
@@ -42,17 +43,12 @@ public class EditTeamRoleController {
       throws Exception {
     logger.info("GET /EditTeamRole");
 
-    User user1 = new User("john", "doe", "1test@test.com", "Password1",
-        new Location(null, null, null, "chch", null, "nz"));
-    User user2 = new User("dave", "doe", "2test@test.com", "Password1",
-        new Location(null, null, null, "chch", null, "nz"));
-    User user3 = new User("seve", "doe", "3test@test.com", "Password1",
-        new Location(null, null, null, "chch", null, "nz"));
+    Team team = teamService.getTeam(teamID);
 
-    Team team = new Team("test team", "football", new Location(null, null, null, "chch", null, "nz"), user1);
-
-    team.setMember(user2);
-    team.setCoach(user3);
+    if (team == null) {
+      logger.error("Team ID does not exist!");
+      return "redirect:/home";
+    }
 
     List<TeamRole> teamRoles = team.getTeamRoleList();
 
@@ -63,5 +59,4 @@ public class EditTeamRoleController {
     model.addAttribute("httpServletRequest", request);
     return "editTeamRoleForm";
   }
-
 }
