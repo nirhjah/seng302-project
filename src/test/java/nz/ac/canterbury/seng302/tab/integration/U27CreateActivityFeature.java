@@ -47,6 +47,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class U27CreateActivityFeature {
 
@@ -89,13 +90,14 @@ public class U27CreateActivityFeature {
         return result.toString();
     }
 
-    @BeforeAll
+    @BeforeEach
     public void beforeAll() throws IOException {
         Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
         userRepository.save(user);
 
         Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
+
     }
 
     @Given("I'm on the home page")
@@ -134,9 +136,9 @@ public class U27CreateActivityFeature {
         mockMvc.perform(get("/createActivity")).andExpect(status().isFound());
     }
 
-    @When("I select {string} and {int}, and enter a valid description {string} and I select a valid {string} and {string} date time and press submit")
     @WithMockUser
-    public void i_select_game_and_and_enter_a_valid_description_game_with_team_and_i_select_a_valid_and_end_date_time_and_press_submit(String activityType, Integer teamId, String desc, String start, String end) throws Exception {
+    @When("I select {string} and {int}, and enter a valid description {string} and I select a valid {string} and {string} date time and press submit")
+    public void i_select_game_and_and_enter_a_valid_description_game_with_team_and_i_select_a_valid_and_end_date_time_and_press_submit(String activityType, long teamId, String desc, String start, String end) throws Exception {
         CreateActivityForm createActivityForm = new CreateActivityForm();
         createActivityForm.setActivityType(Activity.ActivityType.valueOf(activityType));
         createActivityForm.setTeam(teamId);
@@ -144,11 +146,22 @@ public class U27CreateActivityFeature {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         createActivityForm.setStartDateTime(LocalDateTime.parse(start, formatter));
         createActivityForm.setEndDateTime(LocalDateTime.parse(end, formatter));
-        Assertions.assertNotNull(teamService.getTeam(teamId));
+
+        Team team = null;
+        if (teamId != -1){
+            team = new Team("TestName", "Sport");
+            team = teamService.addTeam(team);
+            teamId = team.getTeamId();
+        }
 
         mockMvc.perform(post("/createActivity").contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(buildUrlEncodedFormEntity("activityType", activityType, "team",
-                        String.valueOf(teamId), "description", desc, "startDateTime", start, "endDateTime", end))).andExpect(status().isOk());
+                .content(buildUrlEncodedFormEntity(
+                        "activityType", activityType,
+                        "team", String.valueOf(teamId),
+                        "description", desc,
+                        "startDateTime", start,
+                        "endDateTime", end
+                ))).andExpect(status().isOk());
     }
 
     @Then("An activity is created")
