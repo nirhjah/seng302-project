@@ -166,13 +166,9 @@ public class RegisterController {
         user.generateToken(userService,2);
         user = userService.updateOrAddUser(user);
 
-        // Auto-login when registering
-        request.login(user.getEmail(), registerForm.getPassword());
-
         // This url will be added to the email
         String confirmationUrl = request.getRequestURL().toString().replace(request.getServletPath(), "")
                 + "/confirm?token=" + user.getToken();
-
         emailService.confirmationEmail(user, confirmationUrl);
 
         redirectAttributes.addFlashAttribute("emailSentMessage", "Your email has been confirmed successfully!");
