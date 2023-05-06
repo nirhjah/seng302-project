@@ -1,9 +1,11 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.UpdatePasswordForm;
 
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +22,10 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -53,8 +58,15 @@ public class UpdatePasswordControllerTests {
 
     private String token;
 
+    @MockBean
+    private TeamService teamService;
+
     @BeforeEach
     void beforeEach() throws IOException {
+
+        List<Team> teamList = teamService.getTeamList();
+        assertTrue(teamList.isEmpty());
+
         Date userDOB;
         try {
             // Have to catch a constant parse exception annoyingly
