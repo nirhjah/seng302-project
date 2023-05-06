@@ -8,18 +8,19 @@ import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.form.CreateActivityForm;
+import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
-import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,6 +30,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -41,21 +44,25 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class U27CreateActivityFeature {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
+    @MockBean
     private ActivityService activityService;
+
+    @MockBean
+    private ActivityRepository activityRepository;
 
     @Autowired
     private UserService mockUserService;
@@ -107,7 +114,7 @@ public class U27CreateActivityFeature {
     }
 
     @And("There is a user called {string} {string}")
-    @WithMockUser
+    @WithMockUser()
     public void thereIsAUserCalled(String firstName, String lastName) {
         if (user == null) {
             user = new User(firstName, lastName, "test@test.com", "password1",
@@ -119,33 +126,33 @@ public class U27CreateActivityFeature {
     }
 
     @When("I click on create activity in the nav bar")
-    @WithMockUser
+    @WithMockUser()
     public void i_click_on_create_activity_in_the_nav_bar() throws Exception {
         mockMvc.perform(get("/createActivity"));
     }
 
     @Then("I'm taken to the create activity page")
-    @WithMockUser
+    @WithMockUser()
     public void i_m_taken_to_the_create_activity_page() throws Exception {
         mockMvc.perform(get("/createActivity")).andExpect(status().isFound());
     }
 
     @Given("I'm on the create activity page")
-    @WithMockUser
+    @WithMockUser()
     public void i_m_on_the_create_activity_page() throws Exception {
         mockMvc.perform(get("/createActivity")).andExpect(status().isFound());
     }
 
-    @WithMockUser
+    @WithMockUser()
     @When("I select {string} and {int}, and enter a valid description {string} and I select a valid {string} and {string} date time and press submit")
     public void i_select_game_and_and_enter_a_valid_description_game_with_team_and_i_select_a_valid_and_end_date_time_and_press_submit(String activityType, long teamId, String desc, String start, String end) throws Exception {
-        CreateActivityForm createActivityForm = new CreateActivityForm();
-        createActivityForm.setActivityType(Activity.ActivityType.valueOf(activityType));
-        createActivityForm.setTeam(teamId);
-        createActivityForm.setDescription(desc);
+//        CreateActivityForm createActivityForm = new CreateActivityForm();
+//        createActivityForm.setActivityType(Activity.ActivityType.valueOf(activityType));
+//        createActivityForm.setTeam(teamId);
+//        createActivityForm.setDescription(desc);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        createActivityForm.setStartDateTime(LocalDateTime.parse(start, formatter));
-        createActivityForm.setEndDateTime(LocalDateTime.parse(end, formatter));
+//        createActivityForm.setStartDateTime(LocalDateTime.parse(start, formatter));
+//        createActivityForm.setEndDateTime(LocalDateTime.parse(end, formatter));
 
         Team team = null;
         if (teamId != -1){
@@ -154,21 +161,28 @@ public class U27CreateActivityFeature {
             teamId = team.getTeamId();
         }
 
-        mockMvc.perform(post("/createActivity").contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(buildUrlEncodedFormEntity(
-                        "activityType", activityType,
-                        "team", String.valueOf(teamId),
-                        "description", desc,
-                        "startDateTime", start,
-                        "endDateTime", end
-                ))).andExpect(status().isOk());
+        mockMvc.perform(post("/createActivity", 42L)
+                .with(csrf())
+                .requestAttr("activityType", Activity.ActivityType.valueOf(activityType))
+                .requestAttr("teamId", teamId)
+                .requestAttr("description", desc)
+                .requestAttr("startDateTime", LocalDateTime.parse(start, formatter))
+                .requestAttr("endDateTime", LocalDateTime.parse(end, formatter))).andExpect(status().isFound());
+
+//        mockMvc.perform(post("/createActivity").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+//                .content(buildUrlEncodedFormEntity(
+//                        "activityType", activityType,
+//                        "team", String.valueOf(teamId),
+//                        "description", desc,
+//                        "startDateTime", start,
+//                        "endDateTime", end
+//                ))).andExpect(status().isOk());
     }
 
     @Then("An activity is created")
-    @WithMockUser
+    @WithMockUser()
     public void an_activity_is_created() {
-        List<Activity> acts = activityService.findAll();
-        Assertions.assertTrue(acts.size() > 0);
+        verify(activityService, times(1)).updateOrAddActivity(any());
     }
 
     @When("I select Other and {int}, and enter a valid description Meeting with team and I select a valid {int}-{int}-{int} {int}:{int} and <end> date time and press submit")

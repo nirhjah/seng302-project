@@ -20,7 +20,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -49,7 +51,8 @@ public class CreateActivityController {
     }
 
     @GetMapping("/createActivity")
-    public String activityForm(CreateActivityForm createActivityForm,
+    public String activityForm(
+            CreateActivityForm createActivityForm,
                                         Model model,
                                         HttpServletRequest httpServletRequest) {
         model.addAttribute("httpServletRequest", httpServletRequest);
@@ -59,25 +62,30 @@ public class CreateActivityController {
     }
 
     @PostMapping("/createActivity")
-    public String createActivity(@Validated CreateActivityForm createActivityForm,
-                                 BindingResult bindingResult,
-                                 HttpServletResponse httpServletResponse,
-                                 Model model,
-                                 HttpServletRequest httpServletRequest) {
+    public String createActivity(
+            @RequestParam(name = "activityType") Activity.ActivityType activityType,
+            @RequestParam(name = "teamId") long teamId,
+            @RequestParam(name="description") String description,
+            @RequestParam(name="startDateTime") LocalDateTime startDateTime,
+            @RequestParam(name="endDateTime") LocalDateTime endDateTime,
+            @Validated CreateActivityForm createActivityForm,
+            BindingResult bindingResult,
+            HttpServletResponse httpServletResponse,
+            Model model,
+            HttpServletRequest httpServletRequest) {
         model.addAttribute("httpServletRequest", httpServletRequest);
         prefillModel(model);
 
-        if (!activityService.validateStartAndEnd(createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
+        if (!activityService.validateStartAndEnd(startDateTime, endDateTime)) {
             if (!bindingResult.hasFieldErrors("startDateTime")) {
                 bindingResult.addError(new FieldError("CreateActivityForm", "startDateTime",
                         ActivityFormValidators.END_BEFORE_START_MSG));
             }
         }
 
-        Team team = teamService.getTeam(createActivityForm.getTeam());
+        Team team = teamService.getTeam(teamId);
         if (team != null) {
-            if (!activityService.validateActivityDateTime(team.getCreationDate(),
-                    createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
+            if (!activityService.validateActivityDateTime(team.getCreationDate(), startDateTime, endDateTime)) {
                 if (!bindingResult.hasFieldErrors("endDateTime")) {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
                     bindingResult.addError(new FieldError("CreateActivityForm", "endDateTime",
@@ -85,7 +93,7 @@ public class CreateActivityController {
                 }
 
             }
-        } else if (!activityService.validateTeamSelection(createActivityForm.getActivityType(), team)) {
+        } else if (!activityService.validateTeamSelection(activityType, team)) {
             bindingResult.addError(new FieldError("CreateActivityForm", "team",
                     ActivityFormValidators.TEAM_REQUIRED_MSG));
         }
@@ -95,9 +103,8 @@ public class CreateActivityController {
             return "createActivity";
         }
 
-        Activity activity = new Activity(createActivityForm.getActivityType(), team,
-                createActivityForm.getDescription(), createActivityForm.getStartDateTime(),
-                createActivityForm.getEndDateTime(), userService.getCurrentUser().get());
+        Activity activity = new Activity(activityType, team,
+                description, startDateTime, endDateTime, userService.getCurrentUser().get());
         activity = activityService.updateOrAddActivity(activity);
         return String.format("redirect:./activity?actId=%s", activity.getId());
     }
