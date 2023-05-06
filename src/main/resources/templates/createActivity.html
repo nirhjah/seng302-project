@@ -26,7 +26,6 @@
                 <div class="input-box">
                     <div class="select-box">
                         <select name="team" id="team">
-                            <option value="-1">      </option>
                             <option th:each="team : ${teamList}" th:value="${team.getTeamId()}" th:text="${team.getName()}">
                         </select>
                     </div>
@@ -34,17 +33,17 @@
                     <div th:each="err : ${#fields.errors('team')}" th:text="${err}" class="error-message"></div>
                 </div>
                 <div class="input-box">
-                    <input type="text" class="form-control" id="description" th:name="description" autofocus placeholder="">
+                    <input type="text" class="form-control" id="description" th:name="description" autofocus placeholder="" th:value="${description}">
                     <label for="description">Description:</label>
                     <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
                 </div>
                 <div class="input-box">
-                    <input type="datetime-local" id="startDateTime" name="startDateTime">
+                    <input type="datetime-local" id="startDateTime" name="startDateTime"  th:value="${startDateTime}">
                     <label for="startDateTime">Start date and time of activity:</label>
                     <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}" class="error-message"></div>
                 </div>
                 <div class="input-box">
-                    <input type="datetime-local" id="endDateTime" name="endDateTime">
+                    <input type="datetime-local" id="endDateTime" name="endDateTime" th:value="${endDateTime}">
                     <label for="endDateTime">End date and time of activity:</label>
                     <div th:each="err : ${#fields.errors('endDateTime')}" th:text="${err}" class="error-message"></div>
                 </div>

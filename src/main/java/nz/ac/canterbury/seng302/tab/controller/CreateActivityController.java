@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -59,9 +60,19 @@ public class CreateActivityController {
         Activity activity;
         if (actId !=null){
             if ((activity = activityService.findActivityById(actId))!=null){
+
+                LocalDateTime startDateTime =  activity.getActivityStart();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+                String formattedStartDateTime = startDateTime.format(formatter);
+
+                LocalDateTime endDateTime =  activity.getActivityEnd();
+                String formattedEndDateTime = endDateTime.format(formatter);
+
+                model.addAttribute("teamName", activity.getTeam().getName());
+
                 model.addAttribute("actId", activity.getId());
-//                model.addAttribute("ActivityType", activity.getActivityTypes());
-//                model.addAttribute("ActivityTeam", activity.getTeam().getName());
+                model.addAttribute("startDateTime",formattedStartDateTime);
+                model.addAttribute("endDateTime", formattedEndDateTime);
                 model.addAttribute("description", activity.getDescription());
             }
 
