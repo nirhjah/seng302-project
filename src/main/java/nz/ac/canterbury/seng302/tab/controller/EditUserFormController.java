@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
+import nz.ac.canterbury.seng302.tab.authentication.AutoLogin;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -42,7 +43,7 @@ public class EditUserFormController {
     SportService sportService;
 
     @Autowired
-    RegisterController registerController;
+    private AutoLogin autoLogin;
 
     private void prefillModel(Model model) {
         model.addAttribute("validNameRegex", UserFormValidators.VALID_NAME_REGEX);
@@ -169,7 +170,7 @@ public class EditUserFormController {
 
         if (shouldLogout) {
             httpServletRequest.logout();
-            registerController.forceLogin(user, httpServletRequest);
+            autoLogin.forceLogin(user.getEmail(), user.getAuthorities(), httpServletRequest);
         }
 
         return "redirect:user-info/self";

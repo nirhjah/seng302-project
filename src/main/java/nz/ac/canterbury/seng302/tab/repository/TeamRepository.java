@@ -25,6 +25,8 @@ import nz.ac.canterbury.seng302.tab.enums.Role;
 public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSortingRepository<Team, Long> {
     Optional<Team> findById(long id);
 
+    Optional<Team> findByToken(String token);
+
     List<Team> findAll();
 
     Page<Team> findAll(Pageable pageable);
@@ -39,6 +41,11 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             "WHERE (:user) in (tm) " +
             "ORDER BY LOWER(t.name) ASC, (t.location) ASC")
     public Page<Team> findTeamsWithUser(@Param("user") User user, Pageable pageable);
+
+    @Query("SELECT t FROM Team t LEFT JOIN t.teamMembers tm " +
+            "WHERE (:user) in (tm) " +
+            "ORDER BY LOWER(t.name) ASC, (t.location) ASC")
+    public List<Team> findTeamsWithUser_List(@Param("user") User user);
 
 
     @Query("SELECT t FROM Team t " +
