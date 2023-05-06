@@ -20,6 +20,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -49,12 +50,22 @@ public class CreateActivityController {
     }
 
     @GetMapping("/createActivity")
-    public String activityForm(CreateActivityForm createActivityForm,
+    public String activityForm( @RequestParam(name="edit", required=false) Long actId,CreateActivityForm createActivityForm,
                                         Model model,
                                         HttpServletRequest httpServletRequest) {
         model.addAttribute("httpServletRequest", httpServletRequest);
         prefillModel(model);
         logger.info("GET /createActivity");
+        Activity activity;
+        if (actId !=null){
+            if ((activity = activityService.findActivityById(actId))!=null){
+                model.addAttribute("actId", activity.getId());
+//                model.addAttribute("ActivityType", activity.getActivityTypes());
+//                model.addAttribute("ActivityTeam", activity.getTeam().getName());
+                model.addAttribute("description", activity.getDescription());
+            }
+
+        }
         return "createActivity";
     }
 

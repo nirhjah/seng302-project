@@ -90,6 +90,8 @@ public class Activity {
         return activityEnd;
     }
 
+    public String getDescription(){ return this.description;}
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
