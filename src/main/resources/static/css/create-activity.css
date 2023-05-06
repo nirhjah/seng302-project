@@ -1,26 +1,21 @@
-.activity-form .wrapper {
-    font-size: 15px;
-}
-
-.create-activity {
-    text-align: center;
-}
-
 .activity-form {
+    margin:auto;
     display: grid;
+    grid-auto-rows: 527px;
     justify-content: center;
     align-items: center;
-    width: 65%;
-    margin: auto;
+    grid-template-rows: 237px;
+    height: 90vh;
 }
 
-.activity-form form {
+.activity-form .wrapper form {
     width: 65%;
 }
 
 .activity-form .wrapper {
-    width: 500px;
-    height: 440px;
+    width: 580px;
+    height: 520px;
+    font-size: 15px;
 }
 
 .activity-form select {
@@ -31,3 +26,15 @@
 .select-box {
     text-align: right;
 }
+
+
+
+@media (max-width: 700px) {
+    .activity-form .wrapper {
+        width: 90vw;
+    }
+    .create-activity {
+        width: 90vw;
+    }
+}
+
