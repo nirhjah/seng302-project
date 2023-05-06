@@ -2,8 +2,8 @@ package nz.ac.canterbury.seng302.tab.unit.controller;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.service.SportService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.form.UpdatePasswordForm;
+
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,23 +12,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
-
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import static org.mockito.Mockito.when;
 
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(SpringExtension.class)
@@ -73,7 +73,27 @@ public class UpdatePasswordControllerTests {
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
         when(mockUserService.emailIsInUse(anyString())).thenReturn(false);
         when(mockUserService.findByToken(token)).thenReturn(Optional.of(testUser));
+        when(mockUserService.updateOrAddUser(testUser)).thenReturn(testUser);
 
+
+    }
+
+
+    private UpdatePasswordForm updatePasswordForm() {
+        var form =  new UpdatePasswordForm();
+        form.setPassword("Password123!");
+        form.setConfirmPassword("Password123");
+        return form;
+    }
+
+
+    private ResultActions postUpdatePasswordForm(UpdatePasswordForm form) throws Exception {
+        String URL = "/update-password?token=" + token;
+
+        return mockMvc.perform(post(URL)
+                .param("password", form.getPassword())
+                .param("confirmPassword", form.getConfirmPassword())
+        );
     }
 
 
@@ -83,25 +103,37 @@ public class UpdatePasswordControllerTests {
      */
     @Test
     public void testUpdatePasswordPageWithInvalidToken_return302() throws Exception {
-        mockMvc.perform(get("/update-password/" + "x")
+        mockMvc.perform(get("/update-password?token=" + "x")
         ).andExpect(status().isFound()).andExpect(view().name("redirect:/login"));
 
     }
 
 
     /**
-     * Test when an invalid password is submitted
-     *
+     * Test getting the update password page with a valid token of the user
      * @throws Exception thrown if Mocking fails
      */
     @Test
-    @WithMockUser()
-    void whenPasswordIsInvalid_return302() throws
-            Exception {
-        String URL = "/update-password/" + token;
-        mockMvc.perform(post(URL)
-                        .param("password", "a"))
+    public void testUpdatePasswordPageWithValidToken_return200() throws Exception {
+        mockMvc.perform(get("/update-password?token=" + token)
+        ).andExpect(status().isOk()).andExpect(view().name("updatePassword"));
+
+    }
+
+
+    /**
+     * Test submitting form with password and confirm password fields that do not match
+     * @throws Exception thrown if Mocking fails
+     */
+    @Test
+    public void whenPasswordsDontMatch_return400() throws Exception {
+        var form = updatePasswordForm();
+        postUpdatePasswordForm(form)
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("updatePassword"));
     }
+
 }
+
+
+

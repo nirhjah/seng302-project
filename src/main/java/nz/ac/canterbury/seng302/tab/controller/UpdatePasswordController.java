@@ -9,6 +9,7 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,6 +30,8 @@ import java.util.Optional;
 public class UpdatePasswordController {
     Logger logger = LoggerFactory.getLogger(UpdatePasswordController.class);
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
     @Autowired
     UserService userService;
 
@@ -69,8 +72,8 @@ public class UpdatePasswordController {
      * @param model
      * @return
      */
-    @GetMapping("/update-password/{token}")
-    public String updatePasswordForm(Model model, HttpServletRequest request, @PathVariable String token, RedirectAttributes redirectAttributes) {
+    @GetMapping("/update-password")
+    public String updatePasswordForm(@RequestParam("token") String token, Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         model.addAttribute("updatePasswordForm", new UpdatePasswordForm());
         model.addAttribute("httpServletRequest",request);
 
@@ -81,6 +84,7 @@ public class UpdatePasswordController {
         }
 
         currentToken = token;
+
         return "updatePassword";
     }
 
@@ -92,18 +96,17 @@ public class UpdatePasswordController {
      * @param model                 model
      * @param httpServletResponse   httpServerletResponse
      * @param request               request
-     * @param token                 user's unique token to access their update password page
      * @param redirectAttributes    stores messages to be displayed to user on login page
      * @return
      */
-    @PostMapping("/update-password/{token}")
+    @PostMapping("/update-password")
     public String updatePassword(
             @RequestParam("password") String password,
             @Validated UpdatePasswordForm updatePasswordForm,
             BindingResult bindingResult,
             Model model,
             HttpServletResponse httpServletResponse,
-            HttpServletRequest request, @PathVariable String token,
+            HttpServletRequest request,
             RedirectAttributes redirectAttributes) {
 
 
@@ -113,7 +116,7 @@ public class UpdatePasswordController {
         user = userService.findByToken(currentToken);
 
 
-        checkPasswordsMatchAndIsSecure(updatePasswordForm, bindingResult, token);
+        checkPasswordsMatchAndIsSecure(updatePasswordForm, bindingResult, currentToken);
         model.addAttribute("httpServletRequest",request);
 
 
@@ -126,9 +129,9 @@ public class UpdatePasswordController {
 
         redirectAttributes.addFlashAttribute("passwordUpdatedMessage", "Password updated successfully.");
 
-        user.get().setPassword(password);
-        userService.updateOrAddUser(user.get());
+        user.get().setPassword(passwordEncoder.encode(password));
 
+        userService.updateOrAddUser(user.get());
 
         userService.updatePassword(user.get());
         return "redirect:/login";

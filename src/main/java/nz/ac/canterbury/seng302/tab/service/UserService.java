@@ -286,7 +286,12 @@ public class UserService {
 
         user.generateToken(this, 1);
         updateOrAddUser(user);
-        String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "") + "/update-password/" + user.getToken();
+        //String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "") + "/update-password/" + user.getToken();
+
+        String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "")
+                + "/update-password?token=" + user.getToken();
+
+
         EmailDetails details = new EmailDetails(user.getEmail(), tokenVerificationLink, EmailDetails.RESET_PASSWORD_HEADER);
         String outcome = emailService.sendSimpleMail(details);
         logger.info(outcome);
