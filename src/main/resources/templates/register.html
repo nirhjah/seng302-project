@@ -139,10 +139,10 @@
                  ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
                  * @type {string}
                  */
-                const PROTOCOL_AND_AUTH = /*[[${protocolAndAuthority}]]*/ "";
-                const ENDPOINT = PROTOCOL_AND_AUTH + "/geocode/autocomplete";
+                const path = /*[[${path}]]*/ "";
+                const ENDPOINT = path + "/geocode/autocomplete";
             </script>
-            <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"></script>
+            <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>
             <div class="submit-button">
                 <button class="previous-button" type="button">Previous</button>
                 <button class="next-button" type="button">Next</button>
