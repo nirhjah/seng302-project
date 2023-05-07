@@ -1,59 +1,93 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org" lang="en">
 <head>
-    <link th:href="@{/css/styles.css}" rel="stylesheet" />
-    <link th:href="@{/css/create-activity.css}" rel="stylesheet" />
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+    <link th:href="@{/css/create-activity.css}" rel="stylesheet"/>
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <title>[[${actId != null ? 'Edit' : 'Create'}]] Activity</title>
 </head>
 <body class="create-activity-background">
-    <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
-    <div class="activity-form">
-        <div class="create-activity">
-            <h1>[[${actId != null ? 'Edit' : 'Create'}]] Activity</h1>
-        </div>
-        <div class="wrapper">
-            <form th:action="@{createActivity}" th:object="${createActivityForm}" id="createActivityForm" method="post">
-                <div class="select-box">
-                    <div class="inner-select-box">
-                        <select name="activityType" id="activityType">
-                            <option th:each="activity : ${activityTypes}" th:value="${activity}" th:text="${activity}">
-                        </select>
-                    </div>
-                    <label for="activityType"><span>Choose An Activity Type</span></label>
-                    <div th:each="err : ${#fields.errors('activityType')}" th:text="${err}" class="error-message"></div>
-                </div>
-                <div class="input-box">
-                    <div class="select-box">
-                        <select name="team" id="team">
-                            <option th:each="team : ${teamList}" th:value="${team.getTeamId()}" th:text="${team.getName()}">
-                        </select>
-                    </div>
-                    <label for="team">Select Team For Activity</label>
-                    <div th:each="err : ${#fields.errors('team')}" th:text="${err}" class="error-message"></div>
-                </div>
-                <div class="input-box">
-                    <input type="text" class="form-control" id="description" th:name="description" autofocus placeholder="" th:value="${description}">
-                    <label for="description">Description:</label>
-                    <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
-                </div>
-                <div class="input-box">
-                    <input type="datetime-local" id="startDateTime" name="startDateTime"  th:value="${startDateTime}">
-                    <label for="startDateTime">Start date and time of activity:</label>
-                    <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}" class="error-message"></div>
-                </div>
-                <div class="input-box">
-                    <input type="datetime-local" id="endDateTime" name="endDateTime" th:value="${endDateTime}">
-                    <label for="endDateTime">End date and time of activity:</label>
-                    <div th:each="err : ${#fields.errors('endDateTime')}" th:text="${err}" class="error-message"></div>
-                </div>
-                <div class="submit-button">
-                    <a th:href="@{home}">
-                        <button type="submit" th:text="Create"></button>
-                    </a>
-                </div>
-            </form>
-        </div>
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+<div class="activity-form">
+    <div class="create-activity">
+        <h1>[[${actId != null ? 'Edit' : 'Create'}]] Activity</h1>
     </div>
+    <div class="wrapper">
+        <form th:action="@{createActivity}" th:object="${createActivityForm}" id="createActivityForm" method="post">
+            <div class="dropdown">
+                <div class="select">
+                    <span class="selected" th:text="${activityTypes[0]}" id="activityType"></span>
+                    <div class="caret"></div>
+                </div>
+
+                <ul class="menu">
+                    <li th:each="i : ${#numbers.sequence(1, #lists.size(activityTypes) - 1)}"
+                        th:text="${activityTypes[i]}"></li>
+                </ul>
+            </div>
+
+            <div class="input-box">
+                <div class="select-box">
+                    <select name="team" id="team">
+                        <option th:each="team : ${teamList}" th:value="${team.getTeamId()}" th:text="${team.getName()}">
+                    </select>
+                </div>
+                <label for="team">Select Team For Activity</label>
+                <div th:each="err : ${#fields.errors('team')}" th:text="${err}" class="error-message"></div>
+            </div>
+            <div class="input-box">
+                <input type="text" class="form-control" id="description" th:name="description" autofocus placeholder=""
+                       th:value="${description}">
+                <label for="description">Description:</label>
+                <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
+            </div>
+            <div class="input-box">
+                <input type="datetime-local" id="startDateTime" name="startDateTime" th:value="${startDateTime}">
+                <label for="startDateTime">Start date and time of activity:</label>
+                <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}" class="error-message"></div>
+            </div>
+            <div class="input-box">
+                <input type="datetime-local" id="endDateTime" name="endDateTime" th:value="${endDateTime}">
+                <label for="endDateTime">End date and time of activity:</label>
+                <div th:each="err : ${#fields.errors('endDateTime')}" th:text="${err}" class="error-message"></div>
+            </div>
+            <div class="submit-button">
+                <a th:href="@{home}">
+                    <button type="submit" th:text="Create"></button>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    const dropdowns = document.querySelectorAll('.dropdown');
+    dropdowns.forEach(dropdown => {
+        const select = dropdown.querySelector('.select');
+        const caret = dropdown.querySelector('.caret');
+        const menu = dropdown.querySelector('.menu');
+        const options = dropdown.querySelectorAll('.menu li');
+        const selected = dropdown.querySelector('.selected');
+
+        select.addEventListener('click', () => {
+            select.classList.toggle('select-clicked');
+            caret.classList.toggle('caret-rotate');
+            menu.classList.toggle('menu-open');
+        });
+
+        options.forEach(option => {
+            option.addEventListener('click', () => {
+                selected.innerText = option.innerText;
+                select.classList.remove('select-clicked');
+                select.classList.remove('caret-rotate');
+                menu.classList.remove('menu-open');
+                options.forEach(option => {
+                    option.classList.remove('active');
+                });
+                option.classList.add('active');
+            });
+        });
+    });
+
+</script>
 </body>
 </html>
