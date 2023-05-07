@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class ActivityRepositoryTest {
     ActivityRepository activityRepository;
 
     @Test
-    public void getActivityById() throws IOException {
+    public void getActivityById() throws Exception {
         Team team = new Team("TeamName", "Sport");
         User creator = new User("Test", "Account", "test@test.com", "Password1!",
                 new Location(null, null, null, "Christchurch", null, "New Zealand"));
@@ -33,7 +32,7 @@ public class ActivityRepositoryTest {
     }
 
     @Test
-    public void getActivityListById() throws IOException {
+    public void getActivityListById() throws Exception {
         Team team = new Team("TeamName", "Sport");
         User creator = new User("Test", "Account", "test@test.com", "Password1!",
                 new Location(null, null, null, "Christchurch", null, "New Zealand"));

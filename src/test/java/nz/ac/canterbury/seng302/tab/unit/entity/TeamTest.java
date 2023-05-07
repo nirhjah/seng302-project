@@ -12,6 +12,8 @@ import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -178,4 +180,28 @@ public class TeamTest {
 
     }
 
+    /**
+     * U24/AC5 states that a token must be 12 characters long
+     *
+     * @throws IOException
+     */
+    @Test
+    public void givenCreatingANewUser_WhenTokenIsGenerated_TokenIs12CharactersLong() throws IOException {
+        Team t = new Team("abc", "soccer");
+        t.generateToken(teamService);
+        assertEquals(t.getToken().length(), 12);
+    }
+
+    /**
+     * U24/AC5 states that a token must a combination of letters and numbers
+     *
+     * @throws IOException
+     */
+    @Test
+    public void givenCreatingANewUser_WhenTokenIsGenerated_TokenIsMadeOfOnlyCharactersAndNumbers()
+            throws IOException {
+        Team t = new Team("abc", "soccer");
+        t.generateToken(teamService);
+        assertTrue(t.getToken().matches("^[a-zA-Z0-9]*$"));
+    }
 }

@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Spring Boot Service class for Team Service
@@ -120,8 +121,7 @@ public class TeamService {
      * @param name              the team name query inputted by the use
      * @return Page(s) of teams filtered by city/cities and sport/sports
      */
-    public Page<Team> findPaginatedTeamsByCityAndSports(Pageable pageable, List<String> searchedLocations,
-            List<String> searchedSports, String name) {
+    public Page<Team> findPaginatedTeamsByCityAndSports(Pageable pageable, List<String> searchedLocations, List<String> searchedSports, String name) {
 
         if (searchedLocations == null) {
             searchedLocations = List.of();
@@ -155,6 +155,10 @@ public class TeamService {
         return teamRepository.findTeamByNameAndSportIn(pageable, filterSports, nameSearch);
     }
 
+    public Optional<Team> findByToken(String token) {
+        return teamRepository.findByToken(token);
+    }
+
 
     /**
      * gets a page of all teams the given user is a member of
@@ -162,7 +166,9 @@ public class TeamService {
      * @param user          user to filter teams by
      * @return              all teams the user is apart of
      */
-    public Page<Team> findTeamsByUser(Pageable pageable, User user) {
+    public Page<Team> findTeamsByUser(int pageNo, int pageSize, User user) {
+
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
 
         return teamRepository.findTeamsWithUser(user, pageable);
     }

@@ -26,7 +26,7 @@ public class ActivityServiceTest {
      * Tests validator for if a start date is before the end
      */
     @Test
-    public void ifStartDateIsBeforeEnd_returnTrue() throws IOException {
+    public void ifStartDateIsBeforeEnd_returnTrue() throws Exception {
         Team team = new Team("TeamName", "Sport");
         User creator = new User("Test", "Account", "test@test.com", "Password1!",
                 new Location(null, null, null, "Christchurch", "New Zealand", null));
@@ -40,7 +40,7 @@ public class ActivityServiceTest {
      * Tests validator for if a start date if after the end
      */
     @Test
-    public void ifStartDateIsAfterEnd_returnFalse() throws IOException {
+    public void ifStartDateIsAfterEnd_returnFalse() throws Exception {
         Team team = new Team("TeamName", "Sport");
         User creator = new User("Test", "Account", "test@test.com", "Password1!",
                 new Location(null, null, null, "Christchurch", "New Zealand", null));
@@ -55,7 +55,7 @@ public class ActivityServiceTest {
      * @throws IOException - Exception because of profile picture upload
      */
     @Test
-    public void ifStartDateIsBeforeTeamCreation_returnFalse() throws IOException {
+    public void ifStartDateIsBeforeTeamCreation_returnFalse() throws Exception {
         Team team = new Team("TeamName", "Sport");
         User creator = new User("Test", "Account", "test@test.com", "Password1!",
                 new Location(null, null, null, "Christchurch", "New Zealand", null));
@@ -70,7 +70,7 @@ public class ActivityServiceTest {
      * @throws IOException - Exception because of profile picture upload
      */
     @Test
-    public void ifStartAndEndDateIsAfterTeamCreation_returnTrue() throws IOException {
+    public void ifStartAndEndDateIsAfterTeamCreation_returnTrue() throws Exception {
         Team team = new Team("TeamName", "Sport");
         User creator = new User("Test", "Account", "test@test.com", "Password1!",
                 new Location(null, null, null, "Christchurch", "New Zealand", null));
@@ -86,7 +86,7 @@ public class ActivityServiceTest {
      * @throws IOException - Exception due to profile pictures
      */
     @Test
-    public void ifEndDateIsBeforeTeamCreation_returnFalse() throws IOException {
+    public void ifEndDateIsBeforeTeamCreation_returnFalse() throws Exception {
         Team team = new Team("TeamName", "Sport");
         User creator = new User("Test", "Account", "test@test.com", "Password1!",
                 new Location(null, null, null, "Christchurch", "New Zealand", null));

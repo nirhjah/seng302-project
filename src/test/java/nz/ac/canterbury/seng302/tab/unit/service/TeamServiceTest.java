@@ -4,6 +4,8 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
+
+import org.hibernate.validator.internal.constraintvalidators.bv.AssertFalseValidator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -13,6 +15,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.validation.constraints.AssertFalse;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,8 +25,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.slf4j.Logger;
@@ -253,4 +260,35 @@ public class TeamServiceTest {
         assertEquals(expectedInputs, validInputs);
 
     }
+
+    @Test
+    public void givenIHaveCreatedATeam_WhenGeneratingANewToken_TheTokenIsunique()
+            throws IOException {
+        int numTeams = 100;
+        Team[] teams = new Team[numTeams];
+        for (int i = 0; i < numTeams; i++) {
+            teams[i] = new Team("team " + i, "sport " + i, location);
+        }
+
+        // check all the tokens are unique
+        for (int i = 0; i < numTeams; i++) {
+            for (int j = 0; j < numTeams; j++) {
+                if (i != j) {
+                    assertNotEquals(teams[i].getToken(), teams[j].getToken());
+                }
+            }
+        }
+
+    }
+
+    // @Test
+    // public void
+    // givenIHaveCreatedATeam_WhenGeneratingANewToken_TheTokenIsNotTheSameAsThePrevious()
+    // throws IOException {
+    // Team team = new Team("Liverpool", "football");
+    // String oldToken = team.getToken();
+    // teamService.generateNewTokenForTeam();
+    // String newToken = team.getToken();
+    // assertNotEquals(oldToken, newToken);
+    // }
 }

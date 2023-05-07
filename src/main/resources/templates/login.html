@@ -21,27 +21,27 @@
       <form  th:action="@{login}" method="post">
         <div class="icon">
           <a th:href="@{home}">
-            <img th:src="@{/image/icons/cross.svg}"/>
+            <img id="cancelButton" th:src="@{/image/icons/cross.svg}"/>
           </a>
         </div>
         <h6 th:if="${passwordUpdatedMessage != null}" th:text="${passwordUpdatedMessage}"></h6>
         <h6 th:if="${invalidTokenMessage != null}" th:text="${invalidTokenMessage}"></h6>
         <div class="input-box">
-          <input type="email" class="form-control" id="username" placeholder="" th:name="username"
-            th:value="*{username}" data-cy="username" required autofocus>
+          <input class="form-control" id="username" placeholder="" th:name="username"
+            th:value="*{username}" data-cy="username" autofocus>
           <label for="username">Email</label>
         </div>
         <div class="input-box">
           <input type="password" class="form-control" id="password" placeholder="" th:name="password"
-            th:value="*{password}" data-cy="password" required autofocus>
+            th:value="*{password}" data-cy="password" autofocus>
           <label for="password">Password</label>
         </div>
         </br>
         <div class="error-message" th:text="${errorMessage}">
-          <h6 th:text="${errorMessage}"></h6>
+          <h6 id="loginErrorMessage" class="loginErrorMessage" th:text="${errorMessage}"></h6>
         </div>
         <div class="submit-button">
-          <button type="submit" class="registerLoginButton">Login</button>
+          <button type="submit" class="registerLoginButton" id="loginButton">Login</button>
         </div>
         <div class="cancel-link">
           <p>New Here?</p>
