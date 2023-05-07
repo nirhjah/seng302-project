@@ -7,6 +7,7 @@ import java.util.*;
 
 import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import org.slf4j.Logger;
@@ -278,6 +279,17 @@ public class UserService {
         EmailDetails details = new EmailDetails(user.getEmail(), EmailDetails.UPDATE_PASSWORD_BODY, EmailDetails.UPDATE_PASSWORD_HEADER);
         String outcome = emailService.sendSimpleMail(details);
         logger.info(outcome);
+    }
+
+
+    /**
+     * Adds user to team and updates user
+     * @param user user to join team
+     * @param team team for user to join
+     */
+    public void userJoinTeam(User user, Team team) {
+        user.joinTeam(team);
+        updateOrAddUser(user);
     }
 
 }

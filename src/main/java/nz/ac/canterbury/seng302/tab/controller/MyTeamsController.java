@@ -2,7 +2,6 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.JoinTeamForm;
@@ -119,9 +118,7 @@ public class MyTeamsController {
         }
 
         if(team.isPresent()) {
-            Team teamToJoin =  team.get();
-            user.joinTeam(teamToJoin);
-            userService.updateOrAddUser(user);
+            userService.userJoinTeam(user, team.get());
         }
         
         return "redirect:/my-teams?page=1";
