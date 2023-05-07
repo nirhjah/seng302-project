@@ -46,6 +46,11 @@ public class Activity {
     @JoinColumn(name = "fk_userI", referencedColumnName = "Id")
     private User activityOwner;
 
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Location location;
+
+
     /**
      * Empty Constructor for JPA
      */
@@ -59,13 +64,15 @@ public class Activity {
      * @param activityStart - the date and time of start of activity
      * @param activityEnd - the end date and time of activity
      */
-    public Activity(ActivityType activityType, Team team, String description, LocalDateTime activityStart, LocalDateTime activityEnd, User creator) {
+    public Activity(ActivityType activityType, Team team, String description, LocalDateTime activityStart, LocalDateTime activityEnd, User creator, Location location) {
         this.activityType = activityType;
         this.team = team;
         this.description = description;
         this.activityStart = activityStart;
         this.activityEnd = activityEnd;
         this.activityOwner = creator;
+        this.location = location;
+
     }
 
     public long getId() {
@@ -86,6 +93,14 @@ public class Activity {
 
     public LocalDateTime getActivityEnd() {
         return activityEnd;
+    }
+
+    public Location getLocation() {
+        return this.location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     @Override

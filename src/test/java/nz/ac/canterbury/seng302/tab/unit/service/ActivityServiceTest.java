@@ -6,6 +6,7 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,6 +22,13 @@ public class ActivityServiceTest {
     @Autowired
     ActivityService activityService;
 
+    private Location location;
+
+    @BeforeEach
+    void beforeEach() throws IOException {
+        location = new Location(null, null, null, "Christchurch", null, "New Zealand");
+
+    }
 
     /**
      * Tests validator for if a start date is before the end
@@ -28,11 +36,10 @@ public class ActivityServiceTest {
     @Test
     public void ifStartDateIsBeforeEnd_returnTrue() throws Exception {
         Team team = new Team("TeamName", "Sport");
-        User creator = new User("Test", "Account", "test@test.com", "Password1!",
-                new Location(null, null, null, "Christchurch", "New Zealand", null));
+        User creator = new User("Test", "Account", "test@test.com", "Password1!", location);
         Activity activity = new Activity(Activity.ActivityType.Game, team, "A random activity",
                 LocalDateTime.of(2023, 1,1,6,30),
-                LocalDateTime.of(2023, 1,1,8,30), creator);
+                LocalDateTime.of(2023, 1,1,8,30), creator, location);
         Assertions.assertTrue(activityService.validateStartAndEnd(activity));
     }
 
@@ -42,11 +49,10 @@ public class ActivityServiceTest {
     @Test
     public void ifStartDateIsAfterEnd_returnFalse() throws Exception {
         Team team = new Team("TeamName", "Sport");
-        User creator = new User("Test", "Account", "test@test.com", "Password1!",
-                new Location(null, null, null, "Christchurch", "New Zealand", null));
+        User creator = new User("Test", "Account", "test@test.com", "Password1!", location);
         Activity activity = new Activity(Activity.ActivityType.Game, team, "A random activity",
                 LocalDateTime.of(2023, 1,1,10,30),
-                LocalDateTime.of(2023, 1,1,8,30), creator);
+                LocalDateTime.of(2023, 1,1,8,30), creator, location);
         Assertions.assertFalse(activityService.validateStartAndEnd(activity));
     }
 
@@ -57,11 +63,10 @@ public class ActivityServiceTest {
     @Test
     public void ifStartDateIsBeforeTeamCreation_returnFalse() throws Exception {
         Team team = new Team("TeamName", "Sport");
-        User creator = new User("Test", "Account", "test@test.com", "Password1!",
-                new Location(null, null, null, "Christchurch", "New Zealand", null));
+        User creator = new User("Test", "Account", "test@test.com", "Password1!", location);
         Activity activity = new Activity(Activity.ActivityType.Game, team, "A random activity",
                 LocalDateTime.of(2020, 1,1,10,30),
-                LocalDateTime.of(2023, 1,1,8,30), creator);
+                LocalDateTime.of(2023, 1,1,8,30), creator, location);
         Assertions.assertFalse(activityService.validateActivityDateTime(activity));
     }
 
@@ -72,11 +77,10 @@ public class ActivityServiceTest {
     @Test
     public void ifStartAndEndDateIsAfterTeamCreation_returnTrue() throws Exception {
         Team team = new Team("TeamName", "Sport");
-        User creator = new User("Test", "Account", "test@test.com", "Password1!",
-                new Location(null, null, null, "Christchurch", "New Zealand", null));
+        User creator = new User("Test", "Account", "test@test.com", "Password1!", location);
         Activity activity = new Activity(Activity.ActivityType.Game, team, "A random activity",
                 LocalDateTime.of(2023, 1,1,10,30),
-                LocalDateTime.of(2023, 1,1,8,30), creator);
+                LocalDateTime.of(2023, 1,1,8,30), creator, location);
         Assertions.assertFalse(activityService.validateActivityDateTime(activity));
     }
 
@@ -88,11 +92,10 @@ public class ActivityServiceTest {
     @Test
     public void ifEndDateIsBeforeTeamCreation_returnFalse() throws Exception {
         Team team = new Team("TeamName", "Sport");
-        User creator = new User("Test", "Account", "test@test.com", "Password1!",
-                new Location(null, null, null, "Christchurch", "New Zealand", null));
+        User creator = new User("Test", "Account", "test@test.com", "Password1!", location);
         Activity activity = new Activity(Activity.ActivityType.Game, team, "A random activity",
                 LocalDateTime.of(2023, 1,1,10,30),
-                LocalDateTime.of(2020, 1,1,8,30), creator);
+                LocalDateTime.of(2020, 1,1,8,30), creator, location);
         Assertions.assertFalse(activityService.validateActivityDateTime(activity));
     }
 
