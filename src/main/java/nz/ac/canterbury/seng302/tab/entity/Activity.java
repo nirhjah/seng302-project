@@ -63,6 +63,7 @@ public class Activity {
      * @param description - short description of the event
      * @param activityStart - the date and time of start of activity
      * @param activityEnd - the end date and time of activity
+     * @param location - the location of the activity
      */
     public Activity(ActivityType activityType, Team team, String description, LocalDateTime activityStart, LocalDateTime activityEnd, User creator, Location location) {
         this.activityType = activityType;
