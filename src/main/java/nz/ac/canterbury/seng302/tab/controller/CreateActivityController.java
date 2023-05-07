@@ -63,11 +63,11 @@ public class CreateActivityController {
 
     @PostMapping("/createActivity")
     public String createActivity(
-            @RequestParam(name = "activityType") Activity.ActivityType activityType,
-            @RequestParam(name = "teamId", defaultValue = "-1") long teamId,
-            @RequestParam(name="description") String description,
-            @RequestParam(name="startDateTime") LocalDateTime startDateTime,
-            @RequestParam(name="endDateTime") LocalDateTime endDateTime,
+            @RequestParam(name = "activityType", required = false) Activity.ActivityType activityType,
+            @RequestParam(name = "team", defaultValue = "-1") long teamId,
+            @RequestParam(name="description", required = false) String description,
+            @RequestParam(name="startDateTime", required = false) LocalDateTime startDateTime,
+            @RequestParam(name="endDateTime", required = false) LocalDateTime endDateTime,
             @Validated CreateActivityForm createActivityForm,
             BindingResult bindingResult,
             HttpServletResponse httpServletResponse,

@@ -153,7 +153,7 @@ public class U27CreateActivityFeature {
         mockMvc.perform(post("/createActivity", 42L)
                 .with(csrf())
                 .requestAttr("activityType", Activity.ActivityType.valueOf(activityType))
-                .requestAttr("teamId", teamId)
+                .requestAttr("team", teamId)
                 .requestAttr("description", desc)
                 .requestAttr("startDateTime", LocalDateTime.parse(start, formatter))
                 .requestAttr("endDateTime", LocalDateTime.parse(end, formatter))).andExpect(status().isFound());
