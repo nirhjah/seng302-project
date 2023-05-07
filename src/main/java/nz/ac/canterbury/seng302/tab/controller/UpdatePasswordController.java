@@ -109,10 +109,6 @@ public class UpdatePasswordController {
             HttpServletRequest request,
             RedirectAttributes redirectAttributes) {
 
-
-
-        Optional<User> user1 = userService.findByToken(currentToken);
-
         user = userService.findByToken(currentToken);
 
 
@@ -129,11 +125,7 @@ public class UpdatePasswordController {
 
         redirectAttributes.addFlashAttribute("passwordUpdatedMessage", "Password updated successfully.");
 
-        user.get().setPassword(passwordEncoder.encode(password));
-
-        userService.updateOrAddUser(user.get());
-
-        userService.updatePassword(user.get());
+        userService.updatePassword(user.get(), password);
         return "redirect:/login";
     }
 

@@ -20,6 +20,7 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +39,8 @@ import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 public class UserService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepository;
 
@@ -270,12 +273,14 @@ public class UserService {
     }
 
     /**
-     * Creates and sends email informing the user that their password has been updated.
-     * TODO add the update functionality to this method as well.
+     * Updates the user's password then creates and sends email informing the user that their password has been updated.
      * @param user the user whose password was updated
+     * @param password the password to update the user with
      * @return the outcome of the email sending
      */
-    public void updatePassword(User user) {
+    public void updatePassword(User user, String password) {
+        user.setPassword(passwordEncoder.encode(password));
+        updateOrAddUser(user);
         EmailDetails details = new EmailDetails(user.getEmail(), EmailDetails.UPDATE_PASSWORD_BODY, EmailDetails.UPDATE_PASSWORD_HEADER);
         String outcome = emailService.sendSimpleMail(details);
         logger.info(outcome);
@@ -286,7 +291,6 @@ public class UserService {
 
         user.generateToken(this, 1);
         updateOrAddUser(user);
-        //String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "") + "/update-password/" + user.getToken();
 
         String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "")
                 + "/update-password?token=" + user.getToken();
