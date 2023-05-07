@@ -15,7 +15,7 @@
     }
 }
 
-@media (max-width: 960px) {
+@media (max-width: 850px) {
     .wrapper-profile {
         display: flex !important;
         flex-direction: column !important;
@@ -28,6 +28,7 @@
     .wrapper-profile .profile-pic {
         width: 100% !important;
         position: static !important;
+        height: 310px;
     }
 
     .wrapper-profile .team-info {
@@ -47,7 +48,8 @@
     .wrapper-profile .join-token {
         position: static !important;
         width: 90% !important;
-        margin: 20px 0 !important;
+        margin: 0 0 20px !important;
+        padding-top: 0;
     }
 
 }
@@ -59,23 +61,23 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 5%;
+    padding-top: 1.2%;
 }
 
 
 .join-token-box {
     width: 220px;
-    padding: 10px;
+    padding: 10px 10px 10px 5px;
     border: 5px solid #1B263B;
+    border-left: none;
     outline: none;
     font-size: 1.2em;
-    transition: 0.5s;
     display: flex;
     align-items: center;
     justify-content: space-between;
     background: linear-gradient(to right, #fff 75%, #1b263b 25%);
     height: 50px;
-    border-radius: 10px 50px 50px 10px;
+    border-radius: 0 50px 50px 0;
     font-weight: 600;
 }
 
@@ -83,8 +85,8 @@
     color: #1b263b;
     font-size: 20px;
     font-weight: 600;
-    margin-right: 10px;
     white-space: nowrap;
+    padding-bottom: 5px;
 }
 
 .join-token-box button {
@@ -92,7 +94,7 @@
     background: none;
     border: none;
     height: 30px;
-    margin: 0 2px 0 21px;
+    margin: 0 2px 0 12px;
     cursor: pointer;
 }
 
@@ -109,6 +111,7 @@
     width: 75%;
     margin: 0;
     display: inline-block;
+    transition: opacity 0.5s ease-in;
 }
 
 .join-token-box form {
@@ -116,12 +119,27 @@
     margin:0;
 }
 .copy-token {
-    text-decoration: underline;
-    margin-right: 10px;
-    font-weight:700;
-    font-size:14px;
-    color: #1b263b;
-    padding: 10px;
+    z-index: 1;
+    border: 5px solid #1B263B;
+    border-right: none;
+    justify-content: center;
+    display: flex;
+    border-radius: 5px 0 0 5px;
+    width: 40px;
+}
+
+.copy-token img {
+    height: 32px;
+    margin: 4px 2px 2px 2px;
     cursor: pointer;
-    z-index:1;
+    /*transition: 0.1s ease-in;*/
+}
+
+.copy-token img:active {
+    height: 30px;
+    margin: 5px 5px 5px 5px;
+}
+
+.join-token-box-outer {
+    display: flex;
 }
