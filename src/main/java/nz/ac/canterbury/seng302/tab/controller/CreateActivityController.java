@@ -64,7 +64,7 @@ public class CreateActivityController {
     @PostMapping("/createActivity")
     public String createActivity(
             @RequestParam(name = "activityType") Activity.ActivityType activityType,
-            @RequestParam(name = "teamId") long teamId,
+            @RequestParam(name = "teamId", defaultValue = "-1") long teamId,
             @RequestParam(name="description") String description,
             @RequestParam(name="startDateTime") LocalDateTime startDateTime,
             @RequestParam(name="endDateTime") LocalDateTime endDateTime,
