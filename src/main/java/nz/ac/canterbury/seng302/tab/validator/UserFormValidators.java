@@ -128,7 +128,7 @@ public class UserFormValidators {
     /**/@Retention(RUNTIME)
     /**/@Constraint(validatedBy = PasswordCheck.class)
     /**/@Documented
-    @NotNull(message = NOT_BLANK_MSG)
+    @NotBlank(message = NOT_BLANK_MSG)
     public @interface PasswordValidator {
 
         String message() default "Password does not meet the requirements";
