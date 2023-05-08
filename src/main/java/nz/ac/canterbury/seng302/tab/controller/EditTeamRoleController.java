@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
@@ -50,23 +51,20 @@ public class EditTeamRoleController {
       throws Exception {
     logger.info("GET /getTeamRoles");
     Optional<User> user = userService.getCurrentUser();
-    User u = user.get();
-    model.addAttribute("user", u);
+    if (user.isEmpty()) {
+      logger.error("No current user?");
+      return "redirect:/home";
+    }
+    model.addAttribute("user", user.get());
 
     Team team = teamService.getTeam(teamID);
     if (team == null) {
       logger.error("Team ID does not exist!");
       return "redirect:/home";
     }
-    User u1 = new User("Test", "Account", "email@gmail.com", "password", new Location(null, null, null,"chch", null, "nz"));
-    team.setMember(u1);
 
-    List<TeamRole> teamRoles = team.getTeamRoleList();
-
-    model.addAttribute("possibleRoles", Role.values());
-    model.addAttribute("roleList", teamRoles);
     model.addAttribute("httpServletRequest", request);
-    model.addAttribute("teamID", teamID.toString());
+    populateListsInModel(team, model);
     return "editTeamRoleForm";
   }
 
@@ -79,6 +77,7 @@ public class EditTeamRoleController {
   public String editTeamRoles(
           @RequestParam(name = "teamID", required = true) String teamID,
           @RequestParam("tags") List<String> tags,
+          @RequestParam("userIds") List<String> userIds,
           Model model,
           HttpServletRequest request)
           throws Exception {
@@ -91,13 +90,21 @@ public class EditTeamRoleController {
       return "redirect:/home";
     }
 
-    List<TeamRole> teamRoles = team.getTeamRoleList();
-
-    model.addAttribute("possibleRoles", Role.values());
-    model.addAttribute("roleList", teamRoles);
     model.addAttribute("httpServletRequest", request);
-    model.addAttribute("teamID", teamID.toString());
+    populateListsInModel(team, model);
     return "editTeamRoleForm";
   }
 
+  public void populateListsInModel(Team team, Model model) {
+    List<TeamRole> teamRoles = team.getTeamRoleList();
+    List<Long> userIDList = new ArrayList<>();
+    for (TeamRole role : teamRoles) {
+      userIDList.add(role.getUser().getUserId());
+    }
+
+    model.addAttribute("roleList", teamRoles);
+    model.addAttribute("userIds", userIDList);
+    model.addAttribute("possibleRoles", Role.values());
+    model.addAttribute("teamID", team.getTeamId().toString());
+  }
 }

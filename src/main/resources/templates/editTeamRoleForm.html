@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
@@ -49,7 +49,6 @@
         const form = document.getElementById("sendTeamChanges");
         const selectionBoxes = document.getElementsByClassName("teamRole");
         let teamID = /*[[${teamID}]]*/ "";
-        let teamRoles = /*[[${roleList}]]*/ [];
 
         function addInput(form, name, value) {
             const inp = document.createElement("input");
@@ -59,25 +58,38 @@
             form.appendChild(inp);
         }
 
+        /*
         addInput(form, "teamID", teamID)
 
+         */
+
+        let teamRoles = /*[[${userIds}]]*/ [];
+
+        /*
+        addInput(form, "userIds", teamRoles.join(","))
+        addInput(form, "tags", "");
+        */
+
         form.addEventListener('submit', (event) => {
+            form.reset()
             let roles = [];
             for (const selection of selectionBoxes) {
                 roles.push(selection.value.toString());
             }
+            let tags = roles.join(",")
+            addInput(form, "tags", tags)
 
-            addInput(form, "tags", roles.join(","));
             addInput(form, "teamID", teamID)
 
+            let userIdValues = /*[[${userIds}]]*/ [];
+            const userIds = userIdValues.join(",");
+            addInput(form, "userIds", userIds)
             return true;
         })
 
-
-
     </script>
 
-
+<!--
     <script th:inline="javascript">
         const form = document.getElementById("sendTeamChanges");
         const selectionBoxes = document.getElementsByClassName("teamRole");
@@ -118,13 +130,7 @@
             form.appendChild(userIDInput);
             return true;
         })
-
-
-
-    </script>
-
-
-
+-->
 
 </body>
 </html>
