@@ -39,7 +39,8 @@
                 <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
             </div>
             <div class="input-box">
-                <input type="datetime-local" id="startDateTime" name="startDateTime" th:value="${startDateTime}">
+                <input type="datetime-local" id="startDateTime" name="startDateTime"
+                       th:value="${startDateTime}">
                 <label for="startDateTime">Start date and time of activity:</label>
                 <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}" class="error-message"></div>
             </div>
@@ -56,35 +57,5 @@
         </form>
     </div>
 </div>
-<script>
-    const dropdowns = document.querySelectorAll('.dropdown');
-    dropdowns.forEach(dropdown => {
-        const select = dropdown.querySelector('.select');
-        const caret = dropdown.querySelector('.caret');
-        const menu = dropdown.querySelector('.menu');
-        const options = dropdown.querySelectorAll('.menu li');
-        const selected = dropdown.querySelector('.selected');
-
-        select.addEventListener('click', () => {
-            select.classList.toggle('select-clicked');
-            caret.classList.toggle('caret-rotate');
-            menu.classList.toggle('menu-open');
-        });
-
-        options.forEach(option => {
-            option.addEventListener('click', () => {
-                selected.innerText = option.innerText;
-                select.classList.remove('select-clicked');
-                select.classList.remove('caret-rotate');
-                menu.classList.remove('menu-open');
-                options.forEach(option => {
-                    option.classList.remove('active');
-                });
-                option.classList.add('active');
-            });
-        });
-    });
-
-</script>
 </body>
 </html>
