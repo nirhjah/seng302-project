@@ -21,6 +21,12 @@ public class LoginController {
     public String form(@RequestParam(name="error", required = false, defaultValue = "false") String error,
                        Model model, HttpServletRequest request, HttpSession session) {
         model.addAttribute("httpServletRequest", request);
+
+        model.addAttribute("passwordUpdatedMessage", (String)model.asMap().get("passwordUpdatedMessage"));
+
+        model.addAttribute("invalidTokenMessage", (String)model.asMap().get("invalidTokenMessage"));
+
+
         if (error.equals("true"))
         {
             model.addAttribute("errorMessage", "Invalid Email or Password");
