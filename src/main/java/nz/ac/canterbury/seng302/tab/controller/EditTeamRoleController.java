@@ -41,8 +41,8 @@ public class EditTeamRoleController {
    *
    * @return redirect to /home
    */
-  @GetMapping("/editTeamRoles")
-  public String getTeamRoles(@RequestParam(name = "teamID", required = true) Long teamID, Model model, HttpServletRequest request)
+  @GetMapping("/editTeamRole")
+  public String getTeamRoles(@RequestParam(name = "edit", required = true) Long teamID, Model model, HttpServletRequest request)
       throws Exception {
     logger.info("GET /getTeamRoles");
 
@@ -51,6 +51,8 @@ public class EditTeamRoleController {
       logger.error("Team ID does not exist!");
       return "redirect:/home";
     }
+    User user = new User("Test", "Account", "email@gmail.com", "password", new Location(null, null, null,"chch", null, "nz"));
+    team.setMember(user);
 
     List<TeamRole> teamRoles = team.getTeamRoleList();
 
@@ -67,7 +69,7 @@ public class EditTeamRoleController {
    * TODO: We need to think of how best to pass in the new team roles.
    * I have created a rolesForm
    */
-  @PostMapping("/editTeamRoles")
+  @PostMapping("/editTeamRole")
   public String editTeamRoles(
           @RequestParam(name = "teamID", required = true) Long teamID,
           @Validated EditTeamRolesForm rolesForm,

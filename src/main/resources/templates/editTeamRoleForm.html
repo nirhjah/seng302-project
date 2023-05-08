@@ -21,7 +21,7 @@
                   <div class="card-body">
                     <h5 class="card-title">[[|${teamRole.getUser().getFirstName()} ${teamRole.getUser().getLastName()} |]]</h5>
                     <p> Team Member Role: </p>
-                    <select name="teamRole" id="teamRole">
+                    <select name="teamRole" id="teamRole" class="teamRole" onchange="updateTeamRoles(event)">
                       <option th:each="role : ${possibleRoles}" th:value="${role}" th:text="${role}" th:selected="${role.toString() == teamRole.role.toString()}"></option>
                       
                     </select>
@@ -29,7 +29,6 @@
               </div>
           </div>
       </div>
-      <!-- <div th:insert="~{fragments/pagination.html :: pagination(pageName='editTeamRole')}"></div> -->
         <footer>
             <p>
                 Image by <a
@@ -38,5 +37,19 @@
             </p>
         </footer>
     </div>
+
+    <script th:inline="javascript">
+        const selectionBoxes = document.getElementsByClassName("teamRole");
+        for (const box of selectionBoxes) {
+            box.addEventListener("change", updateTeamRoles)
+        }
+
+        function updateTeamRoles(e) {
+            console.log(this.value);
+        }
+
+
+
+    </script>
 </body>
 </html>
