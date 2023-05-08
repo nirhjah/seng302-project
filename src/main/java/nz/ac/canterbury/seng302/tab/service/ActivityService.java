@@ -1,8 +1,13 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,6 +40,17 @@ public class ActivityService {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Gets a page of activities.
+     * @param pageable A page object showing how the page should be shown
+     *                 (Page size, page count, and [optional] sorting)
+     * @param user User for which the activities belong to
+     * @return A slice of activities returned from pagination
+     */
+    public Page<Activity> getPaginatedActivities(Pageable pageable, User user) {
+        return activityRepository.findActivitiesByUser(pageable, user);
     }
 
     /**

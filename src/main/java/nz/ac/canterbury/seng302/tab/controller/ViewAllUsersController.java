@@ -67,7 +67,7 @@ public class ViewAllUsersController {
             @RequestParam(name = "sports", required=false) List<String> sports,
             @RequestParam(name = "cities", required = false) List<String> cities,
             Model model, HttpServletRequest request) {
-        Page<User> userPage = getUserPage(page, currentSearch, sports,cities);
+        Page<User> userPage = getUserPage(page, currentSearch, sports, cities);
         List<User> userList = userPage.toList();
         Optional<User> user = userService.getCurrentUser();
         model.addAttribute("firstName", user.get().getFirstName());

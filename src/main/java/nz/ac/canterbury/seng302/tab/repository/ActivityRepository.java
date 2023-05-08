@@ -26,6 +26,6 @@ public interface ActivityRepository extends CrudRepository<Activity, Long> {
             "ORDER BY " +
             "COALESCE(lower(t.name), '') ASC, " +
             "u.activityStart ASC")
-    List<Activity> findActivitiesByUser(@Param("user") User user);
+    Page<Activity> findActivitiesByUser(Pageable pageable, @Param("user") User user);
 ////    public Page<Activity> findActivitiesByUser(@Param("user") User user, Pageable pageable);
 }
