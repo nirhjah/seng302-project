@@ -113,12 +113,12 @@ public class UpdatePasswordController {
     }
 
     /**
+     * Receives the form from the user.
      * 
-     * @param updatePasswordForm
-     * @param bindingResult
-     * @param model
-     * @param request
-     * @return
+     * If the form is valid, the user's password changes, and an email is sent.
+     * 
+     * @param updatePasswordForm The filled out form
+     * @param bindingResult Contains any form validation errors (incorrect password, etc.)
      */
     @PostMapping("/updatePassword")
     public String submitUpdatePassword(
@@ -136,14 +136,13 @@ public class UpdatePasswordController {
         prefillModel(model, user, request);
         // Check that the form is valid
         validateForm(bindingResult, updatePasswordForm, user.getPassword());
-        logger.info("{} error(s): {}", bindingResult.getErrorCount(), bindingResult);
         if (bindingResult.hasErrors()) {
             return "updatePassword";
         } else {
             String hashedPassword = passwordEncoder.encode(updatePasswordForm.getNewPassword());
             user.setPassword(hashedPassword);
             userService.updateOrAddUser(user);
-            // TODO: SEND EMAIL
+            userService.updatePassword(user);
             return "redirect:user-info/self";
         }
     }
