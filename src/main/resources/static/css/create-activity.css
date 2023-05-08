@@ -20,13 +20,14 @@
 
 .activity-form select {
     text-align: center;
-    width: 30%;
+    width: 90%;
+    height:50px;
+    border-radius:8px;
+    background:#ffffff;
+    border-color:#0b2239;
+    margin-bottom:15px;
+    font-size:17px;
 }
-
-.select-box {
-    text-align: right;
-}
-
 
 @media (max-width: 700px) {
     .activity-form .wrapper {
