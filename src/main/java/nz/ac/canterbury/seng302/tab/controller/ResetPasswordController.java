@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.form.UpdatePasswordForm;
+import nz.ac.canterbury.seng302.tab.form.ResetPasswordForm;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +24,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.Optional;
 
 /**
- * Spring Boot Controller class for the Update Password Class.
+ * Spring Boot Controller class for the Reset Password Class.
  */
 @Controller
-public class UpdatePasswordController {
-    Logger logger = LoggerFactory.getLogger(UpdatePasswordController.class);
+public class ResetPasswordController {
+    Logger logger = LoggerFactory.getLogger(ResetPasswordController.class);
 
     @Autowired
     UserService userService;
@@ -42,15 +42,15 @@ public class UpdatePasswordController {
     private PasswordEncoder passwordEncoder;
 
 
-    private void checkPasswordsMatchAndIsSecure(UpdatePasswordForm updatePasswordForm, BindingResult bindingResult, String token) {
+    private void checkPasswordsMatchAndIsSecure(ResetPasswordForm resetPasswordForm, BindingResult bindingResult, String token) {
         /*testUser = userService.findUserByEmail("test@gmail.com");
         currentUser = testUser.get();*/
 
         user = userService.findByToken(currentToken);
         currentUser = user.get();
 
-        String password = updatePasswordForm.getPassword();
-        String confirmPassword = updatePasswordForm.getConfirmPassword();
+        String password = resetPasswordForm.getPassword();
+        String confirmPassword = resetPasswordForm.getConfirmPassword();
         // Check #1: Passwords match
         if (password.equals(confirmPassword)) {
             // Check #2: Password doesn't "contain any other field"
@@ -59,7 +59,7 @@ public class UpdatePasswordController {
                 for (String field : otherFields) {
                     if (field != "") {
                         if (password.toLowerCase().contains(field.toLowerCase())) {
-                            bindingResult.addError(new FieldError("updatePasswordForm", "password", "Password can't contain values from other fields"));
+                            bindingResult.addError(new FieldError("resetPasswordForm", "password", "Password can't contain values from other fields"));
                             break;
                         }
                     }
@@ -67,19 +67,19 @@ public class UpdatePasswordController {
             }
         }
         else {
-            bindingResult.addError(new FieldError("updatePasswordForm", "password", "Passwords do not match"));
+            bindingResult.addError(new FieldError("resetPasswordForm", "password", "Passwords do not match"));
 
         }
     }
 
     /**
-     * Gets update password form to be displayed
+     * Gets reset password form to be displayed
      * @param model
      * @return
      */
-    @GetMapping("/update-password/{token}")
-    public String updatePasswordForm(Model model, HttpServletRequest request, @PathVariable String token, RedirectAttributes redirectAttributes) {
-        model.addAttribute("updatePasswordForm", new UpdatePasswordForm());
+    @GetMapping("/reset-password/{token}")
+    public String resetPasswordForm(Model model, HttpServletRequest request, @PathVariable String token, RedirectAttributes redirectAttributes) {
+        model.addAttribute("resetPasswordForm", new ResetPasswordForm());
         model.addAttribute("httpServletRequest",request);
 
         user = userService.findByToken(token);
@@ -90,13 +90,13 @@ public class UpdatePasswordController {
 
         currentUser = user.get();
         currentToken = token;
-        return "updatePassword";
+        return "resetPassword";
     }
 
     /**
-     * Updates/resets a user's password upon valid password entered
+     * Resets a user's password upon valid password entered
      * @param password             user's new password
-     * @param updatePasswordForm   update password form
+     * @param resetPasswordForm   reset password form
      * @param bindingResult        binding result
      * @param model                 model
      * @param httpServletResponse   httpServerletResponse
@@ -105,10 +105,10 @@ public class UpdatePasswordController {
      * @param redirectAttributes    stores messages to be displayed to user on login page
      * @return
      */
-    @PostMapping("/update-password/{token}")
-    public String updatePassword(
+    @PostMapping("/reset-password/{token}")
+    public String resetPassword(
             @RequestParam("password") String password,
-            @Validated UpdatePasswordForm updatePasswordForm,
+            @Validated ResetPasswordForm resetPasswordForm,
             BindingResult bindingResult,
             Model model,
             HttpServletResponse httpServletResponse,
@@ -119,14 +119,14 @@ public class UpdatePasswordController {
         currentUser = user.get();
 
 
-        checkPasswordsMatchAndIsSecure(updatePasswordForm, bindingResult, token);
+        checkPasswordsMatchAndIsSecure(resetPasswordForm, bindingResult, token);
         model.addAttribute("httpServletRequest",request);
 
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("submitted_form", null);
-            return "updatePassword";
+            return "resetPassword";
 
         }
 
