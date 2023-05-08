@@ -83,6 +83,7 @@ public class EditTeamRoleController {
           throws Exception {
     logger.info("GET /EditTeamRole");
     logger.info(tags.toString());
+    logger.info(userIds.toString());
 
     Team team = teamService.getTeam(Long.parseLong(teamID));
     if (team == null) {
