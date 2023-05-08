@@ -26,7 +26,14 @@
         <div class="wrapper">
             <form th:action="@{editUser}" method="post" th:object="${editUserForm}" id="editUserForm">
                 <div class="edit-inputs">
-<!--                    <div class="edit-inputs-left">-->
+                    <div class="edit-user-header">
+                        <h2>Password</h2>
+                    </div>
+                    <div class="submit-button">
+                        <a th:href="@{updatePassword}">
+                            <button type="button">Update Password</button>
+                        </a>
+                    </div>
                     <div class="edit-user-header">
                         <h2>Details</h2>
                         <img th:src="@{/image/icons/dark-blue-user.svg}"/>
