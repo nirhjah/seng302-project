@@ -27,6 +27,7 @@
                 <div class="select-box">
                     <label for="team">Select Team For Activity</label>
                     <select name="team" id="team">
+                        <option th:if="${#lists.isEmpty(teamList)}" value="" disabled selected>No Teams Available</option>
                         <option th:each="team : ${teamList}" th:value="${team.getTeamId()}" th:text="${team.getName()}">
                     </select>
                 </div>

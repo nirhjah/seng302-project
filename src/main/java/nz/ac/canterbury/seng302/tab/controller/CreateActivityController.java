@@ -58,7 +58,7 @@ public class CreateActivityController {
         prefillModel(model);
         logger.info("GET /createActivity");
 
-        LocalDateTime startDateTime = LocalDateTime.now();
+        LocalDateTime startDateTime = LocalDateTime.now().plusMinutes(10);;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         String formattedStartTime = startDateTime.format(formatter);
         model.addAttribute("startDateTime", formattedStartTime);
