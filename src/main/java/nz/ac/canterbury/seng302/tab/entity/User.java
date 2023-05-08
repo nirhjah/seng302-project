@@ -35,8 +35,8 @@ public class User {
     @Column(nullable = false)
     private Date dateOfBirth;
 
-    @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name="favSports")
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "favSports")
     private List<Sport> favoriteSports;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -46,8 +46,7 @@ public class User {
     @Column(columnDefinition = "MEDIUMBLOB")
     private String pictureString;
 
-    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
-            flags = Pattern.Flag.CASE_INSENSITIVE)
+    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags = Pattern.Flag.CASE_INSENSITIVE)
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -83,7 +82,8 @@ public class User {
     }
 
     /**
-     * <strong>WARNING:</strong> Passwords are NOT hashed here. You have to provide a hashed password
+     * <strong>WARNING:</strong> Passwords are NOT hashed here. You have to provide
+     * a hashed password
      * (By Autowiring a <code>PasswordEncoder</code>)
      */
     public User(String firstName, String lastName, Date dateOfBirth, String email, String password,
@@ -101,7 +101,8 @@ public class User {
     }
 
     /**
-     * <strong>WARNING:</strong> Passwords are NOT hashed here. You have to provide a hashed password
+     * <strong>WARNING:</strong> Passwords are NOT hashed here. You have to provide
+     * a hashed password
      * (By Autowiring a <code>PasswordEncoder</code>)
      */
     public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location)
@@ -119,16 +120,20 @@ public class User {
     }
 
     /**
-     * <strong>WARNING:</strong> Passwords are NOT hashed here. You have to provide a hashed password
+     * <strong>WARNING:</strong> Passwords are NOT hashed here. You have to provide
+     * a hashed password
      * (By Autowiring a <code>PasswordEncoder</code>)
      */
-    public User(String firstName, String lastName, String email, String password, Location location) {
+    public User(String firstName, String lastName, String email, String password, Location location) throws Exception {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.dateOfBirth = new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime();
         this.hashedPassword = password;
         this.location = location;
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        InputStream is = resource.getInputStream();
+        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
 
     @ManyToMany(mappedBy = "teamMembers")
@@ -340,9 +345,9 @@ public class User {
         calculateExpiryDate(expiryHour);
     }
 
-
     /**
      * Adds user to given team and sets their role as a Member.
+     * 
      * @param team team to add user to
      */
     public void joinTeam(Team team) {
@@ -364,8 +369,4 @@ public class User {
         this.joinedTeams = teams;
     }
 
-
 }
-
-
-

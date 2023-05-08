@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
     <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
@@ -30,19 +30,21 @@
                 </div>
             </form>
         </div>
-
             <div class="join-token">
                 <label> Join Token</label>
-                <div class="join-token-box">
-                    <span class="token-value" th:text="${displayToken}"></span>
-                    <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}" th:method="post">
-                        <button type="submit">
-                            <img th:src="@{image/icons/reload.svg}">
-                        </button>
-                    </form>
-
+                <div class="join-token-box-outer">
+                    <a href="#" class="copy-token">
+                        <img th:src="@{image/icons/copy.svg}">
+                    </a>
+                    <div class="join-token-box">
+                        <span class="token-value" th:text="${displayToken}"></span>
+                        <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}" th:method="post">
+                            <button type="submit">
+                                <img th:src="@{image/icons/reload.svg}">
+                            </button>
+                        </form>
+                    </div>
                 </div>
-                    <a href="#" class="copy-token">Copy</a>
             </div>
 
         <div class="team-info">
@@ -68,6 +70,9 @@
             <a class="edit-button" th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
                 <button type="button">Edit Profile</button>
             </a>
+            <a class="edit-button" th:href="@{editTeamRole(edit=${teamID})}" th:if="${isUserManager}">
+                <button type="button">Edit Team Roles</button>
+            </a>
         </form>
     </div>
 
@@ -89,6 +94,7 @@
         });
         const copyButton = document.querySelector('.copy-token');
         const tokenValue = document.querySelector('.token-value');
+        const token = tokenValue.innerHTML;
 
         copyButton.addEventListener('click', () => {
             const selection = window.getSelection();
@@ -98,10 +104,14 @@
             selection.addRange(range);
             document.execCommand('copy');
             selection.removeAllRanges();
-            copyButton.textContent = 'Copied';
+            tokenValue.innerHTML = 'Copied...';
             setTimeout(() => {
-                copyButton.textContent = 'Copy';
-            }, 3000);
+                tokenValue.style.opacity = 0;
+                setTimeout(() => {
+                    tokenValue.style.opacity = 1;
+                    tokenValue.innerHTML = token;
+                }, 500);
+            }, 1000);
         });
     </script>
     <footer>
