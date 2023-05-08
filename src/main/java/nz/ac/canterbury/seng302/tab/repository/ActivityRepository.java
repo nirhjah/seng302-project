@@ -21,10 +21,11 @@ public interface ActivityRepository extends CrudRepository<Activity, Long> {
     @Query("SELECT distinct u FROM Activity u " +
             "LEFT JOIN Team t on u.team = t " +
             "WHERE u.activityOwner = (:user) " +
-            "OR (:user) in t.teamMembers " +
+            "OR u.team is not null and (:user) in (SELECT distinct y.user from TeamRole y " +
+                                                    "WHERE t = y.team) " +
             "ORDER BY " +
-            "u.activityOwner.firstName DESC NULLS LAST, " +
-            "lower(t.name) ASC NULLS LAST, " +
+            "COALESCE(lower(t.name), '') ASC, " +
             "u.activityStart ASC")
-            public Page<Activity> findActivitiesByUser(@Param("user") User user, Pageable pageable);
+    List<Activity> findActivitiesByUser(@Param("user") User user);
+////    public Page<Activity> findActivitiesByUser(@Param("user") User user, Pageable pageable);
 }
