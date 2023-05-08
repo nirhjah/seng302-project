@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
@@ -62,7 +63,12 @@ public class EditTeamRoleController {
     team.setMember(u1);
 
     List<TeamRole> teamRoles = team.getTeamRoleList();
+    List<Long> userIds = new ArrayList<>();
+    for (TeamRole role : teamRoles) {
+      userIds.add(role.getUser().getUserId());
+    }
 
+    model.addAttribute("userIds", userIds);
     model.addAttribute("possibleRoles", Role.values());
     model.addAttribute("roleList", teamRoles);
     model.addAttribute("httpServletRequest", request);
@@ -79,11 +85,13 @@ public class EditTeamRoleController {
   public String editTeamRoles(
           @RequestParam(name = "teamID", required = true) String teamID,
           @RequestParam("tags") List<String> tags,
+          @RequestParam("userIds") List<String> userIds,
           Model model,
           HttpServletRequest request)
           throws Exception {
     logger.info("GET /EditTeamRole");
     logger.info(tags.toString());
+    logger.info(userIds.toString());
 
     Team team = teamService.getTeam(Long.parseLong(teamID));
     if (team == null) {
@@ -92,11 +100,18 @@ public class EditTeamRoleController {
     }
 
     List<TeamRole> teamRoles = team.getTeamRoleList();
+    List<Long> userIDList = new ArrayList<>();
+    for (TeamRole role : teamRoles) {
+      userIDList.add(role.getUser().getUserId());
+    }
+
+    model.addAttribute("userIDs", userIds);
 
     model.addAttribute("possibleRoles", Role.values());
     model.addAttribute("roleList", teamRoles);
     model.addAttribute("httpServletRequest", request);
     model.addAttribute("teamID", teamID.toString());
+    model.addAttribute("userIds", userIDList);
     return "editTeamRoleForm";
   }
 

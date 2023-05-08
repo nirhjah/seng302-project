@@ -56,7 +56,10 @@
         teamIDInput.setAttribute("type", "hidden");
         teamIDInput.setAttribute("name", "teamID");
         let teamID = /*[[${teamID}]]*/ "";
-        let teamRoles = /*[[${roleList}]]*/ [];
+        const userIDInput = document.createElement("input");
+        userIDInput.setAttribute("type", "hidden");
+        userIDInput.setAttribute("name", "userIds");
+        let teamRoles = /*[[${userIds}]]*/ [];
 
         form.addEventListener('submit', (event) => {
             const tagsInput = document.createElement("input");
@@ -74,6 +77,12 @@
             let teamID = /*[[${teamID}]]*/ "";
             teamIDInput.setAttribute("value", teamID);
             form.appendChild(teamIDInput);
+            const userIDInput = document.createElement("input");
+            userIDInput.setAttribute("type", "hidden");
+            userIDInput.setAttribute("name", "userIds");
+            let teamRoles = /*[[${userIds}]]*/ [];
+            userIDInput.setAttribute("value", teamRoles.join(","));
+            form.appendChild(userIDInput);
             return true;
         })
 
