@@ -49,6 +49,7 @@
         const form = document.getElementById("sendTeamChanges");
         const selectionBoxes = document.getElementsByClassName("teamRole");
         let teamID = /*[[${teamID}]]*/ "";
+        let teamRoles = /*[[${userIds}]]*/ [];
 
         function addInput(form, name, value) {
             const inp = document.createElement("input");
@@ -58,26 +59,14 @@
             form.appendChild(inp);
         }
 
-        /*
-        addInput(form, "teamID", teamID)
-
-         */
-
-        let teamRoles = /*[[${userIds}]]*/ [];
-
-        /*
-        addInput(form, "userIds", teamRoles.join(","))
-        addInput(form, "tags", "");
-        */
-
         form.addEventListener('submit', (event) => {
             form.reset()
             let roles = [];
             for (const selection of selectionBoxes) {
                 roles.push(selection.value.toString());
             }
-            let tags = roles.join(",")
-            addInput(form, "tags", tags)
+            let userRoles = roles.join(",")
+            addInput(form, "userRoles", userRoles)
 
             addInput(form, "teamID", teamID)
 
@@ -88,49 +77,5 @@
         })
 
     </script>
-
-<!--
-    <script th:inline="javascript">
-        const form = document.getElementById("sendTeamChanges");
-        const selectionBoxes = document.getElementsByClassName("teamRole");
-        const tagsInput = document.createElement("input");
-        tagsInput.setAttribute("type", "hidden");
-        tagsInput.setAttribute("name", "tags");
-        let tags = [];
-        const teamIDInput = document.createElement("input");
-        teamIDInput.setAttribute("type", "hidden");
-        teamIDInput.setAttribute("name", "teamID");
-        let teamID = /*[[${teamID}]]*/ "";
-        const userIDInput = document.createElement("input");
-        userIDInput.setAttribute("type", "hidden");
-        userIDInput.setAttribute("name", "userIds");
-        let teamRoles = /*[[${userIds}]]*/ [];
-
-        form.addEventListener('submit', (event) => {
-            const tagsInput = document.createElement("input");
-            tagsInput.setAttribute("type", "hidden");
-            tagsInput.setAttribute("name", "tags");
-            let tags = [];
-            for (const selection of selectionBoxes) {
-                tags.push(selection.value.toString());
-            }
-            tagsInput.setAttribute("value", tags.join(","));
-            form.appendChild(tagsInput);
-            const teamIDInput = document.createElement("input");
-            teamIDInput.setAttribute("type", "hidden");
-            teamIDInput.setAttribute("name", "teamID");
-            let teamID = /*[[${teamID}]]*/ "";
-            teamIDInput.setAttribute("value", teamID);
-            form.appendChild(teamIDInput);
-            const userIDInput = document.createElement("input");
-            userIDInput.setAttribute("type", "hidden");
-            userIDInput.setAttribute("name", "userIds");
-            let teamRoles = /*[[${userIds}]]*/ [];
-            userIDInput.setAttribute("value", teamRoles.join(","));
-            form.appendChild(userIDInput);
-            return true;
-        })
--->
-
 </body>
 </html>

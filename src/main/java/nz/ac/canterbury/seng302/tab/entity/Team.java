@@ -199,11 +199,10 @@ public class Team {
 
 
     /**
-     * @param user, the
-     * @param role
+     * @param user, the User we are changing
+     * @param role the role we are changing to user to
      */
     public void setRole(User user, Role role) {
-
         TeamRole teamRole = new TeamRole();
         teamRole.setUser(user);
         teamRole.setRole(role);

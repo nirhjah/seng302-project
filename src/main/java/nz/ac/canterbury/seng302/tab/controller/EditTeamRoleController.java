@@ -51,11 +51,11 @@ public class EditTeamRoleController {
       throws Exception {
     logger.info("GET /getTeamRoles");
     Optional<User> user = userService.getCurrentUser();
+
     if (user.isEmpty()) {
       logger.error("No current user?");
       return "redirect:/home";
     }
-    model.addAttribute("user", user.get());
 
     Team team = teamService.getTeam(teamID);
     if (team == null) {
@@ -63,6 +63,7 @@ public class EditTeamRoleController {
       return "redirect:/home";
     }
 
+    model.addAttribute("user", user.get());
     model.addAttribute("httpServletRequest", request);
     populateListsInModel(team, model);
     return "editTeamRoleForm";
@@ -70,19 +71,22 @@ public class EditTeamRoleController {
 
 
   /**
-   * TODO: We need to think of how best to pass in the new team roles.
-   * I have created a rolesForm
+   *  In this PostMapping, we pass in the userRoles and userIds.
+   *  The userId in `userIds` maps DIRECTLY to the role in `userRoles`, per each index.
+   *  ------------
+   *  For example, if userId 5 exists at index 0 of userIds, then user-5 will
+   *  be assigned to the role at index 0 of userRoles.
    */
   @PostMapping("/editTeamRole")
   public String editTeamRoles(
           @RequestParam(name = "teamID", required = true) String teamID,
-          @RequestParam("tags") List<String> tags,
+          @RequestParam("userRoles") List<String> userRoles,
           @RequestParam("userIds") List<String> userIds,
           Model model,
           HttpServletRequest request)
           throws Exception {
     logger.info("GET /EditTeamRole");
-    logger.info(tags.toString());
+    logger.info(userRoles.toString());
     logger.info(userIds.toString());
 
     Team team = teamService.getTeam(Long.parseLong(teamID));
@@ -91,9 +95,35 @@ public class EditTeamRoleController {
       return "redirect:/home";
     }
 
+    int len = Math.min(userRoles.size(), userIds.size());
+    for (int i=0; i < len; i++) {
+      // userIds list maps directly to userRoles list, per index.
+      updateRole(team, userIds.get(i), userRoles.get(i));
+    }
+
     model.addAttribute("httpServletRequest", request);
     populateListsInModel(team, model);
     return "editTeamRoleForm";
+  }
+
+  private void updateRole(Team team, String userId, String userRole) {
+    long id;
+    try {
+      id = Long.parseLong(userId);
+    } catch (NumberFormatException ex) {
+      logger.error("unable to parse user id???");
+      return;
+    }
+
+    if (Role.isValidRole(userRole)) {
+      Role role = Role.stringToRole(userRole);
+      Optional<User> user = userService.findUserById(id);
+      if (user.isPresent()) {
+        team.setRole(user.get(), role);
+      } else {
+        logger.error("Unknown user whilst changing roles: " + id);
+      }
+    }
   }
 
   public void populateListsInModel(Team team, Model model) {
