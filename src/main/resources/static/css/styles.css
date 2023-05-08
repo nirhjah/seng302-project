@@ -92,6 +92,7 @@ td {
 .wrapper-profile .profile-pic,
 .file-label-border,
 .profile-form,
+.team-profile-form,
 .user-info, .team-info, .wrapper-edit-profile {
     justify-content: center;
     align-items: center;
@@ -147,7 +148,6 @@ footer {
     font-family: "Noto Sans",sans-serif;
     /*color: #0B1B2A;*/
     text-align: center;
-    width: 500px;
     font-size: 40px;
     font-weight: 600;
     color: #0D1B2A;
@@ -442,7 +442,7 @@ li a {
     flex: 1;
 }
 
-.pagination-container, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form{
+.pagination-container, .wrapper, .wrapper-profile .profile-pic, .wrapper-profile .team-info, .file-label-border ,.profile-form, .team-profile-form{
     display: flex;
 }
 
@@ -527,8 +527,4 @@ ul.autocomplete-result{
     bottom: -48px;
     width: 35%;
     height: 35px;
-}
-
-h1 {
-    margin-bottom: 50px;
 }

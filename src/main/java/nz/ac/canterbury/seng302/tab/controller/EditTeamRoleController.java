@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -27,7 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Spring Boot Controller class for the Home Form class.
+ * Spring Boot Controller class for the edit team role class
  */
 @Controller
 public class EditTeamRoleController {
@@ -37,9 +36,8 @@ public class EditTeamRoleController {
   private TeamService teamService;
 
   /**
-   * Redirects GET default url '/' to '/home'
-   *
-   * @return redirect to /home
+   * Takes the user to the edit ream roles page
+   * @return the edit team role page
    */
   @GetMapping("/editTeamRole")
   public String getTeamRoles(@RequestParam(name = "edit", required = true) Long teamID, Model model, HttpServletRequest request)
@@ -87,9 +85,7 @@ public class EditTeamRoleController {
     List<TeamRole> teamRoles = team.getTeamRoleList();
 
     model.addAttribute("possibleRoles", Role.values());
-    logger.info("POSSIBLE ROLES =" + Role.values().toString());
     model.addAttribute("roleList", teamRoles);
-    logger.info("ROLES LIST =" + teamRoles);
     model.addAttribute("httpServletRequest", request);
     return "editTeamRoleForm";
   }
