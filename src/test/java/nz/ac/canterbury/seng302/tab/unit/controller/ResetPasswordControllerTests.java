@@ -87,7 +87,6 @@ public class ResetPasswordControllerTests {
         when(mockUserService.findByToken(token)).thenReturn(Optional.of(testUser));
         when(mockUserService.updateOrAddUser(testUser)).thenReturn(testUser);
 
-
     }
 
 

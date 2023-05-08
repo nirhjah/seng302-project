@@ -6,8 +6,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.ResetPasswordForm;
 import nz.ac.canterbury.seng302.tab.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -27,7 +25,6 @@ import java.util.Optional;
  */
 @Controller
 public class ResetPasswordController {
-    Logger logger = LoggerFactory.getLogger(ResetPasswordController.class);
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -39,6 +36,12 @@ public class ResetPasswordController {
     String currentToken;
 
 
+    /**
+     * Checks if password matches other fields and is secure
+     * @param resetPasswordForm   used to get field values of password and confirm password
+     * @param bindingResult       stores errors
+     * @param token               is used to find the user
+     */
     private void checkPasswordsMatchAndIsSecure(ResetPasswordForm resetPasswordForm, BindingResult bindingResult, String token) {
 
         user = userService.findByToken(currentToken);
@@ -67,9 +70,12 @@ public class ResetPasswordController {
     }
 
     /**
-     * Gets reset password form to be displayed
-     * @param model
-     * @return
+     * Gets the page to show the reset password form
+     * @param token user's unique token to get to this page
+     * @param model (map-like) representation of data to be used in thymeleaf display
+     * @param request request
+     * @param redirectAttributes stores error messages to be displayed
+     * @return reset password page
      */
     @GetMapping("/reset-password")
     public String resetPasswordForm(@RequestParam("token") String token, Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
@@ -96,7 +102,7 @@ public class ResetPasswordController {
      * @param httpServletResponse   httpServerletResponse
      * @param request               request
      * @param redirectAttributes    stores messages to be displayed to user on login page
-     * @return
+     * @return login page upon successfully resetting password
      */
     @PostMapping("/reset-password")
     public String resetPassword(

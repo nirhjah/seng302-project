@@ -6,8 +6,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.ForgotPasswordForm;
 import nz.ac.canterbury.seng302.tab.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,7 +29,6 @@ public class ForgotPasswordController {
 
     @Autowired
     UserService userService;
-    Logger logger = LoggerFactory.getLogger(ForgotPasswordController.class);
 
     @GetMapping("/forgot-password")
     public String forgotPasswordForm(Model model,HttpServletRequest request) {
@@ -48,7 +45,7 @@ public class ForgotPasswordController {
      * @param model                 model to store model attributes
      * @param httpServletResponse   httpServerletResponse
      * @param request               request
-     * @return
+     * @return forgot password page
      */
     @PostMapping("/forgot-password")
     public String submitEmail(

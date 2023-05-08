@@ -287,6 +287,11 @@ public class UserService {
     }
 
 
+    /**
+     * Creates a reset password link with unique token for the user and sends it to their email
+     * @param user      user to send reset password link to
+     * @param request   to get current url to create the link
+     */
     public void resetPasswordEmail(User user, HttpServletRequest request) {
 
         user.generateToken(this, 1);
@@ -294,7 +299,6 @@ public class UserService {
 
         String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "")
                 + "/reset-password?token=" + user.getToken();
-
 
         EmailDetails details = new EmailDetails(user.getEmail(), tokenVerificationLink, EmailDetails.RESET_PASSWORD_HEADER);
         String outcome = emailService.sendSimpleMail(details);
