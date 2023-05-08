@@ -293,7 +293,7 @@ public class UserService {
         updateOrAddUser(user);
 
         String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "")
-                + "/update-password?token=" + user.getToken();
+                + "/reset-password?token=" + user.getToken();
 
 
         EmailDetails details = new EmailDetails(user.getEmail(), tokenVerificationLink, EmailDetails.RESET_PASSWORD_HEADER);

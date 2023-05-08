@@ -42,7 +42,7 @@ public class ForgotPasswordController {
 
     /**
      *
-     * @param email                 email for the update password token link to be sent to
+     * @param email                 email for the reset password token link to be sent to
      * @param forgotPasswordForm    forgot password form
      * @param bindingResult         errors attatched to this
      * @param model                 model to store model attributes

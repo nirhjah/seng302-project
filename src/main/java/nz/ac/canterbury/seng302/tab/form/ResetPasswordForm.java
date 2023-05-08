@@ -3,7 +3,7 @@ package nz.ac.canterbury.seng302.tab.form;
 import jakarta.validation.constraints.NotBlank;
 import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
 
-public class UpdatePasswordForm {
+public class ResetPasswordForm {
 
     @UserFormValidators.PasswordValidator
     @NotBlank(message = UserFormValidators.NOT_BLANK_MSG)

@@ -3,7 +3,7 @@ package nz.ac.canterbury.seng302.tab.unit.controller;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.form.UpdatePasswordForm;
+import nz.ac.canterbury.seng302.tab.form.ResetPasswordForm;
 
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class UpdatePasswordControllerTests {
+public class ResetPasswordControllerTests {
 
     private static final String USER_FNAME = "Test";
     private static final String USER_LNAME = "User";
@@ -91,16 +91,16 @@ public class UpdatePasswordControllerTests {
     }
 
 
-    private UpdatePasswordForm updatePasswordForm() {
-        var form =  new UpdatePasswordForm();
+    private ResetPasswordForm resetPasswordForm() {
+        var form =  new ResetPasswordForm();
         form.setPassword("Password123!");
         form.setConfirmPassword("Password123");
         return form;
     }
 
 
-    private ResultActions postUpdatePasswordForm(UpdatePasswordForm form) throws Exception {
-        String URL = "/update-password?token=" + token;
+    private ResultActions postResetPasswordForm(ResetPasswordForm form) throws Exception {
+        String URL = "/reset-password?token=" + token;
 
         return mockMvc.perform(post(URL)
                 .param("password", form.getPassword())
@@ -110,25 +110,25 @@ public class UpdatePasswordControllerTests {
 
 
     /**
-     * Test getting the update password page with an invalid token
+     * Test getting the reset password page with an invalid token
      * @throws Exception thrown if Mocking fails
      */
     @Test
-    public void testUpdatePasswordPageWithInvalidToken_return302() throws Exception {
-        mockMvc.perform(get("/update-password?token=" + "x")
+    public void testResetPasswordPageWithInvalidToken_return302() throws Exception {
+        mockMvc.perform(get("/reset-password?token=" + "x")
         ).andExpect(status().isFound()).andExpect(view().name("redirect:/login"));
 
     }
 
 
     /**
-     * Test getting the update password page with a valid token of the user
+     * Test getting the reset password page with a valid token of the user
      * @throws Exception thrown if Mocking fails
      */
     @Test
-    public void testUpdatePasswordPageWithValidToken_return200() throws Exception {
-        mockMvc.perform(get("/update-password?token=" + token)
-        ).andExpect(status().isOk()).andExpect(view().name("updatePassword"));
+    public void testResetPasswordPageWithValidToken_return200() throws Exception {
+        mockMvc.perform(get("/reset-password?token=" + token)
+        ).andExpect(status().isOk()).andExpect(view().name("resetPassword"));
 
     }
 
@@ -139,10 +139,10 @@ public class UpdatePasswordControllerTests {
      */
     @Test
     public void whenPasswordsDontMatch_return400() throws Exception {
-        var form = updatePasswordForm();
-        postUpdatePasswordForm(form)
+        var form = resetPasswordForm();
+        postResetPasswordForm(form)
                 .andExpect(status().isBadRequest())
-                .andExpect(view().name("updatePassword"));
+                .andExpect(view().name("resetPassword"));
     }
 
 }
