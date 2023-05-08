@@ -16,11 +16,13 @@
         <form th:action="@{createActivity}" th:object="${createActivityForm}" id="createActivityForm" method="post">
             <div class="select-container">
                 <label for="activityType">Choose An Activity Type</label>
-                <div class="select-box">
-                    <select name="activityType" id="activityType">
-                        <option th:each="activity : ${activityTypes}" th:value="${activity}" th:text="${activity}">
-                    </select>
-                </div>
+                <select name="activityType" id="activityType">
+                    <option th:each="type : ${activityTypes}"
+                            th:value="${type}"
+                            th:text="${type}"
+                            th:selected="${type == activityType}">
+                    </option>
+                </select>
                 <div th:each="err : ${#fields.errors('activityType')}" th:text="${err}" class="error-message"></div>
             </div>
             <div class="select-container">
@@ -28,7 +30,8 @@
                     <label for="team">Select Team For Activity</label>
                     <select name="team" id="team">
                         <option th:if="${#lists.isEmpty(teamList)}" value="" disabled selected>No Teams Available</option>
-                        <option th:each="team : ${teamList}" th:value="${team.getTeamId()}" th:text="${team.getName()}">
+                        <option th:each="team : ${teamList}" th:value="${team.getTeamId()}"
+                                th:text="${team.getName()}" th:selected="${team.getName() == teamName}"></option>
                     </select>
                 </div>
                 <div th:each="err : ${#fields.errors('team')}" th:text="${err}" class="error-message"></div>
@@ -36,7 +39,7 @@
             <div class="description-box">
                 <label for="description">Description:</label>
                 <textarea class ="description-text" id="description" th:name="description" autofocus placeholder=""
-                          th:value="${description}"></textarea>
+                          th:text="${description}"></textarea>
                 <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
             </div>
             <div class="input-box">

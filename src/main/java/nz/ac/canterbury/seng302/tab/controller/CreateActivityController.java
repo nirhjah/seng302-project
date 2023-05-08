@@ -73,8 +73,8 @@ public class CreateActivityController {
                 LocalDateTime endDateTime =  activity.getActivityEnd();
                 String formattedEndDateTime = endDateTime.format(formatter);
 
+                model.addAttribute("activityType", activity.getActivityType());
                 model.addAttribute("teamName", activity.getTeam().getName());
-
                 model.addAttribute("actId", activity.getId());
                 model.addAttribute("startDateTime",formattedStartDateTime);
                 model.addAttribute("endDateTime", formattedEndDateTime);
