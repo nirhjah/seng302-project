@@ -56,6 +56,7 @@
         teamIDInput.setAttribute("type", "hidden");
         teamIDInput.setAttribute("name", "teamID");
         let teamID = /*[[${teamID}]]*/ "";
+        let teamRoles = /*[[${roleList}]]*/ [];
 
         form.addEventListener('submit', (event) => {
             const tagsInput = document.createElement("input");
@@ -71,7 +72,7 @@
             teamIDInput.setAttribute("type", "hidden");
             teamIDInput.setAttribute("name", "teamID");
             let teamID = /*[[${teamID}]]*/ "";
-            tagsInput.setAttribute("value", teamID);
+            teamIDInput.setAttribute("value", teamID);
             form.appendChild(teamIDInput);
             return true;
         })

@@ -64,9 +64,7 @@ public class EditTeamRoleController {
     List<TeamRole> teamRoles = team.getTeamRoleList();
 
     model.addAttribute("possibleRoles", Role.values());
-    logger.info("POSSIBLE ROLES =" + Role.values().toString());
     model.addAttribute("roleList", teamRoles);
-    logger.info("ROLES LIST =" + teamRoles);
     model.addAttribute("httpServletRequest", request);
     model.addAttribute("teamID", teamID.toString());
     return "editTeamRoleForm";
