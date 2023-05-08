@@ -1,19 +1,11 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.form.RegisterForm;
-import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -21,11 +13,20 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.form.RegisterForm;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 
 
 @SpringBootTest
@@ -75,6 +76,14 @@ class RegisterControllerTest {
         assertEquals(isConfirmed, optionalUser.get().getEmailConfirmed());
     }
 
+    /**
+     * Helper function to post the contents of the register form, as Spring
+     * provides no ability to do this in tests.
+     * 
+     * @param form The form object being posted
+     * @return The mockMvc's return value, so you can chain <code>.andExpect(...)</code>
+     * @throws Exception
+     */
     private ResultActions postRegisterForm(RegisterForm form) throws Exception {
         var dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         var dateString = dateFormat.format(form.getDateOfBirth());
@@ -100,7 +109,7 @@ class RegisterControllerTest {
     public void whenRegister_expectUnconfirmedUserInDb() throws Exception {
         var form = getDummyRegisterForm();
         postRegisterForm(form).andExpect(
-                MockMvcResultMatchers.redirectedUrl("/login")
+                redirectedUrl("/login")
         );
 
         optionalUser = userRepository.findByEmail(EMAIL);
@@ -113,7 +122,7 @@ class RegisterControllerTest {
     public void whenRegisterAndConfirmToken_expectConfirmedUserInDb() throws Exception {
         var form = getDummyRegisterForm();
         postRegisterForm(form).andExpect(
-                MockMvcResultMatchers.redirectedUrl("/login")
+                redirectedUrl("/login")
         );
 
         optionalUser = userRepository.findByEmail(EMAIL);
@@ -122,7 +131,7 @@ class RegisterControllerTest {
         mockMvc.perform(get(CONFIRM_URL)
                 .param("token", optionalUser.get().getToken()))
                 .andExpect(
-                        MockMvcResultMatchers.redirectedUrl("/login")
+                        redirectedUrl("/login")
                 );
 
         optionalUser = userRepository.findByEmail(EMAIL);
@@ -133,7 +142,7 @@ class RegisterControllerTest {
     public void whenConfirmUnknownURL_expect404() throws Exception {
         var form = getDummyRegisterForm();
         postRegisterForm(form).andExpect(
-                MockMvcResultMatchers.redirectedUrl("/login")
+                redirectedUrl("/login")
         );
 
         var BAD_TOKEN = "abcdefg12345";
