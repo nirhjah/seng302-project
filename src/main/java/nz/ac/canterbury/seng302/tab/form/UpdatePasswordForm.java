@@ -1,16 +1,18 @@
 package nz.ac.canterbury.seng302.tab.form;
 
+import jakarta.validation.constraints.NotBlank;
 import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
 
 public class UpdatePasswordForm {
 
+    @NotBlank
     private String oldPassword;
     
     @UserFormValidators.PasswordValidator
-    private String confirmPassword;
-    
-    @UserFormValidators.PasswordValidator
     private String newPassword;
+
+    @NotBlank
+    private String confirmPassword;
 
     public String getOldPassword() {
         return oldPassword;
