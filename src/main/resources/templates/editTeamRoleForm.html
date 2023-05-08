@@ -21,7 +21,7 @@
                   <div class="card-body">
                     <h5 class="card-title">[[|${teamRole.getUser().getFirstName()} ${teamRole.getUser().getLastName()} |]]</h5>
                     <p> Team Member Role: </p>
-                    <select name="teamRole" id="teamRole" class="teamRole" onchange="updateTeamRoles(event)">
+                    <select name="teamRole" id="teamRole" class="teamRole">
                       <option th:each="role : ${possibleRoles}" th:value="${role}" th:text="${role}" th:selected="${role.toString() == teamRole.role.toString()}"></option>
                       
                     </select>
@@ -31,7 +31,9 @@
       </div>
     <div class="submit-footer">
         <div class="submit-button">
-            <button type="submit" class="registerLoginButton">Submit Changes</button>
+            <form th:action="@{editTeamRole}" id="sendTeamChanges" class="sendTeamChanges" method="post">
+                <button type="submit" class="registerLoginButton">Submit Changes</button>
+            </form>
         </div>
     </div>
         <footer>
@@ -44,14 +46,35 @@
     </div>
 
     <script th:inline="javascript">
+        const form = document.getElementById("sendTeamChanges");
         const selectionBoxes = document.getElementsByClassName("teamRole");
-        for (const box of selectionBoxes) {
-            box.addEventListener("change", updateTeamRoles)
-        }
+        const tagsInput = document.createElement("input");
+        tagsInput.setAttribute("type", "hidden");
+        tagsInput.setAttribute("name", "tags");
+        let tags = [];
+        const teamIDInput = document.createElement("input");
+        teamIDInput.setAttribute("type", "hidden");
+        teamIDInput.setAttribute("name", "teamID");
+        let teamID = /*[[${teamID}]]*/ "";
 
-        function updateTeamRoles(e) {
-            console.log(this.value);
-        }
+        form.addEventListener('submit', (event) => {
+            const tagsInput = document.createElement("input");
+            tagsInput.setAttribute("type", "hidden");
+            tagsInput.setAttribute("name", "tags");
+            let tags = [];
+            for (const selection of selectionBoxes) {
+                tags.push(selection.value.toString());
+            }
+            tagsInput.setAttribute("value", tags.join(","));
+            form.appendChild(tagsInput);
+            const teamIDInput = document.createElement("input");
+            teamIDInput.setAttribute("type", "hidden");
+            teamIDInput.setAttribute("name", "teamID");
+            let teamID = /*[[${teamID}]]*/ "";
+            tagsInput.setAttribute("value", teamID);
+            form.appendChild(teamIDInput);
+            return true;
+        })
 
 
 

@@ -35,22 +35,31 @@ public class EditTeamRoleController {
   @Autowired
   private TeamService teamService;
 
+  @Autowired
+  private UserService userService;
+
   /**
    * Takes the user to the edit ream roles page
    * @return the edit team role page
    */
   @GetMapping("/editTeamRole")
-  public String getTeamRoles(@RequestParam(name = "edit", required = true) Long teamID, Model model, HttpServletRequest request)
+  public String getTeamRoles(
+          @RequestParam(name = "edit", required = true) Long teamID,
+          Model model,
+          HttpServletRequest request)
       throws Exception {
     logger.info("GET /getTeamRoles");
+    Optional<User> user = userService.getCurrentUser();
+    User u = user.get();
+    model.addAttribute("user", u);
 
     Team team = teamService.getTeam(teamID);
     if (team == null) {
       logger.error("Team ID does not exist!");
       return "redirect:/home";
     }
-    User user = new User("Test", "Account", "email@gmail.com", "password", new Location(null, null, null,"chch", null, "nz"));
-    team.setMember(user);
+    User u1 = new User("Test", "Account", "email@gmail.com", "password", new Location(null, null, null,"chch", null, "nz"));
+    team.setMember(u1);
 
     List<TeamRole> teamRoles = team.getTeamRoleList();
 
@@ -59,6 +68,7 @@ public class EditTeamRoleController {
     model.addAttribute("roleList", teamRoles);
     logger.info("ROLES LIST =" + teamRoles);
     model.addAttribute("httpServletRequest", request);
+    model.addAttribute("teamID", teamID.toString());
     return "editTeamRoleForm";
   }
 
@@ -69,14 +79,15 @@ public class EditTeamRoleController {
    */
   @PostMapping("/editTeamRole")
   public String editTeamRoles(
-          @RequestParam(name = "teamID", required = true) Long teamID,
-          @Validated EditTeamRolesForm rolesForm,
+          @RequestParam(name = "teamID", required = true) String teamID,
+          @RequestParam("tags") List<String> tags,
           Model model,
           HttpServletRequest request)
           throws Exception {
     logger.info("GET /EditTeamRole");
+    logger.info(tags.toString());
 
-    Team team = teamService.getTeam(teamID);
+    Team team = teamService.getTeam(Long.parseLong(teamID));
     if (team == null) {
       logger.error("Team ID does not exist!");
       return "redirect:/home";
@@ -87,6 +98,7 @@ public class EditTeamRoleController {
     model.addAttribute("possibleRoles", Role.values());
     model.addAttribute("roleList", teamRoles);
     model.addAttribute("httpServletRequest", request);
+    model.addAttribute("teamID", teamID.toString());
     return "editTeamRoleForm";
   }
 
