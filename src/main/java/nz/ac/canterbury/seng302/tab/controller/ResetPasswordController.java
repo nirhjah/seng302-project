@@ -89,8 +89,8 @@ public class ResetPasswordController {
         }
 
         currentToken = token;
-
         return "resetPassword";
+
     }
 
     /**

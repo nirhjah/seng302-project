@@ -12,9 +12,11 @@
 </head>
 
 <body class="team-form-background">
+
   <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
   <div class="login-form">
-<!--    <div class="login-header">-->
+    <div th:if="${message != null}" th:insert="~{fragments/messageDropDown.html :: messageDropDown(message=${message})}"></div>
+    <!--    <div class="login-header">-->
 <!--      <h1>Login</h1>-->
 <!--    </div>-->
     <div class="wrapper">
