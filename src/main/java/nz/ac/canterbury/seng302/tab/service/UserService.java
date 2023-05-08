@@ -7,6 +7,7 @@ import java.util.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
+import nz.ac.canterbury.seng302.tab.authentication.TokenVerification;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
@@ -296,6 +297,8 @@ public class UserService {
 
         user.generateToken(this, 1);
         updateOrAddUser(user);
+
+        taskScheduler.schedule(new TokenVerification(user, this), Instant.now().plus(Duration.ofHours(1)));
 
         String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "")
                 + "/reset-password?token=" + user.getToken();
