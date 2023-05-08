@@ -175,9 +175,9 @@ public class User {
         return email;
     }
 
-    public String getPassword() {
-        return hashedPassword;
-    }
+    public String getPassword() {return hashedPassword; }
+
+    public void setPassword(String hashedPassword) { this.hashedPassword = hashedPassword; }
 
     /**
      * <p>Sets the user's password</p>
@@ -351,7 +351,7 @@ public class User {
 
     /**
      * Adds user to given team and sets their role as a Member.
-     * 
+     *
      * @param team team to add user to
      */
     public void joinTeam(Team team) {
@@ -374,3 +374,7 @@ public class User {
     }
 
 }
+
+
+
+

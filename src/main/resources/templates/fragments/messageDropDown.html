@@ -1,0 +1,14 @@
+<div th:fragment="messageDropDown" class="message-dropdown-container">
+    <p th:text="${message}" class="message-dropdown-text"></p>
+    <a onclick="hideMessage()">
+        <img src="/image/icons/cross-white.svg">
+    </a>
+    <script>
+        function hideMessage() {
+            const messageDropdown = document.querySelector('.message-dropdown-container');
+            messageDropdown.style.display = 'none';
+        }
+    </script>
+</div>
+
+
