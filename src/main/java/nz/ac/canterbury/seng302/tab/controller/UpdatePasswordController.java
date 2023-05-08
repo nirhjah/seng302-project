@@ -29,6 +29,10 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 @Controller
 public class UpdatePasswordController {
 
+    public static final String WRONG_OLD_PASSWORD_MSG = "The old password is incorrect.";
+
+    public static final String PASSWORD_MISMATCH_MSG = "Passwords do not match.";
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
@@ -79,11 +83,11 @@ public class UpdatePasswordController {
 
         // U22 - AC2: Is the old password correct?
         if (!passwordEncoder.matches(updatePasswordForm.getOldPassword(), hashedPassword)) {
-            bindingResult.addError(new FieldError(FORM_NAME, "oldPassword", "The old password is incorrect."));
+            bindingResult.addError(new FieldError(FORM_NAME, "oldPassword", WRONG_OLD_PASSWORD_MSG));
         }
         // U22 - AC3: Is 'retype password' the same?
         if (!updatePasswordForm.getNewPassword().equals(updatePasswordForm.getConfirmPassword())) {
-            bindingResult.addError(new FieldError(FORM_NAME, "confirmPassword", "Passwords do not match."));
+            bindingResult.addError(new FieldError(FORM_NAME, "confirmPassword", PASSWORD_MISMATCH_MSG));
         }
         // U22 - AC4 is already handled by the UpdatePasswordForm's password annotation.
     }
@@ -92,8 +96,9 @@ public class UpdatePasswordController {
      * Gives the user their form.
      * 
      * This is a simple function, no pre-population is required.
+     * 
      * @param updatePasswordForm A blank form for the user to fill
-     * @param request Required in navBar.html 
+     * @param request            Required in navBar.html
      */
     @GetMapping("/updatePassword")
     public String getUpdatePassword(
@@ -118,7 +123,8 @@ public class UpdatePasswordController {
      * If the form is valid, the user's password changes, and an email is sent.
      * 
      * @param updatePasswordForm The filled out form
-     * @param bindingResult Contains any form validation errors (incorrect password, etc.)
+     * @param bindingResult      Contains any form validation errors (incorrect
+     *                           password, etc.)
      */
     @PostMapping("/updatePassword")
     public String submitUpdatePassword(
