@@ -201,6 +201,11 @@ public class Team {
     /**
      * @param user, the User we are changing
      * @param role the role we are changing to user to
+     *
+     *  TODO: We maybe could have a Map<UserID, Role> for this, instead of
+     *   list of teamRoles. Alternatively, we could remove Users when they are
+     *    updated. Also we need to think about what happens when a User is removed
+     *     from the team.   The TeamRole should be removed.
      */
     public void setRole(User user, Role role) {
         TeamRole teamRole = new TeamRole();

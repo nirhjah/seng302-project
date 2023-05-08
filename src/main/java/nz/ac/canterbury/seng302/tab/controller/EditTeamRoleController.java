@@ -100,6 +100,7 @@ public class EditTeamRoleController {
       // userIds list maps directly to userRoles list, per index.
       updateRole(team, userIds.get(i), userRoles.get(i));
     }
+    teamService.updateTeam(team);
 
     model.addAttribute("httpServletRequest", request);
     populateListsInModel(team, model);
