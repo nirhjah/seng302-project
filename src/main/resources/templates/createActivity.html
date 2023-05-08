@@ -14,18 +14,15 @@
     </div>
     <div class="wrapper">
         <form th:action="@{createActivity}" th:object="${createActivityForm}" id="createActivityForm" method="post">
-            <div class="dropdown">
-                <div class="select">
-                    <span class="selected" th:text="${activityTypes[0]}" id="activityType"></span>
-                    <div class="caret"></div>
+            <div class="input-box">
+                <div class="select-box">
+                    <select name="activityType" id="activityType">
+                        <option th:each="activity : ${activityTypes}" th:value="${activity}" th:text="${activity}">
+                    </select>
                 </div>
-
-                <ul class="menu">
-                    <li th:each="i : ${#numbers.sequence(1, #lists.size(activityTypes) - 1)}"
-                        th:text="${activityTypes[i]}"></li>
-                </ul>
+                <label for="activityType">Choose An Activity Type</label>
+                <div th:each="err : ${#fields.errors('activityType')}" th:text="${err}" class="error-message"></div>
             </div>
-
             <div class="input-box">
                 <div class="select-box">
                     <select name="team" id="team">
