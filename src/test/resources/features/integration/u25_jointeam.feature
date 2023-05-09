@@ -16,9 +16,9 @@ Feature: U25 - Join a Team
 #    Given I am on the my teams page
 #    When I input an invalid team invitation token
 #    Then An error message tells me the token is invalid
+#
 
-
-#  Scenario: AC4 Given I have joined a new team, when I click on a dedicated UI element to see the teams I am a member of, then I see the new team I just joined.
-#    Given I have joined a new team
-#    When I click the my teams button
-#    Then I see the team I just joined
+  Scenario: AC4 Given I have joined a new team, when I click on a dedicated UI element to see the teams I am a member of, then I see the new team I just joined.
+    Given I have joined a new team
+    When I click the my teams button
+    Then I see the team I just joined

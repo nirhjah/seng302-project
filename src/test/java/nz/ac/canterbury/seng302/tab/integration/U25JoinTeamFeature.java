@@ -30,6 +30,7 @@ import java.util.GregorianCalendar;
 import java.util.Optional;
 
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class U25JoinTeamFeature {
@@ -56,7 +57,7 @@ public class U25JoinTeamFeature {
 
 
     @BeforeEach
-    public void beforeAll() throws IOException {
+    public void beforeEach() throws IOException {
         Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
         userRepository.save(user);
@@ -132,32 +133,42 @@ public class U25JoinTeamFeature {
 
 
     @When("I input an invalid team invitation token")
+    @WithMockUser()
     public void i_input_an_invalid_team_invitation_token() throws Exception {
         mockMvc.perform(post("/my-teams", 42L)
                 .with(csrf())
-                .param("token", "invalidtoken")).andExpect(status().isBadRequest());
+                .param("token", "invalidtoken"));
 
     }
 
     @Then("An error message tells me the token is invalid")
+    @WithMockUser()
     public void an_error_message_tells_me_the_token_is_invalid() throws Exception {
         mockMvc.perform(post("/my-teams", 42L)
                 .with(csrf())
-                .param("token", "invalidtoken")).andExpect(status().isBadRequest());
+                .param("token", "invalidtoken")).andExpect(status().isBadRequest()).andExpect(redirectedUrl("/my-teams?page=1"));
+
     }
 
 
 
     @Given("I have joined a new team")
-    public void i_have_joined_a_new_team() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+    public void i_have_joined_a_new_team() throws IOException {
+
+        if (team == null) {
+            team = new Team("TestTeam", "Hockey", new Location(null, null, null, "chch", null, "nz"));
+        }
+
+        if (user == null) {
+            user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", new Location(null, null, null, "chch", null, "nz"));
+
+        }
+        user.joinTeam(team);
     }
 
     @Then("I see the team I just joined")
     public void i_see_the_team_i_just_joined() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+        Assertions.assertTrue(user.getJoinedTeams().size() > 0);
     }
 
 
