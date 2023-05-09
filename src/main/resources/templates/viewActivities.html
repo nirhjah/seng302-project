@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <link th:href="@{/css/view-activities.css}" rel="stylesheet">
+    <title>View All Teams</title>
+</head>
+<body class="background">
+    <div>
+        <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+        <div class="header">
+            <h1>My Activities</h1>
+        </div>
+        <ul>
+            <li th:each="activity : ${activities}" class="card"
+                 th:onclick="|window.location.href='@{profile(teamID=${team.teamId})}'|">
+
+
+            </li>
+        <div th:insert="fragments/pagination.html :: pagination(pageName='view-activities')"></div>
+        <footer>
+            <p>
+                Image by <a href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a> on Freepik
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
