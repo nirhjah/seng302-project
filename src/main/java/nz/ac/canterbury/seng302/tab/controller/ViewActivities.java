@@ -17,6 +17,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -28,38 +30,47 @@ public class ViewActivities {
     private UserService userService;
     @Autowired
     private ActivityService activityService;
+    @Autowired
+    private TeamService teamService;
 
     /**
      * Gets viewAllActivities doc with required attributes. Reroutes if page out of available range
-     * @param pageNo integer corresponding page to be displayed
+     *
+     * @param pageNum integer corresponding page to be displayed
      * @param model  (map-like) representation of name, language and isJava boolean for use in thymeleaf
      * @return thymeleaf viewAllTeams
      */
     public String viewPageOfActivities(@RequestParam(name = "name", required = false, defaultValue = "-1") int userId,
-                                @RequestParam(value = "page", defaultValue = "-1") int pageNo,
-                                Model model, HttpServletRequest request) {
-        if (pageNo < 1) {
-            pageNo = 1;
-        }
+                                       @RequestParam(value = "page", defaultValue = "-1") int pageNum,
+                                       Model model, HttpServletRequest request) {
         Optional<User> user = userService.getCurrentUser();
         User currentUser = user.get();
-        Pageable pageable = PageRequest.of(pageNo - 1, maxPageSize);
-        Page<Activity> listTeams = activityService.getPaginatedActivities(pageable, currentUser);
-        if (pageNo > listTeams.getTotalPages() && listTeams.getTotalPages() > 0) {
-            pageNo = listTeams.getTotalPages();
-              pageable = PageRequest.of(pageNo - 1, maxPageSize);
-            listTeams = activityService.getPaginatedActivities(pageable, currentUser);
-        }
-        // If page number outside of page range then reloads page with appropriate number
-//        if (pageNo < 1 || pageNo > activityService.getPaginatedActivities(pageNo, maxPageSize).getTotalPages() && activityService.findPaginated(pageNo, maxPageSize).getTotalPages() > 0) {
-//            pageNo = pageNo < 1 ? 1: activityService.findPaginated(pageNo, maxPageSize).getTotalPages();
-//            return "redirect:/view-teams?page=" + pageNo;
-//        }
 
-        model.addAttribute("page", pageNo);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("totalItems", page.getTotalElements());
-        model.addAttribute("displayTeams", listTeams);
+        // If page num out of range then set page num to 1 or max
+        if (pageNum < 1) {
+            pageNum = 1;
+        }
+
+        Pageable pageable = PageRequest.of(pageNum-1, maxPageSize);
+        Page<Activity> activitiesPage = activityService.getPaginatedActivities(pageable, currentUser);
+
+        if (pageNum > activitiesPage.getTotalPages() && activitiesPage.getTotalPages() > 0) {
+            pageNum = activitiesPage.getTotalPages();
+            pageable = PageRequest.of(pageNum-1, maxPageSize);
+            activitiesPage = activityService.getPaginatedActivities(pageable, currentUser);
+        }
+
+        List<Activity> activityList = activitiesPage.getContent();
+        model.addAttribute("firstName", user.get().getFirstName());
+        model.addAttribute("lastName", user.get().getLastName());
+        model.addAttribute("displayPicture", user.get().getPictureString());
+        model.addAttribute("navTeams", teamService.getTeamList());
+        model.addAttribute("page", pageNum);
+        model.addAttribute("totalPages", activitiesPage.getTotalPages());
+        model.addAttribute("totalItems", activitiesPage.getTotalElements());
+        model.addAttribute("activities", activityList);
+        return "viewActivities";
     }
 
 }
+
