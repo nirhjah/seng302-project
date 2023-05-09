@@ -39,10 +39,10 @@ public class ViewTeamActivitiesController {
      *               for use in thymeleaf
      * @return thymeleaf profileForm
      */
-    @GetMapping("/ViewTeamActivities")
+    @GetMapping("/viewTeamActivities")
     public String profileForm(Model model, @RequestParam(value = "teamID", required = false) Long teamID,
             HttpServletRequest request) {
-        logger.info("/ViewTeamActivities");
+        logger.info("/viewTeamActivities");
 
         // Retrieve the selected team from the list of available teams using the ID
         // If the name is null or empty, return null
