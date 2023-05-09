@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.UpdatePasswordForm;
@@ -125,12 +127,17 @@ public class UpdatePasswordController {
      * @param updatePasswordForm The filled out form
      * @param bindingResult      Contains any form validation errors (incorrect
      *                           password, etc.)
+     * @param request            Required for navBar.html
+     * @param response           Used to set the status code if an error occurs
+     *                           (Makes testing easier)
      */
     @PostMapping("/updatePassword")
     public String submitUpdatePassword(
             @Valid UpdatePasswordForm updatePasswordForm,
             BindingResult bindingResult,
-            Model model, HttpServletRequest request) {
+            Model model,
+            HttpServletRequest request,
+            HttpServletResponse response) {
         logger.info("GET /updatePassword");
 
         // Get the currently logged in user
@@ -143,6 +150,7 @@ public class UpdatePasswordController {
         // Check that the form is valid
         validateForm(bindingResult, updatePasswordForm, user.getPassword());
         if (bindingResult.hasErrors()) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
             return "updatePassword";
         } else {
             String hashedPassword = passwordEncoder.encode(updatePasswordForm.getNewPassword());
