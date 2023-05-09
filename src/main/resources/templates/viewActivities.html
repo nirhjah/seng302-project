@@ -15,11 +15,12 @@
             <h1>My Activities</h1>
         </div>
         <ul>
-            <li th:each="activity : ${activities}" class="card"
-                 th:onclick="|window.location.href='@{profile(teamID=${team.teamId})}'|">
-
-
+            <li th:each="activity : ${activities}" th:onclick="|window.location.href='@{profile(teamID=${activity.team.teamId})}'|">
+                <span class="title"><a th:href="@{activity...}" th:text="${activity.team != null} ? ${activity.team} : 'Personal'"></a></span>
+                <span class="details" th:text="${activity.team} + '•'"></span>
+                <span class="description" th:text="${activity.description}"></span>
             </li>
+        </ul>
         <div th:insert="fragments/pagination.html :: pagination(pageName='view-activities')"></div>
         <footer>
             <p>
