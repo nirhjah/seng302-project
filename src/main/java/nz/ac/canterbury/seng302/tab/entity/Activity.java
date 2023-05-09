@@ -21,6 +21,7 @@ public class Activity {
         Competition,
         Other
     }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "activityId")
@@ -49,17 +50,20 @@ public class Activity {
     /**
      * Empty Constructor for JPA
      */
-    public Activity() {}
+    public Activity() {
+    }
 
     /**
      * Generic Constructor for Activity
-     * @param activityType - enum value of activity type
-     * @param team - the team that this activity relates too
-     * @param description - short description of the event
+     * 
+     * @param activityType  - enum value of activity type
+     * @param team          - the team that this activity relates too
+     * @param description   - short description of the event
      * @param activityStart - the date and time of start of activity
-     * @param activityEnd - the end date and time of activity
+     * @param activityEnd   - the end date and time of activity
      */
-    public Activity(ActivityType activityType, Team team, String description, LocalDateTime activityStart, LocalDateTime activityEnd, User creator) {
+    public Activity(ActivityType activityType, Team team, String description, LocalDateTime activityStart,
+            LocalDateTime activityEnd, User creator) {
         this.activityType = activityType;
         this.team = team;
         this.description = description;
@@ -88,12 +92,26 @@ public class Activity {
         return activityEnd;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public String getActivityString() {
+        return activityType.name();
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Activity activity = (Activity) o;
-        return id == activity.id && activityType == activity.activityType && Objects.equals(team, activity.team) && Objects.equals(description, activity.description) && Objects.equals(activityStart, activity.activityStart) && Objects.equals(activityEnd, activity.activityEnd) && Objects.equals(activityOwner, activity.activityOwner);
+        return id == activity.id && activityType == activity.activityType && Objects.equals(team, activity.team)
+                && Objects.equals(description, activity.description)
+                && Objects.equals(activityStart, activity.activityStart)
+                && Objects.equals(activityEnd, activity.activityEnd)
+                && Objects.equals(activityOwner, activity.activityOwner);
     }
 
     @Override
