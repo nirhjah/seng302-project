@@ -30,7 +30,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
         boolean existsByEmail(String email);
 
-        Page<User> findAll(Pageable pageable);
+        Page<User> findAllByOrderByLastNameAscIgnoreCaseAndFirstNameIgnoreCase(Pageable pageable);
 
         /*
          * Query Logic:
@@ -47,16 +47,16 @@ public interface UserRepository extends CrudRepository<User, Long> {
          * "Carpenter".
          * So, we ALSO check if the first name or last name is in the search string.
          */
-        @Query("SELECT DISTINCT u "
-                + "FROM UserEntity u LEFT JOIN u.favoriteSports s "
-                + "WHERE (:#{#filteredLocations.size} = 0 OR (u.location.city) in (:filteredLocations)) "
-                + "AND (:#{#filteredSports.size}=0 OR s.name in (:filteredSports)) "
-                + "AND (:name is null OR "
-                + "lower(:name) like lower(concat('%', u.firstName, '%')) "
-                + "OR (lower(:name) like lower(concat('%', u.lastName, '%'))) "
-                + "OR (lower(u.firstName) like lower(concat('%', :name, '%'))) "
-                + "OR (lower(u.lastName) like lower(concat('%', :name, '%')))) "
-                + "ORDER BY lower(u.lastName) ASC")
+        @Query("""
+            SELECT DISTINCT u
+            FROM UserEntity u LEFT JOIN u.favoriteSports s
+            WHERE (:#{#filteredLocations.size} = 0 OR (u.location.city) in (:filteredLocations))
+              AND (:#{#filteredSports.size}=0 OR s.name in (:filteredSports))
+              AND (:name is null OR
+                lower(:name) like lower(concat('%', u.firstName, '%'))
+              OR (lower(:name) like lower(concat('%', u.lastName, '%')))
+              OR (lower(u.firstName) like lower(concat('%', :name, '%')))
+              OR (lower(u.lastName) like lower(concat('%', :name, '%'))))""")
         Page<User> findUserByFilteredLocationsAndSports(Pageable pageable,
                         @Param("filteredLocations") List<String> filteredLocations,
                         @Param("filteredSports") List<String> filteredSports,

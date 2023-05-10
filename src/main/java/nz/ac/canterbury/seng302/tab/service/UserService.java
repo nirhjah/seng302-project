@@ -54,7 +54,7 @@ public class UserService {
      * @return A slice of users returned from pagination
      */
     public Page<User> getPaginatedUsers(Pageable pageable) {
-        return userRepository.findAllByOrderByLastNameAsc(pageable);
+        return userRepository.findAllByOrderByLastNameAscIgnoreCaseAndFirstNameAscIgnoreCase(pageable);
     }
 
     public Optional<User> findByToken(String token) {
@@ -76,9 +76,12 @@ public class UserService {
      *                        <code>firstName+' '+lastName</code>
      * @return A slice of users with the applied filters
      */
-    public Page<User> findUsersByNameOrSportOrCity(Pageable pageable, @Nullable List<String> favouriteSports,
+    public Page<User> findUsersByNameOrSportOrCity(Pageable pageable,
+            @Nullable List<String> favouriteSports,
             @Nullable List<String> favouriteCities,
             @Nullable String nameSearch) {
+        
+        if (pageable.getSo)
         logger.info("fav cities = {}", favouriteCities);
         logger.info("fav sports = {}", favouriteSports);
         logger.info("nameSearch = {}", nameSearch);
