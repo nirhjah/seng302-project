@@ -473,6 +473,7 @@ public class UserRepositoryTest {
         userRepository.save(christchurchHockey);
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(nelson.getCity()), List.of("Hockey", "Rugby"), "");
+        assertEquals(2, returnedUsers.getNumberOfElements());
         assertEquals(List.of(nelsonHockey, nelsonRugby), returnedUsers.toList());
     }
 
