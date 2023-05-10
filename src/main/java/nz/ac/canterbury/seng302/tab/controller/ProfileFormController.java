@@ -82,7 +82,6 @@ public class ProfileFormController {
         model.addAttribute("navTeams", teamList);
         model.addAttribute("httpServletRequest", request);
 
-
         return "profileForm";
     }
 
@@ -101,6 +100,7 @@ public class ProfileFormController {
     public String uploadPicture(
             @RequestParam("file") MultipartFile file,
             @RequestParam("teamID") long teamID) {
+        logger.info("POST /profile");
         teamService.updatePicture(file, teamID);
         return "redirect:/profile?teamID=" + teamID;
     }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
     <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
@@ -27,6 +27,7 @@
                             Edit Profile Picture </label>
                     </div>
                     <input type="file" name="file" class="form-control-file" id="file">
+                    <input type="hidden" name="teamID" th:value="${teamID}">
                 </div>
             </form>
         </div>
@@ -66,7 +67,6 @@
 
         </div>
         <form th:action="@{profile}" class="profile-buttons" method="post">
-            <input type="hidden" name="teamID" th:value="${teamID}">
             <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
             <a class="edit-button" th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
                 <button type="button">Edit Profile</button>
