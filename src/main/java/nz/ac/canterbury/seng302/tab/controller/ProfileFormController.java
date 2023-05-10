@@ -27,7 +27,7 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 @Controller
 public class ProfileFormController {
 
-    Logger logger = LoggerFactory.getLogger(ProfileFormController.class);
+    Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private TeamService teamService;
