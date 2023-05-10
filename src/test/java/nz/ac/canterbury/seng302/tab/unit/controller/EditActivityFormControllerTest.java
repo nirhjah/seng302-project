@@ -66,11 +66,11 @@ public class EditActivityFormControllerTest {
 
     @BeforeEach
     void beforeEach() throws IOException {
+        activityRepository.deleteAll();
         teamRepository.deleteAll();
         userRepository.deleteAll();
         Date userDOB;
         try {
-            // Have to catch a constant parse exception annoyingly
             userDOB = new SimpleDateFormat("YYYY-mm-dd").parse(USER_DOB);
         } catch (ParseException e) {
             throw new RuntimeException(e);
@@ -88,22 +88,28 @@ public class EditActivityFormControllerTest {
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
         when(mockUserService.emailIsInUse(anyString())).thenReturn(false);
     }
-
     @Test
     public void testDisplayingEditActivityReturns200() throws Exception {
         mockMvc.perform(get("/createActivity?edit={id}",team.getTeamId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("createActivity"));
     }
+    @Test
+    public void whenAllFieldsAreValidReturn302() throws Exception {
+        mockMvc.perform(post("/createActivity?edit={id}",team.getTeamId())
+                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("team", String.valueOf(team.getTeamId()))
+                        .param("description", "testing edit description")
+                        .param("startDateTime", "2023-07-01T10:00:00")
+                        .param("endDateTime", "2023-08-01T12:00:00"))
+                .andExpect(status().isFound());
+    }
+    @Test
+    public void whenStartDateTimeIsInvalidReturn400(){}
 
     @Test
-    public void WhenAllFieldsAreValidReturn302() throws Exception {
-        mockMvc.perform(post("/createActivity?edit={id}",team.getTeamId())
-                .param("activityType", String.valueOf(Activity.ActivityType.Training))
-                        .param("description", "testing edit description"))
-                .andExpect(status().isFound());
+    public void whenDescriptionisEmptyReturn400(){}
 
-    }
+    @Test
+    public void whenEndDateTimeIsInvalidReturn400(){}
 }
-
-
