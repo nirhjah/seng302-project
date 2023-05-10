@@ -4,20 +4,24 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.UserService;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.Assertions;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -34,7 +38,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
-@ExtendWith(MockitoExtension.class) // SpringExtension.class
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class ResetPasswordIntegrationTests {
 
@@ -45,7 +48,9 @@ public class ResetPasswordIntegrationTests {
     private UserRepository userRepository;
 
     // @SpyBean was used previously, broke other tests since the controller uses a different object.
-    @Autowired
+   /* @Autowired
+    @Spy*/
+    @MockBean
     private UserService userService = mock(UserService.class);
 
     private User user;
@@ -54,31 +59,25 @@ public class ResetPasswordIntegrationTests {
 
     private String token;
 
-    private String EMAIL = "johndoe@example.com";
-
-    public void setupUser() throws IOException {
-        if (user == null) {
-            var opt = userRepository.findByEmail(EMAIL);
-            if (opt.isPresent()) {
-                user = opt.get();
-            } else {
-                Location location = new Location(null, null, null, "Christchurch", null, "New Zealand");
-                var usr = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", location);
-                user = userRepository.save(usr);
-            }
-        }
-    }
-
-    public void setupToken() {
-        user.generateToken(userService, 1);
-        token = user.getToken();
-        userService.updateOrAddUser(user);
-    }
 
     @Before
-    public void before() {
-        MockitoAnnotations.openMocks(this);
+    public void setup() throws IOException {
+        userRepository.deleteAll();
+        Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
+        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
+        userRepository.save(user);
+        user.generateToken(userService, 1);
+        token = user.getToken();
+        userRepository.save(user);
+
+        // when(userService.resetPasswordEmail(user, request)).thenReturn(Optional.of(testUser));
+        //userService.resetPasswordEmail(user, request);
+
+
     }
+
+
+
 
     @Given("I am on the login page")
     public void i_am_on_the_login_page() throws Exception {
@@ -98,7 +97,6 @@ public class ResetPasswordIntegrationTests {
 
     @Given("I am on the lost password form")
     public void i_am_on_the_lost_password_form() throws Exception {
-        setupUser();
         mockMvc.perform(get("/forgot-password"));
     }
 
@@ -135,29 +133,37 @@ public class ResetPasswordIntegrationTests {
     public void i_enter_a_email_known_to_the_system() throws Exception {
         mockMvc.perform(post("/forgot-password", 42L)
                 .with(csrf())
-                .param("email", "johndoe@example.com")).andExpect(status().isOk());
+                .param("email", "johndoe@example.com")).andExpect(status().isOk()).andExpect(view().name("forgotPassword"));
+
     }
+
+
 
 
     @Then("An email is sent with a unique link to update the password of the associated email")
     public void an_email_is_sent_with_a_unique_link_to_update_the_password_of_the_associated_email() {
         // TODO: find a way to test this.
-        // verify(userService, times(1)).resetPasswordEmail(any(), any());
+        //Mockito.doNothing().when(userService).resetPasswordEmail(user, request);
+        doCallRealMethod().when(userService).resetPasswordEmail(user, request);
+        //  userService.resetPasswordEmail(user, request);
+        verify(userService, times(1)).resetPasswordEmail(any(), any());
+        //  Assertions.assertTrue(user.getToken() != null);
+
+
     }
 
     @Given("I received a reset password email")
     public void i_received_a_reset_password_email() throws IOException {
-        setupUser();
-        setupToken();
+        Assertions.assertTrue(user.getToken() != null);
     }
 
     @When("I go to the URL in the link")
     @WithMockUser
     public void i_go_to_the_url_in_the_link() throws Exception {
         mockMvc.perform(get("/reset-password?token=" + user.getToken())).andExpect(view().name("resetPassword"));
-      //  mockMvc.perform(get("/reset-password").param("token", user.getToken())).andExpect(status().isOk());
-      //  mockMvc.perform(get("/reset-password?token=").param("token", user.getToken())).andExpect(status().isOk());
-      //  mockMvc.perform(get("/reset-password").param("token", user.getToken())).andExpect(view().name("resetPassword"));
+        //  mockMvc.perform(get("/reset-password").param("token", user.getToken())).andExpect(status().isOk());
+        //  mockMvc.perform(get("/reset-password?token=").param("token", user.getToken())).andExpect(status().isOk());
+        //  mockMvc.perform(get("/reset-password").param("token", user.getToken())).andExpect(view().name("resetPassword"));
 
     }
 
