@@ -1,23 +1,23 @@
 package nz.ac.canterbury.seng302.tab.integration;
 
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.UserService;
-import org.mockito.Mockito;
-import org.mockito.Spy;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -34,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
+@ExtendWith(MockitoExtension.class) // SpringExtension.class
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class ResetPasswordIntegrationTests {
 
@@ -45,8 +46,7 @@ public class ResetPasswordIntegrationTests {
 
     // @SpyBean was used previously, broke other tests since the controller uses a different object.
     @Autowired
-    @Spy
-    private UserService userService;
+    private UserService userService = mock(UserService.class);
 
     private User user;
 
@@ -75,6 +75,10 @@ public class ResetPasswordIntegrationTests {
         userService.updateOrAddUser(user);
     }
 
+    @Before
+    public void before() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Given("I am on the login page")
     public void i_am_on_the_login_page() throws Exception {
