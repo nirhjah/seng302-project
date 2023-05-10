@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,8 +49,9 @@ public class ViewAllUsersController {
     private static final int PAGE_SIZE = 10;
 
     private static final Sort SORT_BY_LAST_AND_FIRST_NAME = Sort.by(
-            new Sort.Order(Sort.Direction.ASC, "lastName"),
-            new Sort.Order(Sort.Direction.ASC, "firstName"));
+            Order.asc("lastName").ignoreCase(),
+            Order.asc("firstName").ignoreCase()
+    );
 
     /**
      * Takes user to the view all users page

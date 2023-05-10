@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -54,7 +56,7 @@ public class UserService {
      * @return A slice of users returned from pagination
      */
     public Page<User> getPaginatedUsers(Pageable pageable) {
-        return userRepository.findAllByOrderByLastNameAscIgnoreCaseAndFirstNameAscIgnoreCase(pageable);
+        return userRepository.findAll(pageable);
     }
 
     public Optional<User> findByToken(String token) {
@@ -81,7 +83,6 @@ public class UserService {
             @Nullable List<String> favouriteCities,
             @Nullable String nameSearch) {
         
-        if (pageable.getSo)
         logger.info("fav cities = {}", favouriteCities);
         logger.info("fav sports = {}", favouriteSports);
         logger.info("nameSearch = {}", nameSearch);

@@ -30,7 +30,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
         boolean existsByEmail(String email);
 
-        Page<User> findAllByOrderByLastNameAscIgnoreCaseAndFirstNameIgnoreCase(Pageable pageable);
+        Page<User> findAll(Pageable pageable);
 
         /*
          * Query Logic:
@@ -56,7 +56,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
                 lower(:name) like lower(concat('%', u.firstName, '%'))
               OR (lower(:name) like lower(concat('%', u.lastName, '%')))
               OR (lower(u.firstName) like lower(concat('%', :name, '%')))
-              OR (lower(u.lastName) like lower(concat('%', :name, '%'))))""")
+              OR (lower(u.lastName) like lower(concat('%', :name, '%'))))
+            ORDER BY lower(u.lastName), lower(u.firstName)""")
         Page<User> findUserByFilteredLocationsAndSports(Pageable pageable,
                         @Param("filteredLocations") List<String> filteredLocations,
                         @Param("filteredSports") List<String> filteredSports,
