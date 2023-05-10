@@ -20,10 +20,10 @@ Scenario: AC4 - Given I am on the lost password form, when I enter an email that
   Then An email is sent with a unique link to update the password of the associated email
 
 
-#  Scenario: AC5 - Given I received an email to reset my password, when I go to the given URL passed in the link, then I am asked to supply a new password with “new password” and “retype password” fields.
-#    Given I received a reset password email
-#    When I go to the URL in the link
-#    Then I see the reset password page
+Scenario: AC5 - Given I received an email to reset my password, when I go to the given URL passed in the link, then I am asked to supply a new password with “new password” and “retype password” fields.
+  Given I received a reset password email
+  When I go to the URL in the link
+  Then I see the reset password page
 
 #  Scenario: AC6 - Given I am on the reset password form, and I enter two different passwords in “new” and “retype password” fields, when I hit the save button, then an error message tells me the passwords do not match.
 #    Given I am on the reset password page
