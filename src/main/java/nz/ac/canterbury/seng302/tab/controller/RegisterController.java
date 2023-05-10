@@ -1,5 +1,12 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.form.RegisterForm;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -142,7 +149,7 @@ public class RegisterController {
             @Valid RegisterForm registerForm,
             BindingResult bindingResult,
             HttpServletRequest request,
-            Model model, RedirectAttributes redirectAttributes) throws IOException, ServletException {
+            Model model, RedirectAttributes redirectAttributes, HttpSession session) throws IOException, ServletException {
 
         // Run the custom validation methods
         // TODO: Move validators that might be reused into their own class
@@ -171,7 +178,7 @@ public class RegisterController {
                 + "/confirm?token=" + user.getToken();
         emailService.confirmationEmail(user, confirmationUrl);
 
-        redirectAttributes.addFlashAttribute("emailSentMessage", "Your email has been confirmed successfully!");
+        session.setAttribute("message", "An email has been sent to your email address. Please follow the instructions to validate your account before you can log in");
         return "redirect:/login";
     }
 
@@ -182,7 +189,7 @@ public class RegisterController {
      * @return
      */
     @GetMapping("/confirm")
-    public String confirmEmail(@RequestParam("token") String token, RedirectAttributes redirectAttributes) {
+    public String confirmEmail(@RequestParam("token") String token, RedirectAttributes redirectAttributes, HttpSession session) {
         var opt = userService.findByToken(token);
 
         if (opt.isEmpty()) {

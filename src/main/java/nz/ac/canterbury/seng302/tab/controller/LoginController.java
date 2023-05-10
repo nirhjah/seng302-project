@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import javax.naming.AuthenticationException;
 
 import org.slf4j.Logger;
@@ -24,8 +26,8 @@ public class LoginController {
      * @throws AuthenticationException If logging in failed with an unknown error
      */
     @GetMapping("/login")
-    public String form(@RequestParam(name="error", required=false, defaultValue="false") String error,
-                       Model model, HttpServletRequest request) throws Exception {
+    public String form(@RequestParam(name="error", required = false, defaultValue = "false") String error,
+                       Model model, HttpServletRequest request, HttpSession session) {
         model.addAttribute("httpServletRequest", request);
 
         if (error.equals("true")) {
@@ -45,10 +47,18 @@ public class LoginController {
             }
             model.addAttribute("errorMessage", errorMessage);
         } else {
-            model.addAttribute("errorMessage", "");
-        }
+
+        model.addAttribute("passwordUpdatedMessage", (String)model.asMap().get("passwordUpdatedMessage"));
+
+        model.addAttribute("invalidTokenMessage", (String)model.asMap().get("invalidTokenMessage"));
 
         logger.info("GET /login");
+        model.addAttribute("message", session.getAttribute("message"));
+        String message = (String) session.getAttribute("message");
+        if (message != null) {
+            model.addAttribute("message", message);
+            session.removeAttribute("message");
+        }
         return "login";
     }
 
