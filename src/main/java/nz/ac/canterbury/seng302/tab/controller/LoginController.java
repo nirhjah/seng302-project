@@ -46,10 +46,9 @@ public class LoginController {
                         exception);
             }
             model.addAttribute("errorMessage", errorMessage);
-        } else {
+        }
 
         model.addAttribute("passwordUpdatedMessage", (String)model.asMap().get("passwordUpdatedMessage"));
-
         model.addAttribute("invalidTokenMessage", (String)model.asMap().get("invalidTokenMessage"));
 
         logger.info("GET /login");
