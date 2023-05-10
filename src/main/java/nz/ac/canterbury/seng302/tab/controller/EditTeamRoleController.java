@@ -3,14 +3,12 @@ package nz.ac.canterbury.seng302.tab.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
-import nz.ac.canterbury.seng302.tab.form.EditTeamRolesForm;
 import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.ArrayList;
 import java.util.List;
 
-import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -128,7 +125,7 @@ public class EditTeamRoleController {
   }
 
   public void populateListsInModel(Team team, Model model) {
-    List<TeamRole> teamRoles = team.getTeamRoleList();
+    Set<TeamRole> teamRoles = team.getTeamRoles();
     List<Long> userIDList = new ArrayList<>();
     for (TeamRole role : teamRoles) {
       userIDList.add(role.getUser().getUserId());
