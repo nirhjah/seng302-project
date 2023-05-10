@@ -216,6 +216,10 @@ public class Team {
         return this.teamRoles;
     }
 
+    public void setTeamRoles(Set<TeamRole> teamRoles) {
+        this.teamRoles = teamRoles;
+    }
+
     public void setMember(User user) {
         this.setRole(user, Role.MEMBER);
     }
