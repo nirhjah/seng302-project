@@ -24,7 +24,7 @@ Scenario: AC4 - Given I am on the lost password form, when I enter an email that
 #    Given I received a reset password email
 #    When I go to the URL in the link
 #    Then I see the reset password page
-#
+
 #  Scenario: AC6 - Given I am on the reset password form, and I enter two different passwords in “new” and “retype password” fields, when I hit the save button, then an error message tells me the passwords do not match.
 #    Given I am on the reset password page
 #    When I enter two different passwords in "password" and "confirm password" and click save

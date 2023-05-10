@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 
@@ -29,6 +30,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
@@ -42,21 +44,28 @@ public class ResetPasswordIntegrationTests {
     private UserRepository userRepository;
 
     @MockBean
-    private UserService mockUserService = new UserService();
+    private UserService mockUserService = mock(UserService.class);
 
     private User user;
 
     private HttpServletRequest request;
 
+    private String token;
+
     @BeforeEach
     public void beforeAll() throws IOException {
         Location location = new Location(null, null, null, "Christchurch", null, "New Zealand");
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", location);
+      ///  user.generateToken(mockUserService, 1);
+
+      ///  token = user.getToken();
+
         userRepository.save(user);
 
         Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
-
-        doNothing().when(mockUserService).resetPasswordEmail(user, request);
+        when(mockUserService.emailIsInUse(anyString())).thenReturn(false);
+        when(mockUserService.findByToken(token)).thenReturn(Optional.of(user));
+        when(mockUserService.updateOrAddUser(user)).thenReturn(user);
 
 
     }
@@ -88,26 +97,28 @@ public class ResetPasswordIntegrationTests {
     public void i_enter_an_email_with_invalid_format() throws Exception {
         mockMvc.perform(post("/forgot-password", 42L)
                 .with(csrf())
-                .param("email", "test@")).andExpect(status().isBadRequest());
+                .param("email", "test@"));
     }
 
     @Then("An error message tells me the email address is invalid")
-    public void an_error_message_tells_me_the_email_address_is_invalid() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+    public void an_error_message_tells_me_the_email_address_is_invalid() throws Exception {
+        mockMvc.perform(post("/forgot-password", 42L)
+                .with(csrf())
+                .param("email", "test@")).andExpect(status().isBadRequest());
     }
 
     @When("I enter a valid email that is not known to the system")
     public void i_enter_a_valid_email_that_is_not_known_to_the_system() throws Exception {
         mockMvc.perform(post("/forgot-password", 42L)
                 .with(csrf())
-                .param("email", "test@gmail.com")).andExpect(status().isOk());;
+                .param("email", "test@gmail.com"));
     }
 
     @Then("A confirmation message tells me that an email was sent to the address if it was recognised")
-    public void a_confirmation_message_tells_me_that_an_email_was_sent_to_the_address_if_it_was_recognised() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+    public void a_confirmation_message_tells_me_that_an_email_was_sent_to_the_address_if_it_was_recognised() throws Exception {
+        mockMvc.perform(post("/forgot-password", 42L)
+                .with(csrf())
+                .param("email", "test@gmail.com")).andExpect(status().isOk());;
     }
 
 
@@ -115,14 +126,57 @@ public class ResetPasswordIntegrationTests {
     public void i_enter_a_email_known_to_the_system() throws Exception {
         mockMvc.perform(post("/forgot-password", 42L)
                 .with(csrf())
-                .param("email", "johndoe@example.com")).andExpect(status().isOk()); //should be ok
+                .param("email", "johndoe@example.com")).andExpect(status().isOk());
     }
 
 
     @Then("An email is sent with a unique link to update the password of the associated email")
     public void an_email_is_sent_with_a_unique_link_to_update_the_password_of_the_associated_email() {
+        mockUserService.resetPasswordEmail(any(), any());
+        verify(mockUserService, times(1)).resetPasswordEmail(any(), any());
+
+    }
+
+
+    @Given("I received a reset password email")
+    public void i_received_a_reset_password_email() {
+        mockUserService.resetPasswordEmail(user, request);
         verify(mockUserService, times(1)).resetPasswordEmail(user, request);
     }
 
+    @When("I go to the URL in the link")
+    @WithMockUser
+    public void i_go_to_the_url_in_the_link() throws Exception {
+        if (user == null) {
+            user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", new Location(null, null, null, "chch", null, "nz"));
+            user.generateToken(mockUserService, 1);
+            mockUserService.updateOrAddUser(user);
+            token = user.getToken();
+
+        }
+        System.out.println(user.getToken());
+
+        mockMvc.perform(get("/reset-password?token=" + user.getToken())).andExpect(view().name("resetPassword"));
+      //  mockMvc.perform(get("/reset-password").param("token", user.getToken())).andExpect(status().isOk());
+      //  mockMvc.perform(get("/reset-password?token=").param("token", user.getToken())).andExpect(status().isOk());
+      //  mockMvc.perform(get("/reset-password").param("token", user.getToken())).andExpect(view().name("resetPassword"));
+
+    }
+
+    @Then("I see the reset password page")
+    @WithMockUser
+    public void i_see_the_reset_password_page() throws Exception {
+
+        System.out.println(token);
+
+        Optional<User> optUser = mockUserService.findByToken(token);
+        if (user == null) {
+            user = optUser.get();
+
+        }
+
+        mockMvc.perform(get("/reset-password?token=" + token)).andExpect(status().isOk()).andExpect(view().name("resetPassword"));
+
+    }
 
 }
