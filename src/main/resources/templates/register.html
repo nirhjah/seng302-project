@@ -38,14 +38,15 @@
                         <input type="text" class="form-control" id="first-name" placeholder="" th:field="*{firstName}"
                                data-cy="firstName" required autofocus onkeyup="checkPasswordStrength()">
                         <label for="first-name"> First Name <span class="required">*</span></label>
+                        <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message"></div>
                     </div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="last-name" placeholder="" th:field="*{lastName}"
                                data-cy="lastName" required autofocus onkeyup="checkPasswordStrength()">
                         <label for="last-name"> Last Name <span class="required">*</span></label>
+                        <div th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error-message"></div>
                     </div>
                 </div>
-                <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message"></div>
                 <div class="input-box">
                     <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
                            data-cy="dateOfBirth" required autofocus>
@@ -84,10 +85,8 @@
                 <div class="input-box">
                     <input type="password" class="form-control" id="confirm-password" placeholder=""
                            th:field="*{confirmPassword}" data-cy="confirmPassword" required autofocus>
-                    <!--                    <img th:src="@{/image/icons/view.png}" class="password-toggle"/>-->
                     <label for="confirm-password"> Confirm Password <span class="required">*</span></label>
-                    <div th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}"
-                         class="error-message"></div>
+                    <div th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}" class="error-message"></div>
                 </div>
             </div>
             <div class="register-inputs-location">
@@ -98,6 +97,7 @@
                                autocomplete="off"
                                title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
                         <label for="address-line-1">Address Line 1</label>
+                        <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="error-message"></div>
                         <div class="autocomplete-container" id="autocomplete-container"></div>
                     </div>
                     <div class="input-box">
@@ -105,6 +105,7 @@
                                data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}"
                                title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
                         <label for="address-line-2">Address Line 2</label>
+                        <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message"></div>
                     </div>
                 </div>
                 <div class="input-box">
@@ -112,26 +113,30 @@
                            data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
                            title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
                     <label for="suburb">Suburb</label>
+                    <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="postcode" th:name="postcode"
                            data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder=""
                            title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">
                     <label for="postcode">Postcode</label>
+                    <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="city" th:name="city"
-                           data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}"
+                           data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}"
                            placeholder=""
                            title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
                     <label for="city">City <span class="required">*</span></label>
+                    <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="country" th:name="country"
-                           data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}"
+                           data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}"
                            placeholder=""
                            title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
                     <label for="country">Country <span class="required">*</span></label>
+                    <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
                 </div>
             </div>
             <script type="text/javascript" th:inline="javascript">
@@ -280,19 +285,14 @@
         const passwordInput = document.getElementById('password');
         const passwordToggle = document.querySelector('.password-toggle');
 
-        passwordToggle.addEventListener('mousedown', function () {
-            passwordInput.type = 'text';
-            passwordToggle.src='/image/icons/view.png';
-        });
-
-        passwordToggle.addEventListener('mouseup', function () {
-            passwordInput.type = 'password';
-            passwordToggle.src='/image/icons/hide.png';
-        });
-
-        passwordToggle.addEventListener('mouseout', function () {
-            passwordInput.type = 'password';
-            passwordToggle.src='/image/icons/hide.png';
+        passwordToggle.addEventListener('click', function () {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordToggle.src = '/image/icons/view.png';
+            } else {
+                passwordInput.type = 'password';
+                passwordToggle.src='/image/icons/hide.png';
+            }
         });
     }
 
