@@ -43,6 +43,7 @@ public class SecurityConfiguration {
         return authenticationManagerBuilder.build();
     }
 
+
     /**
      * filters requests being made on the website
      * @param http http security config
@@ -58,7 +59,7 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2/**"),AntPathRequestMatcher.antMatcher("/geocode/autocomplete")))
                 .authorizeHttpRequests()
                 // Allow "/", "/register", and "/login" to anyone (permitAll)
-                .requestMatchers("/", "/register", "/login", "/demo", "/populate_database", "/home", "/geocode/autocomplete")
+                .requestMatchers("/", "/register", "/login", "/demo", "/populate_database", "/home", "/geocode/autocomplete", "/forgot-password", "/reset-password/{token}")
                 .permitAll()
                 // Only allow admins to reach the "/admin" page
                 .requestMatchers("/admin")

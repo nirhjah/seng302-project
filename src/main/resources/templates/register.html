@@ -1,136 +1,161 @@
 <!--/* User Registration Page
-
        */-->
-
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
-
 <head>
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
+    <link th:href="@{/css/register.css}" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Register</title>
 </head>
-
 <body class="background-image">
 <!-- add navbar-->
-<div th:insert="~{homeForm.html::navbar(displayTeams=${displayTeams})}"></div>
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 <div class="register-form">
     <div class="register-header">
         <h1>Register</h1>
     </div>
+    <!--    <div class="register-header">-->
+    <!--        <h1> <img th:src="@{/image/icons/adduser.svg}"/>Register</h1>-->
+    <!--    </div>-->
     <div class="wrapper">
         <form th:action="@{register}" method="post" th:object="${registerForm}">
+            <div class="icon">
+                <a th:href="@{home}">
+                    <img th:src="@{/image/icons/cross.svg}"/>
+                </a>
+            </div>
+            <ul class="progressbar">
+                <li class="active">Details</li>
+                <li id="progressbar-location">Location</li>
+            </ul>
             <div class="register-inputs">
-                <div class="register-inputs-left">
+                <div class="input-boxes">
                     <div class="input-box">
                         <input type="text" class="form-control" id="first-name" placeholder="" th:field="*{firstName}"
-                               data-cy="firstName" autofocus>
+                               data-cy="firstName" required autofocus onkeyup="checkPasswordStrength()">
                         <label for="first-name"> First Name <span class="required">*</span></label>
                     </div>
-                    <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message"></div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="last-name" placeholder="" th:field="*{lastName}"
-                               data-cy="lastName" autofocus>
+                               data-cy="lastName" required autofocus onkeyup="checkPasswordStrength()">
                         <label for="last-name"> Last Name <span class="required">*</span></label>
                     </div>
-                    <div th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error-message"></div>
-                    <div class="input-box">
-                        <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
-                               data-cy="dateOfBirth" autofocus>
-                        <label for="date-of-birth"> Date of Birth <span class="required">*</span></label>
-                    </div>
-                    <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
-                    <div class="input-box">
-                        <input type="email" class="form-control" id="email" placeholder="" th:field="*{email}"
-                               data-cy="email" autofocus>
-                        <label for="email"> Email <span class="required">*</span></label>
-                    </div>
-                    <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message"></div>
-                    <div class="input-box">
-                        <input type="password" class="form-control" id="password" placeholder="" th:field="*{password}"
-                               data-cy="password" autofocus>
-                        <label for="password"> Password <span class="required">*</span></label>
-                    </div>
-                    <div class="input-box">
-                        <input type="password" class="form-control" id="confirm-password" placeholder=""
-                               th:field="*{confirmPassword}" data-cy="confirmPassword" autofocus>
-                        <label for="confirm-password"> Confirm Password <span class="required">*</span></label>
-
-
-                        <ul>
-                            <li th:each="err : ${#fields.errors('password')}" th:text="${err}" class="password-error-message" />
-                        </ul>
-
-                    </div>
-                    <div class="password-info">
-                        <p>Password must be at least <strong>8 characters</strong>, contain <strong>upper</strong> and <strong>lower</strong> case letters, <strong>numbers</strong> and <strong>symbols</strong>, and can't contain your <strong>name</strong> or <strong>email</strong></p>
-                    </div>
                 </div>
-                <hr class="solid">
-                <div class="register-inputs-right">
+                <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message"></div>
+                <div class="input-box">
+                    <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
+                           data-cy="dateOfBirth" required autofocus>
+                    <label for="date-of-birth"> Date of Birth <span class="required">*</span></label>
+                </div>
+                <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
+                <div class="input-box">
+                    <input type="email" class="form-control" id="email" placeholder="" th:field="*{email}"
+                           data-cy="email" required autofocus onkeyup="checkPasswordStrength()">
+                    <label for="email"> Email <span class="required">*</span></label>
+                </div>
+                <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message"></div>
+                <div class="input-box">
+                    <input type="password" class="form-control" id="password" placeholder="" th:field="*{password}"
+                           data-cy="password" required autofocus onkeyup="checkPasswordStrength()">
+                    <img th:src="@{/image/icons/hide.png}" class="password-toggle"/>
+                    <label for="password"> Password <span class="required">*</span></label>
+                </div>
+                <div class="password-info">
+                    <div class="password-strength-meter">
+                        <div class="bar"></div>
+                    </div>
+                    <div class="password-strength-text"></div>
+                    <ul class="password-information-text">
+                        <li>Password must be at least 8 characters</li>
+                        <li>Must contain the following items</li>
+                        <ul>
+                            <li>Uppercase and lowercase letters</li>
+                            <li>Numbers</li>
+                            <li>Symbols</li>
+                        </ul>
+                        <li>Mustn't contain your name or email</li>
+                    </ul>
+                    <div th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error-message"></div>
+                </div>
+                <div class="input-box">
+                    <input type="password" class="form-control" id="confirm-password" placeholder=""
+                           th:field="*{confirmPassword}" data-cy="confirmPassword" required autofocus>
+                    <!--                    <img th:src="@{/image/icons/view.png}" class="password-toggle"/>-->
+                    <label for="confirm-password"> Confirm Password <span class="required">*</span></label>
+                    <div th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}"
+                         class="error-message"></div>
+                </div>
+            </div>
+            <div class="register-inputs-location">
+                <div class="input-boxes">
                     <div class="input-box">
                         <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
-                               data-cy="location" autofocus placeholder="" autocomplete="off">
+                               data-cy="location" th:pattern="${addressRegex}" autofocus placeholder=""
+                               autocomplete="off"
+                               title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
                         <label for="address-line-1">Address Line 1</label>
                         <div class="autocomplete-container" id="autocomplete-container"></div>
                     </div>
-                    <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="error-message"></div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
-                               data-cy="location" autofocus placeholder="">
+                               data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}"
+                               title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
                         <label for="address-line-2">Address Line 2</label>
                     </div>
-                    <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message"></div>
-
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="suburb" th:name="suburb"
-                               data-cy="location" autofocus placeholder="">
-                        <label for="suburb">Suburb</label>
-                    </div>
-                    <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
-
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="postcode" th:name="postcode"
-                               data-cy="location" autofocus placeholder="">
-                        <label for="postcode">Postcode</label>
-                    </div>
-                    <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
-
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="city" th:name="city"
-                               data-cy="location" autofocus placeholder="">
-                        <label for="city">City <span class="required">*</span></label>
-                    </div>
-                    <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
-
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="country" th:name="country"
-                               data-cy="location" autofocus placeholder="">
-                        <label for="country">Country <span class="required">*</span></label>
-                    </div>
-                    <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
-
                 </div>
-                <script type="text/javascript" th:inline="javascript">
-                  /**
-                  ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
-                   * @type {string}
-                   */
-                  const path = /*[[${path}]]*/ "";
-                  const ENDPOINT = path + "/geocode/autocomplete";
-                </script>
-                <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="suburb" th:name="suburb"
+                           data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                           title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
+                    <label for="suburb">Suburb</label>
+                </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="postcode" th:name="postcode"
+                           data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder=""
+                           title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">
+                    <label for="postcode">Postcode</label>
+                </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="city" th:name="city"
+                           data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}"
+                           placeholder=""
+                           title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
+                    <label for="city">City <span class="required">*</span></label>
+                </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="country" th:name="country"
+                           data-cy="location" required autofocus th:pattern="${countryCitySuburbNameRegex}"
+                           placeholder=""
+                           title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
+                    <label for="country">Country <span class="required">*</span></label>
+                </div>
             </div>
+            <script type="text/javascript" th:inline="javascript">
+                /**
+                 ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
+                 * @type {string}
+                 */
+                const path = /*[[${path}]]*/ "";
+                const ENDPOINT = path + "/geocode/autocomplete";
+            </script>
+            <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>
             <div class="submit-button">
-                <button type="submit" formnovalidate>Register</button>
+                <button class="previous-button" type="button">Previous</button>
+                <button class="next-button" type="button">Next</button>
+                <button class="register-button" type="submit" formnovalidate>Register</button>
             </div>
             <div class="cancel-link">
-                <a th:href="@{login}">Login</a>
-                <div class="cancel-link">
-                    <a th:href="@{home}">Cancel</a>
-                </div>
+                <p>Aleady have an account? <a th:href="@{login}">Login</a></p>
             </div>
+            <!--            <div class="cancel-link">-->
+            <!--                <div class="cancel-link">-->
+            <!--                    <a th:href="@{home}">Cancel</a>-->
+            <!--                </div>-->
+            <!--            </div>-->
         </form>
     </div>
 </div>
@@ -142,109 +167,135 @@
     </p>
 </footer>
 </body>
-<!--<script th:inline="javascript">-->
-<!--    /**-->
-<!--     * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.-->
-<!--     * @type {string}-->
-<!--     */-->
-<!--    const ENDPOINT = '/geocode/autocomplete';-->
+<script>
+    const prevButton = document.querySelector('.previous-button');
+    const nextButton = document.querySelector('.next-button');
+    const registerButton = document.querySelector('.register-button');
+    const registerInputs = document.querySelector('.register-inputs');
+    const locationInputs = document.querySelector('.register-inputs-location');
+    const progressBarLocation = document.getElementById('progressbar-location');
 
-<!--    /**-->
-<!--     * The delay time (in milliseconds) for debouncing the search input.-->
-<!--     * @type {number}-->
-<!--     */-->
-<!--    const DEBOUNCE_DELAY = 450; // set the debounce delay to 450ms-->
+    const inputs = registerInputs.querySelectorAll('input[required]')
 
-<!--    const searchBox = document.querySelector('#address-line-1');-->
-<!--    const resultsContainer = document.querySelector('#autocomplete-container');-->
-<!--    const countryInput = document.querySelector('#country');-->
-<!--    const cityInput = document.querySelector('#city');-->
-<!--    const suburbInput = document.querySelector('#suburb');-->
-<!--    const postcodeInput = document.querySelector('#postcode');-->
+    registerButton.addEventListener("click", function () {
+        // If empty values exist on the first page and the user goes to register then bring them back to first page
+        console.log(inputs)
+        for (let i = 0; i < inputs.length; i++) {
+            if (!inputs[i].checkValidity()) {
+                firstPageInitialisation();
+                break;
+            }
+        }
+    });
 
-<!--    let timeoutId;-->
+    nextButton.addEventListener("click", function () {
+        // If empty values exist on the first page and the user goes to register then bring them back to first page
+        locationInputs.style.display = 'block';
+        registerInputs.style.display = 'none';
+        progressBarLocation.classList.add('active');
+        prevButton.style.display = 'block';
+        registerButton.style.display = 'block';
+        nextButton.style.display = 'none';
+    });
 
-<!--    /**-->
-<!--     * Debounces the given function with the given delay time.-->
-<!--     * @param {Function} fn - The function to be debounced.-->
-<!--     * @param {number} delay - The delay time (in milliseconds) for debouncing.-->
-<!--     * @returns {Function} The debounced function.-->
-<!--     */-->
-<!--    function debounce(fn, delay) {-->
-<!--        return function () {-->
-<!--            clearTimeout(timeoutId);-->
-<!--            timeoutId = setTimeout(() => fn.apply(this, arguments), delay);-->
-<!--        }-->
-<!--    }-->
+    prevButton.addEventListener("click", function () {
+        firstPageInitialisation();
+    });
 
-<!--    /**-->
-<!--     * Searches the OpenRouteService Geocoding API for autocomplete results based on the current search input value.-->
-<!--     * Displays the results in the results container element.-->
-<!--     */-->
-<!--    function searchAutocomplete() {-->
-<!--        const searchTerm = this.value.trim();-->
+    function firstPageInitialisation() {
+        locationInputs.style.display = 'none';
+        registerInputs.style.display = 'block';
+        progressBarLocation.classList.remove('active');
+        prevButton.style.display = 'none';
+        registerButton.style.display = 'none';
+        nextButton.style.display = 'block';
+    }
 
-<!--        if (searchTerm.length >= 3) {-->
-<!--            axios.get(ENDPOINT, {-->
-<!--                params: {-->
-<!--                    text: searchTerm,-->
-<!--                    language: 'en'-->
-<!--                }-->
-<!--            })-->
-<!--                .then(response => {-->
-<!--                    const results = response.data.features.slice(0, 5);-->
-<!--                    let html = '';-->
-<!--                    if (results.length > 0) {-->
-<!--                        html = '<ul class ="autocomplete-result">';-->
-<!--                        results.forEach(result => {-->
-<!--                            html += `<li class="location-autocomplete-value" data-country="${result.properties.country}" data-city="${result.properties.locality}" data-suburb="${result.properties.localadmin}" data-postcode="${result.properties.postalcode}" data-house-number="${result.properties.housenumber}" data-street="${result.properties.street}">${result.properties.label}</li>`;-->
-<!--                        });-->
-<!--                        html += '</ul>';-->
-<!--                    } else {-->
-<!--                        html = '<p>No results found</p>';-->
-<!--                    }-->
-<!--                    resultsContainer.innerHTML = html;-->
-<!--                })-->
-<!--                .catch(error => {-->
-<!--                    console.error(error);-->
-<!--                    resultsContainer.innerHTML = '<p>Error fetching results</p>';-->
-<!--                });-->
-<!--        } else {-->
-<!--            resultsContainer.innerHTML = '';-->
-<!--        }-->
-<!--    }-->
+    function checkPasswordStrength() {
+        const bar = document.querySelector(".password-strength-meter .bar");
+        const headerText = document.querySelector(".password-strength-text");
+        const firstName = document.getElementById("first-name").value;
+        const lastName = document.getElementById("last-name").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        if (password) {
+            let strength = 0;
+            if (password.length >= 8) {
+                strength++;
+            }
+            if (/[A-Z]/.test(password)) {
+                strength++;
+            }
+            if (/[a-z]/.test(password)) {
+                strength++;
+            }
+            if (/\d/.test(password)) {
+                strength++;
+            }
+            if (/[\W_]/.test(password)) {
+                strength++;
+            }
+            if ((!firstName || !password.includes(firstName)) && (!lastName || !password.includes(lastName)) && (!email || !password.includes(email))) {
+                strength++;
+            }
 
-<!--    /**-->
-<!--     * Adds an event listener to the search input element for debouncing the searchAutocomplete function.-->
-<!--     */-->
-<!--    searchBox.addEventListener('input', debounce(searchAutocomplete, DEBOUNCE_DELAY));-->
+            if (strength < 3) {
+                bar.classList.remove("medium");
+                bar.classList.remove("strong");
+                bar.classList.add("weak");
+                bar.style.width = "20%";
+                headerText.textContent = "Weak";
+                headerText.classList.remove("medium");
+                headerText.classList.remove("strong");
+                headerText.classList.add("weak");
+            } else if (strength < 6) {
+                bar.classList.remove("strong");
+                bar.classList.remove("weak");
+                bar.classList.add("medium");
+                bar.style.width = "50%";
+                headerText.textContent = "Medium";
+                headerText.classList.remove("weak");
+                headerText.classList.remove("strong");
+                headerText.classList.add("medium");
+            } else {
+                bar.classList.remove("medium");
+                bar.classList.remove("weak");
+                bar.classList.add("strong");
+                bar.style.width = "100%";
+                headerText.textContent = "Strong";
+                headerText.classList.remove("weak");
+                headerText.classList.remove("medium");
+                headerText.classList.add("strong");
+            }
+        } else {
+            bar.classList.remove("medium");
+            bar.classList.remove("strong");
+            bar.classList.remove("weak");
+            bar.style.width = "0%";
+            headerText.textContent = "";
+            headerText.classList.remove("medium");
+            headerText.classList.remove("strong");
+            headerText.classList.remove("weak");
+        }
+        const passwordInput = document.getElementById('password');
+        const passwordToggle = document.querySelector('.password-toggle');
 
-<!--    /**-->
-<!--     * Adds an event listener to the results container element for handling the click event on an autocomplete result.-->
-<!--     * Updates the search input and the selected address elements with the clicked result data.-->
-<!--     */-->
-<!--    resultsContainer.addEventListener('click', function (event) {-->
-<!--        if (event.target.tagName === 'LI') {-->
-<!--            let address = event.target.getAttribute('data-house-number') === "undefined" ? "" : event.target.getAttribute('data-house-number') + " ";-->
-<!--            address += event.target.getAttribute('data-street') === "undefined" ? "" : event.target.getAttribute('data-street');-->
-<!--            searchBox.value = address;-->
-<!--            const country = event.target.getAttribute('data-country') === "undefined" ? "" : event.target.getAttribute('data-country');-->
-<!--            const city = event.target.getAttribute('data-city') === "undefined" ? "" : event.target.getAttribute('data-city');-->
-<!--            const suburb = event.target.getAttribute('data-suburb') === "undefined" ? "" : event.target.getAttribute('data-suburb');-->
-<!--            const postcode = event.target.getAttribute('data-postcode') === "undefined" ? "" : event.target.getAttribute('data-postcode');-->
-<!--            countryInput.value = country;-->
-<!--            cityInput.value = suburb;-->
-<!--            suburbInput.value = city;-->
-<!--            postcodeInput.value = postcode;-->
-<!--            resultsContainer.innerHTML = "";-->
-<!--        }-->
-<!--    });-->
+        passwordToggle.addEventListener('mousedown', function () {
+            passwordInput.type = 'text';
+            passwordToggle.src='/image/icons/view.png';
+        });
 
-<!--    document.addEventListener('click', function (event) {-->
-<!--        if (resultsContainer.innerHTML !== '' && !resultsContainer.contains(event.target)) {-->
-<!--            resultsContainer.innerHTML = "";-->
-<!--        }-->
-<!--    });-->
+        passwordToggle.addEventListener('mouseup', function () {
+            passwordInput.type = 'password';
+            passwordToggle.src='/image/icons/hide.png';
+        });
 
-<!--</script>-->
+        passwordToggle.addEventListener('mouseout', function () {
+            passwordInput.type = 'password';
+            passwordToggle.src='/image/icons/hide.png';
+        });
+    }
+
+</script>
+
 </html>

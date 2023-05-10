@@ -1,0 +1,56 @@
+.login-form ,.forgotPassword-form{
+    /*display: grid;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    /*height: 90vh;*/
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    gap: 8%;
+}
+.login-form{
+    grid-auto-rows: 87vh;
+}
+
+.forgotPassword-form{
+    grid-auto-rows: 33vh;
+}
+
+
+.login-form form, .forgotPassword-form form {
+    width: 65%;
+}
+
+.login-form .wrapper, .forgotPassword-form .wrapper {
+    width: 500px;
+    height: 440px;
+}
+
+.message-dropdown-container {
+    min-width: 500px;
+}
+
+@media (max-width: 555px) {
+    .login-form .wrapper, .forgotPassword-form .wrapper {
+        width: 90vw
+    }
+
+    .message-dropdown-container {
+        min-width: 90vw
+    }
+}
+
+.login-form form .cancel-link, .forgotPassword-form form .cancel-link {
+    display: flex;
+    justify-content: center;
+}
+
+.error-message{
+    margin-top:-13px;
+}
+
+.login-header{
+    margin:auto;
+}

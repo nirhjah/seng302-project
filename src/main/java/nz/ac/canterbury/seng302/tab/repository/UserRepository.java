@@ -24,16 +24,13 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
         Optional<User> findByEmail(String email);
 
+        Optional<User> findByToken(String token);
+
         Page<User> findAll();
 
         boolean existsByEmail(String email);
 
-        @Query("SELECT u FROM UserEntity u WHERE u.email = :email and u.hashedPassword = :password")
-        User getUserByEmailAndPassword(@Param("email") String email, @Param("password") String password);
-
-        //Page<User> findAll(Pageable pageable, Sort.by(Sort.Direction.ASC "lastName"));
-
-        Page<User> findAllByOrderByLastNameAsc(Pageable pageable);
+        Page<User> findAll(Pageable pageable);
 
         /*
          * Query Logic:
