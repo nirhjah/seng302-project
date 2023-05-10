@@ -42,8 +42,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
@@ -145,7 +144,6 @@ public class U27CreateActivityFeature {
     }
 
     @When("I select {string} and {int}, and enter a valid description {string} and I select a valid {string} and {string} date time and press submit")
-    @WithMockUser
     public void i_select_game_and_and_enter_a_valid_description_game_with_team_and_i_select_a_valid_and_end_date_time_and_press_submit(
             String activityType, long teamId, String desc, String start, String end) throws Exception {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -158,18 +156,17 @@ public class U27CreateActivityFeature {
         }
 
         mockMvc.perform(post("/createActivity")
-                .requestAttr("activityType", Activity.ActivityType.valueOf(activityType))
-                .requestAttr("team", teamId)
-                .requestAttr("description", desc)
-                .requestAttr("startDateTime", LocalDateTime.parse(start, formatter))
-                .requestAttr("endDateTime", LocalDateTime.parse(end, formatter)))
+                .param("activityType", String.valueOf(Activity.ActivityType.valueOf(activityType)))
+                .param("team", String.valueOf(teamId))
+                .param("description", desc)
+                .param("startDateTime", start)
+                .param("endDateTime", end))
                 .andExpect(status().isFound()).andExpect(redirectedUrl("/myActivities"));
     }
 
     @Then("An activity is created")
     @WithMockUser()
     public void an_activity_is_created() {
-
         verify(activityService, times(1)).updateOrAddActivity(any());
     }
 
