@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.entity.Activity.ActivityType;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,6 +37,8 @@ public class ViewTeamActivitiesController {
     @Autowired
     private ActivityService activityService;
 
+    private static int maxPageSize = 10;
+
     /**
      * Gets form to be displayed, includes the ability to display results of
      * previous form when linked to from POST form
@@ -47,7 +49,8 @@ public class ViewTeamActivitiesController {
      * @return thymeleaf profileForm
      */
     @GetMapping("/viewTeamActivities")
-    public String profileForm(Model model, @RequestParam(value = "teamID", required = false) Long teamID,
+    public String viewTeamActivities(@RequestParam(value = "page", defaultValue = "-1") int pageNo, Model model,
+            @RequestParam(value = "teamID", required = false) Long teamID,
             HttpServletRequest request) {
         logger.info("/viewTeamActivities");
 
@@ -80,9 +83,21 @@ public class ViewTeamActivitiesController {
         Activity activity = new Activity(Activity.ActivityType.Game, selectedTeam, "this is a test",
                 LocalDateTime.of(2023, 12, 10, 14, 30), LocalDateTime.of(2023, 12, 11, 14, 30), user.get());
         activityService.updateOrAddActivity(activity);
+        Page<Activity> teamActivities = activityService.getAllTeamActivitiesPage(selectedTeam, pageNo, maxPageSize);
+
+        // If page number outside of page then reloads page with appropriate number
+        if (pageNo < 1 || pageNo > teamActivities.getTotalPages()
+                && teamService.findPaginated(pageNo, maxPageSize).getTotalPages() > 0) {
+            pageNo = pageNo < 1 ? 1 : teamActivities.getTotalPages();
+            return "redirect:/view-teams?page=" + pageNo;
+        }
+
         logger.info("activity is: " + activity.getDescription());
-        List<Activity> teamActivities = activityService.getAllTeamActivities(selectedTeam);
         logger.info("team activities is " + teamActivities);
+        model.addAttribute("page", pageNo);
+        model.addAttribute("totalPages", teamActivities.getTotalPages());
+        model.addAttribute("totalItems", teamActivities.getTotalElements());
+
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
         model.addAttribute("teamID", teamID);
