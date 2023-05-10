@@ -11,14 +11,18 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -32,61 +36,59 @@ import java.nio.file.Files;
 import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
+@WithMockUser
 public class ProfileFormControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private TeamService teamService;
-
     @MockBean
     private UserService mockUserService;
 
-    @Autowired
-    private TeamRepository teamRepository;
-
-    private Team team;
-
-    @Autowired
-    private UserRepository userRepository;
+    @MockBean
+    private TeamService mockTeamService;
 
     private User user;
+    private Team team;
+
+    private static final long TEAM_ID = 1;
+    private static final String TEAM_NAME = "test";
+    private static final String TEAM_SPORT = "Hockey";
 
     @BeforeEach
     public void beforeAll() throws IOException {
-        teamRepository.deleteAll();
-        userRepository.deleteAll();
-        Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
-        team = new Team("test", "Hockey", location);
-        teamRepository.save(team);
-        ProfileFormController.teamId = team.getTeamId();
-
-        Location testLocation = new Location("23 test street", "24 test street", "surburb", "city", "8782",
+        Location teamLocation = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
+        team = new Team("test", "Hockey", teamLocation);
+        team = Mockito.spy(team);
+        Location userLocation = new Location("23 test street", "24 test street", "surburb", "city", "8782",
                 "New Zealand");
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
-                "johndoe@example.com", "Password123!", testLocation);
-        userRepository.save(user);
+                "johndoe@example.com", "Password123!", userLocation);
+        user = Mockito.spy(user);
 
         Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
     }
 
     @Test
     public void testGettingTeamList() throws Exception {
-        mockMvc.perform(get("/profile?teamID={id}", team.getTeamId())
-                .requestAttr("teamID", 1))
-                .andExpect(status().isOk())
-                .andExpect(view().name("profileForm"))
-                .andExpect(MockMvcResultMatchers.model().attribute("teamID", team.getTeamId()))
-                .andExpect(MockMvcResultMatchers.model().attribute("displayName", team.getName()))
-                .andExpect(MockMvcResultMatchers.model().attribute("displaySport", team.getSport()))
-                .andExpect(MockMvcResultMatchers.model().attribute("displayTeamPicture", team.getPictureString()));
+        Mockito.when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
+        Mockito.doReturn(TEAM_ID).when(team).getTeamId();
+        
+        mockMvc.perform(get("/profile")
+                .param("teamID", Long.toString(TEAM_ID)))
+            .andExpect(status().isOk())
+            .andExpect(view().name("profileForm"))
+            .andExpect(MockMvcResultMatchers.model().attribute("teamID", TEAM_ID))
+            .andExpect(MockMvcResultMatchers.model().attribute("displayName", TEAM_NAME))
+            .andExpect(MockMvcResultMatchers.model().attribute("displaySport", TEAM_SPORT))
+            .andExpect(MockMvcResultMatchers.model().attribute("displayTeamPicture", team.getPictureString()));
     }
 
     @Test
