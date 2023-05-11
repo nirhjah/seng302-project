@@ -97,12 +97,12 @@ search_individual_unit_tests() {
 run_specific_unit_test() {
 	# find chosen test in file
 	search_individual_unit_tests
-	cd ${PROJECT_DIR} && ./gradlew :test --tests "$UNIT_PACKAGE.$CHOSEN_FILE_PARENT_DIR.$CHOSEN_FILE.$CHOSEN_TEST"
+	./gradlew :test --tests "$UNIT_PACKAGE.$CHOSEN_FILE_PARENT_DIR.$CHOSEN_FILE.$CHOSEN_TEST"
 }
 
 # currently only runs single unit test file
 run_specific_file() {
-	cd ${PROJECT_DIR} && ./gradlew :test --tests "$UNIT_PACKAGE.$CHOSEN_FILE_PARENT_DIR.$CHOSEN_FILE"
+	./gradlew :test --tests "$UNIT_PACKAGE.$CHOSEN_FILE_PARENT_DIR.$CHOSEN_FILE"
 
 }
 
@@ -129,12 +129,12 @@ search_for_individual_integration_scenario() {
 run_specific_integration_test() {
 	search_for_individual_integration_scenario
 	# run the chosen test
-	cd ${PROJECT_DIR} && ./gradlew end2end -PcucumberOpts="--tests '*$CHOSEN_TEST*' $INTEGRATION_TESTS_DIR/$CHOSEN_FILE.feature"
+	./gradlew end2end -PcucumberOpts="--tests '*$CHOSEN_TEST*' $INTEGRATION_TESTS_DIR/$CHOSEN_FILE.feature"
 }
 
 # runs an individual end2end file
 run_specific_integration_file() {
-	cd ${PROJECT_DIR} && ./gradlew end2end -PcucumberOpts="$INTEGRATION_TESTS_DIR/$CHOSEN_FILE.feature"
+	./gradlew end2end -PcucumberOpts="$INTEGRATION_TESTS_DIR/$CHOSEN_FILE.feature"
 }
 
 ######################################################################
@@ -160,12 +160,12 @@ search_for_individual_end2end_scenario() {
 run_specific_end2end_test() {
 	search_for_individual_end2end_scenario
 	# run the chosen test
-	cd ${PROJECT_DIR} && ./gradlew end2end -PcucumberOpts="--tests '*$CHOSEN_TEST*' $END2END_TESTS_DIR/$CHOSEN_FILE.feature"
+	./gradlew end2end -PcucumberOpts="--tests '*$CHOSEN_TEST*' $END2END_TESTS_DIR/$CHOSEN_FILE.feature"
 }
 
 # runs an individual end2end file
 run_specific_feature_file() {
-	cd ${PROJECT_DIR} && ./gradlew end2end -PcucumberOpts="$END2END_TESTS_DIR/$CHOSEN_FILE.feature"
+	./gradlew end2end -PcucumberOpts="$END2END_TESTS_DIR/$CHOSEN_FILE.feature"
 }
 
 ######################################################################
