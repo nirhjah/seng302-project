@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -35,39 +36,41 @@ public class ViewActivitiesController {
     /**
      * Gets viewAllActivities doc with required attributes. Reroutes if page out of available range
      *
-     * @param pageNum integer corresponding page to be displayed
+     * @param pageNo integer corresponding page to be displayed
      * @param model  (map-like) representation of name, language and isJava boolean for use in thymeleaf
      * @return thymeleaf viewAllTeams
      */
     @GetMapping("/view-activities")
-    public String viewPageOfActivities(@RequestParam(value = "page", defaultValue = "-1") int pageNum,
+    public String viewPageOfActivities(@RequestParam(value = "page", defaultValue = "-1") int pageNo,
                                        Model model, HttpServletRequest request) {
         Optional<User> user = userService.getCurrentUser();
         User currentUser = user.get();
 
-        // If page num out of range then set page num to 1 or max
-        if (pageNum < 1) {
-            pageNum = 1;
+        Pageable pageable = PageRequest.of(0, maxPageSize, ActivityService.SORT_BY_DATE_AND_TEAM_NAME);
+        Integer totalPages = activityService.getPaginatedActivities(pageable,currentUser).getTotalPages();
+        // If page number outside of page range then reloads page with appropriate number
+        if (pageNo < 1 || pageNo > totalPages && totalPages > 0) {
+            pageNo = pageNo < 1 ? 1: totalPages;
+            return "redirect:/view-activities?page=" + pageNo;
         }
 
-        Pageable pageable = PageRequest.of(pageNum-1, maxPageSize);
-        Page<Activity> activitiesPage = activityService.getPaginatedActivities(pageable, currentUser);
+        logger.info("GET /view-teams");
+        pageable = PageRequest.of(pageNo, maxPageSize, ActivityService.SORT_BY_DATE_AND_TEAM_NAME);
+        Page<Activity> page = activityService.getPaginatedActivities(pageable,currentUser);
 
-        if (pageNum > activitiesPage.getTotalPages() && activitiesPage.getTotalPages() > 0) {
-            pageNum = activitiesPage.getTotalPages();
-            pageable = PageRequest.of(pageNum-1, maxPageSize);
-            activitiesPage = activityService.getPaginatedActivities(pageable, currentUser);
-        }
-
-        List<Activity> activityList = activitiesPage.getContent();
+        List<Activity> listActivities = page.getContent();
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
         model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
-        model.addAttribute("page", pageNum);
-        model.addAttribute("totalPages", activitiesPage.getTotalPages());
-        model.addAttribute("totalItems", activitiesPage.getTotalElements());
-        model.addAttribute("activities", activityList);
+        model.addAttribute("httpServletRequest", request);
+        model.addAttribute("page", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("activities", listActivities);
+        logger.info("page number" + pageNo);
+        logger.info("total pages" + page.getTotalPages());
+
         return "viewActivities";
     }
 

@@ -2,17 +2,17 @@
     font-family: "Noto Sans", sans-serif;
 }
 
-li {
+.activities-table li {
     display: block;
     border: 3px #1B263B solid;
     border-top: none;
 }
 
-li:hover {
+.activities-table li:hover {
     background-color: #F6F6F6;
 }
 
-li:first-child {
+.activities-table li:first-child {
     border-top: 3px #1B263B solid;
     cursor: pointer;
 }

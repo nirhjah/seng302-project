@@ -6,6 +6,7 @@
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <link th:href="@{/css/view-activities.css}" rel="stylesheet">
+    <link th:href="@{/css/view-all.css}" rel="stylesheet">
     <title>View All Teams</title>
 </head>
 <body class="background">
@@ -14,7 +15,7 @@
         <div class="header">
             <h1>My Activities</h1>
         </div>
-        <ul>
+        <ul class="activities-table">
             <li th:each="activity : ${activities}" th:onclick="|window.location.href='@{activitypage...}'|">
                 <span class="title"><a th:href="|window.location.href='@{profile(teamID=${activity.team.teamId})}'|" th:text="${activity.team != null} ? ${activity.team} : 'Personal'"></a></span>
                 <span class="details" th:with="startDate=${activity.activityStart.format(DateTimeFormatter.ofPattern('dd MMM yyyy'))},

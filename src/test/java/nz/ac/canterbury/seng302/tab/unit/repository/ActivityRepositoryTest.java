@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
+import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,9 +89,9 @@ public class ActivityRepositoryTest {
         activityRepository.save(activity4);
         activityRepository.save(activity5);
         activityRepository.save(activity6);
-        System.out.println(activityRepository.findActivitiesByUser(PageRequest.of(0,10),user).get());
         System.out.println(activities);
-        Assertions.assertEquals(activityRepository.findActivitiesByUser(PageRequest.of(0,10),user), activities);
+        System.out.println(activityRepository.findActivitiesByUser(PageRequest.of(0,10),user).getContent());
+        Assertions.assertEquals(activities, activityRepository.findActivitiesByUser(PageRequest.of(0,10),user).getContent());
     }
 
 
