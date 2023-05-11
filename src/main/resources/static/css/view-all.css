@@ -140,9 +140,8 @@ table {
     border-radius:8px;
     background:white;
     width:fit-content;
-    margin:auto;
     align-items:center;
-    margin-top:10px;
+    margin: 10px 0;
 }
 
 .pagination-container button{

@@ -315,13 +315,6 @@ ul {
     padding: 0;
 }
 
-li a {
-    display: block;
-    padding: 0.5em;
-    text-align: center;
-}
-
-
 .profile-pic .back-button,
 .submit-button button,
 .profile-buttons button,
