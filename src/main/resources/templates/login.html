@@ -5,6 +5,7 @@
   <link th:href="@{/css/styles.css}" rel="stylesheet" />
   <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
   <link th:href="@{/css/login.css}" rel="stylesheet" />
+  <link th:href="@{/css/register.css}" rel="stylesheet" />
   <link th:href="@{/css/preloader.css}" rel="stylesheet" />
   <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -36,7 +37,8 @@
         <div class="input-box">
           <input type="password" class="form-control" id="password" placeholder="" th:name="password"
             th:value="*{password}" data-cy="password" autofocus>
-          <label for="password">Password</label>
+            <label for="password">Password</label>
+            <img th:src="@{/image/icons/hide.png}" class="password-toggle" data-pw-field="password"/>
         </div>
         </br>
         <div class="error-message" th:text="${errorMessage}">
@@ -51,11 +53,29 @@
         </div>
         <div class="cancel-link">
           <a th:href="@{forgot-password}">Forgot password</a>
-
         </div>
       </form>
     </div>
   </div>
+  <!--/* "Reveal Password" code */-->
+  <script>
+    const passwordField = document.getElementById('password');
+    const passwordToggle = document.querySelector(".password-toggle");
+    passwordToggle.addEventListener('mousedown', function () {
+        passwordField.type = 'text';
+        passwordToggle.src='/image/icons/view.png';
+    });
+
+    passwordToggle.addEventListener('mouseup', function () {
+        passwordField.type = 'password';
+        passwordToggle.src='/image/icons/hide.png';
+    });
+
+    passwordToggle.addEventListener('mouseout', function () {
+        passwordField.type = 'password';
+        passwordToggle.src='/image/icons/hide.png';
+    });
+  </script>
   <footer>
     <p>
       Image by <a
