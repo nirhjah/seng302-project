@@ -40,6 +40,16 @@ gum style \
 	--align center --width 50 --margin "1 2" --padding "1 2" \
 	'Test Configuration'
 
+# starts the program and waits for it to load
+wait_for_program_start() {
+	./gradlew bootRun &
+	# get the pid of the program so we can kill running it after the tests are done
+	program_pid=$!
+	while ! nc -z localhost 8080; do
+		sleep 1
+	done
+}
+
 ######################################################################
 # Asks the user for the type of test
 # maybe make it so you can run all ie unit+integration+end2end
@@ -129,12 +139,16 @@ search_for_individual_integration_scenario() {
 run_specific_integration_test() {
 	search_for_individual_integration_scenario
 	# run the chosen test
+	wait_for_program_start
 	./gradlew end2end -PcucumberOpts="--tests '*$CHOSEN_TEST*' $INTEGRATION_TESTS_DIR/$CHOSEN_FILE.feature"
+	kill $program_pid
 }
 
 # runs an individual end2end file
 run_specific_integration_file() {
+	wait_for_program_start
 	./gradlew end2end -PcucumberOpts="$INTEGRATION_TESTS_DIR/$CHOSEN_FILE.feature"
+	kill $program_pid
 }
 
 ######################################################################
@@ -160,12 +174,16 @@ search_for_individual_end2end_scenario() {
 run_specific_end2end_test() {
 	search_for_individual_end2end_scenario
 	# run the chosen test
+	wait_for_program_start
 	./gradlew end2end -PcucumberOpts="--tests '*$CHOSEN_TEST*' $END2END_TESTS_DIR/$CHOSEN_FILE.feature"
+	kill $program_pid
 }
 
 # runs an individual end2end file
 run_specific_feature_file() {
+	wait_for_program_start
 	./gradlew end2end -PcucumberOpts="$END2END_TESTS_DIR/$CHOSEN_FILE.feature"
+	kill $program_pid
 }
 
 ######################################################################
