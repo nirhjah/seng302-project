@@ -17,10 +17,11 @@ li:first-child {
     cursor: pointer;
 }
 
-span {
+.title .details .description {
     display: block;
     margin: 5px;
 }
+
 
 .title {
     color: #1B263B;

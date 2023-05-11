@@ -17,12 +17,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Controller
-public class ViewActivities {
+public class ViewActivitiesController {
     private static int maxPageSize = 10;
     Logger logger = LoggerFactory.getLogger(ViewAllTeamsController.class);
 
@@ -40,8 +39,8 @@ public class ViewActivities {
      * @param model  (map-like) representation of name, language and isJava boolean for use in thymeleaf
      * @return thymeleaf viewAllTeams
      */
-    public String viewPageOfActivities(@RequestParam(name = "name", required = false, defaultValue = "-1") int userId,
-                                       @RequestParam(value = "page", defaultValue = "-1") int pageNum,
+    @GetMapping("/view-activities")
+    public String viewPageOfActivities(@RequestParam(value = "page", defaultValue = "-1") int pageNum,
                                        Model model, HttpServletRequest request) {
         Optional<User> user = userService.getCurrentUser();
         User currentUser = user.get();

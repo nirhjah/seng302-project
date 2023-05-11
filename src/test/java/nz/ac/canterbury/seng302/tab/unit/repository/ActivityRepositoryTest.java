@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -87,8 +88,12 @@ public class ActivityRepositoryTest {
         activityRepository.save(activity4);
         activityRepository.save(activity5);
         activityRepository.save(activity6);
-//        Assertions.assertEquals(activityRepository.findActivitiesByUser(user), activities);
+        System.out.println(activityRepository.findActivitiesByUser(PageRequest.of(0,10),user).get());
+        System.out.println(activities);
+        Assertions.assertEquals(activityRepository.findActivitiesByUser(PageRequest.of(0,10),user), activities);
     }
+
+
 
 
 

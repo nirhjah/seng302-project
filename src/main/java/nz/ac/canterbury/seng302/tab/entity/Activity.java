@@ -27,6 +27,7 @@ public class Activity {
     private long id;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ActivityType activityType;
 
     @ManyToOne(cascade = CascadeType.ALL)
