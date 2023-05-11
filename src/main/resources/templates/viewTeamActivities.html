@@ -1,30 +1,34 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <link th:href="@{/css/view-all.css}" rel="stylesheet">
+    <link th:href="@{/css/view-activities.css}" rel="stylesheet">
     <title>View Team Activities</title>
 </head>
 <body class="profile-background">
 <div>
     <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
-    <div class="card-container">
-        <div th:each="activity : ${teamActivities}" class ="card">
-            <div class="card-wrapper">
-                <div class="card-image">
-                    <img th:src="${'data:image/jpeg;base64,' + selectedTeam.pictureString}" class="card-img-top" alt="User image">
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">[[|${activity.description} |]]</h5>
-                    <p class="card-text" th:text="'Type: '+${activity.getActivityString()}">Activity Type</p>
-
-                </div>
-            </div>
-        </div>
+    <div class="header">
+        <h1 th:text="${selectedTeam.name} + ' Activities'"></h1>
     </div>
+    <ul class="activities-table">
+        <li th:each="activity : ${teamActivities}">
+            <span class="title"><a th:href="|window.location.href='@{profile(teamID=${activity.team.teamId})}'|" th:text="${activity.team != null} ? ${activity.team} : 'Personal'"></a></span>
+            <span class="details" th:with="startDate=${#temporals.format(activity.activityStart, 'dd MMM yyyy')},
+                                                endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')},
+                                                startTime=${#temporals.format(activity.activityStart, 'hh:mma')},
+                                                endTime=${#temporals.format(activity.activityEnd, 'hh:mma')}"
+                  th:text="${activity.getActivityString} + ' • ' +
+                        ${startDate} + (${startDate} != ${endDate} ? ' - ' + ${endDate} : '') + ' • ' +
+                        ${startTime} + (${startTime} != ${endTime} ? ' - ' + ${endTime} : '')">
+                </span>
+            <span class="description" th:text="${activity.description}"></span>
+        </li>
+    </ul>
     <div th:insert="fragments/pagination.html :: pagination(pageName='view-team-activities')"></div>
     <footer>
         <p>

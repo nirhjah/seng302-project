@@ -98,6 +98,7 @@ public class ViewTeamActivitiesController {
         model.addAttribute("totalPages", teamActivities.getTotalPages());
         model.addAttribute("totalItems", teamActivities.getTotalElements());
 
+        model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
         model.addAttribute("teamID", teamID);

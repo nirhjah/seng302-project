@@ -1,0 +1,48 @@
+* {
+    font-family: "Noto Sans", sans-serif;
+}
+
+.activities-table li {
+    display: block;
+    border: 3px #1B263B solid;
+    border-top: none;
+}
+
+.activities-table li:hover {
+    background-color: #F6F6F6;
+}
+
+.activities-table li:first-child {
+    border-top: 3px #1B263B solid;
+    cursor: pointer;
+}
+
+.title .details .description {
+    display: block;
+    margin: 5px;
+}
+
+
+.title {
+    color: #1B263B;
+    font-size: 24px;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+}
+
+.title:hover {
+    color: #1F4C80;
+}
+
+.details {
+    color: #1F4C80;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.description {
+    color: #1F4C80;
+    font-size: 16px;
+    font-weight: 400;
+}
