@@ -48,6 +48,11 @@ public class UserService {
     @Autowired
     private TaskScheduler taskScheduler;
 
+    public static final Sort SORT_BY_LAST_AND_FIRST_NAME = Sort.by(
+        Order.asc("lastName").ignoreCase(),
+        Order.asc("firstName").ignoreCase()
+    );
+
     /**
      * Gets a page of users.
      * 

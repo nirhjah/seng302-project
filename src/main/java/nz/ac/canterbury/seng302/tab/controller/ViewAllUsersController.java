@@ -3,27 +3,24 @@ package nz.ac.canterbury.seng302.tab.controller;
 import java.util.List;
 import java.util.Optional;
 
-import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.service.LocationService;
 import nz.ac.canterbury.seng302.tab.service.SportService;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 
 @Controller
@@ -39,19 +36,11 @@ public class ViewAllUsersController {
     SportService sportService;
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
     LocationService locationService;
 
     final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final int PAGE_SIZE = 10;
-
-    private static final Sort SORT_BY_LAST_AND_FIRST_NAME = Sort.by(
-            Order.asc("lastName").ignoreCase(),
-            Order.asc("firstName").ignoreCase()
-    );
 
     /**
      * Takes user to the view all users page
@@ -120,7 +109,7 @@ public class ViewAllUsersController {
         if (favCities == null) {
             favCities = List.of();
         }
-        var pageable = PageRequest.of(page - 1, PAGE_SIZE, SORT_BY_LAST_AND_FIRST_NAME);
+        var pageable = PageRequest.of(page - 1, PAGE_SIZE, UserService.SORT_BY_LAST_AND_FIRST_NAME);
 
         if (nameQuery.isEmpty() && favSports.isEmpty() && favCities.isEmpty()) {
             logger.info("Empty query string, empty sports list AND empty city list, returning all users...");
