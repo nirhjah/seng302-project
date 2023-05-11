@@ -3,28 +3,21 @@ package nz.ac.canterbury.seng302.tab.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
-import nz.ac.canterbury.seng302.tab.form.EditTeamRolesForm;
 import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
-
-import java.util.Optional;
-import java.util.Set;
 
 /**
  * Spring Boot Controller class for the edit team role class
@@ -128,7 +121,7 @@ public class EditTeamRoleController {
   }
 
   public void populateListsInModel(Team team, Model model) {
-    List<TeamRole> teamRoles = team.getTeamRoleList();
+    Set<TeamRole> teamRoles = team.getTeamRoles();
     List<Long> userIDList = new ArrayList<>();
     for (TeamRole role : teamRoles) {
       userIDList.add(role.getUser().getUserId());
@@ -138,5 +131,34 @@ public class EditTeamRoleController {
     model.addAttribute("userIds", userIDList);
     model.addAttribute("possibleRoles", Role.values());
     model.addAttribute("teamID", team.getTeamId().toString());
+  }
+
+  /**
+   * Loops through all team roles, removes any that are duplicates.
+   * @param team The team to check for duplicates
+   */
+  private void cleanTeamRoles(Team team, HashSet<Long> seenUsers) {
+    Set<TeamRole> teamRoles = team.getTeamRoles();
+    Set<TeamRole> newTeamRoles = new HashSet<>();
+    for (var role: teamRoles) {
+      var user = role.getUser();
+      if (!seenUsers.contains(user.getUserId())) {
+        newTeamRoles.add(role);
+        seenUsers.add(user.getUserId());
+      }
+    }
+
+    if (!teamRoles.equals(newTeamRoles)) {
+      team.setTeamRoles(newTeamRoles);
+      teamService.updateTeam(team);
+    }
+  }
+
+  /**
+   * Loops through all team roles, removes any that are duplicates.
+   * @param team The team to check for duplicates
+   */
+  private void cleanTeamRoles(Team team) {
+    cleanTeamRoles(team, new HashSet<>());
   }
 }

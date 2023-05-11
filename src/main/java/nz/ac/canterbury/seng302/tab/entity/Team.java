@@ -43,7 +43,7 @@ public class Team {
     private LocalDateTime creationDate;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
-    private List<TeamRole> teamRoles;
+    private Set<TeamRole> teamRoles = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
@@ -64,7 +64,6 @@ public class Team {
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.token = generateToken();
-        this.teamRoles = new ArrayList<>();
         this.creationDate = LocalDateTime.now();
     }
 
@@ -88,7 +87,6 @@ public class Team {
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         // set the manager
-        this.teamRoles = new ArrayList<>();
         this.setManager(manager);
         this.creationDate = LocalDateTime.now();
     }
@@ -109,7 +107,6 @@ public class Team {
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.creationDate = LocalDateTime.now();
-        this.teamRoles = new ArrayList<>();
     }
 
     /**
@@ -215,8 +212,12 @@ public class Team {
         this.teamRoles.add(teamRole);
     }
 
-    public List<TeamRole> getTeamRoleList() {
+    public Set<TeamRole> getTeamRoles() {
         return this.teamRoles;
+    }
+
+    public void setTeamRoles(Set<TeamRole> teamRoles) {
+        this.teamRoles = teamRoles;
     }
 
     public void setMember(User user) {

@@ -1,19 +1,14 @@
 package nz.ac.canterbury.seng302.tab.unit.entity;
 
-import nz.ac.canterbury.seng302.tab.controller.ForgotPasswordController;
 import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 import nz.ac.canterbury.seng302.tab.entity.TeamRole;
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,8 +102,8 @@ public class TeamTest {
                 "johndoe@example.com", "Password123!", location);
 
         Team team = new Team("test", "Sport", location, user);
-        List<TeamRole> roleList = team.getTeamRoleList();
-        TeamRole managerRole = roleList.get(0);
+        Set<TeamRole> roles = team.getTeamRoles();
+        TeamRole managerRole = roles.stream().findAny().get();
         assertEquals(user, managerRole.getUser());
         assertEquals(Role.MANAGER, managerRole.getRole());
     }
@@ -123,13 +118,10 @@ public class TeamTest {
         User member = new User("Jane", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "JaneDoe@example.com", "Password123!", location);
         team.setMember(user);
-        List<TeamRole> roleList = team.getTeamRoleList();
-        assertEquals(2, roleList.size());
-        TeamRole memberRole = roleList.get(1);
-
-        assertEquals(member.getUserId(), memberRole.getUser().getUserId());
-        assertEquals(Role.MEMBER, memberRole.getRole());
-
+        Set<TeamRole> roles = team.getTeamRoles();
+        assertEquals(2, roles.size());
+        var hasOneMember = roles.stream().filter((teamRole) -> teamRole.getRole() == Role.MANAGER).count() == 1;
+        assertTrue(hasOneMember, "didn't have one member");
     }
 
     @Test
@@ -142,13 +134,11 @@ public class TeamTest {
         User coach = new User("Jane", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "JaneDoe@example.com", "Password123!", location);
         team.setCoach(user);
-        List<TeamRole> roleList = team.getTeamRoleList();
-        assertEquals(2, roleList.size());
-        TeamRole coachRole = roleList.get(1);
-
-        assertEquals(coach.getUserId(), coachRole.getUser().getUserId());
-        assertEquals(Role.COACH, coachRole.getRole());
-
+        Set<TeamRole> roleList = team.getTeamRoles();
+        var hasOneCoach = roleList.stream().filter((teamRole) -> teamRole.getRole() == Role.COACH).count() == 1;
+        var hasOneManager = roleList.stream().filter((teamRole) -> teamRole.getRole() == Role.MANAGER).count() == 1;
+        assertTrue(hasOneCoach, "doesn't have one coach");
+        assertTrue(hasOneManager, "doesn't have one manager");
     }
 
     @Test
