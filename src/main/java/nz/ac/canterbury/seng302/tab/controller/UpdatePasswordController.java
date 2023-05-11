@@ -55,6 +55,9 @@ public class UpdatePasswordController {
      * @param request New Thymeleaf deprecated ${#request} sooo...
      */
     private void prefillModel(Model model, User user, HttpServletRequest request) {
+        // The following attribute is required so the "Password Strength" JS can work
+        model.addAttribute("user", user);
+        // Everything else here shouldn't be here.
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("firstName", user.getFirstName());
@@ -80,8 +83,11 @@ public class UpdatePasswordController {
      * @param hashedPassword     The current password of the current user
      */
     private void validateForm(BindingResult bindingResult, UpdatePasswordForm updatePasswordForm,
-            String hashedPassword) {
+            User user) {
         final String FORM_NAME = "updatePasswordForm";
+
+        String hashedPassword = user.getPassword();
+        String newPassword = updatePasswordForm.getNewPassword();
 
         // U22 - AC2: Is the old password correct?
         if (!passwordEncoder.matches(updatePasswordForm.getOldPassword(), hashedPassword)) {
@@ -91,7 +97,18 @@ public class UpdatePasswordController {
         if (!updatePasswordForm.getNewPassword().equals(updatePasswordForm.getConfirmPassword())) {
             bindingResult.addError(new FieldError(FORM_NAME, "confirmPassword", PASSWORD_MISMATCH_MSG));
         }
-        // U22 - AC4 is already handled by the UpdatePasswordForm's password annotation.
+        // U22 - AC4 Is the password secure?
+        // This is (mostly) handled by the PasswordValidator annotation, but we need to see if other fields contain
+        // our name or email
+        String[] otherFields = new String[]{user.getFirstName(), user.getLastName(), user.getEmail()};
+        if (!newPassword.isEmpty()) {
+            for (String field : otherFields) {
+                if (!field.isEmpty() && newPassword.toLowerCase().contains(field.toLowerCase())) {
+                    bindingResult.addError(new FieldError(FORM_NAME, "password", "Password can't contain values from other fields"));
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -148,7 +165,7 @@ public class UpdatePasswordController {
         User user = currentUser.get();
         prefillModel(model, user, request);
         // Check that the form is valid
-        validateForm(bindingResult, updatePasswordForm, user.getPassword());
+        validateForm(bindingResult, updatePasswordForm, user);
         if (bindingResult.hasErrors()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return "updatePassword";

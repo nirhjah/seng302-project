@@ -221,6 +221,7 @@
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
         if (password) {
+            const lowerPW = password.toLowerCase();
             let strength = 0;
             if (password.length >= 8) {
                 strength++;
@@ -237,7 +238,7 @@
             if (/[\W_]/.test(password)) {
                 strength++;
             }
-            if ((!firstName || !password.includes(firstName)) && (!lastName || !password.includes(lastName)) && (!email || !password.includes(email))) {
+            if (!lowerPW.includes(FIRST_NAME) && !lowerPW.includes(LAST_NAME) && !lowerPW.includes(EMAIL)) {
                 strength++;
             }
 
