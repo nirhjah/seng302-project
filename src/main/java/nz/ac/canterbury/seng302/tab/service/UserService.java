@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -46,6 +48,11 @@ public class UserService {
     @Autowired
     private TaskScheduler taskScheduler;
 
+    public static final Sort SORT_BY_LAST_AND_FIRST_NAME = Sort.by(
+        Order.asc("lastName").ignoreCase(),
+        Order.asc("firstName").ignoreCase()
+    );
+
     /**
      * Gets a page of users.
      * 
@@ -76,9 +83,11 @@ public class UserService {
      *                        <code>firstName+' '+lastName</code>
      * @return A slice of users with the applied filters
      */
-    public Page<User> findUsersByNameOrSportOrCity(Pageable pageable, @Nullable List<String> favouriteSports,
+    public Page<User> findUsersByNameOrSportOrCity(Pageable pageable,
+            @Nullable List<String> favouriteSports,
             @Nullable List<String> favouriteCities,
             @Nullable String nameSearch) {
+        
         logger.info("fav cities = {}", favouriteCities);
         logger.info("fav sports = {}", favouriteSports);
         logger.info("nameSearch = {}", nameSearch);
