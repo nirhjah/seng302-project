@@ -3,16 +3,15 @@ package nz.ac.canterbury.seng302.tab.repository;
 import java.util.List;
 import java.util.Optional;
 
-import nz.ac.canterbury.seng302.tab.entity.Sport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Sport;
+import nz.ac.canterbury.seng302.tab.entity.User;
 
 /**
  * FormResult repository accessor using Spring's @link{CrudRepository}.

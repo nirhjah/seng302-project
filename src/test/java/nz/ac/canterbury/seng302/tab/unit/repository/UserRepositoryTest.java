@@ -10,6 +10,7 @@ import java.util.Set;
 
 import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -36,6 +39,18 @@ public class UserRepositoryTest {
     // Helper class to make random users.
     @Autowired
     private GenerateRandomUsers generateRandomUsers;
+
+    private User createUserWithName(@Nullable String firstName, @Nullable String lastName) throws IOException {
+        User user = generateRandomUsers.createRandomUser();
+        if (firstName != null) {
+            user.setFirstName(firstName);
+        }
+        if (lastName != null) {
+            user.setLastName(lastName);
+        }
+
+        return user;
+    }
 
     @Test
     void findByNameOrSport_whenParamsAreEmpty_returnAllUsers() throws IOException {
@@ -233,8 +248,7 @@ public class UserRepositoryTest {
         Sport rugby = new Sport(S_RUGBY);
 
         // User with the correct name and sport
-        user = generateRandomUsers.createRandomUser();
-        user.setFirstName(SEARCH_NAME);
+        user = createUserWithName(SEARCH_NAME, null);
         user.setFavoriteSports(List.of(hockey));
         userRepository.save(user);
         // User with incorrect name and wrong sport
@@ -256,13 +270,11 @@ public class UserRepositoryTest {
         Sport rugby = new Sport(S_RUGBY);
 
         // User with the correct name and sport
-        user = generateRandomUsers.createRandomUser();
-        user.setFirstName(SEARCH_NAME);
+        user = createUserWithName(SEARCH_NAME, null);
         user.setFavoriteSports(List.of(hockey));
         userRepository.save(user);
         // User with the correct name and two sports (one correct)
-        user = generateRandomUsers.createRandomUser();
-        user.setFirstName(SEARCH_NAME);
+        user = createUserWithName(SEARCH_NAME, null);
         user.setFavoriteSports(List.of(hockey, rugby));
         userRepository.save(user);
         // User with incorrect name and wrong sport
@@ -753,5 +765,115 @@ public class UserRepositoryTest {
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(sanJose.getCity()), List.of("Football"), "SENG");
         assertTrue(returnedUsers.isEmpty());
+    }
+
+    /*
+        The following tests exist for the `UserService.SORT_BY_LAST_AND_FIRST_NAME` attribute
+    */
+    @Test
+    void findAll_usersAreSortedByLastName() throws IOException {
+        User leonAardvark = createUserWithName("Leon","Aardvark");
+        User adamCharlie = createUserWithName("Adam","Charlie");
+        User cheeseDolphin = createUserWithName("Cheese","Dolphin");
+
+        userRepository.save(adamCharlie);
+        userRepository.save(cheeseDolphin);
+        userRepository.save(leonAardvark);
+
+        Pageable pageable = PageRequest.of(0, 10, UserService.SORT_BY_LAST_AND_FIRST_NAME);
+        var returnedUsers = userRepository.findAll(pageable);
+
+        assertEquals(3, returnedUsers.getNumberOfElements());
+        assertEquals(List.of(leonAardvark, adamCharlie, cheeseDolphin), returnedUsers.toList());
+    }
+
+    @Test
+    void findAll_usersAreSortedByLastNameThenFirstName() throws IOException {
+        User leonAardvark = createUserWithName("Leon","Aardvark");
+        User adamAardvark = createUserWithName("Adam","Aardvark");
+        User cheeseAardvark = createUserWithName("Cheese","Aardvark");
+
+        userRepository.save(adamAardvark);
+        userRepository.save(cheeseAardvark);
+        userRepository.save(leonAardvark);
+
+        Pageable pageable = PageRequest.of(0, 10, UserService.SORT_BY_LAST_AND_FIRST_NAME);
+        var returnedUsers = userRepository.findAll(pageable);
+
+        assertEquals(3, returnedUsers.getNumberOfElements());
+        assertEquals(List.of(adamAardvark, cheeseAardvark, leonAardvark), returnedUsers.toList());
+
+    }
+
+    @Test
+    void findAll_usersAreSortedByLastNameThenFirstNameCaseInsensitive() throws IOException {
+        // Items are lowercase in this pattern so we'll know if it puts A-Z/a-z first, and 
+        // therefore isn't case insensitive
+        User andyLowerAardvark = createUserWithName("Andy", "aardvark");
+        User mattAardvark = createUserWithName("Matt", "Aardvark");
+        User adamBob = createUserWithName("Adam", "Bob");
+        User cheeseLowerBob = createUserWithName("Cheese", "bob");
+        User leonBob = createUserWithName("Leon", "Bob");
+        User katBurgler = createUserWithName("Kat", "Burgler");
+        User neilLowerBurgler = createUserWithName("Neil", "burgler");
+
+        // Insert in incorrect order
+        userRepository.save(andyLowerAardvark);
+        userRepository.save(adamBob);
+        userRepository.save(cheeseLowerBob);
+        userRepository.save(katBurgler);
+        userRepository.save(leonBob);
+        userRepository.save(mattAardvark);
+        userRepository.save(neilLowerBurgler);
+
+        Pageable pageable = PageRequest.of(0, 10, UserService.SORT_BY_LAST_AND_FIRST_NAME);
+        var returnedUsers = userRepository.findAll(pageable);
+
+        assertEquals(7, returnedUsers.getNumberOfElements());
+        assertEquals(List.of(andyLowerAardvark,
+                mattAardvark,
+                adamBob,
+                cheeseLowerBob,
+                leonBob,
+                katBurgler,
+                neilLowerBurgler), returnedUsers.toList());
+    }
+
+    /** This test is a copy of the above method, but calling a different method.
+     *  As both methods sort with the same system, if the above tests pass this should pass,
+     *  but you never know...
+     */
+    @Test
+    void findBySportAndName_usersAreSortedByLastNameThenFirstNameCaseInsensitive() throws IOException {
+        // Items are lowercase in this pattern so we'll know if it puts A-Z/a-z first, and 
+        // therefore isn't case insensitive
+        User andyLowerAardvark = createUserWithName("Andy", "aardvark");
+        User mattAardvark = createUserWithName("Matt", "Aardvark");
+        User adamBob = createUserWithName("Adam", "Bob");
+        User cheeseLowerBob = createUserWithName("Cheese", "bob");
+        User leonBob = createUserWithName("Leon", "Bob");
+        User katBurgler = createUserWithName("Kat", "Burgler");
+        User neilLowerBurgler = createUserWithName("Neil", "burgler");
+
+        // Insert in incorrect order
+        userRepository.save(andyLowerAardvark);
+        userRepository.save(adamBob);
+        userRepository.save(cheeseLowerBob);
+        userRepository.save(katBurgler);
+        userRepository.save(leonBob);
+        userRepository.save(mattAardvark);
+        userRepository.save(neilLowerBurgler);
+
+        Pageable pageable = PageRequest.of(0, 10, UserService.SORT_BY_LAST_AND_FIRST_NAME);
+        var returnedUsers = userRepository.findUserByFilteredLocationsAndSports(pageable, List.of(), List.of(), "");
+
+        assertEquals(7, returnedUsers.getNumberOfElements());
+        assertEquals(List.of(andyLowerAardvark,
+                mattAardvark,
+                adamBob,
+                cheeseLowerBob,
+                leonBob,
+                katBurgler,
+                neilLowerBurgler), returnedUsers.toList());
     }
 }
