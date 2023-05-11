@@ -40,6 +40,7 @@ gum style \
 	--align center --width 50 --margin "1 2" --padding "1 2" \
 	'Test Configuration'
 
+# NOTE: currently if there is already a process runnig on 8080, then the program pid could be set to a random process and we dont want to kill random processes
 # starts the program and waits for it to load
 wait_for_program_start() {
 	./gradlew bootRun &
@@ -141,14 +142,14 @@ run_specific_integration_test() {
 	# run the chosen test
 	wait_for_program_start
 	./gradlew end2end -PcucumberOpts="--tests '*$CHOSEN_TEST*' $INTEGRATION_TESTS_DIR/$CHOSEN_FILE.feature"
-	kill $program_pid
+	kill $program_pid 2>/dev/null
 }
 
 # runs an individual end2end file
 run_specific_integration_file() {
 	wait_for_program_start
 	./gradlew end2end -PcucumberOpts="$INTEGRATION_TESTS_DIR/$CHOSEN_FILE.feature"
-	kill $program_pid
+	kill $program_pid 2>/dev/null
 }
 
 ######################################################################
@@ -176,14 +177,14 @@ run_specific_end2end_test() {
 	# run the chosen test
 	wait_for_program_start
 	./gradlew end2end -PcucumberOpts="--tests '*$CHOSEN_TEST*' $END2END_TESTS_DIR/$CHOSEN_FILE.feature"
-	kill $program_pid
+	kill $program_pid 2>/dev/null
 }
 
 # runs an individual end2end file
 run_specific_feature_file() {
 	wait_for_program_start
 	./gradlew end2end -PcucumberOpts="$END2END_TESTS_DIR/$CHOSEN_FILE.feature"
-	kill $program_pid
+	kill $program_pid 2>/dev/null
 }
 
 ######################################################################
