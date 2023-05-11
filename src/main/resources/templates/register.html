@@ -38,27 +38,27 @@
                         <input type="text" class="form-control" id="first-name" placeholder="" th:field="*{firstName}"
                                data-cy="firstName" required autofocus onkeyup="checkPasswordStrength()">
                         <label for="first-name"> First Name <span class="required">*</span></label>
-                        <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message"></div>
                     </div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="last-name" placeholder="" th:field="*{lastName}"
                                data-cy="lastName" required autofocus onkeyup="checkPasswordStrength()">
                         <label for="last-name"> Last Name <span class="required">*</span></label>
-                        <div th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error-message"></div>
+                        <div th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error-message last-name"></div>
                     </div>
                 </div>
+                <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message first-name"></div>
                 <div class="input-box">
                     <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
                            data-cy="dateOfBirth" required autofocus>
                     <label for="date-of-birth"> Date of Birth <span class="required">*</span></label>
                 </div>
-                <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
+                <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message date-of-birth"></div>
                 <div class="input-box">
                     <input type="email" class="form-control" id="email" placeholder="" th:field="*{email}"
                            data-cy="email" required autofocus onkeyup="checkPasswordStrength()">
                     <label for="email"> Email <span class="required">*</span></label>
                 </div>
-                <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message"></div>
+                <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message email"></div>
                 <div class="input-box">
                     <input type="password" class="form-control" id="password" placeholder="" th:field="*{password}"
                            data-cy="password" required autofocus onkeyup="checkPasswordStrength()">
@@ -80,63 +80,65 @@
                         </ul>
                         <li>Mustn't contain your name or email</li>
                     </ul>
-                    <div th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error-message"></div>
+                    <div th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error-message password"></div>
                 </div>
                 <div class="input-box">
                     <input type="password" class="form-control" id="confirm-password" placeholder=""
                            th:field="*{confirmPassword}" data-cy="confirmPassword" required autofocus>
                     <label for="confirm-password"> Confirm Password <span class="required">*</span></label>
-                    <div th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}" class="error-message"></div>
+                    <div th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}" class="error-message confirm-password"></div>
                 </div>
             </div>
             <div class="register-inputs-location">
                 <div class="input-boxes">
                     <div class="input-box">
                         <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
-                               data-cy="location" th:pattern="${addressRegex}" autofocus placeholder=""
+                               data-cy="location"autofocus placeholder=""
                                autocomplete="off"
                                title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
                         <label for="address-line-1">Address Line 1</label>
-                        <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="error-message"></div>
+                        <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="error-message address-line-1"></div>
                         <div class="autocomplete-container" id="autocomplete-container"></div>
                     </div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
-                               data-cy="location" autofocus placeholder="" th:pattern="${addressRegex}"
+                               data-cy="location" autofocus placeholder=""
                                title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
                         <label for="address-line-2">Address Line 2</label>
-                        <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message"></div>
+                        <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message address-line-2"></div>
                     </div>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="suburb" th:name="suburb"
-                           data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}" placeholder=""
+                           data-cy="location" autofocus
+                           placeholder=""
                            title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
                     <label for="suburb">Suburb</label>
-                    <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
+                    <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message suburb"></div>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="postcode" th:name="postcode"
-                           data-cy="location" autofocus th:pattern="${postcodeRegex}" placeholder=""
+                           data-cy="location" autofocus
+                           placeholder=""
                            title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">
                     <label for="postcode">Postcode</label>
-                    <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
+                    <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message postcode"></div>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="city" th:name="city"
-                           data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}"
+                           data-cy="location" autofocus
                            placeholder=""
                            title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
                     <label for="city">City <span class="required">*</span></label>
-                    <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
+                    <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message city"></div>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="country" th:name="country"
-                           data-cy="location" autofocus th:pattern="${countryCitySuburbNameRegex}"
+                           data-cy="location" autofocus
                            placeholder=""
                            title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
                     <label for="country">Country <span class="required">*</span></label>
-                    <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
+                    <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message country"></div>
                 </div>
             </div>
             <script type="text/javascript" th:inline="javascript">
@@ -173,6 +175,34 @@
 </footer>
 </body>
 <script>
+    const firstNameError = document.getElementsByClassName("error-message first-name");
+    const lastNameError = document.getElementsByClassName("error-message last-name");
+    const dateOfBirthError = document.getElementsByClassName("error-message date-of-birth");
+    const emailError = document.getElementsByClassName("error-message email");
+    const passwordError = document.getElementsByClassName("error-message password");
+    const confirmPasswordError = document.getElementsByClassName("error-message confirm-password");
+    const addressLine1Error = document.getElementsByClassName("error-message address-line-1");
+    const addressLine2Error = document.getElementsByClassName("error-message address-line-2");
+    const suburbError = document.getElementsByClassName("error-message suburb");
+    const postcodeError = document.getElementsByClassName("error-message postcode");
+    const cityError = document.getElementsByClassName("error-message city");
+    const countryError = document.getElementsByClassName("error-message country");
+    const firstPageErrors = [firstNameError.length,  lastNameError.length,  dateOfBirthError.length,  emailError.length,  passwordError.length,  confirmPasswordError.length];
+    const secondPageErrors = [addressLine1Error.length, addressLine2Error.length, suburbError.length, postcodeError.length, cityError.length, countryError.length];
+    const firstPageContainsErrors = firstPageErrors.includes(1);
+    const secondPageContainsErrors = secondPageErrors.includes(1)
+    console.log(firstPageErrors);
+    console.log(secondPageErrors);
+    console.log(firstPageContainsErrors);
+    console.log(secondPageContainsErrors);
+
+
+    window.onload = function() {
+        if (!firstPageContainsErrors && secondPageContainsErrors) {
+            secondPageInitialisation();
+        }
+    };
+
     const prevButton = document.querySelector('.previous-button');
     const nextButton = document.querySelector('.next-button');
     const registerButton = document.querySelector('.register-button');
@@ -180,27 +210,8 @@
     const locationInputs = document.querySelector('.register-inputs-location');
     const progressBarLocation = document.getElementById('progressbar-location');
 
-    const inputs = registerInputs.querySelectorAll('input[required]')
-
-    registerButton.addEventListener("click", function () {
-        // If empty values exist on the first page and the user goes to register then bring them back to first page
-        console.log(inputs)
-        for (let i = 0; i < inputs.length; i++) {
-            if (!inputs[i].checkValidity()) {
-                firstPageInitialisation();
-                break;
-            }
-        }
-    });
-
     nextButton.addEventListener("click", function () {
-        // If empty values exist on the first page and the user goes to register then bring them back to first page
-        locationInputs.style.display = 'block';
-        registerInputs.style.display = 'none';
-        progressBarLocation.classList.add('active');
-        prevButton.style.display = 'block';
-        registerButton.style.display = 'block';
-        nextButton.style.display = 'none';
+        secondPageInitialisation();
     });
 
     prevButton.addEventListener("click", function () {
@@ -214,6 +225,15 @@
         prevButton.style.display = 'none';
         registerButton.style.display = 'none';
         nextButton.style.display = 'block';
+    }
+
+    function secondPageInitialisation() {
+        locationInputs.style.display = 'block';
+        registerInputs.style.display = 'none';
+        progressBarLocation.classList.add('active');
+        prevButton.style.display = 'block';
+        registerButton.style.display = 'block';
+        nextButton.style.display = 'none';
     }
 
     function checkPasswordStrength() {
@@ -286,14 +306,15 @@
         const passwordToggle = document.querySelector('.password-toggle');
 
         passwordToggle.addEventListener('click', function () {
-            if (passwordInput.type === 'password') {
+            if (passwordInput.type === 'text') {
+                passwordInput.type = 'password';
+                passwordToggle.src = '/image/icons/hide.png';
+            } else {
                 passwordInput.type = 'text';
                 passwordToggle.src = '/image/icons/view.png';
-            } else {
-                passwordInput.type = 'password';
-                passwordToggle.src='/image/icons/hide.png';
             }
         });
+
     }
 
 </script>
