@@ -68,19 +68,15 @@
   <script>
     const passwordField = document.getElementById('password');
     const passwordToggle = document.querySelector(".password-toggle");
-    passwordToggle.addEventListener('mousedown', function () {
-      passwordField.type = 'text';
-      passwordToggle.src = '/image/icons/view.png';
-    });
-
-    passwordToggle.addEventListener('mouseup', function () {
-      passwordField.type = 'password';
-      passwordToggle.src = '/image/icons/hide.png';
-    });
-
-    passwordToggle.addEventListener('mouseout', function () {
-      passwordField.type = 'password';
-      passwordToggle.src = '/image/icons/hide.png';
+    
+    passwordToggle.addEventListener('click', function () {
+      if (passwordField.type === 'text') {
+          passwordField.type = 'password';
+          passwordToggle.src='/image/icons/hide.png';
+      } else {
+          passwordField.type = 'text';
+          passwordToggle.src='/image/icons/view.png';
+      }
     });
   </script>
 </body>
