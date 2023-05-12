@@ -21,6 +21,8 @@ public class Activity {
         Competition,
         Other
     }
+
+    public ActivityType[] getActivityTypes() {return ActivityType.values();}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "activityId")

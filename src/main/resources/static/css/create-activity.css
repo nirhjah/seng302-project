@@ -1,0 +1,33 @@
+.activity-form .wrapper {
+    font-size: 15px;
+}
+
+.create-activity {
+    text-align: center;
+}
+
+.activity-form {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    width: 65%;
+    margin: auto;
+}
+
+.activity-form form {
+    width: 65%;
+}
+
+.activity-form .wrapper {
+    width: 500px;
+    height: 440px;
+}
+
+.activity-form select {
+    text-align: center;
+    width: 30%;
+}
+
+.select-box {
+    text-align: right;
+}

@@ -276,6 +276,10 @@ public class TeamService {
 
     }
 
+    public List<String> getAllTeamNames() {
+        return teamRepository.getAllTeamNames();
+    }
+
     public void setTeamMember(Team team, User user) {
         Role memberRole = Role.MEMBER;
         team.setRole(user, memberRole);
