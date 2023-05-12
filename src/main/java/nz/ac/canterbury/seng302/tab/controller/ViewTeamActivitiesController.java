@@ -108,6 +108,6 @@ public class ViewTeamActivitiesController {
 
         logger.info("boolean manager is: " + teamService.isUserManagerOfTeam(user.get().getUserId(), teamId));
 
-        return "viewTeamActivities";
+        return "viewActivities";
     }
 }
