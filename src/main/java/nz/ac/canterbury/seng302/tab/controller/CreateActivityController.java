@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.CreateActivityForm;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Optional;
 
 @Controller
@@ -103,8 +105,10 @@ public class CreateActivityController {
             return "createActivity";
         }
 
+        Location location = new Location(null, null, null, "chch", null, "nz");
+
         Activity activity = new Activity(activityType, team,
-                description, startDateTime, endDateTime, userService.getCurrentUser().get());
+                description, startDateTime, endDateTime, userService.getCurrentUser().get(), location);
         activity = activityService.updateOrAddActivity(activity);
         return String.format("redirect:./activity?actId=%s", activity.getId());
     }

@@ -104,7 +104,7 @@ public class U27CreateActivityFeature {
 
     @And("There is a user called {string} {string}")
     @WithMockUser()
-    public void thereIsAUserCalled(String firstName, String lastName) {
+    public void thereIsAUserCalled(String firstName, String lastName) throws Exception {
         if (user == null) {
             user = new User(firstName, lastName, "test@test.com", "password1",
                     new Location(null, null, null, "chch", null, "NZ"));
