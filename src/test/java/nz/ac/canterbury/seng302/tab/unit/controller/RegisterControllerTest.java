@@ -45,7 +45,7 @@ class RegisterControllerTest {
     private Optional<User> optionalUser;
 
     @BeforeEach
-    public void beforeAll() throws IOException {
+    public void beforeAll() {
         userRepository.deleteAll();
     }
 

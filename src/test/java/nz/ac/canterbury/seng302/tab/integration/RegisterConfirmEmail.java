@@ -26,7 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class RegisterConfirmEmail {
 
     @Autowired
@@ -83,8 +82,6 @@ public class RegisterConfirmEmail {
     @When("I submit a valid form on the register page")
     public void iSubmitAValidFormOnTheRegisterPage() throws Exception {
         var form = RegisterTestUtil.getDummyRegisterForm();
-        form.setEmail(EMAIL);
-        form.setPassword(PASSWORD);
         latestResult = RegisterTestUtil.postRegisterForm(mockMvc, form)
                 .andExpect(redirectedUrl("/login"));
     }
@@ -96,10 +93,10 @@ public class RegisterConfirmEmail {
         ));
     }
 
-    @Then("I am logged into the system and the account is activated")
+    @Then("I am redirected to the login page and the account is activated")
     public void iAmLoggedIntoTheSystemAndTheAccountIsActivated() throws Exception {
         latestResult.andExpect(redirectedUrl("/login"));
-        var userOpt = userService.getCurrentUser();
+        var userOpt = userService.findUserByEmail(EMAIL);
         assertTrue("No account", userOpt.isPresent());
         assertTrue("Not verified", userOpt.get().getEmailConfirmed());
     }
@@ -111,8 +108,9 @@ public class RegisterConfirmEmail {
     }
 
     @Then("I receive an email containing a valid registration link")
-    public void iReceiveAnEmailContainingAValidRegistrationLink() {
-        User user = new User();
+    public void iReceiveAnEmailContainingAValidRegistrationLink() throws Exception {
+        User user = User.defaultDummyUser();
+        user.setEmail(EMAIL);
         user.generateToken(userService, 1);
         registrationToken = user.getToken();
     }

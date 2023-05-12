@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 public class RegisterTestUtil {
@@ -50,6 +51,7 @@ public class RegisterTestUtil {
         var dateString = dateFormat.format(form.getDateOfBirth());
 
         return mockMvc.perform(post("/register")
+                .with(csrf())
                 .param("firstName", form.getFirstName())
                 .param("lastName", form.getLastName())
                 .param("email", form.getEmail())

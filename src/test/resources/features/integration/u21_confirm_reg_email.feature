@@ -9,12 +9,12 @@ Feature: U21 - Confirm registration email
   Scenario: AC3 - Given I received a registration link with a unique token, when I want to log for the first time on the system, then I must use the confirmation link to access to the system.
     Given there is a valid registration link
     When I click on the registration link
-    Then I am logged into the system and the account is activated
+    Then I am redirected to the login page and the account is activated
 
   Scenario: AC4 - Given I have accessed the system with the URL of the confirmation link, when the system validates the confirmation link successfully, then I am redirected to the login page, and a confirmation message tells me that my account is activated, and the confirmation token is not usable anymore.
     Given there is a valid registration link
     When I click on the registration link
-    Then I am logged into the system and the account is activated
+    Then I am redirected to the login page and the account is activated
     When I click on the registration link
     Then I am redirected to NOT FOUND page
 
