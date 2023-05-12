@@ -215,10 +215,6 @@ public class UserService {
 
     private static final Duration TOKEN_EXPIRY_TIME = Duration.ofHours(2);
 
-    public static Duration getEmailTokenExpiry() {
-        return TOKEN_EXPIRY_TIME;
-    }
-
     /**
      * Saves a user to persistence. Starts a timer for two hours whereupon the user will be
      * deleted if they have not verified their email

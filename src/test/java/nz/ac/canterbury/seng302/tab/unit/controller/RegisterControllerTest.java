@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
+import static nz.ac.canterbury.seng302.tab.form.RegisterForm.getDummyRegisterForm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -54,23 +55,6 @@ class RegisterControllerTest {
         userRepository.deleteAll();
     }
 
-    private static final String EMAIL = "myemail@gmail.com";
-    private static final String PASSWORD = "Hello123$";
-
-    private RegisterForm getDummyRegisterForm() {
-        var form =  new RegisterForm();
-        form.setCity("Christchurch");
-        form.setCountry("New Zealand");
-        form.setEmail(EMAIL);
-        form.setFirstName("Bobby");
-        form.setLastName("Johnson");
-        form.setPassword(PASSWORD);
-        form.setConfirmPassword(PASSWORD);
-        var d = new Date(2002-1900, Calendar.JULY, 5);
-        form.setDateOfBirth(d);
-        return form;
-    }
-
     private void ensureUserConfirmed(boolean isConfirmed) {
         assertTrue(optionalUser.isPresent());
         assertEquals(isConfirmed, optionalUser.get().getEmailConfirmed());
@@ -112,7 +96,7 @@ class RegisterControllerTest {
                 redirectedUrl("/login")
         );
 
-        optionalUser = userRepository.findByEmail(EMAIL);
+        optionalUser = userRepository.findByEmail(form.getEmail());
         ensureUserConfirmed(false);
     }
 
@@ -125,7 +109,7 @@ class RegisterControllerTest {
                 redirectedUrl("/login")
         );
 
-        optionalUser = userRepository.findByEmail(EMAIL);
+        optionalUser = userRepository.findByEmail(form.getEmail());
         ensureUserConfirmed(false);
 
         mockMvc.perform(get(CONFIRM_URL)
@@ -134,7 +118,7 @@ class RegisterControllerTest {
                         redirectedUrl("/login")
                 );
 
-        optionalUser = userRepository.findByEmail(EMAIL);
+        optionalUser = userRepository.findByEmail(form.getEmail());
         ensureUserConfirmed(true);
     }
 
@@ -146,7 +130,7 @@ class RegisterControllerTest {
         );
 
         var BAD_TOKEN = "abcdefg12345";
-        optionalUser = userRepository.findByEmail(EMAIL);
+        optionalUser = userRepository.findByEmail(form.getEmail());
         mockMvc.perform(get(CONFIRM_URL)
                 .param("token", BAD_TOKEN))
                 .andExpect(status().isNotFound());
