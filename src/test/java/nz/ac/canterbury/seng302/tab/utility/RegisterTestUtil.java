@@ -60,7 +60,6 @@ public class RegisterTestUtil {
                 .param("password", form.getPassword())
                 .param("confirmPassword", form.getConfirmPassword())
                 .param("dateOfBirth", dateString)
-
                 .param("addressLine1", form.getAddressLine1())
                 .param("addressLine2", form.getAddressLine2())
                 .param("postcode", form.getPostcode())

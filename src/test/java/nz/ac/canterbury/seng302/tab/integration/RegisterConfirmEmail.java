@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.IOException;
 
+import static org.springframework.test.util.AssertionErrors.assertNotNull;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -72,23 +73,20 @@ public class RegisterConfirmEmail {
     public void thereIsAValidRegistrationLink() throws IOException {
         assertUser();
         user.generateToken(userService, 10);
-    }
-
-    @Given("I am on the register page")
-    public void iAmOnTheRegisterPage() {
-
+        registrationToken = user.getToken();
+        assertNotNull("registration token was null", registrationToken);
     }
 
     @When("I submit a valid form on the register page")
     public void iSubmitAValidFormOnTheRegisterPage() throws Exception {
-        var form = RegisterTestUtil.getDummyRegisterForm();
+        var form = getRegisterForm();
         latestResult = RegisterTestUtil.postRegisterForm(mockMvc, form)
                 .andExpect(redirectedUrl("/login"));
     }
 
     @When("I click on the registration link")
     public void iClickOnTheURL() throws Exception {
-        latestResult = mockMvc.perform(get(CONFIRM_URL).param(
+        latestResult = mockMvc.perform(get(CONFIRM_URL).requestAttr(
                 "token", registrationToken
         ));
     }
@@ -109,10 +107,7 @@ public class RegisterConfirmEmail {
 
     @Then("I receive an email containing a valid registration link")
     public void iReceiveAnEmailContainingAValidRegistrationLink() throws Exception {
-        User user = User.defaultDummyUser();
-        user.setEmail(EMAIL);
-        user.generateToken(userService, 1);
-        registrationToken = user.getToken();
+        // TODO: This one's going to be difficult.
     }
 
     @Then("I am redirected to NOT FOUND page")
