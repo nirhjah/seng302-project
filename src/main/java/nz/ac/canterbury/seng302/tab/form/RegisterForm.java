@@ -6,10 +6,12 @@ import jakarta.validation.constraints.Size;
 import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 import static nz.ac.canterbury.seng302.tab.validator.UserFormValidators.INVALID_NAME_MSG;
+import static org.springframework.http.RequestEntity.post;
 
 /**
  * The form provided to the user when registering for the website.
@@ -37,7 +39,6 @@ public class RegisterForm {
         form.setPassword(PASSWORD);
         form.setConfirmPassword(PASSWORD);
         var d = new Date(2002-1900, Calendar.JULY, 5);
-        form.setPostcode("8052");
         form.setSuburb("St Albans");
         form.setAddressLine1("56 Mays Road");
         form.setDateOfBirth(d);
