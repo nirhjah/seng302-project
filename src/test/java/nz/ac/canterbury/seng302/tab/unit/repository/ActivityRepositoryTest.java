@@ -88,9 +88,7 @@ public class ActivityRepositoryTest {
         activityRepository.save(activity4);
         activityRepository.save(activity5);
         activityRepository.save(activity6);
-        System.out.println(activityRepository.findActivitiesByUser(PageRequest.of(0,10),user).get());
-        System.out.println(activities);
-        Assertions.assertEquals(activityRepository.findActivitiesByUser(PageRequest.of(0,10),user), activities);
+        Assertions.assertEquals(activities, activityRepository.findActivitiesByUserSorted(PageRequest.of(0,10),user).getContent());
     }
 
 

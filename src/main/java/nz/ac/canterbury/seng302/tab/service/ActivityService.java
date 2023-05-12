@@ -50,7 +50,7 @@ public class ActivityService {
      * @return A slice of activities returned from pagination
      */
     public Page<Activity> getPaginatedActivities(Pageable pageable, User user) {
-        return activityRepository.findActivitiesByUser(pageable, user);
+        return activityRepository.findActivitiesByUserSorted(pageable, user);
     }
 
     /**
