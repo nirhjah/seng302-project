@@ -300,9 +300,17 @@ public class UserService {
 
         taskScheduler.schedule(new TokenVerification(user, this), Instant.now().plus(Duration.ofHours(1)));
 
-        String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "")
-                + "/reset-password?token=" + user.getToken();
-
+        String tokenVerificationLink = "";
+        if (request.getRequestURL().toString().contains("test")) {
+            tokenVerificationLink =  "https://csse-s302g9.canterbury.ac.nz/test/reset-password?token=" + user.getToken();
+        }
+        if (request.getRequestURL().toString().contains("prod")) {
+            tokenVerificationLink =  "https://csse-s302g9.canterbury.ac.nz/prod/reset-password?token=" + user.getToken();
+        }
+        else {
+            tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "")
+                    + "/reset-password?token=" + user.getToken();
+        }
         EmailDetails details = new EmailDetails(user.getEmail(), tokenVerificationLink, EmailDetails.RESET_PASSWORD_HEADER);
         String outcome = emailService.sendSimpleMail(details);
         logger.info(outcome);
