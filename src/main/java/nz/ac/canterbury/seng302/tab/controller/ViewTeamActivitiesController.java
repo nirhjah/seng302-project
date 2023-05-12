@@ -104,7 +104,7 @@ public class ViewTeamActivitiesController {
         model.addAttribute("teamID", teamID);
         model.addAttribute("selectedTeam", selectedTeam);
         model.addAttribute("isUserManager", teamService.isUserManagerOfTeam(user.get().getUserId(), teamId));
-        model.addAttribute("teamActivities", teamActivities);
+        model.addAttribute("activities", teamActivities);
 
         logger.info("boolean manager is: " + teamService.isUserManagerOfTeam(user.get().getUserId(), teamId));
 
