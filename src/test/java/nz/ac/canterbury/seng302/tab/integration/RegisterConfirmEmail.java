@@ -21,6 +21,7 @@ import java.io.IOException;
 
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
@@ -84,7 +85,8 @@ public class RegisterConfirmEmail {
         var form = RegisterTestUtil.getDummyRegisterForm();
         form.setEmail(EMAIL);
         form.setPassword(PASSWORD);
-        latestResult = RegisterTestUtil.postRegisterForm(mockMvc, form).andExpect(status().isOk());
+        latestResult = RegisterTestUtil.postRegisterForm(mockMvc, form)
+                .andExpect(redirectedUrl("/login"));
     }
 
     @When("I click on the registration link")
@@ -96,7 +98,7 @@ public class RegisterConfirmEmail {
 
     @Then("I am logged into the system and the account is activated")
     public void iAmLoggedIntoTheSystemAndTheAccountIsActivated() throws Exception {
-        latestResult.andExpect(status().isOk());
+        latestResult.andExpect(redirectedUrl("/login"));
         var userOpt = userService.getCurrentUser();
         assertTrue("No account", userOpt.isPresent());
         assertTrue("Not verified", userOpt.get().getEmailConfirmed());
