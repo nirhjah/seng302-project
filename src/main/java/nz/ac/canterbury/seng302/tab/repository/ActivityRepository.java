@@ -18,14 +18,11 @@ public interface ActivityRepository extends CrudRepository<Activity, Long> {
     Optional<Activity> findById(long id);
     List<Activity> findAll();
 
-    @Query("SELECT distinct u FROM Activity u " +
-            "LEFT JOIN Team t on u.team = t " +
-            "WHERE u.activityOwner = (:user) " +
-            "OR u.team is not null and (:user) in (SELECT distinct y.user from TeamRole y " +
-                                                    "WHERE t = y.team) " +
-            "ORDER BY " +
-            "COALESCE(lower(t.name), '') ASC, " +
-            "u.activityStart ASC")
-    List<Activity> findActivitiesByUser(@Param("user") User user);
-////    public Page<Activity> findActivitiesByUser(@Param("user") User user, Pageable pageable);
+    @Query("SELECT a FROM Activity a " +
+            "LEFT JOIN Team t ON a.team = t " +
+            "WHERE a.activityOwner = :user " +
+            "OR (a.team IS NOT NULL AND :user IN (SELECT tr.user FROM TeamRole tr WHERE t = tr.team)) " +
+            "GROUP BY a, t.name " +
+            "ORDER BY COALESCE(LOWER(t.name),''), a.activityStart")
+    Page<Activity> findActivitiesByUserSorted(Pageable pageable, @Param("user") User user);
 }
