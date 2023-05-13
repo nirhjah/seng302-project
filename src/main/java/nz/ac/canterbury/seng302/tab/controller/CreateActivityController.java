@@ -53,13 +53,37 @@ public class CreateActivityController {
     }
 
     @GetMapping("/createActivity")
-    public String activityForm(
-            CreateActivityForm createActivityForm,
+    public String activityForm( @RequestParam(name="edit", required=false) Long actId,CreateActivityForm createActivityForm,
                                         Model model,
                                         HttpServletRequest httpServletRequest) {
         model.addAttribute("httpServletRequest", httpServletRequest);
         prefillModel(model);
         logger.info("GET /createActivity");
+
+        LocalDateTime startDateTime = LocalDateTime.now().plusMinutes(10);;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        String formattedStartTime = startDateTime.format(formatter);
+        model.addAttribute("startDateTime", formattedStartTime);
+
+        Activity activity;
+        if (actId !=null){
+            if ((activity = activityService.findActivityById(actId))!=null){
+
+                startDateTime =  activity.getActivityStart();
+                String formattedStartDateTime = startDateTime.format(formatter);
+
+                LocalDateTime endDateTime =  activity.getActivityEnd();
+                String formattedEndDateTime = endDateTime.format(formatter);
+
+                model.addAttribute("activityType", activity.getActivityType());
+                model.addAttribute("teamName", activity.getTeam().getName());
+                model.addAttribute("actId", activity.getId());
+                model.addAttribute("startDateTime",formattedStartDateTime);
+                model.addAttribute("endDateTime", formattedEndDateTime);
+                model.addAttribute("description", activity.getDescription());
+            }
+
+        }
         return "createActivity";
     }
 

@@ -106,6 +106,13 @@ public class Activity {
         this.location = location;
     }
 
+    public String getDescription(){ return this.description;}
+
+    public ActivityType getActivityType(){
+        return this.activityType;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
