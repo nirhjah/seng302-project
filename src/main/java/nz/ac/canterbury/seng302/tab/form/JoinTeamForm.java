@@ -2,7 +2,6 @@ package nz.ac.canterbury.seng302.tab.form;
 
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 public class JoinTeamForm {
 

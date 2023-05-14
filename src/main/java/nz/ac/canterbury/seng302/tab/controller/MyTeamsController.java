@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,7 +54,7 @@ public class MyTeamsController {
      */
     @GetMapping("/my-teams")
     public String myTeamsForm(@RequestParam(value = "page", defaultValue = "-1") int pageNo,
-                                Model model, HttpServletRequest request) {
+                                Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         model.addAttribute("httpServletRequest",request);
 
         model.addAttribute("joinTeamForm", new JoinTeamForm());
@@ -67,11 +68,22 @@ public class MyTeamsController {
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("page", pageNo);
 
+
+/*        redirectAttributes.addFlashAttribute("displayPicture", user.get().getPictureString());
+        redirectAttributes.addFlashAttribute("navTeams", teamService.getTeamList());
+        redirectAttributes.addFlashAttribute("page", pageNo);
+        redirectAttributes.addFlashAttribute("firstName", user.get().getFirstName());
+        redirectAttributes.addFlashAttribute("lastName", user.get().getLastName());*/
+
+
         if (teamRepository.findTeamsWithUser_List(currentUser).size() == 0) {
             model.addAttribute("noTeamsFlag", "You are not a member of any teams.");
+            redirectAttributes.addFlashAttribute("noTeamsFlag", "You are not a member of any teams.");
+
             return "myTeams";
         }
 
+      //  redirectAttributes.addFlashAttribute("noTeamsFlag", null);
         model.addAttribute("noTeamsFlag", null);
 
         if (pageNo < 1 || pageNo > teamService.findTeamsByUser(pageNo, maxPageSize, currentUser).getTotalPages() && teamService.findTeamsByUser(pageNo, maxPageSize, currentUser).getTotalPages() > 0) {
@@ -87,6 +99,10 @@ public class MyTeamsController {
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
         model.addAttribute("displayTeams", listTeams);
+
+     /*   redirectAttributes.addFlashAttribute("totalPages", page.getTotalPages());
+        redirectAttributes.addFlashAttribute("totalItems", page.getTotalElements());
+        redirectAttributes.addFlashAttribute("displayTeams", listTeams);*/
 
         return "myTeams";
     }
@@ -108,14 +124,16 @@ public class MyTeamsController {
 
 
         if(team.isEmpty()) {
-            redirectAttributes.addFlashAttribute("tokenInvalid", "Token is null");
+            bindingResult.addError(new FieldError("joinTeamForm", "token", "Token is invalid"));
         }
 
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("tokenInvalid", "Token is null");
+            model.addAttribute("tokenInvalid", "Leave Modal Open");
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return "redirect:/my-teams?page=1";
+
+            return "myTeams";
         }
+
 
         if(team.isPresent()) {
             userService.userJoinTeam(user, team.get());
