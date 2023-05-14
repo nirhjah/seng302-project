@@ -24,7 +24,7 @@ public class CustomErrorController extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({ ResponseStatusException.class })
     public String handleAccessDeniedException(Model model, Exception ex, HttpServletResponse response) {
-        response.setStatus(404);
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         populateModel(model, "404 Page not found", "Sorry, the page you requested could not be found.");
         return "error";
     }
@@ -34,7 +34,7 @@ public class CustomErrorController extends ResponseEntityExceptionHandler {
         if (ex instanceof ErrorResponse e) {
             response.setStatus(e.getStatusCode().value());
         } else {
-            response.setStatus(500);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
         populateModel(model, "Error", "Uh oh, an unknown error has occured!");
         logger.error("Unknown error", ex);

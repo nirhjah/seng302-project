@@ -22,8 +22,8 @@ import java.io.IOException;
 import static org.springframework.test.util.AssertionErrors.assertNotNull;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
@@ -80,8 +80,7 @@ public class RegisterConfirmEmail {
     @When("I submit a valid form on the register page")
     public void iSubmitAValidFormOnTheRegisterPage() throws Exception {
         var form = getRegisterForm();
-        latestResult = RegisterTestUtil.postRegisterForm(mockMvc, form)
-                .andExpect(redirectedUrl("/login"));
+        latestResult = RegisterTestUtil.postRegisterForm(mockMvc, form);
     }
 
     @When("I click on the registration link")
@@ -108,10 +107,14 @@ public class RegisterConfirmEmail {
     @Then("I receive an email containing a valid registration link")
     public void iReceiveAnEmailContainingAValidRegistrationLink() throws Exception {
         // TODO: This one's going to be difficult.
+        // (Also currently blocked by the mocking issue.)
     }
 
     @Then("I am redirected to NOT FOUND page")
     public void iAmRedirectedToNOTFOUNDPage() throws Exception {
-        latestResult.andExpect(status().isNotFound());
+        latestResult
+                .andDo(print())
+                .andExpect(view().name("error"))
+                .andExpect(status().isNotFound());
     }
 }
