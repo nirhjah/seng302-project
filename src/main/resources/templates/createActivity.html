@@ -9,7 +9,7 @@
 <body class="create-activity-background">
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 <div class="activity-form">
-    <div class="create-activity">
+    <div class="create-activity-header">
         <h1>[[${actId != null ? 'Edit' : 'Create'}]] Activity</h1>
     </div>
     <div class="wrapper">
@@ -42,16 +42,61 @@
                           th:text="${description}"></textarea>
                 <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
             </div>
-            <div class="input-box">
-                <input type="datetime-local" class ="datetime-input" id="startDateTime" name="startDateTime"
-                       th:value="${startDateTime}">
-                <label for="startDateTime">Start date and time of activity:</label>
-                <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}" class="error-message"></div>
+            <div class="input-boxes">
+                <div class="input-box">
+                    <input type="datetime-local" class="datetime-input" id="startDateTime" name="startDateTime" th:value="${startDateTime}">
+                    <label for="startDateTime">Start date and time of activity:</label>
+                    <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}" class="error-message"></div>
+                </div>
+                <div class="input-box">
+                    <input type="datetime-local" class="datetime-input" id="endDateTime" name="endDateTime" th:value="${endDateTime}">
+                    <label for="endDateTime">End date and time of activity:</label>
+                    <div th:each="err : ${#fields.errors('endDateTime')}" th:text="${err}" class="error-message"></div>
+                </div>
+            </div>
+
+            <div class="input-boxes">
+                <div class="input-box">
+                    <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
+                           data-cy="location" autofocus placeholder="" autocomplete="off" th:value="*{addressLine1}"
+                           title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
+                    <label for="address-line-1">Address Line 1</label>
+                    <div class="autocomplete-container" id="autocomplete-container"></div>
+                </div>
+                <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="error-message"></div>
+
+                <div class="input-box">
+                    <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
+                           data-cy="location" autofocus placeholder="" th:value="*{addressLine2}"
+                           title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
+                    <label for="address-line-2">Address Line 2</label>
+                </div>
+                <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message"></div>
             </div>
             <div class="input-box">
-                <input type="datetime-local" class ="datetime-input" id="endDateTime" name="endDateTime" th:value="${endDateTime}">
-                <label for="endDateTime">End date and time of activity:</label>
-                <div th:each="err : ${#fields.errors('endDateTime')}" th:text="${err}" class="error-message"></div>
+                <input type="text" class="form-control" id="suburb" th:name="suburb"
+                       data-cy="location" autofocus placeholder="" th:value="*{suburb}">
+                <label for="suburb">Suburb</label>
+            </div>
+            <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
+            <div class="input-box">
+                <input type="text" class="form-control" id="postcode" th:name="postcode"
+                       data-cy="location" autofocus placeholder="" th:value="*{postcode}">
+                <label for="postcode">Postcode</label>
+            </div>
+            <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
+
+            <div class="input-box">
+                <input type="text" class="form-control" id="city" th:name="city"
+                       data-cy="location" autofocus placeholder="" th:value="*{city}">
+                <label for="city">City <span class="required">*</span></label>
+            </div>
+            <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
+
+            <div class="input-box">
+                <input type="text" class="form-control" id="country" th:name="country"
+                       data-cy="location" autofocus placeholder="" th:value="*{country}">
+                <label for="country">Country <span class="required">*</span></label>
             </div>
             <div class="submit-button">
                 <a th:href="@{home}">

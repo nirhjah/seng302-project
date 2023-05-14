@@ -13,8 +13,8 @@
 }
 
 .activity-form .wrapper {
-    width: 600px;
-    height: 630px;
+    width: 630px;
+    height: 850px;
     font-size: 15px;
 }
 
@@ -55,4 +55,6 @@
         width: 90vw;
     }
 }
+
+
 
