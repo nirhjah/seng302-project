@@ -27,7 +27,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.Optional;
 
 @Controller
@@ -65,7 +64,7 @@ public class CreateActivityController {
         prefillModel(model, httpServletRequest);
         logger.info("GET /createActivity");
 
-        LocalDateTime startDateTime = LocalDateTime.now().plusMinutes(10);;
+        LocalDateTime startDateTime = LocalDateTime.now().plusMinutes(10);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         String formattedStartTime = startDateTime.format(formatter);
         model.addAttribute("startDateTime", formattedStartTime);
