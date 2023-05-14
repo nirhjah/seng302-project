@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -42,7 +44,7 @@ public class CreateActivityController {
 
     Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
-    public void prefillModel(Model model) {
+    public void prefillModel(Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
         Optional<User> user = userService.getCurrentUser();
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
@@ -50,14 +52,17 @@ public class CreateActivityController {
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("teamList", teamService.getTeamList());
         model.addAttribute("activityTypes", Activity.ActivityType.values());
+        URL url = new URL(httpServletRequest.getRequestURL().toString());
+        String path = (url.getPath() + "/..");
+        model.addAttribute("path", path);
     }
 
     @GetMapping("/createActivity")
     public String activityForm( @RequestParam(name="edit", required=false) Long actId,CreateActivityForm createActivityForm,
                                         Model model,
-                                        HttpServletRequest httpServletRequest) {
+                                        HttpServletRequest httpServletRequest) throws MalformedURLException {
         model.addAttribute("httpServletRequest", httpServletRequest);
-        prefillModel(model);
+        prefillModel(model, httpServletRequest);
         logger.info("GET /createActivity");
 
         LocalDateTime startDateTime = LocalDateTime.now().plusMinutes(10);;
@@ -98,9 +103,9 @@ public class CreateActivityController {
             BindingResult bindingResult,
             HttpServletResponse httpServletResponse,
             Model model,
-            HttpServletRequest httpServletRequest) {
+            HttpServletRequest httpServletRequest) throws MalformedURLException {
         model.addAttribute("httpServletRequest", httpServletRequest);
-        prefillModel(model);
+        prefillModel(model, httpServletRequest);
 
         if (!activityService.validateStartAndEnd(startDateTime, endDateTime)) {
             if (!bindingResult.hasFieldErrors("startDateTime")) {
