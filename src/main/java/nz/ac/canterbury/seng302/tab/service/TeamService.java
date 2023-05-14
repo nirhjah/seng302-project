@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -298,5 +299,10 @@ public class TeamService {
             return false;
         }
         return manager.getUserId() == userId;
+    }
+
+    public boolean validateTeamRoles(List<String> userRoles) {
+        int numOfManagers = Collections.frequency(userRoles, Role.MANAGER.toString());
+        return ((numOfManagers > 0) && (numOfManagers <=3));
     }
 }
