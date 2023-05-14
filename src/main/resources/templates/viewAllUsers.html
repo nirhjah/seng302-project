@@ -39,15 +39,18 @@
 <div th:unless="${listOfUsers.empty}" class="card-container">
     <div th:each="user : ${listOfUsers}" class="card"
          th:onclick="|window.location.href='/user-info?name=${user.userId}'|">
-        <div class="card-wrapper">
-            <div class="card-image">
-                <img th:src="${'data:image/jpeg;base64,' + user.pictureString}" class="card-img-top" alt="User image">
+
+        <a th:href="@{user-info(name=${user.userId})}">
+            <div class="card-wrapper">
+                <div class="card-image">
+                    <img th:src="${'data:image/jpeg;base64,' + user.pictureString}" class="card-img-top" alt="User image">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">[[|${user.firstName} ${user.lastName}|]]</h5>
+                    <p class="card-text" th:text="'Location: ' + ${user.location.country} + ', ' + ${user.location.city}">User location</p>
+                </div>
             </div>
-            <div class="card-body">
-                <h5 class="card-title">[[|${user.firstName} ${user.lastName}|]]</h5>
-                <p class="card-text" th:text="'Location: ' + ${user.location}">User location</p>
-            </div>
-        </div>
+        </a>
     </div>
 </div>
 
