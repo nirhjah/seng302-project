@@ -194,14 +194,15 @@ public class Team {
         setToken(token);
     }
 
+    /**
+     * Remove all team roles for this user.
+     * We should call this function if we are updating a user's role.
+     * @param user The user to remove the team roles for
+     *
+     */
     private void removeTeamRoleForUser(User user) {
         var id = user.getUserId();
-        for (var tRole: teamRoles) {
-            if (tRole.getUser().getUserId() == id) {
-                teamRoles.remove(tRole);
-                break;
-            }
-        }
+        teamRoles.removeIf(tRole -> tRole.getUser().getUserId() == id);
     }
 
     /**
@@ -219,10 +220,6 @@ public class Team {
 
     public Set<TeamRole> getTeamRoles() {
         return this.teamRoles;
-    }
-
-    public void setTeamRoles(Set<TeamRole> teamRoles) {
-        this.teamRoles = teamRoles;
     }
 
     public void setMember(User user) {
