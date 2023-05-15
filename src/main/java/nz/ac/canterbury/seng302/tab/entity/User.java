@@ -363,6 +363,9 @@ public class User {
         this.joinedTeams = teams;
     }
 
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
 }
 
 
