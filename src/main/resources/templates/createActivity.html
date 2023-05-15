@@ -15,7 +15,7 @@
     <div class="wrapper">
         <form th:action="@{createActivity}" th:object="${createActivityForm}" id="createActivityForm" method="post">
             <div class="select-container">
-                <label for="activityType">Choose An Activity Type</label>
+                <label for="activityType">Choose An Activity Type <span class="required">*</span> </label>
                 <select name="activityType" id="activityType">
                     <option th:each="type : ${activityTypes}"
                             th:value="${type}"
@@ -27,7 +27,7 @@
             </div>
             <div class="select-container">
                 <div class="select-box">
-                    <label for="team">Select Team For Activity</label>
+                    <label for="team">Select Team For Activity  <span class="required">*</span></label>
                     <select name="team" id="team">
                         <option th:if="${#lists.isEmpty(teamList)}" value="" disabled selected>No Teams Available</option>
                         <option th:each="team : ${teamList}" th:value="${team.getTeamId()}"
@@ -37,7 +37,7 @@
                 <div th:each="err : ${#fields.errors('team')}" th:text="${err}" class="error-message"></div>
             </div>
             <div class="description-box">
-                <label for="description">Description:</label>
+                <label for="description">Description:  <span class="required">*</span></label>
                 <textarea class ="description-text" id="description" th:name="description" autofocus placeholder=""
                           th:text="${description}"></textarea>
                 <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
@@ -45,12 +45,12 @@
             <div class="input-boxes">
                 <div class="input-box">
                     <input type="datetime-local" class="datetime-input" id="startDateTime" name="startDateTime" th:value="${startDateTime}">
-                    <label for="startDateTime">Start date and time of activity:</label>
+                    <label for="startDateTime">Start date & time of activity<span class="required">*</span> </label>
                     <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}" class="error-message"></div>
                 </div>
                 <div class="input-box">
                     <input type="datetime-local" class="datetime-input" id="endDateTime" name="endDateTime" th:value="${endDateTime}">
-                    <label for="endDateTime">End date and time of activity:</label>
+                    <label for="endDateTime">End date & time of activity<span class="required">*</span> </label>
                     <div th:each="err : ${#fields.errors('endDateTime')}" th:text="${err}" class="error-message"></div>
                 </div>
             </div>
