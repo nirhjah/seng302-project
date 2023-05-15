@@ -201,7 +201,7 @@ public class Team {
      */
     public boolean isManager(User user) {
         var userId = user.getUserId();
-        return getTeamMembers().stream().anyMatch((u) -> u.getUserId() == userId);
+        return getTeamManagers().stream().anyMatch((u) -> u.getUserId() == userId);
     }
 
     /**
