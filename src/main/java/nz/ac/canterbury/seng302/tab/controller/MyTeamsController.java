@@ -68,13 +68,11 @@ public class MyTeamsController {
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("page", pageNo);
 
-
-/*        redirectAttributes.addFlashAttribute("displayPicture", user.get().getPictureString());
-        redirectAttributes.addFlashAttribute("navTeams", teamService.getTeamList());
-        redirectAttributes.addFlashAttribute("page", pageNo);
-        redirectAttributes.addFlashAttribute("firstName", user.get().getFirstName());
-        redirectAttributes.addFlashAttribute("lastName", user.get().getLastName());*/
-
+        if (model.asMap().containsKey("formBindingResult"))
+        {
+            model.addAttribute("org.springframework.validation.BindingResult.joinTeamForm",
+                    model.asMap().get("formBindingResult"));
+        }
 
         if (teamRepository.findTeamsWithUser_List(currentUser).size() == 0) {
             model.addAttribute("noTeamsFlag", "You are not a member of any teams.");
@@ -83,7 +81,6 @@ public class MyTeamsController {
             return "myTeams";
         }
 
-      //  redirectAttributes.addFlashAttribute("noTeamsFlag", null);
         model.addAttribute("noTeamsFlag", null);
 
         if (pageNo < 1 || pageNo > teamService.findTeamsByUser(pageNo, maxPageSize, currentUser).getTotalPages() && teamService.findTeamsByUser(pageNo, maxPageSize, currentUser).getTotalPages() > 0) {
@@ -99,10 +96,6 @@ public class MyTeamsController {
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
         model.addAttribute("displayTeams", listTeams);
-
-     /*   redirectAttributes.addFlashAttribute("totalPages", page.getTotalPages());
-        redirectAttributes.addFlashAttribute("totalItems", page.getTotalElements());
-        redirectAttributes.addFlashAttribute("displayTeams", listTeams);*/
 
         return "myTeams";
     }
@@ -131,7 +124,10 @@ public class MyTeamsController {
             model.addAttribute("tokenInvalid", "Leave Modal Open");
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
-            return "myTeams";
+            redirectAttributes.addFlashAttribute("tokenInvalid", "Leave Modal Open");
+            redirectAttributes.addFlashAttribute("formBindingResult", bindingResult);
+
+            return "redirect:/my-teams?page=1";
         }
 
 
