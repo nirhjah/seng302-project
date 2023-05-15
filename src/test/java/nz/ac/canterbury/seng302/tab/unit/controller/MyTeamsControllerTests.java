@@ -106,7 +106,7 @@ public class MyTeamsControllerTests {
     public void whenJoiningATeamWithInvalidToken() throws Exception {
         mockMvc.perform(post("/my-teams")
                         .param("token", "invalid"))
-                .andExpect(view().name("myTeams"));
+                .andExpect(view().name("myTeams")).andExpect(status().isBadRequest());
 
         verify(mockUserService, times(0)).userJoinTeam(user, team);
     }
