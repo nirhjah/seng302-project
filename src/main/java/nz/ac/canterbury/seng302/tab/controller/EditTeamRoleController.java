@@ -82,10 +82,19 @@ public class EditTeamRoleController {
     logger.info(userRoles.toString());
     logger.info(userIds.toString());
 
+    model.addAttribute("httpServletRequest", request);
+
     Team team = teamService.getTeam(Long.parseLong(teamID));
     if (team == null) {
       logger.error("Team ID does not exist!");
       return "redirect:/home";
+    }
+
+    populateListsInModel(team, model);
+
+    if (!teamService.validateTeamRoles(userRoles)) {
+      model.addAttribute("managerError", "Error: A manager is required for a team, with a maximum of 3 per team.");
+      return "editTeamRoleForm";
     }
 
     int len = Math.min(userRoles.size(), userIds.size());
@@ -95,8 +104,6 @@ public class EditTeamRoleController {
     }
     teamService.updateTeam(team);
 
-    model.addAttribute("httpServletRequest", request);
-    populateListsInModel(team, model);
     return "editTeamRoleForm";
   }
 

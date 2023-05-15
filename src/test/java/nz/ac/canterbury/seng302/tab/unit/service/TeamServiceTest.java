@@ -2,10 +2,10 @@ package nz.ac.canterbury.seng302.tab.unit.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 
-import org.hibernate.validator.internal.constraintvalidators.bv.AssertFalseValidator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -15,8 +15,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.validation.constraints.AssertFalse;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,15 +23,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Import(TeamService.class)
@@ -94,7 +88,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void givenAllFieldsValid_WhenTeamEditedOrCreated_ValidationReturnsTrue() throws IOException {
+    public void givenAllFieldsValid_WhenTeamEditedOrCreated_ValidationReturnsTrue()  {
 
         // call the service validation
         String validSport = "Rugby";
@@ -110,7 +104,7 @@ public class TeamServiceTest {
                 validCity, validPostcode, validSuburb, validAddressLine1, validAddressLine2));
         boolean isTestValid = teamService.validateTeamRegistration(validSport, validName, validCountry, validCity,
                 validPostcode, validSuburb, validAddressLine1, validAddressLine2);
-        assertEquals(true, isTestValid);
+        assertTrue( isTestValid);
     }
 
     /**
@@ -118,7 +112,7 @@ public class TeamServiceTest {
      * 
      **/
     @Test
-    public void givenInvalidSportCharacter_WhenTeamEdited_ValidationReturnsFalse() throws IOException {
+    public void givenInvalidSportCharacter_WhenTeamEdited_ValidationReturnsFalse() {
 
         // call the service validation
         String invalidSport = "%";
@@ -132,7 +126,7 @@ public class TeamServiceTest {
 
         boolean isTestValid = teamService.validateTeamRegistration(invalidSport, validName, validCountry, validCity,
                 validPostcode, validSuburb, validAddressLine1, validAddressLine2);
-        assertEquals(false, isTestValid);
+        assertFalse(isTestValid);
     }
 
     /**
@@ -140,7 +134,7 @@ public class TeamServiceTest {
      * 
      **/
     @Test
-    public void givenInvalidNameCharacter_WhenTeamEdited_ValidationReturnsFalse() throws IOException {
+    public void givenInvalidNameCharacter_WhenTeamEdited_ValidationReturnsFalse() {
 
         // call the service validation
         String invalidSport = "Rugby";
@@ -154,7 +148,7 @@ public class TeamServiceTest {
 
         boolean isTestValid = teamService.validateTeamRegistration(invalidSport, validName, validCountry, validCity,
                 validPostcode, validSuburb, validAddressLine1, validAddressLine2);
-        assertEquals(false, isTestValid);
+        assertFalse(isTestValid);
     }
 
     /**
@@ -162,7 +156,7 @@ public class TeamServiceTest {
      * 
      **/
     @Test
-    public void givenInvalidCountryCharacter_WhenTeamEdited_ValidationReturnsFalse() throws IOException {
+    public void givenInvalidCountryCharacter_WhenTeamEdited_ValidationReturnsFalse() {
 
         // call the service validation
         String invalidSport = "Rugby";
@@ -176,7 +170,7 @@ public class TeamServiceTest {
 
         boolean isTestValid = teamService.validateTeamRegistration(invalidSport, validName, validCountry, validCity,
                 validPostcode, validSuburb, validAddressLine1, validAddressLine2);
-        assertEquals(false, isTestValid);
+        assertFalse( isTestValid);
     }
 
     /**
@@ -184,7 +178,7 @@ public class TeamServiceTest {
      * 
      **/
     @Test
-    public void givenInvalidCityCharacter_WhenTeamEdited_ValidationReturnsFalse() throws IOException {
+    public void givenInvalidCityCharacter_WhenTeamEdited_ValidationReturnsFalse() {
 
         // call the service validation
         String invalidSport = "Rugby";
@@ -198,7 +192,7 @@ public class TeamServiceTest {
 
         boolean isTestValid = teamService.validateTeamRegistration(invalidSport, validName, validCountry, validCity,
                 validPostcode, validSuburb, validAddressLine1, validAddressLine2);
-        assertEquals(false, isTestValid);
+        assertFalse(isTestValid);
     }
 
     /**
@@ -220,7 +214,7 @@ public class TeamServiceTest {
 
         boolean isTestValid = teamService.validateTeamRegistration(invalidSport, validName, validCountry, validCity,
                 validPostcode, invalidSuburb, validAddressLine1, validAddressLine2);
-        assertEquals(false, isTestValid);
+        assertFalse(isTestValid);
     }
 
     @Test
@@ -239,13 +233,13 @@ public class TeamServiceTest {
         boolean isTestValid = teamService.validateTeamRegistration(validSportWithTrailingWhitespace, validTeamName,
                 validCountry, validCity,
                 validPostcode, validSuburb, validAddressLine1, validAddressLine2);
-        assertEquals(true, isTestValid);
+        assertTrue(isTestValid);
         assertEquals("Football", actualSportName);
 
     }
 
     @Test
-    public void givenAllInputsValid_whenTrimmingWhitespace_noInputschanged() throws IOException {
+    public void givenAllInputsValid_whenTrimmingWhitespace_noInputschanged()  {
 
         List<String> validInputs = new ArrayList<>();
         validInputs.add("Football");
@@ -291,4 +285,23 @@ public class TeamServiceTest {
     // String newToken = team.getToken();
     // assertNotEquals(oldToken, newToken);
     // }
+
+    @Test
+    public void givenATeamHasValidNumberOfManagers_returnTrue() {
+        List<String> userRoles = List.of(Role.MANAGER.toString(), Role.COACH.toString(), Role.MEMBER.toString());
+        assertTrue(teamService.validateTeamRoles(userRoles));
+    }
+    @Test
+    public void givenATeamHasNoManagers_returnFalse() {
+        List<String> userRoles = List.of(Role.COACH.toString(), Role.COACH.toString(), Role.MEMBER.toString());
+        assertFalse(teamService.validateTeamRoles(userRoles));
+    }
+
+    @Test
+    public void givenATeamHasTooManyManagers_returnFalse() {
+        List<String> userRoles = List.of(Role.MANAGER.toString(), Role.MANAGER.toString(), Role.MANAGER.toString(),
+                Role.MANAGER.toString());
+        assertFalse(teamService.validateTeamRoles(userRoles));
+    }
+
 }
