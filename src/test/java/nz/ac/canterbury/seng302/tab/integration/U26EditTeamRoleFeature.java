@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,10 +38,10 @@ public class U26EditTeamRoleFeature {
     MockMvc mockMvc;
 
     @MockBean
-    UserService mockUserService;
+    UserService mockUserService = mock(UserService.class);
 
     @MockBean
-    TeamService teamService;
+    TeamService teamService = mock(TeamService.class);
 
     Team team;
 
