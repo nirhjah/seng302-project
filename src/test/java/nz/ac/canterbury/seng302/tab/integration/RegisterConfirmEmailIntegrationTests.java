@@ -5,17 +5,25 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import jakarta.validation.constraints.Email;
+import nz.ac.canterbury.seng302.tab.controller.RegisterController;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.RegisterForm;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.utility.RegisterTestUtil;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.IOException;
 
@@ -29,17 +37,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class RegisterConfirmEmailIntegrationTests {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
+    @SpyBean
     private UserService userService;
 
-    @Autowired
+    @SpyBean
     private EmailService emailService;
 
     @Autowired
+    private ApplicationContext applicationContext;
+
+    @Autowired
     private MockMvc mockMvc;
+
+    private UserRepository userRepository;
 
     private ResultActions latestResult;
 
@@ -64,8 +74,23 @@ public class RegisterConfirmEmailIntegrationTests {
         userService.updateOrAddUser(user);
     }
 
+    private void setupMorganMocking() {
+        userRepository = applicationContext.getBean(UserRepository.class);
+        // get all the necessary beans
+        userService = applicationContext.getBean(UserService.class);
+        TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
+        EmailService emailService = applicationContext.getBean(EmailService.class);
+        PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
+
+        emailService = Mockito.spy(new EmailService());
+
+        var controller = new RegisterController(emailService, userService);
+        this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+    }
+
     @Before
     public void beforeTest() {
+        setupMorganMocking();
         userRepository.deleteAll();
     }
 

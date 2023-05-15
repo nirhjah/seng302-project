@@ -47,6 +47,11 @@ public class RegisterController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    public RegisterController(EmailService emailService, UserService userService) {
+        this.emailService = emailService;
+        this.userService = userService;
+    }
+
     /**
      * Countries and cities can have letters from all alphabets, with hyphens and
      * spaces. Must start with an alphabetical character
