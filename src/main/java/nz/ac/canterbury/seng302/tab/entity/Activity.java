@@ -45,7 +45,7 @@ public class Activity {
     private LocalDateTime activityEnd;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_userI", referencedColumnName = "Id")
+    @JoinColumn(name = "fk_userID", referencedColumnName = "Id")
     private User activityOwner;
 
     /**
