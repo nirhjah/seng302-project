@@ -1,10 +1,8 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -277,14 +275,7 @@ public class TeamService {
 
     }
 
-    public void setTeamMember(Team team, User user) {
-        Role memberRole = Role.MEMBER;
-        team.setRole(user, memberRole);
-        teamRepository.save(team);
-        // updateTeam(team);
-    }
-
-    public boolean validateTeamRoles(List<String> userRoles) {
+    public boolean userRolesAreValid(List<String> userRoles) {
         int numOfManagers = Collections.frequency(userRoles, Role.MANAGER.toString());
         return ((numOfManagers > 0) && (numOfManagers <=3));
     }

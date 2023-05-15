@@ -95,7 +95,8 @@ public class EditTeamRoleController {
 
     populateListsInModel(team, model);
 
-    if (!teamService.validateTeamRoles(userRoles)) {
+    // checks if there is at least 1 manager, and at most 3 managers.
+    if (!teamService.userRolesAreValid(userRoles)) {
       model.addAttribute(
           "managerError",
           "Error: A manager is required for a team, with a maximum of 3 per team.");

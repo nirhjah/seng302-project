@@ -289,19 +289,19 @@ public class TeamServiceTest {
     @Test
     public void givenATeamHasValidNumberOfManagers_returnTrue() {
         List<String> userRoles = List.of(Role.MANAGER.toString(), Role.COACH.toString(), Role.MEMBER.toString());
-        assertTrue(teamService.validateTeamRoles(userRoles));
+        assertTrue(teamService.userRolesAreValid(userRoles));
     }
     @Test
     public void givenATeamHasNoManagers_returnFalse() {
         List<String> userRoles = List.of(Role.COACH.toString(), Role.COACH.toString(), Role.MEMBER.toString());
-        assertFalse(teamService.validateTeamRoles(userRoles));
+        assertFalse(teamService.userRolesAreValid(userRoles));
     }
 
     @Test
     public void givenATeamHasTooManyManagers_returnFalse() {
         List<String> userRoles = List.of(Role.MANAGER.toString(), Role.MANAGER.toString(), Role.MANAGER.toString(),
                 Role.MANAGER.toString());
-        assertFalse(teamService.validateTeamRoles(userRoles));
+        assertFalse(teamService.userRolesAreValid(userRoles));
     }
 
 }
