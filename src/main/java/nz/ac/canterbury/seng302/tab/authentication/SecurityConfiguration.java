@@ -16,7 +16,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 /**
  * Custom Security Configuration
  * Adapted from Morgan English's Security Handout
- * https://eng-git.canterbury.ac.nz/men63/spring-security-example-2023/
+ * <a href="https://eng-git.canterbury.ac.nz/men63/spring-security-example-2023/">...</a>
  */
 @Configuration
 @EnableWebSecurity
@@ -59,7 +59,8 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2/**"),AntPathRequestMatcher.antMatcher("/geocode/autocomplete")))
                 .authorizeHttpRequests()
                 // accessible to anyone
-                .requestMatchers("/", "/register", "/login", "/demo", "/populate_database", "/home", "/geocode/autocomplete", "/forgot-password", "/reset-password")
+                .requestMatchers("/", "/register", "/login", "/demo", "/populate_database", "/home",
+                        "/geocode/autocomplete", "/forgot-password", "/reset-password", "/confirm")
                 .permitAll()
                 // Only allow admins to reach the "/admin" page
                 .requestMatchers("/admin")

@@ -5,6 +5,8 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,6 +25,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    Logger logger = LoggerFactory.getLogger(CustomAuthenticationProvider.class);
+
     public CustomAuthenticationProvider() {
         super();
     }
@@ -39,6 +43,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String password = String.valueOf(authentication.getCredentials());
 
         if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
+            logger.info("Bad Credentials");
             throw new BadCredentialsException("Bad Credentials");
         }
 
@@ -46,11 +51,13 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         // This filter sweeps both "Username not in database" and "Passwords don't
         // match" into the same error message.
         if (matchingUser.isEmpty() || passwordEncoder.matches(password, matchingUser.get().getPassword())) {
+            logger.info("Invalid Username or password");
             throw new BadCredentialsException("Invalid username or password");
         }
         // You haven't confirmed your registration via email
         User user = matchingUser.get();
         if (!user.getConfirmEmail()) {
+            logger.info("User needs to confirm registration");
             throw new DisabledException("User need to confirm registration");
         }
         return new UsernamePasswordAuthenticationToken(

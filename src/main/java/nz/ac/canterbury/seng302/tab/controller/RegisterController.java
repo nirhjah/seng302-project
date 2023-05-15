@@ -183,19 +183,21 @@ public class RegisterController {
      */
     @GetMapping("/confirm")
     public String confirmEmail(@RequestParam("token") String token, RedirectAttributes redirectAttributes, HttpSession session) {
-        var opt = userService.findByToken(token);
+        Optional<User> opt = userService.findByToken(token);
+
+        logger.info("GET /confirm");
 
         if (opt.isEmpty()) {
             // Not sure if this will display the 404 page
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
 
-        var user = opt.get();
+        User user = opt.get();
         user.confirmEmail();
         user.grantAuthority("ROLE_USER");
 
         userService.updateOrAddUser(user);
-        redirectAttributes.addFlashAttribute("confirmationMessage", "Your email has been confirmed successfully!");
+        redirectAttributes.addAttribute("confirmationMessage", "Your email has been confirmed successfully!");
         return "redirect:/login";
     }
 }
