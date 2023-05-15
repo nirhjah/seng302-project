@@ -169,6 +169,13 @@ public class RegisterController {
         // This url will be added to the email
         String confirmationUrl = request.getRequestURL().toString().replace(request.getServletPath(), "")
                 + "/confirm?token=" + user.getToken();
+        if (request.getRequestURL().toString().contains("test")) {
+            confirmationUrl =  "https://csse-s302g9.canterbury.ac.nz/test/reset-password?token=" + user.getToken();
+        }
+        if (request.getRequestURL().toString().contains("prod")) {
+            confirmationUrl =  "https://csse-s302g9.canterbury.ac.nz/prod/reset-password?token=" + user.getToken();
+        }
+
         emailService.confirmationEmail(user, confirmationUrl);
 
         session.setAttribute("message", "An email has been sent to your email address. Please follow the instructions to validate your account before you can log in");
@@ -197,7 +204,7 @@ public class RegisterController {
         user.grantAuthority("ROLE_USER");
 
         userService.updateOrAddUser(user);
-        redirectAttributes.addAttribute("confirmationMessage", "Your email has been confirmed successfully!");
+        redirectAttributes.addFlashAttribute("confirmationMessage", "Your email has been confirmed successfully!");
         return "redirect:/login";
     }
 }
