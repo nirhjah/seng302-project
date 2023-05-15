@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Size;
 import nz.ac.canterbury.seng302.tab.validator.logic.CountryCitySuburbCheck;
 import nz.ac.canterbury.seng302.tab.validator.logic.TeamNameCheck;
 import nz.ac.canterbury.seng302.tab.validator.logic.TeamSportCheck;
-import nz.ac.canterbury.seng302.tab.validator.logic.UserIdToRoleCheck;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
