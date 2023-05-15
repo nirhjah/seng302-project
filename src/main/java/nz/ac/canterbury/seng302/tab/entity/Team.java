@@ -109,16 +109,6 @@ public class Team {
         this.creationDate = LocalDateTime.now();
     }
 
-    /**
-     * Returns true is user is a manager, false otherwise
-     * @param user The user in question
-     * @return true if user manages team, false otherwise
-     */
-    public boolean isManager(User user) {
-        // TODO: this is a facade and needs to be implemented
-        return true;
-    }
-
     public Long getTeamId() {
         return this.teamId;
     }
@@ -194,30 +184,53 @@ public class Team {
         setToken(token);
     }
 
+    public Set<User> getTeamManagers() {
+        Set<User> managers = new HashSet<>();
+        for (var tRole: teamRoles) {
+            if (tRole.getRole() == Role.MANAGER) {
+                managers.add(tRole.getUser());
+            }
+        }
+        return managers;
+    }
+
+    /**
+     * Returns true is user is a manager, false otherwise
+     * @param user The user in question
+     * @return true if user manages team, false otherwise
+     */
+    public boolean isManager(User user) {
+        var userId = user.getUserId();
+        return getTeamManagers().stream().anyMatch((u) -> u.getUserId() == userId);
+    }
+
+    /**
+     * Remove all team roles for this user.
+     * We should call this function if we are updating a user's role.
+     * @param user The user to remove the team roles for
+     *
+     */
+    private void removeTeamRoleForUser(User user) {
+        var id = user.getUserId();
+        teamRoles.removeIf(tRole -> tRole.getUser().getUserId() == id);
+    }
 
     /**
      * @param user, the User we are changing
      * @param role the role we are changing to user to
-     *
-     *  TODO: We maybe could have a Map<UserID, Role> for this, instead of
-     *   list of teamRoles. Alternatively, we could remove Users when they are
-     *    updated. Also we need to think about what happens when a User is removed
-     *     from the team.   The TeamRole should be removed.
      */
     public void setRole(User user, Role role) {
+        removeTeamRoleForUser(user);
         TeamRole teamRole = new TeamRole();
         teamRole.setUser(user);
         teamRole.setRole(role);
         teamRole.setTeam(this);
-        this.teamRoles.add(teamRole);
+        teamRoles.add(teamRole);
+        teamMembers.add(user);
     }
 
     public Set<TeamRole> getTeamRoles() {
         return this.teamRoles;
-    }
-
-    public void setTeamRoles(Set<TeamRole> teamRoles) {
-        this.teamRoles = teamRoles;
     }
 
     public void setMember(User user) {
@@ -235,9 +248,4 @@ public class Team {
     public Set<User> getTeamMembers() {
         return teamMembers;
     }
-
-    public void setTeamMembers(Set<User> teamMembers) {
-        this.teamMembers = teamMembers;
-    }
-
 }
