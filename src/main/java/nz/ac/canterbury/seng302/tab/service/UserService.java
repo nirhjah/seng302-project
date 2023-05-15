@@ -42,16 +42,19 @@ import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 public class UserService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final TaskScheduler taskScheduler;
+    private final EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private EmailService emailService;
+    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.taskScheduler = taskScheduler;
+        this.emailService = emailService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-    @Autowired
-    private TaskScheduler taskScheduler;
 
     public static final Sort SORT_BY_LAST_AND_FIRST_NAME = Sort.by(
         Order.asc("lastName").ignoreCase(),

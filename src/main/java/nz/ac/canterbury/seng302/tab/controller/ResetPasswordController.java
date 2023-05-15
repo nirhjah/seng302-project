@@ -26,15 +26,19 @@ import java.util.Optional;
 @Controller
 public class ResetPasswordController {
 
+    private final PasswordEncoder passwordEncoder;
+
+    private final UserService userService;
+
+    private Optional<User> user;
+
+    private String currentToken;
+
     @Autowired
-    PasswordEncoder passwordEncoder;
-    @Autowired
-    UserService userService;
-
-    Optional<User> user;
-
-    String currentToken;
-
+    public ResetPasswordController(UserService userService, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     /**
      * Checks if password matches other fields and is secure
