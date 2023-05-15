@@ -78,13 +78,18 @@ public class CreateActivityController {
 
                 LocalDateTime endDateTime =  activity.getActivityEnd();
                 String formattedEndDateTime = endDateTime.format(formatter);
-
                 model.addAttribute("activityType", activity.getActivityType());
                 model.addAttribute("teamName", activity.getTeam().getName());
                 model.addAttribute("actId", activity.getId());
                 model.addAttribute("startDateTime",formattedStartDateTime);
                 model.addAttribute("endDateTime", formattedEndDateTime);
                 model.addAttribute("description", activity.getDescription());
+                model.addAttribute("addressLine1", activity.getLocation().getAddressLine1());
+                model.addAttribute("addressLine2", activity.getLocation().getAddressLine2());
+                model.addAttribute("city", activity.getLocation().getCity());
+                model.addAttribute("suburb", activity.getLocation().getSuburb());
+                model.addAttribute("country", activity.getLocation().getCountry());
+                model.addAttribute("postcode", activity.getLocation().getPostcode());
             }
 
         }
