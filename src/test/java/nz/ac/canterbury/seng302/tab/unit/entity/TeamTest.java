@@ -1,21 +1,17 @@
 package nz.ac.canterbury.seng302.tab.unit.entity;
 
-import nz.ac.canterbury.seng302.tab.controller.ForgotPasswordController;
 import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 import nz.ac.canterbury.seng302.tab.entity.TeamRole;
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
@@ -103,52 +99,53 @@ public class TeamTest {
 
     @Test
     public void GivenATeamIsCreated_WhenIgetTheRoleList_thenTheListWillContainTheManger() throws Exception {
-        User user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
-                "johndoe@example.com", "Password123!", location);
+        User user = Mockito.spy(new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", location));
+        Mockito.when(user.getUserId()).thenReturn(1L);
 
         Team team = new Team("test", "Sport", location, user);
-        List<TeamRole> roleList = team.getTeamRoleList();
-        TeamRole managerRole = roleList.get(0);
+        Set<TeamRole> roles = team.getTeamRoles();
+        TeamRole managerRole = roles.stream().findAny().get();
+
         assertEquals(user, managerRole.getUser());
         assertEquals(Role.MANAGER, managerRole.getRole());
+        assertEquals(team.getTeamMembers(), team.getTeamManagers(), "Team managers different from team members?");
     }
 
     @Test
     public void GivenIAddAMember_whenICallGetTeamRoleList_thenTheListWillContainTheMember() throws Exception {
-        User user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
-                "johndoe@example.com", "Password123!", location);
+        User user = Mockito.spy(new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", location));
+        Mockito.when(user.getUserId()).thenReturn(1L);
+        User member = Mockito.spy(new User("Jane", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "JaneDoe@example.com", "Password123!", location));
+        Mockito.when(member.getUserId()).thenReturn(2L);
 
         Team team = new Team("test", "Sport", location, user);
 
-        User member = new User("Jane", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
-                "JaneDoe@example.com", "Password123!", location);
-        team.setMember(user);
-        List<TeamRole> roleList = team.getTeamRoleList();
-        assertEquals(2, roleList.size());
-        TeamRole memberRole = roleList.get(1);
+        // `user` should automatically be set to the manager, but we still need to bind `member` manually
+        team.setMember(member);
 
-        assertEquals(member.getUserId(), memberRole.getUser().getUserId());
-        assertEquals(Role.MEMBER, memberRole.getRole());
-
+        Set<TeamRole> roles = team.getTeamRoles();
+        assertEquals(2, roles.size());
+        var hasOneManager = roles.stream().filter((teamRole) -> teamRole.getRole() == Role.MANAGER).count() == 1;
+        assertTrue(hasOneManager, "didn't have one manager");
+        assertEquals(1, team.getTeamManagers().size(), "didn't have one manager");
     }
 
     @Test
     public void GivenIAddACoach_whenICallGetTeamRoleList_thenTheListWillContainTheCoach() throws Exception {
-        User user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
-                "johndoe@example.com", "Password123!", location);
+        User user = Mockito.spy(new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", location));
+        Mockito.when(user.getUserId()).thenReturn(1L);
+        User coach = Mockito.spy(new User("Coach", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "CoachDoe@example.com", "Password123!", location));
+        Mockito.when(coach.getUserId()).thenReturn(3L);
 
         Team team = new Team("test", "Sport", location, user);
+        team.setCoach(coach);
 
-        User coach = new User("Jane", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
-                "JaneDoe@example.com", "Password123!", location);
-        team.setCoach(user);
-        List<TeamRole> roleList = team.getTeamRoleList();
-        assertEquals(2, roleList.size());
-        TeamRole coachRole = roleList.get(1);
+        Set<TeamRole> roleList = team.getTeamRoles();
 
-        assertEquals(coach.getUserId(), coachRole.getUser().getUserId());
-        assertEquals(Role.COACH, coachRole.getRole());
-
+        var hasOneCoach = roleList.stream().filter((teamRole) -> teamRole.getRole() == Role.COACH).count() == 1;
+        var hasOneManager = roleList.stream().filter((teamRole) -> teamRole.getRole() == Role.MANAGER).count() == 1;
+        assertTrue(hasOneCoach, "doesn't have one coach");
+        assertTrue(hasOneManager, "doesn't have one manager");
     }
 
     @Test

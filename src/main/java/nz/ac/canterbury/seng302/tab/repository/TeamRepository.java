@@ -3,20 +3,15 @@ package nz.ac.canterbury.seng302.tab.repository;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.entity.TeamRole;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
-
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
-
-import nz.ac.canterbury.seng302.tab.enums.Role;
 
 /**
  * Spring Boot Repository class for TeamRespository which extends Spring Data
@@ -90,7 +85,4 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             @Param("filteredLocations") List<String> filteredLocations,
             @Param("filteredSports") List<String> filteredSports,
             @Param("name") String name);
-
-    @Query("SELECT tr FROM TeamRole tr WHERE tr.team.id = :teamId AND tr.role = :role")
-    public TeamRole findTeamManager(@Param("teamId") Long teamId, @Param("role") Role role);
 }

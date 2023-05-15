@@ -1,10 +1,8 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -276,27 +275,8 @@ public class TeamService {
 
     }
 
-    public void setTeamMember(Team team, User user) {
-        Role memberRole = Role.MEMBER;
-        team.setRole(user, memberRole);
-        teamRepository.save(team);
-        // updateTeam(team);
-    }
-
-    public User getTeamManager(Long teamId) {
-        TeamRole manager = teamRepository.findTeamManager(teamId, Role.MANAGER);
-        return manager != null ? manager.getUser() : null;
-    }
-
-    public boolean isUserManagerOfTeam(Long userId, Long teamId) {
-        Team team = teamRepository.findById(teamId).orElse(null);
-        if (team == null) {
-            return false;
-        }
-        User manager = getTeamManager(teamId);
-        if (manager == null) {
-            return false;
-        }
-        return manager.getUserId() == userId;
+    public boolean userRolesAreValid(List<String> userRoles) {
+        int numOfManagers = Collections.frequency(userRoles, Role.MANAGER.toString());
+        return ((numOfManagers > 0) && (numOfManagers <=3));
     }
 }
