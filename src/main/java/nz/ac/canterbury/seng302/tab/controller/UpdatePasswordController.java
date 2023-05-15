@@ -124,7 +124,7 @@ public class UpdatePasswordController {
             UpdatePasswordForm updatePasswordForm,
             Model model,
             HttpServletRequest request) {
-        logger.info("POST /updatePassword");
+        logger.info("POST /update-password");
 
         // Get the currently logged in user
         Optional<User> currentUser = userService.getCurrentUser();
@@ -155,7 +155,7 @@ public class UpdatePasswordController {
             Model model,
             HttpServletRequest request,
             HttpServletResponse response) {
-        logger.info("GET /updatePassword");
+        logger.info("GET /update-password");
 
         // Get the currently logged in user
         Optional<User> currentUser = userService.getCurrentUser();
