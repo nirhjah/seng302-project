@@ -2,47 +2,77 @@
     font-family: "Noto Sans", sans-serif;
 }
 
+.view-activities-form {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    text-align: center;
+    font-family: "Noto Sans",sans-serif;
+    font-size: 40px;
+    font-weight: 600;
+    color: #0D1B2A;
+    width: 100%;
+    margin: 20px 0;
+}
+
+.wrapper-activities {
+    width: fit-content;
+}
+
+.wrapper-activities ul {
+    width: 550px;
+}
+
+@media screen and (max-width: 550px) {
+    .wrapper-activities ul {
+        width: 100vw;
+    }
+}
+
 .activities-table li {
     display: block;
-    border: 3px #1B263B solid;
-    border-top: none;
+    border: 4px #1B263B solid;
+    background: white;
+    margin: 3px 0;
+    border-radius: 10px;
+    padding: 5px;
 }
 
 .activities-table li:hover {
-    background-color: #F6F6F6;
-}
-
-.activities-table li:first-child {
-    border-top: 3px #1B263B solid;
+    background-color: #E6E4E4;
     cursor: pointer;
 }
 
-.title .details .description {
+.title, .details, .description {
     display: block;
-    margin: 5px;
+    margin: 0 5px 5px 5px;
 }
 
 
-.title {
+.title a {
     color: #1B263B;
-    font-size: 24px;
+    font-size: 25px;
     font-weight: 600;
     text-decoration: underline;
     text-decoration-thickness: 2px;
 }
 
-.title:hover {
+.title a:hover {
     color: #1F4C80;
 }
 
 .details {
     color: #1F4C80;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
 }
 
 .description {
     color: #1F4C80;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 400;
 }

@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
@@ -18,6 +19,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,11 +45,11 @@ public class ViewActivitiesController {
      */
     @GetMapping("/view-activities")
     public String viewPageOfActivities(@RequestParam(value = "page", defaultValue = "-1") int pageNo,
-                                       Model model, HttpServletRequest request) {
+                                       Model model, HttpServletRequest request) throws IOException {
         Optional<User> user = userService.getCurrentUser();
         User currentUser = user.get();
 
-        Pageable pageable = PageRequest.of(0, maxPageSize, ActivityService.SORT_BY_DATE_AND_TEAM_NAME);
+        Pageable pageable = PageRequest.of(0, maxPageSize);
         Integer totalPages = activityService.getPaginatedActivities(pageable,currentUser).getTotalPages();
         // If page number outside of page range then reloads page with appropriate number
         if (pageNo < 1 || pageNo > totalPages && totalPages > 0) {
@@ -55,7 +58,7 @@ public class ViewActivitiesController {
         }
 
         logger.info("GET /view-teams");
-        pageable = PageRequest.of(pageNo, maxPageSize, ActivityService.SORT_BY_DATE_AND_TEAM_NAME);
+        pageable = PageRequest.of(pageNo, maxPageSize);
         Page<Activity> page = activityService.getPaginatedActivities(pageable,currentUser);
 
         List<Activity> listActivities = page.getContent();
@@ -65,7 +68,7 @@ public class ViewActivitiesController {
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("page", pageNo);
-        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalPages", page.getTotalPages() == 0 ? 1 : page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
         model.addAttribute("activities", listActivities);
         logger.info("page number" + pageNo);

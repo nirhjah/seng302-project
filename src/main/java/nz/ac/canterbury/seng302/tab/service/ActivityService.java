@@ -23,9 +23,6 @@ public class ActivityService {
     @Autowired
     ActivityRepository activityRepository;
 
-    public static final Sort SORT_BY_DATE_AND_TEAM_NAME = Sort.by(
-            Sort.Order.asc("activityStart")
-    );
 
     /**
      * Returns all activities
