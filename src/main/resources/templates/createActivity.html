@@ -99,6 +99,7 @@
                        data-cy="location" autofocus placeholder="" th:value="*{country}">
                 <label for="country">Country <span class="required">*</span></label>
             </div>
+            <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
             <div class="submit-button">
                 <a th:href="@{home}">
                     <button type="submit" th:text="Create"></button>

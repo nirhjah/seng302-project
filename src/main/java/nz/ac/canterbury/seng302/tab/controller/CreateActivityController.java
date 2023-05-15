@@ -98,6 +98,12 @@ public class CreateActivityController {
             @RequestParam(name="description", required = false) String description,
             @RequestParam(name="startDateTime", required = false) LocalDateTime startDateTime,
             @RequestParam(name="endDateTime", required = false) LocalDateTime endDateTime,
+            @RequestParam(name = "addressLine1") String addressLine1,
+            @RequestParam(name = "addressLine2") String addressLine2,
+            @RequestParam(name = "city") String city,
+            @RequestParam(name = "country") String country,
+            @RequestParam(name = "postcode") String postcode,
+            @RequestParam(name = "suburb") String suburb,
             @Validated CreateActivityForm createActivityForm,
             BindingResult bindingResult,
             HttpServletResponse httpServletResponse,
@@ -133,8 +139,7 @@ public class CreateActivityController {
             return "createActivity";
         }
 
-        Location location = new Location(null, null, null, "chch", null, "nz");
-
+        Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
         Activity activity = new Activity(activityType, team,
                 description, startDateTime, endDateTime, userService.getCurrentUser().get(), location);
         activity = activityService.updateOrAddActivity(activity);
