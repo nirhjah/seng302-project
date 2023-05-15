@@ -37,13 +37,13 @@ public class UserFormValidators {
     public static final String NOT_BLANK_MSG = "Field cannot be blank";
     public static final String WELL_FORMED_EMAIL = "Must be a well-formed email";
     public static final String VALID_EMAIL_REGEX = "(?i)[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}";
-    public static final String INVALID_NAME_MSG = "Invalid characters";
+    public static final String INVALID_NAME_MSG = "Contains Invalid characters";
     public static final String VALID_COUNTRY_SUBURB_CITY_REGEX = "^\\p{L}+[\\- '\\p{L}]*$";
-    public static final String INVALID_COUNTRY_SUBURB_CITY_MSG = "May include letters, hyphens, apostrophes and spaces. Must start with letter";
+    public static final String INVALID_COUNTRY_SUBURB_CITY_MSG = "Contains Invalid characters";
     public static final String VALID_ADDRESS_REGEX = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
-    public static final String INVALID_ADDRESS_MSG = "May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must start with letter or number";
+    public static final String INVALID_ADDRESS_MSG = "Contains Invalid characters";
     public static final String VALID_POSTCODE_REGEX = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
-    public static final String INVALID_POSTCODE_MSG = "May include letters, numbers, forward slashes, and hyphens. Must start with letter or number";
+    public static final String INVALID_POSTCODE_MSG = "Contains Invalid characters";
 
     /**
      * Checks that the provided name is valid.

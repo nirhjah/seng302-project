@@ -71,18 +71,15 @@ public class RegisterController {
         logger.info(String.valueOf(bindingResult.getFieldError("password")));
         logger.info(String.valueOf(bindingResult.getFieldError("confirmPassword")));
         // Check #1: Passwords match
-        if (String.valueOf(bindingResult.getFieldError("confirmPassword")).isBlank() && !password.equals(confirmPassword)) {
+        if (!password.equals(confirmPassword)) {
             bindingResult.addError(new FieldError("registerForm", "confirmPassword", "Passwords do not match"));
         }
-
         // Check #2: Password doesn't "contain any other field"
         String[] otherFields = new String[]{registerForm.getFirstName(), registerForm.getLastName(), registerForm.getEmail()};
-        if (String.valueOf(bindingResult.getFieldError("password")).isBlank() && !password.isEmpty()) {
-            for (String field : otherFields) {
-                if (!field.isEmpty() && password.toLowerCase().contains(field.toLowerCase())) {
-                    bindingResult.addError(new FieldError("registerForm", "password", "Password can't contain values from other fields"));
-                    break;
-                }
+        for (String field : otherFields) {
+            if (!field.isEmpty() && password.toLowerCase().contains(field.toLowerCase())) {
+                bindingResult.addError(new FieldError("registerForm", "password", "Password can't contain values from other fields"));
+                break;
             }
         }
     }

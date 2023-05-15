@@ -60,8 +60,8 @@
                 </div>
                 <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message email"></div>
                 <div class="input-box">
-                    <input type="password" class="form-control" id="password" placeholder="" th:field="*{password}"
-                           data-cy="password" required autofocus onkeyup="checkPasswordStrength()">
+                    <input type="text" class="form-control" id="password" placeholder="" th:field="*{password}"
+                           data-cy="password" required autofocus onkeyup="checkPasswordStrength()" style="type">
                     <img th:src="@{/image/icons/hide.png}" class="password-toggle"/>
                     <label for="password"> Password <span class="required">*</span></label>
                 </div>
@@ -80,20 +80,26 @@
                         </ul>
                         <li>Mustn't contain your name or email</li>
                     </ul>
-                    <div th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error-message password"></div>
+                    <div th:if="${#fields.hasErrors('password')}" class="error-message password">
+                        <span th:text="${#fields.errors('password').get(#fields.errors('password').size() - 1)}"></span>
+                    </div>
+<!--                    <div th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error-message password"></div>-->
                 </div>
                 <div class="input-box">
-                    <input type="password" class="form-control" id="confirm-password" placeholder=""
+                    <input type="text" class="form-control" id="confirm-password" placeholder=""
                            th:field="*{confirmPassword}" data-cy="confirmPassword" required autofocus>
                     <label for="confirm-password"> Confirm Password <span class="required">*</span></label>
-                    <div th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}" class="error-message confirm-password"></div>
+<!--                    <div th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}" class="error-message confirm-password"></div>-->
+                    <div th:if="${#fields.hasErrors('confirmPassword')}" class="error-message confirm-password">
+                        <span th:text="${#fields.errors('confirmPassword').get(#fields.errors('confirmPassword').size() - 1)}"></span>
+                    </div>
                 </div>
             </div>
             <div class="register-inputs-location">
                 <div class="input-boxes">
                     <div class="input-box">
                         <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
-                               data-cy="location"autofocus placeholder=""
+                               data-cy="location"autofocus placeholder="" th:field="*{addressLine1}"
                                autocomplete="off"
                                title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
                         <label for="address-line-1">Address Line 1</label>
@@ -102,7 +108,7 @@
                     </div>
                     <div class="input-box">
                         <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
-                               data-cy="location" autofocus placeholder=""
+                               data-cy="location" autofocus placeholder="" th:field="*{addressLine2}"
                                title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
                         <label for="address-line-2">Address Line 2</label>
                         <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message address-line-2"></div>
@@ -111,7 +117,7 @@
                 <div class="input-box">
                     <input type="text" class="form-control" id="suburb" th:name="suburb"
                            data-cy="location" autofocus
-                           placeholder=""
+                           placeholder="" th:field="*{suburb}"
                            title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
                     <label for="suburb">Suburb</label>
                     <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message suburb"></div>
@@ -119,7 +125,7 @@
                 <div class="input-box">
                     <input type="text" class="form-control" id="postcode" th:name="postcode"
                            data-cy="location" autofocus
-                           placeholder=""
+                           placeholder="" th:field="*{postcode}"
                            title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">
                     <label for="postcode">Postcode</label>
                     <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message postcode"></div>
@@ -127,7 +133,7 @@
                 <div class="input-box">
                     <input type="text" class="form-control" id="city" th:name="city"
                            data-cy="location" autofocus
-                           placeholder=""
+                           placeholder="" th:field="*{city}"
                            title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
                     <label for="city">City <span class="required">*</span></label>
                     <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message city"></div>
@@ -135,7 +141,7 @@
                 <div class="input-box">
                     <input type="text" class="form-control" id="country" th:name="country"
                            data-cy="location" autofocus
-                           placeholder=""
+                           placeholder="" th:field="*{country}"
                            title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
                     <label for="country">Country <span class="required">*</span></label>
                     <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message country"></div>
@@ -302,20 +308,41 @@
             headerText.classList.remove("strong");
             headerText.classList.remove("weak");
         }
+    }
+
+    function togglePasswordVisibility() {
         const passwordInput = document.getElementById('password');
         const passwordToggle = document.querySelector('.password-toggle');
 
-        passwordToggle.addEventListener('click', function () {
-            if (passwordInput.type === 'text') {
-                passwordInput.type = 'password';
-                passwordToggle.src = '/image/icons/hide.png';
-            } else {
-                passwordInput.type = 'text';
-                passwordToggle.src = '/image/icons/view.png';
-            }
-        });
-
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordToggle.src = '/image/icons/view.png';
+        } else {
+            passwordInput.type = 'password';
+            passwordToggle.src = '/image/icons/hide.png';
+        }
     }
+
+    const passwordToggle = document.querySelector('.password-toggle');
+    passwordToggle.addEventListener('click', togglePasswordVisibility);
+
+    // This is done so that if errors exist on second page but not first users don't have to re-enter their password
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm-password')
+
+    if (firstPageContainsErrors) {
+        passwordInput.setAttribute('th:field', '');
+        confirmPasswordInput.setAttribute('th:field', '');
+        passwordInput.value=""
+        confirmPasswordInput.value=""
+    } else {
+        checkPasswordStrength();
+    }
+
+    passwordInput.type = 'password'
+    confirmPasswordInput.type = 'password'
+
+
 
 </script>
 
