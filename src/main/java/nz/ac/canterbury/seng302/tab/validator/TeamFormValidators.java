@@ -156,25 +156,4 @@ public class TeamFormValidators {
 
         Class<? extends Payload>[] payload() default {};
     }
-
-    /**
-     * Checks the team sport is not blank and matches
-     * the regex of valid sports
-     */
-    /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
-    /**/@Retention(RUNTIME)
-    /**/@Constraint(validatedBy = {UserIdToRoleCheck.class})
-    /**/@Documented
-    @NotBlank(message = NOT_BLANK_MSG)
-    @Size(max = 30)
-    public @interface teamUserIdToRoleValidator {
-
-        String regexMatch() default VALID_TEAM_SPORT_REGEX;
-        String message() default "";
-
-        Class<?>[] groups() default {};
-
-        Class<? extends Payload>[] payload() default {};
-    }
-
 }
