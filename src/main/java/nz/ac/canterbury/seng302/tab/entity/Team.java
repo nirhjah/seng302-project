@@ -194,17 +194,22 @@ public class Team {
         setToken(token);
     }
 
+    private void removeTeamRoleForUser(User user) {
+        var id = user.getUserId();
+        for (var tRole: teamRoles) {
+            if (tRole.getUser().getUserId() == id) {
+                teamRoles.remove(tRole);
+                break;
+            }
+        }
+    }
 
     /**
      * @param user, the User we are changing
      * @param role the role we are changing to user to
-     *
-     *  TODO: We maybe could have a Map<UserID, Role> for this, instead of
-     *   list of teamRoles. Alternatively, we could remove Users when they are
-     *    updated. Also we need to think about what happens when a User is removed
-     *     from the team.   The TeamRole should be removed.
      */
     public void setRole(User user, Role role) {
+        removeTeamRoleForUser(user);
         TeamRole teamRole = new TeamRole();
         teamRole.setUser(user);
         teamRole.setRole(role);

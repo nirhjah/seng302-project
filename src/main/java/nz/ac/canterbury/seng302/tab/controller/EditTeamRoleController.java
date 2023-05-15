@@ -132,33 +132,4 @@ public class EditTeamRoleController {
     model.addAttribute("possibleRoles", Role.values());
     model.addAttribute("teamID", team.getTeamId().toString());
   }
-
-  /**
-   * Loops through all team roles, removes any that are duplicates.
-   * @param team The team to check for duplicates
-   */
-  private void cleanTeamRoles(Team team, HashSet<Long> seenUsers) {
-    Set<TeamRole> teamRoles = team.getTeamRoles();
-    Set<TeamRole> newTeamRoles = new HashSet<>();
-    for (var role: teamRoles) {
-      var user = role.getUser();
-      if (!seenUsers.contains(user.getUserId())) {
-        newTeamRoles.add(role);
-        seenUsers.add(user.getUserId());
-      }
-    }
-
-    if (!teamRoles.equals(newTeamRoles)) {
-      team.setTeamRoles(newTeamRoles);
-      teamService.updateTeam(team);
-    }
-  }
-
-  /**
-   * Loops through all team roles, removes any that are duplicates.
-   * @param team The team to check for duplicates
-   */
-  private void cleanTeamRoles(Team team) {
-    cleanTeamRoles(team, new HashSet<>());
-  }
 }
