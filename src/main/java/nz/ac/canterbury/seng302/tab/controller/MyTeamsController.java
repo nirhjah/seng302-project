@@ -36,14 +36,19 @@ public class MyTeamsController {
 
     Logger logger = LoggerFactory.getLogger(ViewAllTeamsController.class);
 
-    @Autowired
-    private TeamService teamService;
 
-    @Autowired
-    private TeamRepository teamRepository;
-    
-    @Autowired
-    private UserService userService;
+    private final TeamService teamService;
+
+    private final TeamRepository teamRepository;
+
+    private final UserService userService;
+
+    public MyTeamsController(UserService userService, TeamService teamService, TeamRepository teamRepository) {
+        this.userService = userService;
+        this.teamRepository = teamRepository;
+        this.teamService = teamService;
+    }
+
 
     /**
      * Gets the page of teams the user has joined

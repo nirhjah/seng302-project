@@ -56,7 +56,6 @@ public class MyTeamsControllerTests {
         Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
         team = new Team("test", "Hockey", location);
         teamRepository.save(team);
-        ProfileFormController.teamId = team.getTeamId();
 
         Location testLocation = new Location("23 test street", "24 test street", "surburb", "city", "8782",
                 "New Zealand");
