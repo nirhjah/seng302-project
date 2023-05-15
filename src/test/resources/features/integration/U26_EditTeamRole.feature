@@ -1,5 +1,6 @@
 Feature: U26- Edit team members role
 
+  @WithAdminUser
   Scenario: AC1 - Given I am in the team profile page of a team I manage (e.g., created), when I click on a UI element
   to edit the members role, then I see the list of members and their roles in the team.
     Given I have created a team
@@ -7,6 +8,7 @@ Feature: U26- Edit team members role
     When I click on the edit team role button
     Then I am taken to the edit team members role page
 
+  @WithAdminUser
   Scenario: AC2 - When I see all team members with their roles, then their roles can be one of “manager”, “coach”,
   or “member”.
     Given I am on the edit team members role page
