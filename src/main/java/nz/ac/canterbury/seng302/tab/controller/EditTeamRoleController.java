@@ -90,6 +90,11 @@ public class EditTeamRoleController {
       return "redirect:/home";
     }
 
+    if (!team.isManager(userService.getCurrentUser().get())) {
+      logger.error("Attempted to edit a team when not manager!");
+      return "redirect:/home";
+    }
+
     populateListsInModel(team, model);
 
     if (!teamService.validateTeamRoles(userRoles)) {
