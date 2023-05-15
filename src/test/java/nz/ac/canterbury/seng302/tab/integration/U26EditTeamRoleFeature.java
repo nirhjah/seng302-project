@@ -18,6 +18,7 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -64,13 +65,13 @@ public class U26EditTeamRoleFeature {
     @Mock
     UserService mockUserService = mock(UserService.class);
 
-    @MockBean
+    @InjectMocks
     private UserRepository userRepository;
 
     @Mock
     TeamService teamService = mock(TeamService.class);
 
-    @MockBean
+    @InjectMocks
     TeamRepository teamRepository;
 
     private HttpServletRequest request;
@@ -118,10 +119,16 @@ public class U26EditTeamRoleFeature {
 
     @When("I click on the edit team role button")
     public void iClickOnTheEditTeamRoleButton() throws Exception {
-        //Mockito.doReturn(Optional.of(user)).when(mockUserService).getCurrentUser();
+        Mockito.when(teamService.getTeam(TEAM_ID)).thenReturn(team);
+        Mockito.doReturn(team).when(teamService).getTeam(TEAM_ID);
+
+        Mockito.when(team.getTeamId()).thenReturn(TEAM_ID);
+        Mockito.doReturn(TEAM_ID).when(team).getTeamId();
+        Mockito.doReturn(Optional.of(user)).when(mockUserService).getCurrentUser();
         Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
+
         mockMvc.perform(get("/editTeamRole")
-                .param("edit", String.valueOf(team.getTeamId()))).andExpect(status().isFound());
+                .param("edit", String.valueOf(team.getTeamId()))).andExpect(status().isFound()).andExpect(view().name("editTeamRoleForm"));
     }
 
     @Then("I am taken to the edit team members role page")
