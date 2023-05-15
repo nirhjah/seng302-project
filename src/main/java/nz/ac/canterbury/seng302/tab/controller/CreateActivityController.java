@@ -51,9 +51,11 @@ public class CreateActivityController {
     }
 
     @GetMapping("/createActivity")
-    public String activityForm( @RequestParam(name="edit", required=false) Long actId,CreateActivityForm createActivityForm,
-                                        Model model,
-                                        HttpServletRequest httpServletRequest) {
+    public String activityForm(
+            @RequestParam(name="edit", required=false) Long actId,
+            CreateActivityForm createActivityForm,
+            Model model,
+            HttpServletRequest httpServletRequest) {
         model.addAttribute("httpServletRequest", httpServletRequest);
         prefillModel(model);
         logger.info("GET /createActivity");
@@ -130,6 +132,6 @@ public class CreateActivityController {
         Activity activity = new Activity(activityType, team,
                 description, startDateTime, endDateTime, userService.getCurrentUser().get());
         activity = activityService.updateOrAddActivity(activity);
-        return String.format("redirect:./activity?actId=%s", activity.getId());
+        return String.format("redirect:activity?actId=%s", activity.getId());
     }
 }
