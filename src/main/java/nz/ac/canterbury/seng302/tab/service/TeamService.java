@@ -284,23 +284,6 @@ public class TeamService {
         // updateTeam(team);
     }
 
-    public User getTeamManager(Long teamId) {
-        TeamRole manager = teamRepository.findTeamManager(teamId, Role.MANAGER);
-        return manager != null ? manager.getUser() : null;
-    }
-
-    public boolean isUserManagerOfTeam(Long userId, Long teamId) {
-        Team team = teamRepository.findById(teamId).orElse(null);
-        if (team == null) {
-            return false;
-        }
-        User manager = getTeamManager(teamId);
-        if (manager == null) {
-            return false;
-        }
-        return manager.getUserId() == userId;
-    }
-
     public boolean validateTeamRoles(List<String> userRoles) {
         int numOfManagers = Collections.frequency(userRoles, Role.MANAGER.toString());
         return ((numOfManagers > 0) && (numOfManagers <=3));

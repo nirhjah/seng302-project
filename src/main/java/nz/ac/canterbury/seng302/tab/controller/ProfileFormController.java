@@ -53,36 +53,34 @@ public class ProfileFormController {
         ProfileFormController.teamId = teamID;
         model.addAttribute("httpServletRequest", request);
 
-        Team selectedTeam;
+        Team team;
         if (teamID != null) {
             // Find the selected team by its id
-            selectedTeam = teamList.stream()
-                    .filter(team -> team.getTeamId().equals(teamID))
+            team = teamList.stream()
+                    .filter(t -> t.getTeamId().equals(teamID))
                     .findFirst()
                     .orElse(null);
         } else {
             return "redirect:./home";
         }
 
-        if (selectedTeam != null) {
-            model.addAttribute("displayName", selectedTeam.getName());
-            model.addAttribute("displaySport", selectedTeam.getSport());
-            model.addAttribute("displayLocation", selectedTeam.getLocation());
-            model.addAttribute("displayTeamPicture", selectedTeam.getPictureString());
-            model.addAttribute("displayToken", selectedTeam.getToken());
+        if (team != null) {
+            model.addAttribute("displayName", team.getName());
+            model.addAttribute("displaySport", team.getSport());
+            model.addAttribute("displayLocation", team.getLocation());
+            model.addAttribute("displayTeamPicture", team.getPictureString());
+            model.addAttribute("displayToken", team.getToken());
         } else {
             return "redirect:./home";
         }
 
-        Optional<User> user = userService.getCurrentUser();
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
+        User user = userService.getCurrentUser().get();
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("displayPicture", user.getPictureString());
         model.addAttribute("navTeams", teamList);
         model.addAttribute("teamID", teamID);
-        model.addAttribute("isUserManager", teamService.isUserManagerOfTeam(user.get().getUserId(), teamId));
-
-        logger.info("boolean manager is: " + teamService.isUserManagerOfTeam(user.get().getUserId(), teamId));
+        model.addAttribute("isUserManager", team.isManager(user));
 
         return "profileForm";
     }

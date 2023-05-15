@@ -90,7 +90,4 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             @Param("filteredLocations") List<String> filteredLocations,
             @Param("filteredSports") List<String> filteredSports,
             @Param("name") String name);
-
-    @Query("SELECT tr FROM TeamRole tr WHERE tr.team.id = :teamId AND tr.role = :role")
-    public TeamRole findTeamManager(@Param("teamId") Long teamId, @Param("role") Role role);
 }

@@ -109,16 +109,6 @@ public class Team {
         this.creationDate = LocalDateTime.now();
     }
 
-    /**
-     * Returns true is user is a manager, false otherwise
-     * @param user The user in question
-     * @return true if user manages team, false otherwise
-     */
-    public boolean isManager(User user) {
-        // TODO: this is a facade and needs to be implemented
-        return true;
-    }
-
     public Long getTeamId() {
         return this.teamId;
     }
@@ -192,6 +182,26 @@ public class Team {
             token = generateToken();
         }
         setToken(token);
+    }
+
+    public Set<User> getTeamManagers() {
+        Set<User> managers = new HashSet<>();
+        for (var tRole: teamRoles) {
+            if (tRole.getRole() == Role.MANAGER) {
+                managers.add(tRole.getUser());
+            }
+        }
+        return managers;
+    }
+
+    /**
+     * Returns true is user is a manager, false otherwise
+     * @param user The user in question
+     * @return true if user manages team, false otherwise
+     */
+    public boolean isManager(User user) {
+        var userId = user.getUserId();
+        return getTeamMembers().stream().anyMatch((u) -> u.getUserId() == userId);
     }
 
     /**
