@@ -43,7 +43,7 @@ public class Team {
     private LocalDateTime creationDate;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
-    private List<TeamRole> teamRoles;
+    private Set<TeamRole> teamRoles = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
@@ -64,7 +64,6 @@ public class Team {
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.token = generateToken();
-        this.teamRoles = new ArrayList<>();
         this.creationDate = LocalDateTime.now();
     }
 
@@ -88,7 +87,6 @@ public class Team {
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         // set the manager
-        this.teamRoles = new ArrayList<>();
         this.setManager(manager);
         this.creationDate = LocalDateTime.now();
     }
@@ -109,17 +107,6 @@ public class Team {
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.creationDate = LocalDateTime.now();
-        this.teamRoles = new ArrayList<>();
-    }
-
-    /**
-     * Returns true is user is a manager, false otherwise
-     * @param user The user in question
-     * @return true if user manages team, false otherwise
-     */
-    public boolean isManager(User user) {
-        // TODO: this is a facade and needs to be implemented
-        return true;
     }
 
     public Long getTeamId() {
@@ -197,21 +184,52 @@ public class Team {
         setToken(token);
     }
 
+    public Set<User> getTeamManagers() {
+        Set<User> managers = new HashSet<>();
+        for (var tRole: teamRoles) {
+            if (tRole.getRole() == Role.MANAGER) {
+                managers.add(tRole.getUser());
+            }
+        }
+        return managers;
+    }
 
     /**
-     * @param user, the
-     * @param role
+     * Returns true is user is a manager, false otherwise
+     * @param user The user in question
+     * @return true if user manages team, false otherwise
+     */
+    public boolean isManager(User user) {
+        var userId = user.getUserId();
+        return getTeamManagers().stream().anyMatch((u) -> u.getUserId() == userId);
+    }
+
+    /**
+     * Remove all team roles for this user.
+     * We should call this function if we are updating a user's role.
+     * @param user The user to remove the team roles for
+     *
+     */
+    private void removeTeamRoleForUser(User user) {
+        var id = user.getUserId();
+        teamRoles.removeIf(tRole -> tRole.getUser().getUserId() == id);
+    }
+
+    /**
+     * @param user, the User we are changing
+     * @param role the role we are changing to user to
      */
     public void setRole(User user, Role role) {
-
+        removeTeamRoleForUser(user);
         TeamRole teamRole = new TeamRole();
         teamRole.setUser(user);
         teamRole.setRole(role);
         teamRole.setTeam(this);
-        this.teamRoles.add(teamRole);
+        teamRoles.add(teamRole);
+        teamMembers.add(user);
     }
 
-    public List<TeamRole> getTeamRoleList() {
+    public Set<TeamRole> getTeamRoles() {
         return this.teamRoles;
     }
 
@@ -230,9 +248,4 @@ public class Team {
     public Set<User> getTeamMembers() {
         return teamMembers;
     }
-
-    public void setTeamMembers(Set<User> teamMembers) {
-        this.teamMembers = teamMembers;
-    }
-
 }
