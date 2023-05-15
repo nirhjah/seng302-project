@@ -47,6 +47,10 @@ public class RegisterController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    /**
+     * This ctor should only be called in testing.
+     * We need manual dep injection for mocks to be processed properly with cucumber
+     */
     @Autowired
     public RegisterController(EmailService emailService, UserService userService) {
         this.emailService = emailService;

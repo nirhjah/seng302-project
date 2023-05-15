@@ -24,6 +24,17 @@ public class EmailService {
     private JavaMailSender javaMailSender;
 
     /**
+     * Manual dependency injection for tests.
+     * Following morgan's solution in origin/feat/morgan-fix.
+     * NOTE: This ctor SHOULD NOT be called outside of tests!!!!
+     * @param javaMailSender
+     */
+    @Autowired
+    public EmailService(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
+
+    /**
      * Gets the sending email from the application properties
      */
     @Value("${spring.mail.username}") private String sender;

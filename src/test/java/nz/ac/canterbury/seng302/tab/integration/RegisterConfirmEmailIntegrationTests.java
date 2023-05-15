@@ -19,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.ApplicationContext;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,6 +28,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.IOException;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.springframework.test.util.AssertionErrors.assertNotNull;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -37,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class RegisterConfirmEmailIntegrationTests {
 
-    @SpyBean
+    @Autowired
     private UserService userService;
 
     @SpyBean
@@ -75,14 +78,15 @@ public class RegisterConfirmEmailIntegrationTests {
     }
 
     private void setupMorganMocking() {
-        userRepository = applicationContext.getBean(UserRepository.class);
         // get all the necessary beans
+        userRepository = applicationContext.getBean(UserRepository.class);
         userService = applicationContext.getBean(UserService.class);
-        TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
-        PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
+        JavaMailSender javaMailSender = applicationContext.getBean(JavaMailSender.class);
 
-        emailService = Mockito.spy(new EmailService());
+        // create email spy with manual DI
+        emailService = Mockito.spy(new EmailService(javaMailSender));
 
+        // create mockMvc manually with spied services
         var controller = new RegisterController(emailService, userService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
@@ -130,8 +134,7 @@ public class RegisterConfirmEmailIntegrationTests {
 
     @Then("I receive an email containing a valid registration link")
     public void iReceiveAnEmailContainingAValidRegistrationLink() throws Exception {
-        // TODO: This one's going to be difficult.
-        // (Also currently blocked by the mocking issue.)
+        Mockito.verify(emailService, times(1)).confirmationEmail(user, any(String.class));
     }
 
     @Then("I am redirected to NOT FOUND page")
