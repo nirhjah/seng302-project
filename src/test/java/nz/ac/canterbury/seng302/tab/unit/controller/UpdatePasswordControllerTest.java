@@ -94,7 +94,7 @@ public class UpdatePasswordControllerTest {
      */
     @Test
     void canAccessUpdatePassword() throws Exception {
-        mockMvc.perform(get("/updatePassword"))
+        mockMvc.perform(get("/update-password"))
                 .andExpect(status().isOk());
     }
 
@@ -103,7 +103,7 @@ public class UpdatePasswordControllerTest {
      */
     @Test
     void updatePassword_validForm_succeeds() throws Exception {
-        mockMvc.perform(post("/updatePassword")
+        mockMvc.perform(post("/update-password")
                 .param("oldPassword", USER_PWORD)
                 .param("newPassword", NEW_PWORD)
                 .param("confirmPassword", NEW_PWORD)
@@ -117,7 +117,7 @@ public class UpdatePasswordControllerTest {
      */
     @Test
     void updatePassword_oldPasswordDoesNotMatch_fails() throws Exception {
-        mockMvc.perform(post("/updatePassword")
+        mockMvc.perform(post("/update-password")
                 .param("oldPassword", "TheWrongPassword")
                 .param("newPassword", NEW_PWORD)
                 .param("confirmPassword", NEW_PWORD)
@@ -133,7 +133,7 @@ public class UpdatePasswordControllerTest {
      */
     @Test
     void updatePassword_newAndRetypeDoNotMatch_fails() throws Exception {
-        mockMvc.perform(post("/updatePassword")
+        mockMvc.perform(post("/update-password")
                 .param("oldPassword", USER_PWORD)
                 .param("newPassword", NEW_PWORD)
                 .param("confirmPassword", "wrong")
@@ -161,7 +161,7 @@ public class UpdatePasswordControllerTest {
     @ParameterizedTest
     @ValueSource(strings = {"", "a", "1", "!", "aB1$", "Controller", "Cheezits1", "corn_c0b", "ABCD123!"})
     void updatePassword_newPasswordIsWeak_fails(String password) throws Exception {
-        mockMvc.perform(post("/updatePassword")
+        mockMvc.perform(post("/update-password")
             .param("oldPassword", USER_PWORD)
             .param("newPassword", password)
             .param("confirmPassword", password)
@@ -177,7 +177,7 @@ public class UpdatePasswordControllerTest {
      */
     @Test
     void updatePassword_validForm_passwordIsUpdated() throws Exception {
-        mockMvc.perform(post("/updatePassword")
+        mockMvc.perform(post("/update-password")
                 .param("oldPassword", USER_PWORD)
                 .param("newPassword", NEW_PWORD)
                 .param("confirmPassword", NEW_PWORD)
@@ -195,13 +195,13 @@ public class UpdatePasswordControllerTest {
      */
     @Test
     void updatePassword_validForm_emailIsSent() throws Exception {
-        mockMvc.perform(post("/updatePassword")
+        mockMvc.perform(post("/update-password")
                 .param("oldPassword", USER_PWORD)
                 .param("newPassword", NEW_PWORD)
                 .param("confirmPassword", NEW_PWORD)
             ).andExpect(status().is3xxRedirection());
 
-        verify(mockUserService, times(1)).updatePassword(testUser);
+        verify(mockUserService, times(1)).updatePassword(testUser, anyString());
     }
     
 }

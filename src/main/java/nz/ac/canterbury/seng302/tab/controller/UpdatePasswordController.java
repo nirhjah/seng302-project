@@ -119,7 +119,7 @@ public class UpdatePasswordController {
      * @param updatePasswordForm A blank form for the user to fill
      * @param request            Required in navBar.html
      */
-    @GetMapping("/updatePassword")
+    @GetMapping("/update-password")
     public String getUpdatePassword(
             UpdatePasswordForm updatePasswordForm,
             Model model,
@@ -148,7 +148,7 @@ public class UpdatePasswordController {
      * @param response           Used to set the status code if an error occurs
      *                           (Makes testing easier)
      */
-    @PostMapping("/updatePassword")
+    @PostMapping("/update-password")
     public String submitUpdatePassword(
             @Valid UpdatePasswordForm updatePasswordForm,
             BindingResult bindingResult,
@@ -170,10 +170,7 @@ public class UpdatePasswordController {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return "updatePassword";
         } else {
-            String hashedPassword = passwordEncoder.encode(updatePasswordForm.getNewPassword());
-            user.setPassword(hashedPassword);
-            userService.updateOrAddUser(user);
-            userService.updatePassword(user);
+            userService.updatePassword(user, updatePasswordForm.getNewPassword());
             return "redirect:user-info/self";
         }
     }
