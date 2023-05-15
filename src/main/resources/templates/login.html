@@ -12,9 +12,11 @@
 </head>
 
 <body class="team-form-background">
+
   <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
   <div class="login-form">
-<!--    <div class="login-header">-->
+    <div th:if="${message != null}" th:insert="~{fragments/messageDropDown.html :: messageDropDown(message=${message})}"></div>
+    <!--    <div class="login-header">-->
 <!--      <h1>Login</h1>-->
 <!--    </div>-->
     <div class="wrapper">
@@ -24,6 +26,8 @@
             <img id="cancelButton" th:src="@{/image/icons/cross.svg}"/>
           </a>
         </div>
+        <h6 class="reset-password-info" th:if="${passwordUpdatedMessage != null}" th:text="${passwordUpdatedMessage}"></h6>
+        <h6 class="reset-password-info" th:if="${invalidTokenMessage != null}" th:text="${invalidTokenMessage}"></h6>
         <div class="input-box">
           <input class="form-control" id="username" placeholder="" th:name="username"
             th:value="*{username}" data-cy="username" autofocus>
