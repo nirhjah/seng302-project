@@ -1,8 +1,10 @@
 package nz.ac.canterbury.seng302.tab.helper;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -45,10 +47,17 @@ public class GenerateRandomUsers {
     public User createRandomUser() throws IOException {
 
         String firstName = RANDOM_NAMES[random.nextInt(0, RANDOM_NAMES.length)];
+        
+        if (random.nextBoolean()) {
+            firstName = firstName.toLowerCase();
+        }
         String lastName = RANDOM_NAMES[random.nextInt(0, RANDOM_NAMES.length)];
+        if (random.nextBoolean()) {
+            lastName = lastName.toLowerCase();
+        }
         String email = UUID.randomUUID().toString() + "@email.com";
-        long startDate = new Date(1980, 1, 1).getTime();
-        long endDate = new Date(2005, 12, 31).getTime();
+        long startDate = new GregorianCalendar(1980, Calendar.JANUARY, 1).getTime().getTime();
+        long endDate = new GregorianCalendar(2005, Calendar.DECEMBER, 31).getTime().getTime();
         Date dob = new Date(random.nextLong(startDate, endDate));
         return new User(firstName, lastName, dob, email, "abc123", new Location(null, null, null, "Christchurch", null, "New Zealand"));
 
