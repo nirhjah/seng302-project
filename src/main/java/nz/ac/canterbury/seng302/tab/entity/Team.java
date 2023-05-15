@@ -225,7 +225,8 @@ public class Team {
         teamRole.setUser(user);
         teamRole.setRole(role);
         teamRole.setTeam(this);
-        this.teamRoles.add(teamRole);
+        teamRoles.add(teamRole);
+        teamMembers.add(user);
     }
 
     public Set<TeamRole> getTeamRoles() {
@@ -247,9 +248,4 @@ public class Team {
     public Set<User> getTeamMembers() {
         return teamMembers;
     }
-
-    public void setTeamMembers(Set<User> teamMembers) {
-        this.teamMembers = teamMembers;
-    }
-
 }
