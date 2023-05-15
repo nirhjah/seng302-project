@@ -40,16 +40,18 @@ import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 public class UserService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final TaskScheduler taskScheduler;
+    private final EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private TaskScheduler taskScheduler;
+    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.taskScheduler = taskScheduler;
+        this.emailService = emailService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     /**
      * Gets a page of users.
@@ -294,7 +296,7 @@ public class UserService {
      * @param request   to get current url to create the link
      */
     public void resetPasswordEmail(User user, HttpServletRequest request) {
-
+        System.out.println("SENDING RESET EMAIL to " + user.getEmail());
         user.generateToken(this, 1);
         updateOrAddUser(user);
 

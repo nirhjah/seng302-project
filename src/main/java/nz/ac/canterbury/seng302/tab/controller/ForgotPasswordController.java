@@ -23,12 +23,14 @@ import java.util.Optional;
 @Controller
 public class ForgotPasswordController {
 
-    Optional<User> user;
-
-    User currentUser;
+    private Optional<User> user;
+    private User currentUser;
+    private final UserService userService;
 
     @Autowired
-    UserService userService;
+    public ForgotPasswordController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/forgot-password")
     public String forgotPasswordForm(Model model,HttpServletRequest request) {

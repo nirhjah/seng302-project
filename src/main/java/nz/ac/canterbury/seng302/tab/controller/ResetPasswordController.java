@@ -26,14 +26,19 @@ import java.util.Optional;
 @Controller
 public class ResetPasswordController {
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-    @Autowired
-    UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    Optional<User> user;
+    private final UserService userService;
 
-    String currentToken;
+    private Optional<User> user;
+
+    private String currentToken;
+
+    @Autowired
+    public ResetPasswordController(UserService userService, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
 
     /**
