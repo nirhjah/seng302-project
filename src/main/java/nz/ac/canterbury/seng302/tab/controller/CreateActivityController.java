@@ -23,9 +23,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.Optional;
 
 @Controller
@@ -42,7 +43,7 @@ public class CreateActivityController {
 
     Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
-    public void prefillModel(Model model) {
+    public void prefillModel(Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
         Optional<User> user = userService.getCurrentUser();
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
@@ -50,17 +51,20 @@ public class CreateActivityController {
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("teamList", teamService.getTeamList());
         model.addAttribute("activityTypes", Activity.ActivityType.values());
+        URL url = new URL(httpServletRequest.getRequestURL().toString());
+        String path = (url.getPath() + "/..");
+        model.addAttribute("path", path);
     }
 
     @GetMapping("/createActivity")
     public String activityForm( @RequestParam(name="edit", required=false) Long actId,CreateActivityForm createActivityForm,
                                         Model model,
-                                        HttpServletRequest httpServletRequest) {
+                                        HttpServletRequest httpServletRequest) throws MalformedURLException {
         model.addAttribute("httpServletRequest", httpServletRequest);
-        prefillModel(model);
+        prefillModel(model, httpServletRequest);
         logger.info("GET /createActivity");
 
-        LocalDateTime startDateTime = LocalDateTime.now().plusMinutes(10);;
+        LocalDateTime startDateTime = LocalDateTime.now().plusMinutes(10);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         String formattedStartTime = startDateTime.format(formatter);
         model.addAttribute("startDateTime", formattedStartTime);
@@ -94,13 +98,19 @@ public class CreateActivityController {
             @RequestParam(name="description", required = false) String description,
             @RequestParam(name="startDateTime", required = false) LocalDateTime startDateTime,
             @RequestParam(name="endDateTime", required = false) LocalDateTime endDateTime,
+            @RequestParam(name = "addressLine1") String addressLine1,
+            @RequestParam(name = "addressLine2") String addressLine2,
+            @RequestParam(name = "city") String city,
+            @RequestParam(name = "country") String country,
+            @RequestParam(name = "postcode") String postcode,
+            @RequestParam(name = "suburb") String suburb,
             @Validated CreateActivityForm createActivityForm,
             BindingResult bindingResult,
             HttpServletResponse httpServletResponse,
             Model model,
-            HttpServletRequest httpServletRequest) {
+            HttpServletRequest httpServletRequest) throws MalformedURLException {
         model.addAttribute("httpServletRequest", httpServletRequest);
-        prefillModel(model);
+        prefillModel(model, httpServletRequest);
 
         if (!activityService.validateStartAndEnd(startDateTime, endDateTime)) {
             if (!bindingResult.hasFieldErrors("startDateTime")) {
@@ -129,8 +139,7 @@ public class CreateActivityController {
             return "createActivity";
         }
 
-        Location location = new Location(null, null, null, "chch", null, "nz");
-
+        Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
         Activity activity = new Activity(activityType, team,
                 description, startDateTime, endDateTime, userService.getCurrentUser().get(), location);
         activity = activityService.updateOrAddActivity(activity);
