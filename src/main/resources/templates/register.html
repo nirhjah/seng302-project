@@ -61,7 +61,7 @@
                 <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message"></div>
                 <div class="input-box">
                     <input type="password" class="form-control" id="password" placeholder="" th:field="*{password}"
-                           data-cy="password" required autofocus onkeyup="checkPasswordStrength()">
+                           data-cy="password" autocomplete="new-password" required autofocus onkeyup="checkPasswordStrength()">
                     <img th:src="@{/image/icons/hide.png}" class="password-toggle" data-pw-field="password"/>
                     <label for="password"> Password <span class="required">*</span></label>
                 </div>
@@ -83,8 +83,8 @@
                     <div th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error-message"></div>
                 </div>
                 <div class="input-box">
-                    <input type="password" class="form-control" id="confirm-password" placeholder=""
-                           th:field="*{confirmPassword}" data-cy="confirmPassword" required autofocus>
+                    <input type="password" class="form-control" id="confirm-password" th:field="*{confirmPassword}"
+                        data-cy="confirmPassword" autocomplete="new-password" required autofocus>
                     <img th:src="@{/image/icons/hide.png}" class="password-toggle" data-pw-field="confirm-password"/>
 
                     <label for="confirm-password"> Confirm Password <span class="required">*</span></label>
@@ -238,7 +238,7 @@
             if (/[\W_]/.test(password)) {
                 strength++;
             }
-            if (!lowerPW.includes(FIRST_NAME) && !lowerPW.includes(LAST_NAME) && !lowerPW.includes(EMAIL)) {
+            if (!lowerPW.includes(firstName.toLowerCase()) && !lowerPW.includes(lastName.toLowerCase()) && !lowerPW.includes(email.toLowerCase())) {
                 strength++;
             }
 
