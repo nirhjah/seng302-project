@@ -14,7 +14,14 @@
 
     <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 
+    <div class="my-teams">
+        <h1>My Teams</h1>
+    </div>
 
+
+    <div th:if="${noTeamsFlag == null}" class="submit-button">
+        <button id="joinTeamByTokenModalBtn2" onclick="modal.style.display = 'block'" style="width: 15%; float: right" type="button" class="registerLoginButton">Join Team by Token</button>
+    </div>
 
 
 
@@ -33,10 +40,6 @@
             </div>
         </div>
 
-
-        <div th:if="${noTeamsFlag == null}" class="submit-button">
-            <button id="joinTeamByTokenModalBtn2" onclick="modal.style.display = 'block'" style="width: 20%; float: right" type="button" class="registerLoginButton">Join Team by Token</button>
-        </div>
 
 
 
