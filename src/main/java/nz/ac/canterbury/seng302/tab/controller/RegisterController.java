@@ -47,6 +47,7 @@ public class RegisterController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
     public RegisterController(EmailService emailService, UserService userService) {
         this.emailService = emailService;
         this.userService = userService;

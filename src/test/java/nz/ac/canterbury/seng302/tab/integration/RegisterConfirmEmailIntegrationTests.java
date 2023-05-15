@@ -79,7 +79,6 @@ public class RegisterConfirmEmailIntegrationTests {
         // get all the necessary beans
         userService = applicationContext.getBean(UserService.class);
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
-        EmailService emailService = applicationContext.getBean(EmailService.class);
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
 
         emailService = Mockito.spy(new EmailService());
