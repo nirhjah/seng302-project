@@ -7,7 +7,6 @@ import io.cucumber.java.en.When;
 
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.controller.ForgotPasswordController;
-import nz.ac.canterbury.seng302.tab.controller.LoginController;
 import nz.ac.canterbury.seng302.tab.controller.ResetPasswordController;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -15,7 +14,6 @@ import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.Assertions;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -59,8 +57,6 @@ public class ResetPasswordIntegrationTests {
 
     private User user;
 
-    private HttpServletRequest request;
-
     private String token;
 
     @Before
@@ -73,7 +69,7 @@ public class ResetPasswordIntegrationTests {
 
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new LoginController(), new ForgotPasswordController(userService), new ResetPasswordController(userService, passwordEncoder)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ForgotPasswordController(userService), new ResetPasswordController(userService, passwordEncoder)).build();
 
         userRepository.deleteAll();
         Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
@@ -85,9 +81,9 @@ public class ResetPasswordIntegrationTests {
     }
 
     
-    @Given("I am on the login page")
-    public void i_am_on_the_login_page() throws Exception {
-        mockMvc.perform(get("/login")).andExpect(status().isOk());
+    @Given("I see the forgot password button on the login page")
+    public void i_see_the_forgot_password_button_on_the_login_page() throws Exception {
+        mockMvc.perform(get("/forgot-password"));
     }
 
 
