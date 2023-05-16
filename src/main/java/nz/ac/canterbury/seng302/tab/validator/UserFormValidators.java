@@ -34,7 +34,7 @@ public class UserFormValidators {
     // Matches any language's alphabet, spaces, and hyphens
     // (e.g. 'van Beethoven', 'Taylor-Joy')...
     public static final String VALID_NAME_REGEX = "^[\\p{L}\\- ]+$";
-    public static final String NOT_BLANK_MSG = "Field cannot be blank";
+    public static final String NOT_BLANK_MSG = "Field cannot be empty";
     public static final String WELL_FORMED_EMAIL = "Must be a well-formed email";
     public static final String WEAK_PASSWORD_MESSAGE = "Password does not meet the requirements";
 

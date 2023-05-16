@@ -6,6 +6,7 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
     <link th:href="@{/css/register.css}" rel="stylesheet" />
+    <link th:href="@{/css/password.css}" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,9 +19,6 @@
     <div class="register-header">
         <h1>Register</h1>
     </div>
-    <!--    <div class="register-header">-->
-    <!--        <h1> <img th:src="@{/image/icons/adduser.svg}"/>Register</h1>-->
-    <!--    </div>-->
     <div class="wrapper">
         <form th:action="@{register}" method="post" th:object="${registerForm}">
             <div class="icon">
@@ -83,13 +81,11 @@
                     <div th:if="${#fields.hasErrors('password')}" class="error-message password">
                         <span th:text="${#fields.errors('password').get(#fields.errors('password').size() - 1)}"></span>
                     </div>
-<!--                    <div th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error-message password"></div>-->
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="confirm-password" placeholder=""
                            th:field="*{confirmPassword}" data-cy="confirmPassword" required autofocus>
                     <label for="confirm-password"> Confirm Password <span class="required">*</span></label>
-<!--                    <div th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}" class="error-message confirm-password"></div>-->
                     <div th:if="${#fields.hasErrors('confirmPassword')}" class="error-message confirm-password">
                         <span th:text="${#fields.errors('confirmPassword').get(#fields.errors('confirmPassword').size() - 1)}"></span>
                     </div>
@@ -164,11 +160,6 @@
             <div class="cancel-link">
                 <p>Aleady have an account? <a th:href="@{login}">Login</a></p>
             </div>
-            <!--            <div class="cancel-link">-->
-            <!--                <div class="cancel-link">-->
-            <!--                    <a th:href="@{home}">Cancel</a>-->
-            <!--                </div>-->
-            <!--            </div>-->
         </form>
     </div>
 </div>
@@ -197,10 +188,6 @@
     const secondPageErrors = [addressLine1Error.length, addressLine2Error.length, suburbError.length, postcodeError.length, cityError.length, countryError.length];
     const firstPageContainsErrors = firstPageErrors.includes(1);
     const secondPageContainsErrors = secondPageErrors.includes(1)
-    console.log(firstPageErrors);
-    console.log(secondPageErrors);
-    console.log(firstPageContainsErrors);
-    console.log(secondPageContainsErrors);
 
 
     window.onload = function() {
