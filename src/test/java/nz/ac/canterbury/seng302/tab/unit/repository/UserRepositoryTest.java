@@ -1,13 +1,16 @@
 package nz.ac.canterbury.seng302.tab.unit.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -34,6 +39,18 @@ public class UserRepositoryTest {
     // Helper class to make random users.
     @Autowired
     private GenerateRandomUsers generateRandomUsers;
+
+    private User createUserWithName(@Nullable String firstName, @Nullable String lastName) throws IOException {
+        User user = generateRandomUsers.createRandomUser();
+        if (firstName != null) {
+            user.setFirstName(firstName);
+        }
+        if (lastName != null) {
+            user.setLastName(lastName);
+        }
+
+        return user;
+    }
 
     @Test
     void findByNameOrSport_whenParamsAreEmpty_returnAllUsers() throws IOException {
@@ -231,8 +248,7 @@ public class UserRepositoryTest {
         Sport rugby = new Sport(S_RUGBY);
 
         // User with the correct name and sport
-        user = generateRandomUsers.createRandomUser();
-        user.setFirstName(SEARCH_NAME);
+        user = createUserWithName(SEARCH_NAME, null);
         user.setFavoriteSports(List.of(hockey));
         userRepository.save(user);
         // User with incorrect name and wrong sport
@@ -254,13 +270,11 @@ public class UserRepositoryTest {
         Sport rugby = new Sport(S_RUGBY);
 
         // User with the correct name and sport
-        user = generateRandomUsers.createRandomUser();
-        user.setFirstName(SEARCH_NAME);
+        user = createUserWithName(SEARCH_NAME, null);
         user.setFavoriteSports(List.of(hockey));
         userRepository.save(user);
         // User with the correct name and two sports (one correct)
-        user = generateRandomUsers.createRandomUser();
-        user.setFirstName(SEARCH_NAME);
+        user = createUserWithName(SEARCH_NAME, null);
         user.setFavoriteSports(List.of(hockey, rugby));
         userRepository.save(user);
         // User with incorrect name and wrong sport
@@ -279,7 +293,6 @@ public class UserRepositoryTest {
         final String SEARCH_NAME = "TDDHater";
         final String S_HOCKEY = "Hockey";
         final String S_RUGBY = "Rugby";
-        Sport hockey = new Sport(S_HOCKEY);
         Sport rugby = new Sport(S_RUGBY);
 
         // User with the correct name and but wrong sport
@@ -295,15 +308,14 @@ public class UserRepositoryTest {
     @Test
     void findBySportAndName_whenSportMatchesButNotName_returnNoUsers() throws IOException {
         User user;
+        final String USER_NAME = "LovesJUnit";
         final String SEARCH_NAME = "TDDHater";
-        final String S_HOCKEY = "Hockey";
         final String S_RUGBY = "Rugby";
-        Sport hockey = new Sport(S_HOCKEY);
         Sport rugby = new Sport(S_RUGBY);
 
         // User with the wrong name but right sport
         user = generateRandomUsers.createRandomUser();
-        user.setFirstName(S_RUGBY);
+        user.setFirstName(USER_NAME);
         user.setFavoriteSports(List.of(rugby));
         userRepository.save(user);
 
@@ -403,7 +415,7 @@ public class UserRepositoryTest {
         userRepository.save(christchurchUser);
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(sanJose.getCity()), List.of(), aucklandUser.getFirstName());
-        assertEquals(List.of(), returnedUsers.toList());
+        assertTrue(returnedUsers.isEmpty());
     }
     @Test
     void findByLocationAndName_whenLocationMatchesButNotName_returnNoUsers() throws IOException {
@@ -421,7 +433,7 @@ public class UserRepositoryTest {
         userRepository.save(christchurchUser);
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(auckland.getCity()), List.of(), "SENG");
-        assertEquals(List.of(), returnedUsers.toList());
+        assertTrue(returnedUsers.isEmpty());
     }
 
     @Test
@@ -447,7 +459,7 @@ public class UserRepositoryTest {
         userRepository.save(christchurchHockey);
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(nelson.getCity()), List.of("Hockey"), "");
-        assertEquals(List.of(nelsonHockey), returnedUsers.toList());
+        assertEquals(Set.of(nelsonHockey), returnedUsers.toSet());
     }
 
     @Test
@@ -473,7 +485,8 @@ public class UserRepositoryTest {
         userRepository.save(christchurchHockey);
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(nelson.getCity()), List.of("Hockey", "Rugby"), "");
-        assertEquals(List.of(nelsonHockey, nelsonRugby), returnedUsers.toList());
+        assertEquals(2, returnedUsers.getNumberOfElements());
+        assertEquals(Set.of(nelsonHockey, nelsonRugby), returnedUsers.toSet());
     }
 
     @Test
@@ -499,7 +512,8 @@ public class UserRepositoryTest {
         userRepository.save(christchurchHockey);
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(nelson.getCity(), auckland.getCity()), List.of("Hockey"), "");
-        assertEquals(List.of(nelsonHockey, aucklandHockey), returnedUsers.toList());
+        assertEquals(2, returnedUsers.getNumberOfElements());
+        assertEquals(Set.of(aucklandHockey, nelsonHockey), returnedUsers.toSet());
     }
 
     @Test
@@ -522,7 +536,7 @@ public class UserRepositoryTest {
         Location sanJose = new Location(null, null, null, "San Jose", null, "Costa Rica");
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(sanJose.getCity()), List.of("Hockey"), "");
-        assertEquals(List.of(), returnedUsers.toList());
+        assertTrue(returnedUsers.isEmpty());
     }
 
     @Test
@@ -538,7 +552,7 @@ public class UserRepositoryTest {
         userRepository.save(christchurchHockey);
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(nelson.getCity()), List.of("Football"), "");
-        assertEquals(List.of(), returnedUsers.toList());
+        assertTrue(returnedUsers.isEmpty());
     }
 
     @Test
@@ -557,7 +571,7 @@ public class UserRepositoryTest {
         Location sanJose = new Location(null, null, null, "San Jose", null, "Costa Rica");
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(sanJose.getCity()), List.of("Football"), "");
-        assertEquals(List.of(), returnedUsers.toList());
+        assertTrue(returnedUsers.isEmpty());
     }
 
     @Test
@@ -584,7 +598,7 @@ public class UserRepositoryTest {
         userRepository.save(christchurchHockey);
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(nelson.getCity()), List.of("Rugby"), "NelsonRugby");
-        assertEquals(List.of(nelsonRugby), returnedUsers.toList());
+        assertEquals(Set.of(nelsonRugby), returnedUsers.toSet());
     }
 
     @Test
@@ -612,7 +626,7 @@ public class UserRepositoryTest {
         userRepository.save(christchurchHockey);
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(nelson.getCity()), List.of("Rugby", "Hockey"), "NelsonSport");
-        assertEquals(List.of(nelsonHockey, nelsonRugby), returnedUsers.toList());
+        assertEquals(Set.of(nelsonHockey, nelsonRugby), returnedUsers.toSet());
     }
 
     @Test
@@ -641,7 +655,7 @@ public class UserRepositoryTest {
         Location sanJose = new Location(null, null, null, "San Jose", null, "Costa Rica");
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(sanJose.getCity()), List.of("Hockey"), "NelsonRugby");
-        assertEquals(List.of(), returnedUsers.toList());
+        assertTrue(returnedUsers.isEmpty());
     }
 
     @Test
@@ -668,7 +682,7 @@ public class UserRepositoryTest {
         userRepository.save(christchurchHockey);
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(nelson.getCity()), List.of("Football"), "NelsonRugby");
-        assertEquals(List.of(), returnedUsers.toList());
+        assertTrue(returnedUsers.isEmpty());
     }
 
     @Test
@@ -696,7 +710,7 @@ public class UserRepositoryTest {
         Location sanJose = new Location(null, null, null, "San Jose", null, "Costa Rica");
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(sanJose.getCity()), List.of("Hockey"), "SENG");
-        assertEquals(List.of(), returnedUsers.toList());
+        assertTrue(returnedUsers.isEmpty());
     }
 
     @Test
@@ -722,7 +736,7 @@ public class UserRepositoryTest {
         userRepository.save(christchurchHockey);
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(nelson.getCity()), List.of("Football"), "SENG");
-        assertEquals(List.of(), returnedUsers.toList());
+        assertTrue(returnedUsers.isEmpty());
     }
 
     @Test
@@ -750,6 +764,116 @@ public class UserRepositoryTest {
         Location sanJose = new Location(null, null, null, "San Jose", null, "Costa Rica");
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(500), List.of(sanJose.getCity()), List.of("Football"), "SENG");
-        assertEquals(List.of(), returnedUsers.toList());
+        assertTrue(returnedUsers.isEmpty());
+    }
+
+    /*
+        The following tests exist for the `UserService.SORT_BY_LAST_AND_FIRST_NAME` attribute
+    */
+    @Test
+    void findAll_usersAreSortedByLastName() throws IOException {
+        User leonAardvark = createUserWithName("Leon","Aardvark");
+        User adamCharlie = createUserWithName("Adam","Charlie");
+        User cheeseDolphin = createUserWithName("Cheese","Dolphin");
+
+        userRepository.save(adamCharlie);
+        userRepository.save(cheeseDolphin);
+        userRepository.save(leonAardvark);
+
+        Pageable pageable = PageRequest.of(0, 10, UserService.SORT_BY_LAST_AND_FIRST_NAME);
+        var returnedUsers = userRepository.findAll(pageable);
+
+        assertEquals(3, returnedUsers.getNumberOfElements());
+        assertEquals(List.of(leonAardvark, adamCharlie, cheeseDolphin), returnedUsers.toList());
+    }
+
+    @Test
+    void findAll_usersAreSortedByLastNameThenFirstName() throws IOException {
+        User leonAardvark = createUserWithName("Leon","Aardvark");
+        User adamAardvark = createUserWithName("Adam","Aardvark");
+        User cheeseAardvark = createUserWithName("Cheese","Aardvark");
+
+        userRepository.save(adamAardvark);
+        userRepository.save(cheeseAardvark);
+        userRepository.save(leonAardvark);
+
+        Pageable pageable = PageRequest.of(0, 10, UserService.SORT_BY_LAST_AND_FIRST_NAME);
+        var returnedUsers = userRepository.findAll(pageable);
+
+        assertEquals(3, returnedUsers.getNumberOfElements());
+        assertEquals(List.of(adamAardvark, cheeseAardvark, leonAardvark), returnedUsers.toList());
+
+    }
+
+    @Test
+    void findAll_usersAreSortedByLastNameThenFirstNameCaseInsensitive() throws IOException {
+        // Items are lowercase in this pattern so we'll know if it puts A-Z/a-z first, and 
+        // therefore isn't case insensitive
+        User andyLowerAardvark = createUserWithName("Andy", "aardvark");
+        User mattAardvark = createUserWithName("Matt", "Aardvark");
+        User adamBob = createUserWithName("Adam", "Bob");
+        User cheeseLowerBob = createUserWithName("Cheese", "bob");
+        User leonBob = createUserWithName("Leon", "Bob");
+        User katBurgler = createUserWithName("Kat", "Burgler");
+        User neilLowerBurgler = createUserWithName("Neil", "burgler");
+
+        // Insert in incorrect order
+        userRepository.save(andyLowerAardvark);
+        userRepository.save(adamBob);
+        userRepository.save(cheeseLowerBob);
+        userRepository.save(katBurgler);
+        userRepository.save(leonBob);
+        userRepository.save(mattAardvark);
+        userRepository.save(neilLowerBurgler);
+
+        Pageable pageable = PageRequest.of(0, 10, UserService.SORT_BY_LAST_AND_FIRST_NAME);
+        var returnedUsers = userRepository.findAll(pageable);
+
+        assertEquals(7, returnedUsers.getNumberOfElements());
+        assertEquals(List.of(andyLowerAardvark,
+                mattAardvark,
+                adamBob,
+                cheeseLowerBob,
+                leonBob,
+                katBurgler,
+                neilLowerBurgler), returnedUsers.toList());
+    }
+
+    /** This test is a copy of the above method, but calling a different method.
+     *  As both methods sort with the same system, if the above tests pass this should pass,
+     *  but you never know...
+     */
+    @Test
+    void findBySportAndName_usersAreSortedByLastNameThenFirstNameCaseInsensitive() throws IOException {
+        // Items are lowercase in this pattern so we'll know if it puts A-Z/a-z first, and 
+        // therefore isn't case insensitive
+        User andyLowerAardvark = createUserWithName("Andy", "aardvark");
+        User mattAardvark = createUserWithName("Matt", "Aardvark");
+        User adamBob = createUserWithName("Adam", "Bob");
+        User cheeseLowerBob = createUserWithName("Cheese", "bob");
+        User leonBob = createUserWithName("Leon", "Bob");
+        User katBurgler = createUserWithName("Kat", "Burgler");
+        User neilLowerBurgler = createUserWithName("Neil", "burgler");
+
+        // Insert in incorrect order
+        userRepository.save(andyLowerAardvark);
+        userRepository.save(adamBob);
+        userRepository.save(cheeseLowerBob);
+        userRepository.save(katBurgler);
+        userRepository.save(leonBob);
+        userRepository.save(mattAardvark);
+        userRepository.save(neilLowerBurgler);
+
+        Pageable pageable = PageRequest.of(0, 10, UserService.SORT_BY_LAST_AND_FIRST_NAME);
+        var returnedUsers = userRepository.findUserByFilteredLocationsAndSports(pageable, List.of(), List.of(), "");
+
+        assertEquals(7, returnedUsers.getNumberOfElements());
+        assertEquals(List.of(andyLowerAardvark,
+                mattAardvark,
+                adamBob,
+                cheeseLowerBob,
+                leonBob,
+                katBurgler,
+                neilLowerBurgler), returnedUsers.toList());
     }
 }

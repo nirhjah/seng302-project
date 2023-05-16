@@ -1,5 +1,12 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.form.RegisterForm;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,13 +25,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.form.RegisterForm;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 
 @Controller
 public class RegisterController {
@@ -134,7 +134,7 @@ public class RegisterController {
             @Valid RegisterForm registerForm,
             BindingResult bindingResult,
             HttpServletRequest request,
-            Model model) throws IOException, ServletException {
+            Model model, HttpSession session) throws IOException {
 
         // Run the custom validation methods
         // TODO: Move validators that might be reused into their own class
@@ -156,12 +156,8 @@ public class RegisterController {
                         registerForm.getCity(), registerForm.getPostcode(), registerForm.getCountry()));
 
         user.grantAuthority("ROLE_USER");
-        user = userService.updateOrAddUser(user);
-
-        // Auto-login when registering
-        request.login(user.getEmail(), registerForm.getPassword());
-
-        return "redirect:/user-info?name=" + user.getUserId();
-
+        userService.updateOrAddUser(user);
+        session.setAttribute("message", "An email has been sent to your email address. Please follow the instructions to validate your account before you can log in");
+        return "redirect:/login";
     }
 }
