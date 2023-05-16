@@ -54,7 +54,12 @@ deploy-staging:
     - cp -r ./build/libs /home/gitlab-runner/staging
     - cp runner-scripts/staging.sh /home/gitlab-runner/staging.sh
     - chmod u+x /home/gitlab-runner/staging.sh
-    - (echo "export MARIADB_USERNAME=${MARIADB_USERNAME}" & echo "export MARIADB_PASSWORD=${MARIADB_PASSWORD}") > /home/gitlab-runner/staging/env.sh
+    - echo "export MARIADB_USERNAME=${MARIADB_USERNAME}" > /home/gitlab-runner/staging/env.sh
+    - echo "export MARIADB_PASSWORD=${MARIADB_PASSWORD}" >> /home/gitlab-runner/staging/env.sh
+    - echo "export GMAIL_USERNAME=${GMAIL_USERNAME}" >> /home/gitlab-runner/staging/env.sh
+    - echo "export GMAIL_PASSWORD=${GMAIL_PASSWORD}" >> /home/gitlab-runner/staging/env.sh
+    - echo "export OPS_API_KEY=${OPS_API_KEY}" >> /home/gitlab-runner/staging/env.sh
+    - echo "export OPS_COLAB_KEY=${OPS_COLAB_KEY}" >> /home/gitlab-runner/staging/env.sh
     - sudo systemctl restart staging-tab
   artifacts:
     paths:
@@ -71,7 +76,12 @@ deploy-production:
     - cp -r ./build/libs /home/gitlab-runner/production
     - cp runner-scripts/production.sh /home/gitlab-runner/production.sh
     - chmod u+x /home/gitlab-runner/production.sh
-    - (echo "export MARIADB_USERNAME=${MARIADB_USERNAME}" & echo "export MARIADB_PASSWORD=${MARIADB_PASSWORD}") > /home/gitlab-runner/production/env.sh
+    - echo "export MARIADB_USERNAME=${MARIADB_USERNAME}" > /home/gitlab-runner/production/env.sh
+    - echo "export MARIADB_PASSWORD=${MARIADB_PASSWORD}" >> /home/gitlab-runner/production/env.sh
+    - echo "export GMAIL_USERNAME=${GMAIL_USERNAME}" >> /home/gitlab-runner/production/env.sh
+    - echo "export GMAIL_PASSWORD=${GMAIL_PASSWORD}" >> /home/gitlab-runner/production/env.sh
+    - echo "export OPS_API_KEY=${OPS_API_KEY}" >> /home/gitlab-runner/production/env.sh
+    - echo "export OPS_COLAB_KEY=${OPS_COLAB_KEY}" >> /home/gitlab-runner/production/env.sh
     - sudo systemctl restart production-tab
   artifacts:
     paths:
