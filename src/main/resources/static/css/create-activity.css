@@ -46,6 +46,7 @@
     color:#888888;
     font-size:1em;
     font-weight: 500;
+    font-family: "Noto Sans",sans-serif;
 }
 
 @media (max-width: 700px) {
