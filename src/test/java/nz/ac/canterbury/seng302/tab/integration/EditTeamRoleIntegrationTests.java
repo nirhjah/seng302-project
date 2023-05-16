@@ -10,6 +10,7 @@ import nz.ac.canterbury.seng302.tab.controller.EditTeamRoleController;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
@@ -32,6 +33,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -39,12 +41,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc(addFilters = false)
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-public class U26EditTeamRoleFeature {
+public class EditTeamRoleIntegrationTests {
 
     @Autowired
     MockMvc mockMvc;
@@ -70,9 +71,11 @@ public class U26EditTeamRoleFeature {
     Team team;
 
     User user;
+    User testUser1;
+    User testUser2;
+    User testUser3;
 
     static long TEAM_ID = 1;
-
 
     @Before
     public void setupUser() throws IOException {
@@ -97,16 +100,40 @@ public class U26EditTeamRoleFeature {
 
         userRepository.deleteAll();
         teamRepository.deleteAll();
-        Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
-        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@test.com", "Password123!", testLocation);
+        Location testLocation1 = new Location(null, null, null, "CHCH", null, "NZ");
+        Location testLocation2 = new Location(null, null, null, "Nelson", null, "NZ");
+        Location testLocation3 = new Location(null, null, null, "Dunners", null, "NZ");
+        Location testLocation4 = new Location(null, null, null, "Auckland", null, "NZ");
+        user = new User("John", "Doe",
+                new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@test.com",
+                "Password123!", testLocation1);
+        testUser1 = new User("Jane", "Doe",
+                new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "team900@tab.gmail.com",
+                "Password123!", testLocation2);
+        testUser2 = new User("Test", "Acount",
+                new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "team901@tab.gmail.com",
+                "Password123!", testLocation3);
+        testUser3 = new User("testing", "Acount",
+                new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "team91@tab.gmail.com",
+                "Password123!", testLocation4);
+        userRepository.save(user);
+        userRepository.save(testUser1);
+        userRepository.save(testUser2);
+        userRepository.save(testUser3);
+
         team = new Team("Test Team", "Hockey");
-        team.setManager(user);
-        team = teamRepository.save(team);
+        team.setManager(userRepository.findById(user.getUserId()).get());
+        team.setMember(userRepository.findById(testUser1.getUserId()).get());
+        team.setMember(userRepository.findById(testUser2.getUserId()).get());
+        team.setMember(userRepository.findById(testUser3.getUserId()).get());
+//        team.setManager(user);
+//        team = teamRepository.save(team);
+//        team.setMember(testUser1);
+//        team = teamRepository.save(team);
         team = Mockito.spy(team);
         Mockito.when(team.getTeamId()).thenReturn(TEAM_ID);
         Mockito.when(teamService.getTeam(TEAM_ID)).thenReturn(team);
         Mockito.when(userService.getCurrentUser()).thenReturn(Optional.of(user));
-
     }
 
     @Given("I have created a team")
@@ -133,7 +160,45 @@ public class U26EditTeamRoleFeature {
         //Mockito.doReturn(Optional.of(user)).when(mockUserService).getCurrentUser();
         //Mockito.when(userService.getCurrentUser()).thenReturn(Optional.of(user));
         mockMvc.perform(get("/editTeamRole", 42L)
-                .param("edit", String.valueOf(team.getTeamId()))).andDo(print()).andExpect(status().isOk())
+                .param("edit", String.valueOf(team.getTeamId()))).andExpect(status().isOk())
                 .andExpect(view().name("editTeamRoleForm"));
+    }
+
+    @Given("I am on the edit team members role page")
+    public void iAmOnTheEditTeamMembersRolePage() throws Exception {
+        mockMvc.perform(get("/editTeamRole", 42L)
+                        .param("edit", String.valueOf(team.getTeamId()))).andExpect(status().isOk())
+                .andExpect(view().name("editTeamRoleForm"));
+    }
+
+    /**
+     * Checks that the expected team member's ID appear in the user ID list returned
+     * @throws Exception for mockMVC if it can't perform request
+     */
+    @When("I see all members of the team")
+    public void iSeeAllMembersOfTheTeam() throws Exception {
+        mockMvc.perform(get("/editTeamRole", 42L)
+                        .param("edit", String.valueOf(team.getTeamId()))).andDo(print()).andExpect(status().isOk())
+                .andExpect(view().name("editTeamRoleForm"))
+                .andExpect(model().attributeExists("userIds"));
+    }
+
+    /**
+     * Checks that the possibleRoles are returned by the request
+     * (In the page these are options of a select drop-down)
+     * @throws Exception for mockMVC if it can't perform request
+     */
+    @Then("I can select their role to be any of the options")
+    public void iCanSelectTheirRoleToBeAnyOfTheOptions() throws Exception {
+        mockMvc.perform(get("/editTeamRole", 42L)
+                        .param("edit", String.valueOf(team.getTeamId()))).andDo(print()).andExpect(status().isOk())
+                .andExpect(view().name("editTeamRoleForm"))
+                .andExpect(model().attribute("possibleRoles", Role.values()));
+    }
+
+
+    @When("I change one team members role")
+    public void iChangeOneTeamMembersRole() {
+
     }
 }
