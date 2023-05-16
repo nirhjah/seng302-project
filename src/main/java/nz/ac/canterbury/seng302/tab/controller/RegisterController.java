@@ -127,7 +127,7 @@ public class RegisterController {
      * @param bindingResult Errors are stored here
      * @param request The controller's request object, we bind the login to this.
      * @return user page or register (if there are errors)
-     * @throws ServletException This is thrown if login fails, which should never happen.
+     * @throws IOException This is thrown if login fails, which should never happen.
      */
     @PostMapping("/register")
     public String register(
