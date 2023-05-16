@@ -37,14 +37,20 @@ public class UpdatePasswordController {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final TeamService teamService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private TeamService teamService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public UpdatePasswordController(
+        UserService userService,
+        TeamService teamService,
+        PasswordEncoder passwordEncoder
+    ) {
+       this.userService = userService;
+       this.teamService = teamService;
+       this.passwordEncoder = passwordEncoder; 
+    }
 
     /**
      * Fills the model with globally required fields for navBar.html
