@@ -28,6 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,9 +53,11 @@ public class RegisterController {
      * We need manual dep injection for mocks to be processed properly with cucumber
      */
     @Autowired
-    public RegisterController(EmailService emailService, UserService userService) {
+    public RegisterController(EmailService emailService, UserService userService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
         this.emailService = emailService;
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
