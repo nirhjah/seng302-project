@@ -24,9 +24,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class EditTeamRoleController {
   Logger logger = LoggerFactory.getLogger(HomeFormController.class);
 
-  @Autowired private TeamService teamService;
+  private final TeamService teamService;
+  private final UserService userService;
 
-  @Autowired private UserService userService;
+  @Autowired
+  public EditTeamRoleController(UserService userService, TeamService teamService) {
+    this.userService = userService;
+    this.teamService = teamService;
+  }
 
   /**
    * Takes the user to the edit ream roles page

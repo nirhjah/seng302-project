@@ -1,52 +1,41 @@
 package nz.ac.canterbury.seng302.tab.integration;
 
 import io.cucumber.java.Before;
-import io.cucumber.java.BeforeAll;
-import io.cucumber.java.Scenario;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.controller.EditTeamRoleController;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.web.FilterChainProxy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -54,26 +43,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @AutoConfigureMockMvc(addFilters = false)
-@ExtendWith(MockitoExtension.class)
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class U26EditTeamRoleFeature {
 
     @Autowired
     MockMvc mockMvc;
 
-    @Mock
-    UserService mockUserService = mock(UserService.class);
+    @Autowired
+    ApplicationContext applicationContext;
 
-    @MockBean
+    @Autowired
+    WebApplicationContext webApplicationContext;
+
+    HttpServletRequest request;
+
+    @SpyBean
+    TeamService teamService;
+
+    @SpyBean
+    UserService userService;
+
     private UserRepository userRepository;
 
-    @Mock
-    TeamService teamService = mock(TeamService.class);
-
-    @MockBean
-    TeamRepository teamRepository;
-
-    private HttpServletRequest request;
+    private TeamRepository teamRepository;
 
     Team team;
 
@@ -81,55 +73,67 @@ public class U26EditTeamRoleFeature {
 
     static long TEAM_ID = 1;
 
-    @Before("@WithAdminUser")
-    public void setupAdminUser() throws IOException {
-        Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
-        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
-                "johndoe@example.com", "Password123!", testLocation);
-
-        Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
-
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(
-                        user.getEmail(),
-                        "N/A",
-                        user.getAuthorities()));
-    }
-
 
     @Before
-    void setupUser(final Scenario scenario) throws IOException {
-        MockitoAnnotations.openMocks(this);
-    }
+    public void setupUser() throws IOException {
+        // get the application context (thanks to @CucumberContextConfiguration in the Configurations class)
+        userRepository = applicationContext.getBean(UserRepository.class);
+        teamRepository = applicationContext.getBean(TeamRepository.class);
+        // get all the necessary beans
+        TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
+        EmailService emailService = applicationContext.getBean(EmailService.class);
+        PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
+        // create the spy with the required beans
+        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
+        // create a custom MockMvc setup with the required controllers and inject the UserService Spy
+        teamService = Mockito.spy(new TeamService(teamRepository));
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new EditTeamRoleController(userService, teamService)).build();
 
-    @Given("I have created a team")
-    public void iHaveCreatedATeam() throws IOException {
+        Authentication authentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+
+        userRepository.deleteAll();
+        teamRepository.deleteAll();
+        Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
+        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@test.com", "Password123!", testLocation);
         team = new Team("Test Team", "Hockey");
+        team.setManager(user);
+        team = teamRepository.save(team);
         team = Mockito.spy(team);
         Mockito.when(team.getTeamId()).thenReturn(TEAM_ID);
         Mockito.when(teamService.getTeam(TEAM_ID)).thenReturn(team);
+        Mockito.when(userService.getCurrentUser()).thenReturn(Optional.of(user));
+
+    }
+
+    @Given("I have created a team")
+    public void iHaveCreatedATeam() {
+        assertNotNull(teamService.getTeam(team.getTeamId()));
     }
 
 
     @And("I am a manager of the team")
     public void iAmAManagerOfTheTeam() {
-        team.setManager(user);
+        assertTrue(team.isManager(user));
     }
+
 
     @When("I click on the edit team role button")
     public void iClickOnTheEditTeamRoleButton() throws Exception {
-        //Mockito.doReturn(Optional.of(user)).when(mockUserService).getCurrentUser();
-        Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
-        mockMvc.perform(get("/editTeamRole")
-                .param("edit", String.valueOf(team.getTeamId()))).andExpect(status().isFound());
+        mockMvc.perform(get("/editTeamRole", 42L)
+                        .with(csrf())
+                .param("edit", String.valueOf(TEAM_ID))).andDo(print()).andExpect(status().isOk());
     }
 
     @Then("I am taken to the edit team members role page")
     public void iAmTakenToTheEditTeamMembersRolePage() throws Exception {
         //Mockito.doReturn(Optional.of(user)).when(mockUserService).getCurrentUser();
-        Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
+        //Mockito.when(userService.getCurrentUser()).thenReturn(Optional.of(user));
         mockMvc.perform(get("/editTeamRole", 42L)
-                .param("edit", String.valueOf(team.getTeamId()))).andDo(print()).andExpect(status().isFound())
+                .param("edit", String.valueOf(team.getTeamId()))).andDo(print()).andExpect(status().isOk())
                 .andExpect(view().name("editTeamRoleForm"));
     }
 }

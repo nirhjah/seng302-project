@@ -4,8 +4,6 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,9 +23,13 @@ import java.util.Optional;
  */
 @Service
 public class TeamService {
-    Logger logger = LoggerFactory.getLogger(getClass());
+
+    private final TeamRepository teamRepository;
+
     @Autowired
-    private TeamRepository teamRepository;
+    public TeamService(TeamRepository teamRepository) {
+        this.teamRepository = teamRepository;
+    }
 
     /**
      * Countries and cities can have letters from all alphabets, with hyphens,
@@ -161,7 +163,8 @@ public class TeamService {
 
     /**
      * gets a page of all teams the given user is a member of
-     * @param pageable      a page object showing how the page should be shown
+     * @param pageNo      page number that is wanted
+     * @param pageSize      size of the page wanted
      * @param user          user to filter teams by
      * @return              all teams the user is apart of
      */
@@ -231,12 +234,12 @@ public class TeamService {
     }
 
     /**
-     * @param country
-     * @param city
-     * @param postcode
-     * @param suburb
-     * @param addressline1
-     * @param addressline2
+     * @param country string of country
+     * @param city string of city
+     * @param postcode string of postcode
+     * @param suburb string of suburb
+     * @param addressline1 string of address line 1
+     * @param addressline2 string of address line 2
      * @return true if all the params match their respective regex's
      *
      */
@@ -263,7 +266,7 @@ public class TeamService {
      * clips extra whitespace off the end of the string and removes double ups of
      * whitespace
      * 
-     * @param string
+     * @param string the string that will have it's white space clipped
      * @return string that is stripped from double up whitespace and whitespace at
      *         the end and start of the string
      */
