@@ -52,17 +52,17 @@ public class ProfileFormController {
         logger.info("GET /profileForm");
 
         // Gets the team from the database, or giving a 404 if not found.
-        Team selectedTeam = teamService.getTeam(teamID);
+        Team team = teamService.getTeam(teamID);
 
-        if (selectedTeam == null) {
+        if (team == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
         model.addAttribute("teamID", teamID);
-        model.addAttribute("displayName", selectedTeam.getName());
-        model.addAttribute("displaySport", selectedTeam.getSport());
-        model.addAttribute("displayLocation", selectedTeam.getLocation());
-        model.addAttribute("displayTeamPicture", selectedTeam.getPictureString());
-        model.addAttribute("displayToken", selectedTeam.getToken());
+        model.addAttribute("displayName", team.getName());
+        model.addAttribute("displaySport", team.getSport());
+        model.addAttribute("displayLocation", team.getLocation());
+        model.addAttribute("displayTeamPicture", team.getPictureString());
+        model.addAttribute("displayToken", team.getToken());
 
         // Is the currently logged in user this team's manager?
         Optional<User> oUser = userService.getCurrentUser();
@@ -70,9 +70,6 @@ public class ProfileFormController {
             return "redirect:login";
         }
         User user = oUser.get();
-        boolean isUserManager = teamService.isUserManagerOfTeam(user.getUserId(), teamID);
-        model.addAttribute("isUserManager", isUserManager);
-        logger.info("boolean manager is: {}", isUserManager);
 
         // Rambling that's required for navBar.html
         List<Team> teamList = teamService.getTeamList();
@@ -81,6 +78,7 @@ public class ProfileFormController {
         model.addAttribute("displayPicture", user.getPictureString());
         model.addAttribute("navTeams", teamList);
         model.addAttribute("httpServletRequest", request);
+        model.addAttribute("isUserManager", team.isManager(user));
 
         return "profileForm";
     }
