@@ -36,6 +36,13 @@ public class ViewActivitiesController {
     @Autowired
     private TeamService teamService;
 
+    @Autowired
+    public ViewActivitiesController(UserService userService, ActivityService activityService, TeamService teamService) {
+        this.userService = userService;
+        this.activityService = activityService;
+        this.teamService = teamService;
+    }
+
     /**
      * Gets viewAllActivities doc with required attributes. Reroutes if page out of available range
      *
@@ -46,6 +53,8 @@ public class ViewActivitiesController {
     @GetMapping("/view-activities")
     public String viewPageOfActivities(@RequestParam(value = "page", defaultValue = "-1") int pageNo,
                                        Model model, HttpServletRequest request) throws IOException {
+        logger.info("GET /view-activities");
+
         Optional<User> user = userService.getCurrentUser();
         User currentUser = user.get();
 
@@ -57,11 +66,15 @@ public class ViewActivitiesController {
             return "redirect:/view-activities?page=" + pageNo;
         }
 
-        logger.info("GET /view-teams");
-        pageable = PageRequest.of(pageNo, maxPageSize);
+        pageable = PageRequest.of(pageNo-1, maxPageSize);
         Page<Activity> page = activityService.getPaginatedActivities(pageable,currentUser);
 
-        List<Activity> listActivities = page.getContent();
+        List<Activity> activities = page.getContent();
+        logger.info("PageNo: " + pageNo);
+        logger.info("totalPages: " + page.getTotalPages());
+        logger.info("totalItems: " + page.getTotalElements());
+        logger.info("activities: " + activities);
+
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
         model.addAttribute("displayPicture", user.get().getPictureString());
@@ -70,10 +83,9 @@ public class ViewActivitiesController {
         model.addAttribute("page", pageNo);
         model.addAttribute("totalPages", page.getTotalPages() == 0 ? 1 : page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
-        model.addAttribute("activities", listActivities);
-        logger.info("page number" + pageNo);
-        logger.info("total pages" + page.getTotalPages());
-
+        model.addAttribute("activities", activities);
+        logger.info(String.valueOf(model.containsAttribute("activities")));
+        logger.info("" + model.getAttribute("activities"));
         return "viewActivities";
     }
 

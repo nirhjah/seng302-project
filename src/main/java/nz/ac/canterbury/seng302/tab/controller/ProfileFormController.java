@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 import java.util.List;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,12 @@ public class ProfileFormController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    public ProfileFormController(UserService userService, TeamService teamService) {
+        this.userService = userService;
+        this.teamService = teamService;
+    }
 
     /**
      * Gets form to be displayed, includes the ability to display results of

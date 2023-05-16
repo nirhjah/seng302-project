@@ -18,12 +18,12 @@
     <div class="wrapper-activities">
         <ul class="activities-table">
             <li th:each="activity : ${activities}">
-                <span class="title"><a th:href="@{profile(teamID=${activity.team.teamId})}" th:text="${activity.team != null} ? ${activity.team.name} : 'Personal'}"></a></span>
+                <span class="title"><a th:href="@{profile(teamID=${activity.team.teamId})}" th:text="${activity.team != null} ? ${activity.team.name} : 'Personal'"></a></span>
                 <span class="details" th:with="startDate=${#temporals.format(activity.activityStart, 'dd MMM yyyy')},
                                                             endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')},
                                                             startTime=${#temporals.format(activity.activityStart, 'hh:mma')},
                                                             endTime=${#temporals.format(activity.activityEnd, 'hh:mma')}"
-                      th:text="${activity.getActivityString} + ' • ' +
+                      th:text="${activity.activityType} + ' • ' +
                                     ${startDate} + (${startDate} != ${endDate} ? ' - ' + ${endDate} : '') + ' • ' +
                                     ${startTime} + ' - ' + ${endTime}">
                             </span>

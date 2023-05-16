@@ -81,12 +81,20 @@ public class Activity {
         this.team = team;
     }
 
+    public void setActivityOwner(User user) {
+        this.activityOwner = user;
+    }
+
     public LocalDateTime getActivityStart() {
         return activityStart;
     }
 
     public LocalDateTime getActivityEnd() {
         return activityEnd;
+    }
+
+    public ActivityType getActivityType() {
+        return activityType;
     }
 
     @Override
@@ -101,4 +109,18 @@ public class Activity {
     public int hashCode() {
         return Objects.hash(id, activityType, team, description, activityStart, activityEnd, activityOwner);
     }
+
+    @Override
+    public String toString() {
+        return "Activity{" +
+                "id=" + id +
+                ", activityType=" + activityType +
+                ", team=" + team +
+                ", description='" + description + '\'' +
+                ", activityStart=" + activityStart +
+                ", activityEnd=" + activityEnd +
+                ", activityOwner=" + activityOwner +
+                '}';
+    }
+
 }
