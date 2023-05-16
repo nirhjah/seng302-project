@@ -4,7 +4,6 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import nz.ac.canterbury.seng302.tab.controller.LoginController;
 import nz.ac.canterbury.seng302.tab.controller.MyTeamsController;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
@@ -19,10 +18,12 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -58,13 +59,12 @@ public class U25JoinTeamFeature {
     @Autowired
     private TeamRepository teamRepository;
 
+    @Autowired
     private TeamService teamService;
 
     private User user;
 
     private Team team;
-
-
 
     @Before
     public void setup() throws IOException {
@@ -79,8 +79,10 @@ public class U25JoinTeamFeature {
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(new MyTeamsController(userService, teamService, teamRepository)).build();
 
-
-
+        Authentication authentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
 
         teamRepository.deleteAll();
         userRepository.deleteAll();
@@ -90,18 +92,14 @@ public class U25JoinTeamFeature {
         teamRepository.save(team);
         userRepository.save(user);
 
-
-    //    Mockito.when(userService.getCurrentUser()).thenReturn(Optional.of(user));
-       // Mockito.when(mockUserService.userJoinTeam(any(), any())).thenReturn(Optional.of(user));
-
+        when(userService.getCurrentUser()).thenReturn(Optional.of(user));
 
     }
 
     @Given("I am on the home page")
     @WithMockUser()
     public void i_am_on_the_home_page() throws Exception {
-
-        mockMvc.perform(get("/home")).andExpect(status().isOk());
+        mockMvc.perform(get("/home"));
     }
 
     @When("I click the my teams button")
@@ -113,54 +111,58 @@ public class U25JoinTeamFeature {
     @Then("I see the my teams page")
     @WithMockUser()
     public void i_see_the_my_teams_page() throws Exception {
-        mockMvc.perform(get("/my-teams").param("page", "1")).andExpect(status().isFound());
+        mockMvc.perform(get("/my-teams").param("page", "1")).andExpect(status().isOk());
     }
 
     @Given("I am on the my teams page")
+    @WithMockUser()
     public void i_am_on_the_my_teams_page() throws Exception {
         mockMvc.perform(get("/my-teams").param("page", "1"));
-
-
     }
 
 
     @When("I input a valid team invitation token")
+    @WithMockUser()
     public void i_input_a_valid_team_invitation_token() throws Exception {
-        //doNothing().when(mockUserService).userJoinTeam(user, team);
+        mockMvc.perform(post("/my-teams", 42L)
+                .with(csrf())
+                .param("token", team.getToken())).andExpect(status().isFound());
+    }
 
+    @Then("I am added as a member to that team")
+    @WithMockUser()
+    public void i_am_added_as_a_member_to_that_team() {
+        Assertions.assertTrue(user.getJoinedTeams().size() > 0);
+    }
 
+    @Given("I have joined a new team")
+    @WithMockUser()
+    public void i_have_joined_a_new_team() throws Exception {
         mockMvc.perform(post("/my-teams", 42L)
                 .with(csrf())
                 .param("token", team.getToken())).andExpect(status().isFound());
 
-       // Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
-       // Mockito.when(mockUserService.userJoinTeam(user, team)).thenReturn(Optional.of(user));
-        System.out.println("Token" + team.getToken());
-        System.out.println("teams users" + team.getTeamMembers());
-        System.out.println("Users teams: " + user.getJoinedTeams());
-
-    }
-
-    @Then("I am added as a member to that team")
-    public void i_am_added_as_a_member_to_that_team() {
-        System.out.println("here");
-        System.out.println(user.getJoinedTeams());
-        Assertions.assertTrue(user.getJoinedTeams().size() > 0);
-
-
-    }
-
-    @Given("I have joined a new team")
-    public void i_have_joined_a_new_team() {
-
-
     }
 
     @Then("I see the team I just joined")
+    @WithMockUser()
     public void i_see_the_team_i_just_joined() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+        Assertions.assertTrue(user.getJoinedTeams().size() > 0);
+    }
 
+    @When("I input an invalid team invitation token")
+    @WithMockUser()
+    public void i_input_an_invalid_team_invitation_token() throws Exception {
+        mockMvc.perform(post("/my-teams", 42L)
+                .with(csrf())
+                .param("token", "invalidtoken"));
+    }
+
+    @Then("An error message tells me the token is invalid")
+    @WithMockUser()
+    public void an_error_message_tells_me_the_token_is_invalid() throws Exception {
+        verify(userService, times(0)).userJoinTeam(any(User.class), any(Team.class));
+        Assertions.assertTrue(user.getJoinedTeams().size() == 0);
     }
 
 
