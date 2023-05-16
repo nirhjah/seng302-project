@@ -362,10 +362,6 @@ public class User {
     public void setJoinedTeams(Set<Team> teams) {
         this.joinedTeams = teams;
     }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
 }
 
 

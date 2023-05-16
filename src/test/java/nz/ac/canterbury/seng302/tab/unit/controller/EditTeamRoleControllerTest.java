@@ -53,7 +53,8 @@ public class EditTeamRoleControllerTest {
         Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "johndoe@example.com", "Password123!", testLocation);
-        user.setUserId(USER_ID);
+        user = spy(user);
+        Mockito.when(user.getUserId()).thenReturn(USER_ID);
 
         //Mock User
         Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
