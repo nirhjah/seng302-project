@@ -47,12 +47,14 @@ public class UserService {
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
     public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.taskScheduler = taskScheduler;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
     }
+
 
     public static final Sort SORT_BY_LAST_AND_FIRST_NAME = Sort.by(
         Order.asc("lastName").ignoreCase(),
