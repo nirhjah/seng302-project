@@ -307,15 +307,15 @@ public class ViewMyActivitiesIntegrationTests {
     public void iMTakenToTheTeamsProfilePage() throws Exception {
         Team teamMock = mock(Team.class);
         when(teamMock.isManager(user)).thenReturn(false);
-        mockMvc.perform(get("/profile").param("teamID", selectedTeam.getTeamId().toString()))
-                .andExpect(status().isOk()).andExpect(view().name("/profile"));
+        MvcResult result = mockMvc.perform(get("/profile").param("teamID", selectedTeam.getTeamId().toString()))
+                .andExpect(status().isOk()).andExpect(view().name("profileForm"))
+                .andReturn();
+        Assertions.assertEquals(selectedTeam.getTeamId(), result.getModelAndView().getModel().get("teamID"));
     }
 
     @And("pagination is active")
     public void paginationIsActive() throws Exception {
         Integer expectedPage = 2;
-        selectedTeam.setManager(user);
-        when(teamService.getTeam(selectedTeam.getTeamId())).thenReturn(selectedTeam);
         MvcResult result = mockMvc.perform(get("/view-activities").param("page", expectedPage.toString()))
                 .andExpect(status().isOk()).andExpect(view().name("viewActivities"))
                 .andReturn();
