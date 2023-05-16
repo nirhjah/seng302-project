@@ -1,0 +1,73 @@
+package nz.ac.canterbury.seng302.tab.unit.controller;
+
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.helper.GenerateRandomUsers;
+import nz.ac.canterbury.seng302.tab.repository.SportRepository;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import nz.ac.canterbury.seng302.tab.service.ActivityService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Optional;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+@SpringBootTest
+@AutoConfigureMockMvc(addFilters = false)
+public class ViewActivitiesControllerTest {
+
+    @Autowired
+    MockMvc mockMvc;
+
+    @MockBean
+    UserService mockUserService;
+
+    @MockBean
+    ActivityService activityService;
+
+    private User user;
+
+    private static long USER_ID = 1;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
+    private static final String USER_ADDRESS_LINE_1 = "1 Street Road";
+    private static final String USER_ADDRESS_LINE_2 = "A";
+    private static final String USER_SUBURB = "Riccarton";
+    private static final String USER_POSTCODE = "8000";
+    private static final String USER_CITY = "Christchurch";
+    private static final String USER_COUNTRY = "New Zealand";
+
+    @BeforeEach
+    public void beforeAll() throws IOException {
+        userRepository.deleteAll();
+        Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY, USER_POSTCODE, USER_COUNTRY);
+        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
+        userRepository.save(user);
+    }
+
+    @Test
+    @WithMockUser()
+    public void getMyActivitiesTest() throws Exception {
+        Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
+        mockMvc.perform(get("/view-activities")).andExpect(view().name("viewActivities"));
+    }
+}
