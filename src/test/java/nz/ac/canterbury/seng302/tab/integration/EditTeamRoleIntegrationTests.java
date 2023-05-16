@@ -40,6 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -87,9 +88,9 @@ public class EditTeamRoleIntegrationTests {
         EmailService emailService = applicationContext.getBean(EmailService.class);
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
         // create the spy with the required beans
-        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
+        this.userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
         // create a custom MockMvc setup with the required controllers and inject the UserService Spy
-        teamService = Mockito.spy(new TeamService(teamRepository));
+        this.teamService = Mockito.spy(new TeamService(teamRepository));
         this.mockMvc = MockMvcBuilders.standaloneSetup(new EditTeamRoleController(userService, teamService)).build();
 
         Authentication authentication = Mockito.mock(Authentication.class);
@@ -134,6 +135,8 @@ public class EditTeamRoleIntegrationTests {
         Mockito.when(team.getTeamId()).thenReturn(TEAM_ID);
         Mockito.when(teamService.getTeam(TEAM_ID)).thenReturn(team);
         Mockito.when(userService.getCurrentUser()).thenReturn(Optional.of(user));
+        Mockito.when(teamService.userRolesAreValid(List.of(Role.MEMBER.toString(), Role.COACH.toString(),
+                Role.MANAGER.toString(), Role.MEMBER.toString()))).thenReturn(false);
     }
 
     @Given("I have created a team")
@@ -152,7 +155,7 @@ public class EditTeamRoleIntegrationTests {
     public void iClickOnTheEditTeamRoleButton() throws Exception {
         mockMvc.perform(get("/editTeamRole", 42L)
                         .with(csrf())
-                .param("edit", String.valueOf(TEAM_ID))).andDo(print()).andExpect(status().isOk());
+                .param("edit", String.valueOf(TEAM_ID))).andExpect(status().isOk());
     }
 
     @Then("I am taken to the edit team members role page")
@@ -178,7 +181,7 @@ public class EditTeamRoleIntegrationTests {
     @When("I see all members of the team")
     public void iSeeAllMembersOfTheTeam() throws Exception {
         mockMvc.perform(get("/editTeamRole", 42L)
-                        .param("edit", String.valueOf(team.getTeamId()))).andDo(print()).andExpect(status().isOk())
+                        .param("edit", String.valueOf(team.getTeamId()))).andExpect(status().isOk())
                 .andExpect(view().name("editTeamRoleForm"))
                 .andExpect(model().attributeExists("userIds"));
     }
@@ -191,7 +194,7 @@ public class EditTeamRoleIntegrationTests {
     @Then("I can select their role to be any of the options")
     public void iCanSelectTheirRoleToBeAnyOfTheOptions() throws Exception {
         mockMvc.perform(get("/editTeamRole", 42L)
-                        .param("edit", String.valueOf(team.getTeamId()))).andDo(print()).andExpect(status().isOk())
+                        .param("edit", String.valueOf(team.getTeamId()))).andExpect(status().isOk())
                 .andExpect(view().name("editTeamRoleForm"))
                 .andExpect(model().attribute("possibleRoles", Role.values()));
     }
@@ -199,6 +202,50 @@ public class EditTeamRoleIntegrationTests {
 
     @When("I change one team members role")
     public void iChangeOneTeamMembersRole() {
+        //Change is made in JS
+        assertNotNull(team.getTeamRoles());
+    }
 
+    @And("I save the change in team roles")
+    public void iSaveTheChangeInTeamRoles() throws Exception {
+        mockMvc.perform(post("/editTeamRole", 42L)
+                .param("teamID", String.valueOf(team.getTeamId()))
+                .param("userIds", String.valueOf(List.of(String.valueOf(user.getUserId()),
+                        String.valueOf(testUser1.getUserId()), String.valueOf(testUser2.getUserId()),
+                        String.valueOf(testUser3.getUserId()))))
+                .param("userRoles", String.valueOf(List.of(Role.MANAGER, Role.COACH, Role.MANAGER, Role.MEMBER))))
+                .andExpect(status().isOk());
+    }
+
+    @When("I select no managers and save the change")
+    public void iSelectNoManagersAndSaveTheChange() throws Exception {
+        mockMvc.perform(post("/editTeamRole", 42L)
+                        .param("teamID", String.valueOf(team.getTeamId()))
+                        .param("userIds", String.valueOf(List.of(String.valueOf(user.getUserId()),
+                                String.valueOf(testUser1.getUserId()), String.valueOf(testUser2.getUserId()),
+                                String.valueOf(testUser3.getUserId()))))
+                        .param("userRoles", String.valueOf(List.of(Role.MEMBER, Role.COACH, Role.MANAGER, Role.MEMBER))));
+    }
+
+    @Then("The page returns back to the edit team page with an error")
+    public void thePageReturnsBackToTheEditTeamPageWithAnError() throws Exception {
+        mockMvc.perform(post("/editTeamRole", 42L)
+                        .param("teamID", String.valueOf(team.getTeamId()))
+                        .param("userIds", String.valueOf(List.of(String.valueOf(user.getUserId()),
+                                String.valueOf(testUser1.getUserId()), String.valueOf(testUser2.getUserId()),
+                                String.valueOf(testUser3.getUserId()))))
+                        .param("userRoles", String.valueOf(List.of(Role.MANAGER, Role.COACH, Role.MANAGER, Role.MEMBER))))
+                .andExpect(status().isFound()).andExpect(model().attributeExists("managerError"));
+    }
+
+    @When("I select {int} managers and save the change")
+    public void iSelectManagersAndSaveTheChange(int arg0) throws Exception {
+        mockMvc.perform(post("/editTeamRole", 42L)
+                        .param("teamID", String.valueOf(team.getTeamId()))
+                        .param("userIds", String.valueOf(List.of(String.valueOf(user.getUserId()),
+                                String.valueOf(testUser1.getUserId()), String.valueOf(testUser2.getUserId()),
+                                String.valueOf(testUser3.getUserId()))))
+                        .param("userRoles", String.valueOf(List.of(Role.MANAGER, Role.MANAGER, Role.MANAGER, Role.MANAGER))))
+                .andExpect(status().isFound()).andExpect(model().attributeExists("managerError"));
     }
 }
