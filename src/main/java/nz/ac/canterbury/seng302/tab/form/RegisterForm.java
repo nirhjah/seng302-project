@@ -46,7 +46,6 @@ public class RegisterForm {
     @UserFormValidators.suburbValidator
     private String suburb;
 
-
     @UserFormValidators.DateOfBirthValidator(minimumAge = 13, message = "You must be at least 13 years old")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     Date dateOfBirth;
