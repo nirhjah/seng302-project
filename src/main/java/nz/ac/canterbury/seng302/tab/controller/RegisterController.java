@@ -104,17 +104,14 @@ public class RegisterController {
         String confirmPassword = registerForm.getConfirmPassword();
         // Check #1: Passwords match
         if (!password.equals(confirmPassword)) {
-            bindingResult.addError(new FieldError("registerForm", "password", "Passwords do not match"));
+            bindingResult.addError(new FieldError("registerForm", "confirmPassword", "Passwords do not match"));
         }
-
         // Check #2: Password doesn't "contain any other field"
         String[] otherFields = new String[]{registerForm.getFirstName(), registerForm.getLastName(), registerForm.getEmail()};
-        if (!password.isEmpty()) {
-            for (String field : otherFields) {
-                if (!field.isEmpty() && password.toLowerCase().contains(field.toLowerCase())) {
-                    bindingResult.addError(new FieldError("registerForm", "password", "Password can't contain values from other fields"));
-                    break;
-                }
+        for (String field : otherFields) {
+            if (!field.isEmpty() && password.toLowerCase().contains(field.toLowerCase())) {
+                bindingResult.addError(new FieldError("registerForm", "password", "Password can't contain values from other fields"));
+                break;
             }
         }
     }
@@ -135,9 +132,6 @@ public class RegisterController {
         String path = (url.getPath() + "/..");
         String protocolAndAuthority = String.format("%s://%s", url.getProtocol(), url.getAuthority());
         model.addAttribute("httpServletRequest", httpServletRequest);
-        model.addAttribute("countryCitySuburbNameRegex", countryCitySuburbNameRegex);
-        model.addAttribute("addressRegex", addressRegex);
-        model.addAttribute("postcodeRegex", postcodeRegex);
         model.addAttribute("path", path);
         return "registerUser";
     }
