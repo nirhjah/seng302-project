@@ -129,6 +129,8 @@ public class RegisterConfirmEmailIntegrationTests {
         user.generateToken(userService, 10);
         registrationToken = user.getToken();
         assertNotNull("registration token was null", registrationToken);
+        user.setToken(registrationToken);
+        userService.updateOrAddUser(user);
     }
 
     @When("I submit a valid form on the register page")
@@ -147,8 +149,9 @@ public class RegisterConfirmEmailIntegrationTests {
     }
 
     @Then("The account is activated")
-    public void iAmLoggedIntoTheSystemAndTheAccountIsActivated() {
+    public void iAmLoggedIntoTheSystemAndTheAccountIsActivated() throws Exception {
         var userOpt = userService.findUserByEmail(EMAIL);
+        latestResult.andDo(print());
         assertTrue("No account", userOpt.isPresent());
         assertTrue("Not verified", userOpt.get().getEmailConfirmed());
     }
@@ -172,6 +175,7 @@ public class RegisterConfirmEmailIntegrationTests {
     @Then("I am redirected to NOT FOUND page")
     public void iAmRedirectedToNOTFOUNDPage() throws Exception {
         latestResult
+                .andDo(print())
                 .andExpect(status().isNotFound());
     }
 }

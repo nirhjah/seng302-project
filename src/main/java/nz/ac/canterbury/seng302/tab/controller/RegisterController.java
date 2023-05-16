@@ -208,8 +208,13 @@ public class RegisterController {
         logger.info("GET /confirm");
 
         if (opt.isEmpty()) {
-            // Not sure if this will display the 404 page
+            // no user; throw 404
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        if (opt.get().getEmailConfirmed()) {
+            // This user is already confirmed, so the link is dead. Throw 404.
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
         User user = opt.get();
