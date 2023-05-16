@@ -59,10 +59,10 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2/**"),AntPathRequestMatcher.antMatcher("/geocode/autocomplete")))
                 .authorizeHttpRequests()
                 // Allow "/", "/register", and "/login" to anyone (permitAll)
-                .requestMatchers("/", "/register", "/login", "/demo", "/populate_database", "/home", "/geocode/autocomplete", "/forgot-password", "/reset-password")
+                .requestMatchers("/", "/register", "/login", "/demo", "/home", "/geocode/autocomplete", "/forgot-password", "/reset-password")
                 .permitAll()
-                // Only allow admins to reach the "/admin" page
-                .requestMatchers("/admin")
+                // Only allow admins to reach the "/admin" and "/populate_database" page
+                .requestMatchers("/admin", "/populate_database")
                 // note we do not need the "ROLE_" prefix as we are calling "hasRole()"
                 .hasRole("ADMIN")
                 // Any other request requires authentication
