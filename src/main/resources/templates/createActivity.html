@@ -42,6 +42,10 @@
                 <textarea class ="description-text" id="description" th:name="description" autofocus placeholder=""
                           th:text="${description}"></textarea>
                 <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
+                <div class="character-count-container">
+                    <span id="character-count" class="character-count">0</span>
+                    <span class="character-label">characters</span>
+                </div>
             </div>
             <div class="input-boxes">
                 <div class="input-box">
@@ -216,6 +220,16 @@
         if (resultsContainer.innerHTML !== '' && !resultsContainer.contains(event.target)) {
             resultsContainer.innerHTML = "";
         }
+    });
+
+
+    const descriptionTextarea = document.getElementById('description');
+    const characterCountElement = document.getElementById('character-count');
+
+    // Update character count on input
+    descriptionTextarea.addEventListener('input', () => {
+        const characterCount = descriptionTextarea.value.length;
+        characterCountElement.textContent = characterCount;
     });
 
 </script>
