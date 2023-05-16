@@ -13,11 +13,12 @@ public class CountryCheck implements ConstraintValidator<UserFormValidators.coun
 
     @Override
     public void initialize(UserFormValidators.countryValidator constraintAnnotation) {
+        // Annotation takes no special arguments
     }
 
     @Override
     public boolean isValid(String country, ConstraintValidatorContext context) {
-        if (country == "") {
+        if (country == null || country.isBlank()) {
             return true;
         }
         else {

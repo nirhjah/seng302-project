@@ -13,11 +13,12 @@ public class CityCheck implements ConstraintValidator<UserFormValidators.cityVal
 
     @Override
     public void initialize(UserFormValidators.cityValidator constraintAnnotation) {
+        // Annotation takes no special arguments
     }
 
     @Override
     public boolean isValid(String city, ConstraintValidatorContext context) {
-        if (city == "") {
+        if (city == null || city.isBlank()) {
             return true;
         }
         else {

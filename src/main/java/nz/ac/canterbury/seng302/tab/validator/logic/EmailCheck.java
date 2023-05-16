@@ -13,11 +13,12 @@ public class EmailCheck implements ConstraintValidator<UserFormValidators.EmailV
 
     @Override
     public void initialize(UserFormValidators.EmailValidator constraintAnnotation) {
+        // Annotation takes no special arguments
     }
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext context) {
-        if (email == "") {
+        if (email == null || email.isBlank()) {
             return true;
         }
         else {

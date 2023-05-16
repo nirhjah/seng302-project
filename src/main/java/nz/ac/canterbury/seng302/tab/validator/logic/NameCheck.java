@@ -13,11 +13,12 @@ public class NameCheck implements ConstraintValidator<UserFormValidators.NameVal
 
     @Override
     public void initialize(UserFormValidators.NameValidator constraintAnnotation) {
+        // Annotation takes no special arguments
     }
 
     @Override
     public boolean isValid(String name, ConstraintValidatorContext context) {
-        if (name == "") {
+        if (name == null || name.isBlank()) {
             return true;
         }
         else {

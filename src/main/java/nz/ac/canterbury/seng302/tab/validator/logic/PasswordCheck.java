@@ -12,11 +12,12 @@ public class PasswordCheck implements ConstraintValidator<UserFormValidators.Pas
 
     @Override
     public void initialize(UserFormValidators.PasswordValidator constraintAnnotation) {
+        // Annotation takes no special arguments
     }
 
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context) {
-        if (password == "") {
+        if (password == null || password.isBlank()) {
             return true;
         }
         else {
@@ -37,7 +38,7 @@ public class PasswordCheck implements ConstraintValidator<UserFormValidators.Pas
                 }
             }
 
-            return (!(!uppercase || !lowercase || !number || !symbol)  && (((password.length() >= 8) && (password.length() <= 100))));
+            return (uppercase && lowercase && number && symbol) && password.length() >= 8 && password.length() <= 100;
 
         }
     }
