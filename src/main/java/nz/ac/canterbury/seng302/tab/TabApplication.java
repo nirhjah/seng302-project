@@ -1,9 +1,5 @@
 package nz.ac.canterbury.seng302.tab;
 
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.List;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -15,18 +11,13 @@ import io.github.cdimascio.dotenv.Dotenv;
  */
 @SpringBootApplication
 public class TabApplication {
-
-
     /**
      * Main entry point, runs the Spring application
      *
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("CHEESEBURGER TESTING");
-        System.out.println("Current absolute path: " + Paths.get("").toAbsolutePath().toString());
-        System.out.println("Files in path: " + List.of(new File(".").listFiles()));
-        
+
         // Load the .env file
         Dotenv
             .configure()
