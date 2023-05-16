@@ -71,6 +71,7 @@ public class ViewActivitiesController {
         model.addAttribute("totalPages", page.getTotalPages() == 0 ? 1 : page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
         model.addAttribute("activities", listActivities);
+        model.addAttribute("currentUser", user);
         logger.info("page number" + pageNo);
         logger.info("total pages" + page.getTotalPages());
 

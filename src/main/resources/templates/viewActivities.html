@@ -18,7 +18,7 @@
     <div class="wrapper-activities">
         <ul class="activities-table">
             <li th:each="activity : ${activities}">
-                <span class="title"><a th:href="@{profile(teamID=${activity.team.teamId})}" th:text="${activity.team != null} ? ${activity.team.name} : 'Personal'"></a></span>
+                <span class="title"><a th:if="${activity.team!=null}" th:href="@{profile(teamID=${activity.team.teamId})}" th:text="${activity.team != null} ? ${activity.team.name} : 'Personal'"></a></span>
                 <span class="details" th:with="startDate=${#temporals.format(activity.activityStart, 'dd MMM yyyy')},
                                                             endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')},
                                                             startTime=${#temporals.format(activity.activityStart, 'hh:mma')},
@@ -28,7 +28,7 @@
                                     ${startTime} + ' - ' + ${endTime}">
                             </span>
                 <span class="description" th:text="${activity.description}"></span>
-                <a th:if="${activity.team.isManager(activity.activityOwner) || activity.team.isCoach(activity.activityOwner)}"
+                <a th:if="${(activity.team!=null && (activity.team.isManager(activity.activityOwner) || activity.team.isCoach(activity.activityOwner))) || activity.team==null}"
                    th:href="@{createActivity(edit=${activity.id})}" type="button">Edit</a>
 
             </li>

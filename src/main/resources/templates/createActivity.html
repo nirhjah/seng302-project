@@ -15,6 +15,7 @@
     </div>
     <div class="wrapper">
         <form th:action="@{createActivity}" th:object="${createActivityForm}" id="createActivityForm" method="post">
+            <input type="hidden" th:if="${actId != null}" th:name="actId" th:value="${actId}"/>
             <div class="select-container">
                 <label for="activityType">Choose An Activity Type <span class="required">*</span> </label>
                 <select name="activityType" id="activityType">
@@ -30,8 +31,7 @@
                 <div class="select-box">
                     <label for="team">Select Team For Activity <span class="required">*</span></label>
                     <select name="team" id="team">
-                        <option th:if="${#lists.isEmpty(teamList)}" value="" disabled selected>No Teams Available
-                        </option>
+                        <option value="-1">(No Team)</option>
                         <option th:each="team : ${teamList}" th:value="${team.getTeamId()}"
                                 th:text="${team.getName()}" th:selected="${team.getName() == teamName}"></option>
                     </select>

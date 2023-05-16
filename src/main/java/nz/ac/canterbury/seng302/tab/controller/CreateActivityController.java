@@ -79,7 +79,9 @@ public class CreateActivityController {
                 LocalDateTime endDateTime =  activity.getActivityEnd();
                 String formattedEndDateTime = endDateTime.format(formatter);
                 model.addAttribute("activityType", activity.getActivityType());
-                model.addAttribute("teamName", activity.getTeam().getName());
+                if (activity.getTeam() != null) {
+                    model.addAttribute("teamName", activity.getTeam().getName());
+                }
                 model.addAttribute("actId", activity.getId());
                 model.addAttribute("startDateTime",formattedStartDateTime);
                 model.addAttribute("endDateTime", formattedEndDateTime);
@@ -98,7 +100,7 @@ public class CreateActivityController {
 
     @PostMapping("/createActivity")
     public String createActivity(
-            @RequestParam(name = "edit", defaultValue = "-1") long actId,
+            @RequestParam(name = "actId", defaultValue = "-1") long actId,
             @RequestParam(name = "activityType", required = false) Activity.ActivityType activityType,
             @RequestParam(name = "team", defaultValue = "-1") long teamId,
             @RequestParam(name="description", required = false) String description,
@@ -154,16 +156,17 @@ public class CreateActivityController {
             editActivity.setActivityStart(startDateTime);
             editActivity.setActivityOwner(userService.getCurrentUser().get());
             editActivity.setLocation(location);
+            editActivity.setDescription(description);
             editActivity = activityService.updateOrAddActivity(editActivity);
             System.out.println("THIS iS THE EDIT ACTIVITY ID" + editActivity.getId());
-            return String.format("redirect:./activity?actId=%s", editActivity.getId());
+            return "redirect:./view-activities";
         } else {
 
             Activity activity = new Activity(activityType, team,
                     description, startDateTime, endDateTime, userService.getCurrentUser().get(), location);
             activity = activityService.updateOrAddActivity(activity);
             System.out.println("TESTING tHIS");
-            return String.format("redirect:./activity?actId=%s", activity.getId());
+            return "redirect:./view-activities";
         }
     }
 }
