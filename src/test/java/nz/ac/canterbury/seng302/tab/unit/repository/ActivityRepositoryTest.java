@@ -1,25 +1,20 @@
 package nz.ac.canterbury.seng302.tab.unit.repository;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @DataJpaTest
 public class ActivityRepositoryTest {

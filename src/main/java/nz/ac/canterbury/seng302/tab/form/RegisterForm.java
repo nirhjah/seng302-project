@@ -1,14 +1,11 @@
 package nz.ac.canterbury.seng302.tab.form;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.util.Date;
 
-import static nz.ac.canterbury.seng302.tab.validator.UserFormValidators.INVALID_NAME_MSG;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import jakarta.validation.constraints.NotBlank;
+import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
 
 /**
  * The form provided to the user when registering for the website.

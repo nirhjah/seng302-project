@@ -241,13 +241,13 @@ public class User {
 
     public void grantAuthority(String authority) {
         if (userRoles == null) {
-            userRoles = new ArrayList<Authority>();
+            userRoles = new ArrayList<>();
         }
         userRoles.add(new Authority(authority));
     }
 
     public List<GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+        List<GrantedAuthority> authorities = new ArrayList<>();
         if (userRoles != null) {
             this.userRoles.forEach(authority -> authorities.add(new SimpleGrantedAuthority(authority.getRole())));
         }
