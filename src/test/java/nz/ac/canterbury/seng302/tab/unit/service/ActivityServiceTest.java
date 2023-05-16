@@ -4,15 +4,21 @@ import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @DataJpaTest
 @Import(ActivityService.class)
@@ -20,6 +26,14 @@ public class ActivityServiceTest {
 
     @Autowired
     ActivityService activityService;
+
+    @Autowired
+    ActivityRepository activityRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    Pageable pageable = PageRequest.of(0, 10);
 
 
     /**
@@ -94,6 +108,25 @@ public class ActivityServiceTest {
                 LocalDateTime.of(2023, 1,1,10,30),
                 LocalDateTime.of(2020, 1,1,8,30), creator);
         Assertions.assertFalse(activityService.validateActivityDateTime(activity));
+    }
+
+    @Test
+    public void ifUserHasAnActivity_returnTheActivity() throws Exception {
+        User creator = new User("Test", "Account", "test@test.com", "Password1!",
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity = new Activity(Activity.ActivityType.Other, null, "A random activity",
+                LocalDateTime.of(2023, 1,1,10,30),
+                LocalDateTime.of(2020, 1,1,8,30), creator);
+        activityRepository.save(activity);
+        Assertions.assertEquals(List.of(activity), activityService.getPaginatedActivities(pageable, creator).toList());
+    }
+
+    @Test
+    public void ifUserHasNoActivity_returnEmpty() throws Exception {
+        User creator = new User("Test", "Account", "test@test.com", "Password1!",
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        userRepository.save(creator);
+        Assertions.assertNotNull(activityService.getPaginatedActivities(pageable, creator));
     }
 
 }
