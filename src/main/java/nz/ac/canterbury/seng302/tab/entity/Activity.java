@@ -113,6 +113,26 @@ public class Activity {
         return this.activityType;
     }
 
+    public void setActivityType(ActivityType activityType){
+        this.activityType=activityType;
+    }
+
+    public void setDescription(String description){
+        this.description=description;
+    }
+
+    public void setActivityStart(LocalDateTime activityStart){
+        this.activityStart = activityStart;
+    }
+
+    public void setActivityEnd(LocalDateTime activityEnd){
+        this.activityEnd=activityEnd;
+    }
+
+    public void setActivityOwner(User activityOwner){
+        this.activityOwner=activityOwner;
+    }
+
     public User getActivityOwner(){
         return this.activityOwner;
     }
