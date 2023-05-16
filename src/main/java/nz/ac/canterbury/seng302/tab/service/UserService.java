@@ -14,6 +14,8 @@ import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -39,12 +41,17 @@ import nz.ac.canterbury.seng302.tab.repository.UserRepository;
  * the @link{Autowired} annotation below
  */
 @Service
+@Configuration
+@ComponentScan("nz.ac.canterbury.seng302.tab.service")
 public class UserService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final UserRepository userRepository;
+
     private final TaskScheduler taskScheduler;
+
     private final EmailService emailService;
+
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
