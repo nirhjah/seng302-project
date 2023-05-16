@@ -182,8 +182,8 @@
     registerButton.addEventListener("click", function () {
         // If empty values exist on the first page and the user goes to register then bring them back to first page
         console.log(inputs)
-        for (let i = 0; i < inputs.length; i++) {
-            if (!inputs[i].checkValidity()) {
+        for (const element of inputs) {
+            if (!element.checkValidity()) {
                 firstPageInitialisation();
                 break;
             }
