@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +18,6 @@ public class ProxyController {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${ops.api.key}")
-    private String opsApiKey;
-
     /**
      * Sends an HTTP GET request to the OpenRouteService Geocoding API's "geocode/autocomplete" endpoint, passing
      * along the given input text, API key, and language. Returns a ResponseEntity<String> object containing the
@@ -35,9 +31,11 @@ public class ProxyController {
     public ResponseEntity<String> autocomplete(@RequestParam("text") String text,
                                                @RequestParam("language") String language) {
 
+        String apiKey = "5b3ce3597851110001cf624872c21df9f0f8419799b5718ed8769650";
+
         String endpoint = "https://api.openrouteservice.org/geocode/autocomplete" +
                 "?text=" + text +
-                "&api_key=" + opsApiKey +
+                "&api_key=" + apiKey +
                 "&language=" + language;
 
         ResponseEntity<String> response = restTemplate.getForEntity(endpoint, String.class);
