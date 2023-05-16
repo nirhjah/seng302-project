@@ -35,7 +35,7 @@ By default, the application will run on local port 8080 [http://localhost:8080](
 ### 2 - Using the application
 > User need to have an account to access most functionality of the application.
 > - There is a default account, that is already confirmed
-> - Username/Email: admin@gmail.comes
+> - Username/Email: admin@gmail.com
 > - Password: 1
 
 ## How to run tests
@@ -54,7 +54,6 @@ gradlew test
 
 ## Contributors
 - Cameron Pearce
-- Philip Dolbel
 - Sebastian Conaghan-Carr
 - Angela Yu
 - Andrew Hall
