@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +34,6 @@ public class MyTeamsController {
 
     Logger logger = LoggerFactory.getLogger(ViewAllTeamsController.class);
 
-
     private final TeamService teamService;
 
     private final TeamRepository teamRepository;
@@ -47,7 +45,6 @@ public class MyTeamsController {
         this.teamRepository = teamRepository;
         this.teamService = teamService;
     }
-
 
     /**
      * Gets the page of teams the user has joined
@@ -80,8 +77,6 @@ public class MyTeamsController {
 
         if (teamRepository.findTeamsWithUser_List(currentUser).size() == 0) {
             model.addAttribute("noTeamsFlag", "You are not a member of any teams.");
-            redirectAttributes.addFlashAttribute("noTeamsFlag", "You are not a member of any teams.");
-
             return "myTeams";
         }
 
@@ -104,6 +99,17 @@ public class MyTeamsController {
         return "myTeams";
     }
 
+    /**
+     * Posts a form response with the team token for user to join team by
+     * @param token             token that identifies team for user to join
+     * @param joinTeamForm      join team form that contains the token
+     * @param bindingResult     Errors are stored here
+     * @param model             model to store model attributes
+     * @param httpServletResponse http response
+     * @param request             http request
+     * @param redirectAttributes  holds redirect attributes for when the page is redirected to a page
+     * @return                    my teams page with the newly joined team
+     */
     @PostMapping("/my-teams")
     public String joinTeamsForm(
             @RequestParam("token") String token,
@@ -111,7 +117,7 @@ public class MyTeamsController {
             BindingResult bindingResult,
             Model model,
             HttpServletResponse httpServletResponse, HttpServletRequest request,
-            RedirectAttributes redirectAttributes) throws IOException {
+            RedirectAttributes redirectAttributes) {
 
         model.addAttribute("token", token);
         model.addAttribute("httpServletRequest", request);
@@ -119,15 +125,12 @@ public class MyTeamsController {
         User user = userService.getCurrentUser().get();
         Optional<Team> team = teamService.findByToken(token);
 
-
         if(team.isEmpty()) {
             bindingResult.addError(new FieldError("joinTeamForm", "token", "Token is invalid"));
         }
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("tokenInvalid", "Leave Modal Open");
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-
             redirectAttributes.addFlashAttribute("tokenInvalid", "Leave Modal Open");
             redirectAttributes.addFlashAttribute("formBindingResult", bindingResult);
 

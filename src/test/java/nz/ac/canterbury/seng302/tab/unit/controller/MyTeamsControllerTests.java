@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
-import nz.ac.canterbury.seng302.tab.controller.ProfileFormController;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -66,9 +65,7 @@ public class MyTeamsControllerTests {
         Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
         doCallRealMethod().when(mockUserService).userJoinTeam(user, team);
 
-
     }
-
 
     /**
      * Test getting the my teams page
