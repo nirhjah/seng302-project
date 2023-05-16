@@ -112,7 +112,7 @@ td {
 .Search-teams-background,
 .edit-user-background,
 .background-image,
-.user-form, .create-activity-background {
+.user-form, .create-activity-background,.background {
     background-image: url("../image/landscape.jpeg");
     background-size: cover;
     background-repeat: no-repeat;
@@ -212,6 +212,7 @@ input:invalid + label:after {
     pointer-events: none;
     transition: 0.5s;
     color: #888888;
+    border-bottom: none;
 }
 
 

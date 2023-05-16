@@ -19,9 +19,6 @@
     <div class="register-header">
         <h1>Register</h1>
     </div>
-    <!--    <div class="register-header">-->
-    <!--        <h1> <img th:src="@{/image/icons/adduser.svg}"/>Register</h1>-->
-    <!--    </div>-->
     <div class="wrapper">
         <form th:action="@{register}" method="post" th:object="${registerForm}">
             <div class="icon">
@@ -153,11 +150,6 @@
             <div class="cancel-link">
                 <p>Aleady have an account? <a th:href="@{login}">Login</a></p>
             </div>
-            <!--            <div class="cancel-link">-->
-            <!--                <div class="cancel-link">-->
-            <!--                    <a th:href="@{home}">Cancel</a>-->
-            <!--                </div>-->
-            <!--            </div>-->
         </form>
     </div>
 </div>
@@ -288,12 +280,12 @@
                 passwordInput.type = 'text';
                 button.src='/image/icons/view.png';
             });
-    
+
             button.addEventListener('mouseup', function () {
                 passwordInput.type = 'password';
                 button.src='/image/icons/hide.png';
             });
-    
+
             button.addEventListener('mouseout', function () {
                 passwordInput.type = 'password';
                 button.src='/image/icons/hide.png';
