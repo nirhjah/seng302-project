@@ -6,8 +6,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.ForgotPasswordForm;
 import nz.ac.canterbury.seng302.tab.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,13 +23,15 @@ import java.util.Optional;
 @Controller
 public class ForgotPasswordController {
 
-    Optional<User> user;
-
-    User currentUser;
+    private Optional<User> user;
+    private User currentUser;
+    private final UserService userService;
 
     @Autowired
-    UserService userService;
-    Logger logger = LoggerFactory.getLogger(ForgotPasswordController.class);
+    public ForgotPasswordController(UserService userService) {
+        this.userService = userService;
+    }
+
 
     @GetMapping("/forgot-password")
     public String forgotPasswordForm(Model model,HttpServletRequest request) {
@@ -48,7 +48,7 @@ public class ForgotPasswordController {
      * @param model                 model to store model attributes
      * @param httpServletResponse   httpServerletResponse
      * @param request               request
-     * @return
+     * @return forgot password page
      */
     @PostMapping("/forgot-password")
     public String submitEmail(
@@ -71,21 +71,10 @@ public class ForgotPasswordController {
         model.addAttribute("submitted_form_message", "If your email is registered with our system, you will receive a link to reset your password shortly.");
 
         user = userService.findUserByEmail(email);
-
-
         if (user.isPresent()) {
             currentUser = user.get();
-
-            currentUser.generateToken(userService, 1);
-
-            String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "") + "/reset-password/" + currentUser.getToken();
-
-            logger.info("Link to reset password: " + tokenVerificationLink);
-
-            userService.updateOrAddUser(currentUser);
-
+            userService.resetPasswordEmail(currentUser, request);
         }
-
         return "forgotPassword";
     }
 
