@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <link th:href="@{/css/styles.css}" rel="stylesheet" />
-    <link th:href="@{/css/create-team.css}" rel="stylesheet" />
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+    <link th:href="@{/css/create-team.css}" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,109 +13,112 @@
 </head>
 
 <body class="team-form-background">
-    <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
-    <div class="team-form">
-        <div class="create-team">
-            <h1 th:inline="text">[[${teamID != null ? 'Edit ' : 'Create '}]]Team</h1>
-        </div>
-        <div class="wrapper">
-            <form th:action="@{createTeam}" th:object="${createAndEditTeamForm}" id="createAndEditTeamForm" method="post">
-                <div th:if="${invalid_team != null}" th:text="${invalid_team}" class="invalid-team error-message"></div>
-                <input type="hidden" th:if="${teamID != null}" th:name="teamID" th:value="${teamID}" />
-                <div class="input-boxes">
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="name" th:name="name" th:value="${name}"
-                               data-cy="name" autofocus placeholder=""
-                        title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
-                        <label for="name">Name <span class="required">*</span></label>
-                        <div th:each="err : ${#fields.errors('name')}" th:text="${err}" class="team-error-message"></div>
-                    </div>
-
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="sport" th:name="sport" th:value="${sport}"
-                               data-cy="sport" autofocus placeholder=""
-                        title="May include letters, spaces, apostrophes, and hyphens. Must start with letter">
-                        <label for="sport">Sport <span class="required">*</span></label>
-                        <div th:each="err : ${#fields.errors('sport')}" th:text="${err}" class="team-error-message"></div>
-
-                    </div>
-                </div>
-                <div class="input-boxes">
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
-                               th:value="${addressLine1}" data-cy="location"
-                               autofocus placeholder="" autocomplete="off"
-                               title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include
-                                    at least one letter or number">
-                        <label for="address-line-1">Address Line 1</label>
-                        <div class="autocomplete-container" id="autocomplete-container"></div>
-                        <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="team-error-message"></div>
-                    </div>
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
-                               th:value="${addressLine2}" data-cy="location" autofocus placeholder=""
-                               title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include
-                                      at least one letter or number">
-                        <label for="address-line-2">Address Line 2</label>
-                        <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="team-error-message"></div>
-                    </div>
-                </div>
-                <div class="input-boxes">
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="suburb" th:name="suburb" th:value="${suburb}"
-                               data-cy="location" autofocus placeholder="">
-                        <label for="suburb">Suburb</label>
-                        <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
-                    </div>
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="postcode" th:name="postcode" th:value="${postcode}"
-                               data-cy="location" autofocus placeholder="">
-                        <label for="postcode">Postcode</label>
-                        <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="team-error-message"></div>
-                    </div>
-                </div>
-                <div class="input-boxes">
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="city" th:name="city" th:value="${city}"
-                               data-cy="location" autofocus placeholder="">
-                        <label for="city">City <span class="required">*</span></label>
-                        <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="team-error-message"></div>
-                    </div>
-                    <div class="input-box">
-                        <input type="text" class="form-control" id="country" th:name="country" th:value="${country}"
-                            data-cy="location" autofocus placeholder="">
-                        <label for="country">Country <span class="required">*</span></label>
-                        <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="team-error-message"></div>
-                    </div>
-                </div>
-                <div class="submit-button">
-                    <a th:href="@{home}">
-                        <button type="submit" th:text="${teamID != null ? 'Save' : 'Create'}"></button>
-                    </a>
-                </div>
-                <div th:if="${invalid_input != null}" th:text="${invalid_input}" class="error-message"></div>
-                <div class="cancel-link">
-                    <a th:if="${teamID != null}" th:href="@{profile(teamID=${teamID})}">Cancel</a>
-                    <a th:unless="${teamID != null}" th:href="@{home}">Cancel</a>
-                </div>
-            </form>
-        </div>
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+<div class="team-form">
+    <div class="create-team">
+        <h1 th:inline="text">[[${teamID != null ? 'Edit ' : 'Create '}]]Team</h1>
     </div>
-    <footer>
-        <p>
-            Image by <a
-                href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
-            on Freepik
-        </p>
-    </footer>
+    <div class="wrapper">
+        <form th:action="@{createTeam}" th:object="${createAndEditTeamForm}" id="createAndEditTeamForm" method="post">
+            <div th:if="${invalid_team != null}" th:text="${invalid_team}" class="invalid-team error-message"></div>
+            <input type="hidden" th:if="${teamID != null}" th:name="teamID" th:value="${teamID}"/>
+            <div class="input-boxes">
+                <div class="input-box">
+                    <input type="text" class="form-control" id="name" th:name="name" th:value="${name}"
+                           data-cy="name" autofocus placeholder=""
+                           title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
+                    <label for="name">Name <span class="required">*</span></label>
+                    <div th:each="err : ${#fields.errors('name')}" th:text="${err}" class="team-error-message"></div>
+                </div>
+
+                <div class="input-box">
+                    <input type="text" class="form-control" id="sport" th:name="sport" th:value="${sport}"
+                           data-cy="sport" autofocus placeholder=""
+                           title="May include letters, spaces, apostrophes, and hyphens. Must start with letter">
+                    <label for="sport">Sport <span class="required">*</span></label>
+                    <div th:each="err : ${#fields.errors('sport')}" th:text="${err}" class="team-error-message"></div>
+
+                </div>
+            </div>
+            <div class="input-boxes">
+                <div class="input-box">
+                    <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
+                           th:value="${addressLine1}" data-cy="location"
+                           autofocus placeholder="" autocomplete="off"
+                           title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include
+                                    at least one letter or number">
+                    <label for="address-line-1">Address Line 1</label>
+                    <div class="autocomplete-container" id="autocomplete-container"></div>
+                    <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}"
+                         class="team-error-message"></div>
+                </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
+                           th:value="${addressLine2}" data-cy="location" autofocus placeholder=""
+                           title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include
+                                      at least one letter or number">
+                    <label for="address-line-2">Address Line 2</label>
+                    <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}"
+                         class="team-error-message"></div>
+                </div>
+            </div>
+            <div class="input-boxes">
+                <div class="input-box">
+                    <input type="text" class="form-control" id="suburb" th:name="suburb" th:value="${suburb}"
+                           data-cy="location" autofocus placeholder="">
+                    <label for="suburb">Suburb</label>
+                    <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
+                </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="postcode" th:name="postcode" th:value="${postcode}"
+                           data-cy="location" autofocus placeholder="">
+                    <label for="postcode">Postcode</label>
+                    <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}"
+                         class="team-error-message"></div>
+                </div>
+            </div>
+            <div class="input-boxes">
+                <div class="input-box">
+                    <input type="text" class="form-control" id="city" th:name="city" th:value="${city}"
+                           data-cy="location" autofocus placeholder="">
+                    <label for="city">City <span class="required">*</span></label>
+                    <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="team-error-message"></div>
+                </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="country" th:name="country" th:value="${country}"
+                           data-cy="location" autofocus placeholder="">
+                    <label for="country">Country <span class="required">*</span></label>
+                    <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="team-error-message"></div>
+                </div>
+            </div>
+            <div class="submit-button">
+                <a th:href="@{home}">
+                    <button type="submit" th:text="${teamID != null ? 'Save' : 'Create'}"></button>
+                </a>
+            </div>
+            <div th:if="${invalid_input != null}" th:text="${invalid_input}" class="error-message"></div>
+            <div class="cancel-link">
+                <a th:if="${teamID != null}" th:href="@{profile(teamID=${teamID})}">Cancel</a>
+                <a th:unless="${teamID != null}" th:href="@{home}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+<footer>
+    <p>
+        Image by <a
+            href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+        on Freepik
+    </p>
+</footer>
 </body>
 <script type="text/javascript" th:inline="javascript">
-  /**
-  ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
-   * @type {string}
-   */
-  const path = /*[[${path}]]*/ "";
-  const ENDPOINT = path + "/geocode/autocomplete";
+    /**
+     ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
+     * @type {string}
+     */
+    const path = /*[[${path}]]*/ "";
+    const ENDPOINT = path + "/geocode/autocomplete";
 </script>
 <script th:inline="javascript">
     /**

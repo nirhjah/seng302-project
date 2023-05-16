@@ -144,7 +144,7 @@ footer {
 
 
 .team-form .create-team, .user-form .user-header,.login-header,
-.register-form .register-header, .activity-form{
+.register-form .register-header, .activity-form .create-activity-header{
     font-family: "Noto Sans",sans-serif;
     /*color: #0B1B2A;*/
     text-align: center;
