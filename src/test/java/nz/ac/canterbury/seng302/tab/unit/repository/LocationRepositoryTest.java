@@ -1,21 +1,16 @@
 package nz.ac.canterbury.seng302.tab.unit.repository;
 
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 
 
 @DataJpaTest

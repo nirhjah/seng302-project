@@ -1,28 +1,20 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
-import nz.ac.canterbury.seng302.tab.service.LocationService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.service.LocationService;
 
 
 @DataJpaTest

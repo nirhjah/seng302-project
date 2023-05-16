@@ -1,13 +1,13 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 
-import jakarta.persistence.*;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class Location {
@@ -35,10 +35,10 @@ public class Location {
     private String country;
 
     public Location (String addressLine1, String addressLine2, String suburb, String city, String postcode, String country ){
-        this.addressLine1 = (addressLine1 == null || addressLine1.equals("")) ? null : addressLine1;
-        this.addressLine2 = (addressLine2 == null || addressLine2.equals("")) ? null : addressLine2;
-        this.suburb = (suburb == null || suburb.equals("")) ? null : suburb;
-        this.postcode = (postcode == null || postcode.equals("")) ? null : postcode;
+        this.addressLine1 = (addressLine1 == null || addressLine1.isBlank()) ? null : addressLine1;
+        this.addressLine2 = (addressLine2 == null || addressLine2.isBlank()) ? null : addressLine2;
+        this.suburb = (suburb == null || suburb.isBlank()) ? null : suburb;
+        this.postcode = (postcode == null || postcode.isBlank()) ? null : postcode;
         this.country= country;
         this.city = city;
     }
