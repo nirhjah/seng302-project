@@ -136,7 +136,7 @@ public class RegisterController {
         model.addAttribute("addressRegex", addressRegex);
         model.addAttribute("postcodeRegex", postcodeRegex);
         model.addAttribute("path", path);
-        return "register";
+        return "registerUser";
     }
 
     /**
@@ -164,7 +164,7 @@ public class RegisterController {
             URL url = new URL(request.getRequestURL().toString());
             String path = (url.getPath() + "/..");
             model.addAttribute("path", path);
-            return "register";
+            return "registerUser";
         }
 
         String hashedPassword = passwordEncoder.encode(registerForm.getPassword());
