@@ -1,11 +1,8 @@
 .activity-form {
-    margin:auto;
-    display: grid;
-    grid-auto-rows: 527px;
     justify-content: center;
     align-items: center;
-    grid-template-rows: 237px;
-    height: 90vh;
+    display:flex;
+    flex-direction:column
 }
 
 .activity-form .wrapper form {
