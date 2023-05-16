@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
@@ -37,7 +37,7 @@
                     <a href="#" class="copy-token">
                         <img th:src="@{image/icons/copy.svg}">
                     </a>
-                    <div class="join-token-box">
+                    <div class="join-token-box" th:if="${isUserManager}">
                         <span class="token-value" th:text="${displayToken}"></span>
                         <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}" th:method="post">
                             <button type="submit">

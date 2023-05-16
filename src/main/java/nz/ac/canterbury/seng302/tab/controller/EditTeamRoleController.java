@@ -1,22 +1,21 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.*;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
+import nz.ac.canterbury.seng302.tab.service.*;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.TeamRole;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
 
 /**
  * Spring Boot Controller class for the edit team role class
@@ -25,48 +24,125 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 public class EditTeamRoleController {
   Logger logger = LoggerFactory.getLogger(HomeFormController.class);
 
-  @Autowired
-  private TeamService teamService;
+  @Autowired private TeamService teamService;
+
+  @Autowired private UserService userService;
 
   /**
    * Takes the user to the edit ream roles page
+   *
    * @return the edit team role page
    */
   @GetMapping("/editTeamRole")
-  public String home(@RequestParam(name = "edit", required = true) Long teamID, Model model, HttpServletRequest request)
-      throws Exception {
-    logger.info("GET /EditTeamRole");
+  public String
+  getTeamRoles(@RequestParam(name = "edit", required = true) Long teamID,
+               Model model, HttpServletRequest request) throws Exception {
+    logger.info("GET /getTeamRoles");
+    Optional<User> user = userService.getCurrentUser();
 
-    /**
-     * This is dummy data for the front end for testing
-     * TODO remove when the backend is implemented
-     */
-    User user1 = new User("john", "doe", "1test@test.com", "Password1",
-        new Location(null, null, null, "chch", null, "nz"));
-    User user2 = new User("dave", "doe", "2test@test.com", "Password1",
-        new Location(null, null, null, "chch", null, "nz"));
-    User user3 = new User("seve", "doe", "3test@test.com", "Password1",
-        new Location(null, null, null, "chch", null, "nz"));
-    User user4 = new User("john", "doe", "4test@test.com", "Password1",
-            new Location(null, null, null, "chch", null, "nz"));
-    User user5 = new User("dave", "doe", "5test@test.com", "Password1",
-            new Location(null, null, null, "chch", null, "nz"));
-    User user6 = new User("seve", "doe", "6test@test.com", "Password1",
-            new Location(null, null, null, "chch", null, "nz"));
-    Team team = new Team("test team", "football", new Location(null, null, null, "chch", null, "nz"), user1);
+    if (user.isEmpty()) {
+      logger.error("No current user?");
+      return "redirect:/home";
+    }
 
-    team.setMember(user2);
-    team.setCoach(user3);
-    team.setMember(user4);
-    team.setManager(user5);
-    team.setMember(user6);
+    Team team = teamService.getTeam(teamID);
+    if (team == null) {
+      logger.error("Team ID does not exist!");
+      return "redirect:/home";
+    }
 
-    List<TeamRole> teamRoles = team.getTeamRoleList();
+    if (!team.isManager(userService.getCurrentUser().get())) {
+      logger.error("Attempted to edit a team when not manager!");
+      return "redirect:/home";
+    }
 
-    model.addAttribute("possibleRoles", Role.values());
-    model.addAttribute("roleList", teamRoles);
+    model.addAttribute("user", user.get());
     model.addAttribute("httpServletRequest", request);
+    populateListsInModel(team, model);
     return "editTeamRoleForm";
   }
 
+  /**
+   * In this PostMapping, we pass in the userRoles and userIds.
+   * The userId in `userIds` maps DIRECTLY to the role in `userRoles`, per each
+   * index.
+   * ------------
+   * For example, if userId 5 exists at index 0 of userIds, then user-5 will
+   * be assigned to the role at index 0 of userRoles.
+   */
+  @PostMapping("/editTeamRole")
+  public String
+  editTeamRoles(@RequestParam(name = "teamID", required = true) String teamID,
+                @RequestParam("userRoles") List<String> userRoles,
+                @RequestParam("userIds") List<String> userIds, Model model,
+                HttpServletRequest request) throws Exception {
+    logger.info("GET /EditTeamRole");
+    logger.info(userRoles.toString());
+    logger.info(userIds.toString());
+
+    model.addAttribute("httpServletRequest", request);
+
+    Team team = teamService.getTeam(Long.parseLong(teamID));
+    if (team == null) {
+      logger.error("Team ID does not exist!");
+      return "redirect:/home";
+    }
+
+    if (!team.isManager(userService.getCurrentUser().get())) {
+      logger.error("Attempted to edit a team when not manager!");
+      return "redirect:/home";
+    }
+
+    populateListsInModel(team, model);
+
+    // checks if there is at least 1 manager, and at most 3 managers.
+    if (!teamService.userRolesAreValid(userRoles)) {
+      model.addAttribute(
+          "managerError",
+          "Error: A manager is required for a team, with a maximum of 3 per team.");
+      return "editTeamRoleForm";
+    }
+
+    int len = Math.min(userRoles.size(), userIds.size());
+    for (int i = 0; i < len; i++) {
+      // userIds list maps directly to userRoles list, per index.
+      updateRole(team, userIds.get(i), userRoles.get(i));
+    }
+    teamService.updateTeam(team);
+
+    return "editTeamRoleForm";
+  }
+
+  private void updateRole(Team team, String userId, String userRole) {
+    long id;
+    try {
+      id = Long.parseLong(userId);
+    } catch (NumberFormatException ex) {
+      logger.error("unable to parse user id???");
+      return;
+    }
+
+    if (Role.isValidRole(userRole)) {
+      Role role = Role.stringToRole(userRole);
+      Optional<User> user = userService.findUserById(id);
+      if (user.isPresent()) {
+        team.setRole(user.get(), role);
+      } else {
+        logger.error("Unknown user whilst changing roles: " + id);
+      }
+    }
+  }
+
+  public void populateListsInModel(Team team, Model model) {
+    Set<TeamRole> teamRoles = team.getTeamRoles();
+    List<Long> userIDList = new ArrayList<>();
+    for (TeamRole role : teamRoles) {
+      userIDList.add(role.getUser().getUserId());
+    }
+
+    model.addAttribute("roleList", teamRoles);
+    model.addAttribute("userIds", userIDList);
+    model.addAttribute("possibleRoles", Role.values());
+    model.addAttribute("teamID", team.getTeamId().toString());
+  }
 }
