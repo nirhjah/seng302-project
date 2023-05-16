@@ -70,10 +70,6 @@ public class ViewActivitiesController {
         Page<Activity> page = activityService.getPaginatedActivities(pageable,currentUser);
 
         List<Activity> activities = page.getContent();
-        logger.info("PageNo: " + pageNo);
-        logger.info("totalPages: " + page.getTotalPages());
-        logger.info("totalItems: " + page.getTotalElements());
-        logger.info("activities: " + activities);
 
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
@@ -84,8 +80,6 @@ public class ViewActivitiesController {
         model.addAttribute("totalPages", page.getTotalPages() == 0 ? 1 : page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
         model.addAttribute("activities", activities);
-        logger.info(String.valueOf(model.containsAttribute("activities")));
-        logger.info("" + model.getAttribute("activities"));
         return "viewActivities";
     }
 

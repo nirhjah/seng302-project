@@ -6,10 +6,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-import nz.ac.canterbury.seng302.tab.controller.ForgotPasswordController;
-import nz.ac.canterbury.seng302.tab.controller.HomeFormController;
-import nz.ac.canterbury.seng302.tab.controller.ResetPasswordController;
-import nz.ac.canterbury.seng302.tab.controller.ViewActivitiesController;
+import nz.ac.canterbury.seng302.tab.controller.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
@@ -47,6 +44,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -114,11 +112,16 @@ public class ViewMyActivitiesIntegrationTests {
 
         activityService = Mockito.spy(new ActivityService(activityRepository));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ProfileFormController(userService, teamService)).build();
 
         userRepository.deleteAll();
+        teamRepository.deleteAll();
+        for (Activity activity: activityRepository.findAll()) {
+            activity.setActivityOwner(null);
+            activity.setTeam(null);
+            activityService.updateOrAddActivity(activity);
+        }
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", new Location(null, null, null, "CHCH", null, "NZ"));
-
         userRepository.save(user);
         team1 = new Team("A-Team", "Soccer", new Location(null, null, null, "CHCH", null, "NZ"));
         team2 = new Team("B-Team", "Hockey", new Location(null, null, null, "CHCH", null, "NZ"));
@@ -130,8 +133,8 @@ public class ViewMyActivitiesIntegrationTests {
         dateLast = new GregorianCalendar(2024, Calendar.MARCH, 1).getTime();
         testDates = Arrays.asList(dateFirst, dateMiddle, dateLast);
 
-        Authentication authentication = Mockito.mock(Authentication.class);
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
         when(userService.getCurrentUser()).thenReturn(Optional.of(user));
@@ -282,7 +285,7 @@ public class ViewMyActivitiesIntegrationTests {
     @And("I am on the my activities form")
     public void iAmOnTheMyActivitiesForm() throws Exception {
         mockMvc.perform(get("/view-activities").param("page", "1"))
-                .andExpect(status().isOk()).andExpect(view().name("/view-activities"));
+                .andExpect(status().isOk()).andExpect(view().name("viewActivities"));
 
     }
 
@@ -302,17 +305,21 @@ public class ViewMyActivitiesIntegrationTests {
 
     @Then("I'm taken to the teams profile page")
     public void iMTakenToTheTeamsProfilePage() throws Exception {
-        mockMvc.perform(get("/view-activities").param("page", "1"))
-                .andExpect(status().isOk()).andExpect(view().name("/view-activities"));
-
+        Team teamMock = mock(Team.class);
+        when(teamMock.isManager(user)).thenReturn(false);
+        mockMvc.perform(get("/profile").param("teamID", selectedTeam.getTeamId().toString()))
+                .andExpect(status().isOk()).andExpect(view().name("/profile"));
     }
 
     @And("pagination is active")
     public void paginationIsActive() throws Exception {
-        mockMvc.perform(get("/view-activities").param("page", "2"))
-                .andExpect(status().isOk()).andExpect(view().name("/view-activities"));
+        Integer expectedPage = 2;
+        selectedTeam.setManager(user);
+        when(teamService.getTeam(selectedTeam.getTeamId())).thenReturn(selectedTeam);
+        MvcResult result = mockMvc.perform(get("/view-activities").param("page", expectedPage.toString()))
+                .andExpect(status().isOk()).andExpect(view().name("viewActivities"))
+                .andReturn();
+        Assertions.assertEquals(expectedPage, result.getModelAndView().getModel().get("page"));
     }
 }
-
-
 
