@@ -58,9 +58,9 @@ public class ViewActivitiesController {
         }
 
         logger.info("GET /view-teams");
-        pageable = PageRequest.of(pageNo, maxPageSize);
+        pageable = PageRequest.of(pageNo-1, maxPageSize);
         Page<Activity> page = activityService.getPaginatedActivities(pageable,currentUser);
-
+        System.out.println(page.getContent());
         List<Activity> listActivities = page.getContent();
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());

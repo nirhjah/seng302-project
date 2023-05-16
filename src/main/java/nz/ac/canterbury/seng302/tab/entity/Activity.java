@@ -113,6 +113,9 @@ public class Activity {
         return this.activityType;
     }
 
+    public User getActivityOwner(){
+        return this.activityOwner;
+    }
 
     @Override
     public boolean equals(Object o) {
