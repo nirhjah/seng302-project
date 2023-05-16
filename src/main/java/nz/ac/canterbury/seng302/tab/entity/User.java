@@ -123,7 +123,7 @@ public class User {
      * a hashed password
      * (By Autowiring a <code>PasswordEncoder</code>)
      */
-    public User(String firstName, String lastName, String email, String password, Location location) throws Exception {
+    public User(String firstName, String lastName, String email, String password, Location location) throws IOException  {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -136,7 +136,7 @@ public class User {
     }
 
     @ManyToMany(mappedBy = "teamMembers")
-    private Set<Team> joinedTeams = new HashSet<Team>();
+    private Set<Team> joinedTeams = new HashSet<>();
 
     public long getUserId() {
         return userId;
