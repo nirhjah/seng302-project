@@ -38,6 +38,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -219,27 +220,44 @@ public class EditTeamRoleIntegrationTests {
 
     @When("I select no managers and save the change")
     public void iSelectNoManagersAndSaveTheChange() throws Exception {
+        List<String> userRoles = List.of(Role.MEMBER.toString(), Role.COACH.toString(), Role.MEMBER.toString(),
+                Role.MEMBER.toString());
+        Mockito.when(teamService.userRolesAreValid(userRoles)).thenReturn(false);
         mockMvc.perform(post("/editTeamRole", 42L)
                         .param("teamID", String.valueOf(team.getTeamId()))
                         .param("userIds", String.valueOf(List.of(String.valueOf(user.getUserId()),
                                 String.valueOf(testUser1.getUserId()), String.valueOf(testUser2.getUserId()),
                                 String.valueOf(testUser3.getUserId()))))
-                        .param("userRoles", String.valueOf(List.of(Role.MEMBER, Role.COACH, Role.MANAGER, Role.MEMBER))));
+                        .param("userRoles", String.valueOf(List.of(Role.MEMBER, Role.COACH, Role.MEMBER, Role.MEMBER))));
     }
 
     @Then("The page returns back to the edit team page with an error")
     public void thePageReturnsBackToTheEditTeamPageWithAnError() throws Exception {
+//        Mockito.when(teamService.updateTeam(team)).thenReturn(team);
+//        mockMvc.perform(post("/editTeamRole", 42L)
+//                        .param("teamID", String.valueOf(team.getTeamId()))
+//                        .param("userIds", String.valueOf(List.of(String.valueOf(user.getUserId()),
+//                                String.valueOf(testUser1.getUserId()), String.valueOf(testUser2.getUserId()),
+//                                String.valueOf(testUser3.getUserId()))))
+//                        .param("userRoles", String.valueOf(List.of(Role.MANAGER, Role.COACH, Role.MANAGER, Role.MEMBER))))
+//                .andExpect(status().isFound()).andExpect(model().attributeExists("managerError"));
+        List<String> userRoles = List.of(Role.MANAGER.toString(), Role.MANAGER.toString(), Role.MANAGER.toString(),
+                Role.MANAGER.toString());
+        Mockito.when(teamService.userRolesAreValid(userRoles)).thenReturn(false);
         mockMvc.perform(post("/editTeamRole", 42L)
                         .param("teamID", String.valueOf(team.getTeamId()))
                         .param("userIds", String.valueOf(List.of(String.valueOf(user.getUserId()),
                                 String.valueOf(testUser1.getUserId()), String.valueOf(testUser2.getUserId()),
                                 String.valueOf(testUser3.getUserId()))))
-                        .param("userRoles", String.valueOf(List.of(Role.MANAGER, Role.COACH, Role.MANAGER, Role.MEMBER))))
+                        .param("userRoles", String.valueOf(List.of(Role.MANAGER, Role.MANAGER, Role.MANAGER, Role.MANAGER))))
                 .andExpect(status().isFound()).andExpect(model().attributeExists("managerError"));
     }
 
     @When("I select {int} managers and save the change")
     public void iSelectManagersAndSaveTheChange(int arg0) throws Exception {
+        List<String> userRoles = List.of(Role.MANAGER.toString(), Role.MANAGER.toString(), Role.MANAGER.toString(),
+                Role.MANAGER.toString());
+        Mockito.when(teamService.userRolesAreValid(userRoles)).thenReturn(false);
         mockMvc.perform(post("/editTeamRole", 42L)
                         .param("teamID", String.valueOf(team.getTeamId()))
                         .param("userIds", String.valueOf(List.of(String.valueOf(user.getUserId()),
