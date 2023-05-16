@@ -34,18 +34,18 @@ public class UserFormValidators {
     // Matches any language's alphabet, spaces, and hyphens
     // (e.g. 'van Beethoven', 'Taylor-Joy')...
     public static final String VALID_NAME_REGEX = "^[\\p{L}\\- ]+$";
-    public static final String NOT_BLANK_MSG = "Field cannot be blank";
+    public static final String NOT_BLANK_MSG = "Field cannot be empty";
     public static final String WELL_FORMED_EMAIL = "Must be a well-formed email";
     public static final String WEAK_PASSWORD_MESSAGE = "Password does not meet the requirements";
 
     public static final String VALID_EMAIL_REGEX = "(?i)[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}";
-    public static final String INVALID_NAME_MSG = "Names can only contain letters, spaces, and hyphens";
+    public static final String INVALID_NAME_MSG = "Contains Invalid characters";
     public static final String VALID_COUNTRY_SUBURB_CITY_REGEX = "^\\p{L}+[\\- '\\p{L}]*$";
-    public static final String INVALID_COUNTRY_SUBURB_CITY_MSG = "May include letters, hyphens, apostrophes and spaces. Must start with letter";
+    public static final String INVALID_COUNTRY_SUBURB_CITY_MSG = "Contains Invalid characters";
     public static final String VALID_ADDRESS_REGEX = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
-    public static final String INVALID_ADDRESS_MSG = "May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must start with letter or number";
+    public static final String INVALID_ADDRESS_MSG = "Contains Invalid characters";
     public static final String VALID_POSTCODE_REGEX = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
-    public static final String INVALID_POSTCODE_MSG = "May include letters, numbers, forward slashes, and hyphens. Must start with letter or number";
+    public static final String INVALID_POSTCODE_MSG = "Contains Invalid characters";
 
     /**
      * Checks that the provided name is valid.
@@ -129,11 +129,10 @@ public class UserFormValidators {
     /**/@Retention(RUNTIME)
     /**/@Constraint(validatedBy = PasswordCheck.class)
     /**/@Documented
-    @NotBlank(message = NOT_BLANK_MSG)
+    @NotNull(message = NOT_BLANK_MSG)
     public @interface PasswordValidator {
 
-
-        String message() default WEAK_PASSWORD_MESSAGE;
+        String message() default "Password does not meet the requirements";
 
         Class<?>[] groups() default {};
 
