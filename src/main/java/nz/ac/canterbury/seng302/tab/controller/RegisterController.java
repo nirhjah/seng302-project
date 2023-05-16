@@ -212,14 +212,10 @@ public class RegisterController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
 
-        if (opt.get().getEmailConfirmed()) {
-            // This user is already confirmed, so the link is dead. Throw 404.
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
         User user = opt.get();
         user.confirmEmail();
         user.grantAuthority("ROLE_USER");
+        user.setToken(null);
 
         userService.updateOrAddUser(user);
         redirectAttributes.addFlashAttribute("confirmationMessage", "Your email has been confirmed successfully!");
