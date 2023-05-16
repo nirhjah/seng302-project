@@ -36,6 +36,8 @@ public class UserFormValidators {
     public static final String VALID_NAME_REGEX = "^[\\p{L}\\- ]+$";
     public static final String NOT_BLANK_MSG = "Field cannot be blank";
     public static final String WELL_FORMED_EMAIL = "Must be a well-formed email";
+    public static final String WEAK_PASSWORD_MESSAGE = "Password does not meet the requirements";
+
     public static final String VALID_EMAIL_REGEX = "(?i)[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}";
     public static final String INVALID_NAME_MSG = "Contains Invalid characters";
     public static final String VALID_COUNTRY_SUBURB_CITY_REGEX = "^\\p{L}+[\\- '\\p{L}]*$";

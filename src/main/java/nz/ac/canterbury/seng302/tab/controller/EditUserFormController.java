@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import nz.ac.canterbury.seng302.tab.authentication.AutoLogin;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
@@ -92,30 +93,23 @@ public class EditUserFormController {
             @RequestParam("tags") List<String> tags,
             Model model,
             RedirectAttributes redirectAttributes) throws ServletException, MalformedURLException {
-        model.addAttribute("httpServletRequest",httpServletRequest);
-        String invalidTags= "These are invalid sports: ";
-        boolean first= true ,invalidSport=false;
-        for (String tag : tags) {
-            if (!tag.matches("^[\\p{L}\\s\\'\\-]+$")) {
-                invalidSport=true;
-                if (!first) {
-                    invalidTags += ", ";
-                } else {
-                    first = false;
-                }
-                invalidTags += tag;
-            }
-            if (invalidSport) {
-                redirectAttributes.addFlashAttribute("errorMessage", invalidTags);
-                URL url = new URL(httpServletRequest.getRequestURL().toString());
-                String path = (url.getPath() + "/..");
-                model.addAttribute("path", path);
-                return "redirect:/editUser";
-            }
-        }
-            System.out.println(invalidTags);
-
         prefillModel(model);
+
+        model.addAttribute("httpServletRequest",httpServletRequest);
+        // Check that all the sports have valid names
+        String invalidSports = tags.stream()
+                .filter(tag -> !tag.matches("^[\\p{L}\\s\\'\\-]+$"))
+                .collect(Collectors.joining(", "));
+        if (!invalidSports.isEmpty()) {
+            logger.info("Invalid sports: {}", invalidSports);
+            String errorMessage = "These are invalid sports: " + invalidSports;
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+            URL url = new URL(httpServletRequest.getRequestURL().toString());
+            String path = (url.getPath() + "/..");
+            model.addAttribute("path", path);
+            return "redirect:/editUser";
+        }
+
         Optional<User> optUser = userService.getCurrentUser();
         if (optUser.isEmpty()) {
             return "redirect:/login";
