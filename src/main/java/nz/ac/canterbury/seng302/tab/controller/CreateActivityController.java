@@ -62,6 +62,29 @@ public class CreateActivityController {
         model.addAttribute("path", path);
     }
 
+    public void fillModelWithActivity(Model model, Activity activity) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        LocalDateTime startDateTime =  activity.getActivityStart();
+        String formattedStartDateTime = startDateTime.format(formatter);
+
+        LocalDateTime endDateTime =  activity.getActivityEnd();
+        String formattedEndDateTime = endDateTime.format(formatter);
+        model.addAttribute("activityType", activity.getActivityType());
+        if (activity.getTeam() != null) {
+            model.addAttribute("teamName", activity.getTeam().getName());
+        }
+        model.addAttribute("actId", activity.getId());
+        model.addAttribute("startDateTime",formattedStartDateTime);
+        model.addAttribute("endDateTime", formattedEndDateTime);
+        model.addAttribute("description", activity.getDescription());
+        model.addAttribute("addressLine1", activity.getLocation().getAddressLine1());
+        model.addAttribute("addressLine2", activity.getLocation().getAddressLine2());
+        model.addAttribute("city", activity.getLocation().getCity());
+        model.addAttribute("suburb", activity.getLocation().getSuburb());
+        model.addAttribute("country", activity.getLocation().getCountry());
+        model.addAttribute("postcode", activity.getLocation().getPostcode());
+    }
+
     /**
      * This controller handles both the edit and creation of an activity
      * @param actId the ID if activity if editing, otherwise null
@@ -83,29 +106,8 @@ public class CreateActivityController {
         Activity activity;
         if (actId !=null){
             if ((activity = activityService.findActivityById(actId))!=null){
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-                LocalDateTime startDateTime =  activity.getActivityStart();
-                String formattedStartDateTime = startDateTime.format(formatter);
-
-                LocalDateTime endDateTime =  activity.getActivityEnd();
-                String formattedEndDateTime = endDateTime.format(formatter);
-                model.addAttribute("activityType", activity.getActivityType());
-                if (activity.getTeam() != null) {
-                    model.addAttribute("teamName", activity.getTeam().getName());
-                }
-                model.addAttribute("actId", activity.getId());
-                model.addAttribute("startDateTime",formattedStartDateTime);
-                model.addAttribute("endDateTime", formattedEndDateTime);
-                model.addAttribute("description", activity.getDescription());
-                model.addAttribute("addressLine1", activity.getLocation().getAddressLine1());
-                model.addAttribute("addressLine2", activity.getLocation().getAddressLine2());
-                model.addAttribute("city", activity.getLocation().getCity());
-                model.addAttribute("suburb", activity.getLocation().getSuburb());
-                model.addAttribute("country", activity.getLocation().getCountry());
-                model.addAttribute("postcode", activity.getLocation().getPostcode());
+                fillModelWithActivity(model, activity);
             }
-
         }
         return "createActivity";
     }
@@ -160,6 +162,15 @@ public class CreateActivityController {
                         ActivityFormValidators.END_BEFORE_START_MSG));
             }
         }
+        addressLine1.trim();
+        if (addressLine1.isEmpty()) {
+            logger.info("EMPTY ADDRESS");
+            bindingResult.addError(new FieldError("CreateActivityForm", "addressLine1", "This is a required field"));
+        }
+        postcode.trim();
+        if (postcode.isEmpty()) {
+            bindingResult.addError(new FieldError("CreateActivityForm", "postcode", "This is a required field"));
+        }
 
         User user = userService.getCurrentUser().get();
         Team team = teamService.getTeam(teamId);
@@ -182,7 +193,15 @@ public class CreateActivityController {
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return "createActivity";
+            if (actId != -1) {
+                model.addAttribute("actId", actId);
+                //return "redirect:./createActivity" + (actId != -1 ? "?edit=" + actId : "");
+                Activity activity = activityService.findActivityById(actId);
+                fillModelWithActivity(model, activity);
+                return "createActivity";
+            } else {
+                return "createActivity";
+            }
         }
         Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
         System.out.println("THE ACTIVITY ID"+ actId);
