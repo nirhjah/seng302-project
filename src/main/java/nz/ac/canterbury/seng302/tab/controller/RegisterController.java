@@ -177,10 +177,10 @@ public class RegisterController {
         String confirmationUrl = request.getRequestURL().toString().replace(request.getServletPath(), "")
                 + "/confirm?token=" + user.getToken();
         if (request.getRequestURL().toString().contains("test")) {
-            confirmationUrl =  "https://csse-s302g9.canterbury.ac.nz/test/reset-password?token=" + user.getToken();
+            confirmationUrl =  "https://csse-s302g9.canterbury.ac.nz/test/confirm?token=" + user.getToken();
         }
         if (request.getRequestURL().toString().contains("prod")) {
-            confirmationUrl =  "https://csse-s302g9.canterbury.ac.nz/prod/reset-password?token=" + user.getToken();
+            confirmationUrl =  "https://csse-s302g9.canterbury.ac.nz/prod/confirm?token=" + user.getToken();
         }
 
         emailService.confirmationEmail(user, confirmationUrl);
