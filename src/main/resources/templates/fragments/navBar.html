@@ -57,7 +57,7 @@
                 <img class="navbar-profile-picture"
                      th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
                 <span th:text="${#strings.length(firstName + ' ' + lastName) &lt;= 24 ? firstName + ' ' + lastName : #strings.substring(firstName + ' ' + lastName, 0, 21) + '...'}"></span>
-                <i class="triangle"></i>
+                <i class="triangle" aria-hidden="true"></i>
             </a>
         </li>
         <form id="logoutForm" th:action="@{logout}" method="POST"></form>
