@@ -1,3 +1,4 @@
+@register_confirm_email
 Feature: U21 - Confirm registration email
   Scenario: AC1 - Given I submit a fully valid registration form, when I click on register, then a confirmation email is sent to my email address, and a unique registration token is attached to the email in the form of a confirmation link.
     When I submit a valid form on the register page

@@ -115,8 +115,7 @@ public class RegisterConfirmEmailIntegrationTests {
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
-
-    @Before
+    @Before("@register_confirm_email")
     public void beforeTest() {
         sentMailContent = null;
         userRepository.deleteAll();
