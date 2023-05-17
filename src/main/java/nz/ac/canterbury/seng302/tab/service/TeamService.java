@@ -303,8 +303,9 @@ public class TeamService {
         }
         return manager.getUserId() == userId;
     }
-    public boolean userRolesAreValid(List < String > userRoles) {
+
+    public boolean userRolesAreValid(List<String> userRoles) {
         int numOfManagers = Collections.frequency(userRoles, Role.MANAGER.toString());
-        return ((numOfManagers > 0) && (numOfManagers <= 3));
+        return ((numOfManagers > 0) && (numOfManagers <=3));
     }
 }

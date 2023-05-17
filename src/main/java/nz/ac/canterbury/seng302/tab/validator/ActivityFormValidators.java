@@ -34,6 +34,8 @@ public class ActivityFormValidators {
 
     public static final String ACTIVITY_BEFORE_TEAM_CREATION = "Activity must be after creation date of team: ";
 
+    public static final String NOT_A_COACH_OR_MANAGER = "You need to be a coach or a manager to do this";
+
     /**
      * Regex taken from <a href="https://stackoverflow.com/a/56276700">...</a>
      */
