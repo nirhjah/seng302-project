@@ -1,7 +1,6 @@
 package nz.ac.canterbury.seng302.tab.mail;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,7 @@ public class EmailService {
     /**
      * Gets the sending email from the application properties
      */
-    @Value("${spring.mail.username}") private String sender;
+    private static final String sender = System.getenv().get("GMAIL_USERNAME");
 
     /**
      *

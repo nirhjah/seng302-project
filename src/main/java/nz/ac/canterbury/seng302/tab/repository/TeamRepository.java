@@ -2,7 +2,9 @@ package nz.ac.canterbury.seng302.tab.repository;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -31,6 +33,7 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             "OR (t.location.city) LIKE LOWER(CONCAT('%', :name, '%')) " +
             "ORDER BY LOWER(t.name) ASC, (t.location) ASC ")
     public Page<Team> findTeamByName(@Param("name") String name, Pageable pageable);
+
 
     @Query("SELECT t FROM Team t LEFT JOIN t.teamMembers tm " +
             "WHERE (:user) in (tm) " +
@@ -85,4 +88,11 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             @Param("filteredLocations") List<String> filteredLocations,
             @Param("filteredSports") List<String> filteredSports,
             @Param("name") String name);
+
+    @Query("SELECT tr FROM TeamRole tr WHERE tr.team.id = :teamId AND tr.role = :role")
+    public TeamRole findTeamManager(@Param("teamId") Long teamId, @Param("role") Role role);
+
+    @Query("SELECT t.name FROM Team t")
+    public List<String> getAllTeamNames();
+
 }

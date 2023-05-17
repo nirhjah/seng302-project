@@ -1,0 +1,63 @@
+.activity-form {
+    justify-content: center;
+    align-items: center;
+    display:flex;
+    flex-direction:column
+}
+
+.activity-form .wrapper form {
+    width: 65%;
+}
+
+.activity-form .wrapper {
+    width: 630px;
+    height: 850px;
+    font-size: 15px;
+
+}
+
+.activity-form select {
+    text-align: center;
+    width: 100%;
+    height:50px;
+    border-radius:8px;
+    background:#ffffff;
+    border-color:#415a77;
+    margin-bottom:15px;
+    font-size:17px;
+}
+
+.datetime-input{
+    text-align: center;
+}
+
+.description-text{
+    resize: none;
+    outline:none;
+    width:100%;
+    height:90px;
+}
+.activity-form label,.charCount{
+    text-align:left;
+    display:flex;
+    color:#888888;
+    font-size:1em;
+    font-weight: 500;
+    font-family: "Noto Sans",sans-serif;
+}
+
+@media (max-width: 700px) {
+    .activity-form .wrapper {
+        width: 90vw;
+    }
+    .create-activity {
+        width: 90vw;
+    }
+}
+
+.character-count-container {
+    position:absolute;
+}
+.description-text{
+    border-color:#415a77;
+}

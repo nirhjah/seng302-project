@@ -47,7 +47,7 @@ public class ViewAllTeamsController {
             return "redirect:/home";
         }
 
-        // If page number outside of page then reloads page with appropriate number
+        // If page number outside of page range then reloads page with appropriate number
         if (pageNo < 1 || pageNo > teamService.findPaginated(pageNo, maxPageSize).getTotalPages() && teamService.findPaginated(pageNo, maxPageSize).getTotalPages() > 0) {
             pageNo = pageNo < 1 ? 1: teamService.findPaginated(pageNo, maxPageSize).getTotalPages();
             return "redirect:/view-teams?page=" + pageNo;
