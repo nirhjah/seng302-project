@@ -1,12 +1,6 @@
 package nz.ac.canterbury.seng302.tab.mail;
 
-import nz.ac.canterbury.seng302.tab.entity.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -19,8 +13,6 @@ import java.util.concurrent.TimeUnit;
  * Email Service class manages sending the emails.
  */
 @Service
-@Configuration
-@ComponentScan("nz.ac.canterbury.seng302.tab.service")
 public class EmailService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 

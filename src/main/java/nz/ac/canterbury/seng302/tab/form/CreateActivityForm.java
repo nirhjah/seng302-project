@@ -1,16 +1,29 @@
 package nz.ac.canterbury.seng302.tab.form;
 
+import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
 import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
-public class CreateAndEditTeamForm {
+import java.time.LocalDateTime;
 
-    @TeamFormValidators.teamNameValidator(message = TeamFormValidators.INVALID_TEAM_NAME_MSG)
-    private String name;
+public class CreateActivityForm {
 
-    @TeamFormValidators.teamSportValidator(message = TeamFormValidators.INVALID_TEAM_SPORT_MSG)
-    private String sport;
+    @ActivityFormValidators.activityTypeValidator
+    private Activity.ActivityType activityType;
+
+    private long teamId;
+
+    @ActivityFormValidators.descriptionValidator
+    private String description;
+
+    @ActivityFormValidators.startActivityValidator
+    private LocalDateTime startDateTime;
+
+    @ActivityFormValidators.endActivityValidator
+    private LocalDateTime endDateTime;
+
     @LocationValidators.addressValidator
     private String addressLine1;
 
@@ -28,6 +41,46 @@ public class CreateAndEditTeamForm {
 
     @LocationValidators.suburbValidator
     private String suburb;
+
+    public Activity.ActivityType getActivityType() {
+        return activityType;
+    }
+
+    public void setActivityType(Activity.ActivityType activityType) {
+        this.activityType = activityType;
+    }
+
+    public long getTeam() {
+        return teamId;
+    }
+
+    public void setTeam(long team) {
+        this.teamId = team;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
+    }
+
+    public void setStartDateTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
+    }
+
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
+    }
+
+    public void setEndDateTime(LocalDateTime endDateTime) {
+        this.endDateTime = endDateTime;
+    }
 
     public String getAddressLine1() {
 
@@ -82,19 +135,4 @@ public class CreateAndEditTeamForm {
         return new Location(this.addressLine1, this.addressLine2, this.suburb, this.city, this.postcode, this.country);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSport() {
-        return sport;
-    }
-
-    public void setSport(String sport) {
-        this.sport = sport;
-    }
 }
