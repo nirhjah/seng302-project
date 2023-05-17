@@ -50,6 +50,13 @@ public class EditActivityFormControllerTest {
     private static final String USER_CITY = "Christchurch";
     private static final String USER_COUNTRY = "New Zealand";
 
+    private static final String ACTVITY_ADDRESS_LINE_1 = "1 Memorial Road";
+    private static final String ACTVITY_ADDRESS_LINE_2 = "A";
+    private static final String ACTVITY_SUBURB = "Ilam";
+    private static final String ACTVITY_POSTCODE = "8088";
+    private static final String ACTVITY_CITY = "Rolleston";
+    private static final String ACTVITY_COUNTRY = "New Zealand";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -74,12 +81,15 @@ public class EditActivityFormControllerTest {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-        Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY, USER_POSTCODE, USER_COUNTRY);
+        Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY,
+                USER_POSTCODE, USER_COUNTRY);
         User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD, testLocation);
         team = new Team("test", "Hockey", testLocation);
         LocalDateTime start =   LocalDateTime.of(2023, 6,1,6,30);
         LocalDateTime end = LocalDateTime.of(2023, 7,1,8,30);
-        activity= new Activity(Activity.ActivityType.Game,team, "testing the description",start,end,testUser);
+        Location activityLocation = new Location(ACTVITY_ADDRESS_LINE_1, ACTVITY_ADDRESS_LINE_2, ACTVITY_SUBURB,
+                ACTVITY_CITY, ACTVITY_POSTCODE, ACTVITY_COUNTRY);
+        activity= new Activity(Activity.ActivityType.Game,team, "testing the description",start,end,testUser, activityLocation);
 
         when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
@@ -109,9 +119,15 @@ public class EditActivityFormControllerTest {
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-07-01T10:00:00")
-                        .param("endDateTime", "2023-08-01T12:00:00"))
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "1 Change address")
+                        .param("addressLine2", "B")
+                        .param("city", "Greymouth")
+                        .param("country", "New Zealand")
+                        .param("postcode", "8888")
+                        .param("suburb", "A Place"))
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrl("activity?actId=" + ACT_ID));
+                .andExpect(redirectedUrl("./view-activities"));
     }
 
     @Test
@@ -123,7 +139,13 @@ public class EditActivityFormControllerTest {
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "")
                         .param("startDateTime", "2023-01-01T10:00:00")
-                        .param("endDateTime", "2023-08-01T12:00:00"))
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "1 Change address")
+                        .param("addressLine2", "B")
+                        .param("city", "Greymouth")
+                        .param("country", "New Zealand")
+                        .param("postcode", "8888")
+                        .param("suburb", "A Place"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -137,7 +159,13 @@ public class EditActivityFormControllerTest {
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "")
-                        .param("endDateTime", "2023-08-01T12:00:00"))
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "1 Change address")
+                        .param("addressLine2", "B")
+                        .param("city", "Greymouth")
+                        .param("country", "New Zealand")
+                        .param("postcode", "8888")
+                        .param("suburb", "A Place"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -151,7 +179,13 @@ public class EditActivityFormControllerTest {
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
-                        .param("endDateTime", ""))
+                        .param("endDateTime", "")
+                        .param("addressLine1", "1 Change address")
+                        .param("addressLine2", "B")
+                        .param("city", "Greymouth")
+                        .param("country", "New Zealand")
+                        .param("postcode", "8888")
+                        .param("suburb", "A Place"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -167,7 +201,173 @@ public class EditActivityFormControllerTest {
                         .param("team", INVALID_TEAM_ID.toString())
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
-                        .param("endDateTime", "2023-08-01T12:00:00"))
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "1 Change address")
+                        .param("addressLine2", "B")
+                        .param("city", "Greymouth")
+                        .param("country", "New Zealand")
+                        .param("postcode", "8888")
+                        .param("suburb", "A Place"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void whenAddressLine1IsInvalidReturn400() throws Exception {
+        when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
+        when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+
+        mockMvc.perform(post("/createActivity")
+                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("team", String.valueOf(TEAM_ID))
+                        .param("description", "testing edit description")
+                        .param("startDateTime", "2023-01-01T10:00:00")
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "&&&&&&&")
+                        .param("addressLine2", "B")
+                        .param("city", "Greymouth")
+                        .param("country", "New Zealand")
+                        .param("postcode", "8888")
+                        .param("suburb", "A Place"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void whenAddressLine2IsInvalidReturn400() throws Exception {
+        when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
+        when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+
+        mockMvc.perform(post("/createActivity")
+                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("team", String.valueOf(TEAM_ID))
+                        .param("description", "testing edit description")
+                        .param("startDateTime", "2023-01-01T10:00:00")
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "1b Show Place")
+                        .param("addressLine2", "*****")
+                        .param("city", "Greymouth")
+                        .param("country", "New Zealand")
+                        .param("postcode", "8888")
+                        .param("suburb", "A Place"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void whenCityIsInvalidReturn400() throws Exception {
+        when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
+        when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+
+        mockMvc.perform(post("/createActivity")
+                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("team", String.valueOf(TEAM_ID))
+                        .param("description", "testing edit description")
+                        .param("startDateTime", "2023-01-01T10:00:00")
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "6H Place")
+                        .param("addressLine2", "B")
+                        .param("city", "$place$")
+                        .param("country", "New Zealand")
+                        .param("postcode", "8888")
+                        .param("suburb", "A Place"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void whenCountryIsInvalidReturn400() throws Exception {
+        when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
+        when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+
+        mockMvc.perform(post("/createActivity")
+                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("team", String.valueOf(TEAM_ID))
+                        .param("description", "testing edit description")
+                        .param("startDateTime", "2023-01-01T10:00:00")
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "6H Place")
+                        .param("addressLine2", "B")
+                        .param("city", "Hamilton")
+                        .param("country", "%%place%%%")
+                        .param("postcode", "8888")
+                        .param("suburb", "A Place"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void whenPostCodeIsInvalidReturn400() throws Exception {
+        when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
+        when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+
+        mockMvc.perform(post("/createActivity")
+                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("team", String.valueOf(TEAM_ID))
+                        .param("description", "testing edit description")
+                        .param("startDateTime", "2023-01-01T10:00:00")
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "6H Place")
+                        .param("addressLine2", "B")
+                        .param("city", "Hamilton")
+                        .param("country", "smething")
+                        .param("postcode", "&&)()()")
+                        .param("suburb", "A Place"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void whenSuburbIsInvalidReturn400() throws Exception {
+        when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
+        when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+
+        mockMvc.perform(post("/createActivity")
+                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("team", String.valueOf(TEAM_ID))
+                        .param("description", "testing edit description")
+                        .param("startDateTime", "2023-01-01T10:00:00")
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "6H Place")
+                        .param("addressLine2", "B")
+                        .param("city", "Hamilton")
+                        .param("country", "smething")
+                        .param("postcode", "uwu")
+                        .param("suburb", "^%^%^%"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void whenCityIsEmptyReturn400() throws Exception {
+        when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
+        when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+
+        mockMvc.perform(post("/createActivity")
+                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("team", String.valueOf(TEAM_ID))
+                        .param("description", "testing edit description")
+                        .param("startDateTime", "2023-01-01T10:00:00")
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "6H Place")
+                        .param("addressLine2", "B")
+                        .param("city", "")
+                        .param("country", "smething")
+                        .param("postcode", "uwu")
+                        .param("suburb", "ilam"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void whenCountryIsEmptyReturn400() throws Exception {
+        when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
+        when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+
+        mockMvc.perform(post("/createActivity")
+                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("team", String.valueOf(TEAM_ID))
+                        .param("description", "testing edit description")
+                        .param("startDateTime", "2023-01-01T10:00:00")
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "6H Place")
+                        .param("addressLine2", "B")
+                        .param("city", "Gore")
+                        .param("country", "")
+                        .param("postcode", "uwu")
+                        .param("suburb", "ilam"))
                 .andExpect(status().isBadRequest());
     }
 }
