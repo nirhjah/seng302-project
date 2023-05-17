@@ -1,3 +1,4 @@
+@join_team
 Feature: U25 - Join a Team
 
   Scenario: AC1 Given I am anywhere on the system, when I click on a dedicated UI element to see the teams I am a member of, then I can choose to join a new team.

@@ -42,8 +42,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc(addFilters = false)
-@SpringBootTest
+//@AutoConfigureMockMvc(addFilters = false)
+//@SpringBootTest
 @ContextConfiguration(classes = IntegrationTestConfigurations.class)
 public class U25JoinTeamFeature {
 
@@ -69,8 +69,9 @@ public class U25JoinTeamFeature {
 
     private Team team;
 
-    @Before
+    @Before("@join_team")
     public void setup() throws IOException {
+        System.out.println("U25 EXECUTING ????????");
 
         userRepository = applicationContext.getBean(UserRepository.class);
 

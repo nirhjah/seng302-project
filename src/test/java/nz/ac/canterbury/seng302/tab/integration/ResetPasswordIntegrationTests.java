@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@AutoConfigureMockMvc(addFilters = false)
+//@AutoConfigureMockMvc(addFilters = false)
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class ResetPasswordIntegrationTests {
 
@@ -60,7 +60,7 @@ public class ResetPasswordIntegrationTests {
 
     private String token;
 
-    @Before
+    @Before("@reset_password")
     public void setup() throws IOException {
         userRepository = applicationContext.getBean(UserRepository.class);
 
