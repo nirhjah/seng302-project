@@ -96,9 +96,6 @@ public class UserService {
             @Nullable List<String> favouriteCities,
             @Nullable String nameSearch) {
         
-        logger.info("fav cities = {}", favouriteCities);
-        logger.info("fav sports = {}", favouriteSports);
-        logger.info("nameSearch = {}", nameSearch);
         if (favouriteSports == null) {
             favouriteSports = List.of();
         }
@@ -108,9 +105,6 @@ public class UserService {
         if (nameSearch != null && nameSearch.isEmpty()) {
             nameSearch = null;
         }
-        logger.info("...nameSearch = {}", nameSearch);
-        logger.info("...fav sports = {}", favouriteSports);
-        logger.info("...fav city = {}", favouriteCities);
         return userRepository.findUserByFilteredLocationsAndSports(pageable, favouriteCities, favouriteSports,
                 nameSearch);
     }
@@ -130,8 +124,7 @@ public class UserService {
         if (name == null || name.isEmpty()) {
             return userRepository.findAllUserLocations();
         }
-        List<Location> listOfLocations = userRepository.findLocationByUser(name);
-        return listOfLocations;
+        return userRepository.findLocationByUser(name);
     }
 
     /**
@@ -147,10 +140,9 @@ public class UserService {
      **/
     public List<Sport> findSportBysearch(String name) {
         if (name == null || name.isEmpty()) {
-            return  userRepository.findAllUserSports(); //find ALL sports if search is blank
+            return userRepository.findAllUserSports(); //find ALL sports if search is blank
         }
-        List<Sport> listOfUserSports = userRepository.findSportByUser(name);
-        return listOfUserSports;
+        return userRepository.findSportByUser(name);
 
     }
 
