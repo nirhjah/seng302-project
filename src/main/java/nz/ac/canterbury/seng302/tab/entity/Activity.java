@@ -90,11 +90,6 @@ public class Activity {
     public void setTeam(Team team) {
         this.team = team;
     }
-
-    public void setActivityOwner(User user) {
-        this.activityOwner = user;
-    }
-
     public LocalDateTime getActivityStart() {
         return activityStart;
     }
