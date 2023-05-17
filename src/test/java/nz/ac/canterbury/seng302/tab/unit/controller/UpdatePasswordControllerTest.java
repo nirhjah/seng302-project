@@ -32,6 +32,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -161,7 +162,7 @@ public class UpdatePasswordControllerTest {
      * - At least 1 symbol (non-letter and non-number)
      */
     @ParameterizedTest
-    @ValueSource(strings = {"", "a", "1", "!", "aB1$", "Controller", "Cheezits1", "corn_c0b", "ABCD123!"})
+    @ValueSource(strings = {"a", "1", "!", "aB1$", "Controller", "Cheezits1", "corn_c0b", "ABCD123!"})
     void updatePassword_newPasswordIsWeak_fails(String password) throws Exception {
         mockMvc.perform(post("/update-password")
             .param("oldPassword", USER_PWORD)
@@ -169,6 +170,17 @@ public class UpdatePasswordControllerTest {
             .param("confirmPassword", password)
             ).andExpect(status().isBadRequest())
             .andExpect(content().string(containsString(WEAK_PASSWORD_MESSAGE)));
+    }
+
+    @Test
+    void updatePassword_newPasswordIsBlank_fails() throws Exception {
+        String blankPassword = "";
+        mockMvc.perform(post("/update-password")
+            .param("oldPassword", USER_PWORD)
+            .param("newPassword", blankPassword)
+            .param("confirmPassword", blankPassword)
+            ).andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("must not be blank")));
     }
 
     /**
@@ -180,7 +192,7 @@ public class UpdatePasswordControllerTest {
     @Test
     @Disabled("""
             Recently, 'change password' and 'send email' was rolled into the single method `UserService#updatePassword()`.
-            Because of this, you can no longer test either of these outcomes individually with mocking.
+            Because of this, you can no longer test either of these outcomes individually in a unit test.
             HOW TO FIX: Either get complex spys and mocks set up (I tried, it just caused ContextErrors),
                             OR delete this test.
             """)
@@ -196,18 +208,16 @@ public class UpdatePasswordControllerTest {
     }
 
     /**
-     * U22 AC5 - Given I am on the change password form,
-     *          when I enter fully compliant details,
-     *          then my password is updated,
-     *    ==>   and an email is sent to my email address to confirm that my password was updated.
+     * If the form is valid, it should succeed with a redirect
      */
     @Test
-    void updatePassword_validForm_emailIsSent() throws Exception {
+    void updatePassword_validForm_submitSucceeds() throws Exception {
         mockMvc.perform(post("/update-password")
                 .param("oldPassword", USER_PWORD)
                 .param("newPassword", NEW_PWORD)
                 .param("confirmPassword", NEW_PWORD)
-            ).andExpect(status().is3xxRedirection());
+            ).andExpect(status().is3xxRedirection())
+            .andExpect(MockMvcResultMatchers.redirectedUrl("user-info/self"));
 
         // The method `updatePassword()` will send an email.
         verify(mockUserService, times(1)).updatePassword(any(), anyString());
