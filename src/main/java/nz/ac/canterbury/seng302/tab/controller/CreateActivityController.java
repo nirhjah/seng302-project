@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.CreateActivityForm;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -40,7 +43,7 @@ public class CreateActivityController {
 
     Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
-    public void prefillModel(Model model) {
+    public void prefillModel(Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
         Optional<User> user = userService.getCurrentUser();
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
@@ -48,19 +51,20 @@ public class CreateActivityController {
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("teamList", teamService.getTeamList());
         model.addAttribute("activityTypes", Activity.ActivityType.values());
+        URL url = new URL(httpServletRequest.getRequestURL().toString());
+        String path = (url.getPath() + "/..");
+        model.addAttribute("path", path);
     }
 
     @GetMapping("/createActivity")
-    public String activityForm(
-            @RequestParam(name="edit", required=false) Long actId,
-            CreateActivityForm createActivityForm,
-            Model model,
-            HttpServletRequest httpServletRequest) {
+    public String activityForm( @RequestParam(name="edit", required=false) Long actId,CreateActivityForm createActivityForm,
+                                        Model model,
+                                        HttpServletRequest httpServletRequest) throws MalformedURLException {
         model.addAttribute("httpServletRequest", httpServletRequest);
-        prefillModel(model);
+        prefillModel(model, httpServletRequest);
         logger.info("GET /createActivity");
 
-        LocalDateTime startDateTime = LocalDateTime.now().plusMinutes(10);;
+        LocalDateTime startDateTime = LocalDateTime.now().plusMinutes(10);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         String formattedStartTime = startDateTime.format(formatter);
         model.addAttribute("startDateTime", formattedStartTime);
@@ -74,13 +78,20 @@ public class CreateActivityController {
 
                 LocalDateTime endDateTime =  activity.getActivityEnd();
                 String formattedEndDateTime = endDateTime.format(formatter);
-
                 model.addAttribute("activityType", activity.getActivityType());
-                model.addAttribute("teamName", activity.getTeam().getName());
+                if (activity.getTeam() != null) {
+                    model.addAttribute("teamName", activity.getTeam().getName());
+                }
                 model.addAttribute("actId", activity.getId());
                 model.addAttribute("startDateTime",formattedStartDateTime);
                 model.addAttribute("endDateTime", formattedEndDateTime);
                 model.addAttribute("description", activity.getDescription());
+                model.addAttribute("addressLine1", activity.getLocation().getAddressLine1());
+                model.addAttribute("addressLine2", activity.getLocation().getAddressLine2());
+                model.addAttribute("city", activity.getLocation().getCity());
+                model.addAttribute("suburb", activity.getLocation().getSuburb());
+                model.addAttribute("country", activity.getLocation().getCountry());
+                model.addAttribute("postcode", activity.getLocation().getPostcode());
             }
 
         }
@@ -89,18 +100,25 @@ public class CreateActivityController {
 
     @PostMapping("/createActivity")
     public String createActivity(
+            @RequestParam(name = "actId", defaultValue = "-1") long actId,
             @RequestParam(name = "activityType", required = false) Activity.ActivityType activityType,
             @RequestParam(name = "team", defaultValue = "-1") long teamId,
             @RequestParam(name="description", required = false) String description,
             @RequestParam(name="startDateTime", required = false) LocalDateTime startDateTime,
             @RequestParam(name="endDateTime", required = false) LocalDateTime endDateTime,
+            @RequestParam(name = "addressLine1") String addressLine1,
+            @RequestParam(name = "addressLine2") String addressLine2,
+            @RequestParam(name = "city") String city,
+            @RequestParam(name = "country") String country,
+            @RequestParam(name = "postcode") String postcode,
+            @RequestParam(name = "suburb") String suburb,
             @Validated CreateActivityForm createActivityForm,
             BindingResult bindingResult,
             HttpServletResponse httpServletResponse,
             Model model,
-            HttpServletRequest httpServletRequest) {
+            HttpServletRequest httpServletRequest) throws MalformedURLException {
         model.addAttribute("httpServletRequest", httpServletRequest);
-        prefillModel(model);
+        prefillModel(model, httpServletRequest);
 
         if (!activityService.validateStartAndEnd(startDateTime, endDateTime)) {
             if (!bindingResult.hasFieldErrors("startDateTime")) {
@@ -110,7 +128,7 @@ public class CreateActivityController {
         }
 
         Team team = teamService.getTeam(teamId);
-        if (team != null) {
+        if (team!=null) {
             if (!activityService.validateActivityDateTime(team.getCreationDate(), startDateTime, endDateTime)) {
                 if (!bindingResult.hasFieldErrors("endDateTime")) {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
@@ -128,10 +146,27 @@ public class CreateActivityController {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "createActivity";
         }
+        Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
+        System.out.println("THE ACTIVITY ID"+ actId);
+        if (actId !=-1) {
+            Activity editActivity = activityService.findActivityById(actId);
+            editActivity.setActivityType(activityType);
+            editActivity.setTeam(team);
+            editActivity.setActivityEnd(endDateTime);
+            editActivity.setActivityStart(startDateTime);
+            editActivity.setActivityOwner(userService.getCurrentUser().get());
+            editActivity.setLocation(location);
+            editActivity.setDescription(description);
+            editActivity = activityService.updateOrAddActivity(editActivity);
+            System.out.println("THIS iS THE EDIT ACTIVITY ID" + editActivity.getId());
+            return "redirect:./view-activities";
+        } else {
 
-        Activity activity = new Activity(activityType, team,
-                description, startDateTime, endDateTime, userService.getCurrentUser().get());
-        activity = activityService.updateOrAddActivity(activity);
-        return String.format("redirect:activity?actId=%s", activity.getId());
+            Activity activity = new Activity(activityType, team,
+                    description, startDateTime, endDateTime, userService.getCurrentUser().get(), location);
+            activity = activityService.updateOrAddActivity(activity);
+            System.out.println("TESTING tHIS");
+            return "redirect:./view-activities";
+        }
     }
 }

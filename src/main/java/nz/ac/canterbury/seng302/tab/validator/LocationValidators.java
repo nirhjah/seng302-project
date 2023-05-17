@@ -6,26 +6,17 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import nz.ac.canterbury.seng302.tab.validator.logic.CountryCitySuburbCheck;
-import nz.ac.canterbury.seng302.tab.validator.logic.TeamNameCheck;
-import nz.ac.canterbury.seng302.tab.validator.logic.TeamSportCheck;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-public class TeamFormValidators {
+public class LocationValidators {
 
-    public static final String NOT_BLANK_MSG = "Field can't be blank";
-
-    public static final String VALID_TEAM_NAME_REGEX = "^[\\p{L}\\p{N}\\s]+[}{.\\p{L}\\p{N}\\s]+$";
-    public static final String VALID_COUNTRY_SUBURB_CITY_REGEX = "^\\p{L}+[\\- '\\p{L}]*$";
-
-    public static final String VALID_TEAM_SPORT_REGEX = "^\\p{L}+[\\- '\\p{L}]*$";
-    public static final String INVALID_TEAM_SPORT_MSG = "May include letters, hyphens, apostrophes and spaces. Must start with letter";
-    public static final String INVALID_TEAM_NAME_MSG = "May include letters, hyphens, apostrophes and spaces. Must start with letter";
     public static final String INVALID_COUNTRY_SUBURB_CITY_MSG = "May include letters, hyphens, apostrophes and spaces. Must start with letter";
 
     public static final String VALID_ADDRESS_REGEX = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
@@ -36,46 +27,11 @@ public class TeamFormValidators {
 
     public static final String INVALID_POSTCODE_MSG = "May include letters, numbers, forward slashes, and hyphens. Must start with letter or number";
 
-    /**
-     * Checks the team sport is not blank and matches
-     * the regex of valid sports
-     */
-    /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
-    /**/@Retention(RUNTIME)
-    /**/@Constraint(validatedBy = {TeamSportCheck.class})
-    /**/@Documented
-    @NotBlank(message = NOT_BLANK_MSG)
-    @Size(max = 30)
-    public @interface teamSportValidator {
+    public static final String VALID_COUNTRY_SUBURB_CITY_REGEX = "^\\p{L}+[\\- '\\p{L}]*$";
 
-        String regexMatch() default VALID_TEAM_SPORT_REGEX;
-        String message() default "";
-
-        Class<?>[] groups() default {};
-
-        Class<? extends Payload>[] payload() default {};
-    }
+    public static final String NOT_BLANK_MSG = "Field can't be blank";
 
 
-    /**
-     * Checks the team name is not blank and matches
-     * the regex of valid team names
-     */
-    /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
-    /**/@Retention(RUNTIME)
-    /**/@Constraint(validatedBy = {TeamNameCheck.class})
-    /**/@Documented
-    @NotBlank(message = NOT_BLANK_MSG)
-    @Size(max = 30)
-    public @interface teamNameValidator {
-
-        String regexMatch() default VALID_TEAM_NAME_REGEX;
-        String message() default "";
-
-        Class<?>[] groups() default {};
-
-        Class<? extends Payload>[] payload() default {};
-    }
 
     /**
      * Checks the country and city is not blank, as well matches
@@ -154,5 +110,7 @@ public class TeamFormValidators {
         Class<?>[] groups() default {};
 
         Class<? extends Payload>[] payload() default {};
+
     }
+
 }

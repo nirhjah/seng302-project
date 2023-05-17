@@ -6,6 +6,8 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.PageRequest;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -27,14 +30,20 @@ public class ActivityRepositoryTest {
     @Autowired
     ActivityRepository activityRepository;
 
+    private Location location;
+    @BeforeEach
+    void beforeEach() throws IOException {
+        location = new Location(null, null, null, "Christchurch", null, "New Zealand");
+
+    }
+
     @Test
     public void getActivityById() throws Exception {
         Team team = new Team("TeamName", "Sport");
-        User creator = new User("Test", "Account", "test@test.com", "Password1!",
-                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        User creator = new User("Test", "Account", "test@test.com", "Password1!", location);
         Activity activity = new Activity(Activity.ActivityType.Game, team, "A random activity",
                 LocalDateTime.of(2023, 1,1,6,30),
-                LocalDateTime.of(2023, 1,1,8,30), creator);
+                LocalDateTime.of(2023, 1,1,8,30), creator, location);
         activityRepository.save(activity);
         Assertions.assertEquals(activity, activityRepository.findById(activity.getId()).get());
     }
@@ -42,14 +51,13 @@ public class ActivityRepositoryTest {
     @Test
     public void getActivityListById() throws Exception {
         Team team = new Team("TeamName", "Sport");
-        User creator = new User("Test", "Account", "test@test.com", "Password1!",
-                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        User creator = new User("Test", "Account", "test@test.com", "Password1!", location);
         Activity activity = new Activity(Activity.ActivityType.Game, team, "A random activity",
                 LocalDateTime.of(2023, 1,1,6,30),
-                LocalDateTime.of(2023, 1,1,8,30), creator);
+                LocalDateTime.of(2023, 1,1,8,30), creator, location);
         Activity activityTwo = new Activity(Activity.ActivityType.Friendly, team, "A random friendly",
                 LocalDateTime.of(2023, 2,1,6,30),
-                LocalDateTime.of(2023, 2,1,8,30), creator);
+                LocalDateTime.of(2023, 2,1,8,30), creator, location);
         activityRepository.save(activity);
         activityRepository.save(activityTwo);
         Assertions.assertEquals(List.of(activity, activityTwo), activityRepository.findAll());

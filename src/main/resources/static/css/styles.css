@@ -112,7 +112,7 @@ td {
 .Search-teams-background,
 .edit-user-background,
 .background-image,
-.user-form, .create-activity-background {
+.user-form, .create-activity-background,.background {
     background-image: url("../image/landscape.jpeg");
     background-size: cover;
     background-repeat: no-repeat;
@@ -144,7 +144,7 @@ footer {
 
 
 .team-form .create-team, .user-form .user-header,.login-header,
-.register-form .register-header, .activity-form{
+.register-form .register-header, .activity-form .create-activity-header{
     font-family: "Noto Sans",sans-serif;
     /*color: #0B1B2A;*/
     text-align: center;
@@ -212,6 +212,7 @@ input:invalid + label:after {
     pointer-events: none;
     transition: 0.5s;
     color: #888888;
+    border-bottom: none;
 }
 
 
@@ -281,6 +282,7 @@ input:invalid + label:after {
     font-weight: 300;
     color: red;
     text-align: center;
+    font-style: italic;
 }
 .Welcome-header {
     overflow: hidden;
@@ -313,13 +315,6 @@ ul {
     margin: 0;
     padding: 0;
 }
-
-li a {
-    display: block;
-    padding: 0.5em;
-    text-align: center;
-}
-
 
 .profile-pic .back-button,
 .submit-button button,

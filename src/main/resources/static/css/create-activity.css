@@ -1,11 +1,8 @@
 .activity-form {
-    margin:auto;
-    display: grid;
-    grid-auto-rows: 527px;
     justify-content: center;
     align-items: center;
-    grid-template-rows: 237px;
-    height: 90vh;
+    display:flex;
+    flex-direction:column
 }
 
 .activity-form .wrapper form {
@@ -13,9 +10,10 @@
 }
 
 .activity-form .wrapper {
-    width: 600px;
-    height: 630px;
+    width: 630px;
+    height: 850px;
     font-size: 15px;
+
 }
 
 .activity-form select {
@@ -45,6 +43,7 @@
     color:#888888;
     font-size:1em;
     font-weight: 500;
+    font-family: "Noto Sans",sans-serif;
 }
 
 @media (max-width: 700px) {
@@ -55,4 +54,11 @@
         width: 90vw;
     }
 }
+
+.character-count-container {
+    position:absolute;
+}
+
+
+
 
