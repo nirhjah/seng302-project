@@ -30,7 +30,11 @@
 }
 
 .message-dropdown-container {
-    min-width: 500px;
+    min-width: fit-content;
+}
+
+.message-dropdown-container a {
+    margin-left: 10px;
 }
 
 @media (max-width: 555px) {

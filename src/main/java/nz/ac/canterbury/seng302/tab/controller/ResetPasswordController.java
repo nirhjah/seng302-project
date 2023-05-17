@@ -86,6 +86,7 @@ public class ResetPasswordController {
         model.addAttribute("resetPasswordForm", new ResetPasswordForm());
         model.addAttribute("httpServletRequest",request);
 
+        System.out.println(token);
         user = userService.findByToken(token);
         if (user.isEmpty()) {
             redirectAttributes.addFlashAttribute("invalidTokenMessage", "Token is invalid or expired.");

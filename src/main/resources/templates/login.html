@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <link th:href="@{/css/styles.css}" rel="stylesheet" />
@@ -13,7 +13,6 @@
 </head>
 
 <body class="team-form-background">
-
   <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
   <div class="login-form">
     <div th:if="${message != null}" th:insert="~{fragments/messageDropDown.html :: messageDropDown(message=${message})}"></div>
@@ -72,10 +71,10 @@
     passwordToggle.addEventListener('click', function () {
       if (passwordField.type === 'text') {
           passwordField.type = 'password';
-          passwordToggle.src='/image/icons/hide.png';
+          passwordToggle.src='image/icons/hide.png';
       } else {
           passwordField.type = 'text';
-          passwordToggle.src='/image/icons/view.png';
+          passwordToggle.src='image/icons/view.png';
       }
     });
   </script>

@@ -9,11 +9,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
 import nz.ac.canterbury.seng302.tab.authentication.TokenVerification;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -39,12 +42,17 @@ import nz.ac.canterbury.seng302.tab.repository.UserRepository;
  * the @link{Autowired} annotation below
  */
 @Service
+@Configuration
+@ComponentScan("nz.ac.canterbury.seng302.tab.service")
 public class UserService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final UserRepository userRepository;
+
     private final TaskScheduler taskScheduler;
+
     private final EmailService emailService;
+
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -95,7 +103,7 @@ public class UserService {
             @Nullable List<String> favouriteSports,
             @Nullable List<String> favouriteCities,
             @Nullable String nameSearch) {
-        
+
         logger.info("fav cities = {}", favouriteCities);
         logger.info("fav sports = {}", favouriteSports);
         logger.info("nameSearch = {}", nameSearch);
@@ -221,6 +229,8 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
+    private static final Duration TOKEN_EXPIRY_TIME = Duration.ofHours(2);
+
     /**
      * Saves a user to persistence. Starts a timer for two hours whereupon the user will be
      * deleted if they have not verified their email
@@ -229,8 +239,10 @@ public class UserService {
      * @return the saved user object
      */
     public User updateOrAddUser(User user) {
-        Instant executionTime = Instant.now().plus(Duration.ofHours(2));
-        taskScheduler.schedule(new EmailVerification(user, userRepository), executionTime);
+        if (!user.getEmailConfirmed()) {
+            Instant executionTime = Instant.now().plus(TOKEN_EXPIRY_TIME);
+            taskScheduler.schedule(new EmailVerification(user, userRepository), executionTime);
+        }
         return userRepository.save(user);
     }
 
@@ -326,5 +338,16 @@ public class UserService {
         logger.info(outcome);
     }
 
+
+
+    /**
+     * Adds user to team and updates user
+     * @param user user to join team
+     * @param team team for user to join
+     */
+    public void userJoinTeam(User user, Team team) {
+        user.joinTeam(team);
+        updateOrAddUser(user);
+    }
 
 }
