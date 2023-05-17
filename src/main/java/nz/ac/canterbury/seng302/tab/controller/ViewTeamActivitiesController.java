@@ -49,7 +49,7 @@ public class ViewTeamActivitiesController {
      * @return thymeleaf profileForm
      */
     @GetMapping("/viewTeamActivities")
-    public String viewTeamActivities(@RequestParam(value = "page", defaultValue = "-1") int pageNo, Model model,
+    public String viewTeamActivities(@RequestParam(value = "page", defaultValue = "1") int pageNo, Model model,
             @RequestParam(value = "teamID", required = false) Long teamID,
             HttpServletRequest request) {
         logger.info("/viewTeamActivities");
@@ -86,7 +86,7 @@ public class ViewTeamActivitiesController {
         if (pageNo < 1 || pageNo > teamActivities.getTotalPages()
                 && teamService.findPaginated(pageNo, maxPageSize).getTotalPages() > 0) {
             pageNo = pageNo < 1 ? 1 : teamActivities.getTotalPages();
-            return "redirect:/view-teams?page=" + pageNo;
+            return "redirect:/viewTeamActivities?page=" + pageNo +"&teamID="+teamID;
         }
 
         model.addAttribute("page", pageNo);
