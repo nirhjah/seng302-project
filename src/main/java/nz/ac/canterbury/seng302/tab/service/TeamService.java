@@ -34,32 +34,32 @@ public class TeamService {
      * apostrophes and
      * spaces. Must start with an alphabetical character
      */
-    public final String countryCitySuburbNameRegex = "^\\p{L}+[\\- '\\p{L}]*$";
+    public static final String COUNTRY_CITY_SUBURB_NAME_REGEX = "^\\p{L}+[\\- '\\p{L}]*$";
 
     /**
      * Addresses can have letters, numbers, spaces, commas, periods, hyphens,
      * forward slashes, apostrophes and pound signs. Must include
      * at least one alphanumeric character
      **/
-    public static final String addressRegex = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
+    public static final String ADDRESS_REGEX = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
 
     /**
      * Allow letters, numbers, forward slashes and hyphens. Must start with an
      * alphanumeric character.
      */
-    public static final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
+    public static final String POSTCODE_REGEX = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
 
     /**
      * A team name can be alphanumeric, dots and curly braces. Must start with on
      * alphabetical character
      **/
-    public static final String teamNameUnicodeRegex = "^[\\p{L}\\p{N}\\s]+[}{.\\p{L}\\p{N}\\s]+$";
+    public static final String TEAM_NAME_UNICODE_REGEX = "^[\\p{L}\\p{N}\\s]+[}{.\\p{L}\\p{N}\\s]+$";
 
     /**
      * A sport can be letters, space, apostrophes or hyphens. Must start with on
      * alphabetical character
      **/
-    public static final String sportUnicodeRegex = "^\\p{L}+[\\- '\\p{L}]*$";
+    public static final String SPORT_UNICODE_REGEX = "^\\p{L}+[\\- '\\p{L}]*$";
 
     public List<Team> getTeamList() {
         return teamRepository.findAll();
@@ -178,7 +178,7 @@ public class TeamService {
      * @return true if the sport is valid and matches the regex
      */
     public boolean isValidSport(String sport) {
-        return (sport.matches(sportUnicodeRegex));
+        return (sport.matches(SPORT_UNICODE_REGEX));
     }
 
     /**
@@ -187,7 +187,7 @@ public class TeamService {
      */
     public boolean isValidTeamName(String name) {
 
-        return (name.matches(teamNameUnicodeRegex));
+        return (name.matches(TEAM_NAME_UNICODE_REGEX));
     }
 
     /**
@@ -197,7 +197,7 @@ public class TeamService {
      */
     public boolean isValidCountryCityName(String location) {
 
-        return (location.matches(countryCitySuburbNameRegex));
+        return (location.matches(COUNTRY_CITY_SUBURB_NAME_REGEX));
     }
 
     /**
@@ -207,7 +207,7 @@ public class TeamService {
      */
     public boolean isValidSuburb(String suburb) {
 
-        return (suburb.matches(countryCitySuburbNameRegex) || suburb.isEmpty()); // suburbs can be empty
+        return (suburb.matches(COUNTRY_CITY_SUBURB_NAME_REGEX) || suburb.isEmpty()); // suburbs can be empty
     }
 
     /**
@@ -217,7 +217,7 @@ public class TeamService {
      */
     public boolean isValidPostcode(String postcode) {
 
-        return (postcode.matches(postcodeRegex) || postcode.isEmpty());
+        return (postcode.matches(POSTCODE_REGEX) || postcode.isEmpty());
     }
 
     /**
@@ -227,7 +227,7 @@ public class TeamService {
      */
     public boolean isValidAddressLine(String addressline) {
 
-        return (addressline.matches(addressRegex) || addressline.isEmpty());
+        return (addressline.matches(ADDRESS_REGEX) || addressline.isEmpty());
     }
 
     /**

@@ -1,17 +1,11 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Sport;
-import nz.ac.canterbury.seng302.tab.entity.Team;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.Optional;
 
-import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.service.SportService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +17,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Optional;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Sport;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
+import nz.ac.canterbury.seng302.tab.service.SportService;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
+import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
 /**
  * Spring Boot Controller class for the Create Team Form
@@ -117,11 +115,11 @@ public class CreateTeamFormController {
 
         // client side validation
 
-        model.addAttribute("addressRegex", teamService.addressRegex);
-        model.addAttribute("countryCitySuburbNameRegex", teamService.countryCitySuburbNameRegex);
-        model.addAttribute("postcodeRegex", teamService.postcodeRegex);
-        model.addAttribute("teamNameUnicodeRegex", teamService.teamNameUnicodeRegex);
-        model.addAttribute("sportUnicodeRegex", teamService.sportUnicodeRegex);
+        model.addAttribute("addressRegex", TeamService.ADDRESS_REGEX);
+        model.addAttribute("countryCitySuburbNameRegex", TeamService.COUNTRY_CITY_SUBURB_NAME_REGEX);
+        model.addAttribute("postcodeRegex", TeamService.POSTCODE_REGEX);
+        model.addAttribute("teamNameUnicodeRegex", TeamService.TEAM_NAME_UNICODE_REGEX);
+        model.addAttribute("sportUnicodeRegex", TeamService.SPORT_UNICODE_REGEX);
 
         List<String> knownSports = sportService.getAllSportNames();
         model.addAttribute("knownSports", knownSports);
@@ -164,10 +162,10 @@ public class CreateTeamFormController {
 
         prefillModel(model);
         // client side validation
-        model.addAttribute("countryOrCityNameRegex", teamService.countryCitySuburbNameRegex);
-        model.addAttribute("postcodeRegex", teamService.postcodeRegex);
-        model.addAttribute("teamNameUnicodeRegex", teamService.teamNameUnicodeRegex);
-        model.addAttribute("sportUnicodeRegex", teamService.sportUnicodeRegex);
+        model.addAttribute("countryOrCityNameRegex", TeamService.COUNTRY_CITY_SUBURB_NAME_REGEX);
+        model.addAttribute("postcodeRegex", TeamService.POSTCODE_REGEX);
+        model.addAttribute("teamNameUnicodeRegex", TeamService.TEAM_NAME_UNICODE_REGEX);
+        model.addAttribute("sportUnicodeRegex", TeamService.SPORT_UNICODE_REGEX);
         model.addAttribute("httpServletRequest", httpServletRequest);
 
         if (bindingResult.hasErrors()) {
@@ -198,8 +196,7 @@ public class CreateTeamFormController {
                 trimmedPostcode, trimmedCountry);
 
         Team team = teamService.getTeam(teamID);
-        boolean teamExists = team != null;
-        if (teamExists) {
+        if (team != null) {
             // edit existing team
             team.setName(trimmedName);
             team.setSport(trimmedSport);
