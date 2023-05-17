@@ -86,7 +86,7 @@ public class EditActivityFormControllerTest {
         Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY,
                 USER_POSTCODE, USER_COUNTRY);
         User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD, testLocation);
-        team = new Team("test", "Hockey", testLocation);
+        team = new Team("test", "Hockey", testLocation, testUser);
         LocalDateTime start =   LocalDateTime.of(2023, 6,1,6,30);
         LocalDateTime end = LocalDateTime.of(2023, 7,1,8,30);
         Location activityLocation = new Location(ACTVITY_ADDRESS_LINE_1, ACTVITY_ADDRESS_LINE_2, ACTVITY_SUBURB,
