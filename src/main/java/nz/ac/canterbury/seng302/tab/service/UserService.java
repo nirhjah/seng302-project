@@ -278,7 +278,7 @@ public class UserService {
             // as the pictureString variable.
             user.setPictureString(Base64.getEncoder().encodeToString(file.getBytes()));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Could not upload a picture string", e);
         }
 
         // Saved the updated picture string in the database.

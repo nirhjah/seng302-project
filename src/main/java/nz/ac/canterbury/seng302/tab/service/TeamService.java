@@ -41,25 +41,25 @@ public class TeamService {
      * forward slashes, apostrophes and pound signs. Must include
      * at least one alphanumeric character
      **/
-    public final String addressRegex = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
+    public static final String addressRegex = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
 
     /**
      * Allow letters, numbers, forward slashes and hyphens. Must start with an
      * alphanumeric character.
      */
-    public final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
+    public static final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
 
     /**
      * A team name can be alphanumeric, dots and curly braces. Must start with on
      * alphabetical character
      **/
-    public final String teamNameUnicodeRegex = "^[\\p{L}\\p{N}\\s]+[}{.\\p{L}\\p{N}\\s]+$";
+    public static final String teamNameUnicodeRegex = "^[\\p{L}\\p{N}\\s]+[}{.\\p{L}\\p{N}\\s]+$";
 
     /**
      * A sport can be letters, space, apostrophes or hyphens. Must start with on
      * alphabetical character
      **/
-    public final String sportUnicodeRegex = "^\\p{L}+[\\- '\\p{L}]*$";
+    public static final String sportUnicodeRegex = "^\\p{L}+[\\- '\\p{L}]*$";
 
     public List<Team> getTeamList() {
         return teamRepository.findAll();
@@ -103,7 +103,7 @@ public class TeamService {
             // as the pictureString variable.
             team.setPictureString(Base64.getEncoder().encodeToString(file.getBytes()));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("TeamService#updatePicture failed", e);
         }
 
         // Saved the updated picture string in the database.
@@ -270,8 +270,7 @@ public class TeamService {
     public String clipExtraWhitespace(String string) {
 
         // checks if there is a double whitespace inside the string
-        String filtered = string.trim().replaceAll("\\s+", " ");
-        return filtered;
+        return string.trim().replaceAll("\\s+", " ");
 
     }
 
