@@ -33,7 +33,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -61,23 +60,9 @@ public class ResetPasswordIntegrationTests {
 
     private String token;
 
-    private void mockUserRepository() {
-        Mockito.when(userRepository.findByToken(eq(token))).thenReturn(Optional.of(user));
-        Mockito.when(userRepository.findByToken(any())).thenReturn(Optional.empty());
-
-        Mockito.when(userRepository.findByEmail(eq(user.getEmail()))).thenReturn(Optional.of(user));
-        Mockito.when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
-    }
-
     @Before
     public void setup() throws IOException {
-        Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
-        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
-        token = "abcd123456";
-        user.setToken(token);
-
-        userRepository = Mockito.mock(UserRepository.class);
-        mockUserRepository();
+        userRepository = applicationContext.getBean(UserRepository.class);
 
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
         EmailService emailService = applicationContext.getBean(EmailService.class);
@@ -85,10 +70,14 @@ public class ResetPasswordIntegrationTests {
 
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
 
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ForgotPasswordController(userService), new ResetPasswordController(userService, passwordEncoder)).build();
+
+        userRepository.deleteAll();
+        Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
+        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
         user.generateToken(userService, 1);
         token = user.getToken();
-
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new ForgotPasswordController(userService), new ResetPasswordController(userService, passwordEncoder)).build();
+        userService.updateOrAddUser(user);
     }
 
     
