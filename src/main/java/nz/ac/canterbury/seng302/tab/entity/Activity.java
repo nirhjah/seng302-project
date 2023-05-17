@@ -29,7 +29,7 @@ public class Activity {
     private long id;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private ActivityType activityType;
 
     @ManyToOne(cascade = CascadeType.ALL)
