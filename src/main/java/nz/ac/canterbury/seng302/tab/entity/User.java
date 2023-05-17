@@ -370,7 +370,6 @@ public class User {
     public void setJoinedTeams(Set<Team> teams) {
         this.joinedTeams = teams;
     }
-
 }
 
 

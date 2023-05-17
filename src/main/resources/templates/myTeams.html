@@ -9,20 +9,61 @@
     <title>My Teams</title>
 </head>
 <body class="view-teams-background">
+
 <div>
+
     <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 
-    <div style="padding-top: 300px" th:if="${noTeamsFlag != null}">
-        <div class="noTeamsBox">
-            <h4 id="reset-password-info" class="reset-password-info"
-                th:text="${noTeamsFlag}"></h4>
-            <div class="submit-button">
-                <button type="submit" class="registerLoginButton">Join Team by Token</button>
-            </div>
-        </div>
+    <div class="my-teams">
+        <h1>My Teams</h1>
     </div>
 
 
+    <div th:if="${noTeamsFlag == null}" class="submit-button"  style="width: 15%; float: right;">
+        <button id="joinTeamByTokenModalBtn2" onclick="modal.style.display = 'block'" type="button" class="registerLoginButton">Join Team by Token</button>
+    </div>
+
+
+
+    <form id="forgot-password-form" th:action="@{/my-teams(page=1)}" method="post" th:object="${joinTeamForm}">
+
+
+        <div style="padding-top: 200px" th:if="${noTeamsFlag == 'You are not a member of any teams.'}">
+            <div class="noTeamsBox">
+                <h4 id="reset-password-info" class="reset-password-info"
+                    th:text="${noTeamsFlag}"></h4>
+
+                <div class="submit-button">
+                    <button id="joinTeamByTokenModalBtn1" onclick="modal.style.display = 'block'" type="button" class="registerLoginButton">Join Team by Token</button>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="joinTeamModal" class="modal" th:style="${tokenInvalid != null ? 'display:block' : 'display:none'}">
+
+            <div class="modal-content">
+                <span class="close" onclick="modal.style.display = 'none'">&times;</span>
+                <h4 class="reset-password-info"> Join Team By Token </h4>
+
+                <div class="input-box">
+                    <input type="text" class="form-control" id="token" placeholder="" th:field="*{token}" th:value="${token}"
+                           data-cy="token" autofocus>
+                    <label for="token"> Token: <span class="required">*</span></label>
+                </div>
+
+                <div th:each="err : ${#fields.errors('token')}" th:text="${err}" class="error-message"></div>
+
+
+                <div class="submit-button">
+                    <button id="joinTeam" type="submit" class="registerLoginButton">Join Team</button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
 
 
 
@@ -43,8 +84,6 @@
     </div>
 
 
-
-
     <div th:if="${displayTeams != null}" th:insert="fragments/pagination.html :: pagination(pageName='my-teams')"></div>
 
     <footer>
@@ -55,3 +94,13 @@
 </div>
 </body>
 </html>
+
+<script>
+    var modal = document.getElementById("joinTeamModal");
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>

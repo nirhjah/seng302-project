@@ -31,13 +31,13 @@
                 </div>
             </form>
         </div>
-            <div class="join-token">
+            <div class="join-token" th:if="${isUserManager}">
                 <label> Join Token</label>
                 <div class="join-token-box-outer">
                     <a href="#" class="copy-token">
                         <img th:src="@{image/icons/copy.svg}">
                     </a>
-                    <div class="join-token-box" th:if="${isUserManager}">
+                    <div class="join-token-box">
                         <span class="token-value" th:text="${displayToken}"></span>
                         <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}" th:method="post">
                             <button type="submit">
