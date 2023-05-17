@@ -1,30 +1,36 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import java.io.IOException;
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
 
+import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
+import nz.ac.canterbury.seng302.tab.authentication.TokenVerification;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
+import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.lang.Nullable;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import nz.ac.canterbury.seng302.tab.service.LocationService;
 
 /**
  * Service class for User database entries, defined by the @link{Service}
@@ -36,11 +42,24 @@ import nz.ac.canterbury.seng302.tab.service.LocationService;
 public class UserService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final TaskScheduler taskScheduler;
+    private final EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private LocationService locationService;
+    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.taskScheduler = taskScheduler;
+        this.emailService = emailService;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+
+    public static final Sort SORT_BY_LAST_AND_FIRST_NAME = Sort.by(
+        Order.asc("lastName").ignoreCase(),
+        Order.asc("firstName").ignoreCase()
+    );
 
     /**
      * Gets a page of users.
@@ -72,9 +91,11 @@ public class UserService {
      *                        <code>firstName+' '+lastName</code>
      * @return A slice of users with the applied filters
      */
-    public Page<User> findUsersByNameOrSportOrCity(Pageable pageable, @Nullable List<String> favouriteSports,
+    public Page<User> findUsersByNameOrSportOrCity(Pageable pageable,
+            @Nullable List<String> favouriteSports,
             @Nullable List<String> favouriteCities,
             @Nullable String nameSearch) {
+        
         logger.info("fav cities = {}", favouriteCities);
         logger.info("fav sports = {}", favouriteSports);
         logger.info("nameSearch = {}", nameSearch);
@@ -112,7 +133,6 @@ public class UserService {
         List<Location> listOfLocations = userRepository.findLocationByUser(name);
         return listOfLocations;
     }
-
 
     /**
      * returns a list of the sports that are relevant to the current search, this
@@ -202,26 +222,27 @@ public class UserService {
     }
 
     /**
-     * Saves a user to persistence
+     * Saves a user to persistence. Starts a timer for two hours whereupon the user will be
+     * deleted if they have not verified their email
      * 
      * @param user User to save to persistence
      * @return the saved user object
      */
     public User updateOrAddUser(User user) {
+        Instant executionTime = Instant.now().plus(Duration.ofHours(2));
+        taskScheduler.schedule(new EmailVerification(user, userRepository), executionTime);
         return userRepository.save(user);
     }
 
     /**
-     * Finds a user by their email and password
+     * Checks who the logged in user of this session is.
+     * <p>
+     * Note: If the current user is authenticated, but their username isn't in the
+     * database (e.g. it got deleted), it'll also return empty
+     * </p>
      * 
-     * @param email    the users email
-     * @param password the users password
-     * @return the user matching the parameters
+     * @return The currently logged in user, otherwise empty.
      */
-    public User getUserByEmailAndPassword(String email, String password) {
-        return userRepository.getUserByEmailAndPassword(email, password);
-    }
-
     public Optional<User> getCurrentUser() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -263,5 +284,47 @@ public class UserService {
         // Saved the updated picture string in the database.
         userRepository.save(user);
     }
+
+    /**
+     * Updates the user's password then creates and sends email informing the user that their password has been updated.
+     * @param user the user whose password was updated
+     * @param password the password to update the user with
+     * @return the outcome of the email sending
+     */
+    public void updatePassword(User user, String password) {
+        user.setPassword(passwordEncoder.encode(password));
+        updateOrAddUser(user);
+        EmailDetails details = new EmailDetails(user.getEmail(), EmailDetails.UPDATE_PASSWORD_BODY, EmailDetails.UPDATE_PASSWORD_HEADER);
+        String outcome = emailService.sendSimpleMail(details);
+        logger.info(outcome);
+    }
+
+
+    /**
+     * Creates a reset password link with unique token for the user and sends it to their email
+     * @param user      user to send reset password link to
+     * @param request   to get current url to create the link
+     */
+    public void resetPasswordEmail(User user, HttpServletRequest request) {
+
+        user.generateToken(this, 1);
+        updateOrAddUser(user);
+
+        taskScheduler.schedule(new TokenVerification(user, this), Instant.now().plus(Duration.ofHours(1)));
+
+        String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "")
+                + "/reset-password?token=" + user.getToken();
+
+        if (request.getRequestURL().toString().contains("test")) {
+            tokenVerificationLink =  "https://csse-s302g9.canterbury.ac.nz/test/reset-password?token=" + user.getToken();
+        }
+        if (request.getRequestURL().toString().contains("prod")) {
+            tokenVerificationLink =  "https://csse-s302g9.canterbury.ac.nz/prod/reset-password?token=" + user.getToken();
+        }
+        EmailDetails details = new EmailDetails(user.getEmail(), tokenVerificationLink, EmailDetails.RESET_PASSWORD_HEADER);
+        String outcome = emailService.sendSimpleMail(details);
+        logger.info(outcome);
+    }
+
 
 }

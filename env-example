@@ -1,0 +1,13 @@
+# NOTE: We recommend putting the first group of variables into a `.env` file
+# NOTE: ALL of these variables should be written into your Gitlab runner's CI/CD variables
+# You will need environment variables for the following:
+
+GMAIL_USERNAME=...      # An email address, used by the app to send confirmation emails
+GMAIL_PASSWORD=...      # Said email's password
+OPS_API_KEY=...         # The API key for OpenRouteService
+OPS_COLAB_KEY=...       # The colab API key for OpenRouteService
+
+# On your production build, you will also need the following:
+MARIADB_USERNAME=...    # Your MariaDB username
+MARIADB_PASSWORD=...    # Your MariaDB password
+SONARQUBE_TOKEN=...     # The SonarQube token to test code quality

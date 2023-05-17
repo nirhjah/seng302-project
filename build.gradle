@@ -26,15 +26,16 @@ dependencies {
 	implementation "org.springframework.boot:spring-boot-starter-security"
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 	implementation 'org.springframework.boot:spring-boot-starter-validation:3.0.4'
+	implementation "org.springframework.boot:spring-boot-starter-mail"
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 
-	implementation "io.cucumber:cucumber-spring:7.5.0"
-	implementation "io.cucumber:cucumber-java:7.5.0"
-	implementation "com.microsoft.playwright:playwright:1.32.0"
-
+	implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.4'
+	testImplementation "io.cucumber:cucumber-spring:7.5.0"
+	testImplementation "io.cucumber:cucumber-java:7.5.0"
+	testImplementation "com.microsoft.playwright:playwright:1.32.0"
 }
 
 configurations {
@@ -89,7 +90,7 @@ jacoco {
 	toolVersion = "0.8.9"
 }
 
-// select what reports Jacoco generates and where to put them
+// select what reports Jacoco generates and where to put them 
 jacocoTestReport {
 	reports {
 		xml.enabled true
