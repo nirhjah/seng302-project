@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
 import nz.ac.canterbury.seng302.tab.authentication.TokenVerification;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import org.slf4j.Logger;
@@ -95,7 +96,7 @@ public class UserService {
             @Nullable List<String> favouriteSports,
             @Nullable List<String> favouriteCities,
             @Nullable String nameSearch) {
-        
+
         logger.info("fav cities = {}", favouriteCities);
         logger.info("fav sports = {}", favouriteSports);
         logger.info("nameSearch = {}", nameSearch);
@@ -326,5 +327,16 @@ public class UserService {
         logger.info(outcome);
     }
 
+
+
+    /**
+     * Adds user to team and updates user
+     * @param user user to join team
+     * @param team team for user to join
+     */
+    public void userJoinTeam(User user, Team team) {
+        user.joinTeam(team);
+        updateOrAddUser(user);
+    }
 
 }
