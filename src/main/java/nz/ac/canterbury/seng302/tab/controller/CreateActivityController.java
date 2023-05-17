@@ -161,6 +161,7 @@ public class CreateActivityController {
             }
         }
 
+        User user = userService.getCurrentUser().get();
         Team team = teamService.getTeam(teamId);
         if (team!=null) {
             if (!activityService.validateActivityDateTime(team.getCreationDate(), startDateTime, endDateTime)) {
@@ -169,7 +170,10 @@ public class CreateActivityController {
                     bindingResult.addError(new FieldError("CreateActivityForm", "endDateTime",
                             ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + team.getCreationDate().format(formatter)));
                 }
-
+            }
+            boolean hasCreateAuth = team.isCoach(user) || team.isManager(user);
+            if (!hasCreateAuth) {
+                bindingResult.addError(new FieldError("CreateActivityForm", "team", ActivityFormValidators.NOT_A_COACH_OR_MANAGER));
             }
         } else if (!activityService.validateTeamSelection(activityType, team)) {
             bindingResult.addError(new FieldError("CreateActivityForm", "team",

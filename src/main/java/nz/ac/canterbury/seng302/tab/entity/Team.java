@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
