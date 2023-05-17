@@ -1,3 +1,4 @@
+@reset_password
 Feature: U23 - Reset Password
   Scenario: AC1 - Given I am on the login page, when I hit the “lost password” button, then I see a form asking me for my email address.
     Given I see the forgot password button on the login page

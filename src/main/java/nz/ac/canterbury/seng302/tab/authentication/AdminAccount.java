@@ -18,6 +18,8 @@ public class AdminAccount implements CommandLineRunner {
     // TODO: This SHOULD NOT be hard coded in. Either remove this account, or make it an env variable.
     private static final String ADMIN_PW = "1";
 
+    private static final String EMAIL = "admin@gmail.com";
+
     @Autowired
     public AdminAccount(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -26,10 +28,15 @@ public class AdminAccount implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        // Don't run if the user already exists
+        if (userRepository.findByEmail(EMAIL).isPresent()) {
+            return;
+        }
+
         Location location = new Location("admin", "admin", "admin", "admin", "admin", "admin");
 
         User admin = new User("Admin", "Admin", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
-                "admin@gmail.com", passwordEncoder.encode(ADMIN_PW), location);
+                EMAIL, passwordEncoder.encode(ADMIN_PW), location);
         admin.confirmEmail();
         userRepository.save(admin);
     }

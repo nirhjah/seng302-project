@@ -19,10 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -36,30 +39,28 @@ import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @AutoConfigureMockMvc(addFilters = false)
-@SpringBootTest
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class ResetPasswordIntegrationTests {
 
     private UserRepository userRepository;
 
-    @SpyBean
     private UserService userService;
 
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Autowired
     private MockMvc mockMvc;
 
     private User user;
 
     private String token;
 
-    @Before
+    @Before("@reset_password")
     public void setup() throws IOException {
         userRepository = applicationContext.getBean(UserRepository.class);
 
@@ -74,10 +75,9 @@ public class ResetPasswordIntegrationTests {
         userRepository.deleteAll();
         Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
-        userRepository.save(user);
         user.generateToken(userService, 1);
         token = user.getToken();
-        userRepository.save(user);
+        userService.updateOrAddUser(user);
     }
 
     
@@ -145,13 +145,16 @@ public class ResetPasswordIntegrationTests {
 
     @Given("I received a reset password email")
     public void i_received_a_reset_password_email() throws IOException {
+        System.out.println("real user token:" + user.getToken());
         Assertions.assertTrue(user.getToken() != null);
     }
 
     @When("I go to the URL in the link")
     @WithMockUser
     public void i_go_to_the_url_in_the_link() throws Exception {
-        mockMvc.perform(get("/reset-password?token=" + user.getToken())).andExpect(view().name("resetPassword"));
+        mockMvc.perform(get("/reset-password?token=" + user.getToken()))
+                .andDo(print())
+                .andExpect(view().name("resetPassword"));
     }
 
     @Then("I see the reset password page")
