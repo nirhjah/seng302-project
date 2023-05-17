@@ -4,6 +4,8 @@ Team Analytics Buddy (TAB) is an application designed for active individuals to 
 ## Prerequisites
 - JDK >= 17 [click here to get the latest stable OpenJDK release (as of writing this README)](https://jdk.java.net/18/)
 - Gradle
+- Openrouteservice API keys
+- An email account from which to send confirmation emails
 
 ## What's Included
 This project comes with some of the following:
@@ -16,7 +18,21 @@ This project comes with some of the following:
 - Mockito (mocking unit tests)
 
 ## How to run
-### 1 - Running the project
+### 1 - Setup your environment variables
+You will need to provide a `.env` file at the top project directory with these variables:
+- `GMAIL_USERNAME`
+- `GMAIL_PASSWORD`
+- `OPS_API_KEY`
+- `OPS_COLAB_KEY`
+
+Your production build will also require these variables:
+- `MARIADB_USERNAME`
+- `MARIADB_PASSWORD`
+- `SONARQUBE_TOKEN`
+
+See (`env-example`)[env-example] for an explanation of these variables
+
+### 2 - Running the project
 From the root directory ...
 
 On Linux:
@@ -32,10 +48,11 @@ gradlew bootRun
 
 By default, the application will run on local port 8080 [http://localhost:8080](http://localhost:8080)
 
-### 2 - Using the application
+### 3 - Using the application
 > User need to have an account to access most functionality of the application.
-> - There are no default credentials provided
-> 
+> - There is a default account, that is already confirmed
+> - Username/Email: admin@gmail.com
+> - Password: 1
 
 ## How to run tests
 From the root directory ...
@@ -60,7 +77,6 @@ gradlew check
 
 ## Contributors
 - Cameron Pearce
-- Philip Dolbel
 - Sebastian Conaghan-Carr
 - Angela Yu
 - Andrew Hall

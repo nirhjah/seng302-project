@@ -177,7 +177,15 @@ public class User {
 
     public String getPassword() {return hashedPassword; }
 
-    public void setPassword(String hashedPassword) { this.hashedPassword = hashedPassword; }
+    /**
+     * <p>Sets the user's password</p>
+     * <strong>THIS DOES NOT HASH THE PASSWORD!</strong>, you have to do it.
+     * 
+     * @param password The password string to be set.
+     */
+    public void setPassword(String password) {
+        this.hashedPassword = password;
+    }
 
     public void setEmail(String email) {
         this.email = email;
@@ -362,7 +370,6 @@ public class User {
     public void setJoinedTeams(Set<Team> teams) {
         this.joinedTeams = teams;
     }
-
 }
 
 

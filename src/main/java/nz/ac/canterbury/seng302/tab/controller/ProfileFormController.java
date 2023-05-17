@@ -1,23 +1,25 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
+import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-import java.util.Optional;
+import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 
 /**
  * Spring Boot Controller class for the ProfileForm
@@ -25,8 +27,8 @@ import java.util.Optional;
 @Controller
 public class ProfileFormController {
 
-    Logger logger = LoggerFactory.getLogger(ProfileFormController.class);
-    public static long teamId;
+    Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private TeamService teamService;
 
@@ -43,46 +45,40 @@ public class ProfileFormController {
      * @return thymeleaf profileForm
      */
     @GetMapping("/profile")
-    public String profileForm(Model model, @RequestParam(value = "teamID", required = false) Long teamID,
+    public String profileForm(
+            Model model,
+            @RequestParam(value = "teamID") Long teamID,
             HttpServletRequest request) {
         logger.info("GET /profileForm");
 
-        // Retrieve the selected team from the list of available teams using the ID
-        // If the name is null or empty, return null
-        List<Team> teamList = teamService.getTeamList();
-        ProfileFormController.teamId = teamID;
-        model.addAttribute("httpServletRequest", request);
+        // Gets the team from the database, or giving a 404 if not found.
+        Team team = teamService.getTeam(teamID);
 
-        Team selectedTeam;
-        if (teamID != null) {
-            // Find the selected team by its id
-            selectedTeam = teamList.stream()
-                    .filter(team -> team.getTeamId().equals(teamID))
-                    .findFirst()
-                    .orElse(null);
-        } else {
-            return "redirect:./home";
+        if (team == null) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
-
-        if (selectedTeam != null) {
-            model.addAttribute("displayName", selectedTeam.getName());
-            model.addAttribute("displaySport", selectedTeam.getSport());
-            model.addAttribute("displayLocation", selectedTeam.getLocation());
-            model.addAttribute("displayTeamPicture", selectedTeam.getPictureString());
-            model.addAttribute("displayToken", selectedTeam.getToken());
-        } else {
-            return "redirect:./home";
-        }
-
-        Optional<User> user = userService.getCurrentUser();
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
-        model.addAttribute("navTeams", teamList);
         model.addAttribute("teamID", teamID);
-        model.addAttribute("isUserManager", teamService.isUserManagerOfTeam(user.get().getUserId(), teamId));
+        model.addAttribute("displayName", team.getName());
+        model.addAttribute("displaySport", team.getSport());
+        model.addAttribute("displayLocation", team.getLocation());
+        model.addAttribute("displayTeamPicture", team.getPictureString());
+        model.addAttribute("displayToken", team.getToken());
 
-        logger.info("boolean manager is: " + teamService.isUserManagerOfTeam(user.get().getUserId(), teamId));
+        // Is the currently logged in user this team's manager?
+        Optional<User> oUser = userService.getCurrentUser();
+        if (oUser.isEmpty()) {
+            return "redirect:login";
+        }
+        User user = oUser.get();
+
+        // Rambling that's required for navBar.html
+        List<Team> teamList = teamService.getTeamList();
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("displayPicture", user.getPictureString());
+        model.addAttribute("navTeams", teamList);
+        model.addAttribute("httpServletRequest", request);
+        model.addAttribute("isUserManager", team.isManager(user));
 
         return "profileForm";
     }
@@ -99,11 +95,12 @@ public class ProfileFormController {
      * @return
      */
     @PostMapping("/profile")
-    public String uploadPicture(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
-            Model model) {
-        model.addAttribute("teamID", ProfileFormController.teamId);
-        teamService.updatePicture(file, ProfileFormController.teamId);
-        return "redirect:/profile?teamID=" + ProfileFormController.teamId;
+    public String uploadPicture(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("teamID") long teamID) {
+        logger.info("POST /profile");
+        teamService.updatePicture(file, teamID);
+        return "redirect:/profile?teamID=" + teamID;
     }
 
 }
