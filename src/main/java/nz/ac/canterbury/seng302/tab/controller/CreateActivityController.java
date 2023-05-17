@@ -64,16 +64,13 @@ public class CreateActivityController {
         prefillModel(model, httpServletRequest);
         logger.info("GET /createActivity");
 
-        LocalDateTime startDateTime = LocalDateTime.now().plusMinutes(10);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-        String formattedStartTime = startDateTime.format(formatter);
-        model.addAttribute("startDateTime", formattedStartTime);
 
         Activity activity;
         if (actId !=null){
             if ((activity = activityService.findActivityById(actId))!=null){
 
-                startDateTime =  activity.getActivityStart();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+                LocalDateTime startDateTime =  activity.getActivityStart();
                 String formattedStartDateTime = startDateTime.format(formatter);
 
                 LocalDateTime endDateTime =  activity.getActivityEnd();
