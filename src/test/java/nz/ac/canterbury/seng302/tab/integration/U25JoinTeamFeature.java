@@ -69,7 +69,7 @@ public class U25JoinTeamFeature {
 
     private Team team;
 
-    @Before
+    @Before("@join_team")
     public void setup() throws IOException {
 
         userRepository = applicationContext.getBean(UserRepository.class);
