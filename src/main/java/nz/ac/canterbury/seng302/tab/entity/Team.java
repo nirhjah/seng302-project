@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
@@ -202,6 +203,14 @@ public class Team {
     public boolean isManager(User user) {
         var userId = user.getUserId();
         return getTeamManagers().stream().anyMatch((u) -> u.getUserId() == userId);
+    }
+
+    public boolean isCoach(User user) {
+        var userId = user.getUserId();
+        return getTeamRoles()
+                .stream()
+                .filter((tRole) -> tRole.getRole() == Role.COACH)
+                .anyMatch((tRole) -> tRole.getUser().getUserId() == userId);
     }
 
     /**
