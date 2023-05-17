@@ -164,7 +164,6 @@ public class CreateActivityController {
         }
         addressLine1.trim();
         if (addressLine1.isEmpty()) {
-            logger.info("EMPTY ADDRESS");
             bindingResult.addError(new FieldError("CreateActivityForm", "addressLine1", "This is a required field"));
         }
         postcode.trim();
@@ -204,7 +203,6 @@ public class CreateActivityController {
             }
         }
         Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
-        System.out.println("THE ACTIVITY ID"+ actId);
         if (actId !=-1) {
             Activity editActivity = activityService.findActivityById(actId);
             editActivity.setActivityType(activityType);
@@ -215,14 +213,12 @@ public class CreateActivityController {
             editActivity.setLocation(location);
             editActivity.setDescription(description);
             editActivity = activityService.updateOrAddActivity(editActivity);
-            System.out.println("THIS iS THE EDIT ACTIVITY ID" + editActivity.getId());
             return "redirect:./view-activities";
         } else {
 
             Activity activity = new Activity(activityType, team,
                     description, startDateTime, endDateTime, userService.getCurrentUser().get(), location);
             activity = activityService.updateOrAddActivity(activity);
-            System.out.println("TESTING tHIS");
             return "redirect:./view-activities";
         }
     }
