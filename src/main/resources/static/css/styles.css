@@ -112,8 +112,7 @@ td {
 .Search-teams-background,
 .edit-user-background,
 .background-image,
-.user-form,
-.background {
+.user-form, .create-activity-background,.background {
     background-image: url("../image/landscape.jpeg");
     background-size: cover;
     background-repeat: no-repeat;
@@ -145,7 +144,7 @@ footer {
 
 
 .team-form .create-team, .user-form .user-header,.login-header,
-.register-form .register-header{
+.register-form .register-header, .activity-form .create-activity-header{
     font-family: "Noto Sans",sans-serif;
     /*color: #0B1B2A;*/
     text-align: center;
@@ -156,7 +155,6 @@ footer {
     background-clip: text;
     -webkit-background-clip: text;
 }
-
 
 .input-boxes {
     display: flex;
@@ -317,13 +315,6 @@ ul {
     margin: 0;
     padding: 0;
 }
-
-li a {
-    display: block;
-    padding: 0.5em;
-    text-align: center;
-}
-
 
 .profile-pic .back-button,
 .submit-button button,

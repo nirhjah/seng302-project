@@ -6,9 +6,12 @@ import jakarta.validation.constraints.Size;
 import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import static nz.ac.canterbury.seng302.tab.validator.UserFormValidators.INVALID_NAME_MSG;
+import static org.springframework.http.RequestEntity.post;
 
 /**
  * The form provided to the user when registering for the website.
@@ -17,6 +20,30 @@ import static nz.ac.canterbury.seng302.tab.validator.UserFormValidators.INVALID_
  * More complex validation is handled inside {@link UserFormValidators}
  */
 public class RegisterForm {
+
+    private static final String EMAIL = "myemail@gmail.com";
+    private static final String PASSWORD = "Hello123$";
+
+    /**
+     * Generates a dummy register form.
+     * For testing purposes only!!!
+     * @return the dummy form to use in testing
+     */
+    public static RegisterForm getDummyRegisterForm() {
+        var form =  new RegisterForm();
+        form.setCity("Christchurch");
+        form.setCountry("New Zealand");
+        form.setEmail(EMAIL);
+        form.setFirstName("Bobby");
+        form.setLastName("Johnson");
+        form.setPassword(PASSWORD);
+        form.setConfirmPassword(PASSWORD);
+        var d = new Date(2002-1900, Calendar.JULY, 5);
+        form.setSuburb("St Albans");
+        form.setAddressLine1("56 Mays Road");
+        form.setDateOfBirth(d);
+        return form;
+    }
 
     @UserFormValidators.NameValidator
     String firstName;

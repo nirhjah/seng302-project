@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
@@ -192,6 +193,16 @@ public class Team {
         return managers;
     }
 
+    public Set<User> getTeamCoaches() {
+        Set<User> coaches = new HashSet<>();
+        for (var tRole: teamRoles) {
+            if (tRole.getRole() == Role.COACH) {
+                coaches.add(tRole.getUser());
+            }
+        }
+        return coaches;
+    }
+
     /**
      * Returns true is user is a manager, false otherwise
      * @param user The user in question
@@ -201,6 +212,12 @@ public class Team {
         var userId = user.getUserId();
         return getTeamManagers().stream().anyMatch((u) -> u.getUserId() == userId);
     }
+
+    public boolean isCoach(User user) {
+        var userId = user.getUserId();
+        return getTeamCoaches().stream().anyMatch((u) -> u.getUserId() == userId);
+    }
+
 
     /**
      * Remove all team roles for this user.

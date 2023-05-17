@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
@@ -221,7 +222,7 @@ public class TeamService {
     /**
      * @param postcode the postcode for the team location
      * @return true if the postcode has only letters numbers and slashes and starts
-     *         with an alphanumeric
+     * with an alphanumeric
      */
     public boolean isValidPostcode(String postcode) {
 
@@ -246,10 +247,9 @@ public class TeamService {
      * @param addressline1
      * @param addressline2
      * @return true if all the params match their respective regex's
-     *
      */
     public boolean isValidLocation(String country, String city, String postcode, String suburb, String addressline1,
-            String addressline2) {
+                                   String addressline2) {
         boolean isvalid = isValidCountryCityName(country) && isValidCountryCityName(city)
                 && isValidSuburb(suburb) && isValidPostcode(postcode) && isValidAddressLine(addressline1)
                 && isValidAddressLine(addressline2);
@@ -260,8 +260,8 @@ public class TeamService {
      * Validates registering a team
      */
     public boolean validateTeamRegistration(String sport, String name, String country, String city,
-            String postcode,
-            String suburb, String addressline1, String addressline2) {
+                                            String postcode,
+                                            String suburb, String addressline1, String addressline2) {
 
         return isValidSport(sport) && isValidTeamName(name)
                 && isValidLocation(country, city, postcode, suburb, addressline1, addressline2);
@@ -270,10 +270,10 @@ public class TeamService {
     /**
      * clips extra whitespace off the end of the string and removes double ups of
      * whitespace
-     * 
+     *
      * @param string
      * @return string that is stripped from double up whitespace and whitespace at
-     *         the end and start of the string
+     * the end and start of the string
      */
     public String clipExtraWhitespace(String string) {
 
@@ -283,8 +283,38 @@ public class TeamService {
 
     }
 
+    public List<String> getAllTeamNames() {
+        return teamRepository.getAllTeamNames();
+    }
+
+    public void setTeamMember(Team team, User user) {
+        Role memberRole = Role.MEMBER;
+        team.setRole(user, memberRole);
+        teamRepository.save(team);
+        // updateTeam(team);
+    }
+
+    public User getTeamManager(Long teamId) {
+        TeamRole manager = teamRepository.findTeamManager(teamId, Role.MANAGER);
+        return manager != null ? manager.getUser() : null;
+    }
+
+    public boolean isUserManagerOfTeam(Long userId, Long teamId) {
+        Team team = teamRepository.findById(teamId).orElse(null);
+        if (team == null) {
+            return false;
+        }
+        User manager = getTeamManager(teamId);
+        if (manager == null) {
+            return false;
+        }
+        return manager.getUserId() == userId;
+    }
+
     public boolean userRolesAreValid(List<String> userRoles) {
         int numOfManagers = Collections.frequency(userRoles, Role.MANAGER.toString());
         return ((numOfManagers > 0) && (numOfManagers <=3));
     }
+
+    public List<Team> findTeamsWithUser(User user) {return teamRepository.findTeamsWithUser_List(user);}
 }

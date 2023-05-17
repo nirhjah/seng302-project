@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.Base64;
 
+
 import java.util.*;
 
 @Entity(name = "UserEntity")
@@ -234,6 +235,10 @@ public class User {
         this.emailConfirmed = true;
     }
 
+    public boolean getConfirmEmail(){
+        return this.emailConfirmed;
+    }
+
     @Column()
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "Id")
@@ -314,7 +319,7 @@ public class User {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Timestamp(calendar.getTime().getTime()));
         calendar.add(Calendar.HOUR, expiryTimeInHours);
-        this.expiryDate = new Date(calendar.getTime().getTime());
+        setExpiryDate(new Date(calendar.getTime().getTime()));
     }
 
     /**
@@ -339,8 +344,9 @@ public class User {
      */
 
     public void generateToken(UserService userService, int expiryHour) {
-        String token = generateToken();
+        String token = generateToken(); // generate random token
         while (userService.findByToken(token).isPresent()) {
+            // if this token is already taken, generate another one.  (Code will likely never get here)
             token = generateToken();
         }
         setToken(token);

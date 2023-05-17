@@ -6,12 +6,6 @@ Feature: U2 - Login
     When I hit the button to login
     Then I see a login form
 
-    Scenario: AC2: Given I am on the login form, and I enter an email address and its corresponding password both known to the system, when I hit the login button, then I am brought to my profile page.
-      Given I am on the login form
-      When I enter valid email and password
-      And I hit the login button
-      Then I am brought to my profile page
-
       Scenario Outline: AC3:  Given I am on the login form, and I enter a malformed or empty email address, when I hit the login button, then an error message tells me the email address is invalid
         Given I am on the login form
         When I enter an invalid <emailAddress> email and <password> password

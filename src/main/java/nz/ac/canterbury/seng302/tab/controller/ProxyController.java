@@ -1,15 +1,11 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
-/**
- *
- */
 /**
  * This class acts as a proxy for the OpenRouteService Geocoding API. It sends HTTP GET requests to the API's
  * "geocode/autocomplete" endpoint, passing along query parameters for text, API key, and language.
@@ -19,8 +15,7 @@ public class ProxyController {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${ops.api.key}")
-    private String opsApiKey;
+    private static final String opsApiKey = System.getenv().get("OPS_API_KEY");
 
     /**
      * Sends an HTTP GET request to the OpenRouteService Geocoding API's "geocode/autocomplete" endpoint, passing
