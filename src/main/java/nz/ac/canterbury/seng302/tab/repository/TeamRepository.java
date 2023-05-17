@@ -34,6 +34,7 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             "ORDER BY LOWER(t.name) ASC, (t.location) ASC ")
     public Page<Team> findTeamByName(@Param("name") String name, Pageable pageable);
 
+
     @Query("SELECT t FROM Team t LEFT JOIN t.teamMembers tm " +
             "WHERE (:user) in (tm) " +
             "ORDER BY LOWER(t.name) ASC, (t.location) ASC")

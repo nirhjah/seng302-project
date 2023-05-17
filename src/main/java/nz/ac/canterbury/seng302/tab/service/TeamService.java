@@ -308,4 +308,6 @@ public class TeamService {
         int numOfManagers = Collections.frequency(userRoles, Role.MANAGER.toString());
         return ((numOfManagers > 0) && (numOfManagers <=3));
     }
+
+    public List<Team> findTeamsWithUser(User user) {return teamRepository.findTeamsWithUser_List(user);}
 }

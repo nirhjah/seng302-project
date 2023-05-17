@@ -14,6 +14,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -95,6 +96,7 @@ public class EditActivityFormControllerTest {
 
         when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
+        when(mockTeamService.findTeamsWithUser(testUser)).thenReturn(List.of(team));
     }
 
     @Test

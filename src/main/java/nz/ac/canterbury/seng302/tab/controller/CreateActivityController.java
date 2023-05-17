@@ -27,6 +27,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -55,7 +57,14 @@ public class CreateActivityController {
         model.addAttribute("lastName", user.get().getLastName());
         model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
-        model.addAttribute("teamList", teamService.getTeamList());
+        List<Team> allUserTeams = teamService.findTeamsWithUser(user.get());
+        List<Team> teamList = new ArrayList<>();
+        for (Team team : allUserTeams) {
+            if (team.isManager(user.get()) || team.isCoach(user.get())) {
+                teamList.add(team);
+            }
+        }
+        model.addAttribute("teamList", teamList);
         model.addAttribute("activityTypes", Activity.ActivityType.values());
         URL url = new URL(httpServletRequest.getRequestURL().toString());
         String path = (url.getPath() + "/..");
