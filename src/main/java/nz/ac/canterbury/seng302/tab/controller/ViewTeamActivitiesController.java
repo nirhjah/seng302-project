@@ -80,9 +80,6 @@ public class ViewTeamActivitiesController {
         }
 
         Optional<User> user = userService.getCurrentUser();
-        Activity activity = new Activity(Activity.ActivityType.Game, selectedTeam, "this is a test",
-                LocalDateTime.of(2023, 12, 10, 14, 30), LocalDateTime.of(2023, 12, 11, 14, 30), user.get());
-        activityService.updateOrAddActivity(activity);
         Page<Activity> teamActivities = activityService.getAllTeamActivitiesPage(selectedTeam, pageNo, maxPageSize);
 
         // If page number outside of page then reloads page with appropriate number
@@ -92,8 +89,6 @@ public class ViewTeamActivitiesController {
             return "redirect:/view-teams?page=" + pageNo;
         }
 
-        logger.info("activity is: " + activity.getDescription());
-        logger.info("team activities is " + teamActivities);
         model.addAttribute("page", pageNo);
         model.addAttribute("totalPages", teamActivities.getTotalPages());
         model.addAttribute("totalItems", teamActivities.getTotalElements());
@@ -105,8 +100,6 @@ public class ViewTeamActivitiesController {
         model.addAttribute("selectedTeam", selectedTeam);
         model.addAttribute("isUserManager", teamService.isUserManagerOfTeam(user.get().getUserId(), teamId));
         model.addAttribute("activities", teamActivities);
-
-        logger.info("boolean manager is: " + teamService.isUserManagerOfTeam(user.get().getUserId(), teamId));
 
         return "viewActivities";
     }
