@@ -43,6 +43,12 @@ public class CreateActivityController {
 
     Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
+    /**
+     * Prefills the model with required values
+     * @param model the model to be filled
+     * @param httpServletRequest the request
+     * @throws MalformedURLException
+     */
     public void prefillModel(Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
         Optional<User> user = userService.getCurrentUser();
         model.addAttribute("firstName", user.get().getFirstName());
@@ -56,6 +62,15 @@ public class CreateActivityController {
         model.addAttribute("path", path);
     }
 
+    /**
+     * This controller handles both the edit and creation of an activity
+     * @param actId the ID if activity if editing, otherwise null
+     * @param createActivityForm the form to be used
+     * @param model a mapping of data to pass to the html
+     * @param httpServletRequest the request
+     * @return the create activity template
+     * @throws MalformedURLException thrown in some cases
+     */
     @GetMapping("/createActivity")
     public String activityForm( @RequestParam(name="edit", required=false) Long actId,CreateActivityForm createActivityForm,
                                         Model model,
@@ -95,6 +110,28 @@ public class CreateActivityController {
         return "createActivity";
     }
 
+    /**
+     * Handles creating or adding activities
+     * @param actId the id of activity if editting, otherwise null
+     * @param activityType the type of actvity
+     * @param teamId the ID of the team, (optional)
+     * @param description description of the activity
+     * @param startDateTime start date time of the activity
+     * @param endDateTime end date time of the activity
+     * @param addressLine1 address line 1 of the activity
+     * @param addressLine2 address line 2 of the activity
+     * @param city city the activity takes place in
+     * @param country country that activity takes place in
+     * @param postcode postcode of activity
+     * @param suburb suburb of event
+     * @param createActivityForm form used to create activity
+     * @param bindingResult holds the results of validating the form
+     * @param httpServletResponse the response to send
+     * @param model model mapping of information
+     * @param httpServletRequest the request
+     * @return returns my activity page iff the details are valid, returns to activity page otherwise
+     * @throws MalformedURLException thrown in some cases
+     */
     @PostMapping("/createActivity")
     public String createActivity(
             @RequestParam(name = "actId", defaultValue = "-1") long actId,
