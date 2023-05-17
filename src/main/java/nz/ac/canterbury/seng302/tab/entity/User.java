@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
+import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -360,8 +361,7 @@ public class User {
      */
     public void joinTeam(Team team) {
         this.joinedTeams.add(team);
-        team.getTeamMembers().add(this);
-        team.setMember(this);
+        team.setRole(this, Role.MEMBER);
     }
 
     public void leaveTeam(Team team) {
