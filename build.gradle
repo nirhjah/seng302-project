@@ -76,7 +76,10 @@ tasks.register('end2end') {
 			]
 		}
 	}
+
+	implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.4'
 }
+
 tasks.named('test') {
 	useJUnitPlatform()
 	finalizedBy jacocoTestReport
@@ -97,11 +100,6 @@ jacocoTestReport {
 	}
 }
 
-tasks.named("check") {
-	dependsOn test, end2end, integration
-}
-
-
 sonarqube {
 	properties {
 		property "sonar.projectKey", "team-900"
@@ -110,4 +108,8 @@ sonarqube {
 		property "sonar.host.url", "https://sonarqube.csse.canterbury.ac.nz"
 		property "sonar.login", "$System.env.SONARQUBE_TOKEN"
 	}
+}
+
+tasks.named("check") {
+	dependsOn test, end2end, integration
 }
