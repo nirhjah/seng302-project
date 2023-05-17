@@ -64,14 +64,15 @@
       </tr>
     </thread>
     <tbody>
-      <tr th:each="team : ${teams}"
-          th:onclick="|window.location.href='profile?teamID=${team.teamId}'|">
-        <td>
-          <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" width="50" height="50"/>
-        </td>
-        <td th:text="${team.name}"></td>
-        <td th:text="${team.sport}"></td>
-        <td th:text="${team.location}"></td>
+      <tr th:each="team : ${teams}">
+        <a th:href="@{profile(team=${team.teamId})}">
+          <td>
+            <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" width="50" height="50"/>
+          </td>
+          <td th:text="${team.name}"></td>
+          <td th:text="${team.sport}"></td>
+          <td th:text="${team.location}"></td>
+        </a>
       </tr>
     </tbody>
   </table>
