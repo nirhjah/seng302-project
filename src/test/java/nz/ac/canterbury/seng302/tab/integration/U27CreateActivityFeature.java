@@ -1,13 +1,17 @@
 package nz.ac.canterbury.seng302.tab.integration;
 
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import nz.ac.canterbury.seng302.tab.controller.ForgotPasswordController;
+import nz.ac.canterbury.seng302.tab.controller.ResetPasswordController;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
@@ -20,8 +24,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -47,53 +59,45 @@ public class U27CreateActivityFeature {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @SpyBean
+    private UserService userService;
+
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Autowired
     private ActivityService activityService;
-
-    @MockBean
-    private ActivityRepository activityRepository;
-
-    @Autowired
-    private UserService mockUserService;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private TeamService teamService;
 
+    private ActivityRepository activityRepository;
+
+    private UserRepository userRepository;
+
     private User user;
 
-    private String buildUrlEncodedFormEntity(String... params) {
-        if( (params.length % 2) > 0 ) {
-            throw new IllegalArgumentException("Need to give an even number of parameters");
-        }
-        StringBuilder result = new StringBuilder();
-        for (int i=0; i<params.length; i+=2) {
-            if( i > 0 ) {
-                result.append('&');
-            }
-            try {
-                result.
-                        append(URLEncoder.encode(params[i], StandardCharsets.UTF_8.name())).
-                        append('=').
-                        append(URLEncoder.encode(params[i+1], StandardCharsets.UTF_8.name()));
-            }
-            catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return result.toString();
-    }
+    @Before("@create-activity")
+    public void setup() throws IOException {
+        userRepository = applicationContext.getBean(UserRepository.class);
 
-    @BeforeEach
-    public void beforeAll() throws IOException {
+        TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
+        EmailService emailService = applicationContext.getBean(EmailService.class);
+        PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
+
+        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
+
+        Authentication authentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ForgotPasswordController(userService), new ResetPasswordController(userService, passwordEncoder)).build();
+
+        userRepository.deleteAll();
         Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
         userRepository.save(user);
-
-        Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
-
     }
 
     @Given("I'm on the home page")

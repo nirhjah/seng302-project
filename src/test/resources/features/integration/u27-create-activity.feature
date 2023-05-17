@@ -1,3 +1,4 @@
+@create-activity
 Feature: U27 - Create Activity
 
   Scenario: AC1: Given I am anywhere on the system, when I click on a UI element to create an activity, then I see a form to create an activity.

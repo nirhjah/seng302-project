@@ -59,7 +59,7 @@ public class ResetPasswordIntegrationTests {
 
     private String token;
 
-    @Before
+    @Before("@reset_password")
     public void setup() throws IOException {
         userRepository = applicationContext.getBean(UserRepository.class);
 
