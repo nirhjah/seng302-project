@@ -37,10 +37,7 @@ public class EmailService {
         this.javaMailSender = javaMailSender;
     }
 
-    /**
-     * Gets the sending email from the application properties
-     */
-    @Value("${spring.mail.username}") private String sender;
+    private static final String sender = System.getenv().get("GMAIL_USERNAME");
 
     /**
      *

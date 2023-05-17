@@ -19,8 +19,7 @@ public class ProxyController {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${ops.api.key}")
-    private String opsApiKey;
+    private static final String opsApiKey = System.getenv().get("OPS_API_KEY");
 
     /**
      * Sends an HTTP GET request to the OpenRouteService Geocoding API's "geocode/autocomplete" endpoint, passing
