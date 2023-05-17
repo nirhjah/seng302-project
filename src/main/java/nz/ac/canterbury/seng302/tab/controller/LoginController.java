@@ -29,6 +29,7 @@ public class LoginController {
     public String form(@RequestParam(name="error", required = false, defaultValue = "false") String error,
                        Model model, HttpServletRequest request, HttpSession session) {
         model.addAttribute("httpServletRequest", request);
+        logger.info("GET /login");
 
         if (error.equals("true")) {
             String errorMessage = "";
@@ -51,13 +52,10 @@ public class LoginController {
         model.addAttribute("passwordUpdatedMessage", (String)model.asMap().get("passwordUpdatedMessage"));
         model.addAttribute("invalidTokenMessage", (String)model.asMap().get("invalidTokenMessage"));
 
-        logger.info("GET /login");
-        model.addAttribute("message", session.getAttribute("message"));
-        String message = (String) session.getAttribute("message");
-        if (message != null) {
-            model.addAttribute("message", message);
-            session.removeAttribute("message");
+        if (!model.containsAttribute("message")) {
+            model.addAttribute("message", session.getAttribute("message"));
         }
+
         return "login";
     }
 

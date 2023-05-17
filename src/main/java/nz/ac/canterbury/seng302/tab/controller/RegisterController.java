@@ -212,7 +212,7 @@ public class RegisterController {
         user.setToken(null);
 
         userService.updateOrAddUser(user);
-        redirectAttributes.addFlashAttribute("confirmationMessage", "Your email has been confirmed successfully!");
+        redirectAttributes.addFlashAttribute("message", "Your email has been confirmed!");
         return "redirect:/login";
     }
 }
