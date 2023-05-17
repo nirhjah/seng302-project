@@ -11,8 +11,6 @@ import io.github.cdimascio.dotenv.Dotenv;
  */
 @SpringBootApplication
 public class TabApplication {
-
-
     /**
      * Main entry point, runs the Spring application
      *
