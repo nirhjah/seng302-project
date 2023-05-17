@@ -21,12 +21,15 @@ public class Activity {
         Competition,
         Other
     }
+
+    public ActivityType[] getActivityTypes() {return ActivityType.values();}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "activityId")
     private long id;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.ORDINAL)
     private ActivityType activityType;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -46,6 +49,11 @@ public class Activity {
     @JoinColumn(name = "fk_userID", referencedColumnName = "Id")
     private User activityOwner;
 
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Location location;
+
+
     /**
      * Empty Constructor for JPA
      */
@@ -58,14 +66,17 @@ public class Activity {
      * @param description - short description of the event
      * @param activityStart - the date and time of start of activity
      * @param activityEnd - the end date and time of activity
+     * @param location - the location of the activity
      */
-    public Activity(ActivityType activityType, Team team, String description, LocalDateTime activityStart, LocalDateTime activityEnd, User creator) {
+    public Activity(ActivityType activityType, Team team, String description, LocalDateTime activityStart, LocalDateTime activityEnd, User creator, Location location) {
         this.activityType = activityType;
         this.team = team;
         this.description = description;
         this.activityStart = activityStart;
         this.activityEnd = activityEnd;
         this.activityOwner = creator;
+        this.location = location;
+
     }
 
     public long getId() {
@@ -86,6 +97,44 @@ public class Activity {
 
     public LocalDateTime getActivityEnd() {
         return activityEnd;
+    }
+
+    public Location getLocation() {
+        return this.location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public String getDescription(){ return this.description;}
+
+    public ActivityType getActivityType(){
+        return this.activityType;
+    }
+
+    public void setActivityType(ActivityType activityType){
+        this.activityType=activityType;
+    }
+
+    public void setDescription(String description){
+        this.description=description;
+    }
+
+    public void setActivityStart(LocalDateTime activityStart){
+        this.activityStart = activityStart;
+    }
+
+    public void setActivityEnd(LocalDateTime activityEnd){
+        this.activityEnd=activityEnd;
+    }
+
+    public void setActivityOwner(User activityOwner){
+        this.activityOwner=activityOwner;
+    }
+
+    public User getActivityOwner(){
+        return this.activityOwner;
     }
 
     @Override

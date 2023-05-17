@@ -5,9 +5,12 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,13 +25,15 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    Logger logger = LoggerFactory.getLogger(CustomAuthenticationProvider.class);
+
     public CustomAuthenticationProvider() {
         super();
     }
 
     /**
      * Custom Authentication
-     * 
+     *
      * @param authentication the authentication request object.
      * @return a UsernamePasswordAuthenticationToken token if the users are valid.
      */
@@ -38,6 +43,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String password = String.valueOf(authentication.getCredentials());
 
         if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
+            logger.info("Bad Credentials");
             throw new BadCredentialsException("Bad Credentials");
         }
 
@@ -46,10 +52,15 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         // match" into the same error message.
         if (matchingUser.isPresent() && passwordEncoder.matches(password, matchingUser.get().getPassword())) {
             User user = matchingUser.get();
+            if (!user.getConfirmEmail()) {
+                logger.info("User needs to confirm registration");
+                throw new DisabledException("User need to confirm registration");
+            }
             return new UsernamePasswordAuthenticationToken(
                     user.getEmail(), null, user.getAuthorities());
         }
         throw new BadCredentialsException("Invalid username or password");
+
     }
 
     @Override
