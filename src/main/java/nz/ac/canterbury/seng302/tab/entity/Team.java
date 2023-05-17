@@ -249,17 +249,7 @@ public class Team {
 
     @Override
     public String toString() {
-        return "Team{" +
-                "teamId=" + teamId +
-                ", location=" + location +
-                ", name='" + name + '\'' +
-                ", sport='" + sport + '\'' +
-                ", pictureString='" + pictureString + '\'' +
-                ", token='" + token + '\'' +
-                ", creationDate=" + creationDate +
-                ", teamRoles=" + teamRoles +
-                ", teamMembers=" + teamMembers +
-                '}';
+        return name;
     }
 
 
