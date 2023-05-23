@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
+  <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
+  <link th:href="@{/css/styles.css}" rel="stylesheet">
+  <link th:href="@{/css/profile.css}" rel="stylesheet">
+  <link th:href="@{/css/team-profile.css}" rel="stylesheet">
+  <title>View Activity</title>
+</head>
+<body class="profile-background">
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+<div class="team-profile-form">
+  <div class="wrapper-profile">
+
+
+
+    <div class="team-info">
+      <div class="team-display">
+        <h2 th:text="${activity.activityType}"></h2>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="team-info">
+      <div class="team-display">
+        <h2 th:text="${activity.activityType}"></h2>
+        <div class="user-label">
+          <img th:src="@{/image/icons/sports.svg}"/>
+          <h3 th:text="|Team: ${activity.team}|"></h3>
+        </div>
+        <div class="user-label">
+          <img th:src="@{/image/icons/sports.svg}"/>
+          <h3 th:text="|Start date: ${activity.activityStart} |"></h3>
+        </div>
+        <div class="user-label">
+          <img th:src="@{/image/icons/sports.svg}"/>
+          <h3 th:text="|End date: ${activity.activityEnd} |"></h3>
+        </div>
+        <div class="user-label">
+          <img th:src="@{/image/icons/location.svg}"/>
+          <h3 th:text="|Location: ${activity.location}|"></h3>
+        </div>
+        <div class="user-label">
+          <img th:src="@{/image/icons/sports.svg}"/>
+          <h3 th:text="|Description: ${activity.description}|"></h3>
+        </div>
+      </div>
+
+
+
+
+  </div>
+
+
+  <footer>
+    <p>
+      Image by <a
+            href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+      on Freepik
+    </p>
+  </footer>
+</div>
+</body>
+</html>
