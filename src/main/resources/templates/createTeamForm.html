@@ -28,7 +28,7 @@
                            data-cy="name" autofocus placeholder=""
                            title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
                     <label for="name">Name <span class="required">*</span></label>
-                    <div th:each="err : ${#fields.errors('name')}" th:text="${err}" class="team-error-message"></div>
+                    <div th:each="err : ${#fields.errors('name')}" th:text="${err}" class="error-message"></div>
                 </div>
 
                 <div class="input-box">
@@ -36,7 +36,7 @@
                            data-cy="sport" autofocus placeholder=""
                            title="May include letters, spaces, apostrophes, and hyphens. Must start with letter">
                     <label for="sport">Sport <span class="required">*</span></label>
-                    <div th:each="err : ${#fields.errors('sport')}" th:text="${err}" class="team-error-message"></div>
+                    <div th:each="err : ${#fields.errors('sport')}" th:text="${err}" class="error-message"></div>
 
                 </div>
             </div>
@@ -50,7 +50,7 @@
                     <label for="address-line-1">Address Line 1</label>
                     <div class="autocomplete-container" id="autocomplete-container"></div>
                     <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}"
-                         class="team-error-message"></div>
+                         class="error-message"></div>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
@@ -59,7 +59,7 @@
                                       at least one letter or number">
                     <label for="address-line-2">Address Line 2</label>
                     <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}"
-                         class="team-error-message"></div>
+                         class="error-message"></div>
                 </div>
             </div>
             <div class="input-boxes">
@@ -74,7 +74,7 @@
                            data-cy="location" autofocus placeholder="">
                     <label for="postcode">Postcode</label>
                     <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}"
-                         class="team-error-message"></div>
+                         class="error-message"></div>
                 </div>
             </div>
             <div class="input-boxes">
@@ -82,13 +82,13 @@
                     <input type="text" class="form-control" id="city" th:name="city" th:value="${city}"
                            data-cy="location" autofocus placeholder="">
                     <label for="city">City <span class="required">*</span></label>
-                    <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="team-error-message"></div>
+                    <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="country" th:name="country" th:value="${country}"
                            data-cy="location" autofocus placeholder="">
                     <label for="country">Country <span class="required">*</span></label>
-                    <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="team-error-message"></div>
+                    <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
                 </div>
             </div>
             <div class="submit-button">
