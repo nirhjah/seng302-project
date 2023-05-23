@@ -79,6 +79,7 @@ public class ProfileFormController {
         model.addAttribute("navTeams", teamList);
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("isUserManager", team.isManager(user));
+        model.addAttribute("isUserManagerOrCoach", team.isManager(user) || team.isCoach(user));
 
         return "profileForm";
     }
@@ -90,8 +91,6 @@ public class ProfileFormController {
      * Byte array.
      *
      * @param file               uploaded MultipartFile file
-     * @param redirectAttributes
-     * @param model              (map-like) representation of team id
      * @return
      */
     @PostMapping("/profile")
