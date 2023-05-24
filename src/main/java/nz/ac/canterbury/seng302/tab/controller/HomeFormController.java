@@ -51,12 +51,6 @@ public class HomeFormController {
     @GetMapping("/home")
     public String getTemplate(Model model, HttpServletRequest request) {
         logger.info("GET /homeForm");
-        Optional<User> user = userService.getCurrentUser();
-        if (user.isPresent()) {
-            model.addAttribute("firstName", user.get().getFirstName());
-            model.addAttribute("lastName", user.get().getLastName());
-            model.addAttribute("displayPicture", user.get().getPictureString());
-        }
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("navTeams", teamService.getTeamList());
         return "homeForm";

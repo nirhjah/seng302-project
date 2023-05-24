@@ -60,10 +60,6 @@ public class ViewAllUsersController {
             Model model, HttpServletRequest request) {
         Page<User> userPage = getUserPage(page, currentSearch, sports, cities);
         List<User> userList = userPage.toList();
-        Optional<User> user = userService.getCurrentUser();
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
 
 
         // get all the cities that populate the dropdown

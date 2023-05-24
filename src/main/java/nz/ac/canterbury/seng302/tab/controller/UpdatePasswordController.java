@@ -66,9 +66,6 @@ public class UpdatePasswordController {
         // Everything else here shouldn't be here.
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("navTeams", teamService.getTeamList());
-        model.addAttribute("firstName", user.getFirstName());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("displayPicture", user.getPictureString());
     }
 
     /**

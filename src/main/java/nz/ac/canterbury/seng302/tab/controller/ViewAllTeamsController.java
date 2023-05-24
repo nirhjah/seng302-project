@@ -59,10 +59,6 @@ public class ViewAllTeamsController {
 
         List<Team> listTeams = page.getContent();
 
-        Optional<User> user = userService.getCurrentUser();
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("page", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());

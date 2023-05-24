@@ -72,9 +72,6 @@ public class EditUserFormController {
         }
         User u = user.get();
         editUserForm.prepopulate(u);
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("knownSports", sportService.getAllSportNames());
         model.addAttribute("favouriteSports", u.getFavouriteSportNames());
         model.addAttribute("user", u);

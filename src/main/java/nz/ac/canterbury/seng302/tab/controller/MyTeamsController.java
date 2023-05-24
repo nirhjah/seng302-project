@@ -63,9 +63,6 @@ public class MyTeamsController {
         Optional<User> user = userService.getCurrentUser();
         User currentUser = user.get();
 
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("page", pageNo);
 

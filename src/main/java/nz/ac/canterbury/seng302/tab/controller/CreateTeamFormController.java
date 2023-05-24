@@ -121,10 +121,6 @@ public class CreateTeamFormController {
 
         List<String> knownSports = sportService.getAllSportNames();
         model.addAttribute("knownSports", knownSports);
-        Optional<User> user = userService.getCurrentUser();
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
         return "createTeamForm";
     }

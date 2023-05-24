@@ -7,12 +7,14 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -48,7 +50,7 @@ public class ViewUserController {
         Optional<User> user = userService.findUserById(userId);
         String userPicture = null;
         if (user.isEmpty()) { // If empty, throw a 404
-            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         } else {
             userPicture = user.get().getPictureString();
             model.addAttribute("userId", userId);
@@ -64,7 +66,7 @@ public class ViewUserController {
         model.addAttribute("location", user.get().getLocation());
         model.addAttribute("displayPicture", userPicture);
         model.addAttribute("navTeams", teamService.getTeamList());
-        model.addAttribute("httpServletRequest",request);
+        model.addAttribute("httpServletRequest", request);
 
         var curUser = userService.getCurrentUser();
         boolean canEdit = curUser.filter(value -> value.getUserId() == userId).isPresent();
