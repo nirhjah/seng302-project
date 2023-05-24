@@ -171,12 +171,10 @@ public class CreateActivityController {
                         ActivityFormValidators.END_BEFORE_START_MSG));
             }
         }
-        addressLine1.trim();
-        if (addressLine1.isEmpty()) {
+        if (addressLine1.isBlank()) {
             bindingResult.addError(new FieldError("CreateActivityForm", "addressLine1", "This is a required field"));
         }
-        postcode.trim();
-        if (postcode.isEmpty()) {
+        if (postcode.isBlank()) {
             bindingResult.addError(new FieldError("CreateActivityForm", "postcode", "This is a required field"));
         }
 
