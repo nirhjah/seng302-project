@@ -1,14 +1,11 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.form.RegisterForm;
-import nz.ac.canterbury.seng302.tab.mail.EmailService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +22,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.rmi.RemoteException;
-import java.util.List;
-import java.util.Optional;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.form.RegisterForm;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 
 @Controller
 public class RegisterController {
@@ -59,19 +58,6 @@ public class RegisterController {
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
     }
-
-    /**
-     * Countries and cities can have letters from all alphabets, with hyphens and
-     * spaces. Must start with an alphabetical character
-     */
-    private static final String countryCitySuburbNameRegex = "^\\p{L}+[\\- \\p{L}]*$";
-
-    /** Addresses can have letters, numbers, spaces, commas, periods, hyphens, forward slashes and pound signs. Must
-     * include at least one alphanumeric character **/
-    private static final String addressRegex = "^[\\p{L}\\p{N}]+[\\- ,./#\\p{L}\\p{N}]*$";
-
-    /** Allow letters, numbers, forward slashes and hyphens. Must start with an alphanumeric character. */
-    private static final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
 
     /**
      * Checks if the email already exists
@@ -130,7 +116,6 @@ public class RegisterController {
         logger.info("GET /register");
         URL url = new URL(httpServletRequest.getRequestURL().toString());
         String path = (url.getPath() + "/..");
-        String protocolAndAuthority = String.format("%s://%s", url.getProtocol(), url.getAuthority());
         model.addAttribute("httpServletRequest", httpServletRequest);
         model.addAttribute("path", path);
         return "registerUser";
@@ -149,7 +134,7 @@ public class RegisterController {
             @Valid RegisterForm registerForm,
             BindingResult bindingResult,
             HttpServletRequest request,
-            Model model, RedirectAttributes redirectAttributes, HttpSession session) throws IOException, ServletException {
+            Model model, RedirectAttributes redirectAttributes, HttpSession session) throws IOException {
 
         // Run the custom validation methods
         // TODO: Move validators that might be reused into their own class

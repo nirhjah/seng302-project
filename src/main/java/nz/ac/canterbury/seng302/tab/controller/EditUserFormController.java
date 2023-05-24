@@ -72,7 +72,6 @@ public class EditUserFormController {
         }
         User u = user.get();
         editUserForm.prepopulate(u);
-        Set<String> sports = new HashSet<>(sportService.getAllSportNames());
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
         model.addAttribute("displayPicture", user.get().getPictureString());
