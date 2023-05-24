@@ -137,24 +137,6 @@ public class TeamService {
         return teamRepository.findTeamByFilteredLocationsAndSports(pageable, searchedLocations, searchedSports, name);
     }
 
-    /**
-     * gets a page of teams filtered by their name and sport
-     *
-     * @param pageable     a page object showing how the page should be shown
-     * @param filterSports List of sports to be filtered by
-     * @param nameSearch   the search query
-     * @return a slice of teams that meet the name conditions and filter conditions
-     */
-    public Page<Team> findTeamsByNameOrSport(Pageable pageable, List<String> filterSports, String nameSearch) {
-        if (filterSports == null) {
-            filterSports = List.of();
-        }
-        if (nameSearch != null && nameSearch.isEmpty()) {
-            nameSearch = null;
-        }
-        return teamRepository.findTeamByNameAndSportIn(pageable, filterSports, nameSearch);
-    }
-
     public Optional<Team> findByToken(String token) {
         return teamRepository.findByToken(token);
     }
