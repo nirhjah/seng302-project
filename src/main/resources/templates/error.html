@@ -1,48 +1,33 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
-<head>
-    <style>
-        table td {
-            vertical-align: top;
-            border: solid 1px #888;
-            padding: 10px;
-        }
 
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageName}"></title>
+    <style>
+        body {
+            background-color: #f2f2f2;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        h1 {
+            font-size: 6em;
+            color: #333;
+            margin-top: 50px;
+        }
+        p {
+            font-size: 1.5em;
+            color: #777;
+            margin-top: 20px;
+        }
+        a {
+            color: #000;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-<h1>Basic Thymeleaf Error Page (You may want to make something better)</h1>
-<table>
-    <tr>
-        <td>Date</td>
-        <td th:text="${timestamp}"/>
-    </tr>
-    <tr>
-        <td>Path</td>
-        <td th:text="${path}"/>
-    </tr>
-    <tr>
-        <td>Error</td>
-        <td th:text="${error}"/>
-    </tr>
-    <tr>
-        <td>Status</td>
-        <td th:text="${status}"/>
-    </tr>
-    <tr>
-        <td>Message</td>
-        <td th:text="${message}"/>
-    </tr>
-    <tr>
-        <td>Exception</td>
-        <td th:text="${exception}"/>
-    </tr>
-    <tr>
-        <td>Trace</td>
-        <td>
-            <pre th:text="${trace}"/>
-        </td>
-    </tr>
-</table>
+<h1 th:text="${pageName}"></h1>
+<p th:text="${errorMessage}"></p>
+<p>Back to the homepage: <a href="/">homepage</a>.</p>
 </body>
+</html>

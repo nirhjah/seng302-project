@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.form;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
 public class CreateAndEditTeamForm {
@@ -10,22 +11,22 @@ public class CreateAndEditTeamForm {
 
     @TeamFormValidators.teamSportValidator(message = TeamFormValidators.INVALID_TEAM_SPORT_MSG)
     private String sport;
-    @TeamFormValidators.addressValidator
+    @LocationValidators.addressValidator
     private String addressLine1;
 
-    @TeamFormValidators.addressValidator
+    @LocationValidators.addressValidator
     private String addressLine2;
 
-    @TeamFormValidators.postcodeValidator
+    @LocationValidators.postcodeValidator
     private String postcode;
 
-    @TeamFormValidators.countryCitySuburbValidator(regexMatch = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
+    @LocationValidators.countryCitySuburbValidator(regexMatch = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
     private String country;
 
-    @TeamFormValidators.countryCitySuburbValidator(regexMatch = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
+    @LocationValidators.countryCitySuburbValidator(regexMatch = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
     private String city;
 
-    @TeamFormValidators.suburbValidator
+    @LocationValidators.suburbValidator
     private String suburb;
 
     public String getAddressLine1() {

@@ -4,7 +4,6 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -162,9 +162,10 @@ public class TeamService {
 
     /**
      * gets a page of all teams the given user is a member of
-     * @param pageable      a page object showing how the page should be shown
-     * @param user          user to filter teams by
-     * @return              all teams the user is apart of
+     *
+     * @param pageNo a page object showing how the page should be shown
+     * @param user   user to filter teams by
+     * @return all teams the user is apart of
      */
     public Page<Team> findTeamsByUser(int pageNo, int pageSize, User user) {
 
@@ -214,7 +215,7 @@ public class TeamService {
     /**
      * @param postcode the postcode for the team location
      * @return true if the postcode has only letters numbers and slashes and starts
-     *         with an alphanumeric
+     * with an alphanumeric
      */
     public boolean isValidPostcode(String postcode) {
 
@@ -239,10 +240,9 @@ public class TeamService {
      * @param addressline1
      * @param addressline2
      * @return true if all the params match their respective regex's
-     *
      */
     public boolean isValidLocation(String country, String city, String postcode, String suburb, String addressline1,
-            String addressline2) {
+                                   String addressline2) {
         boolean isvalid = isValidCountryCityName(country) && isValidCountryCityName(city)
                 && isValidSuburb(suburb) && isValidPostcode(postcode) && isValidAddressLine(addressline1)
                 && isValidAddressLine(addressline2);
@@ -253,8 +253,8 @@ public class TeamService {
      * Validates registering a team
      */
     public boolean validateTeamRegistration(String sport, String name, String country, String city,
-            String postcode,
-            String suburb, String addressline1, String addressline2) {
+                                            String postcode,
+                                            String suburb, String addressline1, String addressline2) {
 
         return isValidSport(sport) && isValidTeamName(name)
                 && isValidLocation(country, city, postcode, suburb, addressline1, addressline2);
@@ -263,10 +263,10 @@ public class TeamService {
     /**
      * clips extra whitespace off the end of the string and removes double ups of
      * whitespace
-     * 
+     *
      * @param string
      * @return string that is stripped from double up whitespace and whitespace at
-     *         the end and start of the string
+     * the end and start of the string
      */
     public String clipExtraWhitespace(String string) {
 
@@ -274,6 +274,10 @@ public class TeamService {
         String filtered = string.trim().replaceAll("\\s+", " ");
         return filtered;
 
+    }
+
+    public List<String> getAllTeamNames() {
+        return teamRepository.getAllTeamNames();
     }
 
     public void setTeamMember(Team team, User user) {
@@ -299,4 +303,11 @@ public class TeamService {
         }
         return manager.getUserId() == userId;
     }
+
+    public boolean userRolesAreValid(List<String> userRoles) {
+        int numOfManagers = Collections.frequency(userRoles, Role.MANAGER.toString());
+        return ((numOfManagers > 0) && (numOfManagers <=3));
+    }
+
+    public List<Team> findTeamsWithUser(User user) {return teamRepository.findTeamsWithUser_List(user);}
 }

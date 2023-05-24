@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
+import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -14,6 +15,7 @@ import java.io.InputStream;
 
 import java.sql.Timestamp;
 import java.util.Base64;
+
 
 import java.util.*;
 
@@ -177,7 +179,15 @@ public class User {
 
     public String getPassword() {return hashedPassword; }
 
-    public void setPassword(String hashedPassword) { this.hashedPassword = hashedPassword; }
+    /**
+     * <p>Sets the user's password</p>
+     * <strong>THIS DOES NOT HASH THE PASSWORD!</strong>, you have to do it.
+     * 
+     * @param password The password string to be set.
+     */
+    public void setPassword(String password) {
+        this.hashedPassword = password;
+    }
 
     public void setEmail(String email) {
         this.email = email;
@@ -224,6 +234,10 @@ public class User {
      */
     public void confirmEmail() {
         this.emailConfirmed = true;
+    }
+
+    public boolean getConfirmEmail(){
+        return this.emailConfirmed;
     }
 
     @Column()
@@ -306,7 +320,7 @@ public class User {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Timestamp(calendar.getTime().getTime()));
         calendar.add(Calendar.HOUR, expiryTimeInHours);
-        this.expiryDate = new Date(calendar.getTime().getTime());
+        setExpiryDate(new Date(calendar.getTime().getTime()));
     }
 
     /**
@@ -331,8 +345,9 @@ public class User {
      */
 
     public void generateToken(UserService userService, int expiryHour) {
-        String token = generateToken();
+        String token = generateToken(); // generate random token
         while (userService.findByToken(token).isPresent()) {
+            // if this token is already taken, generate another one.  (Code will likely never get here)
             token = generateToken();
         }
         setToken(token);
@@ -346,8 +361,7 @@ public class User {
      */
     public void joinTeam(Team team) {
         this.joinedTeams.add(team);
-        team.getTeamMembers().add(this);
-        team.setMember(this);
+        team.setRole(this, Role.MEMBER);
     }
 
     public void leaveTeam(Team team) {
@@ -362,7 +376,6 @@ public class User {
     public void setJoinedTeams(Set<Team> teams) {
         this.joinedTeams = teams;
     }
-
 }
 
 

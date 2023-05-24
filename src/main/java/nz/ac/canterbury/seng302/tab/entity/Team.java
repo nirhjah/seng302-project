@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
@@ -42,10 +43,10 @@ public class Team {
     @Column()
     private LocalDateTime creationDate;
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
-    private List<TeamRole> teamRoles;
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<TeamRole> teamRoles = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "team_members",
             joinColumns = @JoinColumn(name = "team_id"),
@@ -64,7 +65,6 @@ public class Team {
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.token = generateToken();
-        this.teamRoles = new ArrayList<>();
         this.creationDate = LocalDateTime.now();
     }
 
@@ -88,7 +88,6 @@ public class Team {
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         // set the manager
-        this.teamRoles = new ArrayList<>();
         this.setManager(manager);
         this.creationDate = LocalDateTime.now();
     }
@@ -109,17 +108,6 @@ public class Team {
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.creationDate = LocalDateTime.now();
-        this.teamRoles = new ArrayList<>();
-    }
-
-    /**
-     * Returns true is user is a manager, false otherwise
-     * @param user The user in question
-     * @return true if user manages team, false otherwise
-     */
-    public boolean isManager(User user) {
-        // TODO: this is a facade and needs to be implemented
-        return true;
     }
 
     public Long getTeamId() {
@@ -197,21 +185,68 @@ public class Team {
         setToken(token);
     }
 
+    public Set<User> getTeamManagers() {
+        Set<User> managers = new HashSet<>();
+        for (var tRole: teamRoles) {
+            if (tRole.getRole() == Role.MANAGER) {
+                managers.add(tRole.getUser());
+            }
+        }
+        return managers;
+    }
+
+    public Set<User> getTeamCoaches() {
+        Set<User> coaches = new HashSet<>();
+        for (var tRole: teamRoles) {
+            if (tRole.getRole() == Role.COACH) {
+                coaches.add(tRole.getUser());
+            }
+        }
+        return coaches;
+    }
 
     /**
-     * @param user, the
-     * @param role
+     * Returns true is user is a manager, false otherwise
+     * @param user The user in question
+     * @return true if user manages team, false otherwise
+     */
+    public boolean isManager(User user) {
+        var userId = user.getUserId();
+        return getTeamManagers().stream().anyMatch((u) -> u.getUserId() == userId);
+    }
+
+    public boolean isCoach(User user) {
+        var userId = user.getUserId();
+        return getTeamCoaches().stream().anyMatch((u) -> u.getUserId() == userId);
+    }
+
+
+    /**
+     * Remove all team roles for this user.
+     * We should call this function if we are updating a user's role.
+     * @param user The user to remove the team roles for
+     *
+     */
+    private void removeTeamRoleForUser(User user) {
+        var id = user.getUserId();
+        teamRoles.removeIf(tRole -> tRole.getUser().getUserId() == id);
+    }
+
+    /**
+     * @param user, the User we are changing
+     * @param role the role we are changing to user to
      */
     public void setRole(User user, Role role) {
-
+        removeTeamRoleForUser(user);
         TeamRole teamRole = new TeamRole();
         teamRole.setUser(user);
         teamRole.setRole(role);
         teamRole.setTeam(this);
-        this.teamRoles.add(teamRole);
+        teamRoles.add(teamRole);
+        teamMembers.add(user);
     }
 
-    public List<TeamRole> getTeamRoleList() {
+    public Set<TeamRole> getTeamRoles() {
         return this.teamRoles;
     }
 
@@ -230,9 +265,4 @@ public class Team {
     public Set<User> getTeamMembers() {
         return teamMembers;
     }
-
-    public void setTeamMembers(Set<User> teamMembers) {
-        this.teamMembers = teamMembers;
-    }
-
 }

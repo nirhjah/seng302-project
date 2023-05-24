@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
@@ -21,16 +21,17 @@
                     </br>
                 </div>
                 </br>
-                <div class="file-upload">
+                <div class="file-upload" th:if="${isUserManagerOrCoach}">
                     <div class="file-label-border">
                         <label for="file" class="file-label">
                             Edit Profile Picture </label>
                     </div>
                     <input type="file" name="file" class="form-control-file" id="file">
+                    <input type="hidden" name="teamID" th:value="${teamID}">
                 </div>
             </form>
         </div>
-            <div class="join-token">
+            <div class="join-token" th:if="${isUserManagerOrCoach}">
                 <label> Join Token</label>
                 <div class="join-token-box-outer">
                     <a href="#" class="copy-token">

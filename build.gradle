@@ -2,6 +2,8 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.0.2'
 	id 'io.spring.dependency-management' version '1.1.0'
+	id 'jacoco'
+	id 'org.sonarqube' version '4.0.0.2929'
 }
 
 group = 'nz.ac.canterbury.seng302'
@@ -30,11 +32,10 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 
-	implementation "io.cucumber:cucumber-spring:7.5.0"
-	implementation "io.cucumber:cucumber-java:7.5.0"
-	implementation "com.microsoft.playwright:playwright:1.32.0"
-
-
+	implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.4'
+	testImplementation "io.cucumber:cucumber-spring:7.5.0"
+	testImplementation "io.cucumber:cucumber-java:7.5.0"
+	testImplementation "com.microsoft.playwright:playwright:1.32.0"
 }
 
 configurations {
@@ -79,6 +80,32 @@ tasks.register('end2end') {
 
 tasks.named('test') {
 	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+// Jacoco test coverage configuration
+jacoco {
+	toolVersion = "0.8.9"
+}
+
+// select what reports Jacoco generates and where to put them 
+jacocoTestReport {
+	reports {
+		xml.enabled true
+		xml.destination file("${buildDir}/jacoco/test-report.xml")
+		csv.enabled false
+		html.destination file("${buildDir}/jacoco/html")
+	}
+}
+
+sonarqube {
+	properties {
+		property "sonar.projectKey", "team-900"
+		property "sonar.projectName", "team 900"
+		property "sonar.sourceEncoding", "UTF-8"
+		property "sonar.host.url", "https://sonarqube.csse.canterbury.ac.nz"
+		property "sonar.login", "$System.env.SONARQUBE_TOKEN"
+	}
 }
 
 tasks.named("check") {

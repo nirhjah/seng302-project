@@ -7,38 +7,41 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <link th:href="@{/css/view-all.css}" rel="stylesheet">
     <link th:href="@{/css/view-activities.css}" rel="stylesheet">
-    <title th:text="selectedTeam != null ? 'Team Activities' : 'My Activities'"></title>
+    <title th:text="${selectedTeam != null} ? 'Team Activities' : 'My Activities'"></title>
 </head>
 <body class="profile-background">
-    <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
-    <div class="view-activities-form">
-        <div class="header">
-            <h1 th:text="selectedTeam != null ? 'Team Activities' : 'My Activities'"></h1>
-        </div>
-            <div class="wrapper-activities">
-                <ul class="activities-table">
-                    <li th:each="activity : ${activities}">
-                        <span class="title"><a th:href="@{profile(teamID=${activity.team.teamId})}" th:text="${activity.team != null} ? ${activity.team} : 'Personal'"></a></span>
-                        <span class="details" th:with="startDate=${#temporals.format(activity.activityStart, 'dd MMM yyyy')},
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+<div class="view-activities-form">
+    <div class="header">
+        <h1 th:text="${selectedTeam != null} ? 'Team Activities': 'My Activities'"></h1>
+    </div>
+    <div class="wrapper-activities">
+        <ul class="activities-table">
+            <li th:each="activity : ${activities}">
+                <span class="title"><a th:if="${activity.team!=null}" th:href="@{profile(teamID=${activity.team.teamId})}" th:text="${activity.team != null} ? ${activity.team.name} : 'Personal'"></a></span>
+                <span class="details" th:with="startDate=${#temporals.format(activity.activityStart, 'dd MMM yyyy')},
                                                             endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')},
                                                             startTime=${#temporals.format(activity.activityStart, 'hh:mma')},
                                                             endTime=${#temporals.format(activity.activityEnd, 'hh:mma')}"
-                              th:text="${activity.getActivityString} + ' • ' +
+                      th:text="${activity.activityType} + ' • ' +
                                     ${startDate} + (${startDate} != ${endDate} ? ' - ' + ${endDate} : '') + ' • ' +
                                     ${startTime} + ' - ' + ${endTime}">
                             </span>
-                        <span class="description" th:text="${activity.description}"></span>
-                    </li>
-                </ul>
-            </div>
-            <div th:insert="fragments/pagination.html :: pagination(pageName='view-team-activities')"></div>
-        <footer>
-            <p>
-                Image by <a
-                    href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
-                on Freepik
-            </p>
-        </footer>
+                <span class="description" th:text="${activity.description}"></span>
+                <a th:if="${(activity.team!=null && (activity.team.isManager(activity.activityOwner) || activity.team.isCoach(activity.activityOwner))) || activity.team==null}"
+                   th:href="@{createActivity(edit=${activity.id})}" type="button">Edit</a>
+
+            </li>
+        </ul>
     </div>
+    <div th:insert="fragments/pagination.html :: pagination(pageName='view-team-activities')"></div>
+    <footer>
+        <p>
+            Image by <a
+                href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+            on Freepik
+        </p>
+    </footer>
+</div>
 </body>
 </html>

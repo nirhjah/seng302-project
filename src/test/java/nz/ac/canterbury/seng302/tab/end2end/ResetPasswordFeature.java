@@ -22,7 +22,7 @@ public class ResetPasswordFeature {
 
     @When("I hit the lost password button")
     public void i_hit_the_lost_password_button() {
-        PlaywrightBrowser.page.locator("text=Forgot password").click();
+        PlaywrightBrowser.page.locator("text=Lost password").click();
     }
 
     @When("I enter an email with invalid format")
@@ -50,8 +50,8 @@ public class ResetPasswordFeature {
 
     @Then("A confirmation message tells me that an email was sent to the address if it was recognised")
     public void confirmation_message_tells_email_sent_to_address_if_recognised() {
-        PlaywrightBrowser.page.locator(".reset-password-info");
-        Assertions.assertEquals(PlaywrightBrowser.page.locator(".reset-password-info").textContent(), "If your email is registered with our system, you will receive a link to reset your password shortly.");
+        PlaywrightBrowser.page.locator("#reset-password-info-text");
+        Assertions.assertEquals(PlaywrightBrowser.page.locator("#reset-password-info-text").textContent(), "If your email is registered with our system, you will receive a link to reset your password shortly.");
     }
 
 }
