@@ -88,7 +88,6 @@ public class CreateTeamFormController {
 
         URL url = new URL(request.getRequestURL().toString());
         String path = (url.getPath() + "/..");
-        String protocolAndAuthority = String.format("%s://%s", url.getProtocol(), url.getAuthority());
         model.addAttribute("path", path);
 
         Team team;
