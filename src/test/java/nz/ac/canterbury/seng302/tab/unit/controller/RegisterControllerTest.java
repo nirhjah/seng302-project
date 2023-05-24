@@ -1,6 +1,6 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
-import static nz.ac.canterbury.seng302.tab.form.RegisterForm.getDummyRegisterForm;
+import static nz.ac.canterbury.seng302.tab.utility.RegisterTestUtil.getDummyRegisterForm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

@@ -21,27 +21,6 @@ public class RegisterForm {
     private static final String DUMMY_EMAIL = "myemail@gmail.com";
     private static final String DUMMY_PASSWORD = "Hello123$";
 
-    /**
-     * Generates a dummy register form.
-     * For testing purposes only!!!
-     * @return the dummy form to use in testing
-     */
-    public static RegisterForm getDummyRegisterForm() {
-        var form =  new RegisterForm();
-        Date d = new GregorianCalendar(2002-1900, Calendar.JULY, 5).getTime();
-        form.setCity("Christchurch");
-        form.setCountry("New Zealand");
-        form.setEmail(DUMMY_EMAIL);
-        form.setFirstName("Bobby");
-        form.setLastName("Johnson");
-        form.setPassword(DUMMY_PASSWORD);
-        form.setConfirmPassword(DUMMY_PASSWORD);
-        form.setSuburb("St Albans");
-        form.setAddressLine1("56 Mays Road");
-        form.setDateOfBirth(d);
-        return form;
-    }
-
     @UserFormValidators.NameValidator
     private String firstName;
 

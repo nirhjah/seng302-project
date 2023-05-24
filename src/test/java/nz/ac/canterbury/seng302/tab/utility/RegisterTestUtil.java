@@ -7,14 +7,15 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 public class RegisterTestUtil {
 
-    private static final String EMAIL = "myemail@gmail.com";
-    private static final String PASSWORD = "Hello123$";
+    private static final String DUMMY_EMAIL = "myemail@gmail.com";
+    private static final String DUMMY_PASSWORD = "Hello123$";
 
     /**
      * Generates a dummy register form.
@@ -23,15 +24,14 @@ public class RegisterTestUtil {
      */
     public static RegisterForm getDummyRegisterForm() {
         var form =  new RegisterForm();
+        Date d = new GregorianCalendar(2002-1900, Calendar.JULY, 5).getTime();
         form.setCity("Christchurch");
         form.setCountry("New Zealand");
-        form.setEmail(EMAIL);
+        form.setEmail(DUMMY_EMAIL);
         form.setFirstName("Bobby");
         form.setLastName("Johnson");
-        form.setPassword(PASSWORD);
-        form.setConfirmPassword(PASSWORD);
-        var d = new Date(2002-1900, Calendar.JULY, 5);
-        form.setPostcode("8052");
+        form.setPassword(DUMMY_PASSWORD);
+        form.setConfirmPassword(DUMMY_PASSWORD);
         form.setSuburb("St Albans");
         form.setAddressLine1("56 Mays Road");
         form.setDateOfBirth(d);

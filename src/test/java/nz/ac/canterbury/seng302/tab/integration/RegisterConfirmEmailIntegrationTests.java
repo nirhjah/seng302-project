@@ -68,7 +68,7 @@ public class RegisterConfirmEmailIntegrationTests {
     private EmailDetails sentMailContent;
 
     private RegisterForm getRegisterForm() {
-        var form = RegisterForm.getDummyRegisterForm();
+        var form = RegisterTestUtil.getDummyRegisterForm();
         form.setEmail(EMAIL);
         form.setPassword(PASSWORD);
         form.setConfirmPassword(PASSWORD);
