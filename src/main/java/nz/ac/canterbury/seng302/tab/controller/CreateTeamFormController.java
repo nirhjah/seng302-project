@@ -28,6 +28,7 @@ import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
+import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
 /**
  * Spring Boot Controller class for the Create Team Form
@@ -70,7 +71,7 @@ public class CreateTeamFormController {
             if (user.isPresent() && team.isManager(user.get())) {
                 team.generateToken(teamService);
                 teamService.updateTeam(team);
-                logger.info("POST /generateTeamToken, new token: " + team.getToken());
+                logger.info("POST /generateTeamToken, new token: {}", team.getToken());
             }
         }
         return String.format("redirect:./profile?teamID=%s", teamID);
@@ -84,6 +85,7 @@ public class CreateTeamFormController {
 
         logger.info("GET /createTeam");
         prefillModel(model);
+        
         model.addAttribute("httpServletRequest", request);
 
         URL url = new URL(request.getRequestURL().toString());
@@ -114,11 +116,8 @@ public class CreateTeamFormController {
 
         // client side validation
 
-        model.addAttribute("addressRegex", TeamService.ADDRESS_REGEX);
-        model.addAttribute("countryCitySuburbNameRegex", TeamService.COUNTRY_CITY_SUBURB_NAME_REGEX);
-        model.addAttribute("postcodeRegex", TeamService.POSTCODE_REGEX);
-        model.addAttribute("teamNameUnicodeRegex", TeamService.TEAM_NAME_UNICODE_REGEX);
-        model.addAttribute("sportUnicodeRegex", TeamService.SPORT_UNICODE_REGEX);
+        model.addAttribute("teamNameUnicodeRegex", TeamFormValidators.VALID_TEAM_NAME_REGEX);
+        model.addAttribute("sportUnicodeRegex", TeamFormValidators.VALID_TEAM_SPORT_REGEX);
 
         List<String> knownSports = sportService.getAllSportNames();
         model.addAttribute("knownSports", knownSports);
@@ -161,17 +160,15 @@ public class CreateTeamFormController {
 
         prefillModel(model);
         // client side validation
-        model.addAttribute("countryOrCityNameRegex", TeamService.COUNTRY_CITY_SUBURB_NAME_REGEX);
-        model.addAttribute("postcodeRegex", TeamService.POSTCODE_REGEX);
-        model.addAttribute("teamNameUnicodeRegex", TeamService.TEAM_NAME_UNICODE_REGEX);
-        model.addAttribute("sportUnicodeRegex", TeamService.SPORT_UNICODE_REGEX);
+        model.addAttribute("countryOrCityNameRegex", LocationValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
+        model.addAttribute("teamNameUnicodeRegex", TeamFormValidators.VALID_TEAM_NAME_REGEX);
+        model.addAttribute("sportUnicodeRegex", TeamFormValidators.VALID_TEAM_SPORT_REGEX);
         model.addAttribute("httpServletRequest", httpServletRequest);
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             logger.info("bad request");
             return "createTeamForm";
-            //return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
         }
 
 

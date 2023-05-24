@@ -5,6 +5,9 @@ import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
+import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,40 +30,10 @@ import java.util.Optional;
 @Service
 public class TeamService {
     Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private TeamRepository teamRepository;
 
-    /**
-     * Countries and cities can have letters from all alphabets, with hyphens,
-     * apostrophes and
-     * spaces. Must start with an alphabetical character
-     */
-    public static final String COUNTRY_CITY_SUBURB_NAME_REGEX = "^\\p{L}+[\\- '\\p{L}]*$";
-
-    /**
-     * Addresses can have letters, numbers, spaces, commas, periods, hyphens,
-     * forward slashes, apostrophes and pound signs. Must include
-     * at least one alphanumeric character
-     **/
-    public static final String ADDRESS_REGEX = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
-
-    /**
-     * Allow letters, numbers, forward slashes and hyphens. Must start with an
-     * alphanumeric character.
-     */
-    public static final String POSTCODE_REGEX = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
-
-    /**
-     * A team name can be alphanumeric, dots and curly braces. Must start with on
-     * alphabetical character
-     **/
-    public static final String TEAM_NAME_UNICODE_REGEX = "^[\\p{L}\\p{N}\\s]+[}{.\\p{L}\\p{N}\\s]+$";
-
-    /**
-     * A sport can be letters, space, apostrophes or hyphens. Must start with on
-     * alphabetical character
-     **/
-    public static final String SPORT_UNICODE_REGEX = "^\\p{L}+[\\- '\\p{L}]*$";
 
     public List<Team> getTeamList() {
         return teamRepository.findAll();
@@ -180,7 +153,7 @@ public class TeamService {
      * @return true if the sport is valid and matches the regex
      */
     public boolean isValidSport(String sport) {
-        return (sport.matches(SPORT_UNICODE_REGEX));
+        return (sport.matches(TeamFormValidators.VALID_TEAM_SPORT_REGEX));
     }
 
     /**
@@ -189,7 +162,7 @@ public class TeamService {
      */
     public boolean isValidTeamName(String name) {
 
-        return (name.matches(TEAM_NAME_UNICODE_REGEX));
+        return (name.matches(TeamFormValidators.VALID_TEAM_NAME_REGEX));
     }
 
     /**
@@ -199,7 +172,7 @@ public class TeamService {
      */
     public boolean isValidCountryCityName(String location) {
 
-        return (location.matches(COUNTRY_CITY_SUBURB_NAME_REGEX));
+        return (location.matches(LocationValidators.VALID_COUNTRY_SUBURB_CITY_REGEX));
     }
 
     /**
@@ -209,7 +182,7 @@ public class TeamService {
      */
     public boolean isValidSuburb(String suburb) {
 
-        return (suburb.matches(COUNTRY_CITY_SUBURB_NAME_REGEX) || suburb.isEmpty()); // suburbs can be empty
+        return (suburb.matches(LocationValidators.VALID_COUNTRY_SUBURB_CITY_REGEX) || suburb.isEmpty()); // suburbs can be empty
     }
 
     /**
@@ -219,7 +192,7 @@ public class TeamService {
      */
     public boolean isValidPostcode(String postcode) {
 
-        return (postcode.matches(POSTCODE_REGEX) || postcode.isEmpty());
+        return (postcode.matches(LocationValidators.VALID_POSTCODE_REGEX) || postcode.isEmpty());
     }
 
     /**
@@ -229,7 +202,7 @@ public class TeamService {
      */
     public boolean isValidAddressLine(String addressline) {
 
-        return (addressline.matches(ADDRESS_REGEX) || addressline.isEmpty());
+        return (addressline.matches(LocationValidators.VALID_ADDRESS_REGEX) || addressline.isEmpty());
     }
 
     /**

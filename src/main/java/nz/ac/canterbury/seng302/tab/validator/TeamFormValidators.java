@@ -18,11 +18,19 @@ public class TeamFormValidators {
 
     public static final String NOT_BLANK_MSG = "Field can't be blank";
 
+    /**
+     * A team name can be alphanumeric, dots and curly braces. Must start with on
+     * alphabetical character
+     */
     public static final String VALID_TEAM_NAME_REGEX = "^[\\p{L}\\p{N}\\s]+[}{.\\p{L}\\p{N}\\s]+$";
+    public static final String INVALID_TEAM_NAME_MSG = "May include letters, hyphens, apostrophes and spaces.";
 
+    /**
+     * A sport can be letters, space, apostrophes or hyphens. Must start with on
+     * alphabetical character
+     **/
     public static final String VALID_TEAM_SPORT_REGEX = "^\\p{L}+[\\- '\\p{L}]*$";
     public static final String INVALID_TEAM_SPORT_MSG = "May include letters, hyphens, apostrophes and spaces. Must start with letter";
-    public static final String INVALID_TEAM_NAME_MSG = "May include letters, hyphens, apostrophes and spaces. Must start with letter";
 
 
 

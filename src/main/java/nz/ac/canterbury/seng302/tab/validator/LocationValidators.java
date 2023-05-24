@@ -17,17 +17,31 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 public class LocationValidators {
 
-    public static final String INVALID_COUNTRY_SUBURB_CITY_MSG = "May include letters, hyphens, apostrophes and spaces. Must start with letter";
-
+    /**
+     * Addresses can have letters, numbers, spaces, commas, periods, hyphens,
+     * forward slashes, apostrophes and pound signs. Must include
+     * at least one alphanumeric character
+     */
     public static final String VALID_ADDRESS_REGEX = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
 
     public static final String INVALID_ADDRESS_MSG = "May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must start with letter or number";
-
+    
+    /**
+     * Allow letters, numbers, forward slashes and hyphens. Must start with an
+     * alphanumeric character.
+     */
     public static final String VALID_POSTCODE_REGEX = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
 
     public static final String INVALID_POSTCODE_MSG = "May include letters, numbers, forward slashes, and hyphens. Must start with letter or number";
-
+    
+    /**
+     * Countries and cities can have letters from all alphabets, with hyphens,
+     * apostrophes and
+     * spaces. Must start with an alphabetical character
+     */
     public static final String VALID_COUNTRY_SUBURB_CITY_REGEX = "^\\p{L}+[\\- '\\p{L}]*$";
+
+    public static final String INVALID_COUNTRY_SUBURB_CITY_MSG = "May include letters, hyphens, apostrophes and spaces. Must start with letter";
 
     public static final String NOT_BLANK_MSG = "Field can't be blank";
 
