@@ -7,7 +7,7 @@
   <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
   <link th:href="@{/css/styles.css}" rel="stylesheet">
   <link th:href="@{/css/profile.css}" rel="stylesheet">
-  <link th:href="@{/css/team-profile.css}" rel="stylesheet">
+  <link th:href="@{/css/view-activity.css}" rel="stylesheet">
   <title>View Activity</title>
 </head>
 <body class="profile-background">
@@ -29,18 +29,18 @@
 
     <div class="team-info">
       <div class="team-display">
-        <h2 th:text="${activity.activityType}"></h2>
+        <h2 class="activity-type" th:text="${activity.activityType}"></h2>
+        <span class="details" th:with="startDate=${#temporals.format(activity.activityStart, 'dd MMM yyyy')},
+                                                            endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')},
+                                                            startTime=${#temporals.format(activity.activityStart, 'hh:mma')},
+                                                            endTime=${#temporals.format(activity.activityEnd, 'hh:mma')}"
+              th:text="${startDate} + (${startDate} != ${endDate} ? ' - ' + ${endDate} : '') + ' • ' + ${startTime} + ' - ' + ${endTime}">
+                            </span>
+
+
         <div class="user-label">
           <img th:src="@{/image/icons/sports.svg}"/>
           <h3 th:text="|Team: ${activity.team}|"></h3>
-        </div>
-        <div class="user-label">
-          <img th:src="@{/image/icons/sports.svg}"/>
-          <h3 th:text="|Start date: ${activity.activityStart} |"></h3>
-        </div>
-        <div class="user-label">
-          <img th:src="@{/image/icons/sports.svg}"/>
-          <h3 th:text="|End date: ${activity.activityEnd} |"></h3>
         </div>
         <div class="user-label">
           <img th:src="@{/image/icons/location.svg}"/>

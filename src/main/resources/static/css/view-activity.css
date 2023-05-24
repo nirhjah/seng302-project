@@ -1,0 +1,58 @@
+.team-profile-form .wrapper-profile {
+    height: 430px;
+    width: 900px;
+}
+
+.wrapper-profile .team-info {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 5%;
+    left: 10%;
+    transition: 0.5s;
+}
+
+.details {
+    margin-left: 35%;
+}
+
+.activity-type {
+    display: inline-block;
+}
+
+/* width is ~ current width / 90 * 100 */
+@media (max-width: 1000px) {
+    .wrapper-profile {
+        width: 90vw !important;
+        display: block !important;
+    }
+}
+
+@media (max-width: 850px) {
+    .wrapper-profile {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 90vw !important;
+        height: unset !important;
+    }
+
+
+    .wrapper-profile .team-info {
+        width: 0% !important;
+        position: static !important;
+        padding-top: 0 !important;
+    }
+
+
+}
+
+
+
+
+
+
+
