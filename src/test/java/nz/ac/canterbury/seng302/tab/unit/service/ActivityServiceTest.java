@@ -72,6 +72,7 @@ public class ActivityServiceTest {
         LocalDateTime teamCreation = LocalDateTime.of(2022, 1,1, 10, 30);
         LocalDateTime start = LocalDateTime.of(2021, 1,1,6,30);
         LocalDateTime end = LocalDateTime.of(2021, 1,1,8,30);
+        Assertions.assertFalse(activityService.validateActivityDateTime(teamCreation, start, end));
     }
 
 }
