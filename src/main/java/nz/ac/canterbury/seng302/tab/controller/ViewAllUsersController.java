@@ -115,9 +115,6 @@ public class ViewAllUsersController {
             logger.info("Empty query string, empty sports list AND empty city list, returning all users...");
             return userService.getPaginatedUsers(pageable);
         } else {
-            logger.info("Query string: {}", nameQuery);
-            logger.info("Sports: {}", favSports);
-            logger.info("cities: {}", favCities);
             return userService.findUsersByNameOrSportOrCity(pageable, favSports, favCities, nameQuery);
         }
     }
