@@ -40,12 +40,6 @@ public class UserFormValidators {
 
     public static final String VALID_EMAIL_REGEX = "(?i)[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}";
     public static final String INVALID_NAME_MSG = "Contains Invalid characters";
-    public static final String VALID_COUNTRY_SUBURB_CITY_REGEX = "^\\p{L}+[\\- '\\p{L}]*$";
-    public static final String INVALID_COUNTRY_SUBURB_CITY_MSG = "Contains Invalid characters";
-    public static final String VALID_ADDRESS_REGEX = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
-    public static final String INVALID_ADDRESS_MSG = "Contains Invalid characters";
-    public static final String VALID_POSTCODE_REGEX = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
-    public static final String INVALID_POSTCODE_MSG = "Contains Invalid characters";
 
     /**
      * Checks that the provided name is valid.
@@ -129,128 +123,14 @@ public class UserFormValidators {
     /**/@Retention(RUNTIME)
     /**/@Constraint(validatedBy = PasswordCheck.class)
     /**/@Documented
-    @NotNull(message = NOT_BLANK_MSG)
+    @NotBlank(message = NOT_BLANK_MSG)
     public @interface PasswordValidator {
 
-        String message() default "Password does not meet the requirements";
+        String message() default WEAK_PASSWORD_MESSAGE;
 
         Class<?>[] groups() default {};
 
         Class<? extends Payload>[] payload() default {};
-    }
-
-
-    /**
-     * Checks that the provided country is valid.
-     * <ul>
-     * <li>Must not be blank (At least 1 non-whitespace)</li>
-     * <li>Can't be longer than 30 characters</li>
-     * <li>Can only contain letters, hyphens, and spaces</li>
-     * </ul>
-     */
-    /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
-    /**/@Retention(RUNTIME)
-    /**/@Constraint(validatedBy = { CountryCheck.class })
-    /**/@Documented
-    @NotBlank(message = NOT_BLANK_MSG)
-    public @interface countryValidator {
-        String message() default INVALID_COUNTRY_SUBURB_CITY_MSG;
-
-        Class<?>[] groups() default {};
-
-        Class<? extends Payload>[] payload() default {};
-
-    }
-
-    /**
-     * Checks that the provided city is valid.
-     * <ul>
-     * <li>Must not be blank (At least 1 non-whitespace)</li>
-     * <li>Can't be longer than 30 characters</li>
-     * <li>Can only contain letters, hyphens, and spaces</li>
-     * </ul>
-     */
-    /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
-    /**/@Retention(RUNTIME)
-    /**/@Constraint(validatedBy = { CityCheck.class })
-    /**/@Documented
-    @NotBlank(message = NOT_BLANK_MSG)
-    public @interface cityValidator {
-        String message() default INVALID_COUNTRY_SUBURB_CITY_MSG;
-
-        Class<?>[] groups() default {};
-
-        Class<? extends Payload>[] payload() default {};
-
-    }
-
-    /**
-     * Checks that the provided suburb is valid.
-     * <ul>
-     * <li>Must not be blank (At least 1 non-whitespace)</li>
-     * <li>Can't be longer than 30 characters</li>
-     * <li>Can only contain letters, hyphens, and spaces</li>
-     * </ul>
-     */
-    /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
-    /**/@Retention(RUNTIME)
-    /**/@Constraint(validatedBy = {})
-    /**/@Documented
-    @Size(max = 30)
-    @Pattern(regexp = "^$|" +VALID_COUNTRY_SUBURB_CITY_REGEX, message = INVALID_COUNTRY_SUBURB_CITY_MSG)
-    public @interface suburbValidator {
-        String message() default "";
-
-        Class<?>[] groups() default {};
-
-        Class<? extends Payload>[] payload() default {};
-
-    }
-
-    /**
-     * Checks that the provided address line is valid.
-     * <ul>
-     * <li>Must not be blank (At least 1 non-whitespace)</li>
-     * <li>Can't be longer than 30 characters</li>
-     * <li>Can only contain letters, hyphens, and spaces</li>
-     * </ul>
-     */
-    /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
-    /**/@Retention(RUNTIME)
-    /**/@Constraint(validatedBy = {})
-    /**/@Documented
-    @Size(max = 30)
-    @Pattern(regexp = "^$|" +VALID_ADDRESS_REGEX, message = INVALID_ADDRESS_MSG)
-    public @interface addressValidator {
-        String message() default "";
-
-        Class<?>[] groups() default {};
-
-        Class<? extends Payload>[] payload() default {};
-
-    }
-
-    /**
-     * Checks that the provided postcode line is valid.
-     * <ul>
-     * <li>Must not be blank (At least 1 non-whitespace)</li>
-     * <li>Can't be longer than 30 characters</li>
-     * <li>Can only contain letters, hyphens, and spaces</li>
-     * </ul>
-     */
-    /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
-    /**/@Retention(RUNTIME)
-    /**/@Constraint(validatedBy = {})
-    /**/@Documented
-    @Size(max = 30)
-    @Pattern(regexp = "^$|" +VALID_POSTCODE_REGEX, message = INVALID_POSTCODE_MSG)
-    public @interface postcodeValidator {
-        String message() default "";
-
-        Class<?>[] groups() default {};
-
-        Class<? extends Payload>[] payload() default {};
-
     }
 
 }

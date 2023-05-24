@@ -27,7 +27,7 @@ import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
-import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
+import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
 
 /**
  * Spring Boot Controller class for the Create Team Form
@@ -54,12 +54,12 @@ public class CreateTeamFormController {
      * @return thymeleaf createTeamForm
      */
     public void prefillModel(Model model) {
-        model.addAttribute("postcodeRegex", TeamFormValidators.VALID_POSTCODE_REGEX);
-        model.addAttribute("postcodeRegexMsg", TeamFormValidators.INVALID_POSTCODE_MSG);
-        model.addAttribute("addressRegex", TeamFormValidators.VALID_ADDRESS_REGEX);
-        model.addAttribute("addressRegexMsg", TeamFormValidators.INVALID_POSTCODE_MSG);
-        model.addAttribute("countryCitySuburbNameRegex", TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
-        model.addAttribute("countryCitySuburbNameRegexMsg", TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG);
+        model.addAttribute("postcodeRegex", LocationValidators.VALID_POSTCODE_REGEX);
+        model.addAttribute("postcodeRegexMsg", LocationValidators.INVALID_POSTCODE_MSG);
+        model.addAttribute("addressRegex", LocationValidators.VALID_ADDRESS_REGEX);
+        model.addAttribute("addressRegexMsg", LocationValidators.INVALID_POSTCODE_MSG);
+        model.addAttribute("countryCitySuburbNameRegex", LocationValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
+        model.addAttribute("countryCitySuburbNameRegexMsg", LocationValidators.INVALID_COUNTRY_SUBURB_CITY_MSG);
     }
 
     @PostMapping("/generateTeamToken")

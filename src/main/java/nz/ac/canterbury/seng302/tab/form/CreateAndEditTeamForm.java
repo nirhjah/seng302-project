@@ -11,6 +11,7 @@ public class CreateAndEditTeamForm {
 
     @TeamFormValidators.teamSportValidator(message = TeamFormValidators.INVALID_TEAM_SPORT_MSG)
     private String sport;
+
     @LocationValidators.addressValidator
     private String addressLine1;
 
@@ -20,10 +21,10 @@ public class CreateAndEditTeamForm {
     @LocationValidators.postcodeValidator
     private String postcode;
 
-    @LocationValidators.countryCitySuburbValidator(regexMatch = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
+    @LocationValidators.countryCitySuburbValidator(regexMatch = LocationValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = LocationValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
     private String country;
 
-    @LocationValidators.countryCitySuburbValidator(regexMatch = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
+    @LocationValidators.countryCitySuburbValidator(regexMatch = LocationValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = LocationValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
     private String city;
 
     @LocationValidators.suburbValidator

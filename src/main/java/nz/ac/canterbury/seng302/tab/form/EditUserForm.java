@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
+import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
 
 public class EditUserForm {
     @UserFormValidators.NameValidator
@@ -24,22 +25,22 @@ public class EditUserForm {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
 
-    @UserFormValidators.addressValidator
+    @LocationValidators.addressValidator
     private String addressLine1;
 
-    @UserFormValidators.addressValidator
+    @LocationValidators.addressValidator
     private String addressLine2;
 
-    @UserFormValidators.postcodeValidator
+    @LocationValidators.postcodeValidator
     private String postcode;
 
-    @UserFormValidators.countryValidator
+    @LocationValidators.countryCitySuburbValidator
     private String country;
 
-    @UserFormValidators.cityValidator
+    @LocationValidators.countryCitySuburbValidator
     private String city;
 
-    @UserFormValidators.suburbValidator
+    @LocationValidators.suburbValidator
     private String suburb;
 
     private List<Sport> favouriteSports;

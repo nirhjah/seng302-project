@@ -26,6 +26,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.EditUserForm;
 import nz.ac.canterbury.seng302.tab.service.UserService;
+import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
 import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -49,12 +50,12 @@ public class EditUserFormController {
     private void prefillModel(Model model) {
         model.addAttribute("validNameRegex", UserFormValidators.VALID_NAME_REGEX);
         model.addAttribute("validNameMessage", UserFormValidators.INVALID_NAME_MSG);
-        model.addAttribute("postcodeRegex",UserFormValidators.VALID_POSTCODE_REGEX);
-        model.addAttribute("postcodeRegexMsg",UserFormValidators.INVALID_POSTCODE_MSG);
-        model.addAttribute("addressRegex",UserFormValidators.VALID_ADDRESS_REGEX);
-        model.addAttribute("addressRegexMsg",UserFormValidators.INVALID_POSTCODE_MSG);
-        model.addAttribute("countryCitySuburbNameRegex",UserFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
-        model.addAttribute("countryCitySuburbNameRegexMsg",UserFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG);
+        model.addAttribute("postcodeRegex", LocationValidators.VALID_POSTCODE_REGEX);
+        model.addAttribute("postcodeRegexMsg", LocationValidators.INVALID_POSTCODE_MSG);
+        model.addAttribute("addressRegex", LocationValidators.VALID_ADDRESS_REGEX);
+        model.addAttribute("addressRegexMsg", LocationValidators.INVALID_POSTCODE_MSG);
+        model.addAttribute("countryCitySuburbNameRegex", LocationValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
+        model.addAttribute("countryCitySuburbNameRegexMsg", LocationValidators.INVALID_COUNTRY_SUBURB_CITY_MSG);
         model.addAttribute("navTeams", teamService.getTeamList());
     }
 

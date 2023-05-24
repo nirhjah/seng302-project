@@ -2,11 +2,13 @@ package nz.ac.canterbury.seng302.tab.form;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.validation.constraints.NotBlank;
 import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
+import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
 
 /**
  * The form provided to the user when registering for the website.
@@ -16,8 +18,8 @@ import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
  */
 public class RegisterForm {
 
-    private static final String EMAIL = "myemail@gmail.com";
-    private static final String PASSWORD = "Hello123$";
+    private static final String DUMMY_EMAIL = "myemail@gmail.com";
+    private static final String DUMMY_PASSWORD = "Hello123$";
 
     /**
      * Generates a dummy register form.
@@ -26,14 +28,14 @@ public class RegisterForm {
      */
     public static RegisterForm getDummyRegisterForm() {
         var form =  new RegisterForm();
+        Date d = new GregorianCalendar(2002-1900, Calendar.JULY, 5).getTime();
         form.setCity("Christchurch");
         form.setCountry("New Zealand");
-        form.setEmail(EMAIL);
+        form.setEmail(DUMMY_EMAIL);
         form.setFirstName("Bobby");
         form.setLastName("Johnson");
-        form.setPassword(PASSWORD);
-        form.setConfirmPassword(PASSWORD);
-        var d = new Date(2002-1900, Calendar.JULY, 5);
+        form.setPassword(DUMMY_PASSWORD);
+        form.setConfirmPassword(DUMMY_PASSWORD);
         form.setSuburb("St Albans");
         form.setAddressLine1("56 Mays Road");
         form.setDateOfBirth(d);
@@ -41,31 +43,30 @@ public class RegisterForm {
     }
 
     @UserFormValidators.NameValidator
-    String firstName;
+    private String firstName;
 
     @UserFormValidators.NameValidator
-    String lastName;
+    private String lastName;
 
     @UserFormValidators.EmailValidator
-    String email;
+    private String email;
 
-    @UserFormValidators.addressValidator
+    @LocationValidators.addressValidator
     private String addressLine1;
 
-    @UserFormValidators.addressValidator
+    @LocationValidators.addressValidator
     private String addressLine2;
 
-    @UserFormValidators.postcodeValidator
+    @LocationValidators.postcodeValidator
     private String postcode;
 
-    @UserFormValidators.countryValidator
+    @LocationValidators.countryCitySuburbValidator
     private String country;
 
-    @UserFormValidators.cityValidator
-
+    @LocationValidators.countryCitySuburbValidator
     private String city;
 
-    @UserFormValidators.suburbValidator
+    @LocationValidators.suburbValidator
     private String suburb;
 
     @UserFormValidators.DateOfBirthValidator(minimumAge = 13, message = "You must be at least 13 years old")
@@ -73,7 +74,6 @@ public class RegisterForm {
     Date dateOfBirth;
 
     @UserFormValidators.PasswordValidator
-    @NotBlank(message = UserFormValidators.NOT_BLANK_MSG)
     String password;
 
     @NotBlank(message = UserFormValidators.NOT_BLANK_MSG)

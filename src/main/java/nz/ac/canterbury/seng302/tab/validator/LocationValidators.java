@@ -45,7 +45,7 @@ public class LocationValidators {
     @Size(max = 30)
     public @interface countryCitySuburbValidator {
 
-        String regexMatch() default "^\\p{L}+[\\- '\\p{L}]*$";
+        String regexMatch() default VALID_COUNTRY_SUBURB_CITY_REGEX;
         String message() default "";
 
         Class<?>[] groups() default {};

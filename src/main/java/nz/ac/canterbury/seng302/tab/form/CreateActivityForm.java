@@ -4,7 +4,6 @@ import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
 import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
-import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
 import java.time.LocalDateTime;
 
@@ -33,10 +32,10 @@ public class CreateActivityForm {
     @LocationValidators.postcodeValidator
     private String postcode;
 
-    @LocationValidators.countryCitySuburbValidator(regexMatch = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
+    @LocationValidators.countryCitySuburbValidator(regexMatch = LocationValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = LocationValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
     private String country;
 
-    @LocationValidators.countryCitySuburbValidator(regexMatch = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
+    @LocationValidators.countryCitySuburbValidator(regexMatch = LocationValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = LocationValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
     private String city;
 
     @LocationValidators.suburbValidator
