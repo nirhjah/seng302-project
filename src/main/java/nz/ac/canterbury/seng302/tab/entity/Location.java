@@ -1,8 +1,6 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 
-import java.util.Objects;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -103,15 +101,9 @@ public class Location {
     }
 
     public String toString() {
-        String output = "";
-        int i = 1;
-        for (String value : new String[] {addressLine1, addressLine2, suburb, city, postcode, country}) {
-            if (value != null && value.length() > 0) {
-                output += value;
-                output += i > 2 && i < 6 ? ", " : " ";
-            }
-            i++;
-        }
-        return output;
+        return String.format(
+            "%s %s %s, %s, %s, %s",
+            addressLine1, addressLine2, suburb, city, postcode, country
+        );
     }
 }
