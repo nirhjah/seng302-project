@@ -319,7 +319,7 @@ public class TeamServiceTest {
 
     @Test
     public void ifNoTeam_getPaginatedTeam_returnsEmpty() {
-        Assertions.assertEquals(List.of(), teamService.findPaginated(1, 10));
+        Assertions.assertEquals(List.of(), teamService.findPaginated(1, 10).toList());
     }
 
     @Test
