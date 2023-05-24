@@ -31,6 +31,9 @@ public class LocationValidators {
 
     public static final String NOT_BLANK_MSG = "Field can't be blank";
 
+    // Add to the beginning of a regex to make it pass on empty strings
+    private static final String OPTIONAL_OR = "^$|";
+
 
 
     /**
@@ -43,10 +46,11 @@ public class LocationValidators {
     /**/@Documented
     @NotBlank(message = NOT_BLANK_MSG)
     @Size(max = 30)
-    public @interface countryCitySuburbValidator {
+    @Pattern(regexp = VALID_COUNTRY_SUBURB_CITY_REGEX, message = INVALID_COUNTRY_SUBURB_CITY_MSG)
+    public @interface countryCityValidator {
 
         String regexMatch() default VALID_COUNTRY_SUBURB_CITY_REGEX;
-        String message() default "";
+        String message() default INVALID_COUNTRY_SUBURB_CITY_MSG;
 
         Class<?>[] groups() default {};
 
@@ -54,6 +58,8 @@ public class LocationValidators {
     }
 
     /**
+     * <h3>Optional Field</h3>
+     * 
      * Checks that the provided address line is valid.
      * Can't be longer than 30 characters</li>
      * Can only contain letters, hyphens, and spaces</li>
@@ -63,7 +69,7 @@ public class LocationValidators {
     /**/@Constraint(validatedBy = {})
     /**/@Documented
     @Size(max = 30)
-    @Pattern(regexp = "^$|" +VALID_ADDRESS_REGEX, message = INVALID_ADDRESS_MSG)
+    @Pattern(regexp = OPTIONAL_OR + VALID_ADDRESS_REGEX, message = INVALID_ADDRESS_MSG)
     public @interface addressValidator {
         String message() default "";
 
@@ -74,6 +80,8 @@ public class LocationValidators {
     }
 
     /**
+     * <h3>Optional Field</h3>
+     * 
      * Checks that the provided suburb line is valid.
      * Can't be longer than 30 characters</li>
      */
@@ -82,7 +90,7 @@ public class LocationValidators {
     /**/@Constraint(validatedBy = {})
     /**/@Documented
     @Size(max = 30)
-    @Pattern(regexp = "^$|" +VALID_COUNTRY_SUBURB_CITY_REGEX, message = INVALID_COUNTRY_SUBURB_CITY_MSG)
+    @Pattern(regexp = OPTIONAL_OR + VALID_COUNTRY_SUBURB_CITY_REGEX, message = INVALID_COUNTRY_SUBURB_CITY_MSG)
     public @interface suburbValidator {
         String message() default "";
 
@@ -103,7 +111,7 @@ public class LocationValidators {
     /**/@Constraint(validatedBy = {})
     /**/@Documented
     @Size(max = 30)
-    @Pattern(regexp = "^$|" +VALID_POSTCODE_REGEX, message = INVALID_POSTCODE_MSG)
+    @Pattern(regexp = OPTIONAL_OR + VALID_POSTCODE_REGEX, message = INVALID_POSTCODE_MSG)
     public @interface postcodeValidator {
         String message() default "";
 

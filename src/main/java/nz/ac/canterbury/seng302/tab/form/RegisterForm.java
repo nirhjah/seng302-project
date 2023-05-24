@@ -60,10 +60,10 @@ public class RegisterForm {
     @LocationValidators.postcodeValidator
     private String postcode;
 
-    @LocationValidators.countryCitySuburbValidator
+    @LocationValidators.countryCityValidator
     private String country;
 
-    @LocationValidators.countryCitySuburbValidator
+    @LocationValidators.countryCityValidator
     private String city;
 
     @LocationValidators.suburbValidator

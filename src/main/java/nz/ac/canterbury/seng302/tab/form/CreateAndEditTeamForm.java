@@ -21,10 +21,10 @@ public class CreateAndEditTeamForm {
     @LocationValidators.postcodeValidator
     private String postcode;
 
-    @LocationValidators.countryCitySuburbValidator(regexMatch = LocationValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = LocationValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
+    @LocationValidators.countryCityValidator
     private String country;
 
-    @LocationValidators.countryCitySuburbValidator(regexMatch = LocationValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = LocationValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
+    @LocationValidators.countryCityValidator
     private String city;
 
     @LocationValidators.suburbValidator

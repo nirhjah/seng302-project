@@ -10,12 +10,12 @@ import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
  * <p>Implementation for the {@link TeamFormValidators} annotation.</p>
  * Checks whether the provided data is not empty and meets the regex.
  */
-public class CountryCitySuburbCheck implements ConstraintValidator<LocationValidators.countryCitySuburbValidator, String> {
+public class CountryCitySuburbCheck implements ConstraintValidator<LocationValidators.countryCityValidator, String> {
 
     private String regex;
 
     @Override
-    public void initialize(LocationValidators.countryCitySuburbValidator constraintAnnotation) {
+    public void initialize(LocationValidators.countryCityValidator constraintAnnotation) {
         this.regex = constraintAnnotation.regexMatch();
     }
 
