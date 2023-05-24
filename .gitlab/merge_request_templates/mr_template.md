@@ -1,18 +1,16 @@
-
 ## PLAN:
 
 - Story: 
 - Task:
 
-- Description:
-
+- Description / Important details for reviewer:
 
 
 
 -----------------------
 
 ## Required:
-- [ ] User manual updated?
+- [ ] User manual up to date?
 - [ ] Javadoc written?
 - [ ] No unused imports or unused code
 - [ ] Have you merged with origin/dev?
@@ -21,8 +19,7 @@
 - [ ] Integration tests written?
 - [ ] Unit tests written?
 - [ ] Manually tested, does it pass the ACs?
-- [ ] Link to user story: (link)
-- [ ] All local tests pass?
+- [ ] All local tests pass? (E2E, Integration, Unit)
 
 
 ## Code coverage screenshot:
