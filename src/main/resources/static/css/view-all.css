@@ -315,3 +315,15 @@ Join team modal styling
     background-clip: text;
     -webkit-background-clip: text;
 }
+
+
+.edit-button {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 1em;
+    color: #fff;
+    border-radius: 30px;
+    font-weight: bold;
+}

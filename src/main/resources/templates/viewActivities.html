@@ -28,8 +28,12 @@
                                     ${startTime} + ' - ' + ${endTime}">
                             </span>
                 <span class="description" th:text="${activity.description}"></span>
-                <a th:if="${(activity.team!=null && (activity.team.isManager(activity.activityOwner) || activity.team.isCoach(activity.activityOwner))) || activity.team==null}"
-                   th:href="@{createActivity(edit=${activity.id})}" type="button">Edit</a>
+                <div class="submit-button">
+                    <a th:if="${(activity.team!=null && (activity.team.isManager(activity.activityOwner) || activity.team.isCoach(activity.activityOwner))) || activity.team==null}"
+                       th:href="@{createActivity(edit=${activity.id})}" type="button">
+                        <button type="submit" >Edit</button>
+                        </a>
+                </div>
 
             </li>
         </ul>
