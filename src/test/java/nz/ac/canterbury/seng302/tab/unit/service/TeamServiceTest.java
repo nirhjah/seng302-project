@@ -329,11 +329,4 @@ public class TeamServiceTest {
         Assertions.assertEquals(List.of(team), teamService.findPaginated(1, 10).toList());
     }
 
-//    @Test
-//    public void givenUserHasCreatedATeam_whenTheyViewTheirTeam_thenAllTheirTeamsAreReturned() throws Exception {
-//        User u = new User("Test", "Account", "tab.team900@gmail.com", "password",
-//                new Location(null,null,null,"chch", null, "nz"));
-//
-//    }
-
 }
