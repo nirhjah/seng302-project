@@ -1,14 +1,12 @@
 package nz.ac.canterbury.seng302.tab.form;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.validation.constraints.NotBlank;
-import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
 import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
+import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
 
 /**
  * The form provided to the user when registering for the website.
@@ -17,9 +15,6 @@ import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
  * More complex validation is handled inside {@link UserFormValidators}
  */
 public class RegisterForm {
-
-    private static final String DUMMY_EMAIL = "myemail@gmail.com";
-    private static final String DUMMY_PASSWORD = "Hello123$";
 
     @UserFormValidators.NameValidator
     private String firstName;
