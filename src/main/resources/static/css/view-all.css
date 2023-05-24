@@ -129,9 +129,6 @@ table {
 
 .pagination-container {
     justify-content: center;
-}
-
-.pagination-container {
     list-style:none;
     display:flex;
     flex-direction:row;
