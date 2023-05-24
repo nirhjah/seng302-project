@@ -86,6 +86,64 @@ public class ActivityServiceTest {
         LocalDateTime end = LocalDateTime.of(2021, 1,1,8,30);
     }
 
+    /**
+     * A team is required for activity type game, therefore validation should return false if there is no team given.
+     */
+    @Test
+    public void ifNoTeamAndActivityTypeGame_ReturnFalse() {
+        Assertions.assertFalse(activityService.validateTeamSelection(Activity.ActivityType.Game, null));
+    }
+
+    /**
+     * A team is required for activity type friendly, therefore validation should return false if there is no team given.
+     */
+    @Test
+    public void ifNoTeamAndActivityTypeFriendly_ReturnFalse() {
+        Assertions.assertFalse(activityService.validateTeamSelection(Activity.ActivityType.Friendly, null));
+    }
+
+    /**
+     * A team is required for activity type friendly, therefore validation wil return true as a team is provided
+     * @throws IOException - thrown for creation of team due to profile picture.
+     */
+    @Test
+    public void ifTeamAndActivityTypeFriendly_ReturnTrue() throws IOException {
+        Team team = new Team("Team 900", "Programming");
+        Assertions.assertTrue(activityService.validateTeamSelection(Activity.ActivityType.Friendly, team));
+    }
+
+    /**
+     * A team is required for activity type ganr, therefore validation wil return true as a team is provided
+     * @throws IOException - thrown for creation of team due to profile picture.
+     */
+    @Test
+    public void ifTeamAndActivityTypeGame_ReturnTrue() throws IOException {
+        Team team = new Team("Team 900", "Programming");
+        Assertions.assertTrue(activityService.validateTeamSelection(Activity.ActivityType.Game, team));
+    }
+
+    /**
+     * A team is not required for activity type other, therefore validation will return true
+     * @throws IOException - thrown for creation of team due to profile picture.
+     */
+    @Test
+    public void ifTeamAndActivityTypeOther_ReturnTrue() throws IOException {
+        Team team = new Team("Team 900", "Programming");
+        Assertions.assertTrue(activityService.validateTeamSelection(Activity.ActivityType.Other, team));
+    }
+
+    /**
+     * A team is not required for activity type other, therefore validation will return true
+     */
+    @Test
+    public void ifNoTeamAndActivityTypeOther_ReturnTrue() {
+        Assertions.assertTrue(activityService.validateTeamSelection(Activity.ActivityType.Other, null));
+    }
+
+    /**
+     * Testing to see that if a team has no activities, an empty page is returned
+     * @throws Exception could be thrown by team creation due to profile picture encoding for database.
+     */
     @Test
     public void ifNoActivitiesForTeamReturnEmpty() throws IOException {
         Team t = new Team("Test Team", "Hockey");
@@ -93,6 +151,10 @@ public class ActivityServiceTest {
         Assertions.assertEquals(List.of(), activityService.getAllTeamActivitiesPage(t, 1, 10).toList());
     }
 
+    /**
+     * Testing to see that if a team has an activity, an page with only that activity is returned
+     * @throws Exception could be thrown by user or team creation due to profile picture encoding for database.
+     */
     @Test
     public void ifATeamHasActivites_ReturnsPageOfThem() throws Exception {
         Team t = new Team("Test Team", "Hockey");
@@ -106,8 +168,13 @@ public class ActivityServiceTest {
         Assertions.assertEquals(List.of(game), activityService.getAllTeamActivitiesPage(t, 1, 10).toList());
     }
 
+    /**
+     * Testing to see that if a team has an activity, and it's manager has activities, a page with only the is returned
+     * when the manager requests all activities
+     * @throws Exception could be thrown by user or team creation due to profile picture encoding for database.
+     */
     @Test
-    public void ifATeamHasActivitesAndUserHasPersonalActivities_OnlyReturnTeamActivities() throws Exception {
+    public void ifATeamHasActivitiesAndUserHasPersonalActivities_OnlyReturnTeamActivities() throws Exception {
         Team t = new Team("Test Team", "Hockey");
         teamRepository.save(t);
         User u = new User("Test", "Account", "tab.team900@gmail.com", "password", new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
@@ -122,6 +189,23 @@ public class ActivityServiceTest {
         activityRepository.save(game);
         activityRepository.save(training);
         Assertions.assertEquals(List.of(game), activityService.getAllTeamActivitiesPage(t, 1, 10).toList());
+    }
+
+    @Test
+    public void getActivityThatDoesNotExist_returnNull() {
+        Assertions.assertNull(activityService.findActivityById(-1L));
+    }
+
+    @Test
+    public void getActivityThatDoesExist_returnActivity() throws Exception {
+        User u = new User("Test", "Account", "tab.team900@gmail.com", "password",
+                new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
+        Activity training = new Activity(Activity.ActivityType.Training, null, "A Test Game",
+                LocalDateTime.of(2026, 1,1,6,30),
+                LocalDateTime.of(2026, 1,1,8,30), u,
+                new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
+        activityRepository.save(training);
+        Assertions.assertEquals(training, activityService.findActivityById(training.getId()));
     }
 
 }

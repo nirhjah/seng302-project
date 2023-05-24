@@ -105,15 +105,6 @@ public class ActivityService {
         }
     }
 
-    // /**
-    // *
-    // * @param team - the team
-    // * @return list of the teams activities
-    // **/
-    // public List<Activity> getAllTeamActivities(Team team) {
-    // return activityRepository.findByTeam(team);
-    // }
-
     public Page<Activity> getAllTeamActivitiesPage(Team team, int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         return activityRepository.findActivityByTeam(team, pageable);
