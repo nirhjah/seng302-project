@@ -71,6 +71,6 @@ public class LocationTest {
 
     @Test
     public void testGettingLocationString(){
-        assertEquals("addressline1 addressline2 suburb, city, postcode, country ", this.location.toString());
+        assertEquals("addressline1 addressline2 suburb, city, postcode, country", this.location.toString());
     }
 }
