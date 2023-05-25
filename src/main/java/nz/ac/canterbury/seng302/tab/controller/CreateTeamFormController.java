@@ -61,6 +61,10 @@ public class CreateTeamFormController {
         model.addAttribute("addressRegexMsg", LocationValidators.INVALID_POSTCODE_MSG);
         model.addAttribute("countryCitySuburbNameRegex", LocationValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
         model.addAttribute("countryCitySuburbNameRegexMsg", LocationValidators.INVALID_COUNTRY_SUBURB_CITY_MSG);
+        model.addAttribute("teamNameUnicodeRegex", TeamFormValidators.VALID_TEAM_NAME_REGEX);
+        model.addAttribute("sportUnicodeRegex", TeamFormValidators.VALID_TEAM_SPORT_REGEX);
+
+
     }
 
     @PostMapping("/generateTeamToken")
@@ -116,8 +120,6 @@ public class CreateTeamFormController {
 
         // client side validation
 
-        model.addAttribute("teamNameUnicodeRegex", TeamFormValidators.VALID_TEAM_NAME_REGEX);
-        model.addAttribute("sportUnicodeRegex", TeamFormValidators.VALID_TEAM_SPORT_REGEX);
 
         List<String> knownSports = sportService.getAllSportNames();
         model.addAttribute("knownSports", knownSports);
@@ -152,12 +154,7 @@ public class CreateTeamFormController {
             HttpServletRequest httpServletRequest) throws IOException {
         logger.info("POST /createTeam");
 
-
         prefillModel(model);
-        // client side validation
-        model.addAttribute("countryOrCityNameRegex", LocationValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
-        model.addAttribute("teamNameUnicodeRegex", TeamFormValidators.VALID_TEAM_NAME_REGEX);
-        model.addAttribute("sportUnicodeRegex", TeamFormValidators.VALID_TEAM_SPORT_REGEX);
         model.addAttribute("httpServletRequest", httpServletRequest);
 
         if (bindingResult.hasErrors()) {
