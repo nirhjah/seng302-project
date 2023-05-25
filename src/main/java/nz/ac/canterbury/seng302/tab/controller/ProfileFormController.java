@@ -75,7 +75,6 @@ public class ProfileFormController {
         model.addAttribute("isUserManagerOrCoach", team.isManager(user) || team.isCoach(user));
 
         // Rambling that's required for navBar.html
-        List<Team> teamList = teamService.getTeamList();
         model.addAttribute("httpServletRequest", request);
 
         return "profileForm";
