@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,32 +36,32 @@ public class TeamService {
      * apostrophes and
      * spaces. Must start with an alphabetical character
      */
-    public final String countryCitySuburbNameRegex = "^\\p{L}+[\\- '\\p{L}]*$";
+    public final String countryCitySuburbNameRegex = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX;
 
     /**
      * Addresses can have letters, numbers, spaces, commas, periods, hyphens,
      * forward slashes, apostrophes and pound signs. Must include
      * at least one alphanumeric character
      **/
-    public final String addressRegex = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
+    public final String addressRegex = TeamFormValidators.VALID_ADDRESS_REGEX;
 
     /**
      * Allow letters, numbers, forward slashes and hyphens. Must start with an
      * alphanumeric character.
      */
-    public final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
+    public final String postcodeRegex = TeamFormValidators.VALID_POSTCODE_REGEX;
 
     /**
      * A team name can be alphanumeric, dots and curly braces. Must start with on
      * alphabetical character
      **/
-    public final String teamNameUnicodeRegex = "^[\\p{L}\\p{N}\\s]+[}{.\\p{L}\\p{N}\\s]+$";
+    public final String teamNameUnicodeRegex = TeamFormValidators.VALID_TEAM_NAME_REGEX;
 
     /**
      * A sport can be letters, space, apostrophes or hyphens. Must start with on
      * alphabetical character
      **/
-    public final String sportUnicodeRegex = "^\\p{L}+[\\- '\\p{L}]*$";
+    public final String sportUnicodeRegex = TeamFormValidators.VALID_TEAM_SPORT_REGEX;
 
     public List<Team> getTeamList() {
         return teamRepository.findAll();
