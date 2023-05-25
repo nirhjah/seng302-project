@@ -29,7 +29,7 @@
                             </span>
                 <span class="description" th:text="${activity.description}"></span>
                 <div class="submit-button">
-                    <a th:if="${(activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}"
+                    <a th:if="${activity.team==null || (activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}"
                        th:href="@{createActivity(edit=${activity.id})}" type="button">
                         <button type="submit">Edit</button>
                         </a>
