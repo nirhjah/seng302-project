@@ -20,14 +20,10 @@ import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.LocationService;
 import nz.ac.canterbury.seng302.tab.service.SportService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 
 @Controller
 public class ViewAllUsersController {
-
-    @Autowired
-    TeamService teamService;
 
     @Autowired
     UserService userService;
@@ -75,7 +71,6 @@ public class ViewAllUsersController {
         model.addAttribute("listOfSports", userService.findSportBysearch(currentSearch).stream().map(Sport::getName).toList()); //nirhjah
         model.addAttribute("listOfCities", listOfCities);
         model.addAttribute("totalPages", userPage.getTotalPages());
-        model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("httpServletRequest",request);
         return "viewAllUsers";
     }

@@ -52,7 +52,6 @@ public class HomeFormController {
     public String getTemplate(Model model, HttpServletRequest request) {
         logger.info("GET /homeForm");
         model.addAttribute("httpServletRequest", request);
-        model.addAttribute("navTeams", teamService.getTeamList());
         return "homeForm";
     }
 }

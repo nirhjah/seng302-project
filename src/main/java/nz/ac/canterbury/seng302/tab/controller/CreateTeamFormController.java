@@ -121,7 +121,6 @@ public class CreateTeamFormController {
 
         List<String> knownSports = sportService.getAllSportNames();
         model.addAttribute("knownSports", knownSports);
-        model.addAttribute("navTeams", teamService.getTeamList());
         return "createTeamForm";
     }
 

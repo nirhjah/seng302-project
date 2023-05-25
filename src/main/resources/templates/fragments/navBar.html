@@ -40,7 +40,7 @@
                     <select class="form-control" id="dropDownList" name="teamSelector"
                             onchange="if(this.value != '-1') window.location.href = 'profile?teamID=' + this.value;">
                         <option value="-1" selected>Select a Team</option>
-                        <option th:each="team : ${navTeams}"
+                        <option th:each="team : ${G_navTeams}"
                                 th:value="${team.teamId}"
                                 th:text="${team}"
                                 th:selected="${team.teamId.equals(teamID)}"></option>

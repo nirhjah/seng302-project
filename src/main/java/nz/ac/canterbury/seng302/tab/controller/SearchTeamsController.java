@@ -1,7 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 /**
  * Spring Boot Controller class for Search Teams
  */
@@ -34,8 +31,6 @@ public class SearchTeamsController {
     @Autowired
     private TeamRepository teamRepository;
 
-    @Autowired
-    private UserService userService;
     
     private static final int PAGE_SIZE = 10;
 
@@ -93,7 +88,6 @@ public class SearchTeamsController {
             model.addAttribute("teamName", teamName);
             model.addAttribute("cities", cities);
         }
-        model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("notSearch", notSearch);
         return "searchTeamsForm";
     }

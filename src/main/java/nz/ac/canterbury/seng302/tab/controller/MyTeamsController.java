@@ -63,7 +63,6 @@ public class MyTeamsController {
         Optional<User> user = userService.getCurrentUser();
         User currentUser = user.get();
 
-        model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("page", pageNo);
 
         if (model.asMap().containsKey("formBindingResult"))

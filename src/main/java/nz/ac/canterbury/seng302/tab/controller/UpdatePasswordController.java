@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -19,7 +18,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.UpdatePasswordForm;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 
 /**
@@ -38,17 +36,13 @@ public class UpdatePasswordController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final UserService userService;
-    private final TeamService teamService;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
     public UpdatePasswordController(
         UserService userService,
-        TeamService teamService,
         PasswordEncoder passwordEncoder
     ) {
        this.userService = userService;
-       this.teamService = teamService;
        this.passwordEncoder = passwordEncoder; 
     }
 
@@ -65,7 +59,6 @@ public class UpdatePasswordController {
         model.addAttribute("user", user);
         // Everything else here shouldn't be here.
         model.addAttribute("httpServletRequest", request);
-        model.addAttribute("navTeams", teamService.getTeamList());
     }
 
     /**

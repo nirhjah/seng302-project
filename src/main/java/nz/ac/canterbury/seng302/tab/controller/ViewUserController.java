@@ -3,7 +3,6 @@ package nz.ac.canterbury.seng302.tab.controller;
 import java.util.Optional;
 
 import jakarta.servlet.http.HttpServletRequest;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +23,6 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 @Controller
 public class ViewUserController {
     Logger logger = LoggerFactory.getLogger(ViewUserController.class);
-
-    @Autowired
-    TeamService teamService;
 
     @Autowired
     UserService userService;
@@ -65,7 +61,6 @@ public class ViewUserController {
         model.addAttribute("dateOfBirth", user.get().getDateOfBirth());
         model.addAttribute("location", user.get().getLocation());
         model.addAttribute("displayPicture", userPicture);
-        model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("httpServletRequest", request);
 
         var curUser = userService.getCurrentUser();

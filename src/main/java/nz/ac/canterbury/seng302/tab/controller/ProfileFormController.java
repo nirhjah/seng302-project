@@ -76,7 +76,6 @@ public class ProfileFormController {
 
         // Rambling that's required for navBar.html
         List<Team> teamList = teamService.getTeamList();
-        model.addAttribute("navTeams", teamList);
         model.addAttribute("httpServletRequest", request);
 
         return "profileForm";

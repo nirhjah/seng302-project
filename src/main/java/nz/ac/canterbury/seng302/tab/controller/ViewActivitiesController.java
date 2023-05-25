@@ -1,11 +1,8 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
+import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,21 +14,21 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.service.ActivityService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 
 @Controller
 public class ViewActivitiesController {
     private static int maxPageSize = 10;
-    Logger logger = LoggerFactory.getLogger(ViewAllTeamsController.class);
+    Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private UserService userService;
     @Autowired
     private ActivityService activityService;
-    @Autowired
-    private TeamService teamService;
 
     /**
      * Gets viewAllActivities doc with required attributes. Reroutes if page out of available range
@@ -42,7 +39,7 @@ public class ViewActivitiesController {
      */
     @GetMapping("/view-activities")
     public String viewPageOfActivities(@RequestParam(value = "page", defaultValue = "-1") int pageNo,
-                                       Model model, HttpServletRequest request) throws IOException {
+                                       Model model, HttpServletRequest request) {
         Optional<User> user = userService.getCurrentUser();
         User currentUser = user.get();
 
@@ -59,15 +56,14 @@ public class ViewActivitiesController {
         Page<Activity> page = activityService.getPaginatedActivities(pageable,currentUser);
         System.out.println(page.getContent());
         List<Activity> listActivities = page.getContent();
-        model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("page", pageNo);
         model.addAttribute("totalPages", page.getTotalPages() == 0 ? 1 : page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
         model.addAttribute("activities", listActivities);
         model.addAttribute("currentUser", user);
-        logger.info("page number" + pageNo);
-        logger.info("total pages" + page.getTotalPages());
+        logger.info("page number {}", pageNo);
+        logger.info("total pages {}", page.getTotalPages());
 
         return "viewActivities";
     }
