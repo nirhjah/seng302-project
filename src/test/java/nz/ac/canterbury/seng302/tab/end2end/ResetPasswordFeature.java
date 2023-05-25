@@ -22,7 +22,7 @@ public class ResetPasswordFeature {
 
     @When("I hit the lost password button")
     public void i_hit_the_lost_password_button() {
-        PlaywrightBrowser.page.locator("text=Forgot password").click();
+        PlaywrightBrowser.page.locator("text=Lost password").click();
     }
 
     @When("I enter an email with invalid format")
