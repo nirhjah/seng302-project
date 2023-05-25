@@ -1,8 +1,11 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.service.LocationService;
+import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
@@ -32,6 +35,36 @@ public class ViewAllTeamsController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private LocationService locationService;
+
+    @Autowired
+    private SportService sportService;
+
+
+    private void populateModelBasics(Model model, User user, Page<Team> page) {
+        List<Team> listTeams = page.getContent();
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("displayPicture", user.getPictureString());
+        model.addAttribute("navTeams", teamService.getTeamList());
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("listOfTeams", listTeams);
+    }
+
+    private void populateFilterDropdowns(Model model) {
+        var sports = sportService.getAllSports();
+        var cities = locationService.getLocationList()
+                .stream()
+                .map((location) -> location.getCity())
+                .distinct()
+                .toList();
+
+        model.addAttribute("sports", sports);
+        model.addAttribute("cities", cities);
+    }
+
     /**
      * Gets viewAllTeams doc with required attributes. Reroutes if page out of available range or no teams in database
      * @param pageNo integer corresponding page to be displayed
@@ -39,8 +72,12 @@ public class ViewAllTeamsController {
      * @return thymeleaf viewAllTeams
      */
     @GetMapping("/view-teams")
-    public String findPaginated(@RequestParam(value = "page", defaultValue = "-1") int pageNo,
-                                Model model, HttpServletRequest request) {
+    public String findPaginated(
+            @RequestParam(value = "page", defaultValue = "-1") int pageNo,
+            @RequestParam(value = "currentSearch", defaultValue = "") String currentSearch,
+            @RequestParam(name = "sports", required=false) List<String> sports,
+            @RequestParam(name = "cities", required = false) List<String> cities,
+            Model model, HttpServletRequest request) {
         model.addAttribute("httpServletRequest",request);
         // If no teams exist in the database
         if (teamService.getTeamList().size() == 0) {
@@ -55,19 +92,21 @@ public class ViewAllTeamsController {
 
         logger.info("GET /view-teams");
 
+        Optional<User> opt = userService.getCurrentUser();
+        if (opt.isEmpty()) {
+            logger.info("GET /view-teams: getCurrentUser() failed!");
+            return "redirect:/home";
+        }
+        var user = opt.get();
+
         Page<Team> page = teamService.findPaginated(pageNo, maxPageSize);
 
-        List<Team> listTeams = page.getContent();
+        populateModelBasics(model, user, page);
+        populateFilterDropdowns(model);
 
-        Optional<User> user = userService.getCurrentUser();
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
-        model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("page", pageNo);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("totalItems", page.getTotalElements());
-        model.addAttribute("displayTeams", listTeams);
+        model.addAttribute("currentSearch", currentSearch);
+
         return "viewAllTeams";
     }
 }
