@@ -31,15 +31,20 @@
       <div class="team-display">
         <h2 class="activity-type" th:text="${activity.activityType}"></h2>
         <span class="details" th:with="startDate=${#temporals.format(activity.activityStart, 'dd MMM yyyy')},
-                                                            endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')},
-                                                            startTime=${#temporals.format(activity.activityStart, 'hh:mma')},
+                                                            endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')}"
+
+              th:text="${startDate} + (${startDate} != ${endDate} ? ' - ' + ${endDate} : '')">
+                            </span>
+        <br>
+        <span class="details" th:with="
+                                           startTime=${#temporals.format(activity.activityStart, 'hh:mma')},
                                                             endTime=${#temporals.format(activity.activityEnd, 'hh:mma')}"
-              th:text="${startDate} + (${startDate} != ${endDate} ? ' - ' + ${endDate} : '') + ' • ' + ${startTime} + ' - ' + ${endTime}">
+              th:text="${startTime} + ' - ' + ${endTime}">
                             </span>
 
 
         <div class="user-label">
-          <img th:src="@{/image/icons/name.svg}"/>
+          <img th:src="@{/image/icons/sports.svg}"/>
           <h3 th:text="|Team: ${activity.team}|"></h3>
         </div>
         <div class="user-label">

@@ -15,7 +15,9 @@
 }
 
 .details {
-    margin-left: 35%;
+    float: right;
+    margin-right: 20%;
+    margin-top: 2%;
 }
 
 .activity-type {
