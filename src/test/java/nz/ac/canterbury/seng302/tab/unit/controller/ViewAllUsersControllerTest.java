@@ -19,10 +19,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.helper.GenerateRandomUsers;
 import nz.ac.canterbury.seng302.tab.repository.SportRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -34,14 +32,10 @@ public class ViewAllUsersControllerTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private SportRepository sportRepository;
 
-    @Autowired
-    private GenerateRandomUsers generateRandomUsers;
 
     private User user;
 
