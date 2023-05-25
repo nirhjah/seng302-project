@@ -43,7 +43,18 @@ public class LocationValidators {
 
     public static final String INVALID_COUNTRY_SUBURB_CITY_MSG = "May include letters, hyphens, apostrophes and spaces. Must start with letter";
 
-    public static final String NOT_BLANK_MSG = "Field can't be blank";
+    public static final String NOT_BLANK_MSG = "Field cannot be empty";
+
+    /**
+     * This message is the "validator error message", as it is
+     * shorter and therefore fits on the page better.
+     * (The others may also have too much info for a user).
+     * 
+     * In addition, some controllers (CreateTeam, EditUser) use these
+     * more specific error for front-end validation failure as a little popup.
+     */
+    public static final String INVALID_CHARACTERS_MSG = "Field contains invalid values";
+
 
     // Add to the beginning of a regex to make it pass on empty strings
     private static final String OPTIONAL_OR = "^$|";
@@ -83,7 +94,7 @@ public class LocationValidators {
     /**/@Constraint(validatedBy = {})
     /**/@Documented
     @Size(max = 30)
-    @Pattern(regexp = OPTIONAL_OR + VALID_ADDRESS_REGEX, message = INVALID_ADDRESS_MSG)
+    @Pattern(regexp = OPTIONAL_OR + VALID_ADDRESS_REGEX, message = INVALID_CHARACTERS_MSG)
     public @interface addressValidator {
         String message() default "";
 
@@ -104,7 +115,7 @@ public class LocationValidators {
     /**/@Constraint(validatedBy = {})
     /**/@Documented
     @Size(max = 30)
-    @Pattern(regexp = OPTIONAL_OR + VALID_COUNTRY_SUBURB_CITY_REGEX, message = INVALID_COUNTRY_SUBURB_CITY_MSG)
+    @Pattern(regexp = OPTIONAL_OR + VALID_COUNTRY_SUBURB_CITY_REGEX, message = INVALID_CHARACTERS_MSG)
     public @interface suburbValidator {
         String message() default "";
 
@@ -125,7 +136,7 @@ public class LocationValidators {
     /**/@Constraint(validatedBy = {})
     /**/@Documented
     @Size(max = 30)
-    @Pattern(regexp = OPTIONAL_OR + VALID_POSTCODE_REGEX, message = INVALID_POSTCODE_MSG)
+    @Pattern(regexp = OPTIONAL_OR + VALID_POSTCODE_REGEX, message = INVALID_CHARACTERS_MSG)
     public @interface postcodeValidator {
         String message() default "";
 

@@ -6,18 +6,16 @@ import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
 public class CreateAndEditTeamForm {
 
-    @TeamFormValidators.teamNameValidator(message = TeamFormValidators.INVALID_TEAM_NAME_MSG)
+    @TeamFormValidators.teamNameValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG)
     private String name;
 
-    @TeamFormValidators.teamSportValidator(message = TeamFormValidators.INVALID_TEAM_SPORT_MSG)
+    @TeamFormValidators.teamSportValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG)
     private String sport;
 
     @LocationValidators.addressValidator
     private String addressLine1;
-
     @LocationValidators.addressValidator
     private String addressLine2;
-
     @LocationValidators.postcodeValidator
     private String postcode;
 
