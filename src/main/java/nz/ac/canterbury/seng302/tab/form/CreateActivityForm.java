@@ -33,10 +33,10 @@ public class CreateActivityForm {
     @LocationValidators.postcodeValidator
     private String postcode;
 
-    @LocationValidators.countryCitySuburbValidator(regexMatch = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
+    @LocationValidators.countryCitySuburbValidator(regexMatch = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = TeamFormValidators.INVALID_CHARACTERS_MSG)
     private String country;
 
-    @LocationValidators.countryCitySuburbValidator(regexMatch = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
+    @LocationValidators.countryCitySuburbValidator(regexMatch = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = TeamFormValidators.INVALID_CHARACTERS_MSG)
     private String city;
 
     @LocationValidators.suburbValidator

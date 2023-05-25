@@ -18,12 +18,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 public class TeamFormValidators {
 
-    public static final String NOT_BLANK_MSG = "Field can't be blank";
-
-    public static final String VALID_TEAM_NAME_REGEX = "^[\\p{L}\\p{N}\\s]+[}{.\\p{L}\\p{N}\\s]+$";
-    public static final String VALID_COUNTRY_SUBURB_CITY_REGEX = "^\\p{L}+[\\- '\\p{L}]*$";
-
-    public static final String VALID_TEAM_SPORT_REGEX = "^\\p{L}+[\\- '\\p{L}]*$";
+    public static final String NOT_BLANK_MSG = "Field cannot be empty";
+    public static final String INVALID_CHARACTERS_MSG = "Field contains invalid values";
+    public static final String VALID_TEAM_NAME_REGEX = "[\\p{L}\\p{N}\\{\\}\\. ]*$";
+    public static final String VALID_COUNTRY_SUBURB_CITY_REGEX = "[\\- '\\p{L}]*$";
+    public static final String VALID_TEAM_SPORT_REGEX = "[\\- '\\p{L}]*$";
     public static final String INVALID_TEAM_SPORT_MSG = "May include letters, hyphens, apostrophes and spaces. Must start with letter";
     public static final String INVALID_TEAM_NAME_MSG = "May include letters, hyphens, apostrophes and spaces. Must start with letter";
     public static final String INVALID_COUNTRY_SUBURB_CITY_MSG = "May include letters, hyphens, apostrophes and spaces. Must start with letter";
@@ -107,7 +106,7 @@ public class TeamFormValidators {
     /**/@Constraint(validatedBy = {})
     /**/@Documented
     @Size(max = 30)
-    @Pattern(regexp = "^$|" +VALID_ADDRESS_REGEX, message = INVALID_ADDRESS_MSG)
+    @Pattern(regexp = "^$|" +VALID_ADDRESS_REGEX, message = INVALID_CHARACTERS_MSG)
     public @interface addressValidator {
         String message() default "";
 
@@ -126,7 +125,7 @@ public class TeamFormValidators {
     /**/@Constraint(validatedBy = {})
     /**/@Documented
     @Size(max = 30)
-    @Pattern(regexp = "^$|" +VALID_COUNTRY_SUBURB_CITY_REGEX, message = INVALID_COUNTRY_SUBURB_CITY_MSG)
+    @Pattern(regexp = "^$|" +VALID_COUNTRY_SUBURB_CITY_REGEX, message = INVALID_CHARACTERS_MSG)
     public @interface suburbValidator {
         String message() default "";
 
@@ -147,7 +146,7 @@ public class TeamFormValidators {
     /**/@Constraint(validatedBy = {})
     /**/@Documented
     @Size(max = 30)
-    @Pattern(regexp = "^$|" +VALID_POSTCODE_REGEX, message = INVALID_POSTCODE_MSG)
+    @Pattern(regexp = "^$|" +VALID_POSTCODE_REGEX, message = INVALID_CHARACTERS_MSG)
     public @interface postcodeValidator {
         String message() default "";
 

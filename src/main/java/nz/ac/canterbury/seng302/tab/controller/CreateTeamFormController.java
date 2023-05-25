@@ -57,11 +57,11 @@ public class CreateTeamFormController {
      */
     public void prefillModel(Model model) {
         model.addAttribute("postcodeRegex", TeamFormValidators.VALID_POSTCODE_REGEX);
-        model.addAttribute("postcodeRegexMsg", TeamFormValidators.INVALID_POSTCODE_MSG);
+        model.addAttribute("postcodeRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
         model.addAttribute("addressRegex", TeamFormValidators.VALID_ADDRESS_REGEX);
-        model.addAttribute("addressRegexMsg", TeamFormValidators.INVALID_POSTCODE_MSG);
+        model.addAttribute("addressRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
         model.addAttribute("countryCitySuburbNameRegex", TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
-        model.addAttribute("countryCitySuburbNameRegexMsg", TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG);
+        model.addAttribute("countryCitySuburbNameRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
     }
 
     @PostMapping("/generateTeamToken")
@@ -80,7 +80,6 @@ public class CreateTeamFormController {
 
     @GetMapping("/createTeam")
     public String teamForm(@RequestParam(name = "edit", required = false) Long teamID,
-            @RequestParam(name = "invalid_input", defaultValue = "0") boolean invalidInput,
             Model model,
             HttpServletRequest request, CreateAndEditTeamForm createAndEditTeamForm) throws MalformedURLException {
 
@@ -110,18 +109,6 @@ public class CreateTeamFormController {
                 model.addAttribute("invalid_team", "Invalid team ID, creating a new team instead.");
             }
         }
-
-        if (invalidInput) {
-            model.addAttribute("invalid_input", "Invalid input.");
-        }
-
-        // client side validation
-
-        model.addAttribute("addressRegex", teamService.addressRegex);
-        model.addAttribute("countryCitySuburbNameRegex", teamService.countryCitySuburbNameRegex);
-        model.addAttribute("postcodeRegex", teamService.postcodeRegex);
-        model.addAttribute("teamNameUnicodeRegex", teamService.teamNameUnicodeRegex);
-        model.addAttribute("sportUnicodeRegex", teamService.sportUnicodeRegex);
 
         List<String> knownSports = sportService.getAllSportNames();
         model.addAttribute("knownSports", knownSports);
@@ -169,6 +156,12 @@ public class CreateTeamFormController {
         model.addAttribute("teamNameUnicodeRegex", teamService.teamNameUnicodeRegex);
         model.addAttribute("sportUnicodeRegex", teamService.sportUnicodeRegex);
         model.addAttribute("httpServletRequest", httpServletRequest);
+        Optional<User> user = userService.getCurrentUser();
+        model.addAttribute("firstName", user.get().getFirstName());
+        model.addAttribute("lastName", user.get().getLastName());
+        model.addAttribute("displayPicture", user.get().getPictureString());
+        model.addAttribute("navTeams", teamService.getTeamList());
+
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -189,9 +182,11 @@ public class CreateTeamFormController {
         String trimmedSuburb = teamService.clipExtraWhitespace(createAndEditTeamForm.getSuburb());
 
         // TeamService validation
-        if (!teamService.validateTeamRegistration(trimmedSport, trimmedName, trimmedCountry, trimmedCity,
-                trimmedPostcode, trimmedSuburb, trimmedAddressLine1, trimmedAddressLine2)) {
-            return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
+        if (bindingResult.hasErrors()) {
+            URL url = new URL(httpServletRequest.getRequestURL().toString());
+            String path = (url.getPath() + "/..");
+            model.addAttribute("path", path);
+            return "createTeam";
         }
 
         Location location = new Location(trimmedAddressLine1, trimmedAddressLine2, trimmedSuburb, trimmedCity,
