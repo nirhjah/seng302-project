@@ -38,6 +38,13 @@ public class ViewActivityController {
     @Autowired
     private UserService userService;
 
+    /**
+     *
+     * @param model      the model to be filled
+     * @param activityID the activity ID of the activity to be displayed on the page
+     * @param request    http request
+     * @return           view activity page
+     */
     @GetMapping("/view-activity")
     public String viewActivityPage(
             Model model,
