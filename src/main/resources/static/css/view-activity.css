@@ -16,13 +16,23 @@
 
 .details {
     float: right;
+    /*
     margin-right: 20%;
+    */
     margin-top: 2%;
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 600;
+    font-size: 22px;
+    color: #1B263B;
+    width: 344px;
 }
 
 .activity-type {
     display: inline-block;
 }
+
+
+
 
 /* width is ~ current width / 90 * 100 */
 @media (max-width: 1000px) {

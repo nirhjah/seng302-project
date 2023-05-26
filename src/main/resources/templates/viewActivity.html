@@ -30,21 +30,39 @@
     <div class="team-info">
       <div class="team-display">
         <h2 class="activity-type" th:text="${activity.activityType}"></h2>
-        <span class="details" th:with="startDate=${#temporals.format(activity.activityStart, 'dd MMM yyyy')},
+
+
+        <div class="test" style="float: right; margin-right: 80px">
+
+        <div class="user-label" style="margin-top: 10%; margin-left: 10%;">
+          <img  th:src="@{/image/icons/calendar.svg}"/>
+          <span class="details" th:with="startDate=${#temporals.format(activity.activityStart, 'dd MMM yyyy')},
                                                             endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')}"
 
-              th:text="${startDate} + (${startDate} != ${endDate} ? ' - ' + ${endDate} : '')">
+                th:text="${startDate} + (${startDate} != ${endDate} ? ' - ' + ${endDate} : '')">
                             </span>
-        <br>
-        <span class="details" th:with="
+
+        </div>
+
+        <div class="user-label" style="margin-left: 10%;">
+          <img  th:src="@{/image/icons/clock.svg}"/>
+          <span class="details" th:with="
                                            startTime=${#temporals.format(activity.activityStart, 'hh:mma')},
                                                             endTime=${#temporals.format(activity.activityEnd, 'hh:mma')}"
-              th:text="${startTime} + ' - ' + ${endTime}">
+                th:text="${startTime} + ' - ' + ${endTime}">
                             </span>
 
+        </div>
 
-        <div class="user-label">
-          <img th:src="@{/image/icons/sports.svg}"/>
+
+
+        </div>
+
+
+
+
+        <div class="user-label" th:if="${activity.team != null}">
+          <img th:src="@{/image/icons/name.svg}"/>
           <h3 th:text="|Team: ${activity.team}|"></h3>
         </div>
         <div class="user-label">
@@ -58,10 +76,14 @@
       </div>
 
 
-
-
   </div>
 
+<div class="profile-buttons">
+    <a th:if="${(activity.team!=null && (activity.team.isManager(activity.activityOwner) ||
+    activity.team.isCoach(activity.activityOwner))) || activity.team==null}" class="edit-button" th:href="@{createActivity(edit=${activity.id})}">
+      <button type="button">Edit Activity</button>
+    </a>
+</div>
 
   <footer>
     <p>
