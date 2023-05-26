@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 /**
  * Activity Statistics Entity
  */
+
+@Entity
 public class ActivityStatistics {
 
     @Id
@@ -22,7 +24,7 @@ public class ActivityStatistics {
     private User statisticPlayer;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_activityID", referencedColumnName = "Id")
+    @JoinColumn(name = "fk_activityID", referencedColumnName = "activityId")
     private Activity activity;
 
 
