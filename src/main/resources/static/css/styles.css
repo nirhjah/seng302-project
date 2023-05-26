@@ -281,7 +281,7 @@ input:invalid + label:after {
     font-family: "Noto Sans", sans-serif;
     font-weight: 300;
     color: red;
-    text-align: center;
+    text-align: left;
     font-style: italic;
 }
 .Welcome-header {
@@ -500,14 +500,6 @@ ul.autocomplete-result{
     top: 30px;
     right: 30px;
     object-fit: cover;
-}
-.team-error-message {
-    font-size: 13px;
-    font-family: "Noto Sans", sans-serif;
-    font-weight: 300;
-    color: red;
-    text-align: center;
-    width: 85%;
 }
 
 .password-error-message {
