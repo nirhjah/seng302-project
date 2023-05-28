@@ -13,7 +13,7 @@ import nz.ac.canterbury.seng302.tab.entity.Activity;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="fact_type",
         discriminatorType = DiscriminatorType.INTEGER)
-@DiscriminatorValue("null")
+@DiscriminatorValue("0")
 public class Fact {
 
     @Id
