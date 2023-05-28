@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.entity.Fact;
 
 import jakarta.persistence.*;
+import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
 /**
@@ -22,4 +23,9 @@ public class Goal extends Fact{
      * Empty Constructor for JPA
      **/
     public Goal() {}
+
+    public Goal(String description, String timeOfEvent, Activity activity, User scorer) {
+        super(description, timeOfEvent, activity);
+        this.scorer = scorer;
+    }
 }

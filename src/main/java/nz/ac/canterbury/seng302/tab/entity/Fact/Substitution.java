@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.entity.Fact;
 
 import jakarta.persistence.*;
+import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
 /**
@@ -25,4 +26,10 @@ public class Substitution extends Fact{
      * Empty Constructor for JPA
      **/
     public Substitution() {}
+
+    public Substitution(String description, String timeOfEvent, Activity activity, User playerOff, User playerOn) {
+        super(description, timeOfEvent, activity);
+        this.playerOff = playerOff;
+        this.playerOn = playerOn;
+    }
 }

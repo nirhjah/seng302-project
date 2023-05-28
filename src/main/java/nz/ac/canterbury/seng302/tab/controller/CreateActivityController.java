@@ -6,6 +6,7 @@ import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.form.CreateActivityForm;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -49,7 +50,7 @@ public class CreateActivityController {
      * Prefills the model with required values
      * @param model the model to be filled
      * @param httpServletRequest the request
-     * @throws MalformedURLException
+     * @throws MalformedURLException can be thrown by getting the path if invalid
      */
     public void prefillModel(Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
         Optional<User> user = userService.getCurrentUser();
@@ -65,7 +66,7 @@ public class CreateActivityController {
             }
         }
         model.addAttribute("teamList", teamList);
-        model.addAttribute("activityTypes", Activity.ActivityType.values());
+        model.addAttribute("activityTypes", ActivityType.values());
         URL url = new URL(httpServletRequest.getRequestURL().toString());
         String path = (url.getPath() + "/..");
         model.addAttribute("path", path);
@@ -146,7 +147,7 @@ public class CreateActivityController {
     @PostMapping("/createActivity")
     public String createActivity(
             @RequestParam(name = "actId", defaultValue = "-1") long actId,
-            @RequestParam(name = "activityType", required = false) Activity.ActivityType activityType,
+            @RequestParam(name = "activityType", required = false) ActivityType activityType,
             @RequestParam(name = "team", defaultValue = "-1") long teamId,
             @RequestParam(name="description", required = false) String description,
             @RequestParam(name="startDateTime", required = false) LocalDateTime startDateTime,

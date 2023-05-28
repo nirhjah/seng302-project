@@ -2,9 +2,6 @@ package nz.ac.canterbury.seng302.tab.entity.Fact;
 
 import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-
-import java.time.Period;
 
 /**
  * A fact is information about an activity
@@ -20,22 +17,25 @@ import java.time.Period;
 public class Fact {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long factID;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_activityID", referencedColumnName = "activityId")
     private Activity activity;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_teamID", referencedColumnName = "teamId")
-    private Team team;
-
     private String description;
 
-    private Period timeOfEvent;
+    private String timeOfEvent;
 
     /**
      * Empty Constructor for JPA
      **/
     public Fact() {}
+
+    public Fact(String description, String timeOfEvent, Activity activity) {
+        this.activity = activity;
+        this.description = description;
+        this.timeOfEvent = timeOfEvent;
+    }
 }
