@@ -1,8 +1,5 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 
@@ -25,7 +22,6 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.UpdatePasswordForm;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * User Story U22 - Update Password
@@ -93,7 +89,7 @@ public class UpdatePasswordController {
      * 
      * @param bindingResult      The Jakarta error object (mutable)
      * @param updatePasswordForm The form we're reading from
-     * @param hashedPassword     The current password of the current user
+     * @param user     The current user
      */
     private void validateForm(BindingResult bindingResult, UpdatePasswordForm updatePasswordForm,
             User user) {
