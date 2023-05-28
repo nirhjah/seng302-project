@@ -1,12 +1,11 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -48,9 +46,7 @@ public class UpdatePasswordController {
     private final TeamService teamService;
     private final PasswordEncoder passwordEncoder;
 
-    private Map<String, Boolean> passwordError= new HashMap<>();
 
-    private String testing;
 
     @Autowired
     public UpdatePasswordController(
@@ -141,8 +137,6 @@ public class UpdatePasswordController {
             UpdatePasswordForm updatePasswordForm,
             Model model,
             HttpServletRequest request) {
-        model.addAttribute("passwordError", passwordError);
-        model.addAttribute("testing",testing);
 
         // Get the currently logged in user
         Optional<User> currentUser = userService.getCurrentUser();
@@ -167,13 +161,12 @@ public class UpdatePasswordController {
      *                           (Makes testing easier)
      */
     @PostMapping("/update-password")
-    public String submitUpdatePassword(@RequestParam(name = "passwordError") String passwordErrorJson,
+    public String submitUpdatePassword(
             @Valid UpdatePasswordForm updatePasswordForm,
             BindingResult bindingResult,
             Model model,
             HttpServletRequest request,
-            HttpServletResponse response) throws JsonProcessingException {
-        logger.info(passwordErrorJson);
+            HttpServletResponse response){
 
 //        logger.info(passwordError.toString());
 
@@ -188,12 +181,6 @@ public class UpdatePasswordController {
         validateForm(bindingResult, updatePasswordForm, user);
         if (bindingResult.hasErrors()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            Map<String, Boolean> passwordError = null;
-//            passwordError = objectMapper.readValue(passwordErrorJson, new TypeReference<Map<String, Boolean>>() {});
-//            logger.info("passwordError: " + passwordError);
-
-            model.addAttribute("passwordError", passwordErrorJson);
 
             return "updatePassword";
         } else {
