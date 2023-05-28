@@ -61,19 +61,6 @@ public class RegisterController {
     }
 
     /**
-     * Countries and cities can have letters from all alphabets, with hyphens and
-     * spaces. Must start with an alphabetical character
-     */
-    private static final String countryCitySuburbNameRegex = "^\\p{L}+[\\- \\p{L}]*$";
-
-    /** Addresses can have letters, numbers, spaces, commas, periods, hyphens, forward slashes and pound signs. Must
-     * include at least one alphanumeric character **/
-    private static final String addressRegex = "^[\\p{L}\\p{N}]+[\\- ,./#\\p{L}\\p{N}]*$";
-
-    /** Allow letters, numbers, forward slashes and hyphens. Must start with an alphanumeric character. */
-    private static final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
-
-    /**
      * Checks if the email already exists
      * 
      * @param registerForm  The user form containing the email

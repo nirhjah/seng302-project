@@ -81,7 +81,7 @@ header .header-left .hamburger div {
     header .header-left nav {
         margin: 0;
         position: absolute;
-        top: -500%;
+        top: -600%;
         left: 0;
         width: 100vw;
         height: fit-content;
