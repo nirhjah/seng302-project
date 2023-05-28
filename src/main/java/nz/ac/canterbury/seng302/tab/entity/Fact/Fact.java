@@ -20,7 +20,7 @@ public class Fact {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long factID;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "fk_activityID", referencedColumnName = "activityId")
     private Activity activity;
 
