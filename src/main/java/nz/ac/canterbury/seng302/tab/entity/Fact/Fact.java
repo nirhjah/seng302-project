@@ -13,12 +13,22 @@ import nz.ac.canterbury.seng302.tab.entity.Activity;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="fact_type",
         discriminatorType = DiscriminatorType.INTEGER)
-@DiscriminatorValue("null")
+@DiscriminatorValue("0")
 public class Fact {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long factID;
+
+    /**
+     * By setting the fact type column as in attribute, it allows us to filter using the JPA queries
+     * By making them not insertable and not updatable means we can't interfere to change their values
+     * It allows the discriminator values to populate still though.
+     * This was adaptede from a simular question on stack over flow:
+     * https://stackoverflow.com/a/59306312
+     */
+    @Column(name = "fact_type", insertable=false, updatable = false)
+    private int factType;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_activityID", referencedColumnName = "activityId")
