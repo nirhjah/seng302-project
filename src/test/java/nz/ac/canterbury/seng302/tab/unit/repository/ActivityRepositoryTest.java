@@ -1,6 +1,8 @@
 package nz.ac.canterbury.seng302.tab.unit.repository;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -13,8 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -101,6 +103,27 @@ public class ActivityRepositoryTest {
         activityRepository.save(activity5);
         activityRepository.save(activity6);
         Assertions.assertEquals(activities, activityRepository.findActivitiesByUserSorted(PageRequest.of(0,10),user).getContent());
+    }
+
+    @Test
+    public void getActivityFacts() throws Exception {
+        Team team1 = new Team("ATeamName", "Sport");
+        User user = new User("Test", "Account", "testing@test.com", "Password1!",
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        User player = new User("Another", "Account", "account@test.com", "Password1!",
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity1 = new Activity(ActivityType.Game, team1, "First activity",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        List<Fact> factList = new ArrayList<>();
+        factList.add(new Substitution("Player was taken off", "1h", activity1, user, player));
+        factList.add(new Fact("We got 4 PCs", "2h", activity1));
+        activity1.addFactList(factList);
+        activityRepository.save(activity1);
+
+
+        Assertions.assertEquals(activity1.getFactList(), activityRepository.findById(activity1.getId()).get().getFactList());
     }
 
 
