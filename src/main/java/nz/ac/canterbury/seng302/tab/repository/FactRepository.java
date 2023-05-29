@@ -7,6 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface FactRepository extends CrudRepository<Fact, Long> {
-
     List<Fact> getFactByActivity(Activity activity);
+    List<Fact> getFactByFactTypeAndActivity(int factType, Activity activity);
 }
