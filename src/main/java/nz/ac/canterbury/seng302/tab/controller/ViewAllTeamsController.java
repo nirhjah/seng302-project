@@ -49,7 +49,7 @@ public class ViewAllTeamsController {
 
     private Page<Team> getTeamPage(int page, String currentSearch, List<String> cities, List<String> sports) {
         var pageable = getPageable(page);
-        return teamService.findPaginatedTeamsByCityAndSportsAndName(pageable, currentSearch, cities, sports);
+        return teamService.findPaginatedTeamsByCityAndSports(pageable, cities, sports, currentSearch);
     }
 
     private void populateModelBasics(Model model, User user, Page<Team> page) {

@@ -128,33 +128,21 @@ public class TeamService {
      * @return Page(s) of teams filtered by city/cities and sport/sports
      */
     public Page<Team> findPaginatedTeamsByCityAndSports(Pageable pageable, List<String> searchedLocations, List<String> searchedSports, String name) {
-
+        if (name == null) {
+            name = "liv";
+        }
         if (searchedLocations == null) {
-            searchedLocations = List.of();
+            searchedLocations = List.of("chch");
         } else {
             searchedLocations = searchedLocations.stream().map(String::toLowerCase).toList();
         }
 
         if (searchedSports == null) {
-            searchedSports = List.of();
+            searchedSports = List.of("soccer");
         } else {
             searchedSports = searchedSports.stream().map(String::toLowerCase).toList();
         }
         return teamRepository.findTeamByFilteredLocationsAndSports(pageable, searchedLocations, searchedSports, name);
-    }
-
-    /**
-     * Utilizes JPA to find paginated teams by city, sports, and teamName.
-     * @param pageable the pageable object to pass in
-     * @param name the team name
-     * @param cities list of cities
-     * @param sports list of sports
-     * @return Page of teams
-     */
-    public Page<Team> findPaginatedTeamsByCityAndSportsAndName(Pageable pageable, String name, List<String> cities, List<String> sports) {
-        cities = (cities.stream()).map(String::toLowerCase).toList();
-        sports = (sports.stream()).map(String::toLowerCase).toList();
-        return teamRepository.findByNameLikeAndSportInAndLocationCityIn(pageable, name, sports, cities);
     }
 
     /**
