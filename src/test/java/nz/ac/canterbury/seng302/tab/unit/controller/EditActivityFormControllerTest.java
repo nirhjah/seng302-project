@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,6 @@ import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
@@ -92,7 +92,7 @@ public class EditActivityFormControllerTest {
         LocalDateTime end = LocalDateTime.of(2023, 7,1,8,30);
         Location activityLocation = new Location(ACTVITY_ADDRESS_LINE_1, ACTVITY_ADDRESS_LINE_2, ACTVITY_SUBURB,
                 ACTVITY_CITY, ACTVITY_POSTCODE, ACTVITY_COUNTRY);
-        activity= new Activity(Activity.ActivityType.Game,team, "testing the description",start,end,testUser, activityLocation);
+        activity= new Activity(ActivityType.Game,team, "testing the description",start,end,testUser, activityLocation);
 
         when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
@@ -120,7 +120,7 @@ public class EditActivityFormControllerTest {
 
         mockMvc.perform(post("/createActivity")
                         .param("actId", String.valueOf(ACT_ID))
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-07-01T10:00:00")
@@ -144,7 +144,7 @@ public class EditActivityFormControllerTest {
 
         mockMvc.perform(post("/createActivity")
                         .param("actId", String.valueOf(ACT_ID))
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -166,7 +166,7 @@ public class EditActivityFormControllerTest {
 
         mockMvc.perform(post("/createActivity")
                         .param("actId", String.valueOf(ACT_ID))
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "")
@@ -188,7 +188,7 @@ public class EditActivityFormControllerTest {
 
         mockMvc.perform(post("/createActivity")
                         .param("actId", String.valueOf(ACT_ID))
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -212,7 +212,7 @@ public class EditActivityFormControllerTest {
 
         mockMvc.perform(post("/createActivity")
                         .param("actId", String.valueOf(ACT_ID))
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", INVALID_TEAM_ID.toString())
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -234,7 +234,7 @@ public class EditActivityFormControllerTest {
 
         mockMvc.perform(post("/createActivity")
                         .param("actId", String.valueOf(ACT_ID))
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -256,7 +256,7 @@ public class EditActivityFormControllerTest {
 
         mockMvc.perform(post("/createActivity")
                         .param("actId", String.valueOf(ACT_ID))
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -278,7 +278,7 @@ public class EditActivityFormControllerTest {
 
         mockMvc.perform(post("/createActivity")
                         .param("actId", String.valueOf(ACT_ID))
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -300,7 +300,7 @@ public class EditActivityFormControllerTest {
 
         mockMvc.perform(post("/createActivity")
                         .param("actId", String.valueOf(ACT_ID))
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -322,7 +322,7 @@ public class EditActivityFormControllerTest {
 
         mockMvc.perform(post("/createActivity")
                         .param("actId", String.valueOf(ACT_ID))
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -344,7 +344,7 @@ public class EditActivityFormControllerTest {
 
         mockMvc.perform(post("/createActivity")
                         .param("actId", String.valueOf(ACT_ID))
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -366,7 +366,7 @@ public class EditActivityFormControllerTest {
 
         mockMvc.perform(post("/createActivity")
                         .param("actId", String.valueOf(ACT_ID))
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -388,7 +388,7 @@ public class EditActivityFormControllerTest {
 
         mockMvc.perform(post("/createActivity")
                         .param("actId", String.valueOf(ACT_ID))
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -423,7 +423,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.updateOrAddActivity(any())).thenReturn(activity);
 
         mockMvc.perform(post("/createActivity")
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-07-01T10:00:00")
@@ -443,7 +443,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
         mockMvc.perform(post("/createActivity")
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -463,7 +463,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
         mockMvc.perform(post("/createActivity")
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "")
@@ -483,7 +483,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
         mockMvc.perform(post("/createActivity")
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -505,7 +505,7 @@ public class EditActivityFormControllerTest {
         when(mockTeamService.getTeam(INVALID_TEAM_ID)).thenReturn(null);
 
         mockMvc.perform(post("/createActivity")
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", INVALID_TEAM_ID.toString())
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -525,7 +525,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
         mockMvc.perform(post("/createActivity")
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -545,7 +545,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
         mockMvc.perform(post("/createActivity")
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -565,7 +565,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
         mockMvc.perform(post("/createActivity")
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -585,7 +585,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
         mockMvc.perform(post("/createActivity")
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -605,7 +605,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
         mockMvc.perform(post("/createActivity")
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -625,7 +625,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
         mockMvc.perform(post("/createActivity")
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -645,7 +645,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
         mockMvc.perform(post("/createActivity")
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
@@ -665,7 +665,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
         mockMvc.perform(post("/createActivity")
-                        .param("activityType", String.valueOf(Activity.ActivityType.Training))
+                        .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-01-01T10:00:00")
