@@ -128,17 +128,14 @@ public class TeamService {
      * @return Page(s) of teams filtered by city/cities and sport/sports
      */
     public Page<Team> findPaginatedTeamsByCityAndSports(Pageable pageable, List<String> searchedLocations, List<String> searchedSports, String name) {
-        if (name == null) {
-            name = "liv";
-        }
         if (searchedLocations == null) {
-            searchedLocations = List.of("chch");
+            searchedLocations = List.of();
         } else {
             searchedLocations = searchedLocations.stream().map(String::toLowerCase).toList();
         }
 
         if (searchedSports == null) {
-            searchedSports = List.of("soccer");
+            searchedSports = List.of();
         } else {
             searchedSports = searchedSports.stream().map(String::toLowerCase).toList();
         }
