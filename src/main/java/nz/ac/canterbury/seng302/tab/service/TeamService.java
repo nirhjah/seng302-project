@@ -32,9 +32,6 @@ public class TeamService {
     @Autowired
     private TeamRepository teamRepository;
 
-    public static final Sort SORT_BY_TEAM_NAME = Sort.by(
-            Sort.Order.asc("name").ignoreCase()
-    );
 
     /**
      * Countries and cities can have letters from all alphabets, with hyphens,

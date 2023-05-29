@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,8 +28,13 @@ import java.util.Optional;
  */
 @Controller
 public class ViewAllTeamsController {
-
     private static final int MAX_PAGE_SIZE = 10;
+
+    public static final Sort SORT_BY_TEAM_NAME = Sort.by(
+            Sort.Order.asc("name").ignoreCase(),
+            Sort.Order.asc("location.city").ignoreCase()
+    );
+
     Logger logger = LoggerFactory.getLogger(ViewAllTeamsController.class);
 
     @Autowired
@@ -44,7 +50,7 @@ public class ViewAllTeamsController {
     private SportService sportService;
 
     private Pageable getPageable(int page) {
-        return PageRequest.of(page, MAX_PAGE_SIZE, TeamService.SORT_BY_TEAM_NAME);
+        return PageRequest.of(page, MAX_PAGE_SIZE, SORT_BY_TEAM_NAME);
     }
 
     private Page<Team> getTeamPage(int page, String currentSearch, List<String> cities, List<String> sports) {
