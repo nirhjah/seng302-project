@@ -1,9 +1,12 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,17 +15,6 @@ import java.util.Objects;
  */
 @Entity(name = "Activity")
 public class Activity {
-
-    /**
-     * Enum of all possible activity types
-     */
-    public enum ActivityType {
-        Game,
-        Friendly,
-        Training,
-        Competition,
-        Other
-    }
 
     public ActivityType[] getActivityTypes() {return ActivityType.values();}
     @Id
@@ -54,6 +46,9 @@ public class Activity {
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
+
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL)
+    private List<Fact> activityFacts;
 
     @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
     ///@CollectionTable(name = "activityScore", joinColumns = @JoinColumn(name = "library_id"))
@@ -143,6 +138,12 @@ public class Activity {
     public User getActivityOwner(){
         return this.activityOwner;
     }
+
+    public void addFactList(List<Fact> factList) { this.activityFacts = factList;}
+
+    public List<Fact> getFactList() {return this.activityFacts; }
+
+    public void addFactToFactList(Fact fact) {this.activityFacts.add(fact); }
 
 
     public List<String> getActivityScore() { return this.activityScore; }
