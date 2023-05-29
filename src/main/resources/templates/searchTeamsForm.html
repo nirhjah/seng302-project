@@ -1,3 +1,7 @@
+<!-- TODO: THIS FORM IS DUE FOR DELETION!!!
+      It's all gonna be done in viewAllTeams.html -->
+
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
@@ -21,7 +25,7 @@
       <div class="filter-bar">
         <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cityCheckbox')}" th:if="${not #lists.isEmpty(teams)}"></div>
         <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(teams)}"></div>
-        <button class="filter-by-city-button" type="submit">Apply Filters</button>
+        <button class="apply-filters-button" type="submit">Apply Filters</button>
       </div>
     </div>
   </form>
