@@ -51,7 +51,6 @@ public class Activity {
     private List<Fact> activityFacts;
 
     @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
-    ///@CollectionTable(name = "activityScore", joinColumns = @JoinColumn(name = "library_id"))
     @Column(name = "activityScore", nullable = false)
     private List<String> activityScore;
 

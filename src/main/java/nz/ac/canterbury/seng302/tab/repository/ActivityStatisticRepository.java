@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.repository;
 
+import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.ActivityStatistics;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -13,6 +14,8 @@ public interface ActivityStatisticRepository extends CrudRepository<ActivityStat
     Optional<ActivityStatistics> findById(long id);
 
     List<ActivityStatistics> findAll();
+
+    ActivityStatistics findActivityStatisticsByActivity(Activity activity);
 
 
 }
