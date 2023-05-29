@@ -24,9 +24,15 @@
     width: 65%;
 }
 
-.login-form .wrapper, .forgotPassword-form .wrapper {
+.login-form .wrapper {
     width: 500px;
     height: 440px;
+}
+
+
+.forgotPassword-form .wrapper {
+    width: 500px;
+    height: 500px;
 }
 
 .message-dropdown-container {
