@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +31,10 @@ public class TeamService {
     Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private TeamRepository teamRepository;
+
+    public static final Sort SORT_BY_TEAM_NAME = Sort.by(
+            Sort.Order.asc("name").ignoreCase()
+    );
 
     /**
      * Countries and cities can have letters from all alphabets, with hyphens,
@@ -136,6 +141,10 @@ public class TeamService {
             searchedSports = searchedSports.stream().map(String::toLowerCase).toList();
         }
         return teamRepository.findTeamByFilteredLocationsAndSports(pageable, searchedLocations, searchedSports, name);
+    }
+
+    public Page<Team> findPaginatedTeamsByCityAndSportsAndName(Pageable pageable, String name, List<String> cities, List<String> sports) {
+        return teamRepository.findByNameLikeAndSportInAndLocationCityIn(pageable, name, sports, cities);
     }
 
     /**
