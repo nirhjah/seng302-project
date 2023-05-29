@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.LocationService;
@@ -73,7 +74,7 @@ public class ViewAllTeamsController {
         var sports = sportService.getAllSports();
         var cities = locationService.getLocationList()
                 .stream()
-                .map((location) -> location.getCity())
+                .map(Location::getCity)
                 .distinct()
                 .toList();
 
@@ -89,33 +90,41 @@ public class ViewAllTeamsController {
      */
     @GetMapping("/view-teams")
     public String findPaginated(
-            @RequestParam(value = "page", defaultValue = "-1") int pageNo,
-            @RequestParam(value = "currentSearch", required = false) String currentSearch,
-            @RequestParam(name = "sports", required=false) List<String> sports,
+            @RequestParam(name = "page", defaultValue = "1") int pageNo,
+            @RequestParam(name = "currentSearch", required = false) String currentSearch,
+            @RequestParam(name = "sports", required = false) List<String> sports,
             @RequestParam(name = "cities", required = false) List<String> cities,
             Model model, HttpServletRequest request) {
-        model.addAttribute("httpServletRequest",request);
+        logger.info("GET /view-teams");
+        model.addAttribute("httpServletRequest", request);
+        
         // If no teams exist in the database
-        if (teamService.getTeamList().size() == 0) {
+        if (teamService.getNumberOfTeams() == 0) {
             return "redirect:/home";
         }
 
-        // If page number outside of page range then reloads page with appropriate number
-        if (pageNo < 1 || pageNo > teamService.findPaginated(pageNo, MAX_PAGE_SIZE).getTotalPages() && teamService.findPaginated(pageNo, MAX_PAGE_SIZE).getTotalPages() > 0) {
-            pageNo = pageNo < 1 ? 1: teamService.findPaginated(pageNo, MAX_PAGE_SIZE).getTotalPages();
-            return "redirect:/view-teams?page=" + pageNo;
+        // Internally, pagination starts at 0 (page 0 is the first)
+        // However, we want it to start at 1 for the user.
+        pageNo -= 1;
+        // If the page number is valid, reload the page with a new clamped number
+        if (pageNo < 0) {
+            // Too low
+            return "redirect:view-teams?page=1";
         }
-
-        logger.info("GET /view-teams");
+        Page<Team> page = getTeamPage(pageNo, currentSearch, cities, sports);
+        if (page.getTotalPages() != 0 && pageNo > page.getTotalPages()) {
+            // Too high
+            pageNo = page.getTotalPages() + 1;
+            return "redirect:view-teams?page=" + pageNo;
+        }
 
         Optional<User> opt = userService.getCurrentUser();
         if (opt.isEmpty()) {
             logger.info("GET /view-teams: getCurrentUser() failed!");
-            return "redirect:/home";
+            return "redirect:login";
         }
         var user = opt.get();
 
-        Page<Team> page = getTeamPage(pageNo, currentSearch, cities, sports);
 
         populateModelBasics(model, user, page);
         populateFilterDropdowns(model);

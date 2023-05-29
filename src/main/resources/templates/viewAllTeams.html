@@ -29,17 +29,18 @@
     </form>
     <!--/* The table of teams */-->
     <div class="card-container">
-        <div th:each="team : ${listOfTeams}" class="card"
-             th:onclick="|window.location.href='@{profile(teamID=${team.teamId})}'|">
-            <div class="card-wrapper">
-                <div class="card-image">
-                    <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" class="card-img-top" alt="Team image">
+        <div th:each="team : ${listOfTeams}" class="card">
+            <a th:href="@{profile(teamID=${team.teamId})}">
+                <div class="card-wrapper">
+                    <div class="card-image">
+                        <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" class="card-img-top" alt="Team image">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">[[|${user.firstName} ${user.lastName}|]]</h5>
+                        <p class="card-text" th:text="'Location: ' + ${team.location.country} + ', ' + ${team.location.city}">Location</p>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <h5 class="card-title">[[|${user.firstName} ${user.lastName}|]]</h5>
-                    <p class="card-text" th:text="'Location: ' + ${team.location.country} + ', ' + ${team.location.city}">Location</p>
-                </div>
-            </div>
+            </a>
         </div>
 
         <table>

@@ -69,6 +69,10 @@ public class TeamService {
         return teamRepository.findAll();
     }
 
+    public long getNumberOfTeams() {
+        return teamRepository.count();
+    }
+
     public Team addTeam(Team team) {
         return teamRepository.save(team);
     }
