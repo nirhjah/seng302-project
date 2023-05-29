@@ -3,6 +3,8 @@ package nz.ac.canterbury.seng302.tab.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -52,6 +54,11 @@ public class Activity {
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
+
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    ///@CollectionTable(name = "activityScore", joinColumns = @JoinColumn(name = "library_id"))
+    @Column(name = "activityScore", nullable = false)
+    private List<String> activityScore;
 
 
     /**
@@ -136,6 +143,11 @@ public class Activity {
     public User getActivityOwner(){
         return this.activityOwner;
     }
+
+
+    public List<String> getActivityScore() { return this.activityScore; }
+
+    public void setActivityScore(List<String> activityScore) { this.activityScore = activityScore; }
 
     @Override
     public boolean equals(Object o) {
