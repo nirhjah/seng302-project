@@ -132,7 +132,8 @@ public class EditActivityFormControllerTest {
                         .param("postcode", "8888")
                         .param("suburb", "A Place"))
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrl("./view-activities"));
+                .andExpect(redirectedUrl("./view-activity?activityID=" + activity.getId()));
+
     }
 
     @Test
@@ -434,7 +435,7 @@ public class EditActivityFormControllerTest {
                         .param("postcode", "8888")
                         .param("suburb", "A Place"))
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrl("./view-activities"));
+                .andExpect(redirectedUrl("./view-activity?activityID=" + activity.getId()));
     }
 
     @Test

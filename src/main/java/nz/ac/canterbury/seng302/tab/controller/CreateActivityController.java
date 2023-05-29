@@ -223,13 +223,17 @@ public class CreateActivityController {
             editActivity.setLocation(location);
             editActivity.setDescription(description);
             editActivity = activityService.updateOrAddActivity(editActivity);
-            return "redirect:./view-activities";
+            return String.format("redirect:./view-activity?activityID=%s", editActivity.getId());
+
         } else {
 
             Activity activity = new Activity(activityType, team,
                     description, startDateTime, endDateTime, userService.getCurrentUser().get(), location);
             activity = activityService.updateOrAddActivity(activity);
-            return "redirect:./view-activities";
+            return String.format("redirect:./view-activity?activityID=%s", activity.getId());
+
+
+
         }
     }
 }

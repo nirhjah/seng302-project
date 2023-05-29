@@ -30,7 +30,7 @@ public class Fact {
     @Column(name = "fact_type", insertable=false, updatable = false)
     private int factType;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "fk_activityID", referencedColumnName = "activityId")
     private Activity activity;
 
