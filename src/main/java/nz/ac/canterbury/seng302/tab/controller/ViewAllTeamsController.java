@@ -90,7 +90,7 @@ public class ViewAllTeamsController {
     @GetMapping("/view-teams")
     public String findPaginated(
             @RequestParam(value = "page", defaultValue = "-1") int pageNo,
-            @RequestParam(value = "currentSearch", defaultValue = "") String currentSearch,
+            @RequestParam(value = "currentSearch", required = false) String currentSearch,
             @RequestParam(name = "sports", required=false) List<String> sports,
             @RequestParam(name = "cities", required = false) List<String> cities,
             Model model, HttpServletRequest request) {
