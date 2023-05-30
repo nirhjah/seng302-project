@@ -2,6 +2,8 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.ResetPasswordForm;
@@ -33,11 +35,27 @@ public class ResetPasswordController {
     private Optional<User> user;
 
     private String currentToken;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     public ResetPasswordController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    /**
+     * Fills the model with globally required fields for navBar.html
+     * (Wish every controller didn't need to define these...)
+     *
+     * @param model   Values added to this
+     * @param user    We need the first&last name + profile pic
+     * @param request New Thymeleaf deprecated ${#request} sooo...
+     */
+    private void prefillModel(Model model, User user, HttpServletRequest request) {
+        // The following attribute is required so the "Password Strength" JS can work
+        model.addAttribute("user", user);
+        // Everything else here shouldn't be here.
+        model.addAttribute("httpServletRequest", request);
     }
 
     /**
@@ -92,6 +110,8 @@ public class ResetPasswordController {
             redirectAttributes.addFlashAttribute("invalidTokenMessage", "Token is invalid or expired.");
             return "redirect:/login";
         }
+        logger.info(user.get().getFirstName());
+        prefillModel(model,user.get(),request);
 
         currentToken = token;
         return "resetPassword";
