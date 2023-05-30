@@ -59,8 +59,6 @@ public class HomeFormController {
         }
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("navTeams", teamService.getTeamList());
-        model.addAttribute("playerCount", 11);
-        model.addAttribute("formation", "4-4-2");
         return "homeForm";
     }
 }
