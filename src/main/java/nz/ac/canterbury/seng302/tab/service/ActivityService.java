@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.service;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -88,8 +89,8 @@ public class ActivityService {
      * @param team the team selected
      * @return true if the type is game or friendly and there is a team, or if type is anything but game and friendly
      */
-    public boolean validateTeamSelection(Activity.ActivityType type, Team team) {
-        if ((type == Activity.ActivityType.Game || type== Activity.ActivityType.Friendly) && team==null) {
+    public boolean validateTeamSelection(ActivityType type, Team team) {
+        if ((type == ActivityType.Game || type== ActivityType.Friendly) && team==null) {
             return false;
         } else {
             return true;

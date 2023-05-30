@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +87,7 @@ public class ViewActivityControllerTests {
         LocalDateTime end = LocalDateTime.of(2023, 7,1,8,30);
         Location activityLocation = new Location(ACTVITY_ADDRESS_LINE_1, ACTVITY_ADDRESS_LINE_2, ACTVITY_SUBURB,
                 ACTVITY_CITY, ACTVITY_POSTCODE, ACTVITY_COUNTRY);
-        activity= new Activity(Activity.ActivityType.Game, team, "description",start, end, testUser, activityLocation);
+        activity= new Activity(ActivityType.Game, team, "description",start, end, testUser, activityLocation);
 
         when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
