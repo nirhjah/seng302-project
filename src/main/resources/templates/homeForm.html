@@ -37,83 +37,10 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <link th:href="@{/css/formation.css}" rel="stylesheet" />
-
     <title>Formation</title>
 </head>
 <body>
-<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
-    <div id="pitch">
-        <div id="player1" class="player"></div>
-        <div id="player2" class="player"></div>
-        <div id="player3" class="player"></div>
-        <div id="player4" class="player"></div>
-        <div id="player5" class="player"></div>
-        <div id="player6" class="player"></div>
-        <div id="player7" class="player"></div>
-        <div id="player8" class="player"></div>
-        <div id="player9" class="player"></div>
-        <div id="player10" class="player"></div>
-    </div>
+    <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+    <div th:insert="~{fragments/formationDisplay.html::formationDisplay(playerCount=${playerCount},formation=${formation})}"></div>
 </body>
-<script>
-    const players = document.querySelectorAll(".player");
-    const pitch = document.getElementById("pitch")
-    const pitchWidth = pitch.offsetWidth;
-    const pitchHeight = pitch.offsetHeight;
-    // Test formation
-    const formation = "3-5-2".split("-").map(num => parseInt(num));
-    console.log(formation); // Output: [4, 4, 2]
-    let currentMax = 0;
-    players.forEach(player => {
-        dragElement(player);
-        for (let i = 0; i < formation.length; i++) {
-            if (formation[i] !== 0) {
-                if (currentMax === 0) {
-                    currentMax = formation[i].valueOf();
-                }
-                player.style.bottom = ((i + 1) / (formation.length + 1) * pitchHeight) - player.offsetHeight / 2 + "px";
-                player.style.left = ((formation[i]) / (currentMax + 1) * pitchWidth) - player.offsetWidth / 2 + "px";
-                formation[i] -= 1
-                if (formation[i] === 0) {
-                    currentMax = 0;
-                }
-                break
-            }
-        }
-    });
-    function dragElement(player) {
-        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        player.onmousedown = dragMouseDown;
-
-        function dragMouseDown(e) {
-            e = e || window.event;
-            e.preventDefault();
-            // get the mouse cursor position at startup:
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            document.onmouseup = closeDragElement;
-            // call a function whenever the cursor moves:
-            document.onmousemove = elementDrag;
-        }
-
-        function elementDrag(e) {
-            e = e || window.event;
-            e.preventDefault();
-            // calculate the new cursor position:
-            pos1 = pos3 - e.clientX;
-            pos2 = pos4 - e.clientY;
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            // set the element's new position:
-            player.style.top = (player.offsetTop - pos2) + "px";
-            player.style.left = (player.offsetLeft - pos1) + "px";
-        }
-
-        function closeDragElement() {
-            // stop moving when mouse button is released:
-            document.onmouseup = null;
-            document.onmousemove = null;
-        }
-    }
-</script>
 </html>
