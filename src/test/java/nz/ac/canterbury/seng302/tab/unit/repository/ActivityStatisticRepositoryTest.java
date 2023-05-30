@@ -50,10 +50,9 @@ public class ActivityStatisticRepositoryTest {
         List<Fact> factList = new ArrayList<>();
         factList.add(new Fact("Test fact", "20m", activity));
 
-
         activityRepository.save(activity);
 
-        ActivityStatistics activityStatistics = new ActivityStatistics(creator, activity, activityScore, factList);
+        ActivityStatistics activityStatistics = new ActivityStatistics(creator, activity);
         activityStatisticRepository.save(activityStatistics);
 
         Assertions.assertEquals(activityStatisticRepository.findActivityStatisticsByActivity(activity), activityStatistics);

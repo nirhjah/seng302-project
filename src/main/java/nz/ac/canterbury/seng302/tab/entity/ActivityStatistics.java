@@ -29,21 +29,22 @@ public class ActivityStatistics {
     @JoinColumn(name = "fk_activityID", referencedColumnName = "activityId")
     private Activity activity;
 
-    @ElementCollection(targetClass = Fact.class, fetch = FetchType.EAGER)
+/*    @ElementCollection(targetClass = Fact.class, fetch = FetchType.EAGER)
 
-    private List<Fact> activityStatisticFacts;
+    private List<Fact> activityStatisticFacts;*/
 
-   // @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
-    private List<String> activityScore;
+/*    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    @Column(name = "activityScore")
+    private List<String> activityScore;*/
 
     public ActivityStatistics() {}
 
-    public ActivityStatistics(User player, Activity activity, List<String> activityScore, List<Fact> activityFacts) {
+    public ActivityStatistics(User player, Activity activity) {
         this.statisticPlayer = player;
         this.timeOfStatistic = LocalDateTime.now();
         this.activity = activity;
-        this.activityStatisticFacts = activity.getFactList();
-        this.activityScore = activity.getActivityScore();
+      //  this.activityStatisticFacts = activity.getFactList();
+     //   this.activityScore = activity.getActivityScore();
 
 
 
