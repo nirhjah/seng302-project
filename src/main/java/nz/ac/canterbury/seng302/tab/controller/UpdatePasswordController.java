@@ -25,7 +25,6 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 
 /**
  * User Story U22 - Update Password
- * 
  * Gives the user a simple "[old][new][retype] password" field, and
  * updates their password accordingly
  */
@@ -36,7 +35,6 @@ public class UpdatePasswordController {
 
     public static final String PASSWORD_MISMATCH_MSG = "Passwords do not match.";
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final UserService userService;
     private final TeamService teamService;
@@ -146,7 +144,6 @@ public class UpdatePasswordController {
 
     /**
      * Receives the form from the user.
-     * 
      * If the form is valid, the user's password changes, and an email is sent.
      * 
      * @param updatePasswordForm The filled out form
@@ -164,7 +161,6 @@ public class UpdatePasswordController {
             HttpServletRequest request,
             HttpServletResponse response){
 
-//        logger.info(passwordError.toString());
 
         // Get the currently logged in user
         Optional<User> currentUser = userService.getCurrentUser();

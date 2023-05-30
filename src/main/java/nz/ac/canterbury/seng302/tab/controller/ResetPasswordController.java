@@ -43,20 +43,6 @@ public class ResetPasswordController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /**
-     * Fills the model with globally required fields for navBar.html
-     * (Wish every controller didn't need to define these...)
-     *
-     * @param model   Values added to this
-     * @param user    We need the first&last name + profile pic
-     * @param request New Thymeleaf deprecated ${#request} sooo...
-     */
-    private void prefillModel(Model model, User user, HttpServletRequest request) {
-        // The following attribute is required so the "Password Strength" JS can work
-        model.addAttribute("user", user);
-        // Everything else here shouldn't be here.
-        model.addAttribute("httpServletRequest", request);
-    }
 
     /**
      * Checks if password matches other fields and is secure
@@ -110,8 +96,7 @@ public class ResetPasswordController {
             redirectAttributes.addFlashAttribute("invalidTokenMessage", "Token is invalid or expired.");
             return "redirect:/login";
         }
-        logger.info(user.get().getFirstName());
-        prefillModel(model,user.get(),request);
+        model.addAttribute("user",user.get());
 
         currentToken = token;
         return "resetPassword";
@@ -140,11 +125,11 @@ public class ResetPasswordController {
             RedirectAttributes redirectAttributes) {
 
         user = userService.findByToken(currentToken);
+        model.addAttribute("user",user.get());
 
 
         checkPasswordsMatchAndIsSecure(resetPasswordForm, bindingResult, currentToken);
         model.addAttribute("httpServletRequest",request);
-
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);

@@ -62,6 +62,10 @@
     margin-top:-13px;
 }
 
+.forgotPassword-form .error-message{
+    margin-top:10px;
+}
+
 .login-header{
     margin:auto;
 }
