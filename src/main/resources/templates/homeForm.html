@@ -43,70 +43,77 @@
 <body>
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
     <div id="pitch">
-        <div id="player1" class="player" draggable="true"></div>
-        <div id="player2" class="player" draggable="true"></div>
-        <div id="player3" class="player" draggable="true"></div>
-        <div id="player4" class="player" draggable="true"></div>
-        <div id="player5" class="player" draggable="true"></div>
-        <div id="player6" class="player" draggable="true"></div>
-        <div id="player7" class="player" draggable="true"></div>
-        <div id="player8" class="player" draggable="true"></div>
-        <div id="player9" class="player" draggable="true"></div>
-        <div id="player10" class="player" draggable="true"></div>
-        <div id="player11" class="player" draggable="true"></div>
+        <div id="player1" class="player"></div>
+        <div id="player2" class="player"></div>
+        <div id="player3" class="player"></div>
+        <div id="player4" class="player"></div>
+        <div id="player5" class="player"></div>
+        <div id="player6" class="player"></div>
+        <div id="player7" class="player"></div>
+        <div id="player8" class="player"></div>
+        <div id="player9" class="player"></div>
+        <div id="player10" class="player"></div>
     </div>
 </body>
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const players = document.querySelectorAll(".player");
-        const pitch = document.getElementById("pitch");
-        const pitchHeight = pitch.offsetHeight;
-
-        players.forEach(player => {
-            player.addEventListener("dragstart", dragStart);
-            player.addEventListener("dragend", dragEnd);
-        });
-
-        function dragStart(e) {
-            e.dataTransfer.setData("text/plain", e.target.id);
-            this.style.opacity = "0.4";
-        }
-
-        function dragEnd(e) {
-            this.style.opacity = "1";
-        }
-
-        pitch.addEventListener("dragover", dragOver);
-        pitch.addEventListener("dragenter", dragEnter);
-        pitch.addEventListener("dragleave", dragLeave);
-        pitch.addEventListener("drop", dragDrop);
-
-        function dragOver(e) {
-            e.preventDefault();
-        }
-
-        function dragEnter(e) {
-            e.preventDefault();
-            this.classList.add("highlight");
-        }
-
-        function dragLeave() {
-            this.classList.remove("highlight");
-        }
-
-        function dragDrop(e) {
-            const playerId = e.dataTransfer.getData("text/plain");
-            const player = document.getElementById(playerId);
-
-            const offsetY = e.clientY - this.offsetTop;
-            const snappedY = Math.round(offsetY / (pitchHeight / 5)) * (pitchHeight / 5);
-
-            player.style.left = `${e.clientX - this.offsetLeft - player.offsetWidth / 2}px`;
-            player.style.top = `${snappedY - player.offsetHeight / 2}px`;
-
-            this.classList.remove("highlight");
+    const players = document.querySelectorAll(".player");
+    const pitch = document.getElementById("pitch")
+    const pitchWidth = pitch.offsetWidth;
+    const pitchHeight = pitch.offsetHeight;
+    // Test formation
+    const formation = "3-5-2".split("-").map(num => parseInt(num));
+    console.log(formation); // Output: [4, 4, 2]
+    let currentMax = 0;
+    players.forEach(player => {
+        dragElement(player);
+        for (let i = 0; i < formation.length; i++) {
+            if (formation[i] !== 0) {
+                if (currentMax === 0) {
+                    currentMax = formation[i].valueOf();
+                }
+                player.style.bottom = ((i + 1) / (formation.length + 1) * pitchHeight) - player.offsetHeight / 2 + "px";
+                player.style.left = ((formation[i]) / (currentMax + 1) * pitchWidth) - player.offsetWidth / 2 + "px";
+                formation[i] -= 1
+                if (formation[i] === 0) {
+                    currentMax = 0;
+                }
+                break
+            }
         }
     });
+    function dragElement(player) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        player.onmousedown = dragMouseDown;
 
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            // set the element's new position:
+            player.style.top = (player.offsetTop - pos2) + "px";
+            player.style.left = (player.offsetLeft - pos1) + "px";
+        }
+
+        function closeDragElement() {
+            // stop moving when mouse button is released:
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+    }
 </script>
 </html>
