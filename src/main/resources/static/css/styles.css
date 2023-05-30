@@ -542,3 +542,8 @@ ul.autocomplete-result{
     content: '\2022'; /* Unicode character for bullet point */
     margin-right: 0.5em; /* Add some space between the bullet point and the text */
 }
+
+.test {
+    display: flex;
+    justify-content: center;
+}
