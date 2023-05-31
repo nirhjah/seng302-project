@@ -68,7 +68,6 @@ public class TeamService {
     public List<Team> getTeamList() {
         return teamRepository.findAll();
     }
-    public Page<Team> getAllTeams(Pageable pageable) { return teamRepository.findAll(pageable); }
 
     public long getNumberOfTeams() {
         return teamRepository.count();
@@ -124,16 +123,16 @@ public class TeamService {
      * a list of both to filter by selected by the user
      *
      * @param pageable          page object
-     * @param searchedLocations list of locations to filter by selected by the user
+     * @param searchedCities list of locations to filter by selected by the user
      * @param searchedSports    list of sports to filter by selected by the user
      * @param name              the team name query inputted by the use
      * @return Page(s) of teams filtered by city/cities and sport/sports
      */
-    public Page<Team> findPaginatedTeamsByCityAndSports(Pageable pageable, List<String> searchedLocations, List<String> searchedSports, String name) {
-        if (searchedLocations == null) {
-            searchedLocations = List.of();
+    public Page<Team> findPaginatedTeamsByCityAndSports(Pageable pageable, List<String> searchedCities, List<String> searchedSports, String name) {
+        if (searchedCities == null) {
+            searchedCities = List.of();
         } else {
-            searchedLocations = searchedLocations.stream().map(String::toLowerCase).toList();
+            searchedCities = searchedCities.stream().map(String::toLowerCase).toList();
         }
 
         if (searchedSports == null) {
@@ -141,7 +140,7 @@ public class TeamService {
         } else {
             searchedSports = searchedSports.stream().map(String::toLowerCase).toList();
         }
-        return teamRepository.findTeamByFilteredLocationsAndSports(pageable, searchedLocations, searchedSports, name);
+        return teamRepository.findTeamByFilteredLocationsAndSports(pageable, searchedCities, searchedSports, name);
     }
 
     /**
