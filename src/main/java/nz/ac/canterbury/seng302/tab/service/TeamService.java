@@ -70,6 +70,10 @@ public class TeamService {
     }
     public Page<Team> getAllTeams(Pageable pageable) { return teamRepository.findAll(pageable); }
 
+    public long getNumberOfTeams() {
+        return teamRepository.count();
+    }
+
     public Team addTeam(Team team) {
         return teamRepository.save(team);
     }
