@@ -90,7 +90,6 @@ public class Activity {
     public void setTeam(Team team) {
         this.team = team;
     }
-
     public LocalDateTime getActivityStart() {
         return activityStart;
     }
@@ -149,4 +148,18 @@ public class Activity {
     public int hashCode() {
         return Objects.hash(id, activityType, team, description, activityStart, activityEnd, activityOwner);
     }
+
+    @Override
+    public String toString() {
+        return "Activity{" +
+                "id=" + id +
+                ", activityType=" + activityType +
+                ", team=" + team +
+                ", description='" + description + '\'' +
+                ", activityStart=" + activityStart +
+                ", activityEnd=" + activityEnd +
+                ", activityOwner=" + activityOwner +
+                '}';
+    }
+
 }

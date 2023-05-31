@@ -4,13 +4,17 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,7 +32,12 @@ import java.util.Optional;
 public class TeamService {
     Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
-    private TeamRepository teamRepository;
+    private final TeamRepository teamRepository;
+
+    @Autowired
+    public TeamService(TeamRepository teamRepository) {
+        this.teamRepository = teamRepository;
+    }
 
     /**
      * Countries and cities can have letters from all alphabets, with hyphens,
@@ -144,10 +153,8 @@ public class TeamService {
 
     /**
      * gets a page of all teams the given user is a member of
-     *
-     * @param pageNo a page object showing how the page should be shown
-     * @param user   user to filter teams by
-     * @return all teams the user is apart of
+     * @param user          user to filter teams by
+     * @return              all teams the user is apart of
      */
     public Page<Team> findTeamsByUser(int pageNo, int pageSize, User user) {
 
