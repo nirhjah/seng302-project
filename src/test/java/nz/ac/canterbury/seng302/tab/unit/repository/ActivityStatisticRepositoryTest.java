@@ -41,7 +41,6 @@ public class ActivityStatisticRepositoryTest {
                 LocalDateTime.of(2023, 5,29,10,00),
                 LocalDateTime.of(2023, 5,30,10,00), creator, location);
 
-
         List<String> activityScore = new ArrayList<>();
         activityScore.add("141");
         activityScore.add("94");
