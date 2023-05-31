@@ -19,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -60,6 +61,7 @@ public class ViewAllTeamsController {
 
     private void populateModelBasics(Model model, User user, Page<Team> page) {
         List<Team> listOfTeams = page.getContent();
+        listOfTeams = teamService.getTeamList();
         model.addAttribute("listOfTeams", listOfTeams);
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());

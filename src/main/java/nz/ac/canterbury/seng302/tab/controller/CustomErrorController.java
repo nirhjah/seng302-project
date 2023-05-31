@@ -29,6 +29,7 @@ public class CustomErrorController extends ResponseEntityExceptionHandler {
         return "error";
     }
 
+    /*
     @ExceptionHandler({Exception.class})
     public String handleGenericException(Model model, Exception ex, HttpServletResponse response) {
         if (ex instanceof ErrorResponse e) {
@@ -40,5 +41,6 @@ public class CustomErrorController extends ResponseEntityExceptionHandler {
         logger.error("Unknown error", ex);
         return "error";
     }
+     */
 }
 

@@ -68,6 +68,7 @@ public class TeamService {
     public List<Team> getTeamList() {
         return teamRepository.findAll();
     }
+    public Page<Team> getAllTeams(Pageable pageable) { return teamRepository.findAll(pageable); }
 
     public Team addTeam(Team team) {
         return teamRepository.save(team);
