@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.LocationService;
@@ -70,7 +71,11 @@ public class ViewAllTeamsController {
     }
 
     private void populateFilterDropdowns(Model model) {
-        var sports = sportService.getAllSports();
+        var sports = sportService.getAllSports()
+                .stream()
+                .map(Sport::getName)
+                .distinct()
+                .toList();
         var cities = locationService.getLocationList()
                 .stream()
                 .map(Location::getCity)
