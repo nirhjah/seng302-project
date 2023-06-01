@@ -125,8 +125,9 @@ public class ResetPasswordController {
             RedirectAttributes redirectAttributes) {
 
         user = userService.findByToken(currentToken);
-        model.addAttribute("user",user.get());
-
+        if (user.isPresent()) {
+            model.addAttribute("user", user.get());
+        }
 
         checkPasswordsMatchAndIsSecure(resetPasswordForm, bindingResult, currentToken);
         model.addAttribute("httpServletRequest",request);
@@ -143,8 +144,6 @@ public class ResetPasswordController {
         userService.updatePassword(user.get(), password);
         return "redirect:/login";
     }
-
-
 
 }
 
