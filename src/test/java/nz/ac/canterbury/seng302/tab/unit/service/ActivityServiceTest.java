@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Import;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @DataJpaTest
 @Import(ActivityService.class)
@@ -16,6 +18,8 @@ public class ActivityServiceTest {
 
     @Autowired
     ActivityService activityService;
+
+
 
 
     /**
@@ -72,6 +76,50 @@ public class ActivityServiceTest {
         LocalDateTime teamCreation = LocalDateTime.of(2022, 1,1, 10, 30);
         LocalDateTime start = LocalDateTime.of(2021, 1,1,6,30);
         LocalDateTime end = LocalDateTime.of(2021, 1,1,8,30);
+        Assertions.assertFalse(activityService.validateActivityDateTime(teamCreation, start, end));
+
+    }
+
+
+    /**
+     * Tests if both teams scores for an activity are of the same format with a hyphen, return true
+     */
+    @Test
+    public void ifActivityScoreBothSameFormat_Hyphen_returnTrue() {
+        String activityTeamScore = "141-9";
+        String otherTeamScore = "94-3";
+        Assertions.assertTrue(activityService.validateActivityScore(activityTeamScore, otherTeamScore));
+    }
+
+
+    /**
+     * Tests if both teams scores for an activity are of different format where only first score has a hyphen, return false
+     */
+    @Test
+    public void ifActivityScoreBothDifferentFormat_FirstScoreHyphen_returnFalse() {
+        String activityTeamScore = "141-9";
+        String otherTeamScore = "94";
+        Assertions.assertFalse(activityService.validateActivityScore(activityTeamScore, otherTeamScore));
+    }
+
+    /**
+     * Tests if both teams scores for an activity are of the same format with a number only, return true
+     */
+    @Test
+    public void ifActivityScoreBothSameFormat_NumberOnly_returnTrue() {
+        String activityTeamScore = "141";
+        String otherTeamScore = "94";
+        Assertions.assertTrue(activityService.validateActivityScore(activityTeamScore, otherTeamScore));
+    }
+
+    /**
+     * Tests if both teams scores for an activity are of different format where only first team has score number only, return false
+     */
+    @Test
+    public void ifActivityScoreBothDifferentFormat_OneScoreNumberOnly_returnFalse() {
+        String activityTeamScore = "99";
+        String otherTeamScore = "94-23";
+        Assertions.assertFalse(activityService.validateActivityScore(activityTeamScore, otherTeamScore));
     }
 
 }
