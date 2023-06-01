@@ -76,6 +76,8 @@ public class ActivityServiceTest {
         LocalDateTime teamCreation = LocalDateTime.of(2022, 1,1, 10, 30);
         LocalDateTime start = LocalDateTime.of(2021, 1,1,6,30);
         LocalDateTime end = LocalDateTime.of(2021, 1,1,8,30);
+        Assertions.assertFalse(activityService.validateActivityDateTime(teamCreation, start, end));
+
     }
 
 
@@ -84,10 +86,9 @@ public class ActivityServiceTest {
      */
     @Test
     public void ifActivityScoreBothSameFormat_Hyphen_returnTrue() {
-        List<String> activityScore = new ArrayList<>();
-        activityScore.add("141-9");
-        activityScore.add("94-3");
-        Assertions.assertTrue(activityService.validateActivityScore(activityScore));
+        String activityTeamScore = "141-9";
+        String otherTeamScore = "94-3";
+        Assertions.assertTrue(activityService.validateActivityScore(activityTeamScore, otherTeamScore));
     }
 
 
@@ -96,10 +97,9 @@ public class ActivityServiceTest {
      */
     @Test
     public void ifActivityScoreBothDifferentFormat_FirstScoreHyphen_returnFalse() {
-        List<String> activityScore = new ArrayList<>();
-        activityScore.add("141-9");
-        activityScore.add("94");
-        Assertions.assertFalse(activityService.validateActivityScore(activityScore));
+        String activityTeamScore = "141-9";
+        String otherTeamScore = "94";
+        Assertions.assertFalse(activityService.validateActivityScore(activityTeamScore, otherTeamScore));
     }
 
     /**
@@ -107,10 +107,9 @@ public class ActivityServiceTest {
      */
     @Test
     public void ifActivityScoreBothSameFormat_NumberOnly_returnTrue() {
-        List<String> activityScore = new ArrayList<>();
-        activityScore.add("141");
-        activityScore.add("94");
-        Assertions.assertTrue(activityService.validateActivityScore(activityScore));
+        String activityTeamScore = "141";
+        String otherTeamScore = "94";
+        Assertions.assertTrue(activityService.validateActivityScore(activityTeamScore, otherTeamScore));
     }
 
     /**
@@ -118,10 +117,9 @@ public class ActivityServiceTest {
      */
     @Test
     public void ifActivityScoreBothDifferentFormat_OneScoreNumberOnly_returnFalse() {
-        List<String> activityScore = new ArrayList<>();
-        activityScore.add("99");
-        activityScore.add("94-23");
-        Assertions.assertFalse(activityService.validateActivityScore(activityScore));
+        String activityTeamScore = "99";
+        String otherTeamScore = "94-23";
+        Assertions.assertFalse(activityService.validateActivityScore(activityTeamScore, otherTeamScore));
     }
 
 }

@@ -55,6 +55,15 @@ public class Activity {
     private List<String> activityScore;
 
 
+    @Column
+    private String activityTeamScore;
+
+    @Column
+    private String otherTeamScore;
+
+
+
+
     /**
      * Empty Constructor for JPA
      */
@@ -145,9 +154,21 @@ public class Activity {
     public void addFactToFactList(Fact fact) {this.activityFacts.add(fact); }
 
 
-    public List<String> getActivityScore() { return this.activityScore; }
+    public String getActivityTeamScore() {
+        return activityTeamScore;
+    }
 
-    public void setActivityScore(List<String> activityScore) { this.activityScore = activityScore; }
+    public void setActivityTeamScore(String activityTeamScore) {
+        this.activityTeamScore = activityTeamScore;
+    }
+
+    public String getOtherTeamScore() {
+        return otherTeamScore;
+    }
+
+    public void setOtherTeamScore(String otherTeamScore) {
+        this.otherTeamScore = otherTeamScore;
+    }
 
     @Override
     public boolean equals(Object o) {
