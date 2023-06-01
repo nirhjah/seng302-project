@@ -59,7 +59,7 @@
                 <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message email"></div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="password" placeholder="" th:field="*{password}"
-                           data-cy="password" required autofocus onkeyup="checkPasswordStrength()">
+                           data-cy="password" required autofocus oninput= "checkPasswordStrength(this)">
                     <img th:src="@{/image/icons/hide.png}" class="password-toggle"/>
                     <label for="password"> Password <span class="required">*</span></label>
                 </div>
@@ -67,16 +67,16 @@
                     <div class="password-strength-meter">
                         <div class="bar"></div>
                     </div>
-                    <div class="password-strength-text"></div>
+<!--                    <div class="password-strength-text"></div>-->
                     <ul class="password-information-text">
-                        <li>Password must be at least 8 characters</li>
-                        <li>Must contain the following items</li>
+                        <li id="password-min-characters"><img th:src="@{/image/icons/password-cross.svg}" /> Password must be at least 8 characters</li>
+                        <li class="password-items"> Must contain the following items: </li>
                         <ul>
-                            <li>Uppercase and lowercase letters</li>
-                            <li>Numbers</li>
-                            <li>Symbols</li>
+                            <li id ="password-letter-case"><img th:src="@{/image/icons/password-cross.svg}" /> Uppercase and lowercase letters</li>
+                            <li id="password-numbers"><img th:src="@{/image/icons/password-cross.svg}" /> Numbers</li>
+                            <li id="password-symbols"><img th:src="@{/image/icons/password-cross.svg}" /> Symbols</li>
                         </ul>
-                        <li>Mustn't contain your name or email</li>
+                        <li id="password-user-details"><img th:src="@{/image/icons/password-cross.svg}" /> Mustn't contain your name or email</li>
                     </ul>
                     <div th:if="${#fields.hasErrors('password')}" class="error-message password">
                         <span th:text="${#fields.errors('password').get(#fields.errors('password').size() - 1)}"></span>
@@ -229,32 +229,81 @@
         nextButton.style.display = 'none';
     }
 
-    function checkPasswordStrength() {
+    function checkPasswordStrength(elem) {
         const bar = document.querySelector(".password-strength-meter .bar");
-        const headerText = document.querySelector(".password-strength-text");
+        // const headerText = document.querySelector(".password-strength-text");
         const firstName = document.getElementById("first-name").value;
         const lastName = document.getElementById("last-name").value;
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
+        const minChar= document.getElementById("password-min-characters");
+        const hasLetterCase= document.getElementById("password-letter-case");
+        const hasNumber= document.getElementById("password-numbers");
+        const hasSymbol= document.getElementById("password-symbols");
+        const ownDetails= document.getElementById("password-user-details");
         if (password) {
+            const minCharImg = minChar.querySelector("img");
+            const letterCaseImg = hasLetterCase.querySelector("img");
+            const numberImg=hasNumber.querySelector("img");
+            const symbolImg= hasSymbol.querySelector("img");
+            const detailsImg= ownDetails.querySelector("img");
             let strength = 0;
             if (password.length >= 8) {
+                minChar.style.color="green"
+                minCharImg.src = "/image/icons/password-tick.svg";
                 strength++;
             }
+            else{
+                minChar.style.color="red"
+                minCharImg.src = "/image/icons/password-cross.svg";
+            }
+
             if (/[A-Z]/.test(password)) {
                 strength++;
             }
             if (/[a-z]/.test(password)) {
                 strength++;
             }
+
+            if (/[A-Z]/.test(password) &&/[a-z]/.test(password) ){
+                hasLetterCase.style.color="green";
+                letterCaseImg.src = "/image/icons/password-tick.svg";
+                passwordError.letterCase = true;
+            }
+            else{
+                hasLetterCase.style.color="red";
+                letterCaseImg.src = "/image/icons/password-cross.svg";
+                passwordError.letterCase = false;
+            }
             if (/\d/.test(password)) {
+                hasNumber.style.color="green";
+                numberImg.src= "/image/icons/password-tick.svg";
+                passwordError.hasNumber = true;
                 strength++;
+            }else{
+                hasNumber.style.color="red";
+                numberImg.src= "/image/icons/password-cross.svg";
+                passwordError.hasNumber = false;
             }
             if (/[\W_]/.test(password)) {
+                hasSymbol.style.color="green"
+                symbolImg.src="/image/icons/password-tick.svg";
+                passwordError.hasSymbol = true;
                 strength++;
+            }else{
+                hasSymbol.style.color="red";
+                symbolImg.src="/image/icons/password-cross.svg";
+                passwordError.hasSymbol = false;
             }
             if ((!firstName || !password.includes(firstName)) && (!lastName || !password.includes(lastName)) && (!email || !password.includes(email))) {
+                ownDetails.style.color="green"
+                detailsImg.src= "/image/icons/password-tick.svg";
+                passwordError.ownDetails = true;
                 strength++;
+            }else{
+                ownDetails.style.color="red"
+                detailsImg.src="/image/icons/password-cross.svg";
+                passwordError.ownDetails = false;
             }
 
             if (strength < 3) {
@@ -262,38 +311,38 @@
                 bar.classList.remove("strong");
                 bar.classList.add("weak");
                 bar.style.width = "20%";
-                headerText.textContent = "Weak";
-                headerText.classList.remove("medium");
-                headerText.classList.remove("strong");
-                headerText.classList.add("weak");
+                // headerText.textContent = "Weak";
+                // headerText.classList.remove("medium");
+                // headerText.classList.remove("strong");
+                // headerText.classList.add("weak");
             } else if (strength < 6) {
                 bar.classList.remove("strong");
                 bar.classList.remove("weak");
                 bar.classList.add("medium");
                 bar.style.width = "50%";
-                headerText.textContent = "Medium";
-                headerText.classList.remove("weak");
-                headerText.classList.remove("strong");
-                headerText.classList.add("medium");
+                // headerText.textContent = "Medium";
+                // headerText.classList.remove("weak");
+                // headerText.classList.remove("strong");
+                // headerText.classList.add("medium");
             } else {
                 bar.classList.remove("medium");
                 bar.classList.remove("weak");
                 bar.classList.add("strong");
                 bar.style.width = "100%";
-                headerText.textContent = "Strong";
-                headerText.classList.remove("weak");
-                headerText.classList.remove("medium");
-                headerText.classList.add("strong");
+                // headerText.textContent = "Strong";
+                // headerText.classList.remove("weak");
+                // headerText.classList.remove("medium");
+                // headerText.classList.add("strong");
             }
         } else {
             bar.classList.remove("medium");
             bar.classList.remove("strong");
             bar.classList.remove("weak");
             bar.style.width = "0%";
-            headerText.textContent = "";
-            headerText.classList.remove("medium");
-            headerText.classList.remove("strong");
-            headerText.classList.remove("weak");
+            // headerText.textContent = "";
+            // headerText.classList.remove("medium");
+            // headerText.classList.remove("strong");
+            // headerText.classList.remove("weak");
         }
     }
 
