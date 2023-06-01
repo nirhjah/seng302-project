@@ -17,7 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @ControllerAdvice
 public class CustomErrorController extends ResponseEntityExceptionHandler {
-   /*
     private void populateModel(Model model, String pageName, String errorMessage) {
         model.addAttribute("pageName", pageName);
         model.addAttribute("errorMessage", errorMessage);
@@ -29,7 +28,6 @@ public class CustomErrorController extends ResponseEntityExceptionHandler {
         populateModel(model, "404 Page not found", "Sorry, the page you requested could not be found.");
         return "error";
     }
-    */
 
     /*
     @ExceptionHandler({Exception.class})
