@@ -84,15 +84,6 @@ public class U19FilterTeamsBySport {
         }
     }
 
-
-    private String getStackTrace(StackTraceElement[] stackTraceElem) {
-        var string = "";
-        for (var s: stackTraceElem) {
-            string += s.toString() + "\n";
-        }
-        return string;
-    }
-
     private void performGet() {
         Model model = new ExtendedModelMap();
         model.addAttribute("sports", List.copyOf(selectedSports));
@@ -103,7 +94,7 @@ public class U19FilterTeamsBySport {
                     .flashAttr("model", model)
                     .param("page", "1"));
         } catch (Exception e) {
-            fail(getStackTrace(e.getStackTrace()));
+            fail(e.getMessage());
         }
     }
 
