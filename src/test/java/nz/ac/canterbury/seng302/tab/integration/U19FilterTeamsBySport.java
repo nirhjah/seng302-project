@@ -15,12 +15,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 
 import static org.assertj.core.api.Fail.fail;
+import static org.springframework.test.util.AssertionErrors.assertEquals;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.io.IOException;
@@ -65,7 +69,7 @@ public class U19FilterTeamsBySport {
         )).build();
     }
 
-    @Before("@reset_password")
+    @Before("filter_teams_by_sport")
     public void setup() throws IOException {
         setupMorganMocking();
 
@@ -94,11 +98,6 @@ public class U19FilterTeamsBySport {
         }
     }
 
-    @Before("filter_teams_by_sport")
-    public void beforeTest() {
-
-    }
-
     @Given("I select a sport {string}")
     public void iSelectASport(String sport) {
         selectedSports.add(sport);
@@ -106,7 +105,16 @@ public class U19FilterTeamsBySport {
     }
 
     @Then("only teams with sports are selected:")
-    public void onlyTeamsWithSportsAreSelected() {
+    public void onlyTeamsWithSportsAreSelected(List<String> sports) throws Exception {
+        performGet();
+        var sportSet = new HashSet<>(sports);
+        result.andDo(result -> {
+            var model = result.getModelAndView().getModel();
+            List<Team> teams = (List<Team>) model.get("listOfTeams");
+            for (var team: teams) {
+                assertTrue("Didnt contain sport", sportSet.contains(team.getSport()));
+            }
+        });
     }
 
     @Given("I deselect a sport {string}")
@@ -116,11 +124,23 @@ public class U19FilterTeamsBySport {
     }
 
     @Given("no teams are selected")
-    public void noTeamsAreSelected() {
-
+    public void noTeamsAreSelected() throws Exception {
+        performGet();
+        result.andDo(result -> {
+            var model = result.getModelAndView().getModel();
+            List<Team> teams = (List<Team>) model.get("listOfTeams");
+            assertEquals("Size not 0", teams.size(), 0);
+        });
     }
 
     @Then("all teams are shown")
-    public void allTeamsAreShown() {
+    public void allTeamsAreShown() throws Exception {
+        performGet();
+        result.andDo(result -> {
+            var model = result.getModelAndView().getModel();
+            List<Team> teams = (List<Team>) model.get("listOfTeams");
+            int allTeamsSize = teamService.getAllTeamNames().size();
+            assertEquals("All teams not shown", teams.size(), allTeamsSize);
+        });
     }
 }
