@@ -23,14 +23,14 @@ function checkPasswordStrength(elem) {
         let strength = 0;
         if (password.length >= 8) {
             minChar.style.color="green"
-            minCharImg.src = "/image/icons/password-tick.svg";
+            minCharImg.src = "image/icons/password-tick.svg";
             passwordError.minChar = true;
 
             strength++;
         }
         else{
             minChar.style.color="red"
-            minCharImg.src = "/image/icons/password-cross.svg";
+            minCharImg.src = "image/icons/password-cross.svg";
             passwordError.minChar = false;
         }
         if (/[A-Z]/.test(password)) {
@@ -42,46 +42,46 @@ function checkPasswordStrength(elem) {
 
         if (/[A-Z]/.test(password) &&/[a-z]/.test(password) ){
             hasLetterCase.style.color="green";
-            letterCaseImg.src = "/image/icons/password-tick.svg";
+            letterCaseImg.src = "image/icons/password-tick.svg";
             passwordError.letterCase = true;
         }
         else{
             hasLetterCase.style.color="red";
-            letterCaseImg.src = "/image/icons/password-cross.svg";
+            letterCaseImg.src = "image/icons/password-cross.svg";
             passwordError.letterCase = false;
         }
         if (/\d/.test(password)) {
             hasNumber.style.color="green";
-            numberImg.src= "/image/icons/password-tick.svg";
+            numberImg.src= "image/icons/password-tick.svg";
             passwordError.hasNumber = true;
             strength++;
         }
         else{
             hasNumber.style.color="red";
-            numberImg.src= "/image/icons/password-cross.svg";
+            numberImg.src= "image/icons/password-cross.svg";
             passwordError.hasNumber = false;
         }
         if (/[\W_]/.test(password)) {
             hasSymbol.style.color="green"
-            symbolImg.src="/image/icons/password-tick.svg";
+            symbolImg.src="image/icons/password-tick.svg";
             passwordError.hasSymbol = true;
             strength++;
         }
         else{
             hasSymbol.style.color="red";
-            symbolImg.src="/image/icons/password-cross.svg";
+            symbolImg.src="image/icons/password-cross.svg";
             passwordError.hasSymbol = false;
         }
 
         if (!lowerPW.includes(FIRST_NAME) && !lowerPW.includes(LAST_NAME) && !lowerPW.includes(EMAIL)) {
             ownDetails.style.color="green"
-            detailsImg.src= "/image/icons/password-tick.svg";
+            detailsImg.src= "image/icons/password-tick.svg";
             passwordError.ownDetails = true;
             strength++;
         }
         else{
             ownDetails.style.color="red"
-            detailsImg.src="/image/icons/password-cross.svg";
+            detailsImg.src="image/icons/password-cross.svg";
             passwordError.ownDetails = false;
         }
 
