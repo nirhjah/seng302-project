@@ -50,6 +50,13 @@ public class ViewAllTeamsController {
     @Autowired
     private SportService sportService;
 
+    public ViewAllTeamsController(TeamService teamService, UserService userService, LocationService locationService, SportService sportService) {
+        this.teamService = teamService;
+        this.userService = userService;
+        this.locationService = locationService;
+        this.sportService = sportService;
+    }
+
     private Pageable getPageable(int page) {
         return PageRequest.of(page, MAX_PAGE_SIZE, SORT_BY_TEAM_NAME);
     }

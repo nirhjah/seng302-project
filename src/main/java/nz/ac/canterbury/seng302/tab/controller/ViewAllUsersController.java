@@ -65,7 +65,6 @@ public class ViewAllUsersController {
         model.addAttribute("lastName", user.get().getLastName());
         model.addAttribute("displayPicture", user.get().getPictureString());
 
-
         // get all the cities that populate the dropdown
         List<Location> locations = userService.findLocationBysearch(currentSearch);
         List<String> listOfCities = locations.stream()

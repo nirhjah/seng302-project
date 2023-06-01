@@ -181,6 +181,13 @@ public class TeamService {
     }
 
     /**
+     * Deletes all teams
+     */
+    public void deleteAllTeams() {
+        teamRepository.deleteAll();
+    }
+
+    /**
      * @param sport the sport that the user will input in the create teams/edit
      *              teams page
      * @return true if the sport is valid and matches the regex

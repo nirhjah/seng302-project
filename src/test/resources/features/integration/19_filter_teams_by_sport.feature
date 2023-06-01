@@ -21,5 +21,5 @@ Feature: U19 - Filter teams by sport
 
   Scenario: AC4 - Given I am on the search teams page and all the filters are selected, when no sports are selected, the list of teams displays all teams in the database.
     Given no teams are selected
-    Then all teams are selected
+    Then all teams are shown
 
