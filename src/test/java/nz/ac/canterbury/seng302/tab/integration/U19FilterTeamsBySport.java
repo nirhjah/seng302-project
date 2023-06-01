@@ -90,11 +90,11 @@ public class U19FilterTeamsBySport {
         model.addAttribute("sports", List.copyOf(selectedSports));
 
         try {
-            result = mockMvc.perform(get("post")
+            result = mockMvc.perform(get("/view-teams")
                     .flashAttr("model", model)
                     .param("page", "1"));
         } catch (Exception e) {
-            fail("Nah!");
+            fail(e.getMessage());
         }
     }
 

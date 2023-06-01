@@ -50,6 +50,7 @@ public class ViewAllTeamsController {
     @Autowired
     private SportService sportService;
 
+    @Autowired
     public ViewAllTeamsController(TeamService teamService, UserService userService, LocationService locationService, SportService sportService) {
         this.teamService = teamService;
         this.userService = userService;
