@@ -68,8 +68,9 @@
 
 
 .activity-score {
-    margin: auto;
     width: 50%;
+    margin-left: 15%;
+    text-align: center;
 }
 
 

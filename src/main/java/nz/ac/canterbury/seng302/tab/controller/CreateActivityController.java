@@ -229,8 +229,15 @@ public class CreateActivityController {
 
             Activity activity = new Activity(activityType, team,
                     description, startDateTime, endDateTime, userService.getCurrentUser().get(), location);
+
+            //TEST CODE
+            activity.setActivityTeamScore("25");
+            activity.setOtherTeamScore("13");
+            //TEST CODE
+
             activity = activityService.updateOrAddActivity(activity);
             return String.format("redirect:./view-activity?activityID=%s", activity.getId());
+
 
 
 
