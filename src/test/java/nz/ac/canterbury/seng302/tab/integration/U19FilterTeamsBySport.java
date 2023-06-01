@@ -27,11 +27,10 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @AutoConfigureMockMvc(addFilters = false)
@@ -61,7 +60,7 @@ public class U19FilterTeamsBySport {
 
         teamService = applicationContext.getBean(TeamService.class);
         userService = applicationContext.getBean(UserService.class);
-        teamService = applicationContext.getBean(TeamService.class);
+        locationService = applicationContext.getBean(LocationService.class);
         sportService = applicationContext.getBean(SportService.class);
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewAllTeamsController(
@@ -69,7 +68,7 @@ public class U19FilterTeamsBySport {
         )).build();
     }
 
-    @Before("filter_teams_by_sport")
+    @Before("@filter_teams_by_sport")
     public void setup() throws IOException {
         setupMorganMocking();
 
@@ -85,16 +84,26 @@ public class U19FilterTeamsBySport {
         }
     }
 
+
+    private String getStackTrace(StackTraceElement[] stackTraceElem) {
+        var string = "";
+        for (var s: stackTraceElem) {
+            string += s.toString() + "\n";
+        }
+        return string;
+    }
+
     private void performGet() {
         Model model = new ExtendedModelMap();
         model.addAttribute("sports", List.copyOf(selectedSports));
 
         try {
             result = mockMvc.perform(get("/view-teams")
+                    .with(csrf())
                     .flashAttr("model", model)
                     .param("page", "1"));
         } catch (Exception e) {
-            fail(e.getMessage());
+            fail(getStackTrace(e.getStackTrace()));
         }
     }
 
