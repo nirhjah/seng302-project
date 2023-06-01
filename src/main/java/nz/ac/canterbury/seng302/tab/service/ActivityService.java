@@ -23,6 +23,11 @@ public class ActivityService {
     @Autowired
     ActivityRepository activityRepository;
 
+    public static final String activityScoreHyphenRegex = "^(\\p{N}+-(\\p{N}+))+$";
+
+    public static final String activityScoreNumberOnlyRegex = "^[0-9]+$";
+
+
 
     /**
      * Returns all activities
@@ -94,6 +99,32 @@ public class ActivityService {
             return false;
         } else {
             return true;
+        }
+    }
+
+
+    /**
+     * Checks that the scores provided for both teams are of the same format
+     * First checks if the first team's score is of appropriate hyphen format, if true will check if second team's score is of same hyphen format
+     * Otherwise checks if first team's score is of only number format, if true it will check if second team's score is of same only number format
+     * @param activityTeamScore score for the team associated with the activity
+     * @param otherTeamScore    score for the other team
+     * @return true if the scores are both of same format, false otherwise
+     */
+    public boolean validateActivityScore(String activityTeamScore, String otherTeamScore) {
+        if (activityTeamScore.matches(activityScoreHyphenRegex)) {
+            if (otherTeamScore.matches(activityScoreHyphenRegex)) {
+                return true;
+            } else {
+                return false; }
+        } else {
+            if (activityTeamScore.matches(activityScoreNumberOnlyRegex)) {
+                if (otherTeamScore.matches(activityScoreNumberOnlyRegex)) {
+                    return true;
+                } else {
+                    return false; }
+            }
+            return false;
         }
     }
 }
