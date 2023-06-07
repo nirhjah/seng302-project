@@ -6,6 +6,14 @@ stages:
   - deploy
   - e2eTests
 
+workflow:
+  rules:
+    - if: '$CI_COMMIT_TAG'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+
 tag-checker:
   stage: tagChecking
   script:
@@ -13,24 +21,24 @@ tag-checker:
   only:
     - tags
 
-# junit:
-#   stage: test
-#   script:
-#     - ./gradlew test
-#     - ls ./build/jacoco
-#   artifacts:
-#     paths:
-#       - build/jacoco/test-report.xml
+junit:
+  stage: test
+  script:
+    - ./gradlew test
+    - ls ./build/jacoco
+  artifacts:
+    paths:
+      - build/jacoco/test-report.xml
 
 sonarqube-report:
   stage: sonarqube
   script:
     ./gradlew sonarqube
 
-# integration-tests:
-#   stage: test
-#   script:
-#     - ./gradlew integration
+integration-tests:
+  stage: test
+  script:
+    - ./gradlew integration
 
 # builds all branches, except dev and master
 branch-build:
