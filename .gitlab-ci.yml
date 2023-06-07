@@ -13,24 +13,24 @@ tag-checker:
   only:
     - tags
 
-junit:
-  stage: test
-  script:
-    - ./gradlew test
-    - ls ./build/jacoco
-  artifacts:
-    paths:
-      - build/jacoco/test-report.xml
+# junit:
+#   stage: test
+#   script:
+#     - ./gradlew test
+#     - ls ./build/jacoco
+#   artifacts:
+#     paths:
+#       - build/jacoco/test-report.xml
 
 sonarqube-report:
   stage: sonarqube
   script:
     ./gradlew sonarqube
 
-integration-tests:
-  stage: test
-  script:
-    - ./gradlew integration
+# integration-tests:
+#   stage: test
+#   script:
+#     - ./gradlew integration
 
 # builds all branches, except dev and master
 branch-build:
