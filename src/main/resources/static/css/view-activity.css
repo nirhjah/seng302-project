@@ -73,6 +73,33 @@
     text-align: center;
 }
 
+.facts-table li {
+    display: block;
+    border: 4px #1B263B solid;
+    background: white;
+    margin: 3px 0;
+    border-radius: 10px;
+    padding: 5px;
+
+    width: 50%;
+}
+
+.facts-table li:hover {
+    background-color: #E6E4E4;
+    cursor: pointer;
+}
 
 
+.wrapper-facts {
+    width: fit-content;
+}
 
+.wrapper-facts ul {
+    width: 550px;
+}
+
+@media screen and (max-width: 550px) {
+    .wrapper-facts ul {
+        width: 100vw;
+    }
+}

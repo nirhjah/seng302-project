@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
+import nz.ac.canterbury.seng302.tab.service.FactService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,9 @@ public class ViewActivityController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private FactService factService;
+
     /**
      *
      * @param model      the model to be filled
@@ -53,12 +59,20 @@ public class ViewActivityController {
         logger.info("GET /profileForm");
 
         Activity activity = activityService.findActivityById(activityID);
-
         if (activity == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
 
+        List<Fact> activityFacts = factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity);
+        List<Fact> activityGoals = factService.getAllFactsOfGivenTypeForActivity(FactType.GOAL.ordinal(), activity);
+        List<Fact> activitySubstitutions = factService.getAllFactsOfGivenTypeForActivity(FactType.SUBSTITUTION.ordinal(), activity);
+
+
         model.addAttribute("activity", activity);
+        model.addAttribute("activitySubstitutions", activitySubstitutions);
+        model.addAttribute("activityFacts", activityFacts);
+        model.addAttribute("activityGoals", activityGoals);
+
 
         Optional<User> oUser = userService.getCurrentUser();
         if (oUser.isEmpty()) {

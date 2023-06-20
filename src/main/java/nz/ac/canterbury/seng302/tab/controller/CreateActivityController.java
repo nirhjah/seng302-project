@@ -3,6 +3,9 @@ package nz.ac.canterbury.seng302.tab.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -233,6 +236,15 @@ public class CreateActivityController {
             //TEST CODE
             activity.setActivityTeamScore("25");
             activity.setOtherTeamScore("13");
+
+            List<Fact> factList = new ArrayList<>();
+            factList.add(new Fact("Someone fell over", "1h 25m", activity));
+            factList.add(new Fact("Someone fell over again", "1h 30m", activity));
+            factList.add(new Fact("Someone fell over yet again", "1h 42m", activity));
+            factList.add(new Substitution("Player was taken off", "1h 40m", activity, user, user));
+
+            activity.addFactList(factList);
+
             //TEST CODE
 
             activity = activityService.updateOrAddActivity(activity);

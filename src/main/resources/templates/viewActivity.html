@@ -8,6 +8,7 @@
   <link th:href="@{/css/styles.css}" rel="stylesheet">
   <link th:href="@{/css/profile.css}" rel="stylesheet">
   <link th:href="@{/css/view-activity.css}" rel="stylesheet">
+
   <title>View Activity</title>
 </head>
 <body class="profile-background">
@@ -115,6 +116,10 @@
   </footer>
 </div>
 
+<!--
+  Activity Statistics Component
+-->
+
   <div class="wrapper-profile" style="position: relative; margin-bottom: 10%">
     <div class="team-info">
       <div class="team-display">
@@ -132,18 +137,45 @@
       <h3 th:text="     ${activity.activityTeamScore} + ':' + ${activity.otherTeamScore}     " ></h3>
     </div>
 
-    </div>
+        <div style="float: right">
+          <h3> Substitutions </h3>
+
+          <div class="wrapper-facts">
+            <ul class="facts-table">
+              <li th:each="fact : ${activitySubstitutions}">
+                <span class="description" th:text="${fact.timeOfEvent} + ': player + img'"></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+
+        <h3> Facts </h3>
+
+        <div class="wrapper-facts">
+          <ul class="facts-table">
+            <li th:each="fact : ${activityFacts}">
+              <span class="description" th:text="${fact.timeOfEvent} + ': ' + ${fact.description}"></span>
+            </li>
+          </ul>
+        </div>
+
+
+
+
+
+
 
       </div>
+    </div>
 
 
 
 
-  </div>
 
-<!--
-  change % of width and height of wrapper profile on activity page
--->
+
+  </div> <!--close wrapper profile-->
+
 
 
 </body>
