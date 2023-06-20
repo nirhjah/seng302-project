@@ -12,6 +12,10 @@ public class Formation {
     @Column(name = "formationId")
     private long formationId;
 
+    /**
+     * The formation string is in the form of dash separated numbers used to describe the players position.
+     * e.g “1-4-3-3" for football, “1-1-3-3-3" for hockey
+     */
     @Column(nullable = false)
     private String formation;
 
@@ -29,7 +33,8 @@ public class Formation {
     /**
      * Constructs a Formation with the specified formation string and team.
      *
-     * @param formation The formation string.
+     * @param formation The formation string used to describe the players position
+     *                  e.g “1-4-3-3",“1-1-3-3-3"
      * @param team      The team associated with the formation.
      */
     public Formation(String formation,  Team team) {
