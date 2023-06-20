@@ -13,24 +13,30 @@
 <body class="profile-background">
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 <div class="team-profile-form">
+
     <div class="wrapper-profile">
-        <div class="profile-pic">
-            <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
-                <div class="image-styling">
-                    <img th:src="'data:image/png;base64,' + ${displayTeamPicture}" width="200" height="200"/>
-                    </br>
-                </div>
-                </br>
-                <div class="file-upload" th:if="${isUserManagerOrCoach}">
-                    <div class="file-label-border">
-                        <label for="file" class="file-label">
-                            Edit Profile Picture </label>
-                    </div>
-                    <input type="file" name="file" class="form-control-file" id="file">
-                    <input type="hidden" name="teamID" th:value="${teamID}">
-                </div>
-            </form>
+        <div class="btn-box">
+            <button>Team Profile</button>
+            <button>Create Formation</button>
         </div>
+        <div id ="team-profile-content" class="content">
+            <div class="profile-pic">
+                <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
+                    <div class="image-styling">
+                        <img th:src="'data:image/png;base64,' + ${displayTeamPicture}" width="200" height="200"/>
+                        </br>
+                    </div>
+                    </br>
+                    <div class="file-upload" th:if="${isUserManagerOrCoach}">
+                        <div class="file-label-border">
+                            <label for="file" class="file-label">
+                                Edit Profile Picture </label>
+                        </div>
+                        <input type="file" name="file" class="form-control-file" id="file">
+                        <input type="hidden" name="teamID" th:value="${teamID}">
+                    </div>
+                </form>
+            </div>
             <div class="join-token" th:if="${isUserManagerOrCoach}">
                 <label> Join Token</label>
                 <div class="join-token-box-outer">
@@ -48,33 +54,37 @@
                 </div>
             </div>
 
-        <div class="team-info">
-            <div class="team-display">
-                <h2>Team Profile</h2>
-                <div class="user-label">
-                    <img th:src="@{/image/icons/name.svg}"/>
-                    <h3 th:text="|Name: *{displayName}|"></h3>
+            <div class="team-info">
+                <div class="team-display">
+                    <h2>Team Profile</h2>
+                    <div class="user-label">
+                        <img th:src="@{/image/icons/name.svg}"/>
+                        <h3 th:text="|Name: *{displayName}|"></h3>
+                    </div>
+                    <div class="user-label">
+                        <img th:src="@{/image/icons/sports.svg}"/>
+                        <h3 th:text="|Sport: *{displaySport}|"></h3>
+                    </div>
+                    <div class="user-label">
+                        <img th:src="@{/image/icons/location.svg}"/>
+                        <h3 th:text="|Location: *{displayLocation}|"></h3>
+                    </div>
                 </div>
-                <div class="user-label">
-                    <img th:src="@{/image/icons/sports.svg}"/>
-                    <h3 th:text="|Sport: *{displaySport}|"></h3>
-                </div>
-                <div class="user-label">
-                    <img th:src="@{/image/icons/location.svg}"/>
-                    <h3 th:text="|Location: *{displayLocation}|"></h3>
-                </div>
-            </div>
 
+            </div>
+            <form th:action="@{profile}" class="profile-buttons" method="post">
+                <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+                <a class="edit-button" th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
+                    <button type="button">Edit Profile</button>
+                </a>
+                <a class="edit-button" th:href="@{editTeamRole(edit=${teamID})}" th:if="${isUserManager}">
+                    <button type="button">Edit Team Roles</button>
+                </a>
+            </form>
         </div>
-        <form th:action="@{profile}" class="profile-buttons" method="post">
-            <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
-            <a class="edit-button" th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
-                <button type="button">Edit Profile</button>
-            </a>
-            <a class="edit-button" th:href="@{editTeamRole(edit=${teamID})}" th:if="${isUserManager}">
-                <button type="button">Edit Team Roles</button>
-            </a>
-        </form>
+<!--        <div id="create-formation-content" class ="content">-->
+<!--            <p> This is where the 'create formation' is going to be displayed</p>-->
+<!--        </div>-->
     </div>
 
     <script>
@@ -115,13 +125,13 @@
             }, 1000);
         });
     </script>
-    <footer>
-        <p>
-            Image by <a
-                href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
-            on Freepik
-        </p>
-    </footer>
 </div>
 </body>
+<footer>
+    <p>
+        Image by <a
+            href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+        on Freepik
+    </p>
+</footer>
 </html>

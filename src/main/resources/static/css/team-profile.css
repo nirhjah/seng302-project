@@ -143,3 +143,19 @@
 .join-token-box-outer {
     display: flex;
 }
+.btn-box{
+    position:absolute;
+    top:-22px;
+}
+
+.btn-box button{
+    border:none;
+    outline:none;
+    background: white;
+}
+
+.btn-box button:hover{
+    background:#415a77;
+    color:white;
+}
+
