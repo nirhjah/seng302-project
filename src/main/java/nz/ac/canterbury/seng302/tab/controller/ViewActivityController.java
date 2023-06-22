@@ -1,11 +1,13 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
-import nz.ac.canterbury.seng302.tab.enums.FactType;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import nz.ac.canterbury.seng302.tab.service.FactService;
 import org.slf4j.Logger;
@@ -44,6 +46,8 @@ public class ViewActivityController {
     @Autowired
     private FactService factService;
 
+
+
     /**
      *
      * @param model      the model to be filled
@@ -63,15 +67,31 @@ public class ViewActivityController {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
 
-        List<Fact> activityFacts = factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity);
-        List<Fact> activityGoals = factService.getAllFactsOfGivenTypeForActivity(FactType.GOAL.ordinal(), activity);
-        List<Fact> activitySubstitutions = factService.getAllFactsOfGivenTypeForActivity(FactType.SUBSTITUTION.ordinal(), activity);
 
+
+        List<Fact> activityFacts = factService.getAllFactsForActivity(activity);
+        List<Substitution> activitySubstitutions = new ArrayList<>();
+        List<Goal> activityGoals = new ArrayList<>();
+
+        for (Object fact : activityFacts) {
+            if(fact instanceof Substitution) {
+                activitySubstitutions.add((Substitution) fact);
+
+            } else if (fact instanceof Goal) {
+                activityGoals.add((Goal) fact);
+            }
+
+        }
+        
 
         model.addAttribute("activity", activity);
+
         model.addAttribute("activitySubstitutions", activitySubstitutions);
+
         model.addAttribute("activityFacts", activityFacts);
+
         model.addAttribute("activityGoals", activityGoals);
+
 
 
         Optional<User> oUser = userService.getCurrentUser();

@@ -143,7 +143,12 @@
           <div class="wrapper-facts">
             <ul class="facts-table">
               <li th:each="fact : ${activitySubstitutions}">
-                <span class="description" th:text="${fact.timeOfEvent} + ': player + img'"></span>
+                <span class="description" style="float: left" th:text="${fact.timeOfEvent}"></span>
+                <span class="description" th:text="${fact.playerOn.firstName} + '         ' + ${fact.playerOn.lastName}"></span>
+                <span class="image-styling">
+                  <img th:src="*{'data:image/jpeg;base64,'+{displayPicture}}" style="float: right" width="50" height="50"/>
+                  </br>
+                </span>
               </li>
             </ul>
           </div>
