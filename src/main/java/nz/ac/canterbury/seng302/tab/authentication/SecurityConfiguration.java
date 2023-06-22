@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
@@ -43,6 +45,20 @@ public class SecurityConfiguration {
         return authenticationManagerBuilder.build();
     }
 
+    /**
+     * create a custom success url handler which sets
+     * the default url to the user profile when logging in
+     * @return the successHandler which spring security configuration can use
+     * to redirect user to the url with successful authentication
+     */
+
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler(){
+        SimpleUrlAuthenticationSuccessHandler successHandler = new SimpleUrlAuthenticationSuccessHandler();
+        successHandler.setUseReferer(false);
+        successHandler.setDefaultTargetUrl("/user-info/self");
+        return successHandler;
+    }
 
     /**
      * filters requests being made on the website
@@ -71,11 +87,12 @@ public class SecurityConfiguration {
                 .authenticated()
                 .and()
                 // Define logging in, a POST "/login" endpoint now exists under the hood, after login redirect to user page
-                .formLogin().loginPage("/login").loginProcessingUrl("/login").defaultSuccessUrl("/user-info/self").failureUrl("/login?error=true")
+                .formLogin().loginPage("/login").loginProcessingUrl("/login").successHandler(authenticationSuccessHandler()).failureUrl("/login?error=true")
                 .and()
                 // Define logging out, a POST "/logout" endpoint now exists under the hood, redirect to "/login", invalidate session and remove cookie
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/login").invalidateHttpSession(true).deleteCookies("JSESSIONID");
         return http.build();
 
     }
+
 }
