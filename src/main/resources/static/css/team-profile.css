@@ -168,21 +168,22 @@
     font-weight:600;
     font-size:18px;
     color:#919191;
+    /*display:flex;*/
 }
 
 .tab-line{
     position: absolute;
     top:54px;
-    left:95px;
-    width:114px;
+    left:64px;
+    width:175px;
     height:5px;
-    background-color:#0b2239;
+    background-color:#1B263B;
     border-radius:10px;
     transition: all .3s ease-in-out;
 }
 
-.tab-box .tab-button.active{
-    color:#0b2239;
+.tab.active .tab-button{
+    color:#1B263B;
 }
 
 .content-box .content{
@@ -191,4 +192,20 @@
 
 .content-box .content.active{
     display:block;
+}
+
+.tab img{
+    height:27px;
+    width:50px;
+    padding-right:13px;
+    filter:  invert(64%) sepia(0%) saturate(0%) hue-rotate(161deg) brightness(91%) contrast(86%);
+}
+
+.tab.active .tab-icon {
+    filter: brightness(0) saturate(100%) invert(13%) sepia(8%) saturate(3176%) hue-rotate(181deg) brightness(99%) contrast(97%);
+}
+
+.tab{
+    display: flex;
+    align-items: center;
 }

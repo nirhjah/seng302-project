@@ -16,10 +16,21 @@
 
     <div class="wrapper-profile">
         <div class="tab-box">
-            <button class="tab-button active">Team Profile</button>
-            <button class="tab-button">All Formations</button>
-            <button class="tab-button">Statistics</button>
-            <div class="tab-line"></div>
+            <div class="tab active">
+                <img class ="tab-icon" th:src="@{/image/icons/team.svg}"/>
+                <button class="tab-button"> Team Profile &nbsp;</button>
+            </div>
+            <div class="tab">
+                <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
+                <button class="tab-button" >All Formations &nbsp;</button>
+            </div>
+            <div class="tab">
+<!--                this is a temporary icon for statistic, which is probably going to be replaced when working-->
+<!--                on the team aggregated statistic task-->
+                <img class ="tab-icon" th:src="@{/image/icons/formation.svg}"/>
+                <button class="tab-button" >Statistics &nbsp;</button>
+                <div class="tab-line"></div>
+            </div>
         </div>
         <div class="content-box">
             <div class="content active">
@@ -88,7 +99,8 @@
         </div>
         <div class="content-box">
             <div class="content">
-                <p> This is where the 'formation list' is going to be displayed with the option for edit and create formations</p>
+                <p> This is where the 'formation list' is going to be displayed with the option for edit and create
+                    formations</p>
             </div>
         </div>
 
@@ -137,21 +149,25 @@
             }, 1000);
         });
 
-        const tabs = document.querySelectorAll('.tab-button');
+        const tabs = document.querySelectorAll('.tab');
         const tabLine = document.querySelector('.tab-line');
-        const displayContent= document.querySelectorAll('.content');
-        tabs.forEach((tab,index) => {
+        const displayContent = document.querySelectorAll('.content');
+
+        tabs.forEach((tab, index) => {
             tab.addEventListener('click', (e) => {
                 tabs.forEach(otherTab => {
                     otherTab.classList.remove('active');
                 });
                 tab.classList.add('active');
-                tabLine.style.width = e.target.offsetWidth + "px";
-                tabLine.style.left = e.target.offsetLeft + "px";
-                displayContent.forEach(content=>{content.classList.remove('active')});
+                tabLine.style.width = (e.target.offsetWidth + 50) + "px";
+                tabLine.style.left = (e.target.offsetLeft - 50) + "px";
+                displayContent.forEach(content => {
+                    content.classList.remove('active')
+                });
                 displayContent[index].classList.add('active');
             });
         });
+
     </script>
 </div>
 </body>
