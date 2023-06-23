@@ -129,15 +129,15 @@
       <h2>Activity Statistics</h2>
     </div>
 
-
-
-
     <div class="activity-score" th:if="${activity.activityType.toString() == 'Game' || activity.activityType.toString() == 'Friendly'}">
       <h3> Team A vs Team B </h3>
       <h3 th:text="     ${activity.activityTeamScore} + ':' + ${activity.otherTeamScore}     " ></h3>
     </div>
 
-        <div style="float: right">
+<!--
+        If activity is game or friendly with lineup, show list subs. Show goals on lineup
+-->
+        <div style="float: right" th:if="${activity.activityType.toString() == 'Game' || activity.activityType.toString() == 'Friendly'}">
           <h3> Substitutions </h3>
 
           <div class="wrapper-facts">
