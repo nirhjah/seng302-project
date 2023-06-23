@@ -30,7 +30,6 @@ public class ActivityRepositoryTest {
     @BeforeEach
     void beforeEach() {
         location = new Location(null, null, null, "Christchurch", null, "New Zealand");
-
     }
 
     @Test
