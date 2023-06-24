@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +24,12 @@ public class ActivityService {
 
     @Autowired
     ActivityRepository activityRepository;
+
+    @Autowired
+    TeamService teamService;
+
+    @Autowired
+    FactService factService;
 
     public static final String activityScoreHyphenRegex = "^(\\p{N}+-(\\p{N}+))+$";
 
@@ -126,5 +134,37 @@ public class ActivityService {
             }
             return false;
         }
+    }
+
+    public List<String> getLast5ActivityResultsForTeam(long teamID) {
+        String winString = "Won";
+        String loseString = "Lost";
+        String drawString = "Drawn";
+        Team team = teamService.getTeam(teamID);
+        if (team != null) {
+            List<Activity> last5Activities = activityRepository.getLast5Activities(team);
+            List<String> outcomes = new ArrayList<>();
+            for (Activity activity : last5Activities) {
+                String teamScore = activity.getActivityTeamScore();
+                String otherScore = activity.getOtherTeamScore();
+                if (!teamScore.contains("-")) {
+                    try {
+                        int teamScoreNum = Integer.parseInt(teamScore);
+                        long otherTeamScoreNum = Integer.parseInt(otherScore);
+                        if (teamScoreNum > otherTeamScoreNum) {
+                            outcomes.add(winString);
+                        } else if (otherTeamScoreNum == teamScoreNum) {
+                            outcomes.add(drawString);
+                        } else {
+                            outcomes.add(loseString);
+                        }
+                    } catch (Exception e) {
+                        return null;
+                    }
+                    return outcomes;
+                }
+            }
+        }
+        return null;
     }
 }

@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.tab.service;
 
+import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -277,10 +279,19 @@ public class TeamService {
 
     }
 
+    /**
+     * Gets list of team names
+     * @return a list of team names
+     */
     public List<String> getAllTeamNames() {
         return teamRepository.getAllTeamNames();
     }
 
+    /**
+     * Set a user as a member of a team
+     * @param team the team which the user is joining
+     * @param user the user that is joining a team
+     */
     public void setTeamMember(Team team, User user) {
         Role memberRole = Role.MEMBER;
         team.setRole(user, memberRole);
@@ -288,6 +299,11 @@ public class TeamService {
         // updateTeam(team);
     }
 
+    /**
+     * Gets the manager of a team
+     * @param teamId ID of team
+     * @return user who is manager
+     */
     public User getTeamManager(Long teamId) {
         TeamRole manager = teamRepository.findTeamManager(teamId, Role.MANAGER);
         return manager != null ? manager.getUser() : null;

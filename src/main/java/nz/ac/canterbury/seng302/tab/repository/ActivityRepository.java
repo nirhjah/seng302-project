@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.repository;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,4 +25,7 @@ public interface ActivityRepository extends CrudRepository<Activity, Long> {
             "GROUP BY a, t.name " +
             "ORDER BY COALESCE(LOWER(t.name),''), a.activityStart")
     Page<Activity> findActivitiesByUserSorted(Pageable pageable, @Param("user") User user);
+
+    @Query("SELECT a FROM Activity a WHERE (a.activityType = 0 OR a.activityType = 1) and a.team= :team ORDER BY a.activityEnd, a.activityStart LIMIT 5")
+    List<Activity> getLast5Activities(Team team);
 }
