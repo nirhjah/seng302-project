@@ -316,3 +316,7 @@ Join team modal styling
     background-clip: text;
     -webkit-background-clip: text;
 }
+
+.submit-footer .submit-button button{
+    width:10%;
+}
