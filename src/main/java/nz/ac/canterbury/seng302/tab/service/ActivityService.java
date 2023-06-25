@@ -4,6 +4,7 @@ import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,11 @@ public class ActivityService {
     public ActivityService(ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
     }
+
+    public static final String activityScoreHyphenRegex = "^(\\p{N}+-(\\p{N}+))+$";
+
+    public static final String activityScoreNumberOnlyRegex = "^[0-9]+$";
+
 
     /**
      * Returns all activities
@@ -102,8 +108,8 @@ public class ActivityService {
      * @param team the team selected
      * @return true if the type is game or friendly and there is a team, or if type is anything but game and friendly
      */
-    public boolean validateTeamSelection(Activity.ActivityType type, Team team) {
-        if ((type == Activity.ActivityType.Game || type== Activity.ActivityType.Friendly) && team==null) {
+    public boolean validateTeamSelection(ActivityType type, Team team) {
+        if ((type == ActivityType.Game || type== ActivityType.Friendly) && team==null) {
             return false;
         } else {
             return true;
@@ -114,5 +120,28 @@ public class ActivityService {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         return activityRepository.findActivityByTeam(team, pageable);
 
+    /**
+     * Checks that the scores provided for both teams are of the same format
+     * First checks if the first team's score is of appropriate hyphen format, if true will check if second team's score is of same hyphen format
+     * Otherwise checks if first team's score is of only number format, if true it will check if second team's score is of same only number format
+     * @param activityTeamScore score for the team associated with the activity
+     * @param otherTeamScore    score for the other team
+     * @return true if the scores are both of same format, false otherwise
+     */
+    public boolean validateActivityScore(String activityTeamScore, String otherTeamScore) {
+        if (activityTeamScore.matches(activityScoreHyphenRegex)) {
+            if (otherTeamScore.matches(activityScoreHyphenRegex)) {
+                return true;
+            } else {
+                return false; }
+        } else {
+            if (activityTeamScore.matches(activityScoreNumberOnlyRegex)) {
+                if (otherTeamScore.matches(activityScoreNumberOnlyRegex)) {
+                    return true;
+                } else {
+                    return false; }
+            }
+            return false;
+        }
     }
 }

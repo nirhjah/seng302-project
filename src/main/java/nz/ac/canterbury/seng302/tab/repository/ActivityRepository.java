@@ -3,7 +3,6 @@ package nz.ac.canterbury.seng302.tab.repository;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 
-// import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

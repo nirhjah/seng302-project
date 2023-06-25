@@ -391,8 +391,8 @@ public class CreateTeamFormControllerTest {
     void whenSportIsNewAndValid_checkThatItWasSaved() throws Exception {
         mockMvc.perform(post("/createTeam", 42L)
                         .param("teamID", TEAM_ID.toString())
-                        .param("name", "test.{team1}")
-                        .param("sport", "hockey-team a'b")
+                        .param("name", "{}.test.{team1}")
+                        .param("sport", " '-hockey-team a'b")
                         .param("addressLine1", "")
                         .param("addressLine2", "")
                         .param("city", "Christchurch")

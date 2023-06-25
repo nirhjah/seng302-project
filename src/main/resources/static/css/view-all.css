@@ -316,7 +316,6 @@ Join team modal styling
     -webkit-background-clip: text;
 }
 
-
 .edit-button {
     border: none;
     outline: none;
@@ -326,4 +325,7 @@ Join team modal styling
     color: #fff;
     border-radius: 30px;
     font-weight: bold;
+}
+.submit-footer .submit-button button{
+    width:10%;
 }

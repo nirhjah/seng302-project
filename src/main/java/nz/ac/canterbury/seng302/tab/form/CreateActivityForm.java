@@ -1,7 +1,7 @@
 package nz.ac.canterbury.seng302.tab.form;
 
-import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
 import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class CreateActivityForm {
 
     @ActivityFormValidators.activityTypeValidator
-    private Activity.ActivityType activityType;
+    private ActivityType activityType;
 
     private long teamId;
 
@@ -33,20 +33,20 @@ public class CreateActivityForm {
     @LocationValidators.postcodeValidator
     private String postcode;
 
-    @LocationValidators.countryCitySuburbValidator(regexMatch = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
+    @LocationValidators.countryCitySuburbValidator(regexMatch = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = TeamFormValidators.INVALID_CHARACTERS_MSG)
     private String country;
 
-    @LocationValidators.countryCitySuburbValidator(regexMatch = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG)
+    @LocationValidators.countryCitySuburbValidator(regexMatch = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX, message = TeamFormValidators.INVALID_CHARACTERS_MSG)
     private String city;
 
     @LocationValidators.suburbValidator
     private String suburb;
 
-    public Activity.ActivityType getActivityType() {
+    public ActivityType getActivityType() {
         return activityType;
     }
 
-    public void setActivityType(Activity.ActivityType activityType) {
+    public void setActivityType(ActivityType activityType) {
         this.activityType = activityType;
     }
 
