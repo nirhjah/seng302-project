@@ -11,6 +11,7 @@ import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
@@ -143,13 +144,13 @@ public class ViewMyActivitiesIntegrationTests {
     @Given("I have personal and team activities")
     public void iHavePersonalAndTeamActivities() {
         for (Date date: testDates) {
-            Activity activity1 = new Activity(Activity.ActivityType.Friendly, null, "Test description",
+            Activity activity1 = new Activity(ActivityType.Friendly, null, "Test description",
                     date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), null,
                     new Location(null, null, null, "CHCH", null, "NZ"));
-            Activity activity2 = new Activity(Activity.ActivityType.Friendly, null, "Test description",
+            Activity activity2 = new Activity(ActivityType.Friendly, null, "Test description",
                 date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), null,
                     new Location(null, null, null, "CHCH", null, "NZ"));
-            Activity activity3 = new Activity(Activity.ActivityType.Friendly, null, "Test description",
+            Activity activity3 = new Activity(ActivityType.Friendly, null, "Test description",
                     date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), null,
                     new Location(null, null, null, "CHCH", null, "NZ"));
             activityRepository.save(activity1);
@@ -266,7 +267,7 @@ public class ViewMyActivitiesIntegrationTests {
     @Given("I have a mix of {int} personal and team activities")
     public void iHaveAMixOfPersonalAndTeamActivities(int numActvities) {
         for (int i = 0; i < numActvities; i++) {
-            Activity activity1 = new Activity(Activity.ActivityType.Friendly, null, "Test description",
+            Activity activity1 = new Activity(ActivityType.Friendly, null, "Test description",
                     dateFirst.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), dateFirst.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), null,
                     new Location(null, null, null, "CHCH", null, "NZ"));
             activityRepository.save(activity1);

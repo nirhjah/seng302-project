@@ -4,6 +4,7 @@ import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
@@ -50,7 +51,7 @@ public class ViewTeamActivitiesControllerTest {
         User user = new User("John", "Doe",
                 new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
         team = new Team("Team 900", "Hockey");
-        game = new Activity(Activity.ActivityType.Game, team, "Game with Team",
+        game = new Activity(ActivityType.Game, team, "Game with Team",
                 LocalDateTime.of(2030, 1,1,6,30),
                 LocalDateTime.of(2030, 1,1,8,30), user,
                 new Location(null,null,null,"CHCH", null, "NZ"));

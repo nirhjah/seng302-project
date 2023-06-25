@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
+import nz.ac.canterbury.seng302.tab.enums.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -131,7 +133,7 @@ public class ActivityServiceTest {
      */
     @Test
     public void ifNoTeamAndActivityTypeGame_ReturnFalse() {
-        Assertions.assertFalse(activityService.validateTeamSelection(Activity.ActivityType.Game, null));
+        Assertions.assertFalse(activityService.validateTeamSelection(ActivityType.Game, null));
     }
 
     /**
@@ -139,7 +141,7 @@ public class ActivityServiceTest {
      */
     @Test
     public void ifNoTeamAndActivityTypeFriendly_ReturnFalse() {
-        Assertions.assertFalse(activityService.validateTeamSelection(Activity.ActivityType.Friendly, null));
+        Assertions.assertFalse(activityService.validateTeamSelection(ActivityType.Friendly, null));
     }
 
     /**
@@ -149,7 +151,7 @@ public class ActivityServiceTest {
     @Test
     public void ifTeamAndActivityTypeFriendly_ReturnTrue() throws IOException {
         Team team = new Team("Team 900", "Programming");
-        Assertions.assertTrue(activityService.validateTeamSelection(Activity.ActivityType.Friendly, team));
+        Assertions.assertTrue(activityService.validateTeamSelection(ActivityType.Friendly, team));
     }
 
     /**
@@ -159,7 +161,7 @@ public class ActivityServiceTest {
     @Test
     public void ifTeamAndActivityTypeGame_ReturnTrue() throws IOException {
         Team team = new Team("Team 900", "Programming");
-        Assertions.assertTrue(activityService.validateTeamSelection(Activity.ActivityType.Game, team));
+        Assertions.assertTrue(activityService.validateTeamSelection(ActivityType.Game, team));
     }
 
     /**
@@ -169,7 +171,7 @@ public class ActivityServiceTest {
     @Test
     public void ifTeamAndActivityTypeOther_ReturnTrue() throws IOException {
         Team team = new Team("Team 900", "Programming");
-        Assertions.assertTrue(activityService.validateTeamSelection(Activity.ActivityType.Other, team));
+        Assertions.assertTrue(activityService.validateTeamSelection(ActivityType.Other, team));
     }
 
     /**
@@ -177,7 +179,7 @@ public class ActivityServiceTest {
      */
     @Test
     public void ifNoTeamAndActivityTypeOther_ReturnTrue() {
-        Assertions.assertTrue(activityService.validateTeamSelection(Activity.ActivityType.Other, null));
+        Assertions.assertTrue(activityService.validateTeamSelection(ActivityType.Other, null));
     }
 
     /**
@@ -200,7 +202,7 @@ public class ActivityServiceTest {
         Team t = new Team("Test Team", "Hockey");
         teamRepository.save(t);
         User u = new User("Test", "Account", "tab.team900@gmail.com", "password", new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
-        Activity game = new Activity(Activity.ActivityType.Game, t, "A Test Game",
+        Activity game = new Activity(ActivityType.Game, t, "A Test Game",
                 LocalDateTime.of(2025, 1,1,6,30),
                 LocalDateTime.of(2025, 1,1,8,30), u,
                 new Location("Test", "Test", "Test", "test", "Tst", "test"));
@@ -218,11 +220,11 @@ public class ActivityServiceTest {
         Team t = new Team("Test Team", "Hockey");
         teamRepository.save(t);
         User u = new User("Test", "Account", "tab.team900@gmail.com", "password", new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
-        Activity game = new Activity(Activity.ActivityType.Game, t, "A Test Game",
+        Activity game = new Activity(ActivityType.Game, t, "A Test Game",
                 LocalDateTime.of(2025, 1,1,6,30),
                 LocalDateTime.of(2025, 1,1,8,30), u,
                 new Location("Test", "Test", "Test", "test", "Tst", "test"));
-        Activity training = new Activity(Activity.ActivityType.Training, null, "A Test Game",
+        Activity training = new Activity(ActivityType.Training, null, "A Test Game",
                 LocalDateTime.of(2026, 1,1,6,30),
                 LocalDateTime.of(2026, 1,1,8,30), u,
                 new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
@@ -240,7 +242,7 @@ public class ActivityServiceTest {
     public void getActivityThatDoesExist_returnActivity() throws Exception {
         User u = new User("Test", "Account", "tab.team900@gmail.com", "password",
                 new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
-        Activity training = new Activity(Activity.ActivityType.Training, null, "A Test Game",
+        Activity training = new Activity(ActivityType.Training, null, "A Test Game",
                 LocalDateTime.of(2026, 1,1,6,30),
                 LocalDateTime.of(2026, 1,1,8,30), u,
                 new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));

@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.unit.controller;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -43,7 +44,7 @@ public class ViewActivitiesControllerTest {
                 null, "NZ");
         User user = new User("John", "Doe",
                 new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
-        game = new Activity(Activity.ActivityType.Other, null , "Personal Activity",
+        game = new Activity(ActivityType.Other, null , "Personal Activity",
                 LocalDateTime.of(2030, 1,1,6,30),
                 LocalDateTime.of(2030, 1,1,8,30), user,
                 new Location(null,null,null,"CHCH", null, "NZ"));
