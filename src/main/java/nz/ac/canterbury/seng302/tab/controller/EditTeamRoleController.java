@@ -81,6 +81,12 @@ public class EditTeamRoleController {
     logger.info(userRoles.toString());
     logger.info(userIds.toString());
 
+    Optional<User> user = userService.getCurrentUser();
+    if (user.isEmpty()) {
+      logger.error("No current user?");
+      return "redirect:/home";
+    }
+
     model.addAttribute("httpServletRequest", request);
 
     Team team = teamService.getTeam(Long.parseLong(teamID));
@@ -101,6 +107,7 @@ public class EditTeamRoleController {
       model.addAttribute(
           "managerError",
           "Error: A manager is required for a team, with a maximum of 3 per team.");
+      currentUserNavDisplay(user.get(), model);
       return "editTeamRoleForm";
     }
 
@@ -110,11 +117,6 @@ public class EditTeamRoleController {
       updateRole(team, userIds.get(i), userRoles.get(i));
     }
     teamService.updateTeam(team);
-    Optional<User> user = userService.getCurrentUser();
-    if (user.isEmpty()) {
-      logger.error("No current user?");
-      return "redirect:/home";
-    }
     currentUserNavDisplay(user.get(), model);
 
     return "editTeamRoleForm";
