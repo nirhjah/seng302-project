@@ -57,6 +57,7 @@ public class EditTeamRoleController {
     }
 
     model.addAttribute("user", user.get());
+    currentUserNavDisplay(user.get(), model);
     model.addAttribute("httpServletRequest", request);
     populateListsInModel(team, model);
     return "editTeamRoleForm";
@@ -109,6 +110,12 @@ public class EditTeamRoleController {
       updateRole(team, userIds.get(i), userRoles.get(i));
     }
     teamService.updateTeam(team);
+    Optional<User> user = userService.getCurrentUser();
+    if (user.isEmpty()) {
+      logger.error("No current user?");
+      return "redirect:/home";
+    }
+    currentUserNavDisplay(user.get(), model);
 
     return "editTeamRoleForm";
   }
@@ -144,5 +151,18 @@ public class EditTeamRoleController {
     model.addAttribute("userIds", userIDList);
     model.addAttribute("possibleRoles", Role.values());
     model.addAttribute("teamID", team.getTeamId().toString());
+  }
+
+  /**
+   * Method which injects the current user and team list information into the view
+   * so that it will be displayed on the nav bar
+   * @param user the current user who is logged into the system
+   * @param model the Model object used to add attributes for the view
+   */
+  public void currentUserNavDisplay(User user, Model model){
+    model.addAttribute("firstName", user.getFirstName());
+    model.addAttribute("lastName", user.getLastName());
+    model.addAttribute("displayPicture", user.getPictureString());
+    model.addAttribute("navTeams", teamService.getTeamList());
   }
 }

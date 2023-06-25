@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
@@ -10,82 +10,86 @@
     <title>Profile</title>
 </head>
 <body class="profile-background">
-    <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
-    <div class="login-header">
-        <h1 th:inline="text">Edit Team Roles</h1>
-    </div>
-    <div class="error-message">
-        <p th:if="${managerError}" th:text="${managerError}" style="text-align:center;"></p>
-    </div>
-      <div class="card-container">
-        <div th:each="teamRole : ${roleList}" class ="card"\>
-              <div class="card-wrapper">
-                  <div class="card-image">
-                      <img th:src="${'data:image/jpeg;base64,' + teamRole.user.pictureString}" class="card-img-top" alt="User image">
-                  </div>
-                  <div class="card-body">
-                    <h5 class="card-title">[[|${teamRole.getUser().getFirstName()} ${teamRole.getUser().getLastName()} |]]</h5>
-                    <p> Team Member Role: </p>
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+<div class="login-header">
+    <h1 th:inline="text">Edit Team Roles</h1>
+</div>
+<div class="error-message">
+    <p th:if="${managerError}" th:text="${managerError}" style="text-align:center;"></p>
+</div>
+<div class="card-container">
+    <div th:each="teamRole : ${roleList}" class="card" >
+        <div class="card-wrapper">
+            <div class="card-image">
+                <img th:src="${'data:image/jpeg;base64,' + teamRole.user.pictureString}" class="card-img-top"
+                     alt="User image">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">[[|${teamRole.getUser().getFirstName()} ${teamRole.getUser().getLastName()}
+                    |]]</h5>
+                <p> Team Member Role: </p>
+                <div class="team-role-box">
                     <select name="teamRole" id="teamRole" class="teamRole">
-                      <option th:each="role : ${possibleRoles}" th:value="${role}" th:text="${role}" th:selected="${role.toString() == teamRole.role.toString()}"></option>
-                      
+                        <option th:each="role : ${possibleRoles}" th:value="${role}" th:text="${role}"
+                                th:selected="${role.toString() == teamRole.role.toString()}"></option>
                     </select>
-                  </div>
-              </div>
-          </div>
-      </div>
-    <div class="submit-footer">
-        <div class="submit-button">
-            <form th:action="@{editTeamRole}" id="sendTeamChanges" class="sendTeamChanges" method="post">
-                <button type="submit" class="registerLoginButton">Submit Changes</button>
-            </form>
+                </div>
+            </div>
         </div>
     </div>
-        <footer>
-            <p>
-                Image by <a
-                    href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
-                on Freepik
-            </p>
-        </footer>
+</div>
+<div class="submit-footer">
+    <div class="submit-button">
+        <form th:action="@{editTeamRole}" id="sendTeamChanges" class="sendTeamChanges" method="post">
+            <button type="submit" class="registerLoginButton">Submit Changes</button>
+        </form>
     </div>
+</div>
+<footer>
+    <p>
+        Image by <a
+            href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+        on Freepik
+    </p>
+</footer>
+</div>
 
-    <script th:inline="javascript">
-        const form = document.getElementById("sendTeamChanges");
-        const selectionBoxes = document.getElementsByClassName("teamRole");
-        let teamID = /*[[${teamID}]]*/ "";
-        let teamRoles = /*[[${userIds}]]*/ [];
+<script th:inline="javascript">
+    const form = document.getElementById("sendTeamChanges");
+    const selectionBoxes = document.getElementsByClassName("teamRole");
+    let teamID = /*[[${teamID}]]*/ "";
+    let teamRoles = /*[[${userIds}]]*/ [];
 
-        function addInput(form, name, value) {
-            const inp = document.createElement("input");
-            inp.setAttribute("type", "hidden");
-            inp.setAttribute("name", name);
-            inp.setAttribute("value", value)
-            form.appendChild(inp);
+    function addInput(form, name, value) {
+        const inp = document.createElement("input");
+        inp.setAttribute("type", "hidden");
+        inp.setAttribute("name", name);
+        inp.setAttribute("value", value)
+        form.appendChild(inp);
+    }
+
+    form.addEventListener('submit', (event) => {
+        if (confirm("Confirm Changes to Team?") == true) {
+            form.reset()
+            let roles = [];
+            for (const selection of selectionBoxes) {
+                roles.push(selection.value.toString());
+            }
+            let userRoles = roles.join(",")
+            addInput(form, "userRoles", userRoles)
+
+            addInput(form, "teamID", teamID)
+
+            let userIdValues = /*[[${userIds}]]*/ [];
+            const userIds = userIdValues.join(",");
+            addInput(form, "userIds", userIds)
+            return true;
+        } else {
+            event.preventDefault();
         }
 
-        form.addEventListener('submit', (event) => {
-            if (confirm("Confirm Changes to Team?") == true) {
-                form.reset()
-                let roles = [];
-                for (const selection of selectionBoxes) {
-                    roles.push(selection.value.toString());
-                }
-                let userRoles = roles.join(",")
-                addInput(form, "userRoles", userRoles)
+    })
 
-                addInput(form, "teamID", teamID)
-
-                let userIdValues = /*[[${userIds}]]*/ [];
-                const userIds = userIdValues.join(",");
-                addInput(form, "userIds", userIds)
-                return true;
-            } else {
-                event.preventDefault();
-            }
-
-        })
-
-    </script>
+</script>
 </body>
 </html>
