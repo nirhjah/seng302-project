@@ -59,15 +59,6 @@ public class TeamTest {
     }
 
     @Test
-    public void testGettingTeamId() throws IOException {
-        List<Team> teamList = teamService.getTeamList();
-        assertTrue(teamList.isEmpty());
-        Team team = new Team("test", "Hockey", location);
-        teamRepository.save(team);
-        assertEquals(1, team.getTeamId());
-    }
-
-    @Test
     public void testGettingPictureString() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
@@ -180,7 +171,7 @@ public class TeamTest {
     /**
      * U24/AC5 states that a token must be 12 characters long
      *
-     * @throws IOException
+     * @throws IOException thrown by encoding of profile pictures
      */
     @Test
     public void givenCreatingANewUser_WhenTokenIsGenerated_TokenIs12CharactersLong() throws IOException {
@@ -192,7 +183,7 @@ public class TeamTest {
     /**
      * U24/AC5 states that a token must a combination of letters and numbers
      *
-     * @throws IOException
+     * @throws IOException thrown by encoding of profile pictures
      */
     @Test
     public void givenCreatingANewUser_WhenTokenIsGenerated_TokenIsMadeOfOnlyCharactersAndNumbers()

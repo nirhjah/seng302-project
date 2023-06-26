@@ -42,6 +42,7 @@ public class ViewAllTeamsController {
     public String findPaginated(@RequestParam(value = "page", defaultValue = "-1") int pageNo,
                                 Model model, HttpServletRequest request) {
         model.addAttribute("httpServletRequest",request);
+        logger.info("GET /view-teams");
         // If no teams exist in the database
         if (teamService.getTeamList().size() == 0) {
             return "redirect:/home";
@@ -53,10 +54,7 @@ public class ViewAllTeamsController {
             return "redirect:/view-teams?page=" + pageNo;
         }
 
-        logger.info("GET /view-teams");
-
         Page<Team> page = teamService.findPaginated(pageNo, maxPageSize);
-
         List<Team> listTeams = page.getContent();
 
         Optional<User> user = userService.getCurrentUser();

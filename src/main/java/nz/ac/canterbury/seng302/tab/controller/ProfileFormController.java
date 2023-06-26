@@ -35,6 +35,11 @@ public class ProfileFormController {
     @Autowired
     private UserService userService;
 
+    public ProfileFormController(UserService userService, TeamService teamService) {
+        this.userService = userService;
+        this.teamService = teamService;
+    }
+
     /**
      * Gets form to be displayed, includes the ability to display results of
      * previous form when linked to from POST form
