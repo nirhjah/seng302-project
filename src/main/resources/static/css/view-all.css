@@ -140,9 +140,8 @@ table {
     border-radius:8px;
     background:white;
     width:fit-content;
-    margin:auto;
     align-items:center;
-    margin-top:10px;
+    margin: 10px 0;
 }
 
 .pagination-container button{
@@ -317,6 +316,16 @@ Join team modal styling
     -webkit-background-clip: text;
 }
 
+.edit-button {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 1em;
+    color: #fff;
+    border-radius: 30px;
+    font-weight: bold;
+}
 .submit-footer .submit-button button{
     width:10%;
 }
