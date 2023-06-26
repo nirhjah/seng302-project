@@ -238,6 +238,11 @@ table {
     height:fit-content;
 }
 
+.card-body .card-title{
+    text-align: center;
+    font-size:16px;
+}
+
 .card img:hover {
     cursor: pointer;
 }
@@ -343,3 +348,8 @@ Join team modal styling
     justify-content:center;
     align-items:center;
 }
+
+.team-role-box label{
+    padding-right:10px;
+}
+
