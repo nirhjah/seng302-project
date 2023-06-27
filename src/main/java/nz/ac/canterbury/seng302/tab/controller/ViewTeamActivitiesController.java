@@ -57,6 +57,7 @@ public class ViewTeamActivitiesController {
 
         if (selectedTeam != null) {
             model.addAttribute("displayName", selectedTeam.getName());
+            model.addAttribute("selectedTeam", selectedTeam);
             logger.info("TEAM IS: " + selectedTeam.getName());
             model.addAttribute("displayTeamPicture", selectedTeam.getPictureString());
         } else {
