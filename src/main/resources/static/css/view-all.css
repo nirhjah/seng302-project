@@ -238,6 +238,11 @@ table {
     height:fit-content;
 }
 
+.card-body .card-title{
+    text-align: center;
+    font-size:16px;
+}
+
 .card img:hover {
     cursor: pointer;
 }
@@ -259,11 +264,6 @@ table {
     font-family: "Noto Sans", sans-serif;
 
 }
-.teamRole {
-    border-radius: 10px;
-}
-
-
 
 /*
 Join team modal styling
@@ -329,3 +329,27 @@ Join team modal styling
 .submit-footer .submit-button button{
     width:10%;
 }
+
+.teamRole{
+    font-size:14px;
+    color:white;
+    border-radius: 10px;
+    background:#537398;
+    border:none;
+    outline:0;
+    width:60%;
+    height:25px;
+    text-align:center;
+}
+
+.team-role-box{
+    padding-top:10px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.team-role-box label{
+    padding-right:10px;
+}
+
