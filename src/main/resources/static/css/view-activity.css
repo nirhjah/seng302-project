@@ -1,37 +1,36 @@
-.team-profile-form .wrapper-profile {
-    height: 430px;
-    width: 900px;
-}
+/*.team-profile-form .wrapper-profile {*/
+/*    height: 430px;*/
+/*    width: 900px;*/
+/*}*/
 
-.wrapper-profile .team-info {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    justify-content: flex-start;
-    align-items: center;
-    padding-top: 5%;
-    left: 10%;
-    transition: 0.5s;
-}
+/*.wrapper-profile .team-info {*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    width: 100%;*/
+/*    justify-content: flex-start;*/
+/*    align-items: center;*/
+/*    padding-top: 5%;*/
+/*    left: 10%;*/
+/*    transition: 0.5s;*/
+/*}*/
 
-.details {
-    float: right;
-    /*
-    margin-right: 20%;
-    */
-    margin-top: 2%;
-    font-family: "Noto Sans", sans-serif;
-    font-weight: 600;
-    font-size: 22px;
-    color: #1B263B;
-    width: 344px;
-}
+/*.details {*/
+/*    !*float: right;*!*/
+/*    !*!**!*/
+/*    !*margin-right: 20%;*!*/
+/*    !**!*!*/
+/*    !*margin-top: 2%;*!*/
+/*    !*font-family: "Noto Sans", sans-serif;*!*/
+/*    !*font-weight: 600;*!*/
+/*    !*font-size: 22px;*!*/
+/*    !*color: #1B263B;*!*/
+/*    !*width: 344px;*!*/
+
+/*}*/
 
 .activity-type {
     display: inline-block;
 }
-
-
 
 
 /* width is ~ current width / 90 * 100 */
@@ -58,14 +57,7 @@
         position: static !important;
         padding-top: 0 !important;
     }
-
-
-
 }
-
-
-
-
 
 .activity-score {
     width: 50%;
@@ -103,3 +95,47 @@
         width: 100vw;
     }
 }
+.act-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.act-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    padding: 50px 50px 0;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.act-info > div {
+    background-color: white;
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+    border-radius: 20px;
+    position: relative;
+    flex: 1;
+}
+
+.act-details,
+.act-date-time,
+.act-facts,
+.act-lineup,
+.act-subs {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.act-facts {
+    align-items: flex-end;
+}
+
+
+
+
+
+
