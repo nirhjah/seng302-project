@@ -55,6 +55,10 @@ public class Team {
     )
     private Set<User> teamMembers = new HashSet<User>();
 
+    @ManyToOne
+    @JoinColumn(name="clubId")
+    private Club teamClub;
+
     protected Team() {
     }
 
@@ -262,6 +266,14 @@ public class Team {
 
     public Set<User> getTeamMembers() {
         return teamMembers;
+    }
+
+    public Club getTeamClub() {
+        return teamClub;
+    }
+
+    public void setTeamClub(Club teamClub) {
+        this.teamClub = teamClub;
     }
 
     @Override
