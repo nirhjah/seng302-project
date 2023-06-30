@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
+import org.hibernate.Hibernate;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -134,10 +135,6 @@ public class Team {
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return this.name;
-    }
 
     public String getPictureString() {
         return this.pictureString;
@@ -187,7 +184,8 @@ public class Team {
 
     public Set<User> getTeamManagers() {
         Set<User> managers = new HashSet<>();
-        for (var tRole: teamRoles) {
+        Hibernate.initialize(teamRoles);
+        for (var tRole : teamRoles) {
             if (tRole.getRole() == Role.MANAGER) {
                 managers.add(tRole.getUser());
             }
@@ -265,4 +263,11 @@ public class Team {
     public Set<User> getTeamMembers() {
         return teamMembers;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
+
 }
