@@ -28,14 +28,7 @@ import java.util.Optional;
 @Service
 public class ActivityService {
 
-    @Autowired
-    ActivityRepository activityRepository;
-
-    @Autowired
-    TeamService teamService;
-
-    @Autowired
-    FactService factService;
+    private final ActivityRepository activityRepository;
 
     @Autowired
     public ActivityService(ActivityRepository activityRepository) {
@@ -45,6 +38,10 @@ public class ActivityService {
     public static final String activityScoreHyphenRegex = "^(\\p{N}+-(\\p{N}+))+$";
 
     public static final String activityScoreNumberOnlyRegex = "^[0-9]+$";
+
+    private static String winString = "Won";
+    private static String loseString = "Lost";
+    private static String drawString = "Tied";
 
     /**
      * Returns all activities
@@ -167,34 +164,32 @@ public class ActivityService {
         }
     }
 
-    public List<String> getLast5ActivityResultsForTeam(long teamID) {
-        String winString = "Won";
-        String loseString = "Lost";
-        String drawString = "Drawn";
-        Team team = teamService.getTeam(teamID);
-        if (team != null) {
-            List<Activity> last5Activities = activityRepository.getLast5Activities(team);
+    public List<String> getLast5ActivityResultsForTeam(Team team) {
+        if (team.getTeamId() != null) {
+            List<Activity> last5Activities = activityRepository.getLast5GameOrFriendly(team);
             List<String> outcomes = new ArrayList<>();
             for (Activity activity : last5Activities) {
                 String teamScore = activity.getActivityTeamScore();
                 String otherScore = activity.getOtherTeamScore();
-                if (!teamScore.contains("-")) {
-                    try {
-                        int teamScoreNum = Integer.parseInt(teamScore);
-                        long otherTeamScoreNum = Integer.parseInt(otherScore);
-                        if (teamScoreNum > otherTeamScoreNum) {
-                            outcomes.add(winString);
-                        } else if (otherTeamScoreNum == teamScoreNum) {
-                            outcomes.add(drawString);
-                        } else {
-                            outcomes.add(loseString);
-                        }
-                    } catch (Exception e) {
-                        return null;
+                if (teamScore.contains("-")) {
+                    teamScore = teamScore.split("-")[0];
+                    otherScore = otherScore.split("-")[0];
+                }
+                try {
+                    int teamScoreNum = Integer.parseInt(teamScore);
+                    long otherTeamScoreNum = Integer.parseInt(otherScore);
+                    if (teamScoreNum > otherTeamScoreNum) {
+                        outcomes.add(winString);
+                    } else if (otherTeamScoreNum == teamScoreNum) {
+                        outcomes.add(drawString);
+                    } else {
+                        outcomes.add(loseString);
                     }
-                    return outcomes;
+                } catch (Exception e) {
+                    return null;
                 }
             }
+            return outcomes;
         }
         return null;
     }

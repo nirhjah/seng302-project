@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.unit.repository;
 
+import io.cucumber.java.bm.Tetapi;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -127,6 +129,70 @@ public class ActivityRepositoryTest {
 
 
         Assertions.assertEquals(activity1.getFactList(), activityRepository.findById(activity1.getId()).get().getFactList());
+    }
+
+    @Test
+    public void getLast5GamesOrFriendlies_lessThan5_withOtherActivity() throws Exception {
+        Team team1 = new Team("ATeamName", "Sport");
+        User user = new User("Test", "Account", "testing@test.com", "Password1!",
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity1 = new Activity(ActivityType.Game, team1, "First activity",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity2 = new Activity(ActivityType.Friendly, team1, "Second activity",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity3 = new Activity(ActivityType.Other, team1, "First activity",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        activityRepository.save(activity1);
+        activityRepository.save(activity2);
+        activityRepository.save(activity3);
+
+        Assertions.assertEquals(List.of(activity1, activity2), activityRepository.getLast5GameOrFriendly(team1));
+    }
+
+    @Test
+    public void getLast5GamesOrFriendlies() throws Exception {
+        Team team1 = new Team("ATeamName", "Sport");
+        User user = new User("Test", "Account", "testing@test.com", "Password1!",
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity1 = new Activity(ActivityType.Game, team1, "First activity",
+                LocalDateTime.of(2023, 1,6,6,30),
+                LocalDateTime.of(2023, 1,6,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity2 = new Activity(ActivityType.Friendly, team1, "Second activity",
+                LocalDateTime.of(2023, 1,5,6,30),
+                LocalDateTime.of(2023, 1,5,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity3 = new Activity(ActivityType.Game, team1, "Third activity",
+                LocalDateTime.of(2023, 1,4,6,30),
+                LocalDateTime.of(2023, 1,4,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity4 = new Activity(ActivityType.Game, team1, "Fourth activity",
+                LocalDateTime.of(2023, 1,3,6,30),
+                LocalDateTime.of(2023, 1,3,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity5 = new Activity(ActivityType.Game, team1, "Fifth activity",
+                LocalDateTime.of(2023, 1,2,6,30),
+                LocalDateTime.of(2023, 1,2,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity6 = new Activity(ActivityType.Friendly, team1, "First activity",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        activityRepository.save(activity1);
+        activityRepository.save(activity2);
+        activityRepository.save(activity3);
+        activityRepository.save(activity4);
+        activityRepository.save(activity5);
+        activityRepository.save(activity6);
+
+        Assertions.assertEquals(List.of(activity1, activity2, activity3, activity4, activity5),
+                activityRepository.getLast5GameOrFriendly(team1));
     }
 
 
