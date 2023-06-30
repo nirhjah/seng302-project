@@ -1,7 +1,6 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
-import nz.ac.canterbury.seng302.tab.enums.Role;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -9,13 +8,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
 /**
  * Class for Club object which is annotated as a JPA entity.
  */
-@Entity
+@Entity(name = "Club")
 public class Club {
 
 
@@ -35,6 +35,8 @@ public class Club {
 
     @OneToMany(mappedBy = "teamClub", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Team> clubTeams = new HashSet<>();
+
+
 
     protected Club() {
     }
@@ -84,7 +86,9 @@ public class Club {
         this.clubTeams = clubTeams;
     }
 
-    public void addTeam(Team team) {
-        this.clubTeams.add(team);
+    public void addTeam(List<Team> teams) {
+        this.clubTeams.addAll(teams);
     }
+
+
 }

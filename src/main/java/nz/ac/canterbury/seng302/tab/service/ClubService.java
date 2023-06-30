@@ -3,28 +3,17 @@ package nz.ac.canterbury.seng302.tab.service;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.repository.ClubRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
-import java.io.IOException;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ClubService {
 
     @Autowired
     ClubRepository clubRepository;
-
-    /**
-     * Gets a page of all clubs.
-     *
-     * @param pageable A page object showing how the page should be shown
-     *                 (Page size, page count, and [optional] sorting)
-     * @return A slice of clubs returned from pagination
-     */
-    public Page<Club> getPaginatedClubs(Pageable pageable) {
-        return clubRepository.findAll(pageable);
-    }
 
     /**
      * Gets list of all clubs
@@ -59,6 +48,19 @@ public class ClubService {
     }
 
 
+    /**
+     * Checks if all teams to be added have the same sport
+     * @param teamsToAdd list of teams to add to club
+     * @return true if all teams are valid or false if not
+     */
+    public boolean validateTeamSportsinClub(List<Team> teamsToAdd) {
+
+        for (Team team : teamsToAdd) {
+            if (!team.getSport().equals(teamsToAdd.get(0).getSport()))
+                return false;
+        }
+        return true;
+    }
 
 
 
