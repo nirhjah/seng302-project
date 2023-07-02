@@ -3,6 +3,8 @@ package nz.ac.canterbury.seng302.tab.controller;
 import java.util.List;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.entity.Formation;
+import nz.ac.canterbury.seng302.tab.service.FormationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,13 @@ public class ProfileFormController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FormationService formationService;
+
+    private static int DEFAULT_PLAYER_COUNT = 11;
+
+    private static String DEFAULT_FORMATION = "1-4-4-2";
 
     public ProfileFormController(UserService userService, TeamService teamService) {
         this.userService = userService;
@@ -85,6 +94,8 @@ public class ProfileFormController {
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("isUserManager", team.isManager(user));
         model.addAttribute("isUserManagerOrCoach", team.isManager(user) || team.isCoach(user));
+        model.addAttribute("playerCount", DEFAULT_PLAYER_COUNT);
+        model.addAttribute("formation", DEFAULT_FORMATION);
 
         return "profileForm";
     }
@@ -104,6 +115,17 @@ public class ProfileFormController {
             @RequestParam("teamID") long teamID) {
         logger.info("POST /profile");
         teamService.updatePicture(file, teamID);
+        return "redirect:/profile?teamID=" + teamID;
+    }
+
+    @PostMapping("/profile/create-formation")
+    public String createFormation(
+            @RequestParam("formation") String formation,
+            @RequestParam("teamID") long teamID) {
+        logger.info("POST /profile");
+        Team team = teamService.getTeam(teamID);
+        Formation newFormation = new Formation(formation, team);
+        formationService.addFormation(newFormation);
         return "redirect:/profile?teamID=" + teamID;
     }
 

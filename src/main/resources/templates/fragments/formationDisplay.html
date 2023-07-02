@@ -2,7 +2,7 @@
 This fragment requires the following variables to be defined:
 
 playerCount, e.g. 11
-formation, e.g "4-4-2"
+formation, e.g "1-4-4-2"
 
 -->
 <div th:fragment="formationDisplay" id="pitch">
@@ -15,10 +15,10 @@ formation, e.g "4-4-2"
 
     const formation = "[[${formation}]]".split("-").map(num => parseInt(num));
     // Handles formations that exclude players such as the goalie in football
-    const sumFormation = formation.reduce((acc, curr) => acc + curr, 0);
-    if (sumFormation < [[${playerCount}]]) {
-      formation.unshift([[${playerCount}]]-sumFormation)
-    }
+    // const sumFormation = formation.reduce((acc, curr) => acc + curr, 0);
+    // if (sumFormation < [[${playerCount}]]) {
+    //   formation.unshift([[${playerCount}]]-sumFormation)
+    // }
     let currentMax = 0;
     players.forEach(player => {
       dragElement(player);

@@ -20,4 +20,8 @@ public class FormationService {
     public Optional<Formation> findTeamById(long teamId) {
         return formationRepository.findByTeamTeamId(teamId);
     }
+
+     public void addFormation(Formation formation) {
+        formationRepository.save(formation);
+    }
 }
