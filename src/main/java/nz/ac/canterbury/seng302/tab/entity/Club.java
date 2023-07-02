@@ -37,7 +37,6 @@ public class Club {
     private Set<Team> clubTeams = new HashSet<>();
 
 
-
     protected Club() {
     }
 
@@ -87,8 +86,10 @@ public class Club {
     }
 
     public void addTeam(List<Team> teams) {
-        this.clubTeams.addAll(teams);
+        for (Team team : teams) {
+            this.clubTeams.add(team);
+            team.setTeamClub(this);
+        }
     }
-
 
 }
