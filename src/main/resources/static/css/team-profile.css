@@ -186,11 +186,15 @@
     color:#1B263B;
 }
 
-.content-box .content{
+.content {
+    height: 100%;
+}
+
+.content-box{
     display:none;
 }
 
-.content-box .content.active{
+.content-box.active{
     display:block;
 }
 
@@ -212,4 +216,20 @@
 
 .formation-list {
     width: 20%;
+    height: 100%;
+    padding: 3px 4px 3px 4px;
+    box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.formation-list li {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    text-align: center;
+    padding: 10px;
+    display: flex;
+    cursor: pointer;
+}
+
+.formation-list li img {
+    width: 40px;
 }

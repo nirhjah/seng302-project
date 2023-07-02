@@ -22,7 +22,7 @@
             </div>
             <div class="tab">
                 <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
-                <button class="tab-button" >All Formations &nbsp;</button>
+                <button class="tab-button" >Formations &nbsp;</button>
             </div>
             <div class="tab">
 <!--                this is a temporary icon for statistic, which is probably going to be replaced when working-->
@@ -32,8 +32,8 @@
                 <div class="tab-line"></div>
             </div>
         </div>
-        <div class="content-box">
-            <div class="content active">
+        <div class="content-box active">
+            <div class="content">
                 <div class="profile-pic">
                     <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
                         <div class="image-styling">
@@ -102,16 +102,15 @@
         </div>
         <div class="content-box">
             <div class="content">
-                <div class="formation-list">
-                    <ul>
-                        <li>
-                            Add a formation
-                        </li>
-                        <li th:each="formation : ${formations}">
-                            <span class="title"><a th:href="|window.location.href='@{profile(teamID=${activity.team.teamId})}'|" th:text="{formation.formation}"></a></span>
-                        </li>
-                    </ul>
-                </div>
+                <ul class="formation-list">
+                    <li>
+                        <h3>Create a Formation</h3>
+                        <img th:src="@{/image/icons/add-symbol.svg}"/>
+                    </li>
+                    <li th:each="formation : ${formations}">
+                        <span class="title"><a th:href="|window.location.href='@{profile(teamID=${activity.team.teamId})}'|" th:text="{formation.formation}"></a></span>
+                    </li>
+                </ul>
             </div>
         </div>
 
@@ -162,7 +161,7 @@
 
         const tabs = document.querySelectorAll('.tab');
         const tabLine = document.querySelector('.tab-line');
-        const displayContent = document.querySelectorAll('.content');
+        const displayBox = document.querySelectorAll('.content-box');
 
         tabs.forEach((tab, index) => {
             tab.addEventListener('click', (e) => {
@@ -172,10 +171,10 @@
                 tab.classList.add('active');
                 tabLine.style.width = (e.target.offsetWidth + 50) + "px";
                 tabLine.style.left = (e.target.offsetLeft - 50) + "px";
-                displayContent.forEach(content => {
+                displayBox.forEach(content => {
                     content.classList.remove('active')
                 });
-                displayContent[index].classList.add('active');
+                displayBox[index].classList.add('active');
             });
         });
 
