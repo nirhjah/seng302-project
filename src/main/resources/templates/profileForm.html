@@ -102,8 +102,16 @@
         </div>
         <div class="content-box">
             <div class="content">
-                <p> This is where the 'formation list' is going to be displayed with the option for edit and create
-                    formations</p>
+                <div class="formation-list">
+                    <ul>
+                        <li>
+                            Add a formation
+                        </li>
+                        <li th:each="formation : ${formations}">
+                            <span class="title"><a th:href="|window.location.href='@{profile(teamID=${activity.team.teamId})}'|" th:text="{formation.formation}"></a></span>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 
