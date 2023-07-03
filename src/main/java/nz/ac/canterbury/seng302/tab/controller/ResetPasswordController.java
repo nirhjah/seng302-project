@@ -2,6 +2,8 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.ResetPasswordForm;
@@ -33,12 +35,14 @@ public class ResetPasswordController {
     private Optional<User> user;
 
     private String currentToken;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     public ResetPasswordController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
+
 
     /**
      * Checks if password matches other fields and is secure
@@ -92,6 +96,7 @@ public class ResetPasswordController {
             redirectAttributes.addFlashAttribute("invalidTokenMessage", "Token is invalid or expired.");
             return "redirect:/login";
         }
+        model.addAttribute("user",user.get());
 
         currentToken = token;
         return "resetPassword";
@@ -120,11 +125,12 @@ public class ResetPasswordController {
             RedirectAttributes redirectAttributes) {
 
         user = userService.findByToken(currentToken);
-
+        if (user.isPresent()) {
+            model.addAttribute("user", user.get());
+        }
 
         checkPasswordsMatchAndIsSecure(resetPasswordForm, bindingResult, currentToken);
         model.addAttribute("httpServletRequest",request);
-
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -138,8 +144,6 @@ public class ResetPasswordController {
         userService.updatePassword(user.get(), password);
         return "redirect:/login";
     }
-
-
 
 }
 

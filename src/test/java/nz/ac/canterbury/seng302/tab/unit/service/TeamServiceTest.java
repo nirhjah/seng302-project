@@ -2,10 +2,12 @@ package nz.ac.canterbury.seng302.tab.unit.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -275,17 +277,6 @@ public class TeamServiceTest {
 
     }
 
-    // @Test
-    // public void
-    // givenIHaveCreatedATeam_WhenGeneratingANewToken_TheTokenIsNotTheSameAsThePrevious()
-    // throws IOException {
-    // Team team = new Team("Liverpool", "football");
-    // String oldToken = team.getToken();
-    // teamService.generateNewTokenForTeam();
-    // String newToken = team.getToken();
-    // assertNotEquals(oldToken, newToken);
-    // }
-
     @Test
     public void givenATeamHasValidNumberOfManagers_returnTrue() {
         List<String> userRoles = List.of(Role.MANAGER.toString(), Role.COACH.toString(), Role.MEMBER.toString());
@@ -302,6 +293,40 @@ public class TeamServiceTest {
         List<String> userRoles = List.of(Role.MANAGER.toString(), Role.MANAGER.toString(), Role.MANAGER.toString(),
                 Role.MANAGER.toString());
         assertFalse(teamService.userRolesAreValid(userRoles));
+    }
+
+    @Test
+    public void getTeamWithTeam_ReturnsTeam() throws IOException {
+        Team team = new Team("Test", "Hockey");
+        teamRepository.save(team);
+        Assertions.assertEquals(team, teamService.getTeam(team.getTeamId()));
+    }
+
+    @Test
+    public void getTeamWithNoTeam_ReturnsNull() throws IOException {
+        Assertions.assertNull(teamService.getTeam(-1));
+    }
+
+    @Test
+    public void givenICreateATeam_whenIChangeAndSaveItsName_thenTheSavedEntityIsUpdated() throws IOException {
+        Team team = new Team("Test", "Hockey");
+        teamRepository.save(team);
+        team.setName("New Name");
+        teamService.updateTeam(team);
+        Assertions.assertEquals(team, teamService.getTeam(team.getTeamId()));
+        Assertions.assertTrue(team.getName().equals("New Name"));
+    }
+
+    @Test
+    public void ifNoTeam_getPaginatedTeam_returnsEmpty() {
+        Assertions.assertEquals(List.of(), teamService.findPaginated(1, 10).toList());
+    }
+
+    @Test
+    public void ifTeam_getPaginatedTeam_returnsTeam() throws IOException {
+        Team team = new Team("Test", "Hockey");
+        teamRepository.save(team);
+        Assertions.assertEquals(List.of(team), teamService.findPaginated(1, 10).toList());
     }
 
 }

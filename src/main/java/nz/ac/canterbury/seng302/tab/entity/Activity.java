@@ -1,8 +1,13 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -10,17 +15,6 @@ import java.util.Objects;
  */
 @Entity(name = "Activity")
 public class Activity {
-
-    /**
-     * Enum of all possible activity types
-     */
-    public enum ActivityType {
-        Game,
-        Friendly,
-        Training,
-        Competition,
-        Other
-    }
 
     public ActivityType[] getActivityTypes() {return ActivityType.values();}
     @Id
@@ -52,6 +46,22 @@ public class Activity {
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
+
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL)
+    private List<Fact> activityFacts;
+
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    @Column(name = "activityScore", nullable = false)
+    private List<String> activityScore;
+
+
+    @Column
+    private String activityTeamScore;
+
+    @Column
+    private String otherTeamScore;
+
+
 
 
     /**
@@ -90,7 +100,6 @@ public class Activity {
     public void setTeam(Team team) {
         this.team = team;
     }
-
     public LocalDateTime getActivityStart() {
         return activityStart;
     }
@@ -137,6 +146,29 @@ public class Activity {
         return this.activityOwner;
     }
 
+    public void addFactList(List<Fact> factList) { this.activityFacts = factList;}
+
+    public List<Fact> getFactList() {return this.activityFacts; }
+
+    public void addFactToFactList(Fact fact) {this.activityFacts.add(fact); }
+
+
+    public String getActivityTeamScore() {
+        return activityTeamScore;
+    }
+
+    public void setActivityTeamScore(String activityTeamScore) {
+        this.activityTeamScore = activityTeamScore;
+    }
+
+    public String getOtherTeamScore() {
+        return otherTeamScore;
+    }
+
+    public void setOtherTeamScore(String otherTeamScore) {
+        this.otherTeamScore = otherTeamScore;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -149,4 +181,18 @@ public class Activity {
     public int hashCode() {
         return Objects.hash(id, activityType, team, description, activityStart, activityEnd, activityOwner);
     }
+
+    @Override
+    public String toString() {
+        return "Activity{" +
+                "id=" + id +
+                ", activityType=" + activityType +
+                ", team=" + team +
+                ", description='" + description + '\'' +
+                ", activityStart=" + activityStart +
+                ", activityEnd=" + activityEnd +
+                ", activityOwner=" + activityOwner +
+                '}';
+    }
+
 }

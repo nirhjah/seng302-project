@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import java.util.Optional;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,6 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 
 /**
  * User Story U22 - Update Password
- * 
  * Gives the user a simple "[old][new][retype] password" field, and
  * updates their password accordingly
  */
@@ -35,11 +35,12 @@ public class UpdatePasswordController {
 
     public static final String PASSWORD_MISMATCH_MSG = "Passwords do not match.";
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final UserService userService;
     private final TeamService teamService;
     private final PasswordEncoder passwordEncoder;
+
+
 
     @Autowired
     public UpdatePasswordController(
@@ -86,7 +87,7 @@ public class UpdatePasswordController {
      * 
      * @param bindingResult      The Jakarta error object (mutable)
      * @param updatePasswordForm The form we're reading from
-     * @param hashedPassword     The current password of the current user
+     * @param user     The current user
      */
     private void validateForm(BindingResult bindingResult, UpdatePasswordForm updatePasswordForm,
             User user) {
@@ -130,7 +131,6 @@ public class UpdatePasswordController {
             UpdatePasswordForm updatePasswordForm,
             Model model,
             HttpServletRequest request) {
-        logger.info("POST /update-password");
 
         // Get the currently logged in user
         Optional<User> currentUser = userService.getCurrentUser();
@@ -144,7 +144,6 @@ public class UpdatePasswordController {
 
     /**
      * Receives the form from the user.
-     * 
      * If the form is valid, the user's password changes, and an email is sent.
      * 
      * @param updatePasswordForm The filled out form
@@ -160,8 +159,8 @@ public class UpdatePasswordController {
             BindingResult bindingResult,
             Model model,
             HttpServletRequest request,
-            HttpServletResponse response) {
-        logger.info("GET /update-password");
+            HttpServletResponse response){
+
 
         // Get the currently logged in user
         Optional<User> currentUser = userService.getCurrentUser();
@@ -174,10 +173,12 @@ public class UpdatePasswordController {
         validateForm(bindingResult, updatePasswordForm, user);
         if (bindingResult.hasErrors()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
+
             return "updatePassword";
         } else {
             userService.updatePassword(user, updatePasswordForm.getNewPassword());
             return "redirect:user-info/self";
         }
     }
+
 }
