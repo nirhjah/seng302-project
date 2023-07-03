@@ -28,7 +28,7 @@ public class ClubServiceTest {
     public void testFindClubById() throws IOException {
         Club club = new Club("Rugby Club", location);
         clubService.updateOrAddClub(club);
-        Assertions.assertEquals(clubService.findClubById(1L), club);
+        Assertions.assertEquals(clubService.findClubById(1L).get(), club);
     }
 
     @Test

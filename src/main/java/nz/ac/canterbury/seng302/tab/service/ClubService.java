@@ -32,13 +32,9 @@ public class ClubService {
      * @param id id of club to find
      * @return club or null
      */
-    public Club findClubById(Long id) {
-        Optional<Club> club = clubRepository.findById(id);
-        if (club.isPresent()) {
-            return club.get();
-        } else {
-            return null;
-        }
+    public Optional<Club> findClubById(Long id) {
+        return clubRepository.findById(id);
+
     }
 
     /**
