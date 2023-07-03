@@ -75,7 +75,7 @@ public class CreateClubController {
         model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
 
-        return "createTeamForm";
+        return "createClub";
     }
 
 }
