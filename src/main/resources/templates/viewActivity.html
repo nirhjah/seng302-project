@@ -15,14 +15,19 @@
 <div class="act-container">
     <div class="act-info">
         <div class="act-details">
+            <h3 th:if="${activity.team != null}" th:text="${activity.team + '\'s'}"></h3>
+            <h3> Activity Information </h3>
+            <h4 th:text="|Type: ${activity.activityType}|"></h4>
+            <h4 th:text="|Location: ${activity.location}|"></h4>
+            <h4 th:text="|Description: ${activity.description}|"></h4>
         </div>
-        <div class="act-date-time" >
+        <div class="act-date-time">
+
         </div>
-        <div class="act-facts">
-        </div>
+        <div class="act-facts"></div>
     </div>
 
-    <div class="act-info">
+    <div class="act-game-friendly">
         <div class="act-lineup"></div>
         <div class="act-subs"></div>
     </div>
