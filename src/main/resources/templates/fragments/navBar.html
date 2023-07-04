@@ -35,6 +35,10 @@
                     <a th:href="@{createActivity}" th:classappend="${httpServletRequest.requestURI == '/createActivity' ? 'active' : ''}">Create Activity</a>
                 </li>
 
+                <li sec:authorize="isAuthenticated()">
+                    <a th:href="@{createClub}" th:classappend="${httpServletRequest.requestURI == '/createClub' ? 'active' : ''}">Create Club</a>
+                </li>
+
                 <div sec:authorize="isAuthenticated()" class="view-profile">
                     View Profile:
                     <select class="form-control" id="dropDownList" name="teamSelector"
