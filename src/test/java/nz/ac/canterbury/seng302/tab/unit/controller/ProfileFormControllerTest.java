@@ -88,6 +88,17 @@ public class ProfileFormControllerTest {
     }
 
     @Test
+    public void testGettingInvalidTeam() throws Exception {
+        Mockito.when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
+        Mockito.doReturn(TEAM_ID).when(team).getTeamId();
+
+        mockMvc.perform(get("/profile")
+                        .param("teamID", "2"))
+                .andExpect(status().isNotFound())
+                .andExpect(view().name("error"));
+    }
+
+    @Test
     public void testUploadValidProfilePicture() throws Exception {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();

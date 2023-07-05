@@ -33,6 +33,13 @@ public class ViewActivitiesController {
     @Autowired
     private TeamService teamService;
 
+    @Autowired
+    public ViewActivitiesController(UserService userService, ActivityService activityService, TeamService teamService) {
+        this.userService = userService;
+        this.activityService = activityService;
+        this.teamService = teamService;
+    }
+
     /**
      * Gets viewAllActivities doc with required attributes. Reroutes if page out of available range
      *
@@ -43,6 +50,8 @@ public class ViewActivitiesController {
     @GetMapping("/view-activities")
     public String viewPageOfActivities(@RequestParam(value = "page", defaultValue = "-1") int pageNo,
                                        Model model, HttpServletRequest request) throws IOException {
+        logger.info("GET /view-activities");
+
         Optional<User> user = userService.getCurrentUser();
         User currentUser = user.get();
 
