@@ -104,9 +104,9 @@
         <div class="content-box">
             <div class="content formations">
                 <ul class="formation-list">
-                    <li>
+                    <li th:onclick="renderPlayers('1-4-4-2')">
                         <h3>Create a Formation</h3>
-                        <img th:src="@{/image/icons/add-symbol.svg}"/>
+                        <img th:src="@{/image/icons/add-symbol.svg}" alt=""/>
                     </li>
                     <li th:each="formation : ${formations}">
                         <span class="title"><a th:href="|window.location.href='@{profile(teamID=${activity.team.teamId})}'|" th:text="${formation.formation}"></a></span>
@@ -115,8 +115,8 @@
                 <div class="formation-display">
                     <div class="create-formation-display">
                         <h3>Input Formation</h3>
-                        <input type="text" id="formation-string" name="formation-string" placeholder="1-4-4-2"><br>
-                        <button>Generate Formation</button>
+                        <input type="text" id="formation-string" name="formation-string" placeholder="1-4-4-2">
+                        <button th:onclick="render(document.getElementById('formation-string').value) ">Generate Formation</button>
                     </div>
                     <div th:insert="~{fragments/formationDisplay.html::formationDisplay(formation=${formation}, playerCount=${playerCount}, editable=true)}"></div>
                     <button>Create Formation</button>
@@ -188,21 +188,11 @@
             });
         });
 
-        // Sets it such that the players positions are only calculated for a formation when the tab is visible
-        function onVisible(element, callback) {
-            new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if(entry.intersectionRatio > 0) {
-                        callback(element);
-                        observer.disconnect();
-                    }
-                });
-            }).observe(element);
+        function render(formation) {
+            const input = document.getElementById('formation-string');
+            input.setAttribute('placeholder', formation);
+            renderPlayers(formation);
         }
-
-        onVisible(document.querySelector(".content.formations"), () => renderPlayers())
-
-
 
     </script>
 </div>

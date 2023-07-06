@@ -6,44 +6,50 @@ formation, e.g "1-4-4-2"
 
 -->
 <div th:fragment="formationDisplay" id="pitch">
-  <div th:each="playerNumber : ${#numbers.sequence(1, playerCount)}" th:id="'player' + ${playerNumber}" class="player"></div>
   <script>
-    const players = document.querySelectorAll(".player");
+    // document.addEventListener("DOMContentLoaded", function() {
+    //   // Call the renderPlayers function here
+    //   renderPlayers("1-4-4-2");
+    // });
+
     const pitch = document.getElementById("pitch")
-    const editable = [[${editable}]]
-    // Handles formations that exclude players such as the goalie in football
-    // const sumFormation = formation.reduce((acc, curr) => acc + curr, 0);
-    // if (sumFormation < [[${playerCount}]]) {
-    //   formation.unshift([[${playerCount}]]-sumFormation)
-    // }
-    renderPlayers();
-    function renderPlayers() {
-      const formation = "[[${formation}]]".split("-").map(num => parseInt(num));
-      let currentMax = 0;
-      players.forEach(player => {
-        // if (editable) {
-        dragElement(player);
-        // }
-        // Builds default formation
-        for (let i = 0; i < formation.length; i++) {
-          if (formation[i] !== 0) {
-            if (currentMax === 0) {
-              currentMax = formation[i].valueOf();
-            }
-            // player.style.bottom = ((i + 1) / (formation.length + 1) * pitch.offsetHeight) - player.offsetHeight / 2 + "px";
-            // console.log(((i + 1) / (formation.length + 1) * pitch.offsetHeight) - player.offsetHeight / 2 + "px", formation.length, pitch.offsetHeight, player.offsetHeight)
-            // player.style.left = ((formation[i]) / (currentMax + 1) * pitch.offsetWidth) - player.offsetWidth / 2 + "px";
-            // console.log(((formation[i]) / (currentMax + 1) * pitch.offsetWidth) - player.offsetWidth / 2 + "px", formation[i], currentMax, pitch.offsetWidth, player.offsetWidth)
-            player.style.bottom = (i + 1) * 100 + "px";
-            player.style.left = (formation[i]) * 80 + "px";
-            formation[i] -= 1
-            if (formation[i] === 0) {
-              currentMax = 0;
-            }
-          }
+    // Generates the players and sets their position on the pitch
+    function renderPlayers(formationString) {
+      const formation = formationString.split("-").map(num => parseInt(num));
+      const totalPlayers = formation.reduce((acc, curr) => acc + curr, 0);
+      // Clears players
+      while (pitch.firstChild) {
+        pitch.removeChild(pitch.lastChild);
+      }
+
+      // Create the players and add them to pitch
+      for (let i = 0; i < totalPlayers; i++) {
+        let player = document.createElement('div')
+        player.setAttribute("id", "player" + (i + 1))
+        player.setAttribute("class", "player")
+        pitch.appendChild(player)
+      }
+
+      // Display the formation
+      const players = document.querySelectorAll(".player");
+      const pitchRect = pitch.getBoundingClientRect();
+      console.log(formation)
+      // Builds formation
+      let j = 0;
+      for (let i = 0; i < formation.length; i++) {
+        let playersInRow = formation[i]
+        while (formation[i] !== 0) {
+          let player = players[j]
+          console.log(player)
+          dragElement(player);
+          player.style.bottom = ((i + 1) / (formation.length + 1)) * pitch.offsetHeight - player.offsetHeight / 2 + "px";
+          player.style.left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * pitch.offsetWidth - player.offsetWidth / 2 + "px";
+          formation[i] -= 1;
+          j++;
         }
-      });
+      }
     }
+
     function dragElement(player) {
       let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
       player.onmousedown = dragMouseDown;

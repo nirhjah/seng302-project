@@ -95,8 +95,6 @@ public class ProfileFormController {
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("isUserManager", team.isManager(user));
         model.addAttribute("isUserManagerOrCoach", team.isManager(user) || team.isCoach(user));
-        model.addAttribute("playerCount", DEFAULT_PLAYER_COUNT);
-        model.addAttribute("formation", DEFAULT_FORMATION);
         model.addAttribute("formations", formationsList);
 
         return "profileForm";
