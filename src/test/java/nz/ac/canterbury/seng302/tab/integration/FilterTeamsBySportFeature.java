@@ -73,15 +73,6 @@ public class FilterTeamsBySportFeature {
         setupMorganMocking();
 
         selectedSports.clear();
-        System.out.println("AAAA_BBBB");
-        System.out.println("Before");
-        System.out.println("- teamService size = " + teamService.getNumberOfTeams());
-        System.out.println("- entire table = " + teamService.getTeamList());
-        teamService.deleteAllTeams();
-        System.out.println("After");
-        assertEquals(0, teamService.getNumberOfTeams());
-        System.out.println("- teamService size = " + teamService.getNumberOfTeams());
-        System.out.println("- entire table = " + teamService.getTeamList());
     }
 
     private ResultActions performGet() {
@@ -100,13 +91,15 @@ public class FilterTeamsBySportFeature {
         }
     }
 
+    @Given("there are no other teams")
+    public void there_are_no_other_teams() {
+        teamService.deleteAllTeams();
+    }
+
     @Given("there is a sports team called {string} who plays the sport {string}")
     public void there_is_a_sports_team_called_who_plays_the_sport(String teamName, String sportName) throws IOException {
         Team team = new Team(teamName, sportName);
         teamService.addTeam(team);
-        System.out.println("AAAA_BBBB");
-        System.out.println("- teamService size = " + teamService.getNumberOfTeams());
-        System.out.println("- entire table = " + teamService.getTeamList());
     }
 
     @When("I select the sport {string}")
@@ -121,9 +114,6 @@ public class FilterTeamsBySportFeature {
 
     @Then("only these teams are selected:")
     public void only_these_teams_are_selected(List<String> expectedTeams) throws Exception {
-        System.out.println("AAAA_BBBB");
-        System.out.println("- teamService size = " + teamService.getNumberOfTeams());
-        System.out.println("- entire table = " + teamService.getTeamList());
         Set<String> expectedTeamsSet = Set.copyOf(expectedTeams);
         performGet()
             .andExpect(status().isOk()) // Accepted 200

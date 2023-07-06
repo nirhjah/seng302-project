@@ -28,7 +28,7 @@ import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 @Service
 public class TeamService {
     Logger logger = LoggerFactory.getLogger(getClass());
-    @Autowired
+    
     private final TeamRepository teamRepository;
 
     @Autowired
