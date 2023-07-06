@@ -8,6 +8,7 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <link th:href="@{/css/profile.css}" rel="stylesheet">
     <link th:href="@{/css/team-profile.css}" rel="stylesheet">
+    <link th:href="@{/css/formation.css}" rel="stylesheet">
     <title>Profile</title>
 </head>
 <body class="profile-background">
@@ -101,18 +102,24 @@
             </div>
         </div>
         <div class="content-box">
-            <div class="content">
+            <div class="content formations">
                 <ul class="formation-list">
                     <li>
                         <h3>Create a Formation</h3>
                         <img th:src="@{/image/icons/add-symbol.svg}"/>
                     </li>
                     <li th:each="formation : ${formations}">
-                        <span class="title"><a th:href="|window.location.href='@{profile(teamID=${activity.team.teamId})}'|" th:text="{formation.formation}"></a></span>
+                        <span class="title"><a th:href="|window.location.href='@{profile(teamID=${activity.team.teamId})}'|" th:text="${formation.formation}"></a></span>
                     </li>
                 </ul>
                 <div class="formation-display">
-
+                    <div class="create-formation-display">
+                        <h3>Input Formation</h3>
+                        <input type="text" id="formation-string" name="formation-string" placeholder="1-4-4-2"><br>
+                        <button>Generate Formation</button>
+                    </div>
+                    <div th:insert="~{fragments/formationDisplay.html::formationDisplay(formation=${formation}, playerCount=${playerCount}, editable=true)}"></div>
+                    <button>Create Formation</button>
                 </div>
             </div>
         </div>
@@ -143,7 +150,6 @@
         const copyButton = document.querySelector('.copy-token');
         const tokenValue = document.querySelector('.token-value');
         const token = tokenValue.innerHTML;
-
         copyButton.addEventListener('click', () => {
             const selection = window.getSelection();
             const range = document.createRange();
@@ -165,6 +171,7 @@
         const tabs = document.querySelectorAll('.tab');
         const tabLine = document.querySelector('.tab-line');
         const displayBox = document.querySelectorAll('.content-box');
+        const displayContent = document.querySelectorAll('.content');
 
         tabs.forEach((tab, index) => {
             tab.addEventListener('click', (e) => {
@@ -180,6 +187,22 @@
                 displayBox[index].classList.add('active');
             });
         });
+
+        // Sets it such that the players positions are only calculated for a formation when the tab is visible
+        function onVisible(element, callback) {
+            new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if(entry.intersectionRatio > 0) {
+                        callback(element);
+                        observer.disconnect();
+                    }
+                });
+            }).observe(element);
+        }
+
+        onVisible(document.querySelector(".content.formations"), () => renderPlayers())
+
+
 
     </script>
 </div>

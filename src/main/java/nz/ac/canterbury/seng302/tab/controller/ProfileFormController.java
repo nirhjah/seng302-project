@@ -87,6 +87,7 @@ public class ProfileFormController {
 
         // Rambling that's required for navBar.html
         List<Team> teamList = teamService.getTeamList();
+        List<Formation> formationsList = formationService.getTeamsFormations(teamID);
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
         model.addAttribute("displayPicture", user.getPictureString());
@@ -96,6 +97,7 @@ public class ProfileFormController {
         model.addAttribute("isUserManagerOrCoach", team.isManager(user) || team.isCoach(user));
         model.addAttribute("playerCount", DEFAULT_PLAYER_COUNT);
         model.addAttribute("formation", DEFAULT_FORMATION);
+        model.addAttribute("formations", formationsList);
 
         return "profileForm";
     }

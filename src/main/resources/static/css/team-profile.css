@@ -215,7 +215,7 @@
 }
 
 .formation-list {
-    width: 20%;
+    min-width: 20%;
     height: 100%;
     padding: 3px 4px 3px 4px;
     box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -232,4 +232,16 @@
 
 .formation-list li img {
     width: 40px;
+}
+
+.create-formation-display {
+    display: flex;
+}
+
+.content.formations {
+    display: flex;
+}
+
+.formation-display {
+    min-width: 80%;
 }

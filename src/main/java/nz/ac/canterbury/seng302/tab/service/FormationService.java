@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.tab.repository.FormationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,5 +24,9 @@ public class FormationService {
 
      public void addFormation(Formation formation) {
         formationRepository.save(formation);
+    }
+
+    public List<Formation> getTeamsFormations(Long teamID) {
+        return formationRepository.findAllTeamsFormations(teamID);
     }
 }
