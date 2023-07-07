@@ -1,6 +1,7 @@
-@U19_filter_teams_by_sport
+# The associated feature file is FilterTeamsBySportOrCityFeature.java
 # ! Note that AC3 is missing. This is because it's a front-end requirement, 
 # ! so it's best to make it a manual test.
+@view_teams_page_filtering
 Feature: U19 - Filter teams by sport
   Scenario: AC1 - Given I am on the search teams page,
                   when I select a sport from a list of sports known by the system,
@@ -29,9 +30,9 @@ Feature: U19 - Filter teams by sport
       | Banana |
       | Dates  |
 
-# //   Scenario: AC3 - Given I am on the search teams page,
-# //                   when I deselect one or more sports from a list of sports known by the system,
-# //                   then the list of teams updates according to the selected sports.
+#   Scenario: AC3 - Given I am on the search teams page,
+#                   when I deselect one or more sports from a list of sports known by the system,
+#                   then the list of teams updates according to the selected sports.
 
   Scenario: AC4 - Given I am on the search teams page and all the filters are selected,
                   when no sports are selected,
@@ -41,7 +42,7 @@ Feature: U19 - Filter teams by sport
       And there is a sports team called "Banana" who plays the sport "Hockey"
       And there is a sports team called "Coconut" who plays the sport "Badminton"
       And there is a sports team called "Dates" who plays the sport "Soccer"
-    When no teams are selected
+    When no sports are selected
     Then only these teams are selected:
       |  Apple  |
       |  Banana |

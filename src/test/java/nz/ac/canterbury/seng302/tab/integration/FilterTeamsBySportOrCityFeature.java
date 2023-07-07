@@ -31,6 +31,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import nz.ac.canterbury.seng302.tab.controller.ViewAllTeamsController;
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.LocationService;
@@ -38,9 +39,13 @@ import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 
+/**
+ * These step defs cover both U19 and U20, because they both cover
+ * elements of the same system (querying teams)
+ */
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
-public class FilterTeamsBySportFeature {
+public class FilterTeamsBySportOrCityFeature {
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -53,6 +58,9 @@ public class FilterTeamsBySportFeature {
     private MockMvc mockMvc;
 
     private Set<String> selectedSports = new HashSet<>();
+    private Set<String> selectedCities = new HashSet<>();
+
+    private static final String TEST_SPORT = "TEST_SPORT";
 
     private void setupMorganMocking() throws IOException {
 
@@ -65,24 +73,33 @@ public class FilterTeamsBySportFeature {
         Mockito.doReturn(Optional.of(User.defaultDummyUser())).when(userService).getCurrentUser();
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewAllTeamsController(
-                teamService, userService, locationService, sportService)).build();
+                teamService, userService, locationService, sportService
+            )).build();
     }
 
-    @Before("@U19_filter_teams_by_sport")
+    @Before("@view_teams_page_filtering")
     public void setup() throws IOException {
         setupMorganMocking();
 
         selectedSports.clear();
+        selectedCities.clear();
     }
 
+    /**
+     * Performs the get request to the <code>/view-teams</code> page
+     * @return The result of the request, so you can chain <code>.andExpect(...)</code>
+     */
     private ResultActions performGet() {
+        // Build the request
         MockHttpServletRequestBuilder request = get("/view-teams")
-                    .with(csrf())
-                    .with(anonymous())
-                    .param("page", "1");
-        for (String sportName : selectedSports) {
+                .with(csrf())       // Required as the post is a form
+                .with(anonymous())  // Pretend we're logged in
+                .param("page", "1");
+        // Populate the dropdowns
+        for (String sportName : selectedSports)
             request = request.param("sports", sportName);
-        }
+        for (String cityName : selectedCities)
+            request = request.param("cities", cityName);
         try {
             return mockMvc.perform(request);
         } catch (Exception e) {
@@ -91,39 +108,78 @@ public class FilterTeamsBySportFeature {
         }
     }
 
+    /**
+     * The initial step to ensure no other teams are in the database.
+     * 
+     * If you do this during setup(), it won't work, and teams
+     * from other tests (ViewMyActivitiesIntegrationTests) stay.
+     */
     @Given("there are no other teams")
     public void there_are_no_other_teams() {
         teamService.deleteAllTeams();
     }
 
+    /**
+     * U19 - Populate the database, specifying the <strong>sport</strong>
+     */
     @Given("there is a sports team called {string} who plays the sport {string}")
     public void there_is_a_sports_team_called_who_plays_the_sport(String teamName, String sportName) throws IOException {
         Team team = new Team(teamName, sportName);
         teamService.addTeam(team);
     }
 
+    /**
+     * U20 - Populate the database, specifying the <em>city</em>
+     */
+    @Given("there is a sports team called {string} located in {string}")
+    public void there_is_a_sports_team_called_located_in(String teamName, String cityName) throws IOException {
+        Location location = new Location("", "", "", cityName, "", "Test Country");
+        Team team = new Team(teamName, TEST_SPORT, location);
+        teamService.addTeam(team);
+    }
+    /**
+     * U19 - Add a <em>sport</em> to the dropdown
+     */
     @When("I select the sport {string}")
     public void i_select_the_sport(String sport) {
         selectedSports.add(sport);
     }
 
-    @When("no teams are selected")
-    public void no_teams_are_selected() {
+    /**
+     * U20 - Add a <em>city</em> to the dropdown
+     */
+    @When("I select the city {string}")
+    public void i_select_the_city(String city) {
+        selectedCities.add(city);
+    }
+
+    /**
+     * U19 - Explicitly state that the sportsdropdown is empty
+     */
+    @When("no sports are selected")
+    public void no_sports_are_selected() {
         selectedSports.clear();
     }
 
+    /**
+     * U19 & U20 - Asserts that the provided list of teams matches.
+     */
     @Then("only these teams are selected:")
+    @SuppressWarnings("unchecked")
     public void only_these_teams_are_selected(List<String> expectedTeams) throws Exception {
+        // We want the expectedTeams to exactly match the resulting teams
+        // but we don't care about order
         Set<String> expectedTeamsSet = Set.copyOf(expectedTeams);
         performGet()
             .andExpect(status().isOk()) // Accepted 200
             .andExpect(view().name("viewAllTeams")) // Rendering the right page
             .andDo(result -> {
-                // Check that all the 
+                // Check that all the teams are present
                 List<Team> listOfTeams = (List<Team>) result.getModelAndView().getModel().get("listOfTeams");
                 assertNotNull("The webpage's model does not contain a 'listOfTeams'", listOfTeams);
                 Set<String> setOfTeamNames = listOfTeams.stream().map(Team::getName).collect(Collectors.toSet());
                 assertEquals(expectedTeamsSet, setOfTeamNames);
             });
     }
+
 }

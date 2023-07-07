@@ -38,16 +38,9 @@ public class ViewAllTeamsController {
 
     Logger logger = LoggerFactory.getLogger(ViewAllTeamsController.class);
 
-    @Autowired
     private TeamService teamService;
-
-    @Autowired
     private UserService userService;
-
-    @Autowired
     private LocationService locationService;
-
-    @Autowired
     private SportService sportService;
 
     @Autowired
