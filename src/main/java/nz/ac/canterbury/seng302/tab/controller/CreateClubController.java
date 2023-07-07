@@ -59,6 +59,7 @@ public class CreateClubController {
         logger.info("GET /createClub");
         model.addAttribute("httpServletRequest", request);
 
+        model.addAttribute("listOfTeams", teamService.getTeamList());
 
         Club club;
 
@@ -83,6 +84,7 @@ public class CreateClubController {
         model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
 
+
         return "createClub";
     }
 
@@ -105,6 +107,7 @@ public class CreateClubController {
             @RequestParam(name = "country") String country,
             @RequestParam(name = "postcode") String postcode,
             @RequestParam(name = "suburb") String suburb,
+            @RequestParam(name = "selectedTeams") List<Team> selectedTeams,
             @Validated CreateAndEditClubForm createAndEditClubForm,
             BindingResult bindingResult,
             HttpServletResponse httpServletResponse,
@@ -123,19 +126,30 @@ public class CreateClubController {
             bindingResult.addError(new FieldError("CreateAndEditClubForm", "postcode", "Field cannot be empty"));
         }
 
+        if (!clubService.validateTeamSportsinClub(selectedTeams)) {
+            System.out.println("Teams should have same sport" + selectedTeams);
+            bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Teams must have same sport"));
+
+        }
+
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "createClub";
         }
-        Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
 
+        Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
         Club club = new Club(name, location);
-      /*  List<Team> teamsToAdd = new ArrayList<>();
-        teamsToAdd.addAll(teamService.getTeamList());
-        club.addTeam(teamsToAdd);*/
+
+
+        System.out.println("selected teams");
+        System.out.println(selectedTeams);
+
+        club.addTeam(selectedTeams);
         clubService.updateOrAddClub(club);
 
-        return "redirect:/home"; //TODO Redirect to view club page when it's done
+
+
+        return "redirect:/home"; //TODO Redirect to view cb page when it's done
 
 
 

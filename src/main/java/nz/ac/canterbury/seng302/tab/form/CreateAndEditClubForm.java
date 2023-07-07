@@ -1,8 +1,11 @@
 package nz.ac.canterbury.seng302.tab.form;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
+
+import java.util.List;
 
 public class CreateAndEditClubForm {
 
@@ -20,6 +23,8 @@ public class CreateAndEditClubForm {
 
     @LocationValidators.countryCitySuburbValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG)
     private String city;
+
+    private List<Team> selectedTeams;
 
     @LocationValidators.suburbValidator
     private String suburb;
@@ -60,6 +65,14 @@ public class CreateAndEditClubForm {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public List<Team> getSelectedTeams() {
+        return selectedTeams;
+    }
+
+    public void setSelectedTeams(List<Team> teams) {
+        this.selectedTeams = teams;
     }
 
     public String getCity() {

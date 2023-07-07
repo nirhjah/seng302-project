@@ -77,6 +77,18 @@
             </div>
             <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
 
+            <div class="input-box">
+
+            <label> Select teams: </label>
+            <select name="selectedTeams" id="selectedTeams" multiple>
+                <option th:each="team : ${listOfTeams}"
+                        th:value="${team.teamId}"
+                        th:text="${team}"></option>
+            </select>
+            </div>
+            <div th:each="err : ${#fields.errors('selectedTeams')}" th:text="${err}" class="error-message"></div>
+
+
             <div class="submit-button">
                 <a th:href="@{home}">
                     <button type="submit" th:text="${clubId != null ? 'Save' : 'Create'}"></button>
