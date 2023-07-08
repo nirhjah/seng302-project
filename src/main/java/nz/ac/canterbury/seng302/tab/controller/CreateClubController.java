@@ -89,14 +89,6 @@ public class CreateClubController {
     }
 
 
-
-
-
-
-
-
-
-
     @PostMapping("/createClub")
     public String createClub(
             @RequestParam(name = "clubId", defaultValue = "-1") long clubId,
@@ -141,15 +133,11 @@ public class CreateClubController {
         Club club = new Club(name, location);
 
 
-        System.out.println("selected teams");
-        System.out.println(selectedTeams);
-
         club.addTeam(selectedTeams);
         clubService.updateOrAddClub(club);
 
 
-
-        return "redirect:/home"; //TODO Redirect to view cb page when it's done
+        return "redirect:/home"; //TODO Redirect to view club page when it's done
 
 
 

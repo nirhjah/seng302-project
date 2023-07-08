@@ -77,7 +77,6 @@
             </div>
             <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
 
-            <div class="input-box">
 
             <label> Select teams: </label>
             <select name="selectedTeams" id="selectedTeams" multiple>
@@ -85,7 +84,6 @@
                         th:value="${team.teamId}"
                         th:text="${team}"></option>
             </select>
-            </div>
             <div th:each="err : ${#fields.errors('selectedTeams')}" th:text="${err}" class="error-message"></div>
 
 
