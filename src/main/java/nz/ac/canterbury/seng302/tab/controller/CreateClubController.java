@@ -37,10 +37,16 @@ public class CreateClubController {
     private ClubService clubService;
 
     @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private TeamService teamService;
+
+    private final TeamService teamService;
+
+    public CreateClubController(ClubService clubService,UserService userService, TeamService teamService) {
+        this.clubService = clubService;
+        this.userService = userService;
+        this.teamService = teamService;
+    }
 
     /**
      * Gets club form
@@ -58,8 +64,17 @@ public class CreateClubController {
 
         logger.info("GET /createClub");
         model.addAttribute("httpServletRequest", request);
+        Optional<User> user = userService.getCurrentUser();
 
-        model.addAttribute("listOfTeams", teamService.getTeamList());
+
+        List<Team> teamsUserManagerOf = new ArrayList<>();
+        for (Team team : teamService.getTeamList()) {
+            if (team.isManager(user.get())) {
+                teamsUserManagerOf.add(team);
+            }
+        }
+
+        model.addAttribute("listOfTeams", teamsUserManagerOf);
 
         Club club;
 
@@ -78,14 +93,14 @@ public class CreateClubController {
             }
         }
 
-        Optional<User> user = userService.getCurrentUser();
+      //  Optional<User> user = userService.getCurrentUser();
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
         model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
 
 
-        return "createClub";
+        return "createClubForm";
     }
 
 
@@ -126,7 +141,7 @@ public class CreateClubController {
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return "createClub";
+            return "createClubForm";
         }
 
         Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
