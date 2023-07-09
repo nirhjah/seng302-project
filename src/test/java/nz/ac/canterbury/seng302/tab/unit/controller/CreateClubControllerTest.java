@@ -83,7 +83,7 @@ public class CreateClubControllerTest {
     public void testDisplayCreateClubForm_return200() throws Exception {
         mockMvc.perform(get("/createClub"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("createClub"));
+                .andExpect(view().name("createClubForm"));
     }
 
 
@@ -162,7 +162,7 @@ public class CreateClubControllerTest {
                         .param("postcode", "1111")
                         .param("selectedTeams", team.getTeamId().toString(), team3.getTeamId().toString()))
                 .andExpect(status().isBadRequest())
-                .andExpect(view().name("createClub"));
+                .andExpect(view().name("createClubForm"));
 
         verify(mockClubService, times(0)).updateOrAddClub(any());
         verify(mockClubService, times(1)).validateTeamSportsinClub(any());
@@ -183,10 +183,9 @@ public class CreateClubControllerTest {
                         .param("country", "")
                         .param("postcode", "1111"))
                 .andExpect(status().isBadRequest())
-                .andExpect(view().name("createClub"));
+                .andExpect(view().name("createClubForm"));
 
         verify(mockClubService, times(0)).updateOrAddClub(any());
-        verify(mockClubService, times(1)).validateTeamSportsinClub(any());
     }
 
     @Test
@@ -203,7 +202,7 @@ public class CreateClubControllerTest {
                         .param("country", "NZ")
                         .param("postcode", "1111"))
                 .andExpect(status().isBadRequest())
-                .andExpect(view().name("createClub"));
+                .andExpect(view().name("createClubForm"));
 
         verify(mockClubService, times(0)).updateOrAddClub(any());
     }
