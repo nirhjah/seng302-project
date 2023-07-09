@@ -8,7 +8,7 @@ import nz.ac.canterbury.seng302.tab.controller.CreateClubController;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.form.CreateAndEditClubForm;
+import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.ClubRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
@@ -22,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -30,7 +31,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.IOException;
@@ -40,7 +40,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
@@ -122,39 +123,6 @@ public class CreateViewUpdateClubIntegrationTests {
 
     }
 
-    private CreateAndEditClubForm createAndEditClubForm() {
-        var form =  new CreateAndEditClubForm();
-        List<Team> teams = new ArrayList<>();
-        teams.add(team);
-        teams.add(team2);
-        form.setCity("Chch");
-        form.setAddressLine1("1");
-        form.setAddressLine2("test");
-        form.setPostcode("8042");
-        form.setCountry("nz");
-        form.setName("Hockey club");
-        form.setSuburb("test");
-        form.setSelectedTeams(teams);
-        return form;
-    }
-
-
-    private ResultActions postCreateAndEditClubForm(CreateAndEditClubForm form) throws Exception {
-
-        return mockMvc.perform(post("/createClub")
-                .param("clubId", "1")
-                .param("name", form.getName())
-                .param("addressLine1", form.getAddressLine1())
-                .param("addressLine2", form.getAddressLine2())
-                .param("suburb", form.getSuburb())
-                .param("city", form.getCity())
-                .param("country", form.getCountry())
-                .param("postcode", form.getPostcode())
-                .param("selectedTeams", form.getSelectedTeams().toString()));
-    }
-
-
-
     @Given("I am anywhere on the system")
     @WithMockUser()
     public void i_am_anywhere_on_the_system() throws Exception {
@@ -181,15 +149,7 @@ public class CreateViewUpdateClubIntegrationTests {
     @When("I enter valid values for the name, address line, postcode, city and country  and optionally a logo")
     @WithMockUser()
     public void i_enter_valid_values_for_name_address_line_postcode_city_and_country_and_optionally_a_logo() throws Exception {
-        /*List<Team> teamsToAdd = new ArrayList<>();
-        teamsToAdd.add(team);
-        teamsToAdd.add(team2);
-
-*/
-     //   Mockito.when(clubService.validateTeamSportsinClub(teamsToAdd)).thenReturn(true);
-
-       /* mockMvc.perform(post("/createClub", 42L)
-                        .with(csrf())
+       mockMvc.perform(post("/createClub", 42L)
                 .param("clubId", "1")
                 .param("name", "new club")
                 .param("addressLine1", "addressline1")
@@ -197,20 +157,111 @@ public class CreateViewUpdateClubIntegrationTests {
                 .param("suburb", "Ilam")
                 .param("city", "Christchurch")
                 .param("country", "New Zealand")
-                .param("postcode", "1111")
-                .param("selectedTeams", team.getTeamId().toString()))
-                .andExpect(status().isFound());*/
+                .param("postcode", "1111"))
+                .andExpect(status().isFound());
 
-        CreateAndEditClubForm form = createAndEditClubForm();
-        postCreateAndEditClubForm(form)
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/home"));
     }
 
     @Then("The club is created into the system")
     public void the_club_is_created_into_the_system() {
         verify(clubService, times(1)).updateOrAddClub(any());
-        System.out.println(clubService.findAll());
+
+    }
+
+
+    @When("I enter an empty club name or a name with invalid characters for a club \\(e.g. non-alphanumeric other than dots or curly brackets, name made of only acceptable non-alphanumeric),")
+    public void i_enter_an_empty_club_name_or_a_name_with_invalid_characters_for_a_club_e_g_non_alphanumeric_other_than_dots_or_curly_brackets_name_made_of_only_acceptable_non_alphanumeric() throws Exception {
+        mockMvc.perform(post("/createClub", 42L)
+                        .param("clubId", "1")
+                        .param("name", "!@#$%")
+                        .param("addressLine1", "addressline1")
+                        .param("addressLine2", "addressline2")
+                        .param("suburb", "Ilam")
+                        .param("city", "Christchurch")
+                        .param("country", "New Zealand")
+                        .param("postcode", "1111"));
+
+    }
+
+    @Then("An error message tells me the name is invalid")
+    public void an_error_message_tells_me_the_name_is_invalid() throws Exception {
+        mockMvc.perform(post("/createClub", 42L)
+                .param("clubId", "1")
+                .param("name", "!@#$%")
+                .param("addressLine1", "addressline1")
+                .param("addressLine2", "addressline2")
+                .param("suburb", "Ilam")
+                .param("city", "Christchurch")
+                .param("country", "New Zealand")
+                .param("postcode", "1111")).andExpect(status().isBadRequest());
+        verify(clubService, times(0)).updateOrAddClub(any());
+
+    }
+
+    @When("I enter either an empty location that is not addressline2 and suburb, or location with invalid characters \\(i.e. any non-letters except spaces, apostrophes and dashes),")
+    public void i_enter_either_an_empty_location_that_is_not_addressline2_and_suburb_or_location_with_invalid_characters_i_e_any_non_letters_except_spaces_apostrophes_and_dashes() throws Exception {
+        mockMvc.perform(post("/createClub", 42L)
+                .param("clubId", "1")
+                .param("name", "!@#$%")
+                .param("addressLine1", "")
+                .param("addressLine2", "addressline2")
+                .param("suburb", "Ilam")
+                .param("city", "")
+                .param("country", "")
+                .param("postcode", ""));
+    }
+
+    @Then("An error message tells me the location is invalid")
+    public void an_error_message_tells_me_the_location_is_invalid() throws Exception {
+        mockMvc.perform(post("/createClub", 42L)
+                .param("clubId", "1")
+                .param("name", "!@#$%")
+                .param("addressLine1", "")
+                .param("addressLine2", "addressline2")
+                .param("suburb", "Ilam")
+                .param("city", "")
+                .param("country", "")
+                .param("postcode", "")).andExpect(status().isBadRequest());
+        verify(clubService, times(0)).updateOrAddClub(any());
+
+    }
+
+
+    @Given("I am on the create or edit club page")
+    public void i_am_on_the_create_or_edit_club_page() throws Exception {
+        // Write code here that turns the phrase above into concrete actions
+        mockMvc.perform(get("/createClub"));
+
+    }
+
+    @When("I am the manager of at least one team")
+    public void i_am_the_manager_of_at_least_one_team() {
+        team.setRole(user, Role.MANAGER);
+    }
+
+    @Then("I can select as many teams as I want from the list of teams I manage to be added to that club")
+    public void i_can_select_as_many_teams_as_i_want_from_the_list_of_teams_i_manage_to_be_added_to_that_club() throws Exception {
+
+
+        //   Mockito.when(clubService.validateTeamSportsinClub(teamsToAdd)).thenReturn(true);
+
+        mockMvc.perform(post("/createClub", 42L)
+                        .param("clubId", "1")
+                        .param("name", "new club")
+                        .param("addressLine1", "addressline1")
+                        .param("addressLine2", "addressline2")
+                        .param("suburb", "Ilam")
+                        .param("city", "Christchurch")
+                        .param("country", "New Zealand")
+                        .param("postcode", "1111")
+                        .param("selectedTeams", team.getTeamId().toString(), team2.getTeamId().toString()))
+
+                /* .contentType(MediaType.APPLICATION_JSON)
+                .content(String.valueOf(team))
+                        .content(String.valueOf(team3))
+                .accept(MediaType.APPLICATION_JSON))*/
+                .andExpect(status().isFound());
+        verify(clubService, times(1)).updateOrAddClub(any());
 
     }
 

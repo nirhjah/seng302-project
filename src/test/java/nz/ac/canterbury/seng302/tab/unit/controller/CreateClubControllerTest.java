@@ -181,8 +181,7 @@ public class CreateClubControllerTest {
                         .param("suburb", "Ilam")
                         .param("city", "")
                         .param("country", "")
-                        .param("postcode", "1111")
-                        .param("selectedTeams", team.getTeamId().toString(), team3.getTeamId().toString()))
+                        .param("postcode", "1111"))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("createClub"));
 
@@ -202,8 +201,7 @@ public class CreateClubControllerTest {
                         .param("suburb", "Ilam")
                         .param("city", "Christchurch")
                         .param("country", "NZ")
-                        .param("postcode", "1111")
-                        .param("selectedTeams", team.getTeamId().toString(), team3.getTeamId().toString()))
+                        .param("postcode", "1111"))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("createClub"));
 

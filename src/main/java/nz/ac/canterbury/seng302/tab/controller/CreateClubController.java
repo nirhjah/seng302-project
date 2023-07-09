@@ -114,7 +114,7 @@ public class CreateClubController {
             @RequestParam(name = "country") String country,
             @RequestParam(name = "postcode") String postcode,
             @RequestParam(name = "suburb") String suburb,
-            @RequestParam(name = "selectedTeams") List<Team> selectedTeams,
+            @RequestParam(name = "selectedTeams", required = false) List<Team> selectedTeams,
             @Validated CreateAndEditClubForm createAndEditClubForm,
             BindingResult bindingResult,
             HttpServletResponse httpServletResponse,
@@ -123,6 +123,8 @@ public class CreateClubController {
         model.addAttribute("httpServletRequest", httpServletRequest);
         //prefillModel(model, httpServletRequest);
 
+
+        System.out.println("These are selected teams");
 
         addressLine1.trim();
         if (addressLine1.isEmpty()) {
@@ -133,11 +135,13 @@ public class CreateClubController {
             bindingResult.addError(new FieldError("CreateAndEditClubForm", "postcode", "Field cannot be empty"));
         }
 
-        if (!clubService.validateTeamSportsinClub(selectedTeams)) {
-            System.out.println("Teams should have same sport" + selectedTeams);
-            bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Teams must have same sport"));
-
+        if (selectedTeams != null) {
+            if (!clubService.validateTeamSportsinClub(selectedTeams)) {
+                System.out.println("Teams should have same sport" + selectedTeams);
+                bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Teams must have same sport"));
+            }
         }
+
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -148,7 +152,12 @@ public class CreateClubController {
         Club club = new Club(name, location);
 
 
-        club.addTeam(selectedTeams);
+        if (selectedTeams != null) {
+            club.addTeam(selectedTeams);
+        }
+
+
+
         clubService.updateOrAddClub(club);
 
 
