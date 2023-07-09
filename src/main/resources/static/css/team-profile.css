@@ -54,9 +54,7 @@
         margin: 0 0 20px !important;
         padding-top: 0;
     }
-
 }
-
 
 .join-token {
     position: absolute;
@@ -145,7 +143,9 @@
 
 .join-token-box-outer {
     display: flex;
+    z-index: 2;
 }
+
 .tab-box{
     border-radius: 20px 20px 0 0;
     display:flex;
@@ -216,9 +216,9 @@
 
 .formation-list {
     width: 20%;
-    height: 100%;
+    min-width: 20%;
     padding: 3px 4px 3px 4px;
-    box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.19);
     border-radius: 0 0 0 20px;
 }
 
@@ -235,7 +235,7 @@
 
 .formation-list li:active {
     transform: scaleX(0.98) scaleY(0.98);
-    box-shadow: 0 1px 2px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
 }
 
 .formation-list li img {
@@ -244,6 +244,7 @@
 
 .create-formation-display {
     display: flex;
+    margin-top: 2vh;
 }
 
 .content.formations {
@@ -251,11 +252,11 @@
 }
 
 .formation-display {
-    min-width: 80%;
+    margin: 20px 23px;
 }
 
 .input-box {
-    width: unset;
+    width: 130px;
     height: unset;
     margin: unset;
 }
@@ -264,9 +265,44 @@
     display: none;
 }
 
-.error-message.active, .formation-display.active {
+.error-message.active {
     display: block;
 }
+
+.formation-display.active {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.formation-display button {
+    background-color: #0b2239;
+    border: none;
+    outline: none;
+    color: #fff;
+    border-radius: 30px;
+    font-size: 1.1em;
+    font-weight: 500;
+    padding: 0 10px;
+    height: 34px;
+    margin-left: 5px;
+}
+
+.formation-display button:hover {
+    background-color: #415a77;
+    cursor: pointer;
+}
+
+.formation-display button:active {
+    transform: scaleX(0.98) scaleY(0.98);
+    background-color: #0b2239;
+}
+
+.formation-RHS button {
+    float: right;
+    margin-top: 5px;
+}
+
 
 
 

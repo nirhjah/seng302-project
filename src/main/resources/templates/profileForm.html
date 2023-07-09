@@ -115,17 +115,21 @@
                     </li>
                 </ul>
                 <form class="formation-display" method="post" th:action="@{/profile/create-formation}">
-                    <div class="create-formation-display">
-                        <div class="input-box">
-                            <input type="text" id="formation-string" name="formation">
-                            <label for="formation-string">Formation</label>
+                    <div class="formation-LHS">
+                        <div class="create-formation-display">
+                            <div class="input-box">
+                                <input type="text" id="formation-string" name="formation">
+                                <label for="formation-string">Formation</label>
+                            </div>
+                            <button type="button" th:onclick="render(document.getElementById('formation-string').value) ">Generate Formation</button>
                         </div>
-                        <button type="button" th:onclick="render(document.getElementById('formation-string').value) ">Generate Formation</button>
+                        <div class="error-message">Formation must match specified form e.g. 1-4-4-2</div>
                     </div>
-                    <div class="error-message">Formation must match specified form e.g. 1-4-4-2</div>
-                    <div th:insert="~{fragments/formationDisplay.html::formationDisplay(formation=${formation}, playerCount=${playerCount}, editable=true)}"></div>
-                    <input type="hidden" name="teamID" th:value="${teamID}" />
-                    <button type="submit">Create Formation</button>
+                    <div class="formation-RHS">
+                        <div th:insert="~{fragments/formationDisplay.html::formationDisplay(formation=${formation}, playerCount=${playerCount}, editable=true)}"></div>
+                        <input type="hidden" name="teamID" th:value="${teamID}" />
+                        <button type="submit">Create Formation</button>
+                    </div>
                 </form>
             </div>
         </div>
