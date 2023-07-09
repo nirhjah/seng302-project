@@ -88,6 +88,7 @@ public class CreateClubController {
                 model.addAttribute("country", club.getLocation().getCountry());
                 model.addAttribute("postcode", club.getLocation().getPostcode());
                 model.addAttribute("clubId", club.getClubId());
+                model.addAttribute("selectedTeams", club.getClubTeams());
             } else {
                 model.addAttribute("invalidClub", "Invalid club ID, creating club");
             }
@@ -157,6 +158,8 @@ public class CreateClubController {
         }
 
 
+        System.out.println("controller teams");
+        System.out.println(club.getClubTeams());
 
         clubService.updateOrAddClub(club);
 

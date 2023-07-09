@@ -23,7 +23,7 @@
 
 
             <div class="input-box">
-                <input type="text" class="form-control" id="name" th:name="name" th:value="*{name}"
+                <input type="text" class="form-control" id="name" th:name="name" th:value="${name}"
                        data-cy="name" autofocus placeholder=""
                        title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
                 <label for="name">Club Name <span class="required">*</span></label>
@@ -87,7 +87,8 @@
             <select name="selectedTeams" id="selectedTeams" multiple>
                 <option class="selectTeamsOption" th:each="team : ${listOfTeams}"
                         th:value="${team.teamId}"
-                        th:text="${team}"></option>
+                        th:text="${team}"
+                        th:selected="${selectedTeams != null && selectedTeams.contains(team)}"></option>
             </select>
 
             <label style="font-family: 'Noto Sans', sans-serif"> Hold ctrl and click on teams to select multiple </label>
