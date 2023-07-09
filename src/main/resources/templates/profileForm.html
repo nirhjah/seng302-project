@@ -104,26 +104,31 @@
         <div class="content-box">
             <div class="content formations">
                 <ul class="formation-list">
-                    <li th:onclick="renderPlayers('1-4-4-2')">
+                    <li th:onclick="render('1-4-4-2')">
                         <h3>Create a Formation</h3>
                         <img th:src="@{/image/icons/add-symbol.svg}" alt=""/>
                     </li>
-                    <li th:each="formation : ${formations}">
-                        <span class="title"><a th:href="|window.location.href='@{profile(teamID=${activity.team.teamId})}'|" th:text="${formation.formation}"></a></span>
+                    <li th:each="formation : ${formations}" th:onclick="renderPlayers(${formation.formation})">
+                        <span class="title">
+                            <h3 th:text="${formation.formation}"></h3>
+                        </span>
                     </li>
                 </ul>
-                <div class="formation-display">
+                <form class="formation-display" method="post" th:action="@{/profile/create-formation}">
                     <div class="create-formation-display">
-                        <h3>Input Formation</h3>
-                        <input type="text" id="formation-string" name="formation-string" placeholder="1-4-4-2">
-                        <button th:onclick="render(document.getElementById('formation-string').value) ">Generate Formation</button>
+                        <div class="input-box">
+                            <input type="text" id="formation-string" name="formation">
+                            <label for="formation-string">Formation</label>
+                        </div>
+                        <button type="button" th:onclick="render(document.getElementById('formation-string').value) ">Generate Formation</button>
                     </div>
+                    <div class="error-message">Formation must match specified form e.g. 1-4-4-2</div>
                     <div th:insert="~{fragments/formationDisplay.html::formationDisplay(formation=${formation}, playerCount=${playerCount}, editable=true)}"></div>
-                    <button>Create Formation</button>
-                </div>
+                    <input type="hidden" name="teamID" th:value="${teamID}" />
+                    <button type="submit">Create Formation</button>
+                </form>
             </div>
         </div>
-
         <div class="content-box">
             <div class="content">
                 <p> This is where the 'Team Aggregated Statistics' is going to be displayed</p>
@@ -190,8 +195,37 @@
 
         function render(formation) {
             const input = document.getElementById('formation-string');
-            input.setAttribute('placeholder', formation);
-            renderPlayers(formation);
+            const errorMessage = document.querySelector('.error-message')
+            const formationDisplay = document.querySelector('.formation-display')
+            input.value = formation;
+            if (validateFormation(formation)) {
+                formationDisplay.classList.add('active')
+                errorMessage.classList.remove('active')
+                renderPlayers(formation);
+            } else {
+                errorMessage.classList.add('active')
+            }
+        }
+
+        function validateFormation(formation) {
+            if (formation.length === 0) {
+                return false
+            }
+            let isNumber = false;
+            let isDash = true;
+            for (let i = 0; i < formation.length; i++) {
+                let current = formation[i];
+                if (isDash && ['1','2','3','4','5','6','7','8','9'].includes(current)) {
+                    isNumber = true;
+                    isDash = false;
+                } else if (isNumber && current === '-' && i !== formation.length-1) {
+                    isNumber = false;
+                    isDash = true;
+                } else {
+                    return false;
+                }
+            }
+            return true;
         }
 
     </script>
