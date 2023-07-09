@@ -129,6 +129,10 @@ public class ActivityService {
         return activityRepository.findActivityByTeam(team, pageable);
     }
 
+    public List<Activity> getAllTeamActivities(Team team) {
+        return activityRepository.findActivityByTeam(team);
+    }
+
     /**
      * Checks that the scores provided for both teams are of the same format
      * First checks if the first team's score is of appropriate hyphen format, if

@@ -24,6 +24,8 @@ public interface ActivityRepository extends CrudRepository<Activity, Long> {
 
     List<Activity> findAll();
 
+    List<Activity> findActivityByTeam(Team team);
+
     Page<Activity> findActivityByTeam(Team team, Pageable pageable);
 
     @Query("SELECT a FROM Activity a " +
