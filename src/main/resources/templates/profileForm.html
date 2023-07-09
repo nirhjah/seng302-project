@@ -108,13 +108,14 @@
                         <h3>Create a Formation</h3>
                         <img th:src="@{/image/icons/add-symbol.svg}" alt=""/>
                     </li>
-                    <li th:each="formation : ${formations}" th:onclick="renderPlayers(${formation.formation})">
+                    <li th:each="formation : ${formations}"
+                        th:attr="onclick='render(\'' + ${formation.formation} + '\')'">
                         <span class="title">
                             <h3 th:text="${formation.formation}"></h3>
                         </span>
                     </li>
                 </ul>
-                <form class="formation-display" method="post" th:action="@{/profile/create-formation}">
+                <form class="formation-display" method="post" th:action="@{/profile/create-formation}" onsubmit="return submissionCheck(document.getElementById('formation-string').value)">
                     <div class="formation-LHS">
                         <div class="create-formation-display">
                             <div class="input-box">
@@ -211,6 +212,15 @@
             }
         }
 
+        function submissionCheck(formation) {
+            const errorMessage = document.querySelector('.error-message')
+            const valid = validateFormation(formation)
+            if (!valid) {
+                errorMessage.classList.add('active')
+            }
+            return valid
+        }
+
         function validateFormation(formation) {
             if (formation.length === 0) {
                 return false
@@ -231,6 +241,7 @@
             }
             return true;
         }
+
 
     </script>
 </div>
