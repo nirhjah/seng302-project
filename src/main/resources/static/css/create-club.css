@@ -25,3 +25,26 @@
 .create-club-header {
     padding-bottom: 15px;
 }
+
+select[multiple] {
+    padding-right: 0;
+    width: 100%;
+    margin-top: 10%;
+}
+
+.selectTeamsLabel {
+    font-family: "Noto Sans", sans-serif;
+    position: absolute;
+    transform: translateY(-50%);
+    font-size: 1em;
+    font-weight: 500;
+    transition: 0.5s;
+    color: #888888;
+    border-bottom: none;
+    margin-top: 4%
+
+}
+
+.selectTeamsOption {
+    padding: 0.5em;
+}

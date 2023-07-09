@@ -26,7 +26,7 @@
                 <input type="text" class="form-control" id="name" th:name="name" th:value="*{name}"
                        data-cy="name" autofocus placeholder=""
                        title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
-                <label for="name">Name <span class="required">*</span></label>
+                <label for="name">Club Name <span class="required">*</span></label>
                 <div th:each="err : ${#fields.errors('name')}" th:text="${err}" class="error-message"></div>
             </div>
 
@@ -50,6 +50,9 @@
                 </div>
                 <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message"></div>
             </div>
+
+            <div class="input-boxes">
+
             <div class="input-box">
                 <input type="text" class="form-control" id="suburb" th:name="suburb"
                        data-cy="location" autofocus placeholder="" th:value="${suburb}">
@@ -62,7 +65,9 @@
                 <label for="postcode">Postcode<span class="required">*</span></label>
             </div>
             <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
+            </div>
 
+            <div class="input-boxes">
             <div class="input-box">
                 <input type="text" class="form-control" id="city" th:name="city"
                        data-cy="location" autofocus placeholder="" th:value="${city}">
@@ -76,14 +81,17 @@
                 <label for="country">Country <span class="required">*</span></label>
             </div>
             <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
+            </div>
 
-
-            <label> Select teams: </label>
+            <label class="selectTeamsLabel"> Select Teams </label>
             <select name="selectedTeams" id="selectedTeams" multiple>
-                <option th:each="team : ${listOfTeams}"
+                <option class="selectTeamsOption" th:each="team : ${listOfTeams}"
                         th:value="${team.teamId}"
                         th:text="${team}"></option>
             </select>
+
+            <label style="font-family: 'Noto Sans', sans-serif"> Hold ctrl and click on teams to select multiple </label>
+
             <div th:each="err : ${#fields.errors('selectedTeams')}" th:text="${err}" class="error-message"></div>
 
 
