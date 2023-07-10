@@ -46,25 +46,6 @@ public class ViewAllUsersController {
     private static final int PAGE_SIZE = 10;
 
 
-    @Autowired
-    GenerateRandomUsers generateRandomUsers;
-
-    static final int N_USERS_TO_ADD = 100;
-
-    /*
-    For testing purposes ONLY.
-    Remove before merging w/ dev pls.
-     */
-    @GetMapping("/generate-test-users")
-    public String populateDatabaseWithDummyUsers() throws IOException {
-        logger.warn("DEBUG ENDPOINT /populate_database - TESTING PURPOSES ONLY");
-        for (int i = 0; i < N_USERS_TO_ADD; i++) {
-            userService.updateOrAddUser(generateRandomUsers.createRandomUserWithSports());
-        }
-        logger.warn("/populate_database - {} users added", N_USERS_TO_ADD);
-        return "redirect:./";
-    }
-
     /**
      * Takes user to the view all users page
      *

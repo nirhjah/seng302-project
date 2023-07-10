@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.helper.GenerateRandomTeams;
 import nz.ac.canterbury.seng302.tab.service.LocationService;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -21,6 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,6 +44,17 @@ public class ViewAllTeamsController {
     private UserService userService;
     private LocationService locationService;
     private SportService sportService;
+
+    @Autowired
+    GenerateRandomTeams generateRandomTeams;
+
+    int NUM_TEAMS_TO_GENERATE = 20;
+
+    // Should only be used for testing purposes!!!
+    @GetMapping("/populate-test-teams")
+    public void populateTestTeams() throws IOException {
+        generateRandomTeams.createAndSaveRandomTeams(NUM_TEAMS_TO_GENERATE);
+    }
 
     @Autowired
     public ViewAllTeamsController(TeamService teamService, UserService userService, LocationService locationService, SportService sportService) {
