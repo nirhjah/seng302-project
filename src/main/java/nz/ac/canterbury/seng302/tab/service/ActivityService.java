@@ -193,4 +193,13 @@ public class ActivityService {
         }
         return null;
     }
+
+    /**
+     * Returns total number of games and friendlies played
+     * @param team team whose games and friendlies are being returned
+     * @return the number of games and friendlies played by the given team
+     */
+    public int numberOfTotalGamesAndFriendlies(Team team) {
+        return activityRepository.getAllGamesAndFriendlies(team);
+    }
 }
