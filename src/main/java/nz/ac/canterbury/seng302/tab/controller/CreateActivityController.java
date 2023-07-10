@@ -242,6 +242,7 @@ public class CreateActivityController {
             factList.add(new Fact("Someone fell over again", "1h 30m", activity));
             factList.add(new Fact("Someone fell over yet again", "1h 42m", activity));
             factList.add(new Substitution("Player was taken off", "1h 40m", activity, user, user));
+            factList.add(new Fact("Testing scrollable feature", "1h 25m", activity));
 
             activity.addFactList(factList);
 

@@ -33,13 +33,43 @@
         <div class="act-date-time">
 
         </div>
-        <div class="act-facts"></div>
+        <div class="act-facts">
+            <h4> Facts </h4>
+            <div class="facts-table">
+                <ul>
+                    <li th:each="fact : ${activityFacts}">
+                        <span class="description" th:text="${fact.description}"></span>
+                        <span class="time" th:text="${fact.timeOfEvent}"></span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
     </div>
 
     <div class="act-game-friendly">
         <div class="act-lineup"></div>
-        <div class="act-subs"></div>
+        <div class="act-subs">
+            <h4> Substitutions </h4>
+            <div class="subs-table">
+                <ul>
+                    <li th:each="fact : ${activitySubstitutions}">
+                        <span class="sub-pic">
+                            <img th:src="*{'data:image/jpeg;base64,'+{displayPicture}}"/>
+                        </span>
+                        <span class="description"
+                              th:text="${fact.playerOn.firstName} + '         ' + ${fact.playerOn.lastName}"></span>
+
+                        <span class="description" th:text="${fact.timeOfEvent}"></span>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
     </div>
+</div>
 </div>
 </body>
 <footer>
