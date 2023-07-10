@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
+import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.ClubService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -359,4 +360,30 @@ public class TeamServiceTest {
         assertEquals(set1, set2);
     }
 
+    @Test
+    public void testExceptionThrownWhenAssigningInvalidClub() throws IOException {
+        Assertions.assertThrows(UnmatchedSportException.class, () -> {
+            var location = new Location("address1", "address2", "suburb", "chch", "8052", "new zealand");
+            var CLUB_SPORT = "Soccer";
+            var TEAM_SPORT = "Hockey";
+
+            Club club = new Club("Real Madrid", location, CLUB_SPORT);
+            clubService.updateOrAddClub(club);
+
+            Team team = new Team("Test", TEAM_SPORT);
+            team.setTeamClub(club);
+        });
+    }
+
+    @Test
+    public void testClubAssignedOk() throws IOException {
+        var SPORT = "Soccer";
+        var location = new Location("address1", "address2", "suburb", "chch", "8052", "new zealand");
+        Club club = new Club("Real Madrid", location, SPORT);
+        clubService.updateOrAddClub(club);
+
+        Team team = new Team("Test", SPORT);
+        team.setTeamClub(club);
+        assertEquals(team.getTeamClub(), club);
+    }
 }
