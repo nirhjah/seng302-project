@@ -131,13 +131,16 @@ public class ViewAllTeamsController {
             return "redirect:/home";
         }
 
-        Page<Team> page = getTeamPage(pageNo, currentSearch, cities, sports);
+        var internalPageNo = pageNo - 1;
+
+        Page<Team> page = getTeamPage(internalPageNo, currentSearch, cities, sports);
         var maxPage = page.getTotalPages();
+
+        // Page can be between  (1,  maxPage)
         pageNo = Math.max(Math.min(pageNo, maxPage), 1);
 
         // Internally, pagination starts at 0 (page 0 is the first)
         // However, we want it to start at 1 for the user.
-        var internalPageNo = pageNo - 1;
 
         Optional<User> opt = userService.getCurrentUser();
         if (opt.isEmpty()) {
