@@ -63,6 +63,7 @@ public class GenerateRandomTeams implements ApplicationRunner {
     public void createAndSaveRandomTeams(int count) throws IOException {
         for (int i=0; i<count; i++) {
             var team = createRandomTeam();
+            team.generateToken(teamService);
             teamService.addTeam(team);
         }
     }
@@ -75,11 +76,11 @@ public class GenerateRandomTeams implements ApplicationRunner {
      */
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        for (var loc: RANDOM_LOCATIONS) {
-            locationService.addLocation(loc);
-        }
-        for (var sport: RANDOM_SPORTS) {
-            sportRepository.save(new Sport(sport));
-        }
+//        for (var loc: RANDOM_LOCATIONS) {
+//            locationService.addLocation(loc);
+//        }
+//        for (var sport: RANDOM_SPORTS) {
+//            sportRepository.save(new Sport(sport));
+//        }
     }
 }

@@ -52,8 +52,9 @@ public class ViewAllTeamsController {
 
     // Should only be used for testing purposes!!!
     @GetMapping("/populate-test-teams")
-    public void populateTestTeams() throws IOException {
+    public String populateTestTeams() throws IOException {
         generateRandomTeams.createAndSaveRandomTeams(NUM_TEAMS_TO_GENERATE);
+        return "redirect:home";
     }
 
     @Autowired
