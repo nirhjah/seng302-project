@@ -52,8 +52,7 @@ public class GenerateRandomTeams implements ApplicationRunner {
     private Location getRandomLocation() {
         var loc = RANDOM_LOCATIONS[random.nextInt(0, RANDOM_LOCATIONS.length)];
         // Ensure that the location is unique in the DB, or else we get persist duplicate entity errors.
-        //
-        loc.setAddressLine2(UUID.randomUUID().toString());
+        loc.setAddressLine2("location " + random.nextInt());
         return loc;
     }
 
