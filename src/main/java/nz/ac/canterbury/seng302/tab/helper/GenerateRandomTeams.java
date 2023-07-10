@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
@@ -48,6 +49,14 @@ public class GenerateRandomTeams implements ApplicationRunner {
             new Location("99 goodbye street", "", "Goodbye", "Dunedin", "8033", "New Zealand")
     };
 
+    private Location getRandomLocation() {
+        var loc = RANDOM_LOCATIONS[random.nextInt(0, RANDOM_LOCATIONS.length)];
+        // Ensure that the location is unique in the DB, or else we get persist duplicate entity errors.
+        //
+        loc.setAddressLine2(UUID.randomUUID().toString());
+        return loc;
+    }
+
     /**
      * Generates a team with random values.
      * <p><strong>NOTE:</strong> Isn't saved to the database!
@@ -56,7 +65,7 @@ public class GenerateRandomTeams implements ApplicationRunner {
     public Team createRandomTeam() throws IOException {
         var name = RANDOM_NAMES[random.nextInt(0, RANDOM_NAMES.length)];
         var sport = RANDOM_SPORTS[random.nextInt(0, RANDOM_SPORTS.length)];
-        var location = RANDOM_LOCATIONS[random.nextInt(0, RANDOM_LOCATIONS.length)];
+        var location = getRandomLocation();
         return new Team(name, sport, location);
     }
 
@@ -78,9 +87,6 @@ public class GenerateRandomTeams implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         for (var sport: RANDOM_SPORTS) {
             sportRepository.save(new Sport(sport));
-        }
-        for (var loc: RANDOM_LOCATIONS) {
-            locationService.addLocation(loc);
         }
     }
 }
