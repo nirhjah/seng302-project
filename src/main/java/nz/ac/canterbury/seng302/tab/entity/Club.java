@@ -17,8 +17,6 @@ import java.util.Set;
  */
 @Entity(name = "Club")
 public class Club {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "clubId")
@@ -32,10 +30,6 @@ public class Club {
 
     @Column(columnDefinition = "MEDIUMBLOB")
     private String clubLogo;
-
-    @OneToMany(mappedBy = "teamClub", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Team> clubTeams = new HashSet<>();
-
 
     protected Club() {
     }
@@ -76,20 +70,4 @@ public class Club {
     public void setClubLogo(String clubLogo) {
         this.clubLogo = clubLogo;
     }
-
-    public Set<Team> getClubTeams() {
-        return clubTeams;
-    }
-
-    public void setClubTeams(Set<Team> clubTeams) {
-        this.clubTeams = clubTeams;
-    }
-
-    public void addTeam(List<Team> teams) {
-        for (Team team : teams) {
-            this.clubTeams.add(team);
-            team.setTeamClub(this);
-        }
-    }
-
 }

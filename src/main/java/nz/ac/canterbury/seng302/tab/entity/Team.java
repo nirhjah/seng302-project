@@ -55,7 +55,7 @@ public class Team {
     )
     private Set<User> teamMembers = new HashSet<User>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="clubId")
     private Club teamClub;
 
