@@ -101,12 +101,6 @@ th:nth-child(4) {
     opacity: 0.5; /* Set opacity to 50% */
 }
 
-.pagination-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    font-family: "Noto Sans", sans-serif;
-}
 
 .pagination-container > div {
     margin-right: 5px;
@@ -129,6 +123,7 @@ table {
 }
 
 .pagination-container {
+    font-family: "Noto Sans", sans-serif;
     justify-content: center;
     list-style:none;
     display:flex;
@@ -139,7 +134,7 @@ table {
     background:white;
     width:fit-content;
     align-items:center;
-    margin: 10px 0;
+    margin: auto
 }
 
 .pagination-container button{
