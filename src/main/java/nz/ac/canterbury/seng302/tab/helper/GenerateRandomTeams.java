@@ -43,17 +43,13 @@ public class GenerateRandomTeams implements ApplicationRunner {
             "Hockey", "Rugby", "E-Sports", "Football", "Water polo"
     };
 
-    private static final Location[] RANDOM_LOCATIONS = {
-            new Location("51 Tuam Street", "", "Ilam", "Christchurch", "8052", "New Zealand"),
-            new Location("42 hello street", "", "Merivale", "Auckland", "8054", "New Zealand"),
-            new Location("99 goodbye street", "", "Goodbye", "Dunedin", "8033", "New Zealand")
+    private static final String[] RANDOM_CITIES = {
+        "Christchurch", "Auckland", "Sydney", "Dunedin", "Gore"
     };
 
     private Location getRandomLocation() {
-        var loc = RANDOM_LOCATIONS[random.nextInt(0, RANDOM_LOCATIONS.length)];
-        // Ensure that the location is unique in the DB, or else we get persist duplicate entity errors.
-        loc.setAddressLine2("location " + random.nextInt());
-        return loc;
+        var city = RANDOM_CITIES[random.nextInt(0, RANDOM_CITIES.length)];
+        return new Location("49 Mays Road", "", "St Albans", city, "8052", "New Zealand");
     }
 
     /**
