@@ -48,6 +48,15 @@ public class ViewAllTeamsController {
     @Autowired
     GenerateRandomTeams generateRandomTeams;
 
+
+    /**
+     * TODO: Remove all this stuff before merging into dev!
+     *
+     * IF YOU ARE REVIEWING THIS CODE RIGHT NOW, PLEASE
+     * DENY THIS MR.
+     * THIS CODE (populate_teams) SHOULD NOT BE PUSHED TO DEV,
+     * AND IS ONLY FOR DEBUG PURPOSES!!!!
+     */
     int NUM_TEAMS_TO_GENERATE = 20;
 
     // Should only be used for testing purposes!!!
@@ -122,20 +131,13 @@ public class ViewAllTeamsController {
             return "redirect:/home";
         }
 
+        Page<Team> page = getTeamPage(pageNo, currentSearch, cities, sports);
+        var maxPage = page.getTotalPages();
+        pageNo = Math.max(Math.min(pageNo, maxPage), 1);
+
         // Internally, pagination starts at 0 (page 0 is the first)
         // However, we want it to start at 1 for the user.
-        pageNo -= 1;
-        // If the page number is valid, reload the page with a new clamped number
-        if (pageNo < 0) {
-            // Too low
-            return "redirect:view-teams?page=1";
-        }
-        Page<Team> page = getTeamPage(pageNo, currentSearch, cities, sports);
-        if (page.getTotalPages() != 0 && pageNo > page.getTotalPages()) {
-            // Too high
-            pageNo = page.getTotalPages() + 1;
-            return "redirect:view-teams?page=" + pageNo;
-        }
+        var internalPageNo = pageNo - 1;
 
         Optional<User> opt = userService.getCurrentUser();
         if (opt.isEmpty()) {
@@ -143,7 +145,6 @@ public class ViewAllTeamsController {
             return "redirect:login";
         }
         var user = opt.get();
-
 
         populateModelBasics(model, user, page);
         populateFilterDropdowns(model);
