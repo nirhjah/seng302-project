@@ -22,6 +22,9 @@ public class Club {
     @Column(name = "clubId")
     private long clubId;
 
+    @Column
+    private String sport;
+
     @Column(nullable = false)
     private String name;
 
@@ -34,13 +37,13 @@ public class Club {
     protected Club() {
     }
 
-    public Club(String name, Location location) throws IOException {
+    public Club(String name, Location location, String sport) throws IOException {
         this.name = name;
         this.location = location;
+        this.sport = sport;
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
         this.clubLogo = Base64.getEncoder().encodeToString(is.readAllBytes());
-
     }
 
     public long getClubId() {
@@ -69,5 +72,9 @@ public class Club {
 
     public void setClubLogo(String clubLogo) {
         this.clubLogo = clubLogo;
+    }
+
+    public String getSport() {
+        return sport;
     }
 }

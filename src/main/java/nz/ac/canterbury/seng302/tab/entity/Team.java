@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.entity;
 import jakarta.persistence.*;
 
 import nz.ac.canterbury.seng302.tab.enums.Role;
+import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.hibernate.Hibernate;
 import org.springframework.core.io.ClassPathResource;
@@ -272,7 +273,18 @@ public class Team {
         return teamClub;
     }
 
+    /**
+     * Sets the club of a team.
+     * If the club is invalid (i.e. Club sport doesn't match team sport)
+     * an exception is thrown.
+     * @param teamClub
+     */
     public void setTeamClub(Club teamClub) {
+        // TODO: We shouldn't be comparing string here, we should ideally have these
+        //   columns referencing actual sport entities.
+        if (!teamClub.getSport().equals(getSport())) {
+            throw new UnmatchedSportException(teamClub.getSport(), getSport());
+        }
         this.teamClub = teamClub;
     }
 

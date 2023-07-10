@@ -337,11 +337,13 @@ public class TeamServiceTest {
         var NUM_TEAMS_IN_CLUB = 5;
         var location = new Location("address1", "address2", "suburb", "chch", "8052", "new zealand");
 
-        Club club = new Club("Real Madrid", location);
+        var SPORT = "Soccer";
+
+        Club club = new Club("Real Madrid", location, SPORT);
         clubService.updateOrAddClub(club);
 
         for (int i=0; i<10; i++) {
-            Team team = new Team("Test", "Hockey");
+            Team team = new Team("Test", SPORT);
             if (i < NUM_TEAMS_IN_CLUB) {
                 team.setTeamClub(club);
                 teamsInClub.add(team);
