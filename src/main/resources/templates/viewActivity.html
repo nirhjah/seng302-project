@@ -17,9 +17,18 @@
         <div class="act-details">
             <h3 th:if="${activity.team != null}" th:text="${activity.team + '\'s'}"></h3>
             <h3> Activity Information </h3>
-            <h4 th:text="|Type: ${activity.activityType}|"></h4>
-            <h4 th:text="|Location: ${activity.location}|"></h4>
-            <h4 th:text="|Description: ${activity.description}|"></h4>
+            <h4 th:text="|Type:&nbsp&nbsp ${activity.activityType}|"></h4>
+            <h4 th:text="|Location:&nbsp&nbsp ${activity.location}|"></h4>
+            <h4 th:text="|Description:&nbsp&nbsp ${activity.description}|"></h4>
+
+            <div class="edit-act-button">
+                <a th:if="${(activity.team!=null && (activity.team.isManager(activity.activityOwner) ||
+                activity.team.isCoach(activity.activityOwner))) || activity.team==null}" class="edit-button"
+                   th:href="@{createActivity(edit=${activity.id})}">
+                    <button type="button"><img th:src="@{image/icons/pencil.svg}"> <span>Edit Activity</span></button>
+                </a>
+            </div>
+
         </div>
         <div class="act-date-time">
 

@@ -105,12 +105,12 @@
     display: grid;
     gap: 25px;
     padding: 50px 50px 0;
-    align-items: center;
-    justify-content: center;
+    /*align-items: center;*/
+    /*justify-content: center;*/
 }
 
 .act-info {
-    grid-template-columns: 450px 450px 450px;
+    grid-template-columns: 420px 400px 400px;
 }
 
 .act-game-friendly {
@@ -119,11 +119,11 @@
 
 .act-info > div,
 .act-game-friendly > div {
-    height: 300px;
+    height: 280px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    /*align-items: center;*/
+    /*justify-content: center;*/
     box-shadow: 0 0 30px rgba(0, 0, 0, .5);
     border-radius: 20px;
     position: relative;
@@ -135,10 +135,10 @@
 .act-facts,
 .act-lineup,
 .act-subs {
-    height: 300px;
+    height: 280px;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    /*align-items: center;*/
+    /*justify-content: center;*/
 }
 
 .act-details {
@@ -150,15 +150,48 @@
 .act-details h4 {
     margin: 10px 0;
 }
-.act-details h4{
-    text-align: left;
+
+.act-details h3{
+    text-align:center;
+    padding-top:15px;
+    font-size:23px;
 }
 
+.act-details h4{
+    padding-left:28px;
+    font-size:19px;
+}
 
 
 .act-facts {
     align-items: flex-end;
 }
+
+.edit-act-button{
+    cursor:pointer;
+    position:absolute;
+    bottom:20px;
+    right:30px;
+}
+
+.edit-act-button button{
+    width:120px;
+    height:23px;
+    border-radius: 30px;
+    font-size:15px;
+    display: flex;
+    align-items: center;
+}
+
+.edit-act-button button img{
+    height:18px;
+    margin: 0 5px;
+}
+.edit-act-button button span{
+    line-height:1.2;
+}
+
+
 
 
 
