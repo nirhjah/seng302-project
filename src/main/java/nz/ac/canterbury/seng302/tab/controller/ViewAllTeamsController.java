@@ -51,7 +51,7 @@ public class ViewAllTeamsController {
     int NUM_TEAMS_TO_GENERATE = 20;
 
     // Should only be used for testing purposes!!!
-    @GetMapping("/populate-test-teams")
+    @GetMapping("/populate_teams")
     public String populateTestTeams() throws IOException {
         generateRandomTeams.createAndSaveRandomTeams(NUM_TEAMS_TO_GENERATE);
         return "redirect:home";

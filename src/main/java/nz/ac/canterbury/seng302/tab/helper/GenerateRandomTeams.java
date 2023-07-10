@@ -67,4 +67,20 @@ public class GenerateRandomTeams implements ApplicationRunner {
             teamService.addTeam(team);
         }
     }
+
+    /**
+     * Used for initialization, to register the random
+     * sports that we are using.
+     * @param args
+     * @throws Exception
+     */
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        for (var sport: RANDOM_SPORTS) {
+            sportRepository.save(new Sport(sport));
+        }
+        for (var loc: RANDOM_LOCATIONS) {
+            locationService.addLocation(loc);
+        }
+    }
 }
