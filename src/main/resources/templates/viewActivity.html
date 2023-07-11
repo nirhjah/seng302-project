@@ -32,11 +32,41 @@
         </div>
         <div class="nested-grid">
             <div class="act-date-time">
-                <div class="start-date"></div>
-                <div class="end-date"></div>
-            </div>
+                <div class="start-date-time">
+                    <h4> Start </h4>
+                    <span class="date"
+                          th:with="startDate=${#temporals.format(activity.activityStart, 'dd MMM yyyy')}"
+                          th:text="${startDate}">
 
+                    </span>
+                    <span class="time" th:with="startTime=${#temporals.format(activity.activityStart, 'hh:mma')}"
+                          th:text="${startTime}">
+
+                    </span>
+
+                </div>
+                <div class="end-date-time">
+                    <h4> End </h4>
+                    <span class="date" th:with="endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')}"
+                          th:text="${endDate}">
+
+                    </span>
+
+                    <span class="time" th:with="endTime=${#temporals.format(activity.activityEnd, 'hh:mma')}"
+                          th:text="${endTime}">
+
+                    </span>
+
+                </div>
+            </div>
             <div class="act-score">
+                <h3> Score </h3>
+                <div class="activity-score"
+                    th:if="${activity.activityType.toString() == 'Game' || activity.activityType.toString() ==
+                    'Friendly'}">
+                    <h3> Team A vs Team B </h3>
+                    <h3 th:text="     ${activity.activityTeamScore} + ':' + ${activity.otherTeamScore}     "></h3>
+                </div>
             </div>
 
 
@@ -63,7 +93,7 @@
                 <ul>
                     <li th:each="fact : ${activitySubstitutions}">
                         <span class="sub-pic">
-                            <img th:src="*{'data:image/jpeg;base64,'+${displayPicture}}"/>
+                            <img th:src="*{'data:image/jpeg;base64,'+{displayPicture}}"/>
                         </span>
                         <span class="description"
                               th:text="${fact.playerOn.firstName} + '         ' + ${fact.playerOn.lastName}"></span>

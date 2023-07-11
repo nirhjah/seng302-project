@@ -114,27 +114,12 @@
     grid-template-columns: 700px 400px;
 }
 
-/*.act-score{*/
+/*.act-date-time {*/
 /*    display: grid;*/
-/*    grid-template-columns: 400px;*/
+/*    grid-template-columns: 200px 200px;*/
 /*    grid-gap: 5px;*/
-/*    background:grey;*/
-
 /*}*/
 
-.act-date-time {
-    display: grid;
-    grid-template-columns: 200px 200px;
-    grid-gap: 5px;
-}
-
-.act-date-time .start-date{
-    background:red;
-}
-
-.act-date-time .end-date{
-    background:green;
-}
 
 .act-details,.act-facts,
 .act-game-friendly > div {
@@ -148,12 +133,66 @@
 }
 
 .act-details,
-.nested-grid,
 .act-facts,
 .act-lineup,
 .act-subs {
     height: 280px;
     display: flex;
+}
+
+.nested-grid {
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.act-date-time .start-date-time,.act-date-time .end-date-time{
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+    border-radius: 20px;
+    background:#415A77;
+    color:white;
+}
+
+.act-score{
+    display: grid;
+    grid-template-columns: 300px;
+    grid-gap: 5px;
+    background:whitesmoke;
+    height:100px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+    border-radius: 20px;
+
+}
+.act-date-time {
+    grid-gap:35px;
+    padding-top:10px;
+    display: grid;
+    grid-template-columns: 180px 180px;
+    height:120px;
+}
+
+.start-date-time, .end-date-time{
+    display: block;
+    margin-top: 5px;
+    text-align:center;
+    font-family:sans-serif;
+}
+
+.start-date-time .date, .end-date-time .date{
+    font-size:28px;
+}
+
+.start-date-time .time, .end-date-time .time{
+    color:rgba(255,255,255,.8);
+}
+
+
+.act-date-time h4{
+    text-align:center;
+    padding-top:10px;
+    color: rgba(255,255,255,.4);
+    font-size:18px;
 }
 
 .act-details{
@@ -272,6 +311,11 @@
 
 .act-subs .subs-table ul li span:nth-child(3){
     width: 100px;
+}
+
+.act-score h3{
+    text-align:center;
+    padding-top:10px;
 }
 
 
