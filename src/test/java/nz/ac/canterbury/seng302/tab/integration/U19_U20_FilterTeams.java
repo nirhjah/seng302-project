@@ -45,7 +45,7 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
  */
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
-public class FilterTeamsBySportOrCityFeature {
+public class U19_U20_FilterTeams {
 
     @Autowired
     private ApplicationContext applicationContext;
