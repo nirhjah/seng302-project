@@ -114,7 +114,29 @@
     grid-template-columns: 700px 400px;
 }
 
-.act-info > div,
+/*.act-score{*/
+/*    display: grid;*/
+/*    grid-template-columns: 400px;*/
+/*    grid-gap: 5px;*/
+/*    background:grey;*/
+
+/*}*/
+
+.act-date-time {
+    display: grid;
+    grid-template-columns: 200px 200px;
+    grid-gap: 5px;
+}
+
+.act-date-time .start-date{
+    background:red;
+}
+
+.act-date-time .end-date{
+    background:green;
+}
+
+.act-details,.act-facts,
 .act-game-friendly > div {
     height: 280px;
     display: flex;
@@ -126,7 +148,7 @@
 }
 
 .act-details,
-.act-date-time,
+.nested-grid,
 .act-facts,
 .act-lineup,
 .act-subs {
@@ -134,7 +156,7 @@
     display: flex;
 }
 
-.act-details,.act-date-time {
+.act-details{
     background:#415A77;
     color:white;
 }
@@ -168,6 +190,8 @@
     font-size:15px;
     display: flex;
     align-items: center;
+    border:none;
+    background:rgba(255,255,255,.6);
 }
 
 .edit-act-button button img{
@@ -178,7 +202,7 @@
     line-height:1.2;
 }
 
-.act-facts, .act-subs {
+.act-facts, .act-subs,.act-lineup{
     background:whitesmoke;
     color:#1B263B;
 }
