@@ -33,14 +33,12 @@ formation, e.g "1-4-4-2"
       // Display the formation
       const players = document.querySelectorAll(".player");
       const pitchRect = pitch.getBoundingClientRect();
-      console.log(formation)
       // Builds formation
       let j = 0;
       for (let i = 0; i < formation.length; i++) {
         let playersInRow = formation[i]
         while (formation[i] !== 0) {
           let player = players[j]
-          console.log(player)
           dragElement(player);
           player.style.bottom = ((i + 1) / (formation.length + 1)) * pitch.offsetHeight - player.offsetHeight / 2 + "px";
           player.style.left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * pitch.offsetWidth - player.offsetWidth / 2 + "px";
@@ -98,8 +96,6 @@ formation, e.g "1-4-4-2"
                 : Math.max(minTop, newTop);
         const constrainedLeft = pos3 > pitchRight - halfWidth ? maxLeft : pos3 < pitchLeft + halfWidth ? minLeft
                 : Math.max(minLeft, newLeft);
-        console.log("Top", pos4, pitchBottom, halfHeight, maxTop, pitchTop, minTop, newTop);
-        console.log("Left", pos3, pitchRight, halfWidth, maxLeft, pitchLeft, minLeft, newLeft);
         // set the element's new position:
         player.style.top = constrainedTop + "px";
         player.style.left = constrainedLeft + "px";

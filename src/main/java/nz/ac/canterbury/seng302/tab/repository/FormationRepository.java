@@ -15,4 +15,6 @@ public interface FormationRepository extends CrudRepository<Formation, Long> {
     Optional<Formation> findByTeamTeamId(long teamId);
     @Query("SELECT distinct u FROM Formation u WHERE u.team.teamId = :teamId")
     public List<Formation> findAllTeamsFormations(long teamId);
+
+
 }

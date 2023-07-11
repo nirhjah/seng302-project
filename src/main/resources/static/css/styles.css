@@ -223,7 +223,6 @@ input:invalid + label:after {
 }
 
 
-
 .profile-buttons button:hover, .wrapper-profile .back-button:hover, .submit-button button:hover, .file-label-border:hover {
     background-color: #415a77;
     cursor: pointer;

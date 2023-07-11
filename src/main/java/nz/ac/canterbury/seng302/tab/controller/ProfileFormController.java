@@ -40,10 +40,6 @@ public class ProfileFormController {
     @Autowired
     private FormationService formationService;
 
-    private static int DEFAULT_PLAYER_COUNT = 11;
-
-    private static String DEFAULT_FORMATION = "1-4-4-2";
-
     public ProfileFormController(UserService userService, TeamService teamService) {
         this.userService = userService;
         this.teamService = teamService;
@@ -119,13 +115,22 @@ public class ProfileFormController {
     }
 
     @PostMapping("/profile/create-formation")
-    public String createFormation(
-            @RequestParam("formation") String formation,
-            @RequestParam("teamID") long teamID) {
+    public String createAndUpdateFormation(
+            @RequestParam("formation") String newFormation,
+            @RequestParam("teamID") long teamID,
+            @RequestParam(name="formationID", defaultValue = "-1") long formationID ) {
         logger.info("POST /profile");
         Team team = teamService.getTeam(teamID);
-        Formation newFormation = new Formation(formation, team);
-        formationService.addFormation(newFormation);
+        Optional<Formation> formationOptional = formationService.getFormation(formationID);
+        Formation formation;
+        if (formationOptional.isPresent()) {
+            formation = formationOptional.get();
+            formation.setFormation(newFormation);
+            formationService.addOrUpdateFormation(formation);
+        } else {
+            formation = new Formation(newFormation, team);
+            formationService.addOrUpdateFormation(formation);
+        }
         return "redirect:/profile?teamID=" + teamID;
     }
 

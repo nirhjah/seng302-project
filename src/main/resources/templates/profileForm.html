@@ -107,12 +107,14 @@
                     <li th:onclick="render('1-4-4-2')">
                         <h3>Create a Formation</h3>
                         <img th:src="@{/image/icons/add-symbol.svg}" alt=""/>
+                        <input type="hidden" class="formation-id" value="-1"/>
                     </li>
                     <li th:each="formation : ${formations}"
                         th:attr="onclick='render(\'' + ${formation.formation} + '\')'">
                         <span class="title">
                             <h3 th:text="${formation.formation}"></h3>
                         </span>
+                        <input type="hidden" class="formation-id" th:value="${formation.formationId}"/>
                     </li>
                 </ul>
                 <form class="formation-display" method="post" th:action="@{/profile/create-formation}" onsubmit="return submissionCheck(document.getElementById('formation-string').value)">
@@ -127,9 +129,10 @@
                         <div class="error-message">Formation must match specified form e.g. 1-4-4-2</div>
                     </div>
                     <div class="formation-RHS">
-                        <div th:insert="~{fragments/formationDisplay.html::formationDisplay(formation=${formation}, playerCount=${playerCount}, editable=true)}"></div>
+                        <div th:insert="~{fragments/formationDisplay.html::formationDisplay(formation=${formation})}"></div>
                         <input type="hidden" name="teamID" th:value="${teamID}" />
-                        <button type="submit">Create Formation</button>
+                        <input type="hidden" name="formationID" class="current-formation-id"/>
+                        <button type="submit" class="submit-button">Create Formation</button>
                     </div>
                 </form>
             </div>
@@ -195,6 +198,25 @@
                     content.classList.remove('active')
                 });
                 displayBox[index].classList.add('active');
+            });
+        });
+
+        const formationListItems = document.querySelectorAll('.formation-list li')
+        const submitButton = document.querySelector('.submit-button')
+        const currentFormationId = document.querySelector('.current-formation-id')
+
+        formationListItems.forEach((formation, index) => {
+            formation.addEventListener('click', () => {
+                formationListItems.forEach(otherFormation => {
+                    otherFormation.classList.remove('active');
+                });
+                formation.classList.add('active');
+                currentFormationId.value = document.querySelector('li.active .formation-id').value;
+                if (index > 0) {
+                    submitButton.innerHTML = "Update Formation"
+                } else {
+                    submitButton.innerHTML = "Create Formation"
+                }
             });
         });
 

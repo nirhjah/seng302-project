@@ -22,8 +22,12 @@ public class FormationService {
         return formationRepository.findByTeamTeamId(teamId);
     }
 
-     public void addFormation(Formation formation) {
+    public void addOrUpdateFormation(Formation formation) {
         formationRepository.save(formation);
+    }
+
+    public Optional<Formation> getFormation(long formationID) {
+        return formationRepository.findById(formationID);
     }
 
     public List<Formation> getTeamsFormations(Long teamID) {
