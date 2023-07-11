@@ -2,7 +2,6 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.ui.Model;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
