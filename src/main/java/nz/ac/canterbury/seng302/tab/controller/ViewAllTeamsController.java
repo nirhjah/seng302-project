@@ -109,10 +109,10 @@ public class ViewAllTeamsController {
             return "redirect:/home";
         }
 
-        var internalPageNo = pageNo - 1;
+        int internalPageNo = pageNo - 1;
 
         Page<Team> page = getTeamPage(internalPageNo, currentSearch, cities, sports);
-        var maxPage = page.getTotalPages();
+        int maxPage = page.getTotalPages();
 
         // Page can be between  (1,  maxPage)
         pageNo = Math.max(Math.min(pageNo, maxPage), 1);
