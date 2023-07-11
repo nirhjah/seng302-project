@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -52,6 +53,7 @@ public class U19_U20_FilterTeams {
 
     private UserService userService;
     private TeamService teamService;
+    private TeamRepository teamRepository;
     private SportService sportService;
     private LocationService locationService;
 
@@ -68,6 +70,7 @@ public class U19_U20_FilterTeams {
         teamService = applicationContext.getBean(TeamService.class);
         locationService = applicationContext.getBean(LocationService.class);
         sportService = applicationContext.getBean(SportService.class);
+        teamRepository = applicationContext.getBean(TeamRepository.class);
 
         // Mock the authentication
         Mockito.doReturn(Optional.of(User.defaultDummyUser())).when(userService).getCurrentUser();
@@ -116,7 +119,7 @@ public class U19_U20_FilterTeams {
      */
     @Given("there are no other teams")
     public void there_are_no_other_teams() {
-        teamService.deleteAllTeams();
+        teamRepository.deleteAll();
     }
 
     /**
