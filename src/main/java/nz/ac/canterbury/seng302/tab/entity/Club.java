@@ -17,12 +17,13 @@ import java.util.Set;
  */
 @Entity(name = "Club")
 public class Club {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "clubId")
     private long clubId;
+
+    @Column
+    private String sport;
 
     @Column(nullable = false)
     private String name;
@@ -33,20 +34,16 @@ public class Club {
     @Column(columnDefinition = "MEDIUMBLOB")
     private String clubLogo;
 
-    @OneToMany(mappedBy = "teamClub", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Team> clubTeams = new HashSet<>();
-
-
     protected Club() {
     }
 
-    public Club(String name, Location location) throws IOException {
+    public Club(String name, Location location, String sport) throws IOException {
         this.name = name;
         this.location = location;
+        this.sport = sport;
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
         this.clubLogo = Base64.getEncoder().encodeToString(is.readAllBytes());
-
     }
 
     public long getClubId() {
@@ -77,19 +74,7 @@ public class Club {
         this.clubLogo = clubLogo;
     }
 
-    public Set<Team> getClubTeams() {
-        return clubTeams;
+    public String getSport() {
+        return sport;
     }
-
-    public void setClubTeams(Set<Team> clubTeams) {
-        this.clubTeams = clubTeams;
-    }
-
-    public void addTeam(List<Team> teams) {
-        for (Team team : teams) {
-            this.clubTeams.add(team);
-            team.setTeamClub(this);
-        }
-    }
-
 }

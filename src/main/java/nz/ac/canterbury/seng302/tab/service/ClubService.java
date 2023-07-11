@@ -54,22 +54,4 @@ public class ClubService {
     public Club updateOrAddClub(Club club) {
         return clubRepository.save(club);
     }
-
-
-    /**
-     * Checks if all teams to be added have the same sport
-     * @param teamsToAdd list of teams to add to club
-     * @return true if all teams are valid or false if not
-     */
-    public boolean validateTeamSportsinClub(List<Team> teamsToAdd) {
-
-        for (Team team : teamsToAdd) {
-            if (!team.getSport().equals(teamsToAdd.get(0).getSport()))
-                return false;
-        }
-        return true;
-    }
-
-
-
 }
