@@ -45,26 +45,6 @@ public class ViewAllTeamsController {
     private LocationService locationService;
     private SportService sportService;
 
-    @Autowired
-    GenerateRandomTeams generateRandomTeams;
-
-
-    /**
-     * TODO: Remove all this stuff before merging into dev!
-     *
-     * IF YOU ARE REVIEWING THIS CODE RIGHT NOW, PLEASE
-     * DENY THIS MR.
-     * THIS CODE (populate_teams) SHOULD NOT BE PUSHED TO DEV,
-     * AND IS ONLY FOR DEBUG PURPOSES!!!!
-     */
-    int NUM_TEAMS_TO_GENERATE = 20;
-
-    // Should only be used for testing purposes!!!
-    @GetMapping("/populate_teams")
-    public String populateTestTeams() throws IOException {
-        generateRandomTeams.createAndSaveRandomTeams(NUM_TEAMS_TO_GENERATE);
-        return "redirect:home";
-    }
 
     @Autowired
     public ViewAllTeamsController(TeamService teamService, UserService userService, LocationService locationService, SportService sportService) {
