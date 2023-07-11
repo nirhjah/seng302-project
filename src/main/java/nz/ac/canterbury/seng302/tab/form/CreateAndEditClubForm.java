@@ -12,6 +12,8 @@ public class CreateAndEditClubForm {
     @TeamFormValidators.teamNameValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG)
     private String name;
 
+    private String sport;
+
     @LocationValidators.addressValidator
     private String addressLine1;
     @LocationValidators.addressValidator
@@ -35,6 +37,14 @@ public class CreateAndEditClubForm {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSport() {
+        return sport;
+    }
+
+    public void setSport(String name) {
+        this.sport = sport;
     }
 
     public String getAddressLine1() { return addressLine1; }

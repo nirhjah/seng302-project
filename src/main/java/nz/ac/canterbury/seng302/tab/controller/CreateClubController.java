@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditClubForm;
+import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
 import nz.ac.canterbury.seng302.tab.service.ClubService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
@@ -81,6 +82,7 @@ public class CreateClubController {
         if (clubId != null) {
             if ((club = clubService.findClubById(clubId).get()) != null) {
                 model.addAttribute("name", club.getName());
+                model.addAttribute("sport", club.getSport());
                 model.addAttribute("addressLine1", club.getLocation().getAddressLine1());
                 model.addAttribute("addressLine2", club.getLocation().getAddressLine2());
                 model.addAttribute("city", club.getLocation().getCity());
@@ -88,7 +90,7 @@ public class CreateClubController {
                 model.addAttribute("country", club.getLocation().getCountry());
                 model.addAttribute("postcode", club.getLocation().getPostcode());
                 model.addAttribute("clubId", club.getClubId());
-                model.addAttribute("selectedTeams", club.getClubTeams());
+                model.addAttribute("selectedTeams", teamService.findTeamsByClub(club));
             } else {
                 model.addAttribute("invalidClub", "Invalid club ID, creating club");
             }
@@ -115,6 +117,7 @@ public class CreateClubController {
             @RequestParam(name = "country") String country,
             @RequestParam(name = "postcode") String postcode,
             @RequestParam(name = "suburb") String suburb,
+            @RequestParam(name = "sport") String sport,
             @RequestParam(name = "selectedTeams", required = false) List<Team> selectedTeams,
             @Validated CreateAndEditClubForm createAndEditClubForm,
             BindingResult bindingResult,
@@ -136,32 +139,62 @@ public class CreateClubController {
             bindingResult.addError(new FieldError("CreateAndEditClubForm", "postcode", "Field cannot be empty"));
         }
 
-        if (selectedTeams != null) {
+       /* if (selectedTeams != null) {
             if (!clubService.validateTeamSportsinClub(selectedTeams)) {
                 System.out.println("Teams should have same sport" + selectedTeams);
                 bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Teams must have same sport"));
             }
-        }
+        }*/
 
-
-        if (bindingResult.hasErrors()) {
-            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return "createClubForm";
-        }
 
         Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
-        Club club = new Club(name, location);
 
+        if (clubId !=-1) {
+            Club editClub = clubService.findClubById(clubId).get();
+            editClub.setName(name);
+            // editClub.setClubLogo(clubLogo);
+            editClub.setLocation(location);
+            editClub.setSport(sport);
 
-        if (selectedTeams != null) {
-            club.addTeam(selectedTeams);
+            try {
+                if (selectedTeams != null) {
+                    for (Team team : selectedTeams) {
+                        team.setTeamClub(editClub);
+                    }}
+            }
+            catch (UnmatchedSportException e) {
+                bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Teams must have same sport"));
+            }
+
+            if (bindingResult.hasErrors()) {
+                httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return "createClubForm";
+            }
+
+            clubService.updateOrAddClub(editClub);
+
+        } else {
+
+            Club club = new Club(name, location, sport);
+
+            try {
+                if (selectedTeams != null) {
+                    for (Team team : selectedTeams) {
+                        team.setTeamClub(club);
+                    }}
+            }
+            catch (UnmatchedSportException e) {
+                bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Teams must have same sport"));
+            }
+
+            if (bindingResult.hasErrors()) {
+                httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return "createClubForm";
+            }
+
+            clubService.updateOrAddClub(club);
+
         }
-
-
-        System.out.println("controller teams");
-        System.out.println(club.getClubTeams());
-
-        clubService.updateOrAddClub(club);
 
 
         return "redirect:/home"; //TODO Redirect to view club page when it's done

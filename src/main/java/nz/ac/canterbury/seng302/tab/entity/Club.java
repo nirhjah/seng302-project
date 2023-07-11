@@ -77,4 +77,9 @@ public class Club {
     public String getSport() {
         return sport;
     }
+
+    public void setSport(String sport) {
+        this.sport = sport;
+    }
+
 }

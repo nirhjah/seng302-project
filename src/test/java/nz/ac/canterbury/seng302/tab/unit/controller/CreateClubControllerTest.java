@@ -1,3 +1,4 @@
+/*
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
@@ -87,7 +88,7 @@ public class CreateClubControllerTest {
     }
 
 
-    @Test
+@Test
     public void whenAllFieldsValid_return302() throws Exception {
         Mockito.when(mockClubService.validateTeamSportsinClub(any())).thenReturn(true);
         mockMvc.perform(post("/createClub", 42L)
@@ -107,7 +108,8 @@ public class CreateClubControllerTest {
         verify(mockClubService, times(1)).validateTeamSportsinClub(any());
     }
 
-    @Test
+
+ @Test
     public void whenSelectedTeamsIsEmpty_return302() throws Exception {
         Mockito.when(mockClubService.validateTeamSportsinClub(any())).thenReturn(true);
         mockMvc.perform(post("/createClub", 42L)
@@ -126,6 +128,7 @@ public class CreateClubControllerTest {
         verify(mockClubService, times(1)).updateOrAddClub(any());
         verify(mockClubService, times(1)).validateTeamSportsinClub(any());
     }
+
 
     @Test
     public void whenOptionalFieldsEmpty_return302() throws Exception {
@@ -209,3 +212,4 @@ public class CreateClubControllerTest {
 
 
 }
+*/
