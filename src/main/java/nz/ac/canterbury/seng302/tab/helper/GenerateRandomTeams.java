@@ -6,8 +6,6 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.repository.SportRepository;
 import nz.ac.canterbury.seng302.tab.service.LocationService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -15,12 +13,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class GenerateRandomTeams implements ApplicationRunner {
-    Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     SportRepository sportRepository;
