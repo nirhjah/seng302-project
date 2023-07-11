@@ -1,8 +1,11 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.Optional;
 
 import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +31,8 @@ public class ViewUserController {
 
     @Autowired
     UserService userService;
+
+    FileDataSaver fileDataSaver= new FileDataSaver("user");
 
     /**
      * Gets the thymeleaf page representing the /demo page (a basic welcome screen
@@ -62,9 +67,16 @@ public class ViewUserController {
         model.addAttribute("email", user.get().getEmail());
         model.addAttribute("dateOfBirth", user.get().getDateOfBirth());
         model.addAttribute("location", user.get().getLocation());
-        model.addAttribute("displayPicture", userPicture);
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("httpServletRequest",request);
+
+
+        Optional<byte[]> fileData = fileDataSaver.readFile(user.get().getUserId());
+        fileData.ifPresent(data -> {
+            String base64Data = Base64.getEncoder().encodeToString(data);
+            model.addAttribute("displayPicture", base64Data);
+        });
+
 
         var curUser = userService.getCurrentUser();
         boolean canEdit = curUser.filter(value -> value.getUserId() == userId).isPresent();
@@ -109,7 +121,7 @@ public class ViewUserController {
             @RequestParam("file") MultipartFile file,
             RedirectAttributes redirectAttributes,
             Model model
-    ) {
+    ) throws IOException {
         Optional<User> user = userService.getCurrentUser();
         if (user.isEmpty()) {
             return "redirect:/login";
@@ -117,16 +129,10 @@ public class ViewUserController {
         User authUser = user.get();
         model.addAttribute("userId", userId);
 
-        userService.updatePicture(file, userId);
+        // Saving the file in the file system
+        fileDataSaver.saveFile(userId, file.getBytes());
+
+        // userService.updatePicture(file, userId);
         return "redirect:/user-info?name=" + authUser.getUserId();
     }
-
-    /**
-     * @param contentType The picture file type in string, e.g image/jpg, image/svg+xml etc
-     * @return Boolean type if the contentType parameter matches either the image/png, image/jpg, image/svg+xml or image/jpeg string
-     */
-    private boolean isSupportedContentType(String contentType){
-        return contentType.equals("image/png")|| contentType.equals("image/jpg")||contentType.equals("image/svg+xml")|| contentType.equals("image/jpeg");
-    }
-
 }

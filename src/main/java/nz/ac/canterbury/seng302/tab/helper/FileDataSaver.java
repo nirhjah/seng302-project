@@ -58,7 +58,6 @@ public class FileDataSaver {
      */
     public boolean saveFile(Long id, byte[] data) {
         Path fullPath = getPath(id, prefix);
-
         try {
             Files.createDirectories(fullPath.getParent());
         } catch (IOException ex) {
