@@ -22,13 +22,13 @@ public class FileDataSaver {
      *  `team_3287274389549`
      *  etc.
      */
-    private final String modifier;
+    private final String prefix;
 
-    public FileDataSaver(String modifier) {
-        if (!usedModifiers.add(modifier)) {
-            throw new RuntimeException("Duplicate modifier name: " + modifier);
+    public FileDataSaver(String prefix) {
+        if (!usedModifiers.add(prefix)) {
+            throw new RuntimeException("Duplicate modifier name: " + prefix);
         }
-        this.modifier = modifier;
+        this.prefix = prefix;
     }
 
 
@@ -57,7 +57,7 @@ public class FileDataSaver {
      * @return true on success, false on failure
      */
     public boolean saveFile(Long id, byte[] data) {
-        Path fullPath = getPath(id, modifier);
+        Path fullPath = getPath(id, prefix);
 
         try {
             Files.createDirectories(fullPath.getParent());
@@ -83,7 +83,7 @@ public class FileDataSaver {
      * @return Optional.empty() if operation failed, else, Optional.of() containing the bytes.
      */
     public Optional<byte[]> readFile(Long id) {
-        Path fullPath = getPath(id, modifier);
+        Path fullPath = getPath(id, prefix);
         try {
             var bytes = Files.readAllBytes(fullPath);
             return Optional.of(bytes);
