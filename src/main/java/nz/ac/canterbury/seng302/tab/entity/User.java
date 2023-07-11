@@ -364,11 +364,6 @@ public class User {
         team.setRole(this, Role.MEMBER);
     }
 
-    public void leaveTeam(Team team) {
-        this.joinedTeams.remove(team);
-        team.getTeamMembers().remove(this);
-    }
-
     public Set<Team> getJoinedTeams() {
         return this.joinedTeams;
     }

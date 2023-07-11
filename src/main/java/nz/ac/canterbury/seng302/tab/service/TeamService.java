@@ -1,10 +1,14 @@
 package nz.ac.canterbury.seng302.tab.service;
 
-import java.io.IOException;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import nz.ac.canterbury.seng302.tab.entity.Club;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.TeamRole;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.Role;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.enums.Role;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
-import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Spring Boot Service class for Team Service
@@ -28,7 +32,7 @@ import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 @Service
 public class TeamService {
     Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     private final TeamRepository teamRepository;
 
     @Autowired
@@ -165,13 +169,6 @@ public class TeamService {
     }
 
     /**
-     * Deletes all teams
-     */
-    public void deleteAllTeams() {
-        teamRepository.deleteAll();
-    }
-
-    /**
      * @param sport the sport that the user will input in the create teams/edit
      *              teams page
      * @return true if the sport is valid and matches the regex
@@ -282,4 +279,9 @@ public class TeamService {
     }
 
     public List<Team> findTeamsWithUser(User user) {return teamRepository.findTeamsWithUser_List(user);}
+
+    public List<Team> findTeamsByClub(Club club) {
+        long id = club.getClubId();
+        return teamRepository.findTeamsByTeamClubClubId(id);
+    }
 }
