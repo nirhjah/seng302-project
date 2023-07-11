@@ -156,12 +156,13 @@
 
 .act-score{
     display: grid;
-    grid-template-columns: 300px;
+    grid-template-columns: 400px;
     grid-gap: 5px;
     background:whitesmoke;
     height:100px;
     box-shadow: 0 0 30px rgba(0, 0, 0, .5);
     border-radius: 20px;
+    text-align:center;
 
 }
 .act-date-time {
@@ -231,6 +232,9 @@
     align-items: center;
     border:none;
     background:rgba(255,255,255,.6);
+    color:#555;
+    cursor:pointer;
+
 }
 
 .edit-act-button button img{
@@ -313,10 +317,25 @@
     width: 100px;
 }
 
-.act-score h3{
-    text-align:center;
+.act-score .team-names{
     padding-top:10px;
 }
+
+.act-score .score{
+    font-family:sans-serif;
+}
+
+.act-score .team-names span{
+    padding-right:25px;
+    font-size:18px;
+    color:#415A77;
+}
+
+.act-score .score span{
+    font-size:30px;
+    padding-right:25px;
+}
+
 
 
 

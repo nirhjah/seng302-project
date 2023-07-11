@@ -59,13 +59,17 @@
 
                 </div>
             </div>
-            <div class="act-score">
-                <h3> Score </h3>
-                <div class="activity-score"
-                    th:if="${activity.activityType.toString() == 'Game' || activity.activityType.toString() ==
-                    'Friendly'}">
-                    <h3> Team A vs Team B </h3>
-                    <h3 th:text="     ${activity.activityTeamScore} + ':' + ${activity.otherTeamScore}     "></h3>
+            <div class="act-score" th:if="${activity.activityType.toString() == 'Game' || activity.activityType.toString() ==
+      'Friendly'}">
+                <div class ="team-names">
+                    <span>Team A</span>
+                    <span> vs </span>
+                    <span> Team B </span>
+                </div>
+                <div class="score">
+                    <span th:text=" ${activity.activityTeamScore}"></span>
+                    <span> : </span>
+                    <span th:text=" ${activity.otherTeamScore} "></span>
                 </div>
             </div>
 
