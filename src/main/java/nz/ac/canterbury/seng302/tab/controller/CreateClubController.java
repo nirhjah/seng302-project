@@ -63,38 +63,15 @@ public class CreateClubController {
 
         logger.info("GET /createClub");
         model.addAttribute("httpServletRequest", request);
-        Optional<User> user = userService.getCurrentUser();
         prefillModel(model);
-
-
-
 
         Club club;
 
-
         if (clubId != null) {
             if ((club = clubService.findClubById(clubId).get()) != null) {
-                model.addAttribute("name", club.getName());
-                model.addAttribute("sport", club.getSport());
-                model.addAttribute("addressLine1", club.getLocation().getAddressLine1());
-                model.addAttribute("addressLine2", club.getLocation().getAddressLine2());
-                model.addAttribute("city", club.getLocation().getCity());
-                model.addAttribute("suburb", club.getLocation().getSuburb());
-                model.addAttribute("country", club.getLocation().getCountry());
-                model.addAttribute("postcode", club.getLocation().getPostcode());
-                model.addAttribute("clubId", club.getClubId());
-                model.addAttribute("selectedTeams", teamService.findTeamsByClub(club));
-            } else {
-                model.addAttribute("invalidClub", "Invalid club ID, creating club");
-
+                prefillModelWithClub(model, club);
             }
         }
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
-        model.addAttribute("navTeams", teamService.getTeamList());
-
-
         return "createClubForm";
     }
 
@@ -147,6 +124,7 @@ public class CreateClubController {
 
             if (bindingResult.hasErrors()) {
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                prefillModelWithClub(model, editClub);
                 return "createClubForm";
             }
 
@@ -170,15 +148,19 @@ public class CreateClubController {
         return "redirect:/home"; //TODO Redirect to view club page when it's done
     }
 
+    /**
+     * Sets team club using team's setTeamClub method, clears team club if sport changed and throws errors if teams don't have the same sport or if team is already in a club
+     * @param selectedTeams     list of teams the user has selected to add to the club
+     * @param club              club to add teams to
+     * @param bindingResult      used to store errors
+     */
     public void setTeamsClub(List<Team> selectedTeams, Club club, BindingResult bindingResult) {
-        for (Team teamsAlready : teamService.findTeamsByClub(club)) {
-            teamsAlready.clearTeamClub();
+        for (Team teamsAlreadyInClub : teamService.findTeamsByClub(club)) {
+            teamsAlreadyInClub.clearTeamClub();
         }
         try {
             if (selectedTeams != null) {
                 for (Team team : selectedTeams) {
-
-
                     if (team.getTeamClub() != null ) {
                         bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Teams can only be part of one club"));
                     }
@@ -192,6 +174,28 @@ public class CreateClubController {
         }
     }
 
+    /**
+     * Prefills model with club fields
+     * @param model model to be filled
+     * @param club  club to get info from
+     */
+    public void prefillModelWithClub(Model model, Club club) {
+        model.addAttribute("clubId", club.getClubId());
+        model.addAttribute("name", club.getName());
+        model.addAttribute("sport", club.getSport());
+        model.addAttribute("addressLine1", club.getLocation().getAddressLine1());
+        model.addAttribute("addressLine2", club.getLocation().getAddressLine2());
+        model.addAttribute("suburb", club.getLocation().getSuburb());
+        model.addAttribute("postcode", club.getLocation().getPostcode());
+        model.addAttribute("city", club.getLocation().getCity());
+        model.addAttribute("country", club.getLocation().getCountry());
+        model.addAttribute("selectedTeams", teamService.findTeamsByClub(club));
+    }
+
+    /**
+     * Prefill model with info required from navbar, as well as the list of teams a user is manager of
+     * @param model model to be filled
+     */
     public void prefillModel(Model model) {
         Optional<User> user = userService.getCurrentUser();
         List<Team> teamsUserManagerOf = new ArrayList<>();
