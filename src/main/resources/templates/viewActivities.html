@@ -36,7 +36,7 @@
                 </div>
                 <div class="submit-button">
                     <a th:if="${activity.team==null || (activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}"
-                                th:href="@{addActivityEvent(activityID=${activity.id},activityType=${activity.activityType},team=${activity.team.teamId})}" type="button">
+                                th:href="@{addActivityEvent(activityID=${activity.id},activityType=${activity.activityType})}" type="button">
                         <button type="submit">Add Event</button>
                         </a>
                 </div>

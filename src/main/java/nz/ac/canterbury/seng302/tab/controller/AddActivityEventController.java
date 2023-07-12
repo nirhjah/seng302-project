@@ -48,7 +48,6 @@ public class AddActivityEventController {
     public String addActivityEvent(
             @RequestParam(name = "activityID", defaultValue = "-1") long activityId,
             @RequestParam(name = "activityType", required = false) ActivityType activityType,
-            @RequestParam(name = "team", defaultValue = "-1") long teamId,
             Model model,
             HttpServletRequest request) {
         logger.info("GET /addActivityEvent");
