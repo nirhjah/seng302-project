@@ -29,7 +29,7 @@ header .header-left nav ul {
     display: flex;
 }
 
-header .header-right li a, nav ul li a,.view-profile{
+header .header-right li a, nav ul li a,.view-profile, .create-header li a{
     display: block;
     color: #fefefe;
     font-size: 1.3em;
@@ -48,13 +48,18 @@ header .header-right li a, nav ul li a,.view-profile{
 
 nav ul li a:hover,
 nav ul li a.active,
-.navbar-user-button:hover {
+.navbar-user-button:hover,
+.navbar-create-button:hover {
     background: #415a77;
     color: #fff;
     opacity: 1;
 }
 
-header .header-right {
+.navbar-create-button {
+    margin-left: 70%;
+}
+
+header .header-right, .create-header {
     display: flex;
     align-items: center;
     margin-right: 20px;
@@ -111,19 +116,21 @@ header .header-left .hamburger div {
     margin: 3px 10px 3px 3px;
 }
 
-.navbar-user-button {
+.navbar-user-button,
+.navbar-create-button {
     position: relative;
     border-radius: 20px;
     transition: 0.2s;
 }
 
-.navbar-user-button a {
+.navbar-user-button a,
+.navbar-create-button a{
     padding: 0 !important;
     display: flex !important;
     align-items: center !important;
 }
 
-.navbar-user-dropdown {
+.navbar-user-dropdown, .navbar-create-dropdown {
     display: none;
     position: absolute;
     top: 104%;
@@ -136,11 +143,11 @@ header .header-left .hamburger div {
     width: 96%
 }
 
-.navbar-user-dropdown.show {
+.navbar-user-dropdown.show, .navbar-create-dropdown.show {
     display: block;
 }
 
-.navbar-user-dropdown a {
+.navbar-user-dropdown a, .navbar-create-dropdown a {
     display: block !important;
     text-decoration: none;
     color: #444;
@@ -149,7 +156,7 @@ header .header-left .hamburger div {
     border-radius: 4px !important;
 }
 
-.navbar-user-dropdown a:hover {
+.navbar-user-dropdown a:hover, .navbar-create-dropdown a:hover {
     background-color: #0b2239;
 }
 
@@ -175,6 +182,6 @@ header .header-left .hamburger div {
     border-color: transparent transparent white transparent;
 }
 
-.navbar-user-button a:hover {
+.navbar-user-button a:hover, .navbar-create-button a:hover {
     cursor: pointer;
 }
