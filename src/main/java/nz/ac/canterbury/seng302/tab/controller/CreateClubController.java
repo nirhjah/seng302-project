@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -56,28 +55,22 @@ public class CreateClubController {
      * @param request http request
      * @param createAndEditClubForm form data
      * @return create club form
-     * @throws MalformedURLException
      */
     @GetMapping("/createClub")
     public String clubForm(@RequestParam(name = "edit", required = false) Long clubId,
                            Model model,
-                           HttpServletRequest request, CreateAndEditClubForm createAndEditClubForm) throws MalformedURLException {
+                           HttpServletRequest request, CreateAndEditClubForm createAndEditClubForm) {
 
         logger.info("GET /createClub");
         model.addAttribute("httpServletRequest", request);
         Optional<User> user = userService.getCurrentUser();
+        prefillModel(model);
 
 
-        List<Team> teamsUserManagerOf = new ArrayList<>();
-        for (Team team : teamService.getTeamList()) {
-            if (team.isManager(user.get())) {
-                teamsUserManagerOf.add(team);
-            }
-        }
 
-        model.addAttribute("listOfTeams", teamsUserManagerOf);
 
         Club club;
+
 
         if (clubId != null) {
             if ((club = clubService.findClubById(clubId).get()) != null) {
@@ -93,10 +86,9 @@ public class CreateClubController {
                 model.addAttribute("selectedTeams", teamService.findTeamsByClub(club));
             } else {
                 model.addAttribute("invalidClub", "Invalid club ID, creating club");
+
             }
         }
-
-      //  Optional<User> user = userService.getCurrentUser();
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
         model.addAttribute("displayPicture", user.get().getPictureString());
@@ -125,11 +117,7 @@ public class CreateClubController {
             Model model,
             HttpServletRequest httpServletRequest) throws IOException {
         model.addAttribute("httpServletRequest", httpServletRequest);
-        //prefillModel(model, httpServletRequest);
-
-
-        System.out.println("These are selected teams");
-
+        prefillModel(model);
         addressLine1.trim();
         if (addressLine1.isEmpty()) {
             bindingResult.addError(new FieldError("CreateAndEditClubForm", "addressLine1", "Field cannot be empty"));
@@ -152,19 +140,10 @@ public class CreateClubController {
         if (clubId !=-1) {
             Club editClub = clubService.findClubById(clubId).get();
             editClub.setName(name);
-            // editClub.setClubLogo(clubLogo);
             editClub.setLocation(location);
             editClub.setSport(sport);
 
-            try {
-                if (selectedTeams != null) {
-                    for (Team team : selectedTeams) {
-                        team.setTeamClub(editClub);
-                    }}
-            }
-            catch (UnmatchedSportException e) {
-                bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Teams must have same sport"));
-            }
+            setTeamsClub(selectedTeams, editClub, bindingResult);
 
             if (bindingResult.hasErrors()) {
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -177,15 +156,7 @@ public class CreateClubController {
 
             Club club = new Club(name, location, sport);
 
-            try {
-                if (selectedTeams != null) {
-                    for (Team team : selectedTeams) {
-                        team.setTeamClub(club);
-                    }}
-            }
-            catch (UnmatchedSportException e) {
-                bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Teams must have same sport"));
-            }
+            setTeamsClub(selectedTeams, club, bindingResult);
 
             if (bindingResult.hasErrors()) {
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -196,12 +167,44 @@ public class CreateClubController {
 
         }
 
-
         return "redirect:/home"; //TODO Redirect to view club page when it's done
+    }
+
+    public void setTeamsClub(List<Team> selectedTeams, Club club, BindingResult bindingResult) {
+        for (Team teamsAlready : teamService.findTeamsByClub(club)) {
+            teamsAlready.clearTeamClub();
+        }
+        try {
+            if (selectedTeams != null) {
+                for (Team team : selectedTeams) {
 
 
+                    if (team.getTeamClub() != null ) {
+                        bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Teams can only be part of one club"));
+                    }
+                    else {
+                        team.setTeamClub(club);
+                    }
+                }}
+        }
+        catch (UnmatchedSportException e) {
+            bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Teams must have same sport"));
+        }
+    }
 
-
+    public void prefillModel(Model model) {
+        Optional<User> user = userService.getCurrentUser();
+        List<Team> teamsUserManagerOf = new ArrayList<>();
+        for (Team team : teamService.getTeamList()) {
+            if (team.isManager(user.get())) {
+                teamsUserManagerOf.add(team);
+            }
+        }
+        model.addAttribute("listOfTeams", teamsUserManagerOf);
+        model.addAttribute("firstName", user.get().getFirstName());
+        model.addAttribute("lastName", user.get().getLastName());
+        model.addAttribute("displayPicture", user.get().getPictureString());
+        model.addAttribute("navTeams", teamService.getTeamList());
     }
 
 }
