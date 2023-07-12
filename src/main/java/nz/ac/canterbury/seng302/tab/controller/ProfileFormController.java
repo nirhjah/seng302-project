@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nz.ac.canterbury.seng302.tab.entity.Formation;
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.FormationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,8 +41,9 @@ public class ProfileFormController {
     @Autowired
     private FormationService formationService;
 
-    public ProfileFormController(UserService userService, TeamService teamService) {
+    public ProfileFormController(UserService userService, TeamService teamService, FormationService formationService) {
         this.userService = userService;
+        this.formationService = formationService;
         this.teamService = teamService;
     }
 
