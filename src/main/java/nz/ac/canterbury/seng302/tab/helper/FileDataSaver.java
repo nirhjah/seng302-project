@@ -12,7 +12,6 @@ import java.nio.file.*;
 
 public class FileDataSaver {
 
-    private static final Set<String> usedModifiers = new HashSet<>();
 
     /**
      * `prefix` is like the prefix before all files.
@@ -24,10 +23,11 @@ public class FileDataSaver {
      */
     private final String prefix;
 
+//    private static final Set<String> usedModifiers = new HashSet<>();
     public FileDataSaver(String prefix) {
-        if (!usedModifiers.add(prefix)) {
-            throw new RuntimeException("Duplicate modifier name: " + prefix);
-        }
+//        if (!usedModifiers.add(prefix)) {
+//            throw new RuntimeException("Duplicate modifier name: " + prefix);
+//        }
         this.prefix = prefix;
     }
 
