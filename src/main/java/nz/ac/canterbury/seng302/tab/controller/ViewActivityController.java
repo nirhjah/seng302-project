@@ -68,7 +68,6 @@ public class ViewActivityController {
         }
 
 
-
         List<Fact> activityFacts = factService.getAllFactsForActivity(activity);
         List<Substitution> activitySubstitutions = new ArrayList<>();
         List<Goal> activityGoals = new ArrayList<>();

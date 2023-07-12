@@ -15,7 +15,8 @@
 <div class="act-container">
     <div class="act-info">
         <div class="act-details">
-            <h3 th:if="${activity.team != null}" th:text="${activity.team + '\'s'}"></h3>
+            <h3 th:if="${activity.team != null}" th:text="${activity.team} + 's'"></h3>
+
             <h3> Activity Information </h3>
             <h4 th:text="|Type:&nbsp&nbsp ${activity.activityType}|"></h4>
             <h4 th:text="|Location:&nbsp&nbsp ${activity.location}|"></h4>
