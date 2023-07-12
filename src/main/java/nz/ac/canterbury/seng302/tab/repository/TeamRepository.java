@@ -1,9 +1,6 @@
 package nz.ac.canterbury.seng302.tab.repository;
 
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.TeamRole;
-import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,12 +35,12 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
     @Query("SELECT t FROM Team t LEFT JOIN t.teamMembers tm " +
             "WHERE (:user) in (tm) " +
             "ORDER BY LOWER(t.name) ASC, (t.location) ASC")
-    public Page<Team> findTeamsWithUser(@Param("user") User user, Pageable pageable);
+    Page<Team> findTeamsWithUser(@Param("user") User user, Pageable pageable);
 
     @Query("SELECT t FROM Team t LEFT JOIN t.teamMembers tm " +
             "WHERE (:user) in (tm) " +
             "ORDER BY LOWER(t.name) ASC, (t.location) ASC")
-    public List<Team> findTeamsWithUser_List(@Param("user") User user);
+    List<Team> findTeamsWithUser_List(@Param("user") User user);
 
 
     @Query("SELECT t FROM Team t " +
@@ -52,20 +49,20 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             "AND (LOWER(t.name) LIKE LOWER(CONCAT('%', :name, '%')) " +
             "OR (t.location.city) LIKE LOWER(CONCAT('%', :name, '%')))) " +
             "ORDER BY LOWER(t.name) ASC, (t.location) ASC ")
-    public Page<Team> findTeamByNameAndSportIn(Pageable pageable, @Param("searchedSports") List<String> searchedSports,
+    Page<Team> findTeamByNameAndSportIn(Pageable pageable, @Param("searchedSports") List<String> searchedSports,
             @Param("name") String name);
 
     @Query("SELECT t.location FROM Team t " +
             "WHERE LOWER(t.name) LIKE LOWER(CONCAT('%', :name, '%')) " +
             "OR LOWER(t.location.country) LIKE LOWER(CONCAT('%', :name, '%')) " +
             "OR LOWER(t.location.city) LIKE LOWER(CONCAT('%', :name, '%')) ")
-    public List<Location> findLocationsByName(@Param("name") String name);
+    List<Location> findLocationsByName(@Param("name") String name);
 
     @Query("SELECT distinct(t.sport) FROM Team t " +
             "WHERE LOWER(t.name) LIKE LOWER(CONCAT('%', :name, '%')) " +
             "OR LOWER(t.location.country) LIKE LOWER(CONCAT('%', :name, '%')) " +
             "OR LOWER(t.location.city) LIKE LOWER(CONCAT('%', :name, '%')) ")
-    public List<String> findSportsByName(@Param("name") String name);
+    List<String> findSportsByName(@Param("name") String name);
 
     @Query("SELECT t FROM Team t " +
             "WHERE (:#{#filteredLocations.size} = 0 OR t.location.city in (:filteredLocations)) " +
@@ -73,7 +70,7 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             "AND (lower(t.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
             "OR (lower(t.location.city) like lower(concat('%', :name, '%')))) " +
             "ORDER BY LOWER(t.name) ASC, LOWER(t.location.city) ASC ")
-    public Page<Team> findTeamByFilteredLocations(@Param("filteredLocations") List<String> filteredLocations,
+    Page<Team> findTeamByFilteredLocations(@Param("filteredLocations") List<String> filteredLocations,
             Pageable pageable, @Param("name") String name);
 
     @Query("SELECT t FROM Team t " +
@@ -83,16 +80,17 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             "AND (lower(t.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
             "OR (lower(t.location.city) like lower(concat('%', :name, '%')))) " +
             "ORDER BY LOWER(t.name) ASC, LOWER(t.location.city) ASC ")
-    public Page<Team> findTeamByFilteredLocationsAndSports(
+    Page<Team> findTeamByFilteredLocationsAndSports(
             Pageable pageable,
             @Param("filteredLocations") List<String> filteredLocations,
             @Param("filteredSports") List<String> filteredSports,
             @Param("name") String name);
 
-    @Query("SELECT tr FROM TeamRole tr WHERE tr.team.id = :teamId AND tr.role = :role")
-    public TeamRole findTeamManager(@Param("teamId") Long teamId, @Param("role") Role role);
+    @Query("SELECT tr FROM TeamRole tr WHERE tr.team.teamId = :teamId AND tr.role = :role")
+    TeamRole findTeamManager(@Param("teamId") Long teamId, @Param("role") Role role);
 
     @Query("SELECT t.name FROM Team t")
-    public List<String> getAllTeamNames();
+    List<String> getAllTeamNames();
 
+    List<Team> findTeamsByTeamClubClubId(long clubId);
 }

@@ -17,15 +17,10 @@ import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -127,7 +122,7 @@ public class ResetPasswordIntegrationTests {
     public void a_confirmation_message_tells_me_that_an_email_was_sent_to_the_address_if_it_was_recognised() throws Exception {
         mockMvc.perform(post("/forgot-password", 42L)
                 .with(csrf())
-                .param("email", "test@gmail.com")).andExpect(status().isOk());;
+                .param("email", "test@gmail.com")).andExpect(status().isOk());
     }
 
 
@@ -144,7 +139,7 @@ public class ResetPasswordIntegrationTests {
     }
 
     @Given("I received a reset password email")
-    public void i_received_a_reset_password_email() throws IOException {
+    public void i_received_a_reset_password_email() {
         System.out.println("real user token:" + user.getToken());
         Assertions.assertTrue(user.getToken() != null);
     }

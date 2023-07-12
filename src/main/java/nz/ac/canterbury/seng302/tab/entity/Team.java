@@ -3,7 +3,9 @@ package nz.ac.canterbury.seng302.tab.entity;
 import jakarta.persistence.*;
 
 import nz.ac.canterbury.seng302.tab.enums.Role;
+import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
+import org.hibernate.Hibernate;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -53,6 +55,10 @@ public class Team {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> teamMembers = new HashSet<User>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="clubId")
+    private Club teamClub;
 
     protected Team() {
     }
@@ -134,10 +140,6 @@ public class Team {
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return this.name;
-    }
 
     public String getPictureString() {
         return this.pictureString;
@@ -187,7 +189,8 @@ public class Team {
 
     public Set<User> getTeamManagers() {
         Set<User> managers = new HashSet<>();
-        for (var tRole: teamRoles) {
+        Hibernate.initialize(teamRoles);
+        for (var tRole : teamRoles) {
             if (tRole.getRole() == Role.MANAGER) {
                 managers.add(tRole.getUser());
             }
@@ -265,4 +268,30 @@ public class Team {
     public Set<User> getTeamMembers() {
         return teamMembers;
     }
+
+    public Club getTeamClub() {
+        return teamClub;
+    }
+
+    /**
+     * Sets the club of a team.
+     * If the club is invalid (i.e. Club sport doesn't match team sport)
+     * an exception is thrown.
+     * @param teamClub
+     */
+    public void setTeamClub(Club teamClub) {
+        // TODO: We shouldn't be comparing string here, we should ideally have these
+        //   columns referencing actual sport entities.
+        if (!teamClub.getSport().equals(getSport())) {
+            throw new UnmatchedSportException(teamClub.getSport(), getSport());
+        }
+        this.teamClub = teamClub;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
+
 }

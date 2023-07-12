@@ -81,11 +81,6 @@ td {
 }
 
 .wrapper,.wrapper-profile,.wrapper-edit-profile{
-    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
-    border-radius: 20px;
-}
-
-.wrapper,.wrapper-profile,.wrapper-edit-profile{
     border: 2px solid rgba(255, 255, 255, .5);
     box-shadow: 0 0 30px rgba(0, 0, 0, .5);
     border-radius: 20px;
