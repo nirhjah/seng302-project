@@ -68,7 +68,6 @@ public class CreateClubControllerTest {
     @BeforeEach
     void beforeEach() throws IOException {
         userRepository.deleteAll();
-        clubRepository.deleteAll();
 
         Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
         team = new Team("test", "Hockey", location);
@@ -105,48 +104,48 @@ public class CreateClubControllerTest {
     }
 
 
-@Test
-    public void whenAllFieldsValid_return302() throws Exception {
-       // Mockito.when(mockClubService.validateTeamSportsinClub(any())).thenReturn(true);
-        mockMvc.perform(post("/createClub", 42L)
-                        .param("clubId", "-1")
-                        .param("name", "new club")
-                        .param("sport", "Hockey")
-                        .param("addressLine1", "addressline1")
-                        .param("addressLine2", "addressline2")
-                        .param("suburb", "Ilam")
-                        .param("city", "Christchurch")
-                        .param("country", "New Zealand")
-                        .param("postcode", "1111")
-                .param("selectedTeams", team.getTeamId().toString(), team2.getTeamId().toString()))
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/home"));
+    @Test
+        public void whenAllFieldsValid_return302() throws Exception {
+           // Mockito.when(mockClubService.validateTeamSportsinClub(any())).thenReturn(true);
+            mockMvc.perform(post("/createClub", 42L)
+                            .param("clubId", "-1")
+                            .param("name", "new club")
+                            .param("sport", "Hockey")
+                            .param("addressLine1", "addressline1")
+                            .param("addressLine2", "addressline2")
+                            .param("suburb", "Ilam")
+                            .param("city", "Christchurch")
+                            .param("country", "New Zealand")
+                            .param("postcode", "1111")
+                    .param("selectedTeams", team.getTeamId().toString(), team2.getTeamId().toString()))
+                    .andExpect(status().isFound())
+                    .andExpect(view().name("redirect:/home"));
 
-        verify(mockClubService, times(1)).updateOrAddClub(any());
-      //  verify(mockClubService, times(1)).validateTeamSportsinClub(any());
-    }
+            verify(mockClubService, times(1)).updateOrAddClub(any());
+          //  verify(mockClubService, times(1)).validateTeamSportsinClub(any());
+        }
 
 
- @Test
-    public void whenSelectedTeamsIsEmpty_return302() throws Exception {
-        //Mockito.when(mockClubService.validateTeamSportsinClub(any())).thenReturn(true);
-        mockMvc.perform(post("/createClub", 42L)
-                        .param("clubId", "-1")
-                        .param("name", "new club")
-                        .param("sport", "Hockey")
-                        .param("addressLine1", "addressline1")
-                        .param("addressLine2", "addressline2")
-                        .param("suburb", "Ilam")
-                        .param("city", "Christchurch")
-                        .param("country", "New Zealand")
-                        .param("postcode", "1111")
-                        .param("selectedTeams", ""))
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/home")); //TODO Change redirect to the view club page when created
+     @Test
+        public void whenSelectedTeamsIsEmpty_return302() throws Exception {
+            //Mockito.when(mockClubService.validateTeamSportsinClub(any())).thenReturn(true);
+            mockMvc.perform(post("/createClub", 42L)
+                            .param("clubId", "-1")
+                            .param("name", "new club")
+                            .param("sport", "Hockey")
+                            .param("addressLine1", "addressline1")
+                            .param("addressLine2", "addressline2")
+                            .param("suburb", "Ilam")
+                            .param("city", "Christchurch")
+                            .param("country", "New Zealand")
+                            .param("postcode", "1111")
+                            .param("selectedTeams", ""))
+                    .andExpect(status().isFound())
+                    .andExpect(view().name("redirect:/home")); //TODO Change redirect to the view club page when created
 
-        verify(mockClubService, times(1)).updateOrAddClub(any());
-       // verify(mockClubService, times(1)).validateTeamSportsinClub(any());
-    }
+            verify(mockClubService, times(1)).updateOrAddClub(any());
+           // verify(mockClubService, times(1)).validateTeamSportsinClub(any());
+        }
 
 
     @Test
