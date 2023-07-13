@@ -37,7 +37,9 @@ public class AdminAccount implements CommandLineRunner {
 
         User admin = new User("Admin", "Admin", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 EMAIL, passwordEncoder.encode(ADMIN_PW), location);
+        admin.grantAuthority("ROLE_ADMIN");
         admin.confirmEmail();
+        
         userRepository.save(admin);
     }
 }
