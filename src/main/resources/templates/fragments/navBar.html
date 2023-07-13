@@ -48,7 +48,7 @@
                     <select class="form-control" id="dropDownList" name="teamSelector"
                             onchange="if(this.value != '-1') window.location.href = 'profile?teamID=' + this.value;">
                         <option value="-1" selected>Select a Team</option>
-                        <option th:each="team : ${navTeams}"
+                        <option th:each="team : ${G_navTeams}"
                                 th:value="${team.teamId}"
                                 th:text="${team}"
                                 th:selected="${team.teamId.equals(teamID)}"></option>
@@ -60,7 +60,7 @@
     </div>
     
     <div class="header-right">
-        <li class="navbar-user-button" sec:authorize="isAuthenticated()">
+        <li class="navbar-user-button" sec:authorize="isAuthenticated()" th:if="${G_optUser.present}" th:with="user = ${G_optUser.get()}">
             <div class="navbar-user-dropdown">
                 <a th:href="@{user-info/self}">Profile</a>
                 <a th:href="@{my-teams}">My Teams</a>
@@ -69,9 +69,10 @@
             </div>
             <a>
                 <img class="navbar-profile-picture"
-                     th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
-                <span th:text="${#strings.length(firstName + ' ' + lastName) &lt;= 24 ? firstName + ' ' + lastName : #strings.substring(firstName + ' ' + lastName, 0, 21) + '...'}"></span>
-                <i class="triangle"></i>
+                     th:src="'data:image/png;base64,' + ${user.pictureString}" alt="My Profile"/>
+                <span th:if="${#strings.length(user.firstName + ' ' + user.lastName)} &lt;= 24" th:text="${user.firstName + ' ' + user.lastName}"></span>
+                <span th:unless="${#strings.length(user.firstName + ' ' + user.lastName)} &lt;= 24" th:text="${#strings.substring(user.firstName + ' ' + user.lastName, 0, 21) + '...'}"></span>
+                <i class="triangle" aria-hidden="true"></i>
             </a>
         </li>
         <form id="logoutForm" th:action="@{logout}" method="POST"></form>
