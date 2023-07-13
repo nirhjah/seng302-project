@@ -1,4 +1,3 @@
-@create_formation
 Feature: U32 – Create formation
   Scenario: AC1 - All formations
     Given I am on my team’s profile
