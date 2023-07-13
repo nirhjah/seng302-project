@@ -55,16 +55,16 @@ nav ul li a.active,
     opacity: 1;
 }
 
-.navbar-create-button {
-    margin-left: 70%;
-}
-
-header .header-right, .create-header {
+header .header-right {
     display: flex;
     align-items: center;
     margin-right: 20px;
 }
 
+.create-header {
+    display: flex;
+    align-items: center;
+}
 
 header .header-left .hamburger {
     cursor: pointer;
@@ -123,6 +123,10 @@ header .header-left .hamburger div {
     transition: 0.2s;
 }
 
+.navbar-create-button {
+    margin-left: 20px;
+}
+
 .navbar-user-button a,
 .navbar-create-button a{
     padding: 0 !important;
@@ -160,7 +164,7 @@ header .header-left .hamburger div {
     background-color: #0b2239;
 }
 
-.view-profile {
+.view-profile, .create-header {
     display: flex;
     justify-content: center;
     align-items: center;
