@@ -64,12 +64,8 @@ public class UpdatePasswordController {
     private void prefillModel(Model model, User user, HttpServletRequest request) {
         // The following attribute is required so the "Password Strength" JS can work
         model.addAttribute("user", user);
-        // Everything else here shouldn't be here.
+        // Needed by navBar
         model.addAttribute("httpServletRequest", request);
-        model.addAttribute("navTeams", teamService.getTeamList());
-        model.addAttribute("firstName", user.getFirstName());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("displayPicture", user.getPictureString());
     }
 
     /**
