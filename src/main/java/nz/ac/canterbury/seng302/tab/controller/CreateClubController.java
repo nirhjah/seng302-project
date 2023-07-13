@@ -116,10 +116,7 @@ public class CreateClubController {
 
         if (clubId !=-1) {
             Club editClub = clubService.findClubById(clubId).get();
-            editClub.setName(name);
-            editClub.setLocation(location);
             editClub.setSport(sport);
-
             setTeamsClub(selectedTeams, editClub, bindingResult);
 
             if (bindingResult.hasErrors()) {
@@ -127,6 +124,9 @@ public class CreateClubController {
                 prefillModelWithClub(model, editClub);
                 return "createClubForm";
             }
+
+            editClub.setName(name);
+            editClub.setLocation(location);
 
             clubService.updateOrAddClub(editClub);
 
