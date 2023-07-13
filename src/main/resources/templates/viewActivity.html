@@ -90,11 +90,13 @@
         </div>
     </div>
 
-    <div class="act-game-friendly">
+    <div class="act-game-friendly" th:if="${activity.activityType.toString() == 'Game' || activity.activityType.toString() ==
+      'Friendly'}">
         <div class="act-lineup">
             <h3> Line Up </h3>
         </div>
-        <div class="act-subs">
+        <div class="act-subs" th:if="${activity.activityType.toString() == 'Game' || activity.activityType.toString() ==
+      'Friendly'}">
             <h4> Substitutions </h4>
             <div class="subs-table">
                 <ul>
