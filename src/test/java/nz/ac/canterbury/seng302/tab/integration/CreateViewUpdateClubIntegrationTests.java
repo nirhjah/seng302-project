@@ -72,8 +72,6 @@ public class CreateViewUpdateClubIntegrationTests {
 
     private ClubRepository clubRepository;
 
-
-
     private User user;
 
     private Team team;
@@ -150,8 +148,9 @@ public class CreateViewUpdateClubIntegrationTests {
     @WithMockUser()
     public void i_enter_valid_values_for_name_address_line_postcode_city_and_country_and_optionally_a_logo() throws Exception {
        mockMvc.perform(post("/createClub", 42L)
-                .param("clubId", "1")
+                .param("clubId", "-1")
                 .param("name", "new club")
+                       .param("sport", "Hockey")
                 .param("addressLine1", "addressline1")
                 .param("addressLine2", "addressline2")
                 .param("suburb", "Ilam")
@@ -172,9 +171,11 @@ public class CreateViewUpdateClubIntegrationTests {
     @When("I enter an empty club name or a name with invalid characters for a club \\(e.g. non-alphanumeric other than dots or curly brackets, name made of only acceptable non-alphanumeric),")
     public void i_enter_an_empty_club_name_or_a_name_with_invalid_characters_for_a_club_e_g_non_alphanumeric_other_than_dots_or_curly_brackets_name_made_of_only_acceptable_non_alphanumeric() throws Exception {
         mockMvc.perform(post("/createClub", 42L)
-                        .param("clubId", "1")
+                        .param("clubId", "-1")
                         .param("name", "!@#$%")
-                        .param("addressLine1", "addressline1")
+                .param("sport", "Hockey")
+
+                .param("addressLine1", "addressline1")
                         .param("addressLine2", "addressline2")
                         .param("suburb", "Ilam")
                         .param("city", "Christchurch")
@@ -186,8 +187,9 @@ public class CreateViewUpdateClubIntegrationTests {
     @Then("An error message tells me the name is invalid")
     public void an_error_message_tells_me_the_name_is_invalid() throws Exception {
         mockMvc.perform(post("/createClub", 42L)
-                .param("clubId", "1")
+                .param("clubId", "-1")
                 .param("name", "!@#$%")
+                .param("sport", "Hockey")
                 .param("addressLine1", "addressline1")
                 .param("addressLine2", "addressline2")
                 .param("suburb", "Ilam")
@@ -201,8 +203,9 @@ public class CreateViewUpdateClubIntegrationTests {
     @When("I enter either an empty location that is not addressline2 and suburb, or location with invalid characters \\(i.e. any non-letters except spaces, apostrophes and dashes),")
     public void i_enter_either_an_empty_location_that_is_not_addressline2_and_suburb_or_location_with_invalid_characters_i_e_any_non_letters_except_spaces_apostrophes_and_dashes() throws Exception {
         mockMvc.perform(post("/createClub", 42L)
-                .param("clubId", "1")
+                .param("clubId", "-1")
                 .param("name", "!@#$%")
+                .param("sport", "Hockey")
                 .param("addressLine1", "")
                 .param("addressLine2", "addressline2")
                 .param("suburb", "Ilam")
@@ -214,8 +217,9 @@ public class CreateViewUpdateClubIntegrationTests {
     @Then("An error message tells me the location is invalid")
     public void an_error_message_tells_me_the_location_is_invalid() throws Exception {
         mockMvc.perform(post("/createClub", 42L)
-                .param("clubId", "1")
+                .param("clubId", "-1")
                 .param("name", "!@#$%")
+                .param("sport", "Hockey")
                 .param("addressLine1", "")
                 .param("addressLine2", "addressline2")
                 .param("suburb", "Ilam")
@@ -245,22 +249,24 @@ public class CreateViewUpdateClubIntegrationTests {
 
         //   Mockito.when(clubService.validateTeamSportsinClub(teamsToAdd)).thenReturn(true);
 
+        List<Team> selectedTeams = Arrays.asList(team, team2);
         mockMvc.perform(post("/createClub", 42L)
-                        .param("clubId", "1")
+                        .param("clubId", "-1")
                         .param("name", "new club")
+                        .param("sport", "Hockey")
                         .param("addressLine1", "addressline1")
                         .param("addressLine2", "addressline2")
                         .param("suburb", "Ilam")
                         .param("city", "Christchurch")
                         .param("country", "New Zealand")
                         .param("postcode", "1111")
-                        .param("selectedTeams", team.getTeamId().toString(), team2.getTeamId().toString()))
+                        .param("selectedTeams", team.getTeamId().toString(), team2.getTeamId().toString())).andExpect(status().isFound());
 
-                /* .contentType(MediaType.APPLICATION_JSON)
+               /*  .contentType(MediaType.APPLICATION_JSON)
                 .content(String.valueOf(team))
                         .content(String.valueOf(team3))
-                .accept(MediaType.APPLICATION_JSON))*/
-                .andExpect(status().isFound());
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isFound());*/
         verify(clubService, times(1)).updateOrAddClub(any());
 
     }
