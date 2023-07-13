@@ -197,7 +197,8 @@ public class Activity {
     /**
      * Sets the formation for this activity
      * @param formation This formation should be from the same team as this activity (U33 AC1)
-     * @throws UnsupportedOperationException If this activity doesn't support Formations
+     * @throws UnsupportedOperationException If this activity doesn't have a formation
+     * @see Activity#canContainFormation()
      */
     public void setFormation(Formation formation) throws UnsupportedOperationException {
         if (!canContainFormation()) {
