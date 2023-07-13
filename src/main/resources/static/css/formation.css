@@ -2,15 +2,19 @@
     height: 400px;
     width: 320px;
     position: relative;
-    background-color: green;
+    background-image: url('../image/icons/pitch.svg');
+    background-repeat:no-repeat;
+    background-size: 100% 100%;
     border-radius: 2px;
 }
 
 .player {
-    width: 30px;
-    height: 30px;
-    background-color: red;
+    width: 40px;
+    height: 40px;
+    background-image: url('../image/icons/player.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
     position: absolute;
     cursor: move;
-    border-radius: 50px;
 }
+
