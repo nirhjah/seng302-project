@@ -12,7 +12,6 @@ import java.nio.file.*;
 
 public class FileDataSaver {
 
-    private static final Set<String> usedModifiers = new HashSet<>();
 
     /**
      * `prefix` is like the prefix before all files.
@@ -24,15 +23,11 @@ public class FileDataSaver {
      */
     private final String prefix;
 
-    public enum DeploymentType {
-        PROD,
-        DEV
-    }
-
-    public FileDataSaver(String prefix, DeploymentType deploymentType) {
-        if (!usedModifiers.add(prefix)) {
-            throw new RuntimeException("Duplicate modifier name: " + prefix);
-        }
+//    private static final Set<String> usedModifiers = new HashSet<>();
+    public FileDataSaver(String prefix) {
+//        if (!usedModifiers.add(prefix)) {
+//            throw new RuntimeException("Duplicate modifier name: " + prefix);
+//        }
         this.prefix = prefix;
     }
 
@@ -41,23 +36,11 @@ public class FileDataSaver {
     private static final String TAB900_FILE_MODIFIER = "team900_seng302";
     private static final String IMAGE_FILE_PATHS = "images";
 
-    private Path imagePath;
-
-    private void constructPath(String modifier, DeploymentType deploymentType) {
-        String depType;
-        depType = switch (deploymentType) {
-            case DEV -> "dev";
-            case PROD -> "prod";
-        };
-
-        imagePath = Path.of(
-                System.getProperty("user.home"),
-                TAB900_FILE_MODIFIER,
-                depType,
-                IMAGE_FILE_PATHS,
-                modifier
-        );
-    }
+    private final Path imagePath = Path.of(
+            System.getProperty("user.home"),
+            TAB900_FILE_MODIFIER,
+            IMAGE_FILE_PATHS
+    );
 
     private Path getPath(Long id, @NotNull String modifier) {
         String idString = String.valueOf(id);
@@ -75,7 +58,6 @@ public class FileDataSaver {
      */
     public boolean saveFile(Long id, byte[] data) {
         Path fullPath = getPath(id, prefix);
-
         try {
             Files.createDirectories(fullPath.getParent());
         } catch (IOException ex) {
