@@ -7,6 +7,7 @@ import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,8 +44,11 @@ public class HomeFormController {
         return "redirect:./home";
     }
 
+    @Value("${spring.profiles.active}")
+    private String profile;
 
-    FileDataSaver saver = new FileDataSaver("test");
+    FileDataSaver saver = new FileDataSaver("test", profile.replace("/", ""));
+
     @GetMapping("/save1")
     public String upload1() {
         System.out.println(saver.saveFile(1L, new byte[] {1,2,3,4,5,6,7}));

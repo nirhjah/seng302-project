@@ -10,6 +10,7 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +33,10 @@ public class ViewUserController {
     @Autowired
     UserService userService;
 
-    FileDataSaver fileDataSaver= new FileDataSaver("user");
+    @Value("${spring.profiles.active}")
+    private String profile;
+
+    private final FileDataSaver fileDataSaver = new FileDataSaver("test", profile.replace("/", ""));
 
     /**
      * Gets the thymeleaf page representing the /demo page (a basic welcome screen

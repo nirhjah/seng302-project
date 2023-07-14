@@ -21,14 +21,18 @@ public class FileDataSaver {
      *  `team_3287274389549`
      *  etc.
      */
-    private final String prefix;
+    private final Path addPath;
 
-//    private static final Set<String> usedModifiers = new HashSet<>();
-    public FileDataSaver(String prefix) {
-//        if (!usedModifiers.add(prefix)) {
-//            throw new RuntimeException("Duplicate modifier name: " + prefix);
-//        }
-        this.prefix = prefix;
+    private static final Set<String> usedModifiers = new HashSet<>();
+
+    public FileDataSaver(String prefix, String deploymentType) {
+        if (!usedModifiers.add(prefix)) {
+            throw new RuntimeException("Duplicate modifier name: " + prefix);
+        }
+        addPath = Path.of(
+                deploymentType,
+                prefix
+        );
     }
 
 
@@ -42,13 +46,12 @@ public class FileDataSaver {
             IMAGE_FILE_PATHS
     );
 
-    private Path getPath(Long id, @NotNull String modifier) {
+    private Path getPath(Long id, Path addPath) {
         String idString = String.valueOf(id);
         return imagePath
-                .resolve(modifier)
+                .resolve(addPath)
                 .resolve(idString);
     }
-
 
     /**
      * Saves bytes to a file, and returns true on success, false on failure.
@@ -57,7 +60,7 @@ public class FileDataSaver {
      * @return true on success, false on failure
      */
     public boolean saveFile(Long id, byte[] data) {
-        Path fullPath = getPath(id, prefix);
+        Path fullPath = getPath(id, addPath);
         try {
             Files.createDirectories(fullPath.getParent());
         } catch (IOException ex) {
@@ -82,7 +85,7 @@ public class FileDataSaver {
      * @return Optional.empty() if operation failed, else, Optional.of() containing the bytes.
      */
     public Optional<byte[]> readFile(Long id) {
-        Path fullPath = getPath(id, prefix);
+        Path fullPath = getPath(id, addPath);
         try {
             var bytes = Files.readAllBytes(fullPath);
             return Optional.of(bytes);
