@@ -132,67 +132,45 @@ public class CreateActivityController {
 
     /**
      * Handles creating or adding activities
-     * @param actId the id of activity if editting, otherwise null
-     * @param activityType the type of actvity
-     * @param teamId the ID of the team, (optional)
-     * @param description description of the activity
-     * @param startDateTime start date time of the activity
-     * @param endDateTime end date time of the activity
-     * @param addressLine1 address line 1 of the activity
-     * @param addressLine2 address line 2 of the activity
-     * @param city city the activity takes place in
-     * @param country country that activity takes place in
-     * @param postcode postcode of activity
-     * @param suburb suburb of event
+     * @param actId the id of activity if editing, otherwise null
      * @param createActivityForm form used to create activity
      * @param bindingResult holds the results of validating the form
-     * @param httpServletResponse the response to send
      * @param model model mapping of information
      * @param httpServletRequest the request
+     * @param httpServletResponse the response to send
      * @return returns my activity page iff the details are valid, returns to activity page otherwise
      * @throws MalformedURLException thrown in some cases
      */
     @PostMapping("/createActivity")
     public String createActivity(
-            @RequestParam(name = "actId", defaultValue = "-1") long actId,
-            @RequestParam(name = "activityType", required = false) ActivityType activityType,
-            @RequestParam(name = "team", defaultValue = "-1") long teamId,
-            @RequestParam(name="description", required = false) String description,
-            @RequestParam(name="startDateTime", required = false) LocalDateTime startDateTime,
-            @RequestParam(name="endDateTime", required = false) LocalDateTime endDateTime,
-            @RequestParam(name = "addressLine1") String addressLine1,
-            @RequestParam(name = "addressLine2") String addressLine2,
-            @RequestParam(name = "city") String city,
-            @RequestParam(name = "country") String country,
-            @RequestParam(name = "postcode") String postcode,
-            @RequestParam(name = "suburb") String suburb,
+            @RequestParam(name = "actId", defaultValue = "-1") Long actId,
             @Validated CreateActivityForm createActivityForm,
             BindingResult bindingResult,
+            HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
-            Model model,
-            HttpServletRequest httpServletRequest) throws MalformedURLException {
+            Model model) throws MalformedURLException {
+
+        logger.info("POST /createActivity");
         model.addAttribute("httpServletRequest", httpServletRequest);
         prefillModel(model, httpServletRequest);
 
-        if (!activityService.validateStartAndEnd(startDateTime, endDateTime)) {
+        if (!activityService.validateStartAndEnd(createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
             if (!bindingResult.hasFieldErrors("startDateTime")) {
                 bindingResult.addError(new FieldError("CreateActivityForm", "startDateTime",
                         ActivityFormValidators.END_BEFORE_START_MSG));
             }
         }
-        addressLine1 = addressLine1.trim();
-        if (addressLine1.isEmpty()) {
+        if (createActivityForm.getAddressLine1().isBlank()) {
             bindingResult.addError(new FieldError("CreateActivityForm", "addressLine1", "This is a required field"));
         }
-        postcode = postcode.trim();
-        if (postcode.isEmpty()) {
+        if (createActivityForm.getPostcode().isBlank()) {
             bindingResult.addError(new FieldError("CreateActivityForm", "postcode", "This is a required field"));
         }
 
         User user = userService.getCurrentUser().get();
-        Team team = teamService.getTeam(teamId);
+        Team team = teamService.getTeam(createActivityForm.getTeam());
         if (team!=null) {
-            if (!activityService.validateActivityDateTime(team.getCreationDate(), startDateTime, endDateTime)) {
+            if (!activityService.validateActivityDateTime(team.getCreationDate(), createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
                 if (!bindingResult.hasFieldErrors("endDateTime")) {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
                     bindingResult.addError(new FieldError("CreateActivityForm", "endDateTime",
@@ -203,7 +181,7 @@ public class CreateActivityController {
             if (!hasCreateAuth) {
                 bindingResult.addError(new FieldError("CreateActivityForm", "team", ActivityFormValidators.NOT_A_COACH_OR_MANAGER));
             }
-        } else if (!activityService.validateTeamSelection(activityType, team)) {
+        } else if (!activityService.validateTeamSelection(createActivityForm.getActivityType(), team)) {
             bindingResult.addError(new FieldError("CreateActivityForm", "team",
                     ActivityFormValidators.TEAM_REQUIRED_MSG));
         }
@@ -214,31 +192,35 @@ public class CreateActivityController {
                 model.addAttribute("actId", actId);
                 Activity activity = activityService.findActivityById(actId);
                 fillModelWithActivity(model, activity);
-                return "createActivity";
-            } else {
-                return "createActivity";
             }
+            return "createActivity";
         }
-        Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
-        if (actId != -1) {
-            Activity editActivity = activityService.findActivityById(actId);
-            editActivity.setActivityType(activityType);
-            editActivity.setTeam(team);
-            editActivity.setActivityEnd(endDateTime);
-            editActivity.setActivityStart(startDateTime);
-            editActivity.setActivityOwner(userService.getCurrentUser().get());
-            editActivity.setLocation(location);
-            editActivity.setDescription(description);
-            editActivity = activityService.updateOrAddActivity(editActivity);
-            return String.format("redirect:./view-activity?activityID=%s", editActivity.getId());
 
-        } else {
+        Location location = new Location(
+            createActivityForm.getAddressLine1(),
+            createActivityForm.getAddressLine2(),
+            createActivityForm.getSuburb(),
+            createActivityForm.getCity(),
+            createActivityForm.getPostcode(),
+            createActivityForm.getCountry()
+        );
 
-            Activity activity = new Activity(activityType, team,
-                    description, startDateTime, endDateTime, userService.getCurrentUser().get(), location);
-            activity = activityService.updateOrAddActivity(activity);
-            return String.format("redirect:./view-activity?activityID=%s", activity.getId());
+        Activity activity;
+        
+        if (actId == -1) {  // Creating a new activity
+            activity = new Activity();
+        } else {            // Updating an existing activity
+            activity = activityService.findActivityById(actId);
         }
+        activity.setActivityType(createActivityForm.getActivityType());
+        activity.setTeam(team);
+        activity.setActivityEnd(createActivityForm.getEndDateTime());
+        activity.setActivityStart(createActivityForm.getStartDateTime());
+        activity.setActivityOwner(userService.getCurrentUser().get());
+        activity.setLocation(location);
+        activity.setDescription(createActivityForm.getDescription());
+        activity = activityService.updateOrAddActivity(activity);
+        return String.format("redirect:./view-activity?activityID=%s", activity.getId());
     }
 
     @GetMapping(path = "/createActivity/get_team_formation", produces = MediaType.APPLICATION_JSON_VALUE)
