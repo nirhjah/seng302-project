@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -120,7 +122,10 @@ public class ProfileFormController {
     public String createAndUpdateFormation(
             @RequestParam("formation") String newFormation,
             @RequestParam("teamID") long teamID,
-            @RequestParam(name="formationID", defaultValue = "-1") long formationID ) {
+            @RequestParam(name="formationID", defaultValue = "-1") long formationID,
+            @RequestParam("customPlayerPositions") String customPlayerPositions,
+            @RequestParam("custom") Boolean custom) {
+        logger.info(newFormation + " " + teamID + " " + formationID + " " + customPlayerPositions + " " + custom);
         logger.info("POST /profile");
         Team team = teamService.getTeam(teamID);
         Optional<Formation> formationOptional = formationService.getFormation(formationID);
@@ -128,11 +133,12 @@ public class ProfileFormController {
         if (formationOptional.isPresent()) {
             formation = formationOptional.get();
             formation.setFormation(newFormation);
-            formationService.addOrUpdateFormation(formation);
         } else {
             formation = new Formation(newFormation, team);
-            formationService.addOrUpdateFormation(formation);
         }
+        formation.setCustomPlayerPositions(customPlayerPositions);
+        formation.setCustom(custom);
+        formationService.addOrUpdateFormation(formation);
         return "redirect:/profile?teamID=" + teamID;
     }
 

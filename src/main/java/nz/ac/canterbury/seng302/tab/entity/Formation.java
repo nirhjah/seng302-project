@@ -1,6 +1,9 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
+import org.springframework.stereotype.Controller;
+
+import java.util.List;
 
 /**
  * The Formation entity which contains the information involved with the formation.
@@ -22,6 +25,15 @@ public class Formation {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_teamID", referencedColumnName = "teamId")
     private Team team;
+
+    @Column
+    private boolean custom;
+
+    /**
+     * String is of form e.g. '10px,20px;20px30px;'
+     */
+    @Column
+    private String customPlayerPositions;
 
     /**
      * Default constructor for Formation.
@@ -46,6 +58,14 @@ public class Formation {
         this.team = team;
     }
 
+    public void setCustom(Boolean custom) {
+        this.custom = custom;
+    }
+
+    public void setCustomPlayerPositions(String customPlayerPositions) {
+        this.customPlayerPositions = customPlayerPositions;
+    }
+
     public void setFormation(String formation) {
         this.formation = formation;
     }
@@ -59,6 +79,14 @@ public class Formation {
     }
 
     public long getFormationId(){ return this.formationId;}
+
+    public boolean isCustom() {
+        return custom;
+    }
+
+    public String getCustomPlayerPositions() {
+        return customPlayerPositions;
+    }
 
 
 }
