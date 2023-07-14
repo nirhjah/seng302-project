@@ -22,7 +22,7 @@
                     <h5 class="card-title">[[|${team.name} |]]</h5>
                     <p class="card-text" th:text="'Sport: '+${team.sport}">Team sport</p>
                     <p class="card-text" th:if="${team.location}"  th:text="'Location: ' + ${team.location}">Team location</p>
-
+                    <p class="card-text" th:text="${team.teamClub != null} ? 'Club: '+${team.teamClub.getName()} : ''">Team club</p>
                 </div>
             </div>
         </div>

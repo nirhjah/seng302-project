@@ -78,7 +78,8 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             "AND (:#{#filteredSports.size} = 0 OR lower(t.sport) in (:filteredSports)) " +
             "AND (:name IS NOT NULL " +
             "AND (lower(t.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
-            "OR (lower(t.location.city) like lower(concat('%', :name, '%')))) " +
+            "OR (lower(t.location.city) like lower(concat('%', :name, '%')))" +
+            "OR (lower(t.teamClub.name) LIKE LOWER(CONCAT('%', :name, '%')))) " +
             "ORDER BY LOWER(t.name) ASC, LOWER(t.location.city) ASC ")
     Page<Team> findTeamByFilteredLocationsAndSports(
             Pageable pageable,
