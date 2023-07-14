@@ -24,7 +24,12 @@ public class FileDataSaver {
      */
     private final String prefix;
 
-    public FileDataSaver(String prefix) {
+    public enum DeploymentType {
+        PROD,
+        DEV
+    }
+
+    public FileDataSaver(String prefix, DeploymentType deploymentType) {
         if (!usedModifiers.add(prefix)) {
             throw new RuntimeException("Duplicate modifier name: " + prefix);
         }
@@ -36,11 +41,23 @@ public class FileDataSaver {
     private static final String TAB900_FILE_MODIFIER = "team900_seng302";
     private static final String IMAGE_FILE_PATHS = "images";
 
-    private final Path imagePath = Path.of(
-            System.getProperty("user.home"),
-            TAB900_FILE_MODIFIER,
-            IMAGE_FILE_PATHS
-    );
+    private Path imagePath;
+
+    private void constructPath(String modifier, DeploymentType deploymentType) {
+        String depType;
+        depType = switch (deploymentType) {
+            case DEV -> "dev";
+            case PROD -> "prod";
+        };
+
+        imagePath = Path.of(
+                System.getProperty("user.home"),
+                TAB900_FILE_MODIFIER,
+                depType,
+                IMAGE_FILE_PATHS,
+                modifier
+        );
+    }
 
     private Path getPath(Long id, @NotNull String modifier) {
         String idString = String.valueOf(id);
