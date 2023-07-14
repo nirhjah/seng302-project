@@ -14,6 +14,11 @@ public class FactService {
     @Autowired
     FactRepository factRepository;
 
+    @Autowired
+    public FactService( FactRepository factRepository) {
+        this.factRepository = factRepository;
+    }
+
     /**
      * Returns a list of all facts related to an activity
      * @param activity the activity whose facts are wanted to be returned

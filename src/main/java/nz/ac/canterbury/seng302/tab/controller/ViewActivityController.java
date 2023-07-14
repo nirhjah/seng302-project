@@ -46,6 +46,14 @@ public class ViewActivityController {
     @Autowired
     private FactService factService;
 
+    @Autowired
+    public ViewActivityController(UserService userService, ActivityService activityService, TeamService teamService,FactService factService) {
+        this.userService = userService;
+        this.activityService = activityService;
+        this.teamService = teamService;
+        this.factService=factService;
+    }
+
 
 
     /**
