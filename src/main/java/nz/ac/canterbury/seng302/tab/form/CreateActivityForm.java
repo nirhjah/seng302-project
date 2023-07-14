@@ -8,6 +8,8 @@ import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class CreateActivityForm {
 
     @ActivityFormValidators.activityTypeValidator
@@ -24,12 +26,14 @@ public class CreateActivityForm {
     @ActivityFormValidators.endActivityValidator
     private LocalDateTime endDateTime;
 
+    @NotBlank
     @LocationValidators.addressValidator
     private String addressLine1;
 
     @LocationValidators.addressValidator
     private String addressLine2;
 
+    @NotBlank
     @LocationValidators.postcodeValidator
     private String postcode;
 

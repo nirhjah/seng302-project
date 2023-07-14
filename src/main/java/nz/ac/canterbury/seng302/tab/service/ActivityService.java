@@ -117,7 +117,7 @@ public class ActivityService {
      *         is anything but game and friendly
      */
     public boolean validateTeamSelection(ActivityType type, Team team) {
-        if ((type == ActivityType.Game || type == ActivityType.Friendly) && team == null) {
+        if (team == null && (type == ActivityType.Game || type == ActivityType.Friendly)) {
             return false;
         } else {
             return true;

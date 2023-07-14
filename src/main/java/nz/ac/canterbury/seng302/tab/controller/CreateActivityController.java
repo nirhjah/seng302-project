@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,9 +21,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.Null;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Formation;
 import nz.ac.canterbury.seng302.tab.entity.Location;
@@ -45,6 +48,8 @@ public class CreateActivityController {
     private FormationService formationService;
 
     private Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
+
+    private static final String TEMPLATE_NAME = "createActivity";
 
     public CreateActivityController(TeamService teamService, UserService userService,
             ActivityService activityService, FormationService formationService) {
@@ -80,7 +85,7 @@ public class CreateActivityController {
         model.addAttribute("path", path);
     }
 
-    public void fillModelWithActivity(Model model, Activity activity) {
+    private void fillModelWithActivity(Model model, Activity activity) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         LocalDateTime startDateTime =  activity.getActivityStart();
         String formattedStartDateTime = startDateTime.format(formatter);
@@ -104,6 +109,43 @@ public class CreateActivityController {
     }
 
     /**
+     * Performs various error checks for this form, on top of the Jakarta annotations in the form.
+     * @param bindingResult Any found errors are added to this
+     * @param createActivityForm The form containing the data we're validating
+     * @param team The team picked by this form
+     * @param currentUser The user making the request
+     */
+    private void postCreateActivityErrorChecking(
+            BindingResult bindingResult,
+            CreateActivityForm createActivityForm,
+            @Null Team team,
+            User currentUser) {
+        // The startDate is before endDate
+        if (!activityService.validateStartAndEnd(createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
+            bindingResult.addError(new FieldError("CreateActivityForm", "startDateTime", ActivityFormValidators.END_BEFORE_START_MSG));
+        }
+        
+        if (team != null) {
+            // The dates are after the team's creation date
+            if (!activityService.validateActivityDateTime(team.getCreationDate(), createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                bindingResult.addError(new FieldError("CreateActivityForm", "endDateTime",
+                        ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + team.getCreationDate().format(formatter)));
+            }
+            // This user needs the authority to create/update activities
+            boolean hasCreateAuth = team.isCoach(currentUser) || team.isManager(currentUser);
+            if (!hasCreateAuth) {
+                bindingResult.addError(new FieldError("CreateActivityForm", "team", ActivityFormValidators.NOT_A_COACH_OR_MANAGER));
+            }
+        }
+        // The activity type might require a team
+        if (!activityService.validateTeamSelection(createActivityForm.getActivityType(), team)) {
+            bindingResult.addError(new FieldError("CreateActivityForm", "team",
+                    ActivityFormValidators.TEAM_REQUIRED_MSG));
+        }
+    }
+
+    /**
      * This controller handles both the edit and creation of an activity
      * @param actId the ID if activity if editing, otherwise null
      * @param createActivityForm the form to be used
@@ -113,21 +155,41 @@ public class CreateActivityController {
      * @throws MalformedURLException thrown in some cases
      */
     @GetMapping("/createActivity")
-    public String activityForm( @RequestParam(name="edit", required=false) Long actId,CreateActivityForm createActivityForm,
-                                        Model model,
-                                        HttpServletRequest httpServletRequest) throws MalformedURLException {
+    public String activityForm(
+            @RequestParam(name="edit", required=false) Long actId,
+            CreateActivityForm createActivityForm,
+            Model model,
+            HttpServletRequest httpServletRequest) throws MalformedURLException {
+        logger.info("GET /createActivity");
         model.addAttribute("httpServletRequest", httpServletRequest);
         prefillModel(model, httpServletRequest);
-        logger.info("GET /createActivity");
 
-
-        Activity activity;
-        if (actId !=null){
-            if ((activity = activityService.findActivityById(actId))!=null){
-                fillModelWithActivity(model, activity);
-            }
+        // If you're creating an activity, just return a blank field
+        if (actId != null) {
+            return TEMPLATE_NAME;
         }
-        return "createActivity";
+            
+        User currentUser = userService.getCurrentUser().get();
+        Activity activity = activityService.findActivityById(actId);
+
+        // You can't edit an activity that doesn't exist
+        if (activity == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can't edit an activity that doesn't exist");
+        }
+
+        Team team = activity.getTeam();
+        // If it's a teamless activity, only the original creator can edit it
+        if (team == null && !activity.getActivityOwner().equals(currentUser)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Incorrect permissions to edit activity");
+        }
+
+        // If it's an activity with a team, you must be the manager or coach
+        if (team != null && !team.isCoach(currentUser) && !team.isManager(currentUser)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Incorrect permissions to edit activity");
+        }
+
+        fillModelWithActivity(model, activity);
+        return TEMPLATE_NAME;
     }
 
     /**
@@ -154,43 +216,16 @@ public class CreateActivityController {
         model.addAttribute("httpServletRequest", httpServletRequest);
         prefillModel(model, httpServletRequest);
 
-        if (!activityService.validateStartAndEnd(createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
-            if (!bindingResult.hasFieldErrors("startDateTime")) {
-                bindingResult.addError(new FieldError("CreateActivityForm", "startDateTime",
-                        ActivityFormValidators.END_BEFORE_START_MSG));
-            }
-        }
-        if (createActivityForm.getAddressLine1().isBlank()) {
-            bindingResult.addError(new FieldError("CreateActivityForm", "addressLine1", "This is a required field"));
-        }
-        if (createActivityForm.getPostcode().isBlank()) {
-            bindingResult.addError(new FieldError("CreateActivityForm", "postcode", "This is a required field"));
-        }
-
-        User user = userService.getCurrentUser().get();
+        User currentUser = userService.getCurrentUser().get();
         Team team = teamService.getTeam(createActivityForm.getTeam());
-        if (team!=null) {
-            if (!activityService.validateActivityDateTime(team.getCreationDate(), createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
-                if (!bindingResult.hasFieldErrors("endDateTime")) {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-                    bindingResult.addError(new FieldError("CreateActivityForm", "endDateTime",
-                            ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + team.getCreationDate().format(formatter)));
-                }
-            }
-            boolean hasCreateAuth = team.isCoach(user) || team.isManager(user);
-            if (!hasCreateAuth) {
-                bindingResult.addError(new FieldError("CreateActivityForm", "team", ActivityFormValidators.NOT_A_COACH_OR_MANAGER));
-            }
-        } else if (!activityService.validateTeamSelection(createActivityForm.getActivityType(), team)) {
-            bindingResult.addError(new FieldError("CreateActivityForm", "team",
-                    ActivityFormValidators.TEAM_REQUIRED_MSG));
-        }
+        Activity activity = activityService.findActivityById(actId);
+
+        postCreateActivityErrorChecking(bindingResult, createActivityForm, team, currentUser);
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            if (actId != -1) {
+            if (activity != null) {
                 model.addAttribute("actId", actId);
-                Activity activity = activityService.findActivityById(actId);
                 fillModelWithActivity(model, activity);
             }
             return "createActivity";
@@ -205,8 +240,6 @@ public class CreateActivityController {
             createActivityForm.getCountry()
         );
 
-        Activity activity;
-        
         if (actId == -1) {  // Creating a new activity
             activity = new Activity();
         } else {            // Updating an existing activity
@@ -216,7 +249,7 @@ public class CreateActivityController {
         activity.setTeam(team);
         activity.setActivityEnd(createActivityForm.getEndDateTime());
         activity.setActivityStart(createActivityForm.getStartDateTime());
-        activity.setActivityOwner(userService.getCurrentUser().get());
+        activity.setActivityOwner(currentUser);
         activity.setLocation(location);
         activity.setDescription(createActivityForm.getDescription());
         activity = activityService.updateOrAddActivity(activity);
@@ -229,17 +262,17 @@ public class CreateActivityController {
         // CHECK: Are we logged in?
         Optional<User> oCurrentUser = userService.getCurrentUser();
         if (oCurrentUser.isEmpty()) {
-            return ResponseEntity.status(401).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         User currentUser = oCurrentUser.get();
         // CHECK: Does our requested team exist?
         Team team = teamService.getTeam(teamId);
         if (team == null) {
-            return ResponseEntity.status(403).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        // CHECK: Is the current user in the stated team?
-        if (!team.getTeamMembers().contains(currentUser)) {
-            return ResponseEntity.status(403).build();
+        // CHECK: Do you have permission to edit this team's formations?
+        if (!team.isCoach(currentUser) && !team.isManager(currentUser)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         // Return a JSON array of formation strings
