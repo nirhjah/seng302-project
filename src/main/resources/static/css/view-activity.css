@@ -1,33 +1,3 @@
-/*.team-profile-form .wrapper-profile {*/
-/*    height: 430px;*/
-/*    width: 900px;*/
-/*}*/
-
-/*.wrapper-profile .team-info {*/
-/*    position: absolute;*/
-/*    top: 0;*/
-/*    width: 100%;*/
-/*    justify-content: flex-start;*/
-/*    align-items: center;*/
-/*    padding-top: 5%;*/
-/*    left: 10%;*/
-/*    transition: 0.5s;*/
-/*}*/
-
-/*.details {*/
-/*    !*float: right;*!*/
-/*    !*!**!*/
-/*    !*margin-right: 20%;*!*/
-/*    !**!*!*/
-/*    !*margin-top: 2%;*!*/
-/*    !*font-family: "Noto Sans", sans-serif;*!*/
-/*    !*font-weight: 600;*!*/
-/*    !*font-size: 22px;*!*/
-/*    !*color: #1B263B;*!*/
-/*    !*width: 344px;*!*/
-
-/*}*/
-
 .activity-type {
     display: inline-block;
 }
@@ -65,35 +35,6 @@
     text-align: center;
 }
 
-/*.facts-table li {*/
-/*    display: block;*/
-/*    border: 4px #1B263B solid;*/
-/*    background: white;*/
-/*    margin: 3px 0;*/
-/*    border-radius: 10px;*/
-/*    padding: 5px;*/
-/*    width: 50%;*/
-/*}*/
-
-/*.facts-table li:hover {*/
-/*    background-color: #E6E4E4;*/
-/*    cursor: pointer;*/
-/*}*/
-
-
-/*.wrapper-facts {*/
-/*    width: fit-content;*/
-/*}*/
-
-/*.wrapper-facts ul {*/
-/*    width: 550px;*/
-/*}*/
-
-/*@media screen and (max-width: 550px) {*/
-/*    .wrapper-facts ul {*/
-/*        width: 100vw;*/
-/*    }*/
-/*}*/
 .act-container {
     display: flex;
     justify-content: center;
@@ -111,16 +52,8 @@
 }
 
 .act-game-friendly {
-    grid-template-columns: 700px 400px;
+    grid-template-columns: 600px 400px;
 }
-
-/*.act-date-time {*/
-/*    display: grid;*/
-/*    grid-template-columns: 200px 200px;*/
-/*    grid-gap: 5px;*/
-/*}*/
-
-
 .act-details,.act-facts,
 .act-game-friendly > div {
     height: 280px;
@@ -139,7 +72,10 @@
     height: 280px;
     display: flex;
 }
-
+.act-subs{
+    grid-row: span 2;
+    top:35px;
+}
 .nested-grid {
     display: grid;
     grid-template-rows: auto auto;
@@ -336,9 +272,29 @@
     padding-right:25px;
 }
 
+.act-lineup{
+    grid-row: span 2;
+    height:350px !important;
+    align-items: center;
+    justify-items: center;
+}
+
 .act-lineup h3{
     padding-top:15px;
     padding-left:15px;
+    text-align: left;
+    align-self: start;
+}
+
+.act-lineup #pitch{
+    transform: rotate(90deg);
+    height: 400px;
+    width: 320px;
+    bottom:50px;
+}
+
+.act-lineup .player{
+    transform: rotate(270deg);
 }
 
 
