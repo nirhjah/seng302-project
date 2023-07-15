@@ -39,7 +39,6 @@ public class CreateClubController {
     @Autowired
     private final UserService userService;
 
-
     private final TeamService teamService;
 
     public CreateClubController(ClubService clubService,UserService userService, TeamService teamService) {
@@ -87,7 +86,7 @@ public class CreateClubController {
             @RequestParam(name = "postcode") String postcode,
             @RequestParam(name = "suburb") String suburb,
             @RequestParam(name = "sport") String sport,
-            @RequestParam(name = "selectedTeams", required = false) List<Team> selectedTeams,
+            @RequestParam(name = "selectedTeams", required = false) List<String> selectedTeams,
             @Validated CreateAndEditClubForm createAndEditClubForm,
             BindingResult bindingResult,
             HttpServletResponse httpServletResponse,
@@ -154,18 +153,18 @@ public class CreateClubController {
      * @param club              club to add teams to
      * @param bindingResult      used to store errors
      */
-    public void setTeamsClub(List<Team> selectedTeams, Club club, BindingResult bindingResult) {
+    public void setTeamsClub(List<String> selectedTeams, Club club, BindingResult bindingResult) {
         for (Team teamsAlreadyInClub : teamService.findTeamsByClub(club)) {
             teamsAlreadyInClub.clearTeamClub();
         }
         try {
             if (selectedTeams != null) {
-                for (Team team : selectedTeams) {
-                    if (team.getTeamClub() != null ) {
+                for (String team : selectedTeams) {
+                    if ( teamService.getTeam(Long.parseLong(team)).getTeamClub() != null ) {
                         bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Teams can only be part of one club"));
                     }
                     else {
-                        team.setTeamClub(club);
+                        teamService.getTeam(Long.parseLong(team)).setTeamClub(club);
                     }
                 }}
         }

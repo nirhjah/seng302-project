@@ -26,7 +26,7 @@ public class CreateAndEditClubForm {
     @LocationValidators.countryCitySuburbValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG)
     private String city;
 
-    private List<Team> selectedTeams;
+    private List<String> selectedTeams;
 
     @LocationValidators.suburbValidator
     private String suburb;
@@ -77,11 +77,11 @@ public class CreateAndEditClubForm {
         this.country = country;
     }
 
-    public List<Team> getSelectedTeams() {
+    public List<String> getSelectedTeams() {
         return selectedTeams;
     }
 
-    public void setSelectedTeams(List<Team> teams) {
+    public void setSelectedTeams(List<String> teams) {
         this.selectedTeams = teams;
     }
 

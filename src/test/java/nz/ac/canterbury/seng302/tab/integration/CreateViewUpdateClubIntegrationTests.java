@@ -22,7 +22,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.MediaType;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -40,7 +39,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 
 @AutoConfigureMockMvc(addFilters = false)
@@ -94,6 +93,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
         clubService = Mockito.spy(new ClubService(clubRepository));
+        teamService = Mockito.spy(new TeamService(teamRepository));
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService)).build();
 
@@ -119,6 +119,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
         when(userService.getCurrentUser()).thenReturn(Optional.of(user));
 
+        when(teamService.getTeam(Long.parseLong(team.getTeamId().toString()))).thenReturn(team);
     }
 
     @Given("I am anywhere on the system")
@@ -245,11 +246,8 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @Then("I can select as many teams as I want from the list of teams I manage to be added to that club")
     public void i_can_select_as_many_teams_as_i_want_from_the_list_of_teams_i_manage_to_be_added_to_that_club() throws Exception {
-
-
         //   Mockito.when(clubService.validateTeamSportsinClub(teamsToAdd)).thenReturn(true);
 
-        List<Team> selectedTeams = Arrays.asList(team, team2);
         mockMvc.perform(post("/createClub", 42L)
                         .param("clubId", "-1")
                         .param("name", "new club")
@@ -260,13 +258,7 @@ public class CreateViewUpdateClubIntegrationTests {
                         .param("city", "Christchurch")
                         .param("country", "New Zealand")
                         .param("postcode", "1111")
-                        .param("selectedTeams", team.getTeamId().toString(), team2.getTeamId().toString())).andExpect(status().isFound());
-
-               /*  .contentType(MediaType.APPLICATION_JSON)
-                .content(String.valueOf(team))
-                        .content(String.valueOf(team3))
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isFound());*/
+                        .param("selectedTeams", team.getTeamId().toString())).andExpect(status().isFound());
         verify(clubService, times(1)).updateOrAddClub(any());
 
     }
