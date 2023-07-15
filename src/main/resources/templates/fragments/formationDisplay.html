@@ -2,42 +2,52 @@
 This fragment requires the following variables to be defined:
 
 playerCount, e.g. 11
-formation, e.g "4-4-2"
+formation, e.g "1-4-4-2"
 
 -->
 <div th:fragment="formationDisplay" id="pitch">
-  <div th:each="playerNumber : ${#numbers.sequence(1, playerCount)}" th:id="'player' + ${playerNumber}" class="player"></div>
   <script>
-    const players = document.querySelectorAll(".player");
-    const pitch = document.getElementById("pitch")
-    const pitchWidth = pitch.offsetWidth;
-    const pitchHeight = pitch.offsetHeight;
+    // document.addEventListener("DOMContentLoaded", function() {
+    //   // Call the renderPlayers function here
+    //   renderPlayers("1-4-4-2");
+    // });
 
-    const formation = "[[${formation}]]".split("-").map(num => parseInt(num));
-    // Handles formations that exclude players such as the goalie in football
-    const sumFormation = formation.reduce((acc, curr) => acc + curr, 0);
-    if (sumFormation < [[${playerCount}]]) {
-      formation.unshift([[${playerCount}]]-sumFormation)
-    }
-    let currentMax = 0;
-    players.forEach(player => {
-      dragElement(player);
-      // Builds default formation
+    const pitch = document.getElementById("pitch")
+    // Generates the players and sets their position on the pitch
+    function renderPlayers(formationString) {
+      const formation = formationString.split("-").map(num => parseInt(num));
+      const totalPlayers = formation.reduce((acc, curr) => acc + curr, 0);
+      // Clears players
+      while (pitch.firstChild) {
+        pitch.removeChild(pitch.lastChild);
+      }
+
+      // Create the players and add them to pitch
+      for (let i = 0; i < totalPlayers; i++) {
+        let player = document.createElement('div')
+        player.setAttribute("id", "player" + (i + 1))
+        player.setAttribute("class", "player")
+        pitch.appendChild(player)
+      }
+
+      // Display the formation
+      const players = document.querySelectorAll(".player");
+      const pitchRect = pitch.getBoundingClientRect();
+      // Builds formation
+      let j = 0;
       for (let i = 0; i < formation.length; i++) {
-        if (formation[i] !== 0) {
-          if (currentMax === 0) {
-            currentMax = formation[i].valueOf();
-          }
-          player.style.bottom = ((i + 1) / (formation.length + 1) * pitchHeight) - player.offsetHeight / 2 + "px";
-          player.style.left = ((formation[i]) / (currentMax + 1) * pitchWidth) - player.offsetWidth / 2 + "px";
-          formation[i] -= 1
-          if (formation[i] === 0) {
-            currentMax = 0;
-          }
-          break
+        let playersInRow = formation[i]
+        while (formation[i] !== 0) {
+          let player = players[j]
+          dragElement(player);
+          player.style.bottom = ((i + 1) / (formation.length + 1)) * pitch.offsetHeight - player.offsetHeight / 2 + "px";
+          player.style.left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * pitch.offsetWidth - player.offsetWidth / 2 + "px";
+          formation[i] -= 1;
+          j++;
         }
       }
-    });
+    }
+
     function dragElement(player) {
       let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
       player.onmousedown = dragMouseDown;
@@ -68,7 +78,6 @@ formation, e.g "4-4-2"
         pos2 = pos4 - e.clientY;
         pos3 = e.clientX;
         pos4 = e.clientY;
-        console.log(pos3, pitch.offsetWidth, pitch.getBoundingClientRect().right, player.offsetWidth)
 
         // calculate the new position within the pitch boundaries
         const newTop = player.offsetTop - pos2;
@@ -76,18 +85,17 @@ formation, e.g "4-4-2"
 
         // restrict the player's movement within the pitch
         const minTop = 0;
-        const maxTop = pitchHeight - player.offsetHeight;
         const minLeft = 0;
-        const maxLeft = pitchWidth - player.offsetWidth;
+        const maxTop = pitch.offsetHeight - player.offsetHeight;
+        const maxLeft = pitch.offsetWidth - player.offsetWidth;
         const halfWidth = player.offsetWidth / 2;
         const halfHeight = player.offsetHeight / 2;
 
         // calculate the constrained position
         const constrainedTop = pos4 > pitchBottom - halfHeight ? maxTop : pos4 < pitchTop + halfHeight ? minTop
-                : Math.max(minTop, Math.min(newTop, maxTop));
+                : Math.max(minTop, newTop);
         const constrainedLeft = pos3 > pitchRight - halfWidth ? maxLeft : pos3 < pitchLeft + halfWidth ? minLeft
-                : Math.max(minLeft, Math.min(newLeft, maxLeft));
-
+                : Math.max(minLeft, newLeft);
         // set the element's new position:
         player.style.top = constrainedTop + "px";
         player.style.left = constrainedLeft + "px";

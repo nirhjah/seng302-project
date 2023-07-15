@@ -3,6 +3,8 @@ package nz.ac.canterbury.seng302.tab.controller;
 import java.util.List;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.entity.Formation;
+import nz.ac.canterbury.seng302.tab.service.FormationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,9 @@ public class ProfileFormController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FormationService formationService;
 
     public ProfileFormController(UserService userService, TeamService teamService) {
         this.userService = userService;
@@ -78,6 +83,7 @@ public class ProfileFormController {
 
         // Rambling that's required for navBar.html
         List<Team> teamList = teamService.getTeamList();
+        List<Formation> formationsList = formationService.getTeamsFormations(teamID);
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
         model.addAttribute("displayPicture", user.getPictureString());
@@ -85,6 +91,7 @@ public class ProfileFormController {
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("isUserManager", team.isManager(user));
         model.addAttribute("isUserManagerOrCoach", team.isManager(user) || team.isCoach(user));
+        model.addAttribute("formations", formationsList);
 
         return "profileForm";
     }
@@ -104,6 +111,26 @@ public class ProfileFormController {
             @RequestParam("teamID") long teamID) {
         logger.info("POST /profile");
         teamService.updatePicture(file, teamID);
+        return "redirect:/profile?teamID=" + teamID;
+    }
+
+    @PostMapping("/profile/create-formation")
+    public String createAndUpdateFormation(
+            @RequestParam("formation") String newFormation,
+            @RequestParam("teamID") long teamID,
+            @RequestParam(name="formationID", defaultValue = "-1") long formationID ) {
+        logger.info("POST /profile");
+        Team team = teamService.getTeam(teamID);
+        Optional<Formation> formationOptional = formationService.getFormation(formationID);
+        Formation formation;
+        if (formationOptional.isPresent()) {
+            formation = formationOptional.get();
+            formation.setFormation(newFormation);
+            formationService.addOrUpdateFormation(formation);
+        } else {
+            formation = new Formation(newFormation, team);
+            formationService.addOrUpdateFormation(formation);
+        }
         return "redirect:/profile?teamID=" + teamID;
     }
 

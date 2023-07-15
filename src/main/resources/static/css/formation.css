@@ -1,15 +1,16 @@
 #pitch {
-    height: 600px;
-    width: 480px;
-    border: 1px solid black;
+    height: 400px;
+    width: 320px;
     position: relative;
     background-color: green;
+    border-radius: 2px;
 }
 
 .player {
-    width: 40px;
-    height: 40px;
-    background-color: blue;
+    width: 30px;
+    height: 30px;
+    background-color: red;
     position: absolute;
     cursor: move;
+    border-radius: 50px;
 }

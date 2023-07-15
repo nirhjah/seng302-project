@@ -211,7 +211,7 @@ input:invalid + label:after {
 }
 
 
-.input-box input {
+.input-box input, .create-formation-display input {
     width: 99%;
     height: 100%;
     background: transparent;
@@ -220,9 +220,7 @@ input:invalid + label:after {
     font-weight: 500;
     border: none;
     outline: none;
-    cursor: pointer;
 }
-
 
 
 .profile-buttons button:hover, .wrapper-profile .back-button:hover, .submit-button button:hover, .file-label-border:hover {
@@ -537,3 +535,4 @@ ul.autocomplete-result{
     content: '\2022'; /* Unicode character for bullet point */
     margin-right: 0.5em; /* Add some space between the bullet point and the text */
 }
+

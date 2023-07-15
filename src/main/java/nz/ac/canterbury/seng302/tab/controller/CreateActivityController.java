@@ -1,20 +1,17 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.enums.ActivityType;
-import nz.ac.canterbury.seng302.tab.form.CreateActivityForm;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
-import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,27 +21,38 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Formation;
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.form.CreateActivityForm;
+import nz.ac.canterbury.seng302.tab.service.ActivityService;
+import nz.ac.canterbury.seng302.tab.service.FormationService;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
+import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
 
 @Controller
 public class CreateActivityController {
 
-    @Autowired
-    TeamService teamService;
+    private TeamService teamService;
+    private UserService userService;
+    private ActivityService activityService;
+    private FormationService formationService;
 
-    @Autowired
-    UserService userService;
+    private Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
-    @Autowired
-    ActivityService activityService;
-
-    Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
+    public CreateActivityController(TeamService teamService, UserService userService,
+            ActivityService activityService, FormationService formationService) {
+        this.teamService = teamService;
+        this.userService = userService;
+        this.activityService = activityService;
+        this.formationService = formationService;
+    }
 
     /**
      * Prefills the model with required values
@@ -172,11 +180,11 @@ public class CreateActivityController {
                         ActivityFormValidators.END_BEFORE_START_MSG));
             }
         }
-        addressLine1.trim();
+        addressLine1 = addressLine1.trim();
         if (addressLine1.isEmpty()) {
             bindingResult.addError(new FieldError("CreateActivityForm", "addressLine1", "This is a required field"));
         }
-        postcode.trim();
+        postcode = postcode.trim();
         if (postcode.isEmpty()) {
             bindingResult.addError(new FieldError("CreateActivityForm", "postcode", "This is a required field"));
         }
@@ -204,7 +212,6 @@ public class CreateActivityController {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             if (actId != -1) {
                 model.addAttribute("actId", actId);
-                //return "redirect:./createActivity" + (actId != -1 ? "?edit=" + actId : "");
                 Activity activity = activityService.findActivityById(actId);
                 fillModelWithActivity(model, activity);
                 return "createActivity";
@@ -213,7 +220,7 @@ public class CreateActivityController {
             }
         }
         Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
-        if (actId !=-1) {
+        if (actId != -1) {
             Activity editActivity = activityService.findActivityById(actId);
             editActivity.setActivityType(activityType);
             editActivity.setTeam(team);
@@ -231,9 +238,32 @@ public class CreateActivityController {
                     description, startDateTime, endDateTime, userService.getCurrentUser().get(), location);
             activity = activityService.updateOrAddActivity(activity);
             return String.format("redirect:./view-activity?activityID=%s", activity.getId());
-
-
-
         }
     }
+
+    @GetMapping(path = "/createActivity/get_team_formation", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<String>> getTeamFormation(@RequestParam("teamId") long teamId) {
+        logger.info("GET /createActivity/get_team_formation");
+        // CHECK: Are we logged in?
+        Optional<User> oCurrentUser = userService.getCurrentUser();
+        if (oCurrentUser.isEmpty()) {
+            return ResponseEntity.status(401).build();
+        }
+        User currentUser = oCurrentUser.get();
+        // CHECK: Does our requested team exist?
+        Team team = teamService.getTeam(teamId);
+        if (team == null) {
+            return ResponseEntity.status(403).build();
+        }
+        // CHECK: Is the current user in the stated team?
+        if (!team.getTeamMembers().contains(currentUser)) {
+            return ResponseEntity.status(403).build();
+        }
+
+        // Return a JSON array of formation strings
+        List<String> formations = formationService.getTeamsFormations(teamId).stream().map(Formation::getFormation).toList();
+
+        return ResponseEntity.ok().body(formations);
+    }
+
 }
