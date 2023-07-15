@@ -5,6 +5,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import nz.ac.canterbury.seng302.tab.controller.CreateClubController;
+import nz.ac.canterbury.seng302.tab.entity.Club;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -39,14 +40,11 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
 @ContextConfiguration(classes = IntegrationTestConfigurations.class)
 public class CreateViewUpdateClubIntegrationTests {
-
 
     @Autowired
     private MockMvc mockMvc;
@@ -77,7 +75,9 @@ public class CreateViewUpdateClubIntegrationTests {
 
     private Team team2;
 
-    private Team team3;
+    private Team teamDifferentSport;
+
+    private Team teamAlreadyInClub;
 
 
     @Before("@create_club")
@@ -108,11 +108,17 @@ public class CreateViewUpdateClubIntegrationTests {
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
         team = new Team("test1", "Hockey", new Location(null, null, null, "chch", null, "nz"));
         team2 = new Team("test2", "Hockey", new Location("2 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"));
-        team3 = new Team("test3", "Rugby", new Location("3 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"));
+        teamDifferentSport = new Team("test3", "Rugby", new Location("3 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"));
+
+        teamAlreadyInClub = new Team("TeamInAClubAlready", "Hockey", new Location("5 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"));
+        Club teamsClub = new Club("TeamsClub", new Location("4 test lane", null, null, "Christchurch", "8041", "NZ"), "Hockey");
+        clubRepository.save(teamsClub);
+        teamAlreadyInClub.setTeamClub(teamsClub);
 
         teamRepository.save(team);
         teamRepository.save(team2);
-        teamRepository.save(team3);
+        teamRepository.save(teamDifferentSport);
+        teamRepository.save(teamAlreadyInClub);
 
 
         userRepository.save(user);
@@ -120,6 +126,9 @@ public class CreateViewUpdateClubIntegrationTests {
         when(userService.getCurrentUser()).thenReturn(Optional.of(user));
 
         when(teamService.getTeam(Long.parseLong(team.getTeamId().toString()))).thenReturn(team);
+        when(teamService.getTeam(Long.parseLong(team2.getTeamId().toString()))).thenReturn(team2);
+        when(teamService.getTeam(Long.parseLong(teamDifferentSport.getTeamId().toString()))).thenReturn(teamDifferentSport);
+        when(teamService.getTeam(Long.parseLong(teamAlreadyInClub.getTeamId().toString()))).thenReturn(teamAlreadyInClub);
     }
 
     @Given("I am anywhere on the system")
@@ -174,9 +183,8 @@ public class CreateViewUpdateClubIntegrationTests {
         mockMvc.perform(post("/createClub", 42L)
                         .param("clubId", "-1")
                         .param("name", "!@#$%")
-                .param("sport", "Hockey")
-
-                .param("addressLine1", "addressline1")
+                        .param("sport", "Hockey")
+                        .param("addressLine1", "addressline1")
                         .param("addressLine2", "addressline2")
                         .param("suburb", "Ilam")
                         .param("city", "Christchurch")
@@ -260,6 +268,70 @@ public class CreateViewUpdateClubIntegrationTests {
                         .param("postcode", "1111")
                         .param("selectedTeams", team.getTeamId().toString())).andExpect(status().isFound());
         verify(clubService, times(1)).updateOrAddClub(any());
+
+    }
+
+    @When("I select a team that belongs to another club")
+    public void i_select_a_team_that_belongs_to_another_club() throws Exception {
+        mockMvc.perform(post("/createClub", 42L)
+                .param("clubId", "-1")
+                .param("name", "new club")
+                .param("sport", "Hockey")
+                .param("addressLine1", "addressline1")
+                .param("addressLine2", "addressline2")
+                .param("suburb", "Ilam")
+                .param("city", "Christchurch")
+                .param("country", "New Zealand")
+                .param("postcode", "1111")
+                .param("selectedTeams", teamAlreadyInClub.getTeamId().toString()));
+    }
+
+    @Then("An error message tells me that team already belongs to another club")
+    public void an_error_message_tells_me_that_team_already_belongs_to_another_club() throws Exception {
+        mockMvc.perform(post("/createClub", 42L)
+                .param("clubId", "-1")
+                .param("name", "new club")
+                .param("sport", "Hockey")
+                .param("addressLine1", "addressline1")
+                .param("addressLine2", "addressline2")
+                .param("suburb", "Ilam")
+                .param("city", "Christchurch")
+                .param("country", "New Zealand")
+                .param("postcode", "1111")
+                .param("selectedTeams", teamAlreadyInClub.getTeamId().toString())).andExpect(status().isBadRequest());
+        verify(clubService, times(0)).updateOrAddClub(any());
+
+    }
+
+    @When("I select teams that contain different sports")
+    public void i_select_teams_that_contain_different_sports() throws Exception {
+        mockMvc.perform(post("/createClub", 42L)
+                .param("clubId", "-1")
+                .param("name", "new club")
+                .param("sport", "Hockey")
+                .param("addressLine1", "addressline1")
+                .param("addressLine2", "addressline2")
+                .param("suburb", "Ilam")
+                .param("city", "Christchurch")
+                .param("country", "New Zealand")
+                .param("postcode", "1111")
+                .param("selectedTeams", team.getTeamId().toString(), teamDifferentSport.getTeamId().toString()));
+    }
+
+    @Then("An error message tells me that teams must have the same sport")
+    public void an_error_message_tells_me_that_teams_must_have_the_same_sport() throws Exception {
+        mockMvc.perform(post("/createClub", 42L)
+                .param("clubId", "-1")
+                .param("name", "new club")
+                .param("sport", "Hockey")
+                .param("addressLine1", "addressline1")
+                .param("addressLine2", "addressline2")
+                .param("suburb", "Ilam")
+                .param("city", "Christchurch")
+                .param("country", "New Zealand")
+                .param("postcode", "1111")
+                .param("selectedTeams", team.getTeamId().toString(), teamDifferentSport.getTeamId().toString())).andExpect(status().isBadRequest());
+        verify(clubService, times(0)).updateOrAddClub(any());
 
     }
 

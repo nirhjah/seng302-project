@@ -27,16 +27,16 @@ Feature: U38 – Create / view / update a club
     When I am the manager of at least one team
     Then I can select as many teams as I want from the list of teams I manage to be added to that club
 
-#  Scenario: AC4: A team cannot belong to more than one club.
-#    Given I am on the create or edit club page,
-#    When I select a team that belongs to another club,
-#    Then an error message tells me that team already belongs to another club.
-#
-#  Scenario: AC5 A club cannot contain teams of different sports.
-#    Given I am on the create or edit club page,
-#    When I select teams that contain different sports,
-#    Then an error message tells me that teams must have the same sport
-#
+  Scenario: AC4: A team cannot belong to more than one club.
+    Given I am on the create or edit club page
+    When I select a team that belongs to another club
+    Then An error message tells me that team already belongs to another club
+
+  Scenario: AC5 A club cannot contain teams of different sports.
+    Given I am on the create or edit club page
+    When I select teams that contain different sports
+    Then An error message tells me that teams must have the same sport
+
 #  Scenario: AC6: Teams belonging to a club have a link to their clubs in their team’s profile page.
 #    Given I am on the team’s profile page and the team belongs to a club,
 #    When I click on the link to their club,
