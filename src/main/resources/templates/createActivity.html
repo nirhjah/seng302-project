@@ -3,6 +3,8 @@
 <head>
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <link th:href="@{/css/create-activity.css}" rel="stylesheet"/>
+    <link th:href="@{/css/formation.css}" rel="stylesheet"/>
+
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>[[${actId != null ? 'Edit' : 'Create'}]] Activity</title>
@@ -54,6 +56,11 @@
                 </div>
                 <div th:each="err : ${#fields.errors('team')}" th:text="${err}" class="error-message"></div>
             </div>
+
+
+            <div th:insert="~{fragments/formationDisplay.html::formationDisplay}"></div>
+
+
 
             <!--/* Activity Description */-->
             <div class="description-box">
@@ -324,5 +331,10 @@
     }
 
     updateFormationList()
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderPlayers("1-4-4-2");
+    });
 </script>
 </html>
