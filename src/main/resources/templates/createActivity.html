@@ -50,7 +50,7 @@
             <div class="select-container">
                 <div class="select-box">
                     <label for="team">Activity formation <em>(Team Game and Team Friendly only)</em></label>
-                    <select name="formation" id="formation" disabled>
+                    <select onchange="changeDisplayedFormation()" name="formation" id="formation" disabled>
 
                     </select>
                 </div>
@@ -333,8 +333,11 @@
     updateFormationList()
 </script>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        renderPlayers("1-4-4-2");
-    });
+
+    function changeDisplayedFormation() {
+        formationString = document.getElementById("formation").value;
+        renderPlayers(formationString);
+
+    }
 </script>
 </html>
