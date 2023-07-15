@@ -8,6 +8,7 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <link th:href="@{/css/profile.css}" rel="stylesheet">
     <link th:href="@{/css/team-profile.css}" rel="stylesheet">
+    <link th:href="@{/css/formation.css}" rel="stylesheet">
     <title>Profile</title>
 </head>
 <body class="profile-background">
@@ -22,7 +23,7 @@
             </div>
             <div class="tab">
                 <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
-                <button class="tab-button" >All Formations &nbsp;</button>
+                <button class="tab-button" >Formations &nbsp;</button>
             </div>
             <div class="tab">
 <!--                this is a temporary icon for statistic, which is probably going to be replaced when working-->
@@ -32,8 +33,8 @@
                 <div class="tab-line"></div>
             </div>
         </div>
-        <div class="content-box">
-            <div class="content active">
+        <div class="content-box active"  id="team-profile-tab">
+            <div class="content">
                 <div class="profile-pic">
                     <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
                         <div class="image-styling">
@@ -100,14 +101,45 @@
                 </form>
             </div>
         </div>
-        <div class="content-box">
-            <div class="content">
-                <p> This is where the 'formation list' is going to be displayed with the option for edit and create
-                    formations</p>
+        <div class="content-box" id="formations-tab">
+            <div class="content formations">
+                <ul class="formation-list">
+                    <li id="create-formation-li" onclick="render('1-4-4-2', null)">
+                        <h3>Create a Formation</h3>
+                        <img th:src="@{/image/icons/add-symbol.svg}" alt=""/>
+                        <input type="hidden" class="formation-id" value="-1"/>
+                    </li>
+                    <li th:each="formation : ${formations}"
+                        th:attr="onclick='renderSavedFormation(\'' + ${formation.formation} + '\',' + ${formation.custom} + ',\'' + ${formation.customPlayerPositions} + '\');'"
+                        class="formation-li">
+                        <span class="title">
+                            <h3 th:text="${formation.formation} + (${formation.custom} ? ' Custom' : '')"></h3>
+                        </span>
+                        <input type="hidden" class="formation-id" th:value="${formation.formationId}" />
+                    </li>
+
+                </ul>
+                <form class="formation-display" method="post" th:action="@{/profile/create-formation}" onsubmit="return submissionCheck(document.getElementById('formation-string').value)">
+                    <div class="formation-LHS">
+                        <div class="create-formation-display">
+                            <div class="input-box">
+                                <input type="text" id="formation-string" name="formation">
+                                <label for="formation-string">Formation</label>
+                            </div>
+                            <button type="button" onclick="render(document.getElementById('formation-string').value, null) ">Generate Formation</button>
+                        </div>
+                        <div class="error-message">Formation must match specified form e.g. 1-4-4-2</div>
+                    </div>
+                    <div class="formation-RHS">
+                        <div th:insert="~{fragments/formationDisplay.html}"></div>
+                        <input type="hidden" name="teamID" th:value="${teamID}" />
+                        <input type="hidden" name="formationID" class="current-formation-id"/>
+                        <button type="submit" class="submit-button" id="create-formation-button">Create Formation</button>
+                    </div>
+                </form>
             </div>
         </div>
-
-        <div class="content-box">
+        <div class="content-box" id="statistics-tab">
             <div class="content">
                 <p> This is where the 'Team Aggregated Statistics' is going to be displayed</p>
             </div>
@@ -130,10 +162,10 @@
             }
             document.getElementById('upload-picture').submit();
         });
+
         const copyButton = document.querySelector('.copy-token');
         const tokenValue = document.querySelector('.token-value');
         const token = tokenValue.innerHTML;
-
         copyButton.addEventListener('click', () => {
             const selection = window.getSelection();
             const range = document.createRange();
@@ -154,6 +186,7 @@
 
         const tabs = document.querySelectorAll('.tab');
         const tabLine = document.querySelector('.tab-line');
+        const displayBox = document.querySelectorAll('.content-box');
         const displayContent = document.querySelectorAll('.content');
 
         tabs.forEach((tab, index) => {
@@ -170,12 +203,93 @@
                     tabLine.style.left = "670px";
                 }
 
-                displayContent.forEach(content => {
+                displayBox.forEach(content => {
                     content.classList.remove('active')
                 });
-                displayContent[index].classList.add('active');
+                displayBox[index].classList.add('active');
             });
         });
+
+        const formationListItems = document.querySelectorAll('.formation-list li')
+        const submitButton = document.querySelector('.submit-button')
+        const currentFormationId = document.querySelector('.current-formation-id')
+
+        formationListItems.forEach((formation, index) => {
+            formation.addEventListener('click', () => {
+                formationListItems.forEach(otherFormation => {
+                    otherFormation.classList.remove('active');
+                });
+                formation.classList.add('active');
+                currentFormationId.value = document.querySelector('li.active .formation-id').value;
+                if (index > 0) {
+                    submitButton.innerHTML = "Update Formation"
+                } else {
+                    submitButton.innerHTML = "Create Formation"
+                }
+            });
+        });
+
+
+        function render(formation, customPlayerPositions) {
+            const input = document.getElementById('formation-string');
+            const errorMessage = document.querySelector('.error-message')
+            const formationDisplay = document.querySelector('.formation-display')
+            input.value = formation;
+            if (validateFormation(formation)) {
+                formationDisplay.classList.add('active')
+                errorMessage.classList.remove('active')
+                if (customPlayerPositions !== null && customPlayerPositions.size > 0) {
+                    renderPlayersCustom(customPlayerPositions)
+                } else {
+                    renderPlayers(formation);
+                }
+            } else {
+                errorMessage.classList.add('active')
+            }
+        }
+
+        function renderSavedFormation(formation, custom, customPlayerPositions) {
+            const formationDisplay = document.querySelector('.formation-display');
+            const input = document.getElementById('formation-string');
+            input.value = formation;
+            formationDisplay.classList.add('active');
+            if (custom) {
+                renderPlayersCustom(customPlayerPositions)
+            } else {
+                renderPlayers(formation)
+            }
+        }
+
+        function submissionCheck(formation) {
+            const errorMessage = document.querySelector('.error-message')
+            const valid = validateFormation(formation)
+            if (!valid) {
+                errorMessage.classList.add('active')
+            }
+            return valid
+        }
+
+        function validateFormation(formation) {
+            if (formation.length === 0) {
+                return false
+            }
+            let isNumber = false;
+            let isDash = true;
+            for (let i = 0; i < formation.length; i++) {
+                let current = formation[i];
+                if (isDash && ['1','2','3','4','5','6','7','8','9'].includes(current)) {
+                    isNumber = true;
+                    isDash = false;
+                } else if (isNumber && current === '-' && i !== formation.length-1) {
+                    isNumber = false;
+                    isDash = true;
+                } else {
+                    return false;
+                }
+            }
+            return true;
+        }
+
 
     </script>
 </div>
