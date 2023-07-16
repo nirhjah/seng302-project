@@ -11,10 +11,16 @@
 
 .activity-form .wrapper {
     width: 630px;
-    height: 850px;
+    height: 1350px;
     font-size: 15px;
 
 }
+
+.activity-form #pitch{
+    margin-left: 50px;
+    margin-bottom: 15px;
+}
+
 
 .activity-form select {
     text-align: center;
