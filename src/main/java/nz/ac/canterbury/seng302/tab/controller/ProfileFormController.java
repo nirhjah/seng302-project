@@ -136,7 +136,6 @@ public class ProfileFormController {
             @RequestParam(name="formationID", defaultValue = "-1") long formationID,
             @RequestParam("customPlayerPositions") String customPlayerPositions,
             @RequestParam("custom") Boolean custom) {
-        logger.info(newFormation + " " + teamID + " " + formationID + " " + customPlayerPositions + " " + custom);
         logger.info("POST /profile");
         Team team = teamService.getTeam(teamID);
         Optional<Formation> formationOptional = formationService.getFormation(formationID);
