@@ -186,7 +186,7 @@ public class CreateActivityController {
 
         // You can't edit an activity that doesn't exist
         if (activity == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can't edit an activity that doesn't exist");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Specified activity does not exist");
         }
 
         Team team = activity.getTeam();
@@ -240,7 +240,7 @@ public class CreateActivityController {
                 model.addAttribute("actId", actId);
                 fillModelWithActivity(model, activity);
             }
-            return "createActivity";
+            return TEMPLATE_NAME;
         }
 
         Location location = new Location(
@@ -258,6 +258,9 @@ public class CreateActivityController {
         } else {            // Updating an existing activity
             logger.info("Updating existing activity");
             activity = activityService.findActivityById(actId);
+            if (activity == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Specified activity does not exist");
+            }
         }
         activity.setActivityType(createActivityForm.getActivityType());
         activity.setTeam(team);

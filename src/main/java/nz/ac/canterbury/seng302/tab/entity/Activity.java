@@ -113,7 +113,7 @@ public class Activity {
      * can have a formation
      */
     public static boolean canContainFormation(ActivityType activityType, Team team) {
-        return team != null && (activityType != ActivityType.Game || activityType != ActivityType.Friendly);
+        return team != null && (activityType == ActivityType.Game || activityType == ActivityType.Friendly);
     }
 
     public long getId() {
