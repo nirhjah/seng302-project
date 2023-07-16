@@ -58,7 +58,7 @@
             </div>
 
 
-            <div th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"></div>
+            <div id="activityFormationFragment" th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"></div>
 
 
 
@@ -335,9 +335,21 @@
 <script>
 
     function changeDisplayedFormation() {
+
+        if (document.getElementById("formation").value == -1) {
+            document.getElementById("activityFormationFragment").style.display = "none"
+            document.querySelector(".activity-form .wrapper").style.height = "950px"
+        }
+        else {
+            document.getElementById("activityFormationFragment").style.display = "block"
+            document.querySelector(".activity-form .wrapper").style.height = "1350px"
+        }
+
         formationString = document.getElementById("formation").value;
         renderPlayers(formationString);
-
     }
+
+
+
 </script>
 </html>
