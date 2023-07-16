@@ -13,12 +13,15 @@ function checkPasswordStrength(elem) {
     password=password.trim()
     document.getElementById(elem.id).value = password;
 
+    // password requirements icons (e.g ticks, cross)
+    const minCharImg = minChar.querySelector("img");
+    const letterCaseImg = hasLetterCase.querySelector("img");
+    const numberImg=hasNumber.querySelector("img");
+    const symbolImg= hasSymbol.querySelector("img");
+    const detailsImg= ownDetails.querySelector("img");
+
     if (password) {
-        const minCharImg = minChar.querySelector("img");
-        const letterCaseImg = hasLetterCase.querySelector("img");
-        const numberImg=hasNumber.querySelector("img");
-        const symbolImg= hasSymbol.querySelector("img");
-        const detailsImg= ownDetails.querySelector("img");
+
         const lowerPW = password.toLowerCase();
         let strength = 0;
         if (password.length >= 8) {
@@ -106,5 +109,26 @@ function checkPasswordStrength(elem) {
         bar.classList.remove("strong");
         bar.classList.remove("weak");
         bar.style.width = "0%";
+
+        passwordError.minChar = false;
+        passwordError.letterCase = false;
+        passwordError.hasNumber=false;
+        passwordError.hasSymbol= false;
+        passwordError.ownDetails=false;
+
+        ownDetails.style.color="red"
+        detailsImg.src="image/icons/password-cross.svg";
+
+        hasSymbol.style.color="red";
+        symbolImg.src="image/icons/password-cross.svg";
+
+        hasLetterCase.style.color="red";
+        letterCaseImg.src = "image/icons/password-cross.svg";
+
+        minChar.style.color="red"
+        minCharImg.src = "image/icons/password-cross.svg";
+
+        hasNumber.style.color="red";
+        numberImg.src= "image/icons/password-cross.svg";
     }
 }
