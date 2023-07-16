@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 
 import java.time.LocalDateTime;
@@ -61,7 +62,7 @@ public class Activity {
 
     @Column(nullable = true)
     @Enumerated(EnumType.ORDINAL)
-    private int outcome;
+    private ActivityOutcome outcome;
 
 
 
