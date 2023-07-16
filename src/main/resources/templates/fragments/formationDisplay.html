@@ -83,7 +83,9 @@ Required variables: formationEditable, true if you want the formation to be edit
         player.setAttribute("id", "player" + (i + 1))
         player.setAttribute("class", "player")
         pitch.appendChild(player)
-        dragElement(player);
+        if (formationEditable == true) {
+          dragElement(player);
+        }
       }
     }
 
