@@ -198,4 +198,13 @@ public class ActivityService {
     public int numberOfTotalGamesAndFriendlies(Team team) {
         return activityRepository.getAllGamesAndFriendlies(team);
     }
+
+    /**
+     * Returns the total number of wins a team has
+     * @param team team which the number of wins is wanted
+     * @return the total number of wins (friendly and games) a team has
+     */
+    public int getNumberOfWins(Team team) {
+        return activityRepository.getAllGamesAndFriendlies(team);
+    }
 }
