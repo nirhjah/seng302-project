@@ -41,6 +41,12 @@ public interface ActivityRepository extends CrudRepository<Activity, Long> {
     @Query("SELECT COUNT(a) FROM Activity a WHERE (a.activityType = 0 OR a.activityType = 1) and a.team= :team")
     int getAllGamesAndFriendlies(Team team);
 
-    @Query("SELECT count(a) FROM Activity a WHERE (a.activityType = 0 OR a.activityType = 1) and a.team= :team and a.outcome=true")
+    @Query("SELECT count(a) FROM Activity a WHERE (a.activityType = 0 OR a.activityType = 1) and a.team= :team and a.outcome=0")
     int getNumberOfWinsForATeam(Team team);
+
+    @Query("SELECT count(a) FROM Activity a WHERE (a.activityType = 0 OR a.activityType = 1) and a.team= :team and a.outcome=1")
+    int getNumberOfLosesForATeam(Team team);
+
+    @Query("SELECT count(a) FROM Activity a WHERE (a.activityType = 0 OR a.activityType = 1) and a.team= :team and a.outcome=2")
+    int getNumberOfDrawsForATeam(Team team);
 }
