@@ -334,6 +334,11 @@
 </script>
 <script>
 
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("activityFormationFragment").style.display = "none"
+        document.querySelector(".activity-form .wrapper").style.height = "950px"
+    });
+
     function changeDisplayedFormation() {
 
         if (document.getElementById("formation").value == -1) {
@@ -348,7 +353,6 @@
         formationString = document.getElementById("formation").value;
         renderPlayers(formationString);
     }
-
 
 
 </script>
