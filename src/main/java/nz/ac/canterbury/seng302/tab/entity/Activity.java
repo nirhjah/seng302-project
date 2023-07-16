@@ -61,7 +61,7 @@ public class Activity {
 
     @Column(nullable = true)
     @Enumerated(EnumType.ORDINAL)
-    private boolean outcome;
+    private int outcome;
 
 
 
