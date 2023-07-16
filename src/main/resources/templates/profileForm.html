@@ -129,7 +129,7 @@
                         <div class="error-message">Formation must match specified form e.g. 1-4-4-2</div>
                     </div>
                     <div class="formation-RHS">
-                        <div th:insert="~{fragments/formationDisplay.html::formationDisplay(formation=${formation})}"></div>
+                        <div th:insert="~{fragments/formationDisplay.html::formationDisplay(true)}"></div>
                         <input type="hidden" name="teamID" th:value="${teamID}" />
                         <input type="hidden" name="formationID" class="current-formation-id"/>
                         <button type="submit" class="submit-button">Create Formation</button>

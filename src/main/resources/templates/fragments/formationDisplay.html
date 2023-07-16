@@ -3,14 +3,17 @@ This fragment requires the following variables to be defined:
 
 playerCount, e.g. 11
 formation, e.g "1-4-4-2"
+formationEditable, true if you want the formation to be edited i.e. being able to move players around, false otherwise
 
 -->
-<div th:fragment="formationDisplay" id="pitch">
+<div th:fragment="formationDisplay(formationEditable)" id="pitch">
   <script>
     // document.addEventListener("DOMContentLoaded", function() {
     //   // Call the renderPlayers function here
     //   renderPlayers("1-4-4-2");
     // });
+
+    const formationEditable = [[${formationEditable}]];
 
     const pitch = document.getElementById("pitch")
     // Generates the players and sets their position on the pitch
@@ -39,7 +42,11 @@ formation, e.g "1-4-4-2"
         let playersInRow = formation[i]
         while (formation[i] !== 0) {
           let player = players[j]
-          dragElement(player);
+
+          if (formationEditable == true) {
+            dragElement(player);
+          }
+
           player.style.bottom = ((i + 1) / (formation.length + 1)) * pitch.offsetHeight - player.offsetHeight / 2 + "px";
           player.style.left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * pitch.offsetWidth - player.offsetWidth / 2 + "px";
           formation[i] -= 1;
