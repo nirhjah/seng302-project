@@ -10,6 +10,15 @@ Formation strings should be of form e.g. '1-4-4-2' and positions should be strin
     const pitch = document.getElementById("pitch");
     const custom = document.querySelector(".custom");
     const customPlayerPositions = document.querySelector(".custom-player-positions");
+
+    function generatedOrCustom(formation, custom, customPlayerPositions) {
+      if (custom) {
+        renderPlayersCustom(customPlayerPositions)
+      } else {
+        renderPlayers(formation)
+      }
+    }
+
     // Generates the players and sets their position on the pitch
     function renderPlayers(formationString) {
       const formation = formationString.split("-").map(num => parseInt(num));
@@ -41,6 +50,7 @@ Formation strings should be of form e.g. '1-4-4-2' and positions should be strin
       customPlayerPositions.value = '';
     }
 
+    // Builds formation based on custom positions string
     function renderPlayersCustom(positions) {
       while (pitch.firstChild) {
         pitch.removeChild(pitch.lastChild);
