@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditClubForm;
+import nz.ac.canterbury.seng302.tab.form.ForgotPasswordForm;
 import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
 import nz.ac.canterbury.seng302.tab.service.ClubService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -61,8 +62,8 @@ public class CreateClubController {
                            HttpServletRequest request, CreateAndEditClubForm createAndEditClubForm) {
 
         logger.info("GET /createClub");
-        model.addAttribute("httpServletRequest", request);
-        prefillModel(model);
+        prefillModel(model, request);
+
 
         Club club;
 
@@ -92,8 +93,8 @@ public class CreateClubController {
             HttpServletResponse httpServletResponse,
             Model model,
             HttpServletRequest httpServletRequest) throws IOException {
-        model.addAttribute("httpServletRequest", httpServletRequest);
-        prefillModel(model);
+        prefillModel(model, httpServletRequest);
+
         addressLine1.trim();
         if (addressLine1.isEmpty()) {
             bindingResult.addError(new FieldError("CreateAndEditClubForm", "addressLine1", "Field cannot be empty"));
@@ -102,14 +103,6 @@ public class CreateClubController {
         if (postcode.isEmpty()) {
             bindingResult.addError(new FieldError("CreateAndEditClubForm", "postcode", "Field cannot be empty"));
         }
-
-       /* if (selectedTeams != null) {
-            if (!clubService.validateTeamSportsinClub(selectedTeams)) {
-                System.out.println("Teams should have same sport" + selectedTeams);
-                bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Teams must have same sport"));
-            }
-        }*/
-
 
         Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
 
@@ -136,6 +129,7 @@ public class CreateClubController {
             setTeamsClub(selectedTeams, club, bindingResult);
 
             if (bindingResult.hasErrors()) {
+                System.out.println(bindingResult.getAllErrors());
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return "createClubForm";
             }
@@ -195,7 +189,7 @@ public class CreateClubController {
      * Prefill model with info required from navbar, as well as the list of teams a user is manager of
      * @param model model to be filled
      */
-    public void prefillModel(Model model) {
+    public void prefillModel(Model model, HttpServletRequest httpServletRequest) {
         Optional<User> user = userService.getCurrentUser();
         List<Team> teamsUserManagerOf = new ArrayList<>();
         for (Team team : teamService.getTeamList()) {
@@ -203,6 +197,7 @@ public class CreateClubController {
                 teamsUserManagerOf.add(team);
             }
         }
+        model.addAttribute("httpServletRequest", httpServletRequest);
         model.addAttribute("listOfTeams", teamsUserManagerOf);
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());

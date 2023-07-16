@@ -1,7 +1,6 @@
 package nz.ac.canterbury.seng302.tab.form;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
@@ -12,6 +11,7 @@ public class CreateAndEditClubForm {
     @TeamFormValidators.teamNameValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG)
     private String name;
 
+    @TeamFormValidators.teamSportValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG)
     private String sport;
 
     @LocationValidators.addressValidator
