@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.unit.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -20,12 +21,14 @@ import java.util.Optional;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
@@ -87,7 +90,8 @@ public class EditActivityFormControllerTest {
         Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY,
                 USER_POSTCODE, USER_COUNTRY);
         User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD, testLocation);
-        team = new Team("test", "Hockey", testLocation, testUser);
+        team = spy(new Team("test", "Hockey", testLocation, testUser));
+        Mockito.doReturn(TEAM_ID).when(team).getTeamId();
         LocalDateTime start =   LocalDateTime.of(2023, 6,1,6,30);
         LocalDateTime end = LocalDateTime.of(2023, 7,1,8,30);
         Location activityLocation = new Location(ACTVITY_ADDRESS_LINE_1, ACTVITY_ADDRESS_LINE_2, ACTVITY_SUBURB,
@@ -101,6 +105,7 @@ public class EditActivityFormControllerTest {
 
     @Test
     public void testDisplayingEditActivityReturns200() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
         mockMvc.perform(get("/createActivity?edit={id}",activity.getId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("createActivity"));
@@ -121,6 +126,7 @@ public class EditActivityFormControllerTest {
         mockMvc.perform(post("/createActivity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Training))
+                        .param("formation", "-1")
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-07-01T10:00:00")
@@ -131,6 +137,7 @@ public class EditActivityFormControllerTest {
                         .param("country", "New Zealand")
                         .param("postcode", "8888")
                         .param("suburb", "A Place"))
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("./view-activity?activityID=" + activity.getId()));
 
