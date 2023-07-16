@@ -247,11 +247,7 @@
             const input = document.getElementById('formation-string');
             input.value = formation;
             formationDisplay.classList.add('active');
-            if (custom) {
-                renderPlayersCustom(customPlayerPositions)
-            } else {
-                renderPlayers(formation)
-            }
+            generatedOrCustom(formation, custom, customPlayerPositions)
         }
 
         function submissionCheck(formation) {
