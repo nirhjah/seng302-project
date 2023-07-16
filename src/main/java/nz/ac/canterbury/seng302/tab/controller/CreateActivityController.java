@@ -27,7 +27,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.Null;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Formation;
 import nz.ac.canterbury.seng302.tab.entity.Location;
@@ -68,18 +67,14 @@ public class CreateActivityController {
      * @throws MalformedURLException can be thrown by getting the path if invalid
      */
     public void prefillModel(Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
-        Optional<User> user = userService.getCurrentUser();
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
+        User user = userService.getCurrentUser().get();
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("displayPicture", user.getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
-        List<Team> allUserTeams = teamService.findTeamsWithUser(user.get());
-        List<Team> teamList = new ArrayList<>();
-        for (Team team : allUserTeams) {
-            if (team.isManager(user.get()) || team.isCoach(user.get())) {
-                teamList.add(team);
-            }
-        }
+        List<Team> teamList = teamService.findTeamsWithUser(user).stream()
+                .filter(team -> team.isManager(user) || team.isCoach(user))
+                .toList();
         model.addAttribute("teamList", teamList);
         model.addAttribute("activityTypes", ActivityType.values());
         URL url = new URL(httpServletRequest.getRequestURL().toString());
@@ -122,7 +117,7 @@ public class CreateActivityController {
     private void postCreateActivityErrorChecking(
             BindingResult bindingResult,
             CreateActivityForm createActivityForm,
-            @Null Team team,
+            Team team,
             User currentUser) {
         // The startDate is before endDate
         if (!activityService.validateStartAndEnd(createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {

@@ -117,12 +117,13 @@ public class EditActivityFormControllerTest {
         // They should have their own tests, we only care about their output.
         when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+        when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+        when(mockActivityService.validateTeamSelection(any(), any())).thenReturn(true);
         // When complete, the controller saves the activity & redirects to its ID.
-        Activity activity = mock(Activity.class);
-        when(activity.getId()).thenReturn(ACT_ID);
-        when(mockActivityService.updateOrAddActivity(any())).thenReturn(activity);
-        when(mockActivityService.findActivityById(ACT_ID)).thenReturn(activity);
-
+        Activity localActivity = spy(activity);
+        Mockito.doReturn(ACT_ID).when(localActivity).getId();
+        when(mockActivityService.updateOrAddActivity(any())).thenReturn(localActivity);
+        when(mockActivityService.findActivityById(ACT_ID)).thenReturn(localActivity);
         mockMvc.perform(post("/createActivity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Training))
@@ -137,9 +138,8 @@ public class EditActivityFormControllerTest {
                         .param("country", "New Zealand")
                         .param("postcode", "8888")
                         .param("suburb", "A Place"))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrl("./view-activity?activityID=" + activity.getId()));
+                .andExpect(redirectedUrl("./view-activity?activityID=" + localActivity.getId()));
 
     }
 
@@ -426,12 +426,15 @@ public class EditActivityFormControllerTest {
         // They should have their own tests, we only care about their output.
         when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+        when(mockActivityService.validateTeamSelection(any(), any())).thenReturn(true);
+
         // When complete, the controller saves the activity & redirects to its ID.
         when(mockActivityService.updateOrAddActivity(any())).thenReturn(activity);
 
         mockMvc.perform(post("/createActivity")
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
+                        .param("formation", "-1")
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-07-01T10:00:00")
                         .param("endDateTime", "2023-08-01T12:00:00")
@@ -442,6 +445,7 @@ public class EditActivityFormControllerTest {
                         .param("postcode", "8888")
                         .param("suburb", "A Place"))
                 .andExpect(status().isFound())
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(redirectedUrl("./view-activity?activityID=" + activity.getId()));
     }
 
@@ -452,6 +456,7 @@ public class EditActivityFormControllerTest {
         mockMvc.perform(post("/createActivity")
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
+                        .param("formation", "-1")
                         .param("description", "")
                         .param("startDateTime", "2023-01-01T10:00:00")
                         .param("endDateTime", "2023-08-01T12:00:00")
