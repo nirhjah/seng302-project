@@ -16,10 +16,6 @@ public class U32CreateFormationFeature {
 
     private static boolean isSetupExecuted = false;
 
-    private final FormationService formationService = new FormationService();
-
-    private int numFormations;
-
     @Before("@create_formation")
     public void setup() {
         DefaultFunctions.pwLogin();
