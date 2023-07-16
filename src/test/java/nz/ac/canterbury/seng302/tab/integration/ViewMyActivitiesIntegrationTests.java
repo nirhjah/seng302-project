@@ -18,6 +18,7 @@ import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
+import nz.ac.canterbury.seng302.tab.service.FormationService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -67,6 +68,9 @@ public class ViewMyActivitiesIntegrationTests {
     @SpyBean
     private TeamService teamService;
 
+    @Autowired
+    private FormationService formationService;
+
     private UserRepository userRepository;
 
     private TeamRepository teamRepository;
@@ -113,7 +117,7 @@ public class ViewMyActivitiesIntegrationTests {
 
         activityService = Mockito.spy(new ActivityService(activityRepository));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ProfileFormController(userService, teamService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ProfileFormController(userService, teamService, formationService)).build();
 
         userRepository.deleteAll();
         teamRepository.deleteAll();

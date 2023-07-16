@@ -33,7 +33,7 @@
                 <div class="tab-line"></div>
             </div>
         </div>
-        <div class="content-box active">
+        <div class="content-box active" id="team-profile-tab">
             <div class="content">
                 <div class="profile-pic">
                     <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
@@ -101,21 +101,23 @@
                 </form>
             </div>
         </div>
-        <div class="content-box">
+        <div class="content-box" id="formations-tab">
             <div class="content formations">
                 <ul class="formation-list">
-                    <li th:onclick="render('1-4-4-2')">
+                    <li id="create-formation-li" onclick="render('1-4-4-2', null)">
                         <h3>Create a Formation</h3>
                         <img th:src="@{/image/icons/add-symbol.svg}" alt=""/>
                         <input type="hidden" class="formation-id" value="-1"/>
                     </li>
                     <li th:each="formation : ${formations}"
-                        th:attr="onclick='render(\'' + ${formation.formation} + '\')'">
+                        th:attr="onclick='renderSavedFormation(\'' + ${formation.formation} + '\',' + ${formation.custom} + ',\'' + ${formation.customPlayerPositions} + '\');'"
+                        class="formation-li">
                         <span class="title">
-                            <h3 th:text="${formation.formation}"></h3>
+                            <h3 th:text="${formation.formation} + (${formation.custom} ? ' Custom' : '')"></h3>
                         </span>
-                        <input type="hidden" class="formation-id" th:value="${formation.formationId}"/>
+                        <input type="hidden" class="formation-id" th:value="${formation.formationId}" />
                     </li>
+
                 </ul>
                 <form class="formation-display" method="post" th:action="@{/profile/create-formation}" onsubmit="return submissionCheck(document.getElementById('formation-string').value)">
                     <div class="formation-LHS">
@@ -124,20 +126,20 @@
                                 <input type="text" id="formation-string" name="formation">
                                 <label for="formation-string">Formation</label>
                             </div>
-                            <button type="button" th:onclick="render(document.getElementById('formation-string').value) ">Generate Formation</button>
+                            <button type="button" onclick="render(document.getElementById('formation-string').value, null) ">Generate Formation</button>
                         </div>
                         <div class="error-message">Formation must match specified form e.g. 1-4-4-2</div>
                     </div>
                     <div class="formation-RHS">
-                        <div th:insert="~{fragments/formationDisplay.html::formationDisplay(formation=${formation})}"></div>
+                        <div th:insert="~{fragments/formationDisplay.html}"></div>
                         <input type="hidden" name="teamID" th:value="${teamID}" />
                         <input type="hidden" name="formationID" class="current-formation-id"/>
-                        <button type="submit" class="submit-button">Create Formation</button>
+                        <button type="submit" class="submit-button" id="create-formation-button">Create Formation</button>
                     </div>
                 </form>
             </div>
         </div>
-        <div class="content-box">
+        <div class="content-box" id="statistics-tab">
             <div class="content">
                 <p> This is where the 'Team Aggregated Statistics' is going to be displayed</p>
             </div>
@@ -160,6 +162,7 @@
             }
             document.getElementById('upload-picture').submit();
         });
+
         const copyButton = document.querySelector('.copy-token');
         const tokenValue = document.querySelector('.token-value');
         const token = tokenValue.innerHTML;
@@ -220,7 +223,8 @@
             });
         });
 
-        function render(formation) {
+
+        function render(formation, customPlayerPositions) {
             const input = document.getElementById('formation-string');
             const errorMessage = document.querySelector('.error-message')
             const formationDisplay = document.querySelector('.formation-display')
@@ -228,9 +232,25 @@
             if (validateFormation(formation)) {
                 formationDisplay.classList.add('active')
                 errorMessage.classList.remove('active')
-                renderPlayers(formation);
+                if (customPlayerPositions !== null && customPlayerPositions.size > 0) {
+                    renderPlayersCustom(customPlayerPositions)
+                } else {
+                    renderPlayers(formation);
+                }
             } else {
                 errorMessage.classList.add('active')
+            }
+        }
+
+        function renderSavedFormation(formation, custom, customPlayerPositions) {
+            const formationDisplay = document.querySelector('.formation-display');
+            const input = document.getElementById('formation-string');
+            input.value = formation;
+            formationDisplay.classList.add('active');
+            if (custom) {
+                renderPlayersCustom(customPlayerPositions)
+            } else {
+                renderPlayers(formation)
             }
         }
 
