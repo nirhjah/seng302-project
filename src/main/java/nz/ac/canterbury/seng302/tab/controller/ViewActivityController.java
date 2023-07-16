@@ -77,27 +77,27 @@ public class ViewActivityController {
 
 
         List<Fact> activityFacts = factService.getAllFactsForActivity(activity);
-        List<Substitution> activitySubstitutions = new ArrayList<>();
-        List<Goal> activityGoals = new ArrayList<>();
+        if (!activityFacts.isEmpty()){
+            List<Substitution> activitySubstitutions = new ArrayList<>();
+            List<Goal> activityGoals = new ArrayList<>();
 
-        for (Object fact : activityFacts) {
-            if(fact instanceof Substitution) {
-                activitySubstitutions.add((Substitution) fact);
+            for (Object fact : activityFacts) {
+                if(fact instanceof Substitution) {
+                    activitySubstitutions.add((Substitution) fact);
 
-            } else if (fact instanceof Goal) {
-                activityGoals.add((Goal) fact);
+                } else if (fact instanceof Goal) {
+                    activityGoals.add((Goal) fact);
+                }
             }
-
+            model.addAttribute("activitySubstitutions", activitySubstitutions);
+            model.addAttribute("activityGoals", activityGoals);
         }
-        
 
+        logger.info("activityFacts: {}", activityFacts);
         model.addAttribute("activity", activity);
-
-        model.addAttribute("activitySubstitutions", activitySubstitutions);
 
         model.addAttribute("activityFacts", activityFacts);
 
-        model.addAttribute("activityGoals", activityGoals);
 
 
 

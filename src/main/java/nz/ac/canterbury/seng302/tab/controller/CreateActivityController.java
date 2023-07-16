@@ -234,17 +234,17 @@ public class CreateActivityController {
                     description, startDateTime, endDateTime, userService.getCurrentUser().get(), location);
 
             //TEST CODE
-            activity.setActivityTeamScore("25");
-            activity.setOtherTeamScore("13");
+//            activity.setActivityTeamScore("25");
+//            activity.setOtherTeamScore("13");
 
-            List<Fact> factList = new ArrayList<>();
-            factList.add(new Fact("Someone fell over", "1h 25m", activity));
-            factList.add(new Fact("Someone fell over again", "1h 30m", activity));
-            factList.add(new Fact("Someone fell over yet again", "1h 42m", activity));
-            factList.add(new Substitution("Player was taken off", "1h 40m", activity, user, user));
-            factList.add(new Fact("Testing scrollable feature", "1h 25m", activity));
-
-            activity.addFactList(factList);
+//            List<Fact> factList = new ArrayList<>();
+//            factList.add(new Fact("Someone fell over", "1h 25m", activity));
+//            factList.add(new Fact("Someone fell over again", "1h 30m", activity));
+//            factList.add(new Fact("Someone fell over yet again", "1h 42m", activity));
+//            factList.add(new Substitution("Player was taken off", "1h 40m", activity, user, user));
+//            factList.add(new Fact("Testing scrollable feature", "1h 25m", activity));
+//
+//            activity.addFactList(factList);
 
             //TEST CODE
 
