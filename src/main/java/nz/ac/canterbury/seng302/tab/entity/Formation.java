@@ -87,5 +87,4 @@ public class Formation {
         return customPlayerPositions;
     }
 
-
 }

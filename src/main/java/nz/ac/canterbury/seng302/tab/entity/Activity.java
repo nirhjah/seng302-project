@@ -100,11 +100,20 @@ public class Activity {
 
     /**
      * <p>Checks whether this Activity can have a formation associated with it.</p>
-     * Currently only Activities of type <code>Game</code> or <code>Friendly</code>
+     * Currently only <em>Team</em> Activities of type <code>Game</code> or <code>Friendly</code>
      * can have a formation
      */
     public boolean canContainFormation() {
-        return activityType != ActivityType.Game || activityType != ActivityType.Friendly;
+        return team != null && (activityType != ActivityType.Game || activityType != ActivityType.Friendly);
+    }
+
+    /**
+     * <p>Checks whether an Activity can have a formation associated with it.</p>
+     * Currently only <em>Team</em> Activities of type <code>Game</code> or <code>Friendly</code>
+     * can have a formation
+     */
+    public static boolean canContainFormation(ActivityType activityType, Team team) {
+        return team != null && (activityType != ActivityType.Game || activityType != ActivityType.Friendly);
     }
 
     public long getId() {
@@ -202,7 +211,9 @@ public class Activity {
      * @see Activity#canContainFormation()
      */
     public void setFormation(Formation formation) throws UnsupportedOperationException {
-        if (!canContainFormation()) {
+        // Don't check if removing a formation, as that's always valid.
+        // It's only adding to unsupported activities that's wrong.
+        if (formation != null && !canContainFormation()) {
             throw new UnsupportedOperationException("Can not have a formation on an activity of type: " + activityType);
         }
 
