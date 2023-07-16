@@ -59,7 +59,8 @@ public class Activity {
     @Column
     private String otherTeamScore;
 
-    @Column
+    @Column(nullable = true)
+    @Enumerated(EnumType.ORDINAL)
     private boolean outcome;
 
 
