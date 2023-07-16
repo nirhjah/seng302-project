@@ -1,21 +1,27 @@
 <!--
-This fragment requires the following variables to be defined:
-
-playerCount, e.g. 11
-formation, e.g "1-4-4-2"
-formationEditable, true if you want the formation to be edited i.e. being able to move players around, false otherwise
+Formation strings should be of form e.g. '1-4-4-2' and positions should be strings of form e.g. '20px,30px;40px,60px;'
+Required variables: formationEditable, true if you want the formation to be edited i.e. being able to move players around, false otherwise
 
 -->
-<div th:fragment="formationDisplay(formationEditable)" id="pitch">
+<div th:fragment="formationDisplay(formationEditable)">
+  <input type="hidden" name="custom" class="custom" value="false">
+  <input type="hidden" name="customPlayerPositions" class="custom-player-positions">
+  <div id="pitch"></div>
   <script>
-    // document.addEventListener("DOMContentLoaded", function() {
-    //   // Call the renderPlayers function here
-    //   renderPlayers("1-4-4-2");
-    // });
-
     const formationEditable = [[${formationEditable}]];
 
-    const pitch = document.getElementById("pitch")
+    const pitch = document.getElementById("pitch");
+    const custom = document.querySelector(".custom");
+    const customPlayerPositions = document.querySelector(".custom-player-positions");
+
+    function generatedOrCustom(formation, custom, customPlayerPositions) {
+      if (custom) {
+        renderPlayersCustom(customPlayerPositions)
+      } else {
+        renderPlayers(formation)
+      }
+    }
+
     // Generates the players and sets their position on the pitch
     function renderPlayers(formationString) {
       const formation = formationString.split("-").map(num => parseInt(num));
@@ -26,16 +32,11 @@ formationEditable, true if you want the formation to be edited i.e. being able t
       }
 
       // Create the players and add them to pitch
-      for (let i = 0; i < totalPlayers; i++) {
-        let player = document.createElement('div')
-        player.setAttribute("id", "player" + (i + 1))
-        player.setAttribute("class", "player")
-        pitch.appendChild(player)
-      }
+      generatePlayers(totalPlayers)
 
       // Display the formation
       const players = document.querySelectorAll(".player");
-      const pitchRect = pitch.getBoundingClientRect();
+
       // Builds formation
       let j = 0;
       for (let i = 0; i < formation.length; i++) {
@@ -53,6 +54,37 @@ formationEditable, true if you want the formation to be edited i.e. being able t
           j++;
         }
       }
+      custom.value = 'false';
+      customPlayerPositions.value = '';
+    }
+
+    // Builds formation based on custom positions string
+    function renderPlayersCustom(positions) {
+      while (pitch.firstChild) {
+        pitch.removeChild(pitch.lastChild);
+      }
+      const positionsList = positions.split(';')
+      let numPlayers = positionsList.length;
+      generatePlayers(numPlayers);
+      const players = document.querySelectorAll(".player");
+      for (let i = 0; i < numPlayers; i++) {
+        let coordinates = positionsList[i].split(",")
+        let player = players[i]
+        player.style.left = coordinates[0];
+        player.style.bottom = coordinates[1];
+      }
+      custom.value = 'true';
+      customPlayerPositions.value = positions;
+    }
+
+    function generatePlayers(numPlayers) {
+      for (let i = 0; i < numPlayers; i++) {
+        let player = document.createElement('div')
+        player.setAttribute("id", "player" + (i + 1))
+        player.setAttribute("class", "player")
+        pitch.appendChild(player)
+        dragElement(player);
+      }
     }
 
     function dragElement(player) {
@@ -60,6 +92,7 @@ formationEditable, true if you want the formation to be edited i.e. being able t
       player.onmousedown = dragMouseDown;
 
       function dragMouseDown(e) {
+        custom.value = "true";
         e = e || window.event;
         e.preventDefault();
         // get the mouse cursor position at startup:
@@ -105,6 +138,7 @@ formationEditable, true if you want the formation to be edited i.e. being able t
                 : Math.max(minLeft, newLeft);
         // set the element's new position:
         player.style.top = constrainedTop + "px";
+        player.style.bottom = pitch.offsetHeight - constrainedTop - player.offsetHeight + "px";
         player.style.left = constrainedLeft + "px";
       }
 
@@ -112,8 +146,17 @@ formationEditable, true if you want the formation to be edited i.e. being able t
         // stop moving when mouse button is released:
         document.onmouseup = null;
         document.onmousemove = null;
+        customPlayerPositions.value = ""
+        const players = document.querySelectorAll(".player");
+        players.forEach(player => {
+          let left = player.style.left
+          let bottom = player.style.bottom
+          customPlayerPositions.value += left + "," + bottom;
+          if (player.id !== 'player' + players.length) {
+            customPlayerPositions.value += ";"
+          }
+        })
       }
     }
   </script>
 </div>
-

@@ -1,13 +1,11 @@
 package nz.ac.canterbury.seng302.tab.repository;
 
-import java.util.List;
-import java.util.Optional;
-
+import nz.ac.canterbury.seng302.tab.entity.Formation;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 
-import nz.ac.canterbury.seng302.tab.entity.Formation;
+import java.util.List;
+import java.util.Optional;
 
 public interface FormationRepository extends CrudRepository<Formation, Long> {
     Optional<Formation> findById(long id);
