@@ -1,9 +1,6 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
-import org.springframework.stereotype.Controller;
-
-import java.util.List;
 
 /**
  * The Formation entity which contains the information involved with the

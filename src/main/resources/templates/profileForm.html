@@ -21,7 +21,7 @@
                 <img class ="tab-icon" th:src="@{/image/icons/team.svg}"/>
                 <button class="tab-button"> Team Profile &nbsp;</button>
             </div>
-            <div class="tab">
+            <div class="tab" id="formations-tab">
                 <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
                 <button class="tab-button" >Formations &nbsp;</button>
             </div>
@@ -101,7 +101,7 @@
                 </form>
             </div>
         </div>
-        <div class="content-box" id="formations-tab">
+        <div class="content-box">
             <div class="content formations">
                 <ul class="formation-list">
                     <li id="create-formation-li" onclick="render('1-4-4-2', null)">
@@ -126,7 +126,7 @@
                                 <input type="text" id="formation-string" name="formation">
                                 <label for="formation-string">Formation</label>
                             </div>
-                            <button type="button" onclick="render(document.getElementById('formation-string').value, null) ">Generate Formation</button>
+                            <button type="button" id="generate-formation-button" onclick="render(document.getElementById('formation-string').value, null) ">Generate Formation</button>
                         </div>
                         <div class="error-message">Formation must match specified form e.g. 1-4-4-2</div>
                     </div>
@@ -195,12 +195,21 @@
                     otherTab.classList.remove('active');
                 });
                 tab.classList.add('active');
-                tabLine.style.width = (e.target.offsetWidth + 50) + "px";
-                tabLine.style.left = (e.target.offsetLeft - 50) + "px";
-                displayBox.forEach(content => {
-                    content.classList.remove('active')
+                if (index === 0) {
+                    tabLine.style.left = "64px";
+                } else if (index ===1){
+                    tabLine.style.left = "368px";
+                } else{
+                    tabLine.style.left = "670px";
+                }
+                displayBox.forEach(box => {
+                    box.classList.remove('active')
                 });
                 displayBox[index].classList.add('active');
+                displayContent.forEach(content => {
+                    content.classList.remove('active')
+                });
+                displayContent[index].classList.add('active');
             });
         });
 

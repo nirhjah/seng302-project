@@ -1,12 +1,10 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.util.List;
 import java.util.Optional;
 
 import nz.ac.canterbury.seng302.tab.entity.Formation;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.FormationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,6 +116,19 @@ public class ProfileFormController {
         return "redirect:/profile?teamID=" + teamID;
     }
 
+    /**
+     * Saves formation into the system or updates formation.
+     *
+     * @param newFormation formation string
+     * @param teamID id of the team to add the formation to
+     * @param formationID if a formation is being updated, then this will represent the id of said formation
+     * @param customPlayerPositions if the formation is a 'custom' formation then this will be a string of px elements
+     *                              describing the left and bottom displacement for each player in a form such as
+     *                              "20px30px;40px20px"
+     * @param custom boolean to represent whether a formation has been manually changed by dragging and dropping the
+     *               players rather than simply being from a generated formation string
+     * @return reloads the page
+     */
     @PostMapping("/profile/create-formation")
     public String createAndUpdateFormation(
             @RequestParam("formation") String newFormation,
@@ -125,7 +136,6 @@ public class ProfileFormController {
             @RequestParam(name="formationID", defaultValue = "-1") long formationID,
             @RequestParam("customPlayerPositions") String customPlayerPositions,
             @RequestParam("custom") Boolean custom) {
-        logger.info(newFormation + " " + teamID + " " + formationID + " " + customPlayerPositions + " " + custom);
         logger.info("POST /profile");
         Team team = teamService.getTeam(teamID);
         Optional<Formation> formationOptional = formationService.getFormation(formationID);

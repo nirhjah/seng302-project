@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.service;
 
+import nz.ac.canterbury.seng302.tab.entity.Club;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -273,4 +274,9 @@ public class TeamService {
     }
 
     public List<Team> findTeamsWithUser(User user) {return teamRepository.findTeamsWithUser_List(user);}
+
+    public List<Team> findTeamsByClub(Club club) {
+        long id = club.getClubId();
+        return teamRepository.findTeamsByTeamClubClubId(id);
+    }
 }
