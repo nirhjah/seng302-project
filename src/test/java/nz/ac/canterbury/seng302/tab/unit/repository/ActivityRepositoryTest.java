@@ -1,12 +1,12 @@
 package nz.ac.canterbury.seng302.tab.unit.repository;
 
-import io.cucumber.java.bm.Tetapi;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import org.junit.jupiter.api.Assertions;
@@ -14,13 +14,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -299,6 +294,86 @@ public class ActivityRepositoryTest {
         activityRepository.save(activity1);
 
         Assertions.assertEquals(1, activityRepository.getAllGamesAndFriendlies(team1));
+    }
+
+    @Test
+    public void getTotalNumberOfWins_MultipleWins_GameAndFriendly() throws Exception {
+        Team team1 = new Team("ATeamName", "Sport");
+        User user = new User("Test", "Account", "testing@test.com", "Password1!",
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity1 = new Activity(ActivityType.Game, team1, "First activity",
+                LocalDateTime.of(2023, 1,6,6,30),
+                LocalDateTime.of(2023, 1,6,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        activity1.setActivityOutcome(ActivityOutcome.Win);
+        Activity activity2 = new Activity(ActivityType.Friendly, team1, "Second activity",
+                LocalDateTime.of(2023, 1,5,6,30),
+                LocalDateTime.of(2023, 1,5,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity3 = new Activity(ActivityType.Game, team1, "Third activity",
+                LocalDateTime.of(2023, 1,4,6,30),
+                LocalDateTime.of(2023, 1,4,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        activity2.setActivityOutcome(ActivityOutcome.Win);
+        activityRepository.save(activity1);
+        activityRepository.save(activity2);
+        activityRepository.save(activity3);
+
+        Assertions.assertEquals(2, activityRepository.getNumberOfWinsForATeam(team1));
+    }
+
+    @Test
+    public void getTotalNumberOfLoses_OneLoss_GameAndFriendly() throws Exception {
+        Team team1 = new Team("ATeamName", "Sport");
+        User user = new User("Test", "Account", "testing@test.com", "Password1!",
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity1 = new Activity(ActivityType.Game, team1, "First activity",
+                LocalDateTime.of(2023, 1,6,6,30),
+                LocalDateTime.of(2023, 1,6,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        activity1.setActivityOutcome(ActivityOutcome.Loss);
+        Activity activity2 = new Activity(ActivityType.Friendly, team1, "Second activity",
+                LocalDateTime.of(2023, 1,5,6,30),
+                LocalDateTime.of(2023, 1,5,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity3 = new Activity(ActivityType.Other, team1, "Third activity",
+                LocalDateTime.of(2023, 1,4,6,30),
+                LocalDateTime.of(2023, 1,4,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        activity2.setActivityOutcome(ActivityOutcome.Win);
+        activity3.setActivityOutcome(ActivityOutcome.Loss);
+        activityRepository.save(activity1);
+        activityRepository.save(activity2);
+        activityRepository.save(activity3);
+
+        Assertions.assertEquals(1, activityRepository.getNumberOfWinsForATeam(team1));
+    }
+
+    @Test
+    public void getTotalNumberOfDraws_GameAndFriendly() throws Exception {
+        Team team1 = new Team("ATeamName", "Sport");
+        User user = new User("Test", "Account", "testing@test.com", "Password1!",
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity1 = new Activity(ActivityType.Game, team1, "First activity",
+                LocalDateTime.of(2023, 1,6,6,30),
+                LocalDateTime.of(2023, 1,6,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        activity1.setActivityOutcome(ActivityOutcome.Draw);
+        Activity activity2 = new Activity(ActivityType.Friendly, team1, "Second activity",
+                LocalDateTime.of(2023, 1,5,6,30),
+                LocalDateTime.of(2023, 1,5,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity3 = new Activity(ActivityType.Game, team1, "Third activity",
+                LocalDateTime.of(2023, 1,4,6,30),
+                LocalDateTime.of(2023, 1,4,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        activity2.setActivityOutcome(ActivityOutcome.Win);
+        activity3.setActivityOutcome(ActivityOutcome.Draw);
+        activityRepository.save(activity1);
+        activityRepository.save(activity2);
+        activityRepository.save(activity3);
+
+        Assertions.assertEquals(1, activityRepository.getNumberOfWinsForATeam(team1));
     }
 
 }
