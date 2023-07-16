@@ -356,7 +356,7 @@
             document.querySelector(".activity-form .wrapper").style.height = "1350px"
         }
 
-        formationString = document.getElementById("formation").value;
+        formationString = document.getElementById("formation").options[document.getElementById("formation").selectedIndex].text;
         renderPlayers(formationString);
     }
 
