@@ -1,14 +1,13 @@
 package nz.ac.canterbury.seng302.tab.form;
 
+import java.time.LocalDateTime;
+
+import jakarta.validation.constraints.NotBlank;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
 import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
-
-import java.time.LocalDateTime;
-
-import jakarta.validation.constraints.NotBlank;
 
 public class CreateActivityForm {
 
@@ -16,6 +15,8 @@ public class CreateActivityForm {
     private ActivityType activityType;
 
     private long teamId;
+    
+    private long formationId;
 
     @ActivityFormValidators.descriptionValidator
     private String description;
@@ -52,6 +53,14 @@ public class CreateActivityForm {
 
     public void setActivityType(ActivityType activityType) {
         this.activityType = activityType;
+    }
+    
+    public long getFormation() {
+        return formationId;
+    }
+
+    public void setFormation(long formation) {
+        this.formationId = formation;
     }
 
     public long getTeam() {

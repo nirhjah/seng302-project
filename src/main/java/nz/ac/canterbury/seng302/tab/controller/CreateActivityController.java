@@ -6,7 +6,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,6 +145,19 @@ public class CreateActivityController {
             bindingResult.addError(new FieldError("CreateActivityForm", "team",
                     ActivityFormValidators.TEAM_REQUIRED_MSG));
         }
+
+        // Formations can only exist under certain circumstances.
+        // However, if the conditions aren't met, we simply don't add the formation.
+        // This is because the front-end greys out the Formation dropdown if the conditions aren't met,
+        // so the value may be set but it's invalid.
+        long formationId = createActivityForm.getFormation();
+        if (formationId != -1 && (Activity.canContainFormation(createActivityForm.getActivityType(), team))) {
+            // Check that your team has this formation
+            if (formationService.findFormationById(formationId).map(form -> form.getTeam().equals(team)).isEmpty()) {
+                bindingResult.addError(new FieldError("CreateActivityForm", "formation",
+                    ActivityFormValidators.FORMATION_DOES_NOT_EXIST_MSG));
+            }
+        }
     }
 
     /**
@@ -165,15 +180,16 @@ public class CreateActivityController {
         prefillModel(model, httpServletRequest);
 
         // If you're creating an activity, just return a blank field
-        if (actId != null) {
+        if (actId == null) {
             return TEMPLATE_NAME;
         }
+        logger.info("You should be stupid");
             
         User currentUser = userService.getCurrentUser().get();
         Activity activity = activityService.findActivityById(actId);
 
         // You can't edit an activity that doesn't exist
-        if (activity == null){
+        if (activity == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can't edit an activity that doesn't exist");
         }
 
@@ -252,12 +268,24 @@ public class CreateActivityController {
         activity.setActivityOwner(currentUser);
         activity.setLocation(location);
         activity.setDescription(createActivityForm.getDescription());
+        // Add formation if possible
+        if (createActivityForm.getFormation() == -1 || !Activity.canContainFormation(createActivityForm.getActivityType(), team)) {
+            activity.setFormation(null);
+        } else {
+            Optional<Formation> formation = formationService.findFormationById(createActivityForm.getFormation());
+            // The error checking function checks if this exists, so this should always pass
+            activity.setFormation(formation.get());
+        }
         activity = activityService.updateOrAddActivity(activity);
         return String.format("redirect:./view-activity?activityID=%s", activity.getId());
     }
 
+    /**
+     * A JSON API endpoint, which gives the formations of an associated team.. Used by the createActivity page to update
+     * @return A json object of type <code>{formationId: "formationString", ...}</code>
+     */
     @GetMapping(path = "/createActivity/get_team_formation", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<String>> getTeamFormation(@RequestParam("teamId") long teamId) {
+    public ResponseEntity<Map<Long, String>> getTeamFormation(@RequestParam("teamId") long teamId) {
         logger.info("GET /createActivity/get_team_formation");
         // CHECK: Are we logged in?
         Optional<User> oCurrentUser = userService.getCurrentUser();
@@ -271,12 +299,14 @@ public class CreateActivityController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         // CHECK: Do you have permission to edit this team's formations?
+        // (This doubles as an "Are you in this team" check)
         if (!team.isCoach(currentUser) && !team.isManager(currentUser)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        // Return a JSON array of formation strings
-        List<String> formations = formationService.getTeamsFormations(teamId).stream().map(Formation::getFormation).toList();
+        // Return a JSON object of (id -> string)
+        Map<Long, String> formations = formationService.getTeamsFormations(teamId).stream()
+                    .collect(Collectors.toMap(Formation::getFormationId, Formation::getFormation));
 
         return ResponseEntity.ok().body(formations);
     }

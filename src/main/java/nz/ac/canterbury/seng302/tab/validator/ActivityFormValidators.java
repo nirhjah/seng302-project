@@ -36,6 +36,8 @@ public class ActivityFormValidators {
 
     public static final String NOT_A_COACH_OR_MANAGER = "You need to be a coach or a manager to do this";
 
+    public static final String FORMATION_DOES_NOT_EXIST_MSG = "The specified team does not have this formation";
+
     /**
      * Regex taken from <a href="https://stackoverflow.com/a/56276700">...</a>
      */
