@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 
 import java.time.LocalDateTime;
@@ -59,8 +60,9 @@ public class Activity {
     @Column
     private String otherTeamScore;
 
-    @Column
-    private boolean outcome;
+    @Column(nullable = true)
+    @Enumerated(EnumType.ORDINAL)
+    private ActivityOutcome outcome;
 
 
 
