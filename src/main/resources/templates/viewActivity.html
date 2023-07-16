@@ -84,6 +84,23 @@
 
             <div class="modal-content">
                 <h1>test</h1>
+                        <form id="addEventForm" method="post" th:object="${addEventForm}">
+                    <div class="select-container">
+                                <!--here we need to display all of the types of events -->
+                        <label for="factsType"></label>
+                        <select id="factsType" name="factsType">
+                                    <option th:each="fact : ${possibleFactType}"
+                                            th:value="${fact}"
+                                            th:selected="${fact == addEventForm.factsType}"
+                                            th:text="${fact}"></option> 
+                        </select>
+                        <label for="description"></label>
+                        <label for="description"></label>
+                        <label for="description"></label>
+                        
+                    </div>
+                    
+                </form>
                 <div class="submit-button">
                     <button id="joinTeam" type="submit" class="registerLoginButton">Join Team</button>
                 </div>

@@ -8,6 +8,7 @@ import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
+import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import nz.ac.canterbury.seng302.tab.service.FactService;
 import org.slf4j.Logger;
@@ -114,6 +115,7 @@ public class ViewActivityController {
         model.addAttribute("displayPicture", user.getPictureString());
         model.addAttribute("navTeams", teamList);
         model.addAttribute("httpServletRequest", request);
+        model.addAttribute("possibleFactTypes", FactType.values());
 
         return "viewActivity";
     }
