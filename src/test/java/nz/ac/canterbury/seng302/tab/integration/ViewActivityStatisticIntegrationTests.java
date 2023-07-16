@@ -88,6 +88,7 @@ public class ViewActivityStatisticIntegrationTests {
         factRespository = applicationContext.getBean(FactRepository.class);
         userRepository.deleteAll();
         teamRepository.deleteAll();
+        activityRepository.deleteAll();
 
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
         EmailService emailService = applicationContext.getBean(EmailService.class);
@@ -175,28 +176,28 @@ public class ViewActivityStatisticIntegrationTests {
         Assertions.assertEquals(game.getActivityType(), actualActivity.getActivityType());
     }
 
-//    @When("there are statistics about scoring players")
-//    public void there_are_statistics_about_scoring_players() {
-//        throw new io.cucumber.java.PendingException();
-//    }
-//
-//    @Then("I can see the time that player scored next to their icon on the line-up")
-//    public void i_can_see_the_time_that_player_scored_next_to_their_icon_on_the_line_up() {
-//        throw new io.cucumber.java.PendingException();
-//    }
-//
-//    @When("there are statistics about substitute players")
-//    public void there_are_statistics_about_substitute_players() {
-//        throw new io.cucumber.java.PendingException();
-//    }
-//
-//    @Then("I can see the icon, name and time of substitution of the player")
-//    public void i_can_see_the_icon_name_and_time_of_substitution_of_the_player() {
-//        throw new io.cucumber.java.PendingException();
-//    }
-//
-//    @Given("I am viewing an activity")
-//    public void i_am_viewing_an_activity(){
+    @When("there are statistics about scoring players")
+    public void there_are_statistics_about_scoring_players() {
+        throw new io.cucumber.java.PendingException();
+    }
+
+    @Then("I can see the time that player scored next to their icon on the line-up")
+    public void i_can_see_the_time_that_player_scored_next_to_their_icon_on_the_line_up() {
+        throw new io.cucumber.java.PendingException();
+    }
+
+    @When("there are statistics about substitute players")
+    public void there_are_statistics_about_substitute_players() {
+        throw new io.cucumber.java.PendingException();
+    }
+
+    @Then("I can see the icon, name and time of substitution of the player")
+    public void i_can_see_the_icon_name_and_time_of_substitution_of_the_player() {
+        throw new io.cucumber.java.PendingException();
+    }
+
+    @Given("I am viewing an activity")
+    public void i_am_viewing_an_activity() throws Exception {
 //        training = new Activity(ActivityType.Training, null, "Test description",
 //                date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), user,
 //                new Location(null, null, null, "CHCH", null, "NZ"));
@@ -206,16 +207,16 @@ public class ViewActivityStatisticIntegrationTests {
 //                .andExpect(MockMvcResultMatchers.status().isOk())
 //                .andReturn();
 
-//        throw new io.cucumber.java.PendingException();
-//    }
-//
-//    @When("that activity has statistics and facts with times")
-//    public void that_activity_has_statistics_and_facts_with_times() {
-//        throw new io.cucumber.java.PendingException();
-//    }
-//
-//    @Then("they are listed and sorted by their time in ascending order")
-//    public void they_are_listed_and_sorted_by_their_time_in_ascending_order() {
-//        throw new io.cucumber.java.PendingException();
-//    }
+        throw new io.cucumber.java.PendingException();
+    }
+
+    @When("that activity has statistics and facts with times")
+    public void that_activity_has_statistics_and_facts_with_times() {
+        throw new io.cucumber.java.PendingException();
+    }
+
+    @Then("they are listed and sorted by their time in ascending order")
+    public void they_are_listed_and_sorted_by_their_time_in_ascending_order() {
+        throw new io.cucumber.java.PendingException();
+    }
 }
