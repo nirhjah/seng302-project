@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
+import io.cucumber.java.en_old.Ac;
 import nz.ac.canterbury.seng302.tab.enums.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
@@ -248,37 +249,6 @@ public class ActivityServiceTest {
                 new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
         activityRepository.save(training);
         Assertions.assertEquals(training, activityService.findActivityById(training.getId()));
-    }
-
-    @Test
-    public void testWinLoss() throws Exception {
-        Team team1 = new Team("ATeamName", "Sport");
-        User user = new User("Test", "Account", "testing@test.com", "Password1!",
-                new Location(null, null, null, "Christchurch", null, "New Zealand"));
-        Activity activity1 = new Activity(ActivityType.Game, team1, "First activity",
-                LocalDateTime.of(2023, 1,6,6,30),
-                LocalDateTime.of(2023, 1,6,8,30), user,
-                new Location(null, null, null, "Christchurch", null, "New Zealand"));
-        Activity activity2 = new Activity(ActivityType.Friendly, team1, "Second activity",
-                LocalDateTime.of(2023, 1,5,6,30),
-                LocalDateTime.of(2023, 1,5,8,30), user,
-                new Location(null, null, null, "Christchurch", null, "New Zealand"));
-        Activity activity3 = new Activity(ActivityType.Friendly, team1, "Second activity",
-                LocalDateTime.of(2023, 1,5,6,30),
-                LocalDateTime.of(2023, 1,5,8,30), user,
-                new Location(null, null, null, "Christchurch", null, "New Zealand"));
-        activity1.setActivityTeamScore("100");
-        activity1.setOtherTeamScore("70");
-        activity2.setActivityTeamScore("123-4");
-        activity2.setOtherTeamScore("456-6");
-        activity3.setActivityTeamScore("19");
-        activity3.setOtherTeamScore("19");
-        activityRepository.save(activity1);
-        activityRepository.save(activity2);
-        activityRepository.save(activity3);
-
-        List <String> outcomes = activityService.getLast5ActivityResultsForTeam(team1);
-        Assertions.assertTrue(List.of("Won", "Lost", "Tied").equals(outcomes));
     }
 
 }

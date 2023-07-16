@@ -143,6 +143,8 @@ public class ActivityRepositoryTest {
                 LocalDateTime.of(2023, 1,1,6,30),
                 LocalDateTime.of(2023, 1,1,8,30), user,
                 new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        activity1.setActivityOutcome(ActivityOutcome.Win);
+        activity2.setActivityOutcome(ActivityOutcome.Loss);
         activityRepository.save(activity1);
         activityRepository.save(activity2);
         activityRepository.save(activity3);
@@ -179,6 +181,12 @@ public class ActivityRepositoryTest {
                 LocalDateTime.of(2023, 1,1,6,30),
                 LocalDateTime.of(2023, 1,1,8,30), user,
                 new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        activity1.setActivityOutcome(ActivityOutcome.Win);
+        activity2.setActivityOutcome(ActivityOutcome.Loss);
+        activity3.setActivityOutcome(ActivityOutcome.Win);
+        activity4.setActivityOutcome(ActivityOutcome.Draw);
+        activity5.setActivityOutcome(ActivityOutcome.Win);
+        activity6.setActivityOutcome(ActivityOutcome.Draw);
         activityRepository.save(activity1);
         activityRepository.save(activity2);
         activityRepository.save(activity3);

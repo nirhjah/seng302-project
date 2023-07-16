@@ -38,6 +38,9 @@ public interface ActivityRepository extends CrudRepository<Activity, Long> {
     @Query("SELECT a FROM Activity a WHERE (a.activityType = 0 OR a.activityType = 1) and a.team= :team ORDER BY a.activityEnd desc , a.activityStart desc LIMIT 5")
     List<Activity> getLast5GameOrFriendly(Team team);
 
+    @Query("SELECT a FROM Activity a WHERE (a.activityType = 0 OR a.activityType = 1) and a.team= :team and (a.outcome=0 or a.outcome=1 or a.outcome =2) ORDER BY a.activityEnd desc , a.activityStart desc LIMIT 5")
+    List<Activity> getLast5ActivityGameOrFriendly(Team team);
+
     @Query("SELECT COUNT(a) FROM Activity a WHERE (a.activityType = 0 OR a.activityType = 1) and a.team= :team")
     int getAllGamesAndFriendlies(Team team);
 
