@@ -5,8 +5,6 @@ import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.List;
 import java.util.Objects;
 
@@ -60,6 +58,9 @@ public class Activity {
 
     @Column
     private String otherTeamScore;
+
+    @Column
+    private boolean outcome;
 
 
 

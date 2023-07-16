@@ -162,8 +162,14 @@
                     otherTab.classList.remove('active');
                 });
                 tab.classList.add('active');
-                tabLine.style.width = (e.target.offsetWidth + 50) + "px";
-                tabLine.style.left = (e.target.offsetLeft - 50) + "px";
+                if (index === 0) {
+                    tabLine.style.left = "64px";
+                } else if (index ===1){
+                    tabLine.style.left = "368px";
+                } else{
+                    tabLine.style.left = "670px";
+                }
+
                 displayContent.forEach(content => {
                     content.classList.remove('active')
                 });
