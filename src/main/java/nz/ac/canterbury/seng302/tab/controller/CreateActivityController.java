@@ -97,6 +97,8 @@ public class CreateActivityController {
         model.addAttribute("activityType", activity.getActivityType());
         if (activity.getTeam() != null) {
             model.addAttribute("teamName", activity.getTeam().getName());
+            model.addAttribute("teamFormations", formationService.getTeamsFormations(activity.getTeam().getTeamId()));
+            model.addAttribute("selectedFormation", activity.getFormation().orElse(null));
         }
         model.addAttribute("actId", activity.getId());
         model.addAttribute("startDateTime",formattedStartDateTime);
@@ -183,7 +185,6 @@ public class CreateActivityController {
         if (actId == null) {
             return TEMPLATE_NAME;
         }
-        logger.info("You should be stupid");
             
         User currentUser = userService.getCurrentUser().get();
         Activity activity = activityService.findActivityById(actId);
@@ -221,7 +222,7 @@ public class CreateActivityController {
      */
     @PostMapping("/createActivity")
     public String createActivity(
-            @RequestParam(name = "edit", defaultValue = "-1") Long actId,
+            @RequestParam(name = "actId", defaultValue = "-1") Long actId,
             @Validated CreateActivityForm createActivityForm,
             BindingResult bindingResult,
             HttpServletRequest httpServletRequest,
@@ -257,8 +258,10 @@ public class CreateActivityController {
         );
 
         if (actId == -1) {  // Creating a new activity
+            logger.info("Creating new activity");
             activity = new Activity();
         } else {            // Updating an existing activity
+            logger.info("Updating existing activity");
             activity = activityService.findActivityById(actId);
         }
         activity.setActivityType(createActivityForm.getActivityType());

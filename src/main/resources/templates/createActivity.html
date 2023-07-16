@@ -36,8 +36,10 @@
                     <label for="team">Activity Team <span class="required">*</span></label>
                     <select name="team" id="team" onchange="updateFormationList()">
                         <option value="-1">(No Team)</option>
-                        <option th:each="team : ${teamList}" th:value="${team.getTeamId()}"
-                                th:text="${team.getName()}" th:selected="${team.getName() == teamName}"></option>
+                        <option th:each="team : ${teamList}"
+                                th:value="${team.getTeamId()}"
+                                th:text="${team.getName()}"
+                                th:selected="${team.getName() == teamName}"></option>
                     </select>
                 </div>
                 <div th:each="err : ${#fields.errors('team')}" th:text="${err}" class="error-message"></div>
@@ -47,9 +49,12 @@
             <div class="select-container">
                 <div class="select-box">
                     <label for="team">Activity formation <em>(Team Game and Team Friendly only)</em></label>
-                    <select name="formation" id="formation" disabled>
+                    <select name="formation" id="formation" th:disabled="${#lists.isEmpty(teamFormations)}">
                         <option value="-1">(No Team)</option>
-                        <option th:value="*{formation}" th:text="*{formation}">FORMATION_HERE</option>
+                        <option th:each="forma : ${teamFormations}"
+                                th:value="${forma.formationId}"
+                                th:text="${forma.formation}"
+                                th:selected="${forma == selectedFormation}"></option>
                     </select>
                 </div>
                 <div th:each="err : ${#fields.errors('formation')}" th:text="${err}" class="error-message"></div>
@@ -322,7 +327,5 @@
             formationDropdown.appendChild(item);
         }
     }
-
-    updateFormationList()
 </script>
 </html>
