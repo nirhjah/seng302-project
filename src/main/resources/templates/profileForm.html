@@ -109,15 +109,30 @@
 
         <div class="content-box">
             <div class="content">
+                <a class="edit-button" th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
+                    <button type="button">View Team Activities</button>
+                </a>
                 <div class="col-wrapper">
                     <div class="third-col">
-                        <p>Hello</p>
+                        <p>Outcome of Games:</p>
+                        <p>Overall:</p>
+                        <p>Wins: </p>
+                        <p>Loses: </p>
+                        <p>Draws: </p>
+                        </br>
+                        </br>
+                        <p>Last 5 Games: </p>
+                        <p>(date) - (Game Or Friendly) </p>
+                        <p>(date) - </p>
+                        <p>(date) - </p>
+                        <p>(date) - </p>
+                        <p>(date) - </p>
                     </div>
                     <div class="third-col">
-                        <p>Hello</p>
+                        <p>Top Scorers:</p>
                     </div>
                     <div class="third-col">
-                        <p>Hello</p>
+                        <p>Substitutions:</p>
                     </div>
                 </div>
             </div>
