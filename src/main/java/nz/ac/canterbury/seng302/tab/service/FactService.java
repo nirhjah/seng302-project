@@ -2,11 +2,15 @@ package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FactService {
@@ -30,6 +34,23 @@ public class FactService {
      */
     public List<Fact> getAllFactsOfGivenTypeForActivity(int factType, Activity activity) {
         return factRepository.getFactByFactTypeAndActivity(factType, activity);
+    }
+
+    /**
+     * Code for handling return of multiple entities adapted from
+     * https://www.baeldung.com/jpa-return-multiple-entities#:~:text=In%20order%20to%20create%20a,primary%20and%20corresponding%20foreign%20keys.
+     * @param team team that top scorers are to be found from
+     * @return a List of mapping of top scorer by name to their number of goals
+     */
+    public List<Map<User, Long>> getTop5Scorers(Team team) {
+        List<Object[]> scorers =  factRepository.getListOfTopScorersAndTheirScores(team);
+        List<Map<User, Long>> scoreInformation = new ArrayList<>();
+        for (Object[] scorerInfo : scorers) {
+            User u = (User) scorerInfo[0];
+            Long i = (Long) scorerInfo[1];
+            scoreInformation.add(Map.of(u, i));
+        }
+        return scoreInformation;
     }
 
 
