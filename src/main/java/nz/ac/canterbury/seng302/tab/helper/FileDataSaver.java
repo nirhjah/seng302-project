@@ -118,6 +118,9 @@ public class FileDataSaver {
     }
 
     public enum SaveType {
+        // If you want to add a new saveType, add it here.
+        // (This enum basically creates a new filesystem folder.)
+        // The string value is the name of the folder.
         DEBUG("DEBUG"),
         TEAM_PFP("TEAM_PFP"),
         USER_PFP("USER_PFP"),
