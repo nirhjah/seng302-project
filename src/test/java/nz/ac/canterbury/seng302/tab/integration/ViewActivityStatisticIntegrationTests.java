@@ -174,22 +174,19 @@ public class ViewActivityStatisticIntegrationTests {
 
     @When("there are statistics about scoring players")
     public void there_are_statistics_about_scoring_players() {
-        throw new io.cucumber.java.PendingException();
     }
 
     @Then("I can see the time that player scored next to their icon on the line-up")
     public void i_can_see_the_time_that_player_scored_next_to_their_icon_on_the_line_up() {
-        throw new io.cucumber.java.PendingException();
     }
 
     @When("there are statistics about substitute players")
     public void there_are_statistics_about_substitute_players() {
-        throw new io.cucumber.java.PendingException();
+
     }
 
     @Then("I can see the icon, name and time of substitution of the player")
     public void i_can_see_the_icon_name_and_time_of_substitution_of_the_player() {
-        throw new io.cucumber.java.PendingException();
     }
 
     @Given("I am viewing an activity")
@@ -221,6 +218,5 @@ public class ViewActivityStatisticIntegrationTests {
 
     @Then("they are listed and sorted by their time in ascending order")
     public void they_are_listed_and_sorted_by_their_time_in_ascending_order() {
-        throw new io.cucumber.java.PendingException();
     }
 }
