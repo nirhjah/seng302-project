@@ -69,8 +69,7 @@ public class ViewUserController {
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("httpServletRequest",request);
 
-        Optional<String> base64Data = userService.getEncodedPictureString(user.getUserId());
-        base64Data.ifPresent(data -> model.addAttribute("displayPicture", base64Data.get()));
+        model.addAttribute("displayPicture", userService.getEncodedPictureString(user.getUserId()));
 
         var curUser = userService.getCurrentUser();
         boolean canEdit = curUser.filter(value -> value.getUserId() == userId).isPresent();

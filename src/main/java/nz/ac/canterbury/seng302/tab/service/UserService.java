@@ -319,19 +319,12 @@ public class UserService {
     }
 
     public byte[] getPictureBytes(long id) {
-        Optional<byte[]> optBytes = fileDataSaver.readFile(id);
-        if (optBytes.isPresent()) {
-            // return the profile picture bytes
-            return optBytes.get();
-        } else {
-            // else, return the default profile picture.
-            return defaultProfilePicture;
-        }
+        return fileDataSaver.readFileOrDefault(id, defaultProfilePicture);
     }
 
     public String getEncodedPictureString(long id) {
-        Optional<byte[]> bytes = getPictureBytes(id);
-        return bytes.map(value -> Base64.getEncoder().encodeToString(value));
+        byte[] bytes = getPictureBytes(id);
+        return Base64.getEncoder().encodeToString(bytes);
     }
 
     /**

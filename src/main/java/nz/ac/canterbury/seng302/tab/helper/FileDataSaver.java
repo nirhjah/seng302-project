@@ -174,7 +174,9 @@ public class FileDataSaver {
     }
 
     /**
-     * Reads bytes from a file, (returns Optional.empty() on failure).
+     * Reads bytes from a file given an id.
+     * If the file doesn't exist, (or the operation fails) returns Optional.empty()
+     * Else, returns an Optional of the data.
      * @param id A unique ID (e.g. user entity primary key)
      * @return Optional.empty() if operation failed, else, Optional.of() containing the bytes.
      */
@@ -188,6 +190,13 @@ public class FileDataSaver {
         }
     }
 
+    /**
+     * Reads bytes from a file.
+     * If the file doesn't exist, or the operation fails, returns `defaultBytes`
+     * @param id A unique ID (e.g. user entity primary key)
+     * @param defaultBytes an array of bytes to serve as default (e.g. default profile picture bytes)
+     * @return An array of bytes representing the save data
+     */
     public byte[] readFileOrDefault(Long id, byte[] defaultBytes) {
         Optional<byte[]> optBytes = readFile(id);
         if (optBytes.isPresent()) {
