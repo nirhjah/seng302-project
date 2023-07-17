@@ -47,7 +47,12 @@ public class HomeFormController {
     @Value("${spring.profiles.active}")
     private String profile;
 
-    FileDataSaver saver = new FileDataSaver("test", profile.replace("/", ""));
+    FileDataSaver saver = new FileDataSaver(
+            "homeFormTest",
+            // aye, this is kinda hacky. If the spring active profile contains "prod", we assume that we are on prod.
+            // Else, we assume that we are currently within a testing suite.
+            profile.contains("prod") ? FileDataSaver.DeploymentType.PROD : FileDataSaver.DeploymentType.TEST
+    );
 
     @GetMapping("/save1")
     public String upload1() {

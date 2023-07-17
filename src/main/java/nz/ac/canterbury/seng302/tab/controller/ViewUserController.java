@@ -36,7 +36,12 @@ public class ViewUserController {
     @Value("${spring.profiles.active}")
     private String profile;
 
-    private final FileDataSaver fileDataSaver = new FileDataSaver("test", profile.replace("/", ""));
+    FileDataSaver fileDataSaver = new FileDataSaver(
+            "homeFormTest",
+            // aye, this is kinda hacky. If the spring active profile contains "prod", we assume that we are on prod.
+            // Else, we are on test, and the files will be saved to a different folder.
+            profile.contains("prod") ? FileDataSaver.DeploymentType.PROD : FileDataSaver.DeploymentType.TEST
+    );
 
     /**
      * Gets the thymeleaf page representing the /demo page (a basic welcome screen

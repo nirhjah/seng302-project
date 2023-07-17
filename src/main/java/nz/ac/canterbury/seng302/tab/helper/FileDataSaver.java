@@ -1,56 +1,67 @@
 package nz.ac.canterbury.seng302.tab.helper;
 
-import jakarta.validation.constraints.NotNull;
+import org.springframework.security.core.parameters.P;
 
-import java.io.*;
-import java.util.*;
-
-import java.nio.file.*;
-
-
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 
 public class FileDataSaver {
-
-
-    /**
-     * `prefix` is like the prefix before all files.
-     * For example, teams have `prefix = "team"`
-     * And all the files are saved like:
-     *  `team_34894895`
-     *  `team_3287274389549`
-     *  etc.
-     */
-    private final Path addPath;
-
     private static final Set<String> usedModifiers = new HashSet<>();
-
-    public FileDataSaver(String prefix, String deploymentType) {
-        if (!usedModifiers.add(prefix)) {
-            throw new RuntimeException("Duplicate modifier name: " + prefix);
-        }
-        addPath = Path.of(
-                deploymentType,
-                prefix
-        );
-    }
-
 
     // DON'T CHANGE THESE PATH NAMES!
     private static final String TAB900_FILE_MODIFIER = "team900_seng302";
-    private static final String IMAGE_FILE_PATHS = "images";
 
-    private final Path imagePath = Path.of(
-            System.getProperty("user.home"),
-            TAB900_FILE_MODIFIER,
-            IMAGE_FILE_PATHS
-    );
+    private final Path initialPath;
 
-    private Path getPath(Long id, Path addPath) {
+    private Path getPath(Long id) {
         String idString = String.valueOf(id);
-        return imagePath
-                .resolve(addPath)
+        return initialPath
                 .resolve(idString);
+    }
+
+    public enum DeploymentType {
+        PROD("PROD"),
+        TEST("TEST");
+
+        private final String value;
+
+        DeploymentType(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return this.value;
+        }
+    }
+
+    /**
+     * `prefix` is just the prefix before all files.
+     * For example, teams prof picture saving should have a prefix like "team_imgs"
+     * And all the files are saved similar to so:
+     *  `team_imgs_3489489389545`
+     *  `team_imgs_5287274389549`
+     *  etc.
+     */
+    public FileDataSaver(String prefix, DeploymentType deploymentType) {
+        if (!usedModifiers.add(prefix)) {
+            throw new RuntimeException("Duplicate modifier name: " + prefix);
+        }
+
+        initialPath = Path.of(
+                System.getProperty("user.home"),
+                TAB900_FILE_MODIFIER,
+                deploymentType.toString(),
+                prefix
+        );
     }
 
     /**
@@ -60,7 +71,7 @@ public class FileDataSaver {
      * @return true on success, false on failure
      */
     public boolean saveFile(Long id, byte[] data) {
-        Path fullPath = getPath(id, addPath);
+        Path fullPath = getPath(id);
         try {
             Files.createDirectories(fullPath.getParent());
         } catch (IOException ex) {
@@ -85,7 +96,7 @@ public class FileDataSaver {
      * @return Optional.empty() if operation failed, else, Optional.of() containing the bytes.
      */
     public Optional<byte[]> readFile(Long id) {
-        Path fullPath = getPath(id, addPath);
+        Path fullPath = getPath(id);
         try {
             var bytes = Files.readAllBytes(fullPath);
             return Optional.of(bytes);
