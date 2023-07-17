@@ -313,6 +313,11 @@ public class UserService {
         return fileDataSaver.readFile(id);
     }
 
+    public Optional<String> getEncodedPictureString(long id) {
+        Optional<byte[]> bytes = getPictureBytes(id);
+        return bytes.map(value -> Base64.getEncoder().encodeToString(value));
+    }
+
     /**
      * Updates the user's password then creates and sends email informing the user that their password has been updated.
      * @param user the user whose password was updated
