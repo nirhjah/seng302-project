@@ -4,10 +4,7 @@ import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Formation;
 import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
 
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity(name="LineUp")
 public class LineUp {
