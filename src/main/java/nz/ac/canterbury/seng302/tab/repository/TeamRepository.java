@@ -73,13 +73,27 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
     Page<Team> findTeamByFilteredLocations(@Param("filteredLocations") List<String> filteredLocations,
             Pageable pageable, @Param("name") String name);
 
-    @Query("SELECT t FROM Team t " +
+//    @Query("SELECT t FROM Team t " +
+//            "WHERE (:#{#filteredLocations.size} = 0 OR lower(t.location.city) in (:filteredLocations)) " +
+//            "AND (:#{#filteredSports.size} = 0 OR lower(t.sport) in (:filteredSports)) " +
+//            "AND (:name IS NOT NULL " +
+//            "AND ((lower(t.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
+//            "OR (lower(t.location.city) like lower(concat('%', :name, '%')))" +
+//            "OR ((t.teamClub is not null ) AND (lower(t.teamClub.name) LIKE LOWER(CONCAT('%', :name, '%'))))))" +
+//            "ORDER BY LOWER(t.name) ASC, LOWER(t.location.city) ASC ")
+//    Page<Team> findTeamByFilteredLocationsAndSports(
+//            Pageable pageable,
+//            @Param("filteredLocations") List<String> filteredLocations,
+//            @Param("filteredSports") List<String> filteredSports,
+//            @Param("name") String name);
+
+    @Query("SELECT t FROM Team t left join Club c on t.teamClub.clubId = c.clubId " +
             "WHERE (:#{#filteredLocations.size} = 0 OR lower(t.location.city) in (:filteredLocations)) " +
             "AND (:#{#filteredSports.size} = 0 OR lower(t.sport) in (:filteredSports)) " +
             "AND (:name IS NOT NULL " +
             "AND ((lower(t.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
-            "OR (((t.teamClub) IS NOT NULL) AND (lower(t.teamClub.name) LIKE LOWER (CONCAT('%', :name, '%'))))" +
             "OR (lower(t.location.city) like lower(concat('%', :name, '%'))))) " +
+            "OR lower(c.name) like lower(concat('%', :name, '%')) " +
             "ORDER BY LOWER(t.name) ASC, LOWER(t.location.city) ASC ")
     Page<Team> findTeamByFilteredLocationsAndSports(
             Pageable pageable,
