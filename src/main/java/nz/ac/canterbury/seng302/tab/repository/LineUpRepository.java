@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface LineUpRepository extends CrudRepository<LineUp, Long> {
 
-    Optional<List<LineUp>> findLineUpByTeamId(Long teamId);
+    Optional<List<LineUp>> findLineUpByTeamTeamId(Long teamId);
 
 }

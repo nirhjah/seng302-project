@@ -11,11 +11,11 @@ public class LineUpPosition {
     private Long lineUpPositionId;
 
     @OneToOne
-    @JoinColumn(name = "fk_lineUpId", referencedColumnName = "lineUpId")
+    @JoinColumn(name = "lineUpId")
     private LineUp lineUp;
 
     @OneToOne
-    @JoinColumn(name = "fk_userId", referencedColumnName = "userId")
+    @JoinColumn(name = "userId")
     private User player;
 
     @Column(nullable = false)

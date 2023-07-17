@@ -15,7 +15,7 @@ public class LineUpService {
     LineUpRepository lineUpRepository;
 
     public Optional<List<LineUp>> findLineUpsByTeam(long id) {
-        return lineUpRepository.findLineUpByTeamId(id);
+        return lineUpRepository.findLineUpByTeamTeamId(id);
     }
 
 }

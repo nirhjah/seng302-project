@@ -15,7 +15,7 @@ public class LineUpPositionService {
     private LineUpPositionRepository lineUpPositionRepository;
 
     public Optional<List<LineUpPosition>> findLineUpPositionsByLineUp(long id) {
-        return lineUpPositionRepository.findLineUpPositionsByLineUpId(id);
+        return lineUpPositionRepository.findLineUpPositionsByLineUpLineUpId(id);
     }
 
 }
