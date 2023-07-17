@@ -42,6 +42,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -106,7 +107,6 @@ public class U33EditLineupForGameFeature {
     public void i_am_the_manager_of_a_team() throws IOException {
         Location location = new Location("42 Wallaby Way", null, null, "Sydney", null, "Australia");
         team = new Team("Test Team", "Fire Juggling", location);
-
         team = teamService.addTeam(team);
 
         team.setManager(user);
@@ -131,8 +131,8 @@ public class U33EditLineupForGameFeature {
         requestBuilder = post("/createActivity")
                 .param("team", String.valueOf(team.getTeamId()))
                 .param("description", "testing edit description")
-                .param("startDateTime", "2023-07-01T10:00:00")
-                .param("endDateTime", "2023-08-01T12:00:00")
+                .param("startDateTime", "3023-07-01T10:00:00")
+                .param("endDateTime", "3023-08-01T12:00:00")
                 .param("addressLine1", "43 Wallaby Way")
                 .param("city", "Greymouth")
                 .param("country", "New Zealand")
@@ -154,6 +154,7 @@ public class U33EditLineupForGameFeature {
     @Then("the saved activity has the formation {string}")
     public void the_saved_activity_has_the_formation(String formationStr) throws Exception {
         MvcResult result = mockMvc.perform(requestBuilder)
+            .andDo(print())
             .andExpect(status().isFound())
             .andExpect(redirectedUrlPattern("/view-activity*"))
             .andReturn();

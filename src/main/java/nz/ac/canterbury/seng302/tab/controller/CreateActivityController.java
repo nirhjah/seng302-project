@@ -49,7 +49,7 @@ public class CreateActivityController {
 
     private Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
-    private static final String TEMPLATE_NAME = "createActivity";
+    private static final String TEMPLATE_NAME = "createActivityForm";
 
     public CreateActivityController(TeamService teamService, UserService userService,
             ActivityService activityService, FormationService formationService) {
