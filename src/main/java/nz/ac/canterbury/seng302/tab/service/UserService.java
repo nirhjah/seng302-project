@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -19,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -62,12 +65,18 @@ public class UserService {
 
     private final FileDataSaver fileDataSaver;
 
+    private final byte[] defaultProfilePicture;
+
     @Autowired
-    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService, PasswordEncoder passwordEncoder) throws IOException {
         this.userRepository = userRepository;
         this.taskScheduler = taskScheduler;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
+
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        InputStream is = resource.getInputStream();
+        defaultProfilePicture = is.readAllBytes();
 
         /*
         Explanation:
@@ -309,11 +318,18 @@ public class UserService {
         fileDataSaver.saveFile(userId, bytes);
     }
 
-    public Optional<byte[]> getPictureBytes(long id) {
-        return fileDataSaver.readFile(id);
+    public byte[] getPictureBytes(long id) {
+        Optional<byte[]> optBytes = fileDataSaver.readFile(id);
+        if (optBytes.isPresent()) {
+            // return the profile picture bytes
+            return optBytes.get();
+        } else {
+            // else, return the default profile picture.
+            return defaultProfilePicture;
+        }
     }
 
-    public Optional<String> getEncodedPictureString(long id) {
+    public String getEncodedPictureString(long id) {
         Optional<byte[]> bytes = getPictureBytes(id);
         return bytes.map(value -> Base64.getEncoder().encodeToString(value));
     }

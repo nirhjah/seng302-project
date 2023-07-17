@@ -96,9 +96,6 @@ public class User {
         this.hashedPassword = password;
         this.favoriteSports = favoriteSports;
         this.location = location;
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
 
     /**

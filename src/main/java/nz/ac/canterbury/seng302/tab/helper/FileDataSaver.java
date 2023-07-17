@@ -187,4 +187,15 @@ public class FileDataSaver {
             return Optional.empty();
         }
     }
+
+    public byte[] readFileOrDefault(Long id, byte[] defaultBytes) {
+        Optional<byte[]> optBytes = readFile(id);
+        if (optBytes.isPresent()) {
+            // If the file exists, return the default bytes
+            return optBytes.get();
+        } else {
+            // Else, return default bytes
+            return defaultBytes;
+        }
+    }
 }
