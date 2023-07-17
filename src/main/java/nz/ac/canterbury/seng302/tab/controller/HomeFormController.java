@@ -7,6 +7,7 @@ import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
 import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -22,7 +23,7 @@ import java.util.Optional;
  * Spring Boot Controller class for the Home Form class.
  */
 @Controller
-public class HomeFormController {
+public class HomeFormController implements InitializingBean {
     Logger logger = LoggerFactory.getLogger(HomeFormController.class);
 
     @Autowired
@@ -48,22 +49,19 @@ public class HomeFormController {
     @Value("${spring.profiles.active}")
     private String profile;
 
-    private final FileDataSaver saver =
+    private FileDataSaver saver;
 
-    @PostConstruct
-    public void init() {
+    @Override
+    public void afterPropertiesSet() {
         /*
         Explanation:
         The reason we need this here is because .profile is null when the controller is being constructed.
         We need to wait until everything is fully initialized before the @Value
         annotation works, hence this method here.
          */
-
-        // aye, this is kinda hacky. If the spring active profile contains "prod", we assume that we are on prod.
-        // Else, we assume that we are currently within a testing suite.
-        FileDataSaver.DeploymentType deploymentType = profile.contains("prod") ? FileDataSaver.DeploymentType.PROD : FileDataSaver.DeploymentType.TEST
-        new FileDataSaver(
+        saver = new FileDataSaver(
                 "homeFormTest",
+                FileDataSaver.getDeploymentType(profile)
         );
     }
 

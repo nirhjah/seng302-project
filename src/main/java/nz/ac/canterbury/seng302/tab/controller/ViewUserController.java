@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.Optional;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -36,12 +37,21 @@ public class ViewUserController {
     @Value("${spring.profiles.active}")
     private String profile;
 
-    FileDataSaver fileDataSaver = new FileDataSaver(
-            "homeFormTest",
-            // aye, this is kinda hacky. If the spring active profile contains "prod", we assume that we are on prod.
-            // Else, we are on test, and the files will be saved to a different folder.
-            profile.contains("prod") ? FileDataSaver.DeploymentType.PROD : FileDataSaver.DeploymentType.TEST
-    );
+    private FileDataSaver fileDataSaver;
+
+    @PostConstruct
+    public void init() {
+        /*
+        Explanation:
+        The reason we need this here is because .profile is null when the controller is being constructed.
+        We need to wait until everything is fully initialized before the @Value
+        annotation works, hence this method here.
+         */
+        fileDataSaver = new FileDataSaver(
+                "homeFormTest",
+                FileDataSaver.getDeploymentType(profile)
+        );
+    }
 
     /**
      * Gets the thymeleaf page representing the /demo page (a basic welcome screen

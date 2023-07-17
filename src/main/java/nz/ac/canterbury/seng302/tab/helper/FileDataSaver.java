@@ -5,9 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 
 public class FileDataSaver {
@@ -33,13 +31,19 @@ public class FileDataSaver {
      * @return appropriate DeploymentType enum
      */
     public static DeploymentType getDeploymentType(String profile) {
-
+        // This is a bit hacky, but oh well
+        if (profile.contains("prod")) {
+            return DeploymentType.PROD;
+        } else {
+            return DeploymentType.TEST;
+        }
     }
+
 
     /**
      * Returns a (global) path that matches the deployment type.
+     * <br>
      * For example:
-     *
      * getDeploymentPath( TEST ) -> C:/users/oli/home/seng302/TEST
      * getDeploymentPath( PROD ) -> C:/users/oli/home/seng302/PROD
      * @param depType the deployment type
