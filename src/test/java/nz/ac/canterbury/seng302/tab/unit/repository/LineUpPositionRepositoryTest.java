@@ -69,6 +69,7 @@ public class LineUpPositionRepositoryTest {
         this.lineUpPosition = new LineUpPosition(this.lineUp, this.user, 1);
         this.formationRepository.save(formation);
         this.lineUpRepository.save(lineUp);
+        this.lineUpPositionRepository.save(lineUpPosition);
     }
     @Test
     public void getLineUpByPositionId() {
