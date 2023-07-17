@@ -60,7 +60,7 @@ public class Activity {
     @Column
     private String otherTeamScore;
 
-    @Column(nullable = true)
+    @Column
     @Enumerated(EnumType.ORDINAL)
     private ActivityOutcome outcome;
 
@@ -171,6 +171,10 @@ public class Activity {
     public void setOtherTeamScore(String otherTeamScore) {
         this.otherTeamScore = otherTeamScore;
     }
+
+    public void setActivityOutcome(ActivityOutcome activityOutcome) {this.outcome = activityOutcome;}
+
+    public ActivityOutcome getOutcome() {return outcome;}
 
     @Override
     public boolean equals(Object o) {
