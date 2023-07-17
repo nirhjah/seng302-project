@@ -1,17 +1,13 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.io.IOException;
-import java.util.Base64;
-import java.util.Optional;
-
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
-import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
+import jakarta.servlet.http.HttpServletResponse;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.servlet.http.HttpServletResponse;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.service.UserService;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.Optional;
 
 @Controller
 public class ViewUserController {
@@ -34,24 +30,6 @@ public class ViewUserController {
     @Autowired
     UserService userService;
 
-    @Value("${spring.profiles.active:unknown}")
-    private String profile;
-
-    private FileDataSaver fileDataSaver;
-
-    @PostConstruct
-    public void init() {
-        /*
-        Explanation:
-        The reason we need this here is because .profile is null when the controller is being constructed.
-        We need to wait until everything is fully initialized before the @Value
-        annotation works, hence this method here.
-         */
-        fileDataSaver = new FileDataSaver(
-                FileDataSaver.SaveType.USER_PFP,
-                FileDataSaver.getDeploymentType(profile)
-        );
-    }
 
     /**
      * Gets the thymeleaf page representing the /demo page (a basic welcome screen
@@ -91,7 +69,7 @@ public class ViewUserController {
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("httpServletRequest",request);
 
-        Optional<byte[]> fileData = fileDataSaver.readFile(user.getUserId());
+        Optional<byte[]> fileData = userService.getPictureBytes(user.getUserId());
         fileData.ifPresent(data -> {
             String base64Data = Base64.getEncoder().encodeToString(data);
             model.addAttribute("displayPicture", base64Data);
@@ -149,7 +127,7 @@ public class ViewUserController {
         model.addAttribute("userId", userId);
 
         // Saving the file in the file system
-        fileDataSaver.saveFile(userId, file.getBytes());
+        userService.updatePicture(userId, file.getBytes());
 
         // userService.updatePicture(file, userId);
         return "redirect:/user-info?name=" + authUser.getUserId();

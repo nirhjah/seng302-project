@@ -60,7 +60,7 @@ public class UserService {
     @Value("${spring.profiles.active:unknown}")
     private String profile = "test";
 
-    private FileDataSaver saver;
+    private final FileDataSaver fileDataSaver;
 
     @Autowired
     public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService, PasswordEncoder passwordEncoder) {
@@ -69,8 +69,14 @@ public class UserService {
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
 
+        /*
+        Explanation:
+        The reason we need to construct this here is because .profile is null when the controller is being constructed.
+        We need to wait until everything is fully initialized before the @Value
+        annotation works, hence this method here.
+         */
         FileDataSaver.DeploymentType deploymentType = FileDataSaver.getDeploymentType(profile);
-        saver = new FileDataSaver(FileDataSaver.SaveType.USER_PFP, deploymentType);
+        fileDataSaver = new FileDataSaver(FileDataSaver.SaveType.USER_PFP, deploymentType);
     }
 
     public static final Sort SORT_BY_LAST_AND_FIRST_NAME = Sort.by(
@@ -195,7 +201,7 @@ public class UserService {
 
 
     public String getPictureString(long id) {
-        Optional<byte[]> optionalBytes = saver.readFile(id);
+        Optional<byte[]> optionalBytes = fileDataSaver.readFile(id);
 
         if (optionalBytes.isPresent()) {
             return Base64.getEncoder().encodeToString(optionalBytes.get());
@@ -289,31 +295,22 @@ public class UserService {
     }
 
     /**
-     * Method which updates the picture by taking the MultipartFile type and
-     * updating the picture
-     * stored in the team with id primary key.
+     * Updates a user's profile picture.
+     * If the user doesn't exist, this method is a NOOP.
      *
-     * @param file MultipartFile file upload
-     * @param id   Team's unique id
+     * @param userId The userId
+     * @param bytes The bytes that represent the image
      */
-    public void updatePicture(MultipartFile file, long id) {
-        User user = userRepository.findById(id).get();
-
-        // Gets the original file name as a string for validation
-        String pictureString = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        if (pictureString.contains("..")) {
-            logger.info("not a a valid file");
+    public void updatePicture(long userId, byte[] bytes) {
+        if (findUserById(userId).isEmpty()) {
+            // If the user doesn't exist, do nothing
+            return;
         }
-        try {
-            // Encodes the file to a byte array and then convert it to string, then set it
-            // as the pictureString variable.
-            saver.saveFile(id, file.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        fileDataSaver.saveFile(userId, bytes);
+    }
 
-        // Saved the updated picture string in the database.
-        userRepository.save(user);
+    public Optional<byte[]> getPictureBytes(long id) {
+        return fileDataSaver.readFile(id);
     }
 
     /**
