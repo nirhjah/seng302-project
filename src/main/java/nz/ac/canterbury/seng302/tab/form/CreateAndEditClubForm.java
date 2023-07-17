@@ -43,7 +43,7 @@ public class CreateAndEditClubForm {
         return sport;
     }
 
-    public void setSport(String name) {
+    public void setSport(String sport) {
         this.sport = sport;
     }
 
