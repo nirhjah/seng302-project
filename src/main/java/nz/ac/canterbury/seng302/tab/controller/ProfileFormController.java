@@ -50,9 +50,12 @@ public class ProfileFormController {
     @Autowired
     private FactService factService;
 
-    public ProfileFormController(UserService userService, TeamService teamService) {
+    public ProfileFormController(UserService userService, TeamService teamService,
+                                 ActivityService activityService, FactService factService) {
         this.userService = userService;
         this.teamService = teamService;
+        this.activityService = activityService;
+        this.factService = factService;
     }
 
     /**

@@ -124,7 +124,12 @@
                         </br>
                         </br>
                         <p>Last 5 Games: </p>
-                        <p th:each="act : ${last5GOrF}" th:text="|${act.outcome.name()} - ${act.activityType.name()}|" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|"></p>
+                        <p th:each="act : ${last5GOrF}"
+                           th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
+                           endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')},
+                           startTime=${#temporals.format(act.activityStart, 'hh:mma')},
+                           endTime=${#temporals.format(act.activityEnd, 'hh:mma')}"
+                           th:text="|Date: ${startDate} ${startTime}, ${act.outcome.name()} - ${act.activityType.name()}|" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|"></p>
                     </div>
                     <div class="third-col">
                         <p>Top Scorers:</p>
