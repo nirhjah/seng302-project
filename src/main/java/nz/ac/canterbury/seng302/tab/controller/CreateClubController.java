@@ -121,6 +121,7 @@ public class CreateClubController {
             editClub.setLocation(location);
 
             clubService.updateOrAddClub(editClub);
+            return "redirect:/view-club?clubID=" + editClub.getClubId();
 
         } else {
 
@@ -135,10 +136,9 @@ public class CreateClubController {
             }
 
             clubService.updateOrAddClub(club);
+            return "redirect:/view-club?clubID=" + club.getClubId();
 
         }
-
-        return "redirect:/home"; //TODO Redirect to view club page when it's done
     }
 
     /**
