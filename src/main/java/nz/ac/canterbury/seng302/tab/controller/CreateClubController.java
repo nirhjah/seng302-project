@@ -155,7 +155,7 @@ public class CreateClubController {
             if (selectedTeams != null) {
                 for (String team : selectedTeams) {
                     if ( teamService.getTeam(Long.parseLong(team)).getTeamClub() != null ) {
-                        bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Teams can only be part of one club"));
+                        bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Team already belongs to another club"));
                     }
                     else {
                         teamService.getTeam(Long.parseLong(team)).setTeamClub(club);
@@ -163,7 +163,7 @@ public class CreateClubController {
                 }}
         }
         catch (UnmatchedSportException e) {
-            bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Teams must have same sport"));
+            bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Teams must have the same sport"));
         }
     }
 
