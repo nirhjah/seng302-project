@@ -9,6 +9,7 @@ import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.enums.FactType;
+import nz.ac.canterbury.seng302.tab.form.CreateEventForm;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import nz.ac.canterbury.seng302.tab.service.FactService;
 import org.slf4j.Logger;
@@ -68,8 +69,8 @@ public class ViewActivityController {
     public String viewActivityPage(
             Model model,
             @RequestParam(value = "activityID") Long activityID,
-            HttpServletRequest request) {
-        logger.info("GET /profileForm");
+            HttpServletRequest request,
+            CreateEventForm createEventForm) {
 
         Activity activity = activityService.findActivityById(activityID);
         if (activity == null) {

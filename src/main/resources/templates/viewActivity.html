@@ -83,27 +83,27 @@
         <div id="addEventModal" class="modal" th:style="${tokenInvalid != null ? 'display:block' : 'display:none'}">
 
             <div class="modal-content">
-                <h1>test</h1>
-                        <form id="addEventForm" method="post" th:object="${addEventForm}">
+                <h1>Create New Event</h1>
+                        <form id="createEventForm" method="post" th:object="${createEventForm}">
                     <div class="select-container">
-                                <!--here we need to display all of the types of events -->
-                        <label for="factsType"></label>
-                        <select id="factsType" name="factsType">
-                                    <option th:each="fact : ${possibleFactType}"
+                        <!--here we need to display all of the types of events -->
+                        <label for="factType"></label>
+                        <select id="factType" name="factType">
+                                    <option th:each="fact : ${possibleFactTypes}"
                                             th:value="${fact}"
-                                            th:selected="${fact == addEventForm.factsType}"
                                             th:text="${fact}"></option> 
                         </select>
                         <label for="description"></label>
-                        <label for="description"></label>
-                        <label for="description"></label>
+                        <input type="text-area" name="description" value="description">
+                        <label for="time"></label>
+                        <input type="text-area" name="factTime" value="time">
                         
+                    </div>
+                    <div class="submit-button">
+                        <button id="createEvent" type="submit" class="registerLoginButton">Create Event</button>
                     </div>
                     
                 </form>
-                <div class="submit-button">
-                    <button id="joinTeam" type="submit" class="registerLoginButton">Join Team</button>
-                </div>
 
             </div>
 
