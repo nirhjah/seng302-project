@@ -42,11 +42,6 @@ Feature: U38 – Create / view / update a club
 #    When I click on the link to their club,
 #    Then I will see their club details (Not sure if this is what the link does)
 #
-#  Scenario: AC7: Everywhere I see a team’s profile (e.g., in search results), if this team belongs to a club, I also see the name of the club
-#    Given I am anywhere on the system where I can see a team’s profile (e.g. in search results) and the team belongs to a club,
-#    Then I can see the name of the club.
-#
-#
 #  Scenario: AC8: When searching for teams, I can also search for clubs.
 #    Given I am on the teams search form,
 #    When the search string contains the name of the club,
