@@ -3,12 +3,12 @@ package nz.ac.canterbury.seng302.tab.entity.lineUp;
 import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
-@Entity(name="LineUpPositions")
-public class LineUpPositions {
+@Entity(name="LineUpPosition")
+public class LineUpPosition {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long lineUpPositionsId;
+    private Long lineUpPositionId;
 
     @OneToOne
     @JoinColumn(name = "fk_lineUpId", referencedColumnName = "lineUpId")
@@ -25,7 +25,7 @@ public class LineUpPositions {
      * Default constructor for Line-up positions.
      * Required by JPA.
      */
-    protected LineUpPositions() {}
+    protected LineUpPosition() {}
 
     /**
      * Constructs a position in a line-up for a player to occupy
@@ -34,7 +34,7 @@ public class LineUpPositions {
      * @param player    The player to whom the position describes
      * @param position  The position in the formation as it relates to the line-up
      */
-    public LineUpPositions(LineUp lineUp, User player, int position) {
+    public LineUpPosition(LineUp lineUp, User player, int position) {
         this.lineUp = lineUp;
         this.player = player;
         this.position = position;
@@ -63,5 +63,13 @@ public class LineUpPositions {
 
     public void setLineUp(LineUp lineUp) {
         this.lineUp = lineUp;
+    }
+
+    public Long getLineUpPositionId() {
+        return lineUpPositionId;
+    }
+
+    public void setLineUpPositionId(Long lineUpPositionId) {
+        this.lineUpPositionId = lineUpPositionId;
     }
 }

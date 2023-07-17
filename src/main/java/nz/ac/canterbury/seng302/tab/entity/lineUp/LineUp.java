@@ -63,4 +63,20 @@ public class LineUp {
     public void setTeam(Team team) {
         this.team = team;
     }
+
+    public Long getLineUpId() {
+        return lineUpId;
+    }
+
+    public void setLineUpId(Long lineUpId) {
+        this.lineUpId = lineUpId;
+    }
+
+    public Activity getActivity() {
+        return activity;
+    }
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
+    }
 }

@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.unit.repository;
 
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.repository.*;
 import org.junit.jupiter.api.Assertions;
@@ -15,10 +16,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @DataJpaTest
-public class LineUpRepositoryTest {
+public class LineUpPositionRepositoryTest {
 
     @Autowired
     private LineUpRepository lineUpRepository;
+
+    @Autowired
+    private LineUpPositionRepository lineUpPositionRepository;
 
     @Autowired
     private TeamRepository teamRepository;
@@ -44,6 +48,8 @@ public class LineUpRepositoryTest {
 
     private Formation formation;
 
+    private LineUpPosition lineUpPosition;
+
     @BeforeEach
     void beforeAll() throws Exception {
         this.location = new Location(null, null, null, "Christchurch", null, "New Zealand");
@@ -61,20 +67,20 @@ public class LineUpRepositoryTest {
 
         this.formation = new Formation ("4-2-2", this.team);
         this.lineUp = new LineUp(formation, this.team, this.activity);
+        this.lineUpPosition = new LineUpPosition(this.lineUp, this.user, 1);
         this.formationRepository.save(formation);
         this.lineUpRepository.save(lineUp);
     }
     @Test
-    public void getLineUpById(){
-        LineUp retreivedLineup = lineUpRepository.findById(lineUp.getLineUpId()).get();
-        Assertions.assertEquals(lineUp, retreivedLineup);
+    public void getLineUpByPositionId() {
+        LineUpPosition retreivedLineUpPosition = lineUpPositionRepository.findById(lineUpPosition.getLineUpPositionId()).get();
+        Assertions.assertEquals(lineUpPosition, retreivedLineUpPosition);
     }
 
     @Test
-    public void getLineUpsByTeam() throws IOException {
-        List<LineUp> retrievedLineups = lineUpRepository.findLineUpByTeamId(team.getTeamId()).get();
-        Assertions.assertEquals(lineUp, retrievedLineups.get(0));
+    public void getLineUpPositionsByFormation() {
+        List<LineUpPosition> retrievedLineupPositions = lineUpPositionRepository.findLineUpPositionsByLineUpId(formation.getFormationId()).get();
+        Assertions.assertEquals(lineUpPosition, retrievedLineupPositions.get(0));
     }
 
 }
-
