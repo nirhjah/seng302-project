@@ -209,3 +209,14 @@
     display: flex;
     align-items: center;
 }
+
+.col-wrapper {
+    width: 100%;
+}
+
+.third-col {
+    padding: 10px;
+    float: left;
+    display: block;
+    width: 33%;
+}
