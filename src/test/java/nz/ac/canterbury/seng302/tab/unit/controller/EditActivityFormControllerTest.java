@@ -79,12 +79,12 @@ public class EditActivityFormControllerTest {
     private FormationService mockFormationService;
 
     private Team team;
-
+    private User testUser;
     private Activity activity;
 
     private static final Long TEAM_ID = 1L;
 
-    final long ACT_ID = 99;
+    private static final long ACT_ID = 99;
 
     private static final Long FORMATION_ID = 123L;
 
@@ -98,7 +98,7 @@ public class EditActivityFormControllerTest {
         }
         Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY,
                 USER_POSTCODE, USER_COUNTRY);
-        User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD, testLocation);
+        testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD, testLocation);
         team = spy(new Team("test", "Hockey", testLocation, testUser));
         Mockito.doReturn(TEAM_ID).when(team).getTeamId();
         LocalDateTime start =   LocalDateTime.of(2023, 6,1,6,30);
@@ -864,7 +864,7 @@ public class EditActivityFormControllerTest {
 
     // TODO: ADD TESTS FOR THE API ENDPOINT
     @Test
-    public void whenAskingForTeamFormation_returnJSON() throws Exception {
+    public void whenAskingForTeamFormation_isManager_succeed() throws Exception {
         Formation formation1 = Mockito.spy(new Formation("1-2-3", team));
         Formation formation2 = Mockito.spy(new Formation("2-3-4", team));
         Mockito.doReturn(1L).when(formation1).getFormationId();
@@ -881,5 +881,54 @@ public class EditActivityFormControllerTest {
                         .param("teamId", String.valueOf(TEAM_ID)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(EXPECTED_JSON, false));
+    }
+
+    @Test
+    public void whenAskingForTeamFormation_isCoach_succeed() throws Exception {
+        Formation formation1 = Mockito.spy(new Formation("1-2-3", team));
+        Formation formation2 = Mockito.spy(new Formation("2-3-4", team));
+        Mockito.doReturn(1L).when(formation1).getFormationId();
+        Mockito.doReturn(2L).when(formation2).getFormationId();
+        when(mockFormationService.getTeamsFormations(TEAM_ID)).thenReturn(
+            List.of(formation1, formation2)
+        );
+
+        team.setCoach(testUser);
+
+        String EXPECTED_JSON = """
+            {"1":"1-2-3","2":"2-3-4"}
+        """;
+
+        mockMvc.perform(get("/createActivity/get_team_formation")
+                        .param("teamId", String.valueOf(TEAM_ID)))
+                .andExpect(status().isOk())
+                .andExpect(content().json(EXPECTED_JSON, false));
+    }
+
+    @Test
+    public void whenAskingForTeamFormation_notInTeam_returnForbidden() throws Exception {
+        // We're not in this team
+        Team otherTeam = new Team("Wrong", "Sport");
+        when(mockTeamService.getTeam(TEAM_ID)).thenReturn(otherTeam);
+
+
+        mockMvc.perform(get("/createActivity/get_team_formation")
+                        .param("teamId", String.valueOf(TEAM_ID)))
+                .andExpect(status().isForbidden())
+                .andExpect(content().string(""));
+    }
+
+    @Test
+    public void whenAskingForTeamFormation_notTeamManagerOrCoach_returnForbidden() throws Exception {
+        // We're not the manager of this team
+        Team otherTeam = new Team("Wrong", "Sport");
+        otherTeam.setMember(testUser);
+        when(mockTeamService.getTeam(TEAM_ID)).thenReturn(otherTeam);
+
+
+        mockMvc.perform(get("/createActivity/get_team_formation")
+                        .param("teamId", String.valueOf(TEAM_ID)))
+                .andExpect(status().isForbidden())
+                .andExpect(content().string(""));
     }
 }
