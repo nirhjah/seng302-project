@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.helper;
 
-import org.springframework.security.core.parameters.P;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,6 +15,8 @@ public class FileDataSaver {
 
     // DON'T CHANGE THESE PATH NAMES!
     private static final String TAB900_FILE_MODIFIER = "team900_seng302";
+
+    private static final Logger logger = LoggerFactory.getLogger(FileDataSaver.class);
 
     private final Path initialPath;
 
@@ -84,14 +87,14 @@ public class FileDataSaver {
 
     /**
      * Clears the test folder (deletes all files and nested directories)
-     * @return true on success, false on failure
      */
-    public static boolean clearTestFolder() {
-        var path = getDeploymentPath(DeploymentType.TEST);
-        boolean success = true;
+    public static void clearTestFolder() {
+        Path path = getDeploymentPath(DeploymentType.TEST);
 
         File folder = new File(path.toUri());
-        return deleteFolder(folder);
+        boolean ok = deleteFolder(folder);
+        if (!ok)
+            logger.warn("Delete folder failed!");
     }
 
     static {
