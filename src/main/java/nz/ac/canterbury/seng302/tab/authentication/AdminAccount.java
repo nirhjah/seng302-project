@@ -1,7 +1,10 @@
 package nz.ac.canterbury.seng302.tab.authentication;
 
+import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -14,6 +17,8 @@ import java.util.GregorianCalendar;
 public class AdminAccount implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private TeamRepository teamRepository;
 
     // TODO: This SHOULD NOT be hard coded in. Either remove this account, or make it an env variable.
     private static final String ADMIN_PW = "1";
