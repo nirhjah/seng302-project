@@ -28,6 +28,7 @@ public class LineUp {
     @OneToOne
     @JoinColumn(name = "fk_activityId", referencedColumnName = "activityId")
     private Activity activity;
+
     /**
      * Default constructor for Line-up.
      * Required by JPA.

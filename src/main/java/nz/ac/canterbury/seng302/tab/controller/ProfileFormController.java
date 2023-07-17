@@ -149,7 +149,7 @@ public class ProfileFormController {
         formation.setCustomPlayerPositions(customPlayerPositions);
         formation.setCustom(custom);
         formationService.addOrUpdateFormation(formation);
-        return "redirect:/profile?teamID=" + teamID;
+        return "profileForm";
     }
 
 }
