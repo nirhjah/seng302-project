@@ -79,7 +79,7 @@ public class LineUpPositionRepositoryTest {
 
     @Test
     public void getLineUpPositionsByFormation() {
-        List<LineUpPosition> retrievedLineupPositions = lineUpPositionRepository.findLineUpPositionsByLineUpLineUpId(formation.getFormationId()).get();
+        List<LineUpPosition> retrievedLineupPositions = lineUpPositionRepository.findLineUpPositionsByLineUpLineUpId(lineUp.getLineUpId()).get();
         Assertions.assertEquals(lineUpPosition, retrievedLineupPositions.get(0));
     }
 
