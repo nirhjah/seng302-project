@@ -84,9 +84,9 @@
 
             <div class="modal-content">
                 <h1>Create New Event</h1>
-                        <form id="createEventForm" method="post" th:object="${createEventForm}">
+                <form th:action="@{view-activity}" id="createEventForm" method="post" th:object="${createEventForm}">
+                    <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
                     <div class="select-container">
-                        <!--here we need to display all of the types of events -->
                         <label for="factType"></label>
                         <select id="factType" name="factType">
                                     <option th:each="fact : ${possibleFactTypes}"
@@ -96,7 +96,8 @@
                         <label for="description"></label>
                         <input type="text-area" name="description" value="description">
                         <label for="time"></label>
-                        <input type="text-area" name="factTime" value="time">
+                        <input type="text-area" name="time" value="time">
+                        <label for="time"></label>
                         
                     </div>
                     <div class="submit-button">

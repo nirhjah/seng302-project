@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -120,6 +121,36 @@ public class ViewActivityController {
 
         return "viewActivity";
     }
+
+    @PostMapping("/view-activity")
+    public String createEvent(
+            @RequestParam(name = "actId", defaultValue = "-1") long actId, 
+            @RequestParam(name = "factType") FactType factType,
+            @RequestParam(name = "description") String description,
+            @RequestParam(name = "time") String time,
+            HttpServletRequest request) {
+
+        // create the new fact of facttype 
+        logger.info("POST /view-activity");
+        logger.info("got the desc " + description);
+        logger.info(factType.name());
+        logger.info(String.format("got the act id: %s", actId));
+
+        // add the fact to the game 
+            
+        Activity activity = activityService.findActivityById(actId);
+
+        Fact fact = new Fact(description, time, activity);
+        List<Fact> factList= new ArrayList<>();
+        factList.add(fact);
+        
+        // activity.addFactToFactList(fact);
+        activity.addFactList(factList);
+        activity = activityService.updateOrAddActivity(activity);
+        
+        return String.format("redirect:./view-activity?activityID=%s", actId);
+    }
+
 
 
 }
