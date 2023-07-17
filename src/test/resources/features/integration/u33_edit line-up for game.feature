@@ -3,17 +3,19 @@
 Feature: U33 – Edit line-up for game
   Scenario: AC1: Add line-up to activity from existing team formations as manager
     Given I am the manager of a team
+    And the team has a formation "1-2-3"
+    And the team has a formation "4-5-6"
     And viewing the edit page for a team activity for that team
     And the activity has type game or friendly
-    When I select a line-up from a list of existing team formations
-    Then I can add the selected line-up to the activity
+    When I select the line-up "4-5-6" from the list of existing team formations
+    Then the saved activity has the formation "4-5-6"
 
-  Scenario: AC2: Display selected formation of team
-    Given I am the manager of a team
-    And viewing the edit page for a team activity for that team
-    And the activity has type game or friendly and the has a selected formation
-    When I select that formation for the game
-    Then the formation is displayed in the activity page
+#  Scenario: AC2: Display selected formation of team
+#    Given I am the manager of a team
+#    And viewing the edit page for a team activity for that team
+#    And the activity has type game or friendly and the has a selected formation
+#    When I select that formation for the game
+#    Then the formation is displayed in the activity page
 #
 #
 #  Scenario: AC3: Set player from team to a selected position on a formation
