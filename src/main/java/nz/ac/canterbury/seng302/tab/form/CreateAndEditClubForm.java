@@ -6,6 +6,9 @@ import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
 import java.util.List;
 
+/**
+ * Form object provided to the controller which contains the fields for the user to enter and validation for the fields.
+ */
 public class CreateAndEditClubForm {
 
     @TeamFormValidators.teamNameValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG)

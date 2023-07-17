@@ -1,4 +1,3 @@
-
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
 import nz.ac.canterbury.seng302.tab.entity.Club;
@@ -74,8 +73,6 @@ public class CreateClubControllerTest {
         team2 = new Team("test2", "Hockey", new Location("2 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"));
         team3 = new Team("test3", "Rugby", new Location("3 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"));
 
-
-
         Location testLocation = new Location("23 test street", "24 test street", "surburb", "city", "8782",
                 "New Zealand");
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
@@ -93,7 +90,6 @@ public class CreateClubControllerTest {
         Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
 
         Mockito.when(mockClubService.findClubById(club.getClubId())).thenReturn(Optional.of(club));
-
     }
 
     @Test
@@ -106,7 +102,6 @@ public class CreateClubControllerTest {
 
     @Test
         public void whenAllFieldsValid_return302() throws Exception {
-           // Mockito.when(mockClubService.validateTeamSportsinClub(any())).thenReturn(true);
             mockMvc.perform(post("/createClub", 42L)
                             .param("clubId", "-1")
                             .param("name", "new club")
@@ -122,13 +117,11 @@ public class CreateClubControllerTest {
                     .andExpect(view().name("redirect:/home"));
 
             verify(mockClubService, times(1)).updateOrAddClub(any());
-          //  verify(mockClubService, times(1)).validateTeamSportsinClub(any());
         }
 
 
      @Test
         public void whenSelectedTeamsIsEmpty_return302() throws Exception {
-            //Mockito.when(mockClubService.validateTeamSportsinClub(any())).thenReturn(true);
             mockMvc.perform(post("/createClub", 42L)
                             .param("clubId", "-1")
                             .param("name", "new club")
@@ -144,13 +137,11 @@ public class CreateClubControllerTest {
                     .andExpect(view().name("redirect:/home")); //TODO Change redirect to the view club page when created
 
             verify(mockClubService, times(1)).updateOrAddClub(any());
-           // verify(mockClubService, times(1)).validateTeamSportsinClub(any());
         }
 
 
     @Test
     public void whenOptionalFieldsEmpty_return302() throws Exception {
-       // Mockito.when(mockClubService.validateTeamSportsinClub(any())).thenReturn(true);
         mockMvc.perform(post("/createClub", 42L)
                         .param("clubId", "-1")
                         .param("name", "new club")
@@ -166,13 +157,10 @@ public class CreateClubControllerTest {
                 .andExpect(view().name("redirect:/home")); //TODO Change redirect to the view club page when created
 
         verify(mockClubService, times(1)).updateOrAddClub(any());
-        //verify(mockClubService, times(1)).validateTeamSportsinClub(any());
     }
 
     @Test
     public void whenSelectedTeamsHaveDifferentSports_return400() throws Exception {
-       // Mockito.when(mockClubService.validateTeamSportsinClub(any())).thenReturn(false);
-
         mockMvc.perform(post("/createClub", 42L)
                         .param("clubId", "-1")
                         .param("name", "new club")
@@ -188,14 +176,11 @@ public class CreateClubControllerTest {
                 .andExpect(view().name("createClubForm"));
 
         verify(mockClubService, times(0)).updateOrAddClub(any());
-        //verify(mockClubService, times(1)).validateTeamSportsinClub(any());
     }
 
 
     @Test
     public void whenAllRequiredFieldsEmpty_return400() throws Exception {
-        //Mockito.when(mockClubService.validateTeamSportsinClub(any())).thenReturn(true);
-
         mockMvc.perform(post("/createClub", 42L)
                         .param("clubId", "-1")
                         .param("name", "")
@@ -214,8 +199,6 @@ public class CreateClubControllerTest {
 
     @Test
     public void whenClubNameInvalid_return400() throws Exception {
-       // Mockito.when(mockClubService.validateTeamSportsinClub(any())).thenReturn(true);
-
         mockMvc.perform(post("/createClub", 42L)
                         .param("clubId", "-1")
                         .param("name", "!@#$%^")
@@ -270,6 +253,22 @@ public class CreateClubControllerTest {
                         .param("postcode", "8042"));
 
         Assertions.assertEquals("Rugby Club", club.getName());
+    }
+
+    @Test
+    public void testWhenSportInvalid_ClubNotUpdated() throws Exception {
+        mockMvc.perform(post("/createClub?edit={id}", club.getClubId())
+                .param("clubId", String.valueOf(club.getClubId()))
+                .param("name", "Club")
+                .param("sport", "@#@#")
+                .param("addressLine1", "5 Test Lane")
+                .param("addressLine2", "")
+                .param("suburb", "")
+                .param("city", "Christchurch")
+                .param("country", "New Zealand")
+                .param("postcode", "8042")).andExpect(status().isBadRequest());
+
+        verify(mockClubService, times(0)).updateOrAddClub(any());
     }
 
 }

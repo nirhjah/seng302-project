@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditClubForm;
-import nz.ac.canterbury.seng302.tab.form.ForgotPasswordForm;
 import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
 import nz.ac.canterbury.seng302.tab.service.ClubService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -63,7 +62,6 @@ public class CreateClubController {
 
         logger.info("GET /createClub");
         prefillModel(model, request);
-
 
         Club club;
 

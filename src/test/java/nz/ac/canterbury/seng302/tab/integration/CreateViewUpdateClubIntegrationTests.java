@@ -239,12 +239,9 @@ public class CreateViewUpdateClubIntegrationTests {
 
     }
 
-
     @Given("I am on the create or edit club page")
     public void i_am_on_the_create_or_edit_club_page() throws Exception {
-        // Write code here that turns the phrase above into concrete actions
         mockMvc.perform(get("/createClub"));
-
     }
 
     @When("I am the manager of at least one team")
@@ -254,8 +251,6 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @Then("I can select as many teams as I want from the list of teams I manage to be added to that club")
     public void i_can_select_as_many_teams_as_i_want_from_the_list_of_teams_i_manage_to_be_added_to_that_club() throws Exception {
-        //   Mockito.when(clubService.validateTeamSportsinClub(teamsToAdd)).thenReturn(true);
-
         mockMvc.perform(post("/createClub", 42L)
                         .param("clubId", "-1")
                         .param("name", "new club")
@@ -336,5 +331,32 @@ public class CreateViewUpdateClubIntegrationTests {
     }
 
 
+    @When("I enter an empty club sport or a sport with invalid characters \\(i.e. any non-letters except spaces, apostrophes and dashes)")
+    public void i_enter_an_empty_club_sport_or_a_sport_with_invalid_characters_i_e_any_non_letters_except_spaces_apostrophes_and_dashes() throws Exception {
+        mockMvc.perform(post("/createClub", 42L)
+                .param("clubId", "-1")
+                .param("name", "Club")
+                .param("sport", "!@#$")
+                .param("addressLine1", "")
+                .param("addressLine2", "addressline2")
+                .param("suburb", "Ilam")
+                .param("city", "")
+                .param("country", "")
+                .param("postcode", ""));
+    }
+
+    @Then("An error message tells me the sport is invalid")
+    public void an_error_message_tells_me_the_sport_is_invalid() throws Exception {
+        mockMvc.perform(post("/createClub", 42L)
+                .param("clubId", "-1")
+                .param("name", "Club")
+                .param("sport", "!@#$")
+                .param("addressLine1", "")
+                .param("addressLine2", "addressline2")
+                .param("suburb", "Ilam")
+                .param("city", "")
+                .param("country", "")
+                .param("postcode", "")).andExpect(status().isBadRequest());
+    }
 
 }
