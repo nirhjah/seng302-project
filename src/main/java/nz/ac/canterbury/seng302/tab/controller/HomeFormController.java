@@ -4,17 +4,16 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
-import nz.ac.canterbury.seng302.tab.service.*;
+import nz.ac.canterbury.seng302.tab.service.SportService;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import nz.ac.canterbury.seng302.tab.service.TeamService;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -23,7 +22,7 @@ import java.util.Optional;
  * Spring Boot Controller class for the Home Form class.
  */
 @Controller
-public class HomeFormController implements InitializingBean {
+public class HomeFormController {
     Logger logger = LoggerFactory.getLogger(HomeFormController.class);
 
     @Autowired
@@ -46,19 +45,17 @@ public class HomeFormController implements InitializingBean {
         return "redirect:./home";
     }
 
-    @Value("${spring.profiles.active}")
-    private String profile = "";
+    @Value("${spring.profiles.active:unknown}")
+    private String profile = "test";
 
     private FileDataSaver saver;
 
-    @Override
+    @PostConstruct
     public void afterPropertiesSet() {
-        /*
-        Explanation:
-        The reason we need this here is because .profile is null when the controller is being constructed.
-        We need to wait until everything is fully initialized before the @Value
-        annotation works, hence this method here.
-         */
+//        Explanation:
+//        The reason we need this here is because .profile is null when the controller is being constructed.
+//        We need to wait until everything is fully initialized before the @Value
+//        annotation works, hence this method here.
         saver = new FileDataSaver(
                 "homeFormTest",
                 FileDataSaver.getDeploymentType(profile)

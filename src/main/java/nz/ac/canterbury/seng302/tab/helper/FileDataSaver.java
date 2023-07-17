@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.tab.helper;
 
+import org.springframework.security.core.parameters.P;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,6 +33,11 @@ public class FileDataSaver {
      * @return appropriate DeploymentType enum
      */
     public static DeploymentType getDeploymentType(String profile) {
+        if (profile == null) {
+            // If there is no profile, assume it's a test.
+            return DeploymentType.TEST;
+        }
+
         // This is a bit hacky, but oh well
         if (profile.contains("prod")) {
             return DeploymentType.PROD;
@@ -84,8 +91,7 @@ public class FileDataSaver {
         boolean success = true;
 
         File folder = new File(path.toUri());
-        System.out.println(folder.toString());
-        return true; //deleteFolder(folder);
+        return deleteFolder(folder);
     }
 
     static {

@@ -34,7 +34,7 @@ public class ViewUserController {
     @Autowired
     UserService userService;
 
-    @Value("${spring.profiles.active}")
+    @Value("${spring.profiles.active:unknown}")
     private String profile;
 
     private FileDataSaver fileDataSaver;
