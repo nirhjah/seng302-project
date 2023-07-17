@@ -1,20 +1,16 @@
 package nz.ac.canterbury.seng302.tab.helper;
 
-import org.springframework.security.core.parameters.P;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 
 public class FileDataSaver {
-    private static final Set<String> usedModifiers = new HashSet<>();
 
     // DON'T CHANGE THESE PATH NAMES!
     private static final String TAB900_FILE_MODIFIER = "team900_seng302";
@@ -25,6 +21,71 @@ public class FileDataSaver {
         String idString = String.valueOf(id);
         return initialPath
                 .resolve(idString);
+    }
+
+    /**
+     * Takes the spring active profile,
+     * i.e. \@Value("${spring.profiles.active}")
+     * And returns the deploymentType associated with the profile.
+     * If the active profile contains `prod`, then PROD deploymentType is used.
+     * Else, TEST deploymentType is used.
+     * @param profile the spring active profile
+     * @return appropriate DeploymentType enum
+     */
+    public static DeploymentType getDeploymentType(String profile) {
+
+    }
+
+    /**
+     * Returns a (global) path that matches the deployment type.
+     * For example:
+     *
+     * getDeploymentPath( TEST ) -> C:/users/oli/home/seng302/TEST
+     * getDeploymentPath( PROD ) -> C:/users/oli/home/seng302/PROD
+     * @param depType the deployment type
+     * @return The global path
+     */
+    private static Path getDeploymentPath(DeploymentType depType) {
+        return Path.of(
+                System.getProperty("user.home"),
+                TAB900_FILE_MODIFIER,
+                depType.toString()
+        );
+    }
+
+    /**
+     * WARNING: Be very (very) careful when calling this.
+     * This will purge the filesystem database if called incorrectly!
+     */
+    private static boolean deleteFolder(File folder) {
+        boolean success = true;
+        if (folder.isDirectory()) {
+            File[] files = folder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    success &= deleteFolder(file);
+                }
+            }
+        }
+        success &= folder.delete();
+        return success;
+    }
+
+    /**
+     * Clears the test folder (deletes all files and nested directories)
+     * @return true on success, false on failure
+     */
+    public static boolean clearTestFolder() {
+        var path = getDeploymentPath(DeploymentType.TEST);
+        boolean success = true;
+
+        File folder = new File(path.toUri());
+        System.out.println(folder.toString());
+        return true; //deleteFolder(folder);
+    }
+
+    static {
+        clearTestFolder();
     }
 
     public enum DeploymentType {
@@ -52,16 +113,7 @@ public class FileDataSaver {
      *  etc.
      */
     public FileDataSaver(String prefix, DeploymentType deploymentType) {
-        if (!usedModifiers.add(prefix)) {
-            throw new RuntimeException("Duplicate modifier name: " + prefix);
-        }
-
-        initialPath = Path.of(
-                System.getProperty("user.home"),
-                TAB900_FILE_MODIFIER,
-                deploymentType.toString(),
-                prefix
-        );
+        initialPath = getDeploymentPath(deploymentType).resolve(prefix);
     }
 
     /**

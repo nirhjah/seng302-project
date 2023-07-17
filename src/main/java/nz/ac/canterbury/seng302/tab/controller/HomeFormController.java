@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
@@ -47,12 +48,24 @@ public class HomeFormController {
     @Value("${spring.profiles.active}")
     private String profile;
 
-    FileDataSaver saver = new FileDataSaver(
-            "homeFormTest",
-            // aye, this is kinda hacky. If the spring active profile contains "prod", we assume that we are on prod.
-            // Else, we assume that we are currently within a testing suite.
-            profile.contains("prod") ? FileDataSaver.DeploymentType.PROD : FileDataSaver.DeploymentType.TEST
-    );
+    private final FileDataSaver saver =
+
+    @PostConstruct
+    public void init() {
+        /*
+        Explanation:
+        The reason we need this here is because .profile is null when the controller is being constructed.
+        We need to wait until everything is fully initialized before the @Value
+        annotation works, hence this method here.
+         */
+
+        // aye, this is kinda hacky. If the spring active profile contains "prod", we assume that we are on prod.
+        // Else, we assume that we are currently within a testing suite.
+        FileDataSaver.DeploymentType deploymentType = profile.contains("prod") ? FileDataSaver.DeploymentType.PROD : FileDataSaver.DeploymentType.TEST
+        new FileDataSaver(
+                "homeFormTest",
+        );
+    }
 
     @GetMapping("/save1")
     public String upload1() {
