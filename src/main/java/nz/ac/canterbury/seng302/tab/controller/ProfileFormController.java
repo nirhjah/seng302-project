@@ -1,8 +1,17 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.service.ActivityService;
+import nz.ac.canterbury.seng302.tab.service.FactService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +43,12 @@ public class ProfileFormController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ActivityService activityService;
+
+    @Autowired
+    private FactService factService;
 
     public ProfileFormController(UserService userService, TeamService teamService) {
         this.userService = userService;
@@ -76,6 +91,40 @@ public class ProfileFormController {
         }
         User user = oUser.get();
 
+        Activity activity1 = new Activity(ActivityType.Game, team, "First activity",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity2 = new Activity(ActivityType.Friendly, team, "Second activity",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity activity3 = new Activity(ActivityType.Other, team, "First activity",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        activity1.addFactList(List.of(new Goal("dasdas", "asdas", activity1, user)));
+        activity1.setActivityOutcome(ActivityOutcome.Win);
+        activity2.setActivityOutcome(ActivityOutcome.Loss);
+        activityService.updateOrAddActivity(activity1);
+        activityService.updateOrAddActivity(activity2);
+        activityService.updateOrAddActivity(activity3);
+
+        int totalWins = activityService.getNumberOfWins(team);
+        int totalLosses = activityService.getNumberOfLoses(team);
+        int totalDraws = activityService.getNumberOfDraws(team);
+        int totalGamesAndFriendlies = activityService.numberOfTotalGamesAndFriendlies(team);
+
+        List<Activity> activities = activityService.getLast5GamesOrFriendliesForTeamWithOutcome(team);
+        List<Map<User, Long>> scorerAndPoints = factService.getTop5Scorers(team);
+
+        model.addAttribute("top5Scorers", scorerAndPoints);
+        model.addAttribute("last5GOrF", activities);
+        model.addAttribute("totalWins", totalWins);
+        model.addAttribute("totalLosses", totalLosses);
+        model.addAttribute("totalDraws", totalDraws);
+        model.addAttribute("totalGOrF", totalGamesAndFriendlies);
+
         // Rambling that's required for navBar.html
         List<Team> teamList = teamService.getTeamList();
         model.addAttribute("firstName", user.getFirstName());
@@ -96,7 +145,7 @@ public class ProfileFormController {
      * Byte array.
      *
      * @param file               uploaded MultipartFile file
-     * @return
+     * @return Takes user back to profile page
      */
     @PostMapping("/profile")
     public String uploadPicture(

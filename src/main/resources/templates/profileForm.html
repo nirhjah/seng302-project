@@ -109,30 +109,30 @@
 
         <div class="content-box">
             <div class="content">
-                <a class="edit-button" th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
-                    <button type="button">View Team Activities</button>
-                </a>
+                <form th:action="@{profile}" class="profile-buttons" method="post">
+                    <a class="edit-button" th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
+                        <button type="button">View Team Activities</button>
+                    </a>
+                </form>
                 <div class="col-wrapper">
                     <div class="third-col">
                         <p>Outcome of Games:</p>
-                        <p>Overall:</p>
-                        <p>Wins: </p>
-                        <p>Loses: </p>
-                        <p>Draws: </p>
+                        <p th:text="|Total: ${totalGOrF}|"></p>
+                        <p th:text="|Wins: ${totalWins}|"></p>
+                        <p th:text="|Losses: ${totalLosses}|"></p>
+                        <p th:text="|Draws: ${totalDraws}|"></p>
                         </br>
                         </br>
                         <p>Last 5 Games: </p>
-                        <p>(date) - (Game Or Friendly) </p>
-                        <p>(date) - </p>
-                        <p>(date) - </p>
-                        <p>(date) - </p>
-                        <p>(date) - </p>
+                        <p th:each="act : ${last5GOrF}" th:text="|${act.outcome.name()} - ${act.activityType.name()}|" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|"></p>
                     </div>
                     <div class="third-col">
                         <p>Top Scorers:</p>
+                        <p th:each="score : ${top5Scorers}" th:text="|${score.keySet().toArray()[0].firstName} ${score.keySet().toArray()[0].lastName} ${score.values().toArray()[0]}|"></p>
                     </div>
                     <div class="third-col">
                         <p>Substitutions:</p>
+                        <p>n/a</p>
                     </div>
                 </div>
             </div>
