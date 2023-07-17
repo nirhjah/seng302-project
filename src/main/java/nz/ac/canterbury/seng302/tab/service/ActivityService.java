@@ -33,10 +33,6 @@ public class ActivityService {
 
     public static final String activityScoreNumberOnlyRegex = "^[0-9]+$";
 
-    private static String winString = "Won";
-    private static String loseString = "Lost";
-    private static String drawString = "Tied";
-
     /**
      * Returns all activities
      *
@@ -158,36 +154,6 @@ public class ActivityService {
         }
     }
 
-//    public List<String> getLast5ActivityResultsForTeam(Team team) {
-//        if (team.getTeamId() != null) {
-//            List<Activity> last5Activities = activityRepository.getLast5GameOrFriendly(team);
-//            List<String> outcomes = new ArrayList<>();
-//            for (Activity activity : last5Activities) {
-//                String teamScore = activity.getActivityTeamScore();
-//                String otherScore = activity.getOtherTeamScore();
-//                if (teamScore.contains("-")) {
-//                    teamScore = teamScore.split("-")[0];
-//                    otherScore = otherScore.split("-")[0];
-//                }
-//                try {
-//                    int teamScoreNum = Integer.parseInt(teamScore);
-//                    long otherTeamScoreNum = Integer.parseInt(otherScore);
-//                    if (teamScoreNum > otherTeamScoreNum) {
-//                        outcomes.add(winString);
-//                    } else if (otherTeamScoreNum == teamScoreNum) {
-//                        outcomes.add(drawString);
-//                    } else {
-//                        outcomes.add(loseString);
-//                    }
-//                } catch (Exception e) {
-//                    return null;
-//                }
-//            }
-//            return outcomes;
-//        }
-//        return null;
-//    }
-
     /**
      * Returns a list of the last 5 activities that have an outcome
      * @param team the team whose statistics are being returned
@@ -233,5 +199,10 @@ public class ActivityService {
         return activityRepository.getNumberOfDrawsForATeam(team);
     }
 
+    /**
+     * Returns a list of all games and friendlies for a team
+     * @param team the team whose games and friendlies are being returned
+     * @return a list of only the games and friendlies a team has
+     */
     public List<Activity> getAllGamesAndFriendliesForTeam(Team team) {return activityRepository.getAllGamesAndFriendliesForTeam(team);}
 }
