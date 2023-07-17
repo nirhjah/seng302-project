@@ -27,7 +27,7 @@
             <div class="tab">
 <!--                this is a temporary icon for statistic, which is probably going to be replaced when working-->
 <!--                on the team aggregated statistic task-->
-                <img class ="tab-icon" th:src="@{/image/icons/formation.svg}"/>
+                <img class ="tab-icon" th:src="@{/image/icons/statistics.svg}"/>
                 <button class="tab-button" >Statistics &nbsp;</button>
                 <div class="tab-line"></div>
             </div>
@@ -116,28 +116,28 @@
                 </form>
                 <div class="col-wrapper">
                     <div class="third-col">
-                        <p>Outcome of Games:</p>
-                        <p th:text="|Total: ${totalGOrF}|"></p>
-                        <p th:text="|Wins: ${totalWins}|"></p>
-                        <p th:text="|Losses: ${totalLosses}|"></p>
-                        <p th:text="|Draws: ${totalDraws}|"></p>
+                        <h3>Outcome of Games:</h3>
+                        <h4 th:text="|Wins: ${totalWins}|"></h4>
+                        <h4 th:text="|Losses: ${totalLosses}|"></h4>
+                        <h4 th:text="|Draws: ${totalDraws}|"></h4>
+                        <h4 th:text="|Total: ${totalGOrF}|"></h4>
                         </br>
                         </br>
-                        <p>Last 5 Games: </p>
-                        <p th:each="act : ${last5GOrF}"
+                        <h3>Last 5 Games: </h3>
+                        <h4 th:each="act : ${last5GOrF}"
                            th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
                            endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')},
                            startTime=${#temporals.format(act.activityStart, 'hh:mma')},
                            endTime=${#temporals.format(act.activityEnd, 'hh:mma')}"
-                           th:text="|Date: ${startDate} ${startTime}, ${act.outcome.name()} - ${act.activityType.name()}|" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|"></p>
+                           th:text="|Date: ${startDate} ${startTime} ${act.outcome.name()} - ${act.activityType.name()}|" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|"></h4>
                     </div>
                     <div class="third-col">
-                        <p>Top Scorers:</p>
-                        <p th:each="score : ${top5Scorers}" th:text="|${score.keySet().toArray()[0].firstName} ${score.keySet().toArray()[0].lastName} ${score.values().toArray()[0]}|"></p>
+                        <h3>Top Scorers:</h3>
+                        <h4 th:each="score : ${top5Scorers}" th:text="|${score.keySet().toArray()[0].firstName} ${score.keySet().toArray()[0].lastName} ${score.values().toArray()[0]}|"></h4>
                     </div>
                     <div class="third-col">
-                        <p>Substitutions:</p>
-                        <p>n/a</p>
+                        <h3>Substitutions:</h3>
+                        <h4>n/a</h4>
                     </div>
                 </div>
             </div>
