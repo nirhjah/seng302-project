@@ -117,6 +117,23 @@ public class FileDataSaver {
         }
     }
 
+    public enum SaveType {
+        DEBUG("DEBUG"),
+        TEAM_PFP("TEAM_PFP"),
+        USER_PFP("USER_PFP"),
+        CLUB_PFP("CLUB_PFP");
+
+        private final String folderName;
+
+        SaveType(String folderName) {
+            this.folderName = folderName;
+        }
+
+        public String getFolderName() {
+            return this.folderName;
+        }
+    }
+
     /**
      * `prefix` is just the prefix before all files.
      * For example, teams prof picture saving should have a prefix like "team_imgs"
@@ -125,7 +142,8 @@ public class FileDataSaver {
      *  `team_imgs_5287274389549`
      *  etc.
      */
-    public FileDataSaver(String prefix, DeploymentType deploymentType) {
+    public FileDataSaver(SaveType saveType, DeploymentType deploymentType) {
+        String prefix = saveType.getFolderName();
         initialPath = getDeploymentPath(deploymentType).resolve(prefix);
     }
 

@@ -48,7 +48,7 @@ public class ViewUserController {
         annotation works, hence this method here.
          */
         fileDataSaver = new FileDataSaver(
-                "homeFormTest",
+                FileDataSaver.SaveType.USER_PFP,
                 FileDataSaver.getDeploymentType(profile)
         );
     }
@@ -69,33 +69,33 @@ public class ViewUserController {
             HttpServletResponse httpServletResponse, HttpServletRequest request) {
         logger.info("GET /user-info");
 
-        Optional<User> user = userService.findUserById(userId);
-        String userPicture = null;
-        if (user.isEmpty()) { // If empty, throw a 404
+        Optional<User> userOptional = userService.findUserById(userId);
+        model.addAttribute("thisUser", userOptional);
+
+        User user;
+        if (userOptional.isEmpty()) { // If empty, throw a 404
             httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return "viewUserTemplate";
         } else {
-            userPicture = user.get().getPictureString();
+            user = userOptional.get();
             model.addAttribute("userId", userId);
-            model.addAttribute("favSportNames", user.get().getFavouriteSportNames());
+            model.addAttribute("favSportNames", user.getFavouriteSportNames());
         }
 
         // Thymeleaf has no special support for optionals
-        model.addAttribute("thisUser", user);
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("email", user.get().getEmail());
-        model.addAttribute("dateOfBirth", user.get().getDateOfBirth());
-        model.addAttribute("location", user.get().getLocation());
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("email", user.getEmail());
+        model.addAttribute("dateOfBirth", user.getDateOfBirth());
+        model.addAttribute("location", user.getLocation());
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("httpServletRequest",request);
 
-
-        Optional<byte[]> fileData = fileDataSaver.readFile(user.get().getUserId());
+        Optional<byte[]> fileData = fileDataSaver.readFile(user.getUserId());
         fileData.ifPresent(data -> {
             String base64Data = Base64.getEncoder().encodeToString(data);
             model.addAttribute("displayPicture", base64Data);
         });
-
 
         var curUser = userService.getCurrentUser();
         boolean canEdit = curUser.filter(value -> value.getUserId() == userId).isPresent();

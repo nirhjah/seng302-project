@@ -10,11 +10,13 @@ import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
 import nz.ac.canterbury.seng302.tab.authentication.TokenVerification;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
 import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
@@ -55,14 +57,21 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
+    @Value("${spring.profiles.active:unknown}")
+    private String profile = "test";
+
+    private FileDataSaver saver;
+
     @Autowired
     public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.taskScheduler = taskScheduler;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
-    }
 
+        FileDataSaver.DeploymentType deploymentType = FileDataSaver.getDeploymentType(profile);
+        saver = new FileDataSaver(FileDataSaver.SaveType.USER_PFP, deploymentType);
+    }
 
     public static final Sort SORT_BY_LAST_AND_FIRST_NAME = Sort.by(
         Order.asc("lastName").ignoreCase(),
@@ -184,6 +193,16 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+
+    public String getPictureString(long id) {
+        Optional<byte[]> optionalBytes = saver.readFile(id);
+
+        if (optionalBytes.isPresent()) {
+            return Base64.getEncoder().encodeToString(optionalBytes.get());
+        }
+        return null;
+    }
+
     /**
      * <h4>For Editing</h4>
      * <p>
@@ -288,7 +307,7 @@ public class UserService {
         try {
             // Encodes the file to a byte array and then convert it to string, then set it
             // as the pictureString variable.
-            user.setPictureString(Base64.getEncoder().encodeToString(file.getBytes()));
+            saver.saveFile(id, file.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }

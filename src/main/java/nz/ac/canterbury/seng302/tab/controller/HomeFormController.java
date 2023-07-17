@@ -57,7 +57,7 @@ public class HomeFormController {
 //        We need to wait until everything is fully initialized before the @Value
 //        annotation works, hence this method here.
         saver = new FileDataSaver(
-                "homeFormTest",
+                FileDataSaver.SaveType.DEBUG,
                 FileDataSaver.getDeploymentType(profile)
         );
     }
