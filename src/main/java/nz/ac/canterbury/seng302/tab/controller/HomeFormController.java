@@ -47,7 +47,7 @@ public class HomeFormController implements InitializingBean {
     }
 
     @Value("${spring.profiles.active}")
-    private String profile;
+    private String profile = "";
 
     private FileDataSaver saver;
 
