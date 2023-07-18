@@ -209,6 +209,15 @@ public class UserService {
     }
 
 
+    public String getPictureString(long id) {
+        Optional<byte[]> optionalBytes = fileDataSaver.readFile(id);
+
+        if (optionalBytes.isPresent()) {
+            return Base64.getEncoder().encodeToString(optionalBytes.get());
+        }
+        return null;
+    }
+
     /**
      * <h4>For Editing</h4>
      * <p>
@@ -309,8 +318,12 @@ public class UserService {
         fileDataSaver.saveFile(userId, bytes);
     }
 
+    public byte[] getPictureBytes(long id) {
+        return fileDataSaver.readFileOrDefault(id, defaultProfilePicture);
+    }
+
     public String getEncodedPictureString(long id) {
-        byte[] bytes = fileDataSaver.readFileOrDefault(id, defaultProfilePicture);
+        byte[] bytes = getPictureBytes(id);
         return Base64.getEncoder().encodeToString(bytes);
     }
 

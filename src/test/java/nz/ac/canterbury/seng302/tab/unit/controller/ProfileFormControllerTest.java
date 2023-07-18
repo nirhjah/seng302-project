@@ -77,8 +77,6 @@ public class ProfileFormControllerTest {
         Mockito.when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         Mockito.doReturn(TEAM_ID).when(team).getTeamId();
 
-        var pictureString = mockTeamService.getProfilePictureEncodedString(TEAM_ID);
-
         mockMvc.perform(get("/profile")
                 .param("teamID", TEAM_ID.toString()))
             .andExpect(status().isOk())
@@ -86,7 +84,7 @@ public class ProfileFormControllerTest {
             .andExpect(MockMvcResultMatchers.model().attribute("teamID", TEAM_ID))
             .andExpect(MockMvcResultMatchers.model().attribute("displayName", TEAM_NAME))
             .andExpect(MockMvcResultMatchers.model().attribute("displaySport", TEAM_SPORT))
-            .andExpect(MockMvcResultMatchers.model().attribute("displayTeamPicture", pictureString));
+            .andExpect(MockMvcResultMatchers.model().attribute("displayTeamPicture", team.getPictureString()));
     }
 
     @Test
@@ -127,7 +125,7 @@ public class ProfileFormControllerTest {
             mockMvc.perform(multipart("/profile?teamID={id}", TEAM_ID).file(multipartFile))
                     .andExpect(status().is3xxRedirection());
         }
-        assertNotEquals(mockTeamService.getProfilePictureEncodedString(team.getTeamId()), Base64.getEncoder().encodeToString(fileBytes));
+        assertNotEquals(team.getPictureString(), Base64.getEncoder().encodeToString(fileBytes));
 
     }
 
@@ -142,7 +140,7 @@ public class ProfileFormControllerTest {
             mockMvc.perform(multipart("/profile?teamID={id}", TEAM_ID).file(multipartFile))
                     .andExpect(status().is3xxRedirection());
         }
-        assertNotEquals(mockTeamService.getProfilePictureEncodedString(team.getTeamId()), Base64.getEncoder().encodeToString(fileBytes));
+        assertNotEquals(team.getPictureString(), Base64.getEncoder().encodeToString(fileBytes));
     }
 
 }

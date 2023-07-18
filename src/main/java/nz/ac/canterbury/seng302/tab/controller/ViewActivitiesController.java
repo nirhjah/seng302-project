@@ -61,7 +61,7 @@ public class ViewActivitiesController {
         List<Activity> listActivities = page.getContent();
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", userService.getEncodedPictureString(user.get().getUserId()));
+        model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("page", pageNo);

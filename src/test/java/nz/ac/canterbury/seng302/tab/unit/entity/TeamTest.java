@@ -76,8 +76,7 @@ public class TeamTest {
         String pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
         Team team = new Team("test", "Hockey", location);
         teamService.addTeam(team);
-        var actualPicString = teamService.getProfilePictureEncodedString(team.getTeamId());
-        assertEquals(pictureString, actualPicString);
+        assertEquals(pictureString, team.getPictureString());
     }
 
     @Test

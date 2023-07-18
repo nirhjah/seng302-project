@@ -99,7 +99,7 @@ public class SearchTeamsController {
         Optional<User> user = userService.getCurrentUser();
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", userService.getEncodedPictureString(user.get().getUserId()));
+        model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("notSearch", notSearch);
         return "searchTeamsForm";

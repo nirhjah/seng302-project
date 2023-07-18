@@ -56,9 +56,6 @@ public class EditTeamRoleController {
       return "redirect:/home";
     }
 
-    // TODO: This is dumb. We should do a URL based
-    model.addAttribute("userService", userService);
-
     model.addAttribute("user", user.get());
     model.addAttribute("httpServletRequest", request);
     populateListsInModel(team, model);

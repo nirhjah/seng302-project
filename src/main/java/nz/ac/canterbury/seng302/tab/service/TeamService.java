@@ -4,15 +4,11 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
-import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +17,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
@@ -33,27 +28,8 @@ import java.util.Optional;
 @Service
 public class TeamService {
     Logger logger = LoggerFactory.getLogger(getClass());
-
-    private TeamRepository teamRepository;
-
-    @Value("${spring.profiles.active:unknown}")
-    private String profile = "test";
-
     @Autowired
-    public TeamService(TeamRepository teamRepository) throws IOException {
-        this.teamRepository = teamRepository;
-
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        defaultProfilePicture = is.readAllBytes();
-
-        FileDataSaver.DeploymentType deploymentType = FileDataSaver.getDeploymentType(profile);
-        this.fileDataSaver = new FileDataSaver(FileDataSaver.SaveType.TEAM_PFP, deploymentType);
-    }
-
-    private final FileDataSaver fileDataSaver;
-
-    private final byte[] defaultProfilePicture;
+    private TeamRepository teamRepository;
 
     /**
      * Countries and cities can have letters from all alphabets, with hyphens,
@@ -117,25 +93,23 @@ public class TeamService {
      * @param id   Team's unique id
      */
     public void updatePicture(MultipartFile file, long id) {
-        try {
-            byte[] bytes = file.getBytes();
-            fileDataSaver.saveFile(id, bytes);
-        } catch (IOException exception) {
-            // TODO: what do we actually do here (if) the op fails?
-            //  Do nothing???
-        }
-    }
+        Team team = teamRepository.findById(id).get();
 
-    /**
-     * Gets a team's profile picture.
-     * If the team has no profile picture, (or the IO operation fails,)
-     * then the default team profile picture is returned.
-     * @param id the team id
-     * @return The picture bytes, encoded as a string in base64.
-     */
-    public String getProfilePictureEncodedString(long id) {
-        byte[] bytes = fileDataSaver.readFileOrDefault(id, defaultProfilePicture);
-        return Base64.getEncoder().encodeToString(bytes);
+        // Gets the original file name as a string for validation
+        String pictureString = StringUtils.cleanPath(file.getOriginalFilename());
+        if (pictureString.contains("..")) {
+            System.out.println("not a valid file");
+        }
+        try {
+            // Encodes the file to a byte array and then convert it to string, then set it
+            // as the pictureString variable.
+            team.setPictureString(Base64.getEncoder().encodeToString(file.getBytes()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Saved the updated picture string in the database.
+        teamRepository.save(team);
     }
 
     /**

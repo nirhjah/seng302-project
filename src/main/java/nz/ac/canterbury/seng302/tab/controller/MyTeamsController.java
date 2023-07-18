@@ -46,20 +46,6 @@ public class MyTeamsController {
         this.teamService = teamService;
     }
 
-    private void populateModelTeamService(Model model) {
-        /*
-        Ok::: this is hacky, but for now, there's no better way.
-        Our thymeleaf html needs access to the team pfps;
-        Previously, this was achieved via `team.getPictureString`, since the pfps were stored in the DB.
-        But now that our pfps are stored within the filesystem, we instead access our images through the teamService.
-        The thymeleaf accesses the teamService directly now, which is BAD, but we can't afford a better solution rn.
-
-        An ideal solution for future would be to create a separate controller that displays
-        images; that way, in the html, we can simply give a src to the image pointing to those urls. No time rn tho
-         */
-        model.addAttribute("teamService", teamService);
-    }
-
     /**
      * Gets the page of teams the user has joined
      * @param pageNo  integer corresponding page to be displayed
@@ -79,11 +65,9 @@ public class MyTeamsController {
 
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", userService.getEncodedPictureString(user.get().getUserId()));
+        model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("page", pageNo);
-
-        populateModelTeamService(model);
 
         if (model.asMap().containsKey("formBindingResult"))
         {

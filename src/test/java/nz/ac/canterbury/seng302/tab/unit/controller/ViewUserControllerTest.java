@@ -106,7 +106,7 @@ public class ViewUserControllerTest {
         mockMvc.perform(multipart(URL).file(tooBigImage))
                 .andExpect(status().is3xxRedirection());
 
-        assertNotEquals(Base64.getEncoder().encodeToString(fileBytes), mockUserService.getEncodedPictureString(user.getUserId()));
+        assertNotEquals(Base64.getEncoder().encodeToString(fileBytes), user.getPictureString());
     }
 
     @Test

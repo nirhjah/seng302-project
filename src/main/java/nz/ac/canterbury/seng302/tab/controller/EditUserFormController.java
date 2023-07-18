@@ -74,7 +74,7 @@ public class EditUserFormController {
         Set<String> sports = new HashSet<>(sportService.getAllSportNames());
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", userService.getEncodedPictureString(user.get().getUserId()));
+        model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("knownSports", sportService.getAllSportNames());
         model.addAttribute("favouriteSports", u.getFavouriteSportNames());
         model.addAttribute("user", u);
