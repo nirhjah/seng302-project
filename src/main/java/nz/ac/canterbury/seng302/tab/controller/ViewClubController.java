@@ -48,6 +48,7 @@ public class ViewClubController {
             return "redirect:/home";
         }
         model.addAttribute("club",club.get());
+        model.addAttribute("location", club.get().getLocation().toString());
         return "viewClub";
     }
 

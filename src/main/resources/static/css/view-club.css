@@ -1,3 +1,6 @@
+*{
+    font-family: "Noto Sans", sans-serif
+}
 .view-club-form{
     display:flex;
     justify-content: center;
@@ -6,7 +9,55 @@
     min-height:90vh;
 }
 
-.wrapper{
-    height:400px;
-    width:500px;
+@media (max-width: 1000px) {
+    .wrapper {
+        height: 50vh !important;
+        width: 50vw !important;
+        display: block !important;
+    }
+    .club-info{
+        margin-left:20px;
+    }
+    .logo{
+        margin-top:10px;
+    }
 }
+
+
+.wrapper {
+    height: auto;
+    width: 80%;
+    max-width: 550px;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 10px;
+    min-height: 300px;
+}
+
+.club-header{
+    padding-top:30px;
+    padding-bottom:20px;
+}
+
+.club-info{
+    color:#1b263b;
+    margin-left:20px;
+}
+
+.club-label{
+    padding-bottom:20px;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 200px;
+    width: 100%;
+}
+.logo img {
+    width: 60%;
+    height: auto;
+}
+
+

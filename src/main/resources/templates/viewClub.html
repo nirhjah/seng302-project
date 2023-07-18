@@ -13,10 +13,21 @@
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 <div class="view-club-form">
     <div class="wrapper">
-        <h1>Club</h1>
-        <h1 th:text=" ${club.name}"></h1>
-        <h1 th:text=" ${club.sport}"></h1>
-
+        <div class ="logo">
+            <img th:src="@{/image/icons/club-logo.svg}"/>
+        </div>
+        <div class="club-info">
+            <h1 class="club-header">Club Profile</h1>
+            <div class="club-label">
+                <h3 th:text="|Name: *{club.name}|"></h3>
+            </div>
+            <div class="club-label">
+                <h3 th:text="|Sport: *{club.sport}|"></h3>
+            </div>
+            <div class="club-label">
+                <h3 th:text="|Location: *{location}|"></h3>
+            </div>
+        </div>
     </div>
 </div>
 <footer>
