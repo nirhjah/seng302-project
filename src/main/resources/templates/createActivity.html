@@ -55,7 +55,7 @@
                         <option value="-1">(No Team)</option>
                         <option th:each="forma : ${teamFormations}"
                                 th:value="${forma.formationId}"
-                                th:text="${forma.formation}"
+                                th:text="${forma.formation} + (${forma.custom} ? ' Custom' : '')"
                                 th:selected="${forma == selectedFormation}"></option>
                     </select>
                 </div>
@@ -64,14 +64,26 @@
 
             <div class="formation-activity-display" >
                 <div class="subs-reserves-box">
-                    <div></div>
-                    <ul
-                    <div></div>
+                    <div class=subs-reserves-header>Subs</div>
+                    <ul class="subs-ul">
+                        <li th:each="player : ${playersSubs}"
+                              class="subs-li">
+                            <span class="title">
+                                <h3 th:text="${player.firstName} + ' ' ${player.lastName}"></h3>
+                            </span>
+                        </li>
+                    </ul>
+                    <div class="subs-reserves-header active">Reserves</div>
+                    <ul class="reserves-ul active">
+                        <li th:each="player : ${players}"
+                            class="reserves-li">
+                            <span class="title">
+                                <h3 th:text="${player.firstName} + ' ' ${player.lastName}"></h3>
+                            </span>
+                    </ul>
                 </div>
                 <div th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"></div>
             </div>
-
-
 
             <!--/* Activity Description */-->
             <div class="description-box">
@@ -149,7 +161,6 @@
             <div class="submit-button">
                 <a th:href="@{home}">
                     <button type="submit" th:text="${actId != null ? 'Save' : 'Create'}"></button>
-
                 </a>
             </div>
         </form>
@@ -345,19 +356,20 @@
 </script>
 <script>
 
+
     document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById("activityFormationFragment").style.display = "none"
+        document.querySelector(".formation-activity-display").style.display = "none"
         document.querySelector(".activity-form .wrapper").style.height = "950px"
     });
 
     function changeDisplayedFormation() {
 
-        if (document.getElementById("formation").value == -1) {
-            document.getElementById("activityFormationFragment").style.display = "none"
+        if (document.getElementById("formation").value === -1) {
+            document.querySelector(".formation-activity-display").style.display = "none"
             document.querySelector(".activity-form .wrapper").style.height = "950px"
         }
         else {
-            document.getElementById("activityFormationFragment").style.display = "block"
+            document.querySelector(".formation-activity-display").style.display = "flex"
             document.querySelector(".activity-form .wrapper").style.height = "1350px"
         }
 

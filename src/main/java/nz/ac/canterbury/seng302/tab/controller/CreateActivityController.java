@@ -94,6 +94,8 @@ public class CreateActivityController {
             model.addAttribute("teamName", activity.getTeam().getName());
             model.addAttribute("teamFormations", formationService.getTeamsFormations(activity.getTeam().getTeamId()));
             model.addAttribute("selectedFormation", activity.getFormation().orElse(null));
+            model.addAttribute("players", activity.getTeam().getTeamMembers());
+            logger.info(activity.getTeam().getTeamMembers().toString());
         }
         model.addAttribute("actId", activity.getId());
         model.addAttribute("startDateTime",formattedStartDateTime);
