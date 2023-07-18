@@ -6,6 +6,7 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserImageService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,32 +46,18 @@ public class HomeFormController {
         return "redirect:./home";
     }
 
-    @Value("${spring.profiles.active:unknown}")
-    private String profile = "test";
-
-    private FileDataSaver saver;
-
-    @PostConstruct
-    public void afterPropertiesSet() {
-//        Explanation:
-//        The reason we need this here is because .profile is null when the controller is being constructed.
-//        We need to wait until everything is fully initialized before the @Value
-//        annotation works, hence this method here.
-        saver = new FileDataSaver(
-                FileDataSaver.SaveType.DEBUG,
-                FileDataSaver.getDeploymentType(profile)
-        );
-    }
+    @Autowired
+    private UserImageService userImageService;
 
     @GetMapping("/save1")
     public String upload1() {
-        System.out.println(saver.saveFile(1L, new byte[] {1,2,3,4,5,6,7}));
+        System.out.println(userImageService.saveFile(1L, new byte[] {1,2,3,4,5,6,7}));
         return "redirect:./home";
     }
 
     @GetMapping("/read1")
     public String read() {
-        logger.info(Arrays.toString(saver.readFile(1L).get()));
+        logger.info(Arrays.toString(userImageService.readFile(1L).get()));
         return "redirect:./home";
     }
 

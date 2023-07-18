@@ -60,11 +60,6 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    @Value("${spring.profiles.active:unknown}")
-    private String profile = "test";
-
-    private final FileDataSaver fileDataSaver;
-
     private final byte[] defaultProfilePicture;
 
     @Autowired
@@ -77,15 +72,6 @@ public class UserService {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
         defaultProfilePicture = is.readAllBytes();
-
-        /*
-        Explanation:
-        The reason we need to construct this here is because .profile is null when the controller is being constructed.
-        We need to wait until everything is fully initialized before the @Value
-        annotation works, hence this method here.
-         */
-        FileDataSaver.DeploymentType deploymentType = FileDataSaver.getDeploymentType(profile);
-        fileDataSaver = new FileDataSaver(FileDataSaver.SaveType.USER_PFP, deploymentType);
     }
 
     public static final Sort SORT_BY_LAST_AND_FIRST_NAME = Sort.by(
@@ -210,11 +196,12 @@ public class UserService {
 
 
     public String getPictureString(long id) {
-        Optional<byte[]> optionalBytes = fileDataSaver.readFile(id);
-
-        if (optionalBytes.isPresent()) {
-            return Base64.getEncoder().encodeToString(optionalBytes.get());
-        }
+//        Optional<byte[]> optionalBytes = fileDataSaver.readFile(id);
+//
+//        if (optionalBytes.isPresent()) {
+//            return Base64.getEncoder().encodeToString(optionalBytes.get());
+//        }
+//        return null;
         return null;
     }
 
@@ -315,11 +302,11 @@ public class UserService {
             // If the user doesn't exist, do nothing
             return;
         }
-        fileDataSaver.saveFile(userId, bytes);
+        //fileDataSaver.saveFile(userId, bytes);
     }
 
     public byte[] getPictureBytes(long id) {
-        return fileDataSaver.readFileOrDefault(id, defaultProfilePicture);
+        return new byte[]{};// fileDataSaver.readFileOrDefault(id, defaultProfilePicture);
     }
 
     public String getEncodedPictureString(long id) {

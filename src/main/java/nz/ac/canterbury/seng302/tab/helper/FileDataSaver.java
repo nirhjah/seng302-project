@@ -8,10 +8,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Base64;
 import java.util.Optional;
 
 
-public class FileDataSaver {
+public abstract class FileDataSaver {
 
     // DON'T CHANGE THESE PATH NAMES!
     private static final String TAB900_FILE_MODIFIER = "team900_seng302";
@@ -42,7 +43,9 @@ public class FileDataSaver {
         }
 
         // This is a bit hacky, but oh well
-        if (profile.contains("prod")) {
+        if (profile.contains("staging")) {
+            return DeploymentType.STAGING;
+        } else if (profile.contains("prod")){
             return DeploymentType.PROD;
         } else {
             return DeploymentType.TEST;
@@ -103,6 +106,7 @@ public class FileDataSaver {
 
     public enum DeploymentType {
         PROD("PROD"),
+        STAGING("STAGING"),
         TEST("TEST");
 
         private final String value;
@@ -137,16 +141,26 @@ public class FileDataSaver {
         }
     }
 
+
     /**
-     * `prefix` is just the prefix before all files.
-     * For example, teams prof picture saving should have a prefix like "team_imgs"
+     * `folderName` should be unique in global context.
+     * For example, teams prof picture saving should have a folderName like "team_imgs"
      * And all the files are saved similar to so:
-     *  `team_imgs_3489489389545`
-     *  `team_imgs_5287274389549`
-     *  etc.
+     * `team_imgs_3489489389545`
+     * `team_imgs_5287274389549`
+     * etc.
      */
-    public FileDataSaver(SaveType saveType, DeploymentType deploymentType) {
-        String prefix = saveType.getFolderName();
+    public abstract String getFolderName();
+
+    /**
+     * Creates a FileDataSaver.
+     * deploymentType is PROD when on production,
+     * otherwise, deploymentType is TEST.
+     * @param deploymentType the deploymentType
+     */
+    public FileDataSaver(DeploymentType deploymentType) {
+        String prefix = getFolderName();
+
         initialPath = getDeploymentPath(deploymentType).resolve(prefix);
     }
 
@@ -209,5 +223,19 @@ public class FileDataSaver {
             // Else, return default bytes
             return defaultBytes;
         }
+    }
+
+
+    /**
+     * Reads bytes from a file.
+     * If the file doesn't exist, or the operation fails, returns `defaultBytes`
+     * @param id A unique ID (e.g. user entity primary key)
+     * @param defaultBytes an array of bytes to serve as default (e.g. default profile picture bytes)
+     * @return An array of bytes representing the save data
+     */
+    public String readFileOrDefaultB64(Long id, byte[] defaultBytes) {
+        return Base64.getEncoder().encodeToString(
+                readFileOrDefault(id, defaultBytes)
+        );
     }
 }

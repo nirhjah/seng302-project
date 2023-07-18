@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserImageService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,9 @@ public class ViewUserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserImageService userImageService;
 
 
     /**
@@ -69,7 +73,8 @@ public class ViewUserController {
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("httpServletRequest",request);
 
-        model.addAttribute("displayPicture", userService.getEncodedPictureString(user.getUserId()));
+        model.addAttribute("displayPicture", userImageService.readFileOrDefaultB64(userId))
+                userService.getEncodedPictureString(user.getUserId()));
 
         var curUser = userService.getCurrentUser();
         boolean canEdit = curUser.filter(value -> value.getUserId() == userId).isPresent();
