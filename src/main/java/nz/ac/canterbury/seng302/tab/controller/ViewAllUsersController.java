@@ -63,7 +63,7 @@ public class ViewAllUsersController {
         Optional<User> user = userService.getCurrentUser();
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
+        model.addAttribute("displayPicture", userService.getEncodedPictureString(user.get().getUserId()));
 
 
         // get all the cities that populate the dropdown

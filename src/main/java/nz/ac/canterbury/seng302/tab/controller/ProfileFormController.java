@@ -75,7 +75,7 @@ public class ProfileFormController {
         List<Team> teamList = teamService.getTeamList();
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("displayPicture", user.getPictureString());
+        model.addAttribute("displayPicture", userService.getEncodedPictureString(user.get().getUserId()));
         model.addAttribute("navTeams", teamList);
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("isUserManager", team.isManager(user));

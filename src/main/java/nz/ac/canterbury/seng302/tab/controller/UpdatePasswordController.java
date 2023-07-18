@@ -68,7 +68,7 @@ public class UpdatePasswordController {
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("displayPicture", user.getPictureString());
+        model.addAttribute("displayPicture", userService.getEncodedPictureString(user.get().getUserId()));
     }
 
     /**

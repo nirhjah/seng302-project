@@ -4,11 +4,13 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
+import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,8 +30,21 @@ import java.util.Optional;
 @Service
 public class TeamService {
     Logger logger = LoggerFactory.getLogger(getClass());
-    @Autowired
+
     private TeamRepository teamRepository;
+
+    @Value("${spring.profiles.active:unknown}")
+    private String profile = "test";
+
+    @Autowired
+    public TeamService(TeamRepository teamRepository) {
+        this.teamRepository = teamRepository;
+
+        FileDataSaver.DeploymentType deploymentType = FileDataSaver.getDeploymentType(profile);
+        this.fileDataSaver = new FileDataSaver(FileDataSaver.SaveType.TEAM_PFP, deploymentType);
+    }
+
+    private final FileDataSaver fileDataSaver;
 
     /**
      * Countries and cities can have letters from all alphabets, with hyphens,
@@ -93,23 +108,12 @@ public class TeamService {
      * @param id   Team's unique id
      */
     public void updatePicture(MultipartFile file, long id) {
-        Team team = teamRepository.findById(id).get();
-
-        // Gets the original file name as a string for validation
-        String pictureString = StringUtils.cleanPath(file.getOriginalFilename());
-        if (pictureString.contains("..")) {
-            System.out.println("not a valid file");
-        }
         try {
-            // Encodes the file to a byte array and then convert it to string, then set it
-            // as the pictureString variable.
-            team.setPictureString(Base64.getEncoder().encodeToString(file.getBytes()));
-        } catch (IOException e) {
-            e.printStackTrace();
+            byte[] bytes = file.getBytes();
+            fileDataSaver.saveFile(id, bytes);
+        } catch (IOException exception) {
+            // TODO: what do we actually do here? Do nothing?
         }
-
-        // Saved the updated picture string in the database.
-        teamRepository.save(team);
     }
 
     /**

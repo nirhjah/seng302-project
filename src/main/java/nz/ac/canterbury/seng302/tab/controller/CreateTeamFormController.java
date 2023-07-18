@@ -115,7 +115,7 @@ public class CreateTeamFormController {
         Optional<User> user = userService.getCurrentUser();
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
+        model.addAttribute("displayPicture", userService.getEncodedPictureString(user.get().getUserId()));
         model.addAttribute("navTeams", teamService.getTeamList());
         return "createTeamForm";
     }
@@ -159,7 +159,7 @@ public class CreateTeamFormController {
         Optional<User> user = userService.getCurrentUser();
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
+        model.addAttribute("displayPicture", userService.getEncodedPictureString(user.get().getUserId()));
         model.addAttribute("navTeams", teamService.getTeamList());
 
 
