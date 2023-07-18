@@ -12,14 +12,26 @@
                 <li>
                     <a th:href="@{home}" th:classappend="${httpServletRequest.requestURI == '/home' ? 'active' : ''}">Home</a>
                 </li>
+
+                <div class="create-header">
+                    <li class="navbar-create-button" sec:authorize="isAuthenticated()">
+                        <div class="navbar-create-dropdown">
+                            <a th:href="@{createTeam}">Create Team</a>
+                            <a th:href="@{createActivity}">Create Activity</a>
+                            <a th:href="@{createClub}">Create Club</a>
+                        </div>
+                        <a>
+                            <span th:text="Create"></span>
+                            <i class="triangle"></i>
+                        </a>
+                    </li>
+                </div>
+
                 <li sec:authorize="isAnonymous()">
                     <a th:href="@{login}" th:classappend="${httpServletRequest.requestURI == '/login' ? 'active' : ''}">Login</a>
                 </li>
                 <li sec:authorize="isAnonymous()">
                     <a th:href="@{register}" th:classappend="${httpServletRequest.requestURI == '/register' ? 'active' : ''}">Register</a>
-                </li>
-                <li sec:authorize="isAuthenticated()">
-                    <a th:href="@{createTeam}" th:classappend="${httpServletRequest.requestURI == '/createTeam' ? 'active' : ''}">Create Team</a>
                 </li>
                 <li sec:authorize="isAuthenticated()">
                     <a th:href="@{searchTeams}" th:classappend="${httpServletRequest.requestURI == '/searchTeams' ? 'active' : ''}">Search Teams</a>
@@ -29,10 +41,6 @@
                 </li>
                 <li sec:authorize="isAuthenticated()">
                     <a th:href="@{view-users(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
-                </li>
-
-                <li sec:authorize="isAuthenticated()">
-                    <a th:href="@{createActivity}" th:classappend="${httpServletRequest.requestURI == '/createActivity' ? 'active' : ''}">Create Activity</a>
                 </li>
 
                 <div sec:authorize="isAuthenticated()" class="view-profile">
@@ -50,6 +58,7 @@
             </ul>
         </nav>
     </div>
+
     <div class="header-right">
         <li class="navbar-user-button" sec:authorize="isAuthenticated()">
             <div class="navbar-user-dropdown">
@@ -99,6 +108,25 @@
                     triangle.classList.remove("up");
                 }
             });
+        }
+
+
+        let navbarCreateButton = document.querySelector(".navbar-create-button");
+        if (navbarCreateButton !== null){
+            let triangle = navbarCreateButton.querySelector(".triangle");
+            let navbarCreateDropdown = navbarCreateButton.querySelector(".navbar-create-dropdown");
+            navbarCreateButton.addEventListener("click", function (event_create) {
+                event_create.stopPropagation();
+                navbarCreateDropdown.classList.toggle("show");
+                triangle.classList.toggle("up");
+            });
+
+             document.addEventListener("click", function (event) {
+                 if (!navbarCreateButton.contains(event.target)) {
+                     navbarCreateDropdown.classList.remove("show");
+                     triangle.classList.remove("up");
+                 }
+             });
         }
 
         // // preloader loading is only displayed if pages are taking a while to load

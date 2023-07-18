@@ -2,11 +2,10 @@ package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.List;
 import java.util.Objects;
 
@@ -60,6 +59,10 @@ public class Activity {
 
     @Column
     private String otherTeamScore;
+
+    @Column
+    @Enumerated(EnumType.ORDINAL)
+    private ActivityOutcome outcome;
 
 
 
@@ -168,6 +171,10 @@ public class Activity {
     public void setOtherTeamScore(String otherTeamScore) {
         this.otherTeamScore = otherTeamScore;
     }
+
+    public void setActivityOutcome(ActivityOutcome activityOutcome) {this.outcome = activityOutcome;}
+
+    public ActivityOutcome getOutcome() {return outcome;}
 
     @Override
     public boolean equals(Object o) {

@@ -1,48 +1,90 @@
 <!--
-This fragment requires the following variables to be defined:
-
-playerCount, e.g. 11
-formation, e.g "4-4-2"
+Formation strings should be of form e.g. '1-4-4-2' and positions should be strings of form e.g. '20px,30px;40px,60px;'
 
 -->
-<div th:fragment="formationDisplay" id="pitch">
-  <div th:each="playerNumber : ${#numbers.sequence(1, playerCount)}" th:id="'player' + ${playerNumber}" class="player"></div>
+<div th:fragment="formationDisplay">
+  <input type="hidden" name="custom" class="custom" value="false">
+  <input type="hidden" name="customPlayerPositions" class="custom-player-positions">
+  <div id="pitch"></div>
   <script>
-    const players = document.querySelectorAll(".player");
-    const pitch = document.getElementById("pitch")
-    const pitchWidth = pitch.offsetWidth;
-    const pitchHeight = pitch.offsetHeight;
+    const pitch = document.getElementById("pitch");
+    const custom = document.querySelector(".custom");
+    const customPlayerPositions = document.querySelector(".custom-player-positions");
 
-    const formation = "[[${formation}]]".split("-").map(num => parseInt(num));
-    // Handles formations that exclude players such as the goalie in football
-    const sumFormation = formation.reduce((acc, curr) => acc + curr, 0);
-    if (sumFormation < [[${playerCount}]]) {
-      formation.unshift([[${playerCount}]]-sumFormation)
+    function generatedOrCustom(formation, custom, customPlayerPositions) {
+      if (custom) {
+        renderPlayersCustom(customPlayerPositions)
+      } else {
+        renderPlayers(formation)
+      }
     }
-    let currentMax = 0;
-    players.forEach(player => {
-      dragElement(player);
-      // Builds default formation
+
+    // Generates the players and sets their position on the pitch
+    function renderPlayers(formationString) {
+      const formation = formationString.split("-").map(num => parseInt(num));
+      const totalPlayers = formation.reduce((acc, curr) => acc + curr, 0);
+      // Clears players
+      while (pitch.firstChild) {
+        pitch.removeChild(pitch.lastChild);
+      }
+
+      // Create the players and add them to pitch
+      generatePlayers(totalPlayers)
+
+      // Display the formation
+      const players = document.querySelectorAll(".player");
+
+      // Builds formation
+      let j = 0;
       for (let i = 0; i < formation.length; i++) {
-        if (formation[i] !== 0) {
-          if (currentMax === 0) {
-            currentMax = formation[i].valueOf();
-          }
-          player.style.bottom = ((i + 1) / (formation.length + 1) * pitchHeight) - player.offsetHeight / 2 + "px";
-          player.style.left = ((formation[i]) / (currentMax + 1) * pitchWidth) - player.offsetWidth / 2 + "px";
-          formation[i] -= 1
-          if (formation[i] === 0) {
-            currentMax = 0;
-          }
-          break
+        let playersInRow = formation[i]
+        while (formation[i] !== 0) {
+          let player = players[j]
+          player.style.bottom = ((i + 1) / (formation.length + 1)) * pitch.offsetHeight - player.offsetHeight / 2 + "px";
+          player.style.left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * pitch.offsetWidth - player.offsetWidth / 2 + "px";
+          formation[i] -= 1;
+          j++;
         }
       }
-    });
+      custom.value = 'false';
+      customPlayerPositions.value = '';
+    }
+
+    // Builds formation based on custom positions string
+    function renderPlayersCustom(positions) {
+      while (pitch.firstChild) {
+        pitch.removeChild(pitch.lastChild);
+      }
+      const positionsList = positions.split(';')
+      let numPlayers = positionsList.length;
+      generatePlayers(numPlayers);
+      const players = document.querySelectorAll(".player");
+      for (let i = 0; i < numPlayers; i++) {
+        let coordinates = positionsList[i].split(",")
+        let player = players[i]
+        player.style.left = coordinates[0];
+        player.style.bottom = coordinates[1];
+      }
+      custom.value = 'true';
+      customPlayerPositions.value = positions;
+    }
+
+    function generatePlayers(numPlayers) {
+      for (let i = 0; i < numPlayers; i++) {
+        let player = document.createElement('div')
+        player.setAttribute("id", "player" + (i + 1))
+        player.setAttribute("class", "player")
+        pitch.appendChild(player)
+        dragElement(player);
+      }
+    }
+
     function dragElement(player) {
       let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
       player.onmousedown = dragMouseDown;
 
       function dragMouseDown(e) {
+        custom.value = "true";
         e = e || window.event;
         e.preventDefault();
         // get the mouse cursor position at startup:
@@ -68,7 +110,6 @@ formation, e.g "4-4-2"
         pos2 = pos4 - e.clientY;
         pos3 = e.clientX;
         pos4 = e.clientY;
-        console.log(pos3, pitch.offsetWidth, pitch.getBoundingClientRect().right, player.offsetWidth)
 
         // calculate the new position within the pitch boundaries
         const newTop = player.offsetTop - pos2;
@@ -76,20 +117,20 @@ formation, e.g "4-4-2"
 
         // restrict the player's movement within the pitch
         const minTop = 0;
-        const maxTop = pitchHeight - player.offsetHeight;
         const minLeft = 0;
-        const maxLeft = pitchWidth - player.offsetWidth;
+        const maxTop = pitch.offsetHeight - player.offsetHeight;
+        const maxLeft = pitch.offsetWidth - player.offsetWidth;
         const halfWidth = player.offsetWidth / 2;
         const halfHeight = player.offsetHeight / 2;
 
         // calculate the constrained position
         const constrainedTop = pos4 > pitchBottom - halfHeight ? maxTop : pos4 < pitchTop + halfHeight ? minTop
-                : Math.max(minTop, Math.min(newTop, maxTop));
+                : Math.max(minTop, newTop);
         const constrainedLeft = pos3 > pitchRight - halfWidth ? maxLeft : pos3 < pitchLeft + halfWidth ? minLeft
-                : Math.max(minLeft, Math.min(newLeft, maxLeft));
-
+                : Math.max(minLeft, newLeft);
         // set the element's new position:
         player.style.top = constrainedTop + "px";
+        player.style.bottom = pitch.offsetHeight - constrainedTop - player.offsetHeight + "px";
         player.style.left = constrainedLeft + "px";
       }
 
@@ -97,8 +138,17 @@ formation, e.g "4-4-2"
         // stop moving when mouse button is released:
         document.onmouseup = null;
         document.onmousemove = null;
+        customPlayerPositions.value = ""
+        const players = document.querySelectorAll(".player");
+        players.forEach(player => {
+          let left = player.style.left
+          let bottom = player.style.bottom
+          customPlayerPositions.value += left + "," + bottom;
+          if (player.id !== 'player' + players.length) {
+            customPlayerPositions.value += ";"
+          }
+        })
       }
     }
   </script>
 </div>
-
