@@ -56,6 +56,7 @@ public class PersonalAggregatedStatisticsController {
     public String personalStatistics(Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
         prefillModel(model, httpServletRequest);
         model.addAttribute("httpServletRequest", httpServletRequest);
+
         return "personalAggregatedStatistics";
     }
 }

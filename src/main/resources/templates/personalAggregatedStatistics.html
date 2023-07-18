@@ -1,18 +1,50 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 
 <head>
   <link th:href="@{/css/styles.css}" rel="stylesheet" />
   <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
   <link th:href="@{/css/preloader.css}" rel="stylesheet" />
+  <link th:href="@{/css/profile.css}" rel="stylesheet">
+  <link th:href="@{/css/user-profile.css}" rel="stylesheet">
   <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link th:href="@{/css/view-all.css}" rel="stylesheet">
+
   <title>My Stats</title>
 </head>
 
 <body class="team-form-background">
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
-<h1>Personal Statistics</h1>
+<div class="profile-form">
+  <div class="wrapper-profile">
+    <div class="team-info">
+      <div class="team-display">
+        <h2>My Statistics</h2>
+        <h3>Team Statistics</h3>
+        <div class="card-container">
+          <div class="team-card">
+            <div class="card">
+            <div class="card-wrapper">
+              <div class="card-body">
+              <h4>Team Name</h4>
+              <p>Total Goals Scored:</p>
+              <p>Matches Played:</p>
+              <p>Average Time Per Match:</p>
+              <p>Overall Time Played:</p>
+              <h5>Team Games and Friendlies:</h5>
+              <p>Date: XXX | Time: XXX | Game | Click for More</p>
+              </div>
+            </div>
+            </div>
+          </div>
+      </div>
+      </div>
+    </div>
+    <div class="profile-buttons">
+      <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+    </div>
+  </div>
 </div>
 <footer>
   <p>
