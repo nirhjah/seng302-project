@@ -57,14 +57,19 @@
                                 th:value="${forma.formationId}"
                                 th:text="${forma.formation}"
                                 th:selected="${forma == selectedFormation}"></option>
-
                     </select>
                 </div>
                 <div th:each="err : ${#fields.errors('formation')}" th:text="${err}" class="error-message"></div>
             </div>
 
-
-            <div id="activityFormationFragment" th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"></div>
+            <div class="formation-activity-display" >
+                <div class="subs-reserves-box">
+                    <div></div>
+                    <ul
+                    <div></div>
+                </div>
+                <div th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"></div>
+            </div>
 
 
 
@@ -278,7 +283,7 @@
 </script>
 <script>
     function typeCanHaveFormation(activityType) {
-        return (activityType == "Game" || activityType == "Friendly");
+        return (activityType === "Game" || activityType === "Friendly");
     }
 
     function updateFormationList() {

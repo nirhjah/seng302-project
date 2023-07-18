@@ -62,7 +62,7 @@
     border-color:#415a77;
 }
 
-#activityFormationFragment {
+.formation-activity-display {
     display: flex;
     box-shadow: rgba(0, 0, 0, 0.2) 0 0 10px 1px inset;
     border-radius: 5px;
