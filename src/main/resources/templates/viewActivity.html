@@ -33,29 +33,23 @@
 
 
         <div class="test" style="float: right; margin-right: 80px">
+          <div class="user-label" style="margin-top: 10%; margin-left: 10%;">
+            <img  th:src="@{/image/icons/calendar.svg}"/>
+            <span class="details" th:with="startDate=${#temporals.format(activity.activityStart, 'dd MMM yyyy')},
+                                                              endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')}"
 
-        <div class="user-label" style="margin-top: 10%; margin-left: 10%;">
-          <img  th:src="@{/image/icons/calendar.svg}"/>
-          <span class="details" th:with="startDate=${#temporals.format(activity.activityStart, 'dd MMM yyyy')},
-                                                            endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')}"
+                  th:text="${startDate} + (${startDate} != ${endDate} ? ' - ' + ${endDate} : '')">
+                              </span>
+          </div>
 
-                th:text="${startDate} + (${startDate} != ${endDate} ? ' - ' + ${endDate} : '')">
-                            </span>
-
-        </div>
-
-        <div class="user-label" style="margin-left: 10%;">
-          <img  th:src="@{/image/icons/clock.svg}"/>
-          <span class="details" th:with="
-                                           startTime=${#temporals.format(activity.activityStart, 'hh:mma')},
-                                                            endTime=${#temporals.format(activity.activityEnd, 'hh:mma')}"
-                th:text="${startTime} + ' - ' + ${endTime}">
-                            </span>
-
-        </div>
-
-
-
+          <div class="user-label" style="margin-left: 10%;">
+            <img  th:src="@{/image/icons/clock.svg}"/>
+            <span class="details" th:with="
+                                            startTime=${#temporals.format(activity.activityStart, 'hh:mma')},
+                                                              endTime=${#temporals.format(activity.activityEnd, 'hh:mma')}"
+                  th:text="${startTime} + ' - ' + ${endTime}">
+                              </span>
+          </div>
         </div>
 
 
@@ -73,10 +67,14 @@
           <img th:src="@{/image/icons/sports.svg}"/>
           <h3 th:text="|Description: ${activity.description}|"></h3>
         </div>
+        <div class="user-label">
+          <img th:src="@{/image/icons/formation.svg}"/>
+          <h3 th:text="|Formation: ${activity.formation.orElse('None Selected').formation}|"></h3>
+        </div>
       </div>
 
 
-  </div>
+    </div>
 
 <div class="profile-buttons">
     <a th:if="${(activity.team!=null && (activity.team.isManager(activity.activityOwner) ||
