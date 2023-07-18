@@ -7,10 +7,6 @@ import org.springframework.core.io.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 
 /**
  * Class for Club object which is annotated as a JPA entity.
@@ -21,12 +17,11 @@ public class Club {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "clubId")
     private long clubId;
-
-    @Column
-    private String sport;
-
     @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private String sport;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
@@ -77,4 +72,9 @@ public class Club {
     public String getSport() {
         return sport;
     }
+
+    public void setSport(String sport) {
+        this.sport = sport;
+    }
+
 }

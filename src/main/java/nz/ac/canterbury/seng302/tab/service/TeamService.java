@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.tab.service;
 
+import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Club;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.TeamRole;
@@ -130,7 +132,7 @@ public class TeamService {
      * @param pageable          page object
      * @param searchedLocations list of locations to filter by selected by the user
      * @param searchedSports    list of sports to filter by selected by the user
-     * @param name              the team name query inputted by the use
+     * @param name              the team name or club name query inputted by the user
      * @return Page(s) of teams filtered by city/cities and sport/sports
      */
     public Page<Team> findPaginatedTeamsByCityAndSports(Pageable pageable, List<String> searchedLocations, List<String> searchedSports, String name) {

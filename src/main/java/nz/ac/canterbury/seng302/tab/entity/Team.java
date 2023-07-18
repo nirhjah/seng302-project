@@ -288,6 +288,10 @@ public class Team {
         this.teamClub = teamClub;
     }
 
+    public void clearTeamClub() {
+        this.teamClub = null;
+    }
+
     @Override
     public String toString() {
         return name;
