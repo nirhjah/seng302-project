@@ -1,11 +1,34 @@
 package nz.ac.canterbury.seng302.tab.integration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import jakarta.validation.constraints.Email;
-import nz.ac.canterbury.seng302.tab.controller.RegisterController;
 import nz.ac.canterbury.seng302.tab.controller.CreateActivityController;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Formation;
@@ -13,57 +36,14 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
-import nz.ac.canterbury.seng302.tab.form.RegisterForm;
-import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
-import nz.ac.canterbury.seng302.tab.mail.EmailService;
-import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import nz.ac.canterbury.seng302.tab.service.FormationService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
-import nz.ac.canterbury.seng302.tab.utility.RegisterTestUtil;
-import org.junit.jupiter.api.Disabled;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.TaskScheduler;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.util.AssertionErrors.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 
 /**
  * Unfortunately, due to non-stop issues around
- *  <code>org.hibernate.PersistentObjectException: detached entity passed to persist:</code>,
+ * <code>org.hibernate.PersistentObjectException: detached entity passed to persist:</code>,
  * whenever I try to save anything to the database, these tests use mocking.
  */
 @AutoConfigureMockMvc(addFilters = false)
@@ -76,7 +56,7 @@ public class U33EditLineupForGameFeature {
     private MockMvc mockMvc;
     private MockHttpServletRequestBuilder requestBuilder;
     private ResultActions response;
-    
+
     private TeamService teamService;
     private UserService userService;
     private ActivityService activityService;
@@ -89,6 +69,7 @@ public class U33EditLineupForGameFeature {
     private static final Long ACT_ID = 999L;
 
     private Map<String, Formation> formationMap = new HashMap<>();
+    private long formationId = 0;
 
     private void setupMorganMocking() {
         // get all the necessary beans
@@ -127,9 +108,12 @@ public class U33EditLineupForGameFeature {
     @Given("the team has a formation {string}")
     public void the_team_has_a_formation(String formationStr) {
         // Problem: The webpage sends the ID of the formation, so
-        // we need to remember it for later steps
-        Formation formation = new Formation(formationStr, team);
-        formation = formationService.addOrUpdateFormation(formation);
+        // we need to remember it for later steps.
+        // We're also mocking here because detached entities make me cry
+        Formation formation = Mockito.spy(new Formation(formationStr, team));
+        Mockito.doReturn(formationId).when(formation).getFormationId();
+        Mockito.doReturn(Optional.of(formation)).when(formationService).findFormationById(formationId);
+        formationId += 1;
         formationMap.put(formation.getFormation(), formation);
     }
 
@@ -154,7 +138,8 @@ public class U33EditLineupForGameFeature {
         LocalDateTime startDate = LocalDateTime.of(3023, 1, 1, 1, 1);
         LocalDateTime endDate = LocalDateTime.of(3023, 2, 1, 1, 1);
         user = userService.findUserById(user.getUserId()).orElseThrow();
-        activity = Mockito.spy(new Activity(ActivityType.Game, team, "testing edit description", startDate, endDate, user, location));
+        activity = Mockito.spy(
+                new Activity(ActivityType.Game, team, "testing edit description", startDate, endDate, user, location));
         // We have to mock, otherwise we get detached entity errors, even though
         // the entities are saved, and even if we immediately query for them back.
         // I know this is wrong, but I've been at this for so long.
@@ -171,15 +156,19 @@ public class U33EditLineupForGameFeature {
     public void i_select_the_line_up_from_the_list_of_existing_team_formations(String formationStr) {
         // Problem: The webpage sends the ID of the formation,
         // luckily we saved that earlier
-        requestBuilder = requestBuilder.param("formation", String.valueOf(formationMap.get(formationStr).getFormationId()));
+        requestBuilder = requestBuilder.param("formation",
+                String.valueOf(formationMap.get(formationStr).getFormationId()));
     }
 
     @Then("the saved activity has the formation {string}")
     public void the_saved_activity_has_the_formation(String formationStr) throws Exception {
+        Mockito.doReturn(List.copyOf(formationMap.values())).when(formationService).getTeamsFormations(team.getTeamId());
+
         mockMvc.perform(requestBuilder)
-            .andExpect(status().isFound())
-            .andExpect(redirectedUrlPattern("**/view-activity?activityID="+ACT_ID))
-            .andReturn();
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrlPattern("**/view-activity?activityID=" + ACT_ID))
+                .andReturn();
 
         verify(activityService).updateOrAddActivity(activity);
         assertTrue(activity.getFormation().isPresent());
