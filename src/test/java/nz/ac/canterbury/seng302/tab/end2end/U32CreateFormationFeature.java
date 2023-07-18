@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.end2end;
 
 import com.microsoft.playwright.ElementHandle;
+import com.microsoft.playwright.options.LoadState;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -15,10 +16,6 @@ import java.util.List;
 public class U32CreateFormationFeature {
 
     private static boolean isSetupExecuted = false;
-
-    private final FormationService formationService = new FormationService();
-
-    private int numFormations;
 
     @Before("@create_formation")
     public void setup() {
