@@ -93,4 +93,5 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
     List<String> getAllTeamNames();
 
     List<Team> findTeamsByTeamClubClubId(long clubId);
+
 }

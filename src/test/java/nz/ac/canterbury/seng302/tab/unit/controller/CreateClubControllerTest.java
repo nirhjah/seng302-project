@@ -64,6 +64,9 @@ public class CreateClubControllerTest {
 
     private Club club;
 
+    private final long DEFAULT_CLUB_ID=0;
+
+
 
     @BeforeEach
     void beforeEach() throws IOException {
@@ -119,7 +122,7 @@ public class CreateClubControllerTest {
                             .param("postcode", "1111")
                     .param("selectedTeams", team.getTeamId().toString(), team2.getTeamId().toString()))
                     .andExpect(status().isFound())
-                    .andExpect(view().name("redirect:/home"));
+                    .andExpect(view().name("redirect:/view-club?clubID="+DEFAULT_CLUB_ID));
 
             verify(mockClubService, times(1)).updateOrAddClub(any());
           //  verify(mockClubService, times(1)).validateTeamSportsinClub(any());
@@ -141,7 +144,7 @@ public class CreateClubControllerTest {
                             .param("postcode", "1111")
                             .param("selectedTeams", ""))
                     .andExpect(status().isFound())
-                    .andExpect(view().name("redirect:/home")); //TODO Change redirect to the view club page when created
+                    .andExpect(view().name("redirect:/view-club?clubID="+DEFAULT_CLUB_ID));
 
             verify(mockClubService, times(1)).updateOrAddClub(any());
            // verify(mockClubService, times(1)).validateTeamSportsinClub(any());
@@ -163,7 +166,7 @@ public class CreateClubControllerTest {
                         .param("postcode", "1111")
                         .param("selectedTeams", ""))
                 .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/home")); //TODO Change redirect to the view club page when created
+                .andExpect(view().name("redirect:/view-club?clubID="+DEFAULT_CLUB_ID));
 
         verify(mockClubService, times(1)).updateOrAddClub(any());
         //verify(mockClubService, times(1)).validateTeamSportsinClub(any());

@@ -2,12 +2,9 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Sport;
-import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.*;
 
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
@@ -26,8 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +42,6 @@ public class CreateTeamFormController {
 
     @Autowired
     private UserService userService;
-
 
     /**
      * Gets createTeamForm to be displayed and contains name, sport,
@@ -82,6 +76,7 @@ public class CreateTeamFormController {
     public String teamForm(@RequestParam(name = "edit", required = false) Long teamID,
             Model model,
             HttpServletRequest request, CreateAndEditTeamForm createAndEditTeamForm) throws MalformedURLException {
+
 
         logger.info("GET /createTeam");
         prefillModel(model);
