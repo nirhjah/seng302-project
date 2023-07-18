@@ -23,6 +23,15 @@ public class Formation {
     @JoinColumn(name = "fk_teamID", referencedColumnName = "teamId")
     private Team team;
 
+    @Column
+    private boolean custom;
+
+    /**
+     * String is of form e.g. '10px,20px;20px30px;'
+     */
+    @Column
+    private String customPlayerPositions;
+
     /**
      * Default constructor for Formation.
      * Required by JPA.
@@ -46,6 +55,14 @@ public class Formation {
         this.team = team;
     }
 
+    public void setCustom(Boolean custom) {
+        this.custom = custom;
+    }
+
+    public void setCustomPlayerPositions(String customPlayerPositions) {
+        this.customPlayerPositions = customPlayerPositions;
+    }
+
     public void setFormation(String formation) {
         this.formation = formation;
     }
@@ -59,6 +76,14 @@ public class Formation {
     }
 
     public long getFormationId(){ return this.formationId;}
+
+    public boolean isCustom() {
+        return custom;
+    }
+
+    public String getCustomPlayerPositions() {
+        return customPlayerPositions;
+    }
 
 
 }
