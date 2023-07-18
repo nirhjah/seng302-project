@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
       lang="en">
 <head>
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
@@ -14,7 +14,7 @@
 <div class="view-club-form">
     <div class="wrapper">
         <div class ="logo">
-            <img th:src="@{/image/icons/club-logo.svg}"/>
+            <img th:src="@{'data:image/jpeg;base64,' + club.clubLogo}"/>
         </div>
         <div class="club-info">
             <h1 class="club-header">Club Profile</h1>
