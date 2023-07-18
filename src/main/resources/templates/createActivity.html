@@ -51,7 +51,7 @@
             <div class="select-container">
                 <div class="select-box">
                     <label for="team">Activity formation <em>(Team Game and Team Friendly only)</em></label>
-                    <select onchange="changeDisplayedFormation()" name="formation" id="formation" th:disabled="${#lists.isEmpty(teamFormations)}">
+                    <select onchange="changeDisplayedFormation()" name="formation" id="formation-dropdown" th:disabled="${#lists.isEmpty(teamFormations)}">
                         <option value="-1">(No Team)</option>
                         <option th:each="forma : ${teamFormations}"
                                 th:value="${forma.formationId}"
@@ -64,7 +64,7 @@
 
             <div class="formation-activity-display" >
                 <div class="subs-reserves-box">
-                    <div class=subs-reserves-header>Subs</div>
+                    <div class=subs-header>Subs</div>
                     <ul class="subs-ul">
                         <li th:each="player : ${playersSubs}"
                               class="subs-li">
@@ -73,7 +73,7 @@
                             </span>
                         </li>
                     </ul>
-                    <div class="subs-reserves-header active">Reserves</div>
+                    <div class="reserves-header active">Reserves</div>
                     <ul class="reserves-ul active">
                         <li th:each="player : ${players}"
                             class="reserves-li">
@@ -298,7 +298,7 @@
     }
 
     function updateFormationList() {
-        const formationDropdown = document.querySelector("#formation");
+        const formationDropdown = document.querySelector("#formation-dropdown");
         const currentTeamId = document.querySelector("#team").value;
         const currentActivity = document.querySelector("#activityType").value;
 
@@ -334,7 +334,7 @@
     }
 
     function populateFormationDropdown(isEnabled, emptyValueName, otherFields) {
-        const formationDropdown = document.querySelector("#formation");
+        const formationDropdown = document.querySelector("#formation-dropdown");
         // Set visibility
         formationDropdown.disabled = !isEnabled;
         formationDropdown.innerHTML = "";
@@ -359,22 +359,20 @@
 
     document.addEventListener("DOMContentLoaded", function() {
         document.querySelector(".formation-activity-display").style.display = "none"
-        document.querySelector(".activity-form .wrapper").style.height = "950px"
     });
 
     function changeDisplayedFormation() {
-
-        if (document.getElementById("formation").value === -1) {
+        const element = document.getElementById("formation-dropdown");
+        const value = element.options[element.selectedIndex].value;
+        console.log(value);
+        if (value == -1) {
             document.querySelector(".formation-activity-display").style.display = "none"
-            document.querySelector(".activity-form .wrapper").style.height = "950px"
         }
         else {
             document.querySelector(".formation-activity-display").style.display = "flex"
-            document.querySelector(".activity-form .wrapper").style.height = "1350px"
+            const formationString = element[value].text;
+            renderPlayers(formationString);
         }
-
-        formationString = document.getElementById("formation").options[document.getElementById("formation").selectedIndex].text;
-        renderPlayers(formationString);
     }
 
 

@@ -11,7 +11,7 @@
 
 .activity-form .wrapper {
     width: 630px;
-    height: 1350px;
+    height: fit-content;
     font-size: 15px;
 
 }
@@ -74,11 +74,11 @@
 
 .subs-reserves-box {
     width: 100%;
-    height: inherit;
-    display: grid;
+    display: flex;
+    flex-direction: column;
 }
 
-.subs-reserves-header {
+.reserves-header, .subs-header {
     width: 100%;
     color: white;
     background-color: #0b2239;
@@ -88,21 +88,28 @@
     margin-top: 5px;
 }
 
-.subs-reserves-header.active {
+.reserves-header {
     margin-top: 5px;
+}
+
+.reserves-header.active, .subs-header.active {
     border-radius: 10px 10px 0 0;
 }
 
-.reserves-ul.active {
+.reserves-ul.active, .subs-ul.active {
     border-left: 4px #0b2239 solid;
     border-right: 4px #0b2239 solid;
     border-bottom: 4px #0b2239 solid;
     padding: 3px 4px 3px 4px;
+    flex: 1;
     overflow: auto;
     list-style: none;
-    min-height: 78%;
 }
 
 .subs-ul {
-    display: none;
+    transition: flex 1s ease-out;
 }
+
+
+
+
