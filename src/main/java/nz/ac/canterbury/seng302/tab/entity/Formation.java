@@ -21,7 +21,7 @@ public class Formation {
     @Column(nullable = false)
     private String formation;
 
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_teamID", referencedColumnName = "teamId")
     private Team team;
 

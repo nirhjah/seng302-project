@@ -117,7 +117,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
         mockMvc.perform(get("/createActivity?edit={id}",activity.getId()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("createActivity"));
+                .andExpect(view().name("createActivityForm"));
     }
 
     @Test
@@ -425,7 +425,7 @@ public class EditActivityFormControllerTest {
     public void testDisplayingCreateActivityReturns200() throws Exception {
         mockMvc.perform(get("/createActivity"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("createActivity"));
+                .andExpect(view().name("createActivityForm"));
     }
 
     @Test

@@ -55,7 +55,7 @@ public class FormationRepositoryTest {
     @Test
     public void getFormationByTeam() throws IOException {
         Team uniqueTeam = new Team ("unique","sport", this.location);
-        teamRepository.save(team);
+        uniqueTeam = teamRepository.save(team);
         Formation formation = new Formation("4-4-3",uniqueTeam);
         formationRepository.save(formation);
         Formation retrievedFormation = formationRepository.findByTeamTeamId(uniqueTeam.getTeamId()).get();
