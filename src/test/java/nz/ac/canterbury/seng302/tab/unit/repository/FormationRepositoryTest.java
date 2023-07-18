@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,10 +35,11 @@ public class FormationRepositoryTest {
 
     @BeforeEach
     void beforeAll() throws Exception {
+        formationRepository.deleteAll();
+        teamRepository.deleteAll();
         this.location = new Location(null, null, null, "Christchurch", null, "New Zealand");
         this.team = new Team("testName","sport",this.location);
         this.teamRepository.save(this.team);
-        formationRepository.deleteAll();
 
         for (int i=0; i<formationList.size(); i++){
             Formation formation = new Formation (formationList.get(i), this.team);
@@ -55,12 +59,18 @@ public class FormationRepositoryTest {
     @Test
     public void getFormationByTeam() throws IOException {
         Team uniqueTeam = new Team ("unique","sport", this.location);
-        uniqueTeam = teamRepository.save(team);
+        uniqueTeam = teamRepository.save(uniqueTeam);
         Formation formation = new Formation("4-4-3",uniqueTeam);
         formationRepository.save(formation);
-        Formation retrievedFormation = formationRepository.findByTeamTeamId(uniqueTeam.getTeamId()).get();
-        Assertions.assertEquals(formation,retrievedFormation);
-        Assertions.assertEquals(formation.getTeam().getName(),retrievedFormation.getTeam().getName());
+        List<Formation> formationList = formationRepository.findByTeamTeamId(uniqueTeam.getTeamId());
+        System.out.println(formationList);
+        System.out.println("team.id = " + team.getTeamId());
+        System.out.println("uniqueTeam.id = " + uniqueTeam.getTeamId());
+        System.out.println(formationList);
+        assertEquals(1, formationList.size());
+        Formation retrievedFormation = formationList.get(0);
+        Assertions.assertEquals(formation, retrievedFormation);
+        Assertions.assertEquals(formation.getTeam().getName(), retrievedFormation.getTeam().getName());
     }
 
 }
