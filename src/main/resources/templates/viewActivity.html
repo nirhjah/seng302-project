@@ -98,7 +98,8 @@
                         <label for="time"></label>
                         <input type="text-area" name="time" value="time">
                         <label for="time"></label>
-                        
+                        <div id="additionalFields"></div>
+
                     </div>
                     <div class="submit-button">
                         <button id="createEvent" type="submit" class="registerLoginButton">Create Event</button>
@@ -177,4 +178,40 @@
             modal.style.display = "none";
         }
     }
+</script>
+<script>
+    // Get a reference to the dropdown select element
+    var factTypeSelect = document.getElementById("factType");
+
+    // Get a reference to the div that will contain the additional fields
+    var additionalFieldsDiv = document.getElementById("additionalFields");
+
+    // Define the additional fields HTML for each option
+    var additionalFieldsHTML = {
+        // Replace "option1" and "option2" with the values of your dropdown options
+        "GOAL": '<label for="scorer"></label><input type="text" name="scorer" value="scorer">',
+        "SUBSTITUTION": '<label for="playerOff"></label><input type="text" name="playerOff" value="Player on">',
+        "SUBSTITUTION": '<label for="playerOn"></label><input type="text" name="playerOn" value="Player off">'
+    };
+
+    // Function to handle the change event of the dropdown
+    function handleDropdownChange() {
+        // Clear the additional fields div
+        additionalFieldsDiv.innerHTML = "";
+
+        // Get the selected option value
+        var selectedOption = factTypeSelect.value;
+
+        // Check if the selected option has additional fields
+        if (selectedOption in additionalFieldsHTML) {
+            // If it does, add the corresponding additional fields HTML to the div
+            var newFieldsDiv = document.createElement("div")
+            newFieldsDiv.innerHTML = additionalFieldsHTML[selectedOption];
+
+            additionalFieldsDiv.appendChild(newFieldsDiv)
+        }
+    }
+
+    // Attach the event listener to the dropdown select element
+    factTypeSelect.addEventListener("change", handleDropdownChange);
 </script>

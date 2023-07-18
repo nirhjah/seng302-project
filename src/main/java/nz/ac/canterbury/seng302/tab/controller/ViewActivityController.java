@@ -128,6 +128,9 @@ public class ViewActivityController {
             @RequestParam(name = "factType") FactType factType,
             @RequestParam(name = "description") String description,
             @RequestParam(name = "time") String time,
+            @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
+            @RequestParam(name = "playerOff", defaultValue = "-1") int subOffId,
+            @RequestParam(name = "playerOn", defaultValue = "-1") int subOnId,
             HttpServletRequest request) {
 
         // create the new fact of facttype 
@@ -135,6 +138,9 @@ public class ViewActivityController {
         logger.info("got the desc " + description);
         logger.info(factType.name());
         logger.info(String.format("got the act id: %s", actId));
+        logger.info(String.format("got the player on id: %s", subOnId));
+        logger.info(String.format("got the player on id: %s", subOffId));
+        logger.info(String.format("got the scorer id: %s", scorerId));
 
         // add the fact to the game 
             
