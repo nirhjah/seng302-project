@@ -58,7 +58,6 @@ public class ProfileFormController {
 
         // Gets the team from the database, or giving a 404 if not found.
         Team team = teamService.getTeam(teamID);
-        logger.info("CLub id {}", teamService.getTeamClubId(team));
 
         if (team == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
@@ -70,6 +69,10 @@ public class ProfileFormController {
         model.addAttribute("displayTeamPicture", team.getPictureString());
         model.addAttribute("displayToken", team.getToken());
         model.addAttribute("clubId",teamService.getTeamClubId(team));
+
+        if( team.getTeamClub()!=null){
+            model.addAttribute("clubName",team.getTeamClub().getName());
+        }
 
         // Is the currently logged in user this team's manager?
         Optional<User> oUser = userService.getCurrentUser();

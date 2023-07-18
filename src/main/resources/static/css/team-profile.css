@@ -209,3 +209,8 @@
     display: flex;
     align-items: center;
 }
+
+.club-link >span{
+    color:#415a77;
+}
+

@@ -86,8 +86,12 @@
                         <div class="user-label" th:if="${clubId!=null}">
                             <img th:src="@{image/icons/club-logo.svg}">
                             <h3>
-                                <a th:href="@{view-club(clubID=${clubId})}">View Club</a>
+                                <a class="club-link" th:href="@{view-club(clubID=${clubId})}" onmouseover="viewClubText(this, true)" onmouseout="viewClubText(this, false)">
+                                    <span id="original-text">View Club</span>
+                                    <span id="hover-text" th:text="|Club: *{clubName}|" style="display: none;"></span>
+                                </a>
                             </h3>
+
                         </div>
 
                     </div>
@@ -122,6 +126,19 @@
     </div>
 
     <script>
+
+        function viewClubText(link, isHover) {
+            var originalText = link.querySelector("#original-text");
+            var hoverText = link.querySelector("#hover-text");
+            if (isHover) {
+                originalText.style.display = "none";
+                hoverText.style.display = "inline";
+            } else {
+                originalText.style.display = "inline";
+                hoverText.style.display = "none";
+            }
+        }
+
         const input = document.getElementById('file');
 
         input.addEventListener('change', () => {

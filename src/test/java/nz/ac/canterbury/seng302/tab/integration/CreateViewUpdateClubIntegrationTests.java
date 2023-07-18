@@ -339,19 +339,19 @@ public class CreateViewUpdateClubIntegrationTests {
 
     }
 
-    @Given("I am on the team's profile page and the team belongs to a club,")
+    @Given("I am on the team’s profile page and the team belongs to a club,")
     public void i_am_on_the_team_s_profile_page_and_the_team_belongs_to_a_club() throws Exception {
-        mockMvc.perform(get("/profile").param(String.valueOf(team.getTeamId())))
+        mockMvc.perform(get("/profile")
+                .param("teamID", team.getTeamId().toString()))
                 .andExpect(status().isOk());
-
     }
 
     @When("I click on the link to their club,")
     public void i_click_on_the_link_to_their_club() throws Exception {
-        mockMvc.perform(get("/view-club").param("clubID",String.valueOf(teamService.getTeamClubId(team))))
+        result=mockMvc.perform(get("/view-club").param("clubID",String.valueOf(teamsClub.getClubId())))
                 .andExpect(status().isOk())
-                .andExpect(view().name("viewClub"));
-
+                .andExpect(view().name("viewClub"))
+                .andReturn();;
     }
 
     @Then("I will see their club details \\(Not sure if this is what the link does)")
