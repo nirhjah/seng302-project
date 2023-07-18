@@ -27,6 +27,11 @@
             </div>
         </div>
     </form>
+
+    <div th:if="${listOfTeams.empty}" class="emptySearchResults">
+        No teams found.
+    </div>
+
     <!--/* The table of teams */-->
     <div class="card-container">
         <div th:each="team : ${listOfTeams}" class="card"
@@ -42,13 +47,6 @@
                 </div>
             </div>
         </div>
-
-        <table>
-            <tr th:if="${listOfTeams.empty}">
-                <td colspan="2"> No teams! </td>
-            </tr>
-
-        </table>
     </div>
     <div th:insert="~{fragments/pagination.html :: pagination(pageName='view-teams')}"></div>
     <footer>

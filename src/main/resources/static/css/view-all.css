@@ -179,8 +179,7 @@ table {
 }
 
 .emptySearchResults {
-    width: 400px;
-    margin: 0 auto;
+    width: 300px;
     padding: 20px;
     border: 2px solid #ff0000;
     border-radius: 5px;
@@ -188,6 +187,8 @@ table {
     color: #ff0000;
     text-align: center;
     font-weight: bold;
+    font-family: "Noto Sans", sans-serif;
+    margin: 20px auto 20px;
 }
 
 /*table {*/
