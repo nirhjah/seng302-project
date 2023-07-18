@@ -142,21 +142,77 @@ public class ViewActivityController {
         logger.info(String.format("got the player on id: %s", subOffId));
         logger.info(String.format("got the scorer id: %s", scorerId));
 
-        // add the fact to the game 
             
         Activity activity = activityService.findActivityById(actId);
 
-        Fact fact = new Fact(description, time, activity);
-        List<Fact> factList= new ArrayList<>();
-        factList.add(fact);
+
+        Fact fact;
+
+        switch (factType) {
+            case FACT:
+                fact = new Fact(description, time, activity);
+                break;
+                
+            case GOAL:
+                Optional<User> potentialScorer = userService.findUserById(scorerId);
+                if (potentialScorer.isEmpty()) {
+                    logger.error("Scorer Id not found");
+                    return String.format("redirect:./view-activity?activityID=%s", actId);
+                }
+                User scorer = potentialScorer.get();
+                fact = new Goal(description, time, activity, scorer);
+
+                // update the score 
+                // activity.setOtherTeamScore("13");
+                updateTeamsScore(activity);
+                break;
+                
+            case SUBSTITUTION:
+                Optional<User> potentialSubOff = userService.findUserById(subOffId);
+                if (potentialSubOff.isEmpty()){
+                    logger.error("subbed off player Id not found");
+                    return String.format("redirect:./view-activity?activityID=%s", actId);
+                }
+                User playerOff = potentialSubOff.get(); 
+                
+                Optional<User> potentialSubOn = userService.findUserById(subOnId);
+                if (potentialSubOff.isEmpty()){
+                    logger.error("subbed on player Id not found");
+                    return String.format("redirect:./view-activity?activityID=%s", actId);
+                }
+                User playerOn = potentialSubOn.get(); 
+                
+                fact = new Substitution(description, time, activity, playerOff, playerOn);
+                break;
+                
+            default:
+                logger.error("fact type unknown value");
+                return String.format("redirect:./view-activity?activityID=%s", actId);
+        }
         
-        // activity.addFactToFactList(fact);
+        List<Fact> factList = new ArrayList<>();
+        factList.add(fact);
         activity.addFactList(factList);
         activity = activityService.updateOrAddActivity(activity);
         
+
         return String.format("redirect:./view-activity?activityID=%s", actId);
     }
 
+    /**
+     * TODO: maybe move into activity service?
+     * increments the home teams score by one 
+     **/
+    private void updateTeamsScore(Activity activity) {
+        String score = activity.getActivityTeamScore();
+        if (score == null) {
+            score = "0";
+        }
+        int parsedScore = Integer.parseInt(score);
+        parsedScore++;
+        
+        activity.setActivityTeamScore(String.valueOf(parsedScore));
+    }
 
 
 }
