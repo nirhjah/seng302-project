@@ -155,6 +155,9 @@
                 <a th:href="@{home}">
                     <button type="submit" th:text="${actId != null ? 'Save' : 'Create'}"></button>
                 </a>
+                <div class="cancel-link">
+                    <a th:if="${actId != null}" th:href="@{view-activity(activityID=${actId})}">Cancel</a>
+                </div>
             </div>
         </form>
     </div>
