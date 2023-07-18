@@ -73,8 +73,7 @@ public class ViewUserController {
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("httpServletRequest",request);
 
-        model.addAttribute("displayPicture", userImageService.readFileOrDefaultB64(userId))
-                userService.getEncodedPictureString(user.getUserId()));
+        model.addAttribute("displayPicture", userImageService.readFileOrDefaultB64((long) userId));
 
         var curUser = userService.getCurrentUser();
         boolean canEdit = curUser.filter(value -> value.getUserId() == userId).isPresent();
@@ -128,7 +127,7 @@ public class ViewUserController {
         model.addAttribute("userId", userId);
 
         // Saving the file in the file system
-        userService.updatePicture(userId, file.getBytes());
+        userImageService.updateProfilePicture(userId, file.getBytes());
 
         // userService.updatePicture(file, userId);
         return "redirect:/user-info?name=" + authUser.getUserId();

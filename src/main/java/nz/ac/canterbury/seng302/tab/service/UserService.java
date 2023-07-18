@@ -60,7 +60,6 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final byte[] defaultProfilePicture;
 
     @Autowired
     public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService, PasswordEncoder passwordEncoder) throws IOException {
@@ -69,9 +68,6 @@ public class UserService {
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
 
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        defaultProfilePicture = is.readAllBytes();
     }
 
     public static final Sort SORT_BY_LAST_AND_FIRST_NAME = Sort.by(
@@ -290,29 +286,6 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    /**
-     * Updates a user's profile picture.
-     * If the user doesn't exist, this method is a NOOP.
-     *
-     * @param userId The userId
-     * @param bytes The bytes that represent the image
-     */
-    public void updatePicture(long userId, byte[] bytes) {
-        if (findUserById(userId).isEmpty()) {
-            // If the user doesn't exist, do nothing
-            return;
-        }
-        //fileDataSaver.saveFile(userId, bytes);
-    }
-
-    public byte[] getPictureBytes(long id) {
-        return new byte[]{};// fileDataSaver.readFileOrDefault(id, defaultProfilePicture);
-    }
-
-    public String getEncodedPictureString(long id) {
-        byte[] bytes = getPictureBytes(id);
-        return Base64.getEncoder().encodeToString(bytes);
-    }
 
     /**
      * Updates the user's password then creates and sends email informing the user that their password has been updated.

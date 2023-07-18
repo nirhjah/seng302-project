@@ -153,6 +153,19 @@ public abstract class FileDataSaver {
     public abstract String getFolderName();
 
     /**
+     * Allows for specification of default bytes.
+     * Think of this like a default profile picture, or a default image.
+     * (If the IO operation fails, these bytes will be returned when possible)
+     *
+     * The reason this is not abstract, is that some FileDataSavers may not have default
+     * bytes. We still want to support the optional API in that situation.
+     * @return An array of bytes as the default.
+     */
+    public byte[] getDefaultBytes() {
+        return null;
+    };
+
+    /**
      * Creates a FileDataSaver.
      * deploymentType is PROD when on production,
      * otherwise, deploymentType is TEST.
@@ -211,17 +224,16 @@ public abstract class FileDataSaver {
      * Reads bytes from a file.
      * If the file doesn't exist, or the operation fails, returns `defaultBytes`
      * @param id A unique ID (e.g. user entity primary key)
-     * @param defaultBytes an array of bytes to serve as default (e.g. default profile picture bytes)
      * @return An array of bytes representing the save data
      */
-    public byte[] readFileOrDefault(Long id, byte[] defaultBytes) {
+    public byte[] readFileOrDefault(Long id) {
         Optional<byte[]> optBytes = readFile(id);
         if (optBytes.isPresent()) {
             // If the file exists, return the default bytes
             return optBytes.get();
         } else {
             // Else, return default bytes
-            return defaultBytes;
+            return getDefaultBytes();
         }
     }
 
@@ -230,12 +242,11 @@ public abstract class FileDataSaver {
      * Reads bytes from a file.
      * If the file doesn't exist, or the operation fails, returns `defaultBytes`
      * @param id A unique ID (e.g. user entity primary key)
-     * @param defaultBytes an array of bytes to serve as default (e.g. default profile picture bytes)
      * @return An array of bytes representing the save data
      */
-    public String readFileOrDefaultB64(Long id, byte[] defaultBytes) {
+    public String readFileOrDefaultB64(Long id) {
         return Base64.getEncoder().encodeToString(
-                readFileOrDefault(id, defaultBytes)
+                readFileOrDefault(id)
         );
     }
 }
