@@ -15,4 +15,10 @@ public interface FactRepository extends CrudRepository<Fact, Long> {
 
     @Query("SELECT count(f.scorer) FROM Activity a JOIN Goal f WHERE f.factType=1 AND f MEMBER of a.activityFacts AND f.activity=a AND a.team=:team AND f.scorer=:user AND (a.activityType = 0 OR a.activityType = 1)")
     int getTotalGoalsScoredPerTeam(User user, Team team);
+
+    @Query("SELECT f.timeOfEvent FROM Activity a JOIN Substitution f WHERE f.factType=2 AND f MEMBER of a.activityFacts AND f.activity=a AND f.playerOff=:user AND (a.activityType = 0 OR a.activityType = 1)")
+    String getNumberOfSubsOffOfAUserPerActivity(User user, Activity activity);
+
+    @Query("SELECT f.timeOfEvent FROM Activity a JOIN Substitution f WHERE f.factType=2 AND f MEMBER of a.activityFacts AND f.activity=a AND f.playerOn=:user AND (a.activityType = 0 OR a.activityType = 1)")
+    String getNumberOfSubsOnOfAUserPerActivity(User user, Activity activity);
 }

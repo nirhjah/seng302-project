@@ -8,8 +8,8 @@ import nz.ac.canterbury.seng302.tab.repository.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class FactService {
@@ -43,6 +43,18 @@ public class FactService {
      */
     public int getTotalGoalsForTeamPerUser(User user, Team team) {
         return factRepository.getTotalGoalsScoredPerTeam(user, team);
+    }
+
+    public String getUserSubOffForActivity(User user, Activity activity) {
+        return factRepository.getNumberOfSubsOffOfAUserPerActivity(user, activity);
+    }
+
+    public String getUserSubOnsForActivity(User user, Activity activity) {
+        return factRepository.getNumberOfSubsOnOfAUserPerActivity(user, activity);
+    }
+
+    public long getTimePlayed(Activity activity) {
+        return Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
     }
 
 }
