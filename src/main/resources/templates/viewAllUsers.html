@@ -28,13 +28,10 @@
     </div>
 </form>
 
-<!--Really need to fix this error message-->
-    <table>
-        <tr th:if="${listOfUsers.empty}">
-            <td colspan="2"> No users </td>
-        </tr>
 
-    </table>
+<div th:if="${listOfUsers.empty}" class="emptySearchResults">
+    No users found.
+</div>
 
 <div th:unless="${listOfUsers.empty}" class="card-container">
     <div th:each="user : ${listOfUsers}" class="card"

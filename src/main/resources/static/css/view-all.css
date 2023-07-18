@@ -178,6 +178,18 @@ table {
     font-weight:500;
 }
 
+.emptySearchResults {
+    width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 2px solid #ff0000;
+    border-radius: 5px;
+    background-color: #ffe6e6;
+    color: #ff0000;
+    text-align: center;
+    font-weight: bold;
+}
+
 /*table {*/
 /*    width: 100%;*/
 /*    border-collapse: collapse;*/
