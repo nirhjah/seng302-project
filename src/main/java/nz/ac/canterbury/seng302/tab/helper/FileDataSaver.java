@@ -121,27 +121,6 @@ public abstract class FileDataSaver {
         }
     }
 
-    public enum SaveType {
-        // If you want to add a new saveType, add it here.
-        // (This enum basically creates a new filesystem folder.)
-        // The string value is the name of the folder.
-        DEBUG("DEBUG"),
-        TEAM_PFP("TEAM_PFP"),
-        USER_PFP("USER_PFP"),
-        CLUB_PFP("CLUB_PFP");
-
-        private final String folderName;
-
-        SaveType(String folderName) {
-            this.folderName = folderName;
-        }
-
-        public String getFolderName() {
-            return this.folderName;
-        }
-    }
-
-
     /**
      * `folderName` should be unique in global context.
      * For example, teams prof picture saving should have a folderName like "team_imgs"
