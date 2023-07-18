@@ -2,11 +2,14 @@ package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FactService {
@@ -32,5 +35,14 @@ public class FactService {
         return factRepository.getFactByFactTypeAndActivity(factType, activity);
     }
 
+    /**
+     * Gets a user's total goals for a team they are apart of
+     * @param user the user's whose goals are being found
+     * @param team the team the user is apart of
+     * @return the total number of goals they've scored for a team
+     */
+    public int getTotalGoalsForTeamPerUser(User user, Team team) {
+        return factRepository.getTotalGoalsScoredPerTeam(user, team);
+    }
 
 }
