@@ -45,14 +45,32 @@ public class FactService {
         return factRepository.getTotalGoalsScoredPerTeam(user, team);
     }
 
-    public String getUserSubOffForActivity(User user, Activity activity) {
-        return factRepository.getNumberOfSubsOffOfAUserPerActivity(user, activity);
+    /**
+     * Get list of substitution (off) times for a user for a specific activity
+     * @param user the user whose sub offs are being requested
+     * @param activity the activity which the user participated in
+     * @return list of the times of substitution
+     */
+    public List<String> getUserSubOffForActivity(User user, Activity activity) {
+        return factRepository.getUserSubOffForActivity(user, activity);
     }
 
-    public String getUserSubOnsForActivity(User user, Activity activity) {
-        return factRepository.getNumberOfSubsOnOfAUserPerActivity(user, activity);
+    /**
+     * Get list of substitution (on) times for a user for a specific activity
+     * @param user the user whose sub ons are being requested
+     * @param activity the activity which the user participated in
+     * @return list of the times of substitution
+     */
+    public List<String> getUserSubOnsForActivity(User user, Activity activity) {
+        return factRepository.getUserSubOnsForActivity(user, activity);
     }
 
+    /**
+     * Get the total time a player participated in an activity
+     * TODO implement in combination with subbing and starting line up
+     * @param activity the activity the player took part in
+     * @return the length of the activity in minutes
+     */
     public long getTimePlayed(Activity activity) {
         return Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
     }

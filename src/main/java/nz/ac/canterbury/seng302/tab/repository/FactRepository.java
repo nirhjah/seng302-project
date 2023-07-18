@@ -17,8 +17,8 @@ public interface FactRepository extends CrudRepository<Fact, Long> {
     int getTotalGoalsScoredPerTeam(User user, Team team);
 
     @Query("SELECT f.timeOfEvent FROM Activity a JOIN Substitution f WHERE f.factType=2 AND f MEMBER of a.activityFacts AND f.activity=:activity AND f.playerOff=:user AND (a.activityType = 0 OR a.activityType = 1)")
-    String getNumberOfSubsOffOfAUserPerActivity(User user, Activity activity);
+    List<String> getUserSubOffForActivity(User user, Activity activity);
 
     @Query("SELECT f.timeOfEvent FROM Activity a JOIN Substitution f WHERE f.factType=2 AND f MEMBER of a.activityFacts AND f.activity=:activity AND f.playerOn=:user AND (a.activityType = 0 OR a.activityType = 1)")
-    String getNumberOfSubsOnOfAUserPerActivity(User user, Activity activity);
+    List<String> getUserSubOnsForActivity(User user, Activity activity);
 }
