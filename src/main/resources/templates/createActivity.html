@@ -65,34 +65,13 @@
             <div class="formation-activity-display" >
                 <div class="subs-reserves-box">
                     <div class=subs-header>Subs</div>
-                    <ul class="subs-ul">
-                       <!-- <li th:each="player : ${playersSubs}"
-                              class="subs-li">
-                            <span class="title">
-                                <h3 th:text="${player.getFirstName()} + ' ' ${player.getLastName()}"></h3>
-                            </span>
-                        </li>-->
-                    </ul>
+                    <ul class="subs-ul"></ul>
                     <div class="reserves-header active">Reserves</div>
                     <ul class="reserves-ul active">
-                        <li th:each="player : ${players}"
-                            class="reserves-li">
-                                <h3 class="li-player-name" th:text="${player.getFirstName()} + ${player.getLastName()}"></h3>
-                        </li>
-                        <li class="reserves-li">
-                            <img class="li-player-image" th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
-                            <span class="li-player-name" th:text="${firstName}"></span>
-                            <input type="hidden" class="playerId" value="">
-                        </li>
-                        <li class="reserves-li">
-                            <img class="li-player-image" th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
-                            <span class="li-player-name" th:text="${firstName}"></span>
-                            <input type="hidden" class="playerId" value="">
-                        </li>
-                        <li class="reserves-li">
-                            <img class="li-player-image" th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
-                            <span class="li-player-name" th:text="${firstName}"></span>
-                            <input type="hidden" class="playerId" value="">
+                        <li th:each="player : ${players}" class="reserves-li">
+                            <img class="li-player-image" th:src="${'data:image/jpeg;base64,' + player.getPictureString}" alt="My Profile"/>
+                            <span class="li-player-name" th:text="${player.getFirstName}"></span>
+                            <input type="hidden" class="playerId" th:value="${player.getUserId}">
                         </li>
                     </ul>
                 </div>
