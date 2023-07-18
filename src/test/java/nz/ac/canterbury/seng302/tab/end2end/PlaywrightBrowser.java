@@ -37,7 +37,7 @@ public class PlaywrightBrowser {
         browser = playwright.chromium().launch();
         // The current config runs the tests headlessly - this means that the browser is not displayed.
         // To run the browser headed (you can see the browser GUI as the tests run), switch to the following line:
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
+        //browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
         baseUrl = Objects.equals(System.getenv("USER"), "gitlab-runner") ? "localhost:9500/test" : "localhost:8080";
     }
 
