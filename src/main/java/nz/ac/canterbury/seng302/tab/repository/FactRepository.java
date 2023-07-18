@@ -13,6 +13,6 @@ public interface FactRepository extends CrudRepository<Fact, Long> {
     List<Fact> getFactByActivity(Activity activity);
     List<Fact> getFactByFactTypeAndActivity(int factType, Activity activity);
 
-    @Query("SELECT count(f.scorer) FROM Activity a JOIN Goal f WHERE f.factType=1 AND f MEMBER of a.activityFacts AND a.team=:team AND f.scorer=:user AND (a.activityType = 0 OR a.activityType = 1)")
+    @Query("SELECT count(f.scorer) FROM Activity a JOIN Goal f WHERE f.factType=1 AND f MEMBER of a.activityFacts AND f.activity=a AND a.team=:team AND f.scorer=:user AND (a.activityType = 0 OR a.activityType = 1)")
     int getTotalGoalsScoredPerTeam(User user, Team team);
 }
