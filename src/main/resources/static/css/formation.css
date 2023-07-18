@@ -18,3 +18,7 @@
     cursor: move;
 }
 
+.player.uneditable {
+    cursor: unset;
+}
+
