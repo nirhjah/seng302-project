@@ -5,10 +5,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import nz.ac.canterbury.seng302.tab.controller.CreateClubController;
-import nz.ac.canterbury.seng302.tab.entity.Club;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.ClubRepository;
@@ -17,6 +14,7 @@ import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.ClubService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
+import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -31,6 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.IOException;
@@ -40,6 +39,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
@@ -79,6 +79,10 @@ public class CreateViewUpdateClubIntegrationTests {
 
     private Team teamAlreadyInClub;
 
+    private MvcResult result;
+
+    private Club teamsClub;
+
 
     @Before("@create_club")
     public void setup() throws IOException {
@@ -111,7 +115,7 @@ public class CreateViewUpdateClubIntegrationTests {
         teamDifferentSport = new Team("test3", "Rugby", new Location("3 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"));
 
         teamAlreadyInClub = new Team("TeamInAClubAlready", "Hockey", new Location("5 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"));
-        Club teamsClub = new Club("TeamsClub", new Location("4 test lane", null, null, "Christchurch", "8041", "NZ"), "Hockey");
+        teamsClub = new Club("TeamsClub", new Location("4 test lane", null, null, "Christchurch", "8041", "NZ"), "Hockey");
         clubRepository.save(teamsClub);
         teamAlreadyInClub.setTeamClub(teamsClub);
 
@@ -124,7 +128,7 @@ public class CreateViewUpdateClubIntegrationTests {
         userRepository.save(user);
 
         when(userService.getCurrentUser()).thenReturn(Optional.of(user));
-
+        when(teamService.getTeamClubId(team)).thenReturn(teamsClub.getClubId());
         when(teamService.getTeam(Long.parseLong(team.getTeamId().toString()))).thenReturn(team);
         when(teamService.getTeam(Long.parseLong(team2.getTeamId().toString()))).thenReturn(team2);
         when(teamService.getTeam(Long.parseLong(teamDifferentSport.getTeamId().toString()))).thenReturn(teamDifferentSport);
@@ -334,6 +338,31 @@ public class CreateViewUpdateClubIntegrationTests {
         verify(clubService, times(0)).updateOrAddClub(any());
 
     }
+
+    @Given("I am on the team's profile page and the team belongs to a club,")
+    public void i_am_on_the_team_s_profile_page_and_the_team_belongs_to_a_club() throws Exception {
+        mockMvc.perform(get("/profile").param(String.valueOf(team.getTeamId())))
+                .andExpect(status().isOk());
+
+    }
+
+    @When("I click on the link to their club,")
+    public void i_click_on_the_link_to_their_club() throws Exception {
+        mockMvc.perform(get("/view-club").param("clubID",String.valueOf(teamService.getTeamClubId(team))))
+                .andExpect(status().isOk())
+                .andExpect(view().name("viewClub"));
+
+    }
+
+    @Then("I will see their club details \\(Not sure if this is what the link does)")
+    public void i_will_see_their_club_details_not_sure_if_this_is_what_the_link_does() {
+        Club actualClub = (Club) result.getModelAndView().getModel().get("club");
+        Assertions.assertEquals(teamsClub.getName(), actualClub.getName());
+        Assertions.assertEquals(teamsClub.getLocation(), actualClub.getLocation());
+        Assertions.assertEquals(teamsClub.getSport(), actualClub.getSport());
+
+    }
+
 
 
 

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
-
 @Controller
 public class ViewClubController {
 
@@ -28,6 +27,15 @@ public class ViewClubController {
     @Autowired
     private ClubService clubService;
     Logger logger = LoggerFactory.getLogger(getClass());
+
+    /**
+     * Retrieves the club profile.
+     *
+     * @param model    the model object for adding attributes
+     * @param clubId   the ID of the club to view
+     * @param request  the HttpServletRequest object
+     * @return the view name for displaying the club profile form
+     */
     @GetMapping("/view-club")
     public String profileForm(
             Model model,
@@ -52,6 +60,13 @@ public class ViewClubController {
         return "viewClub";
     }
 
+
+    /**
+     * Method which injects the current user and team list information into the view
+     * so that it will be displayed on the nav bar
+     * @param user the current user who is logged into the system
+     * @param model the Model object used to add attributes for the view
+     */
     public void currentUserNavDisplay(User user, Model model){
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
