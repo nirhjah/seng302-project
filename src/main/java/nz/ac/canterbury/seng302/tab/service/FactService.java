@@ -76,4 +76,8 @@ public class FactService {
     public long getTimePlayed(Activity activity) {
         return Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
     }
+
+    public long getGoalsForActivityForPlayer(Activity activity, User user) {
+        return factRepository.getGoalsForActivityForPlayer(activity, user);
+    }
 }

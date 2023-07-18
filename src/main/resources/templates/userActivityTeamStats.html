@@ -9,31 +9,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link th:href="@{/css/view-all.css}" rel="stylesheet">
 
-  <title>My Stats</title>
+  <title>My Stats For Team Activities</title>
 </head>
 
 <body class="view-teams-background">
 <div>
-<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+  <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
   <div class="statistics-title">
-    <h1 th:inline="text">Personal Team Statistics</h1>
+    <h1 th:inline="text">Personal Team Activity Statistics</h1>
+    <h3>Team: Team Name</h3>
   </div>
-    <div class="card-container">
-        <div th:each="teamStat : ${teamStats}" class="card"
-             th:onclick="|window.location.href='@{myActivityStats(teamID=${teamStat.team.teamId})}'|">
-        <div class="card-wrapper">
-          <div class="card-image">
-            <img th:src="${'data:image/jpeg;base64,' + teamStat.team.pictureString}" class="card-img-top" alt="User image">
-          </div>
-          <div class="card-body">
-            <h5 class="card-title">[[|${teamStat.team.name} |]]</h5>
-            <p class="card-text" th:text="'Goals Scored Total: ' + ${teamStat.totalGoalsScored}"></p>
-            <p class="card-text" th:text="'Total Time Played: ' + ${teamStat.totalMinutesPlayed}"></p>
-            <p class="card-text" th:text="'Total Matches Played: ' + ${teamStat.totalMatchesPlayed}"></p>
-            <h5 style="text-align: center">Click to see more</h5>
-          </div>
+  <div class="card-container">
+    <div th:each="actStat : ${actStats}" class="card"
+         th:onclick="|window.location.href='@{view-activity(activityID=${actStat.activity.id})}'|">
+      <div class="card-wrapper">
+        <div class="card-body">
+          <h5 class="card-title">Activity</h5>
+          <p class="card-text" th:text="'Goals Scored: ' + ${actStat.goalsScored}"></p>
+          <p class="card-text" th:text="'Time Played: ' + ${actStat.minutesPlayed}"></p>
+          <p class="card-text" th:text="'Sub Off: ' + ${actStat.subOffTimings}"></p>
+          <p class="card-text" th:text="'Sub Ons: ' + ${actStat.subOnTimings}"></p>
+          <h5>Click to see activity details</h5>
         </div>
       </div>
+    </div>
   </div>
 </div>
 <div class="submit-footer">

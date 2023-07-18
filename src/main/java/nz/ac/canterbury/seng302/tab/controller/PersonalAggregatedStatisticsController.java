@@ -1,9 +1,8 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.entity.UserTeamStatistic;
+import nz.ac.canterbury.seng302.tab.entity.*;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import nz.ac.canterbury.seng302.tab.service.FactService;
@@ -13,9 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -77,4 +78,29 @@ public class PersonalAggregatedStatisticsController {
         model.addAttribute("teamStats", userStats);
         return "userTeamSummaryStats";
     }
+
+    @GetMapping("/myActivityStats")
+    public String activityPersonalStats(Model model, HttpServletRequest httpServletRequest, @RequestParam(value = "teamID") Long teamID) throws MalformedURLException {
+        prefillModel(model, httpServletRequest);
+        model.addAttribute("httpServletRequest", httpServletRequest);
+        Team team = teamService.getTeam(teamID);
+        User user = userService.getCurrentUser().get();
+
+        List<Activity> activities = activityService.getAllTeamActivities(team);
+        List<UserTeamActivityStatistic> userTeamActStats = new ArrayList<>();
+        for (Activity act : activities) {
+            userTeamActStats.add(new UserTeamActivityStatistic(
+                    factService.getGoalsForActivityForPlayer(act, user),
+                    factService.getTimePlayed(act),
+                    factService.getUserSubOffForActivity(user, act),
+                    factService.getUserSubOnsForActivity(user, act),
+                    act
+            ));
+        }
+        model.addAttribute("team", team);
+        model.addAttribute("actStats", userTeamActStats);
+        return "userActivityTeamStats";
+    }
+
+
 }
