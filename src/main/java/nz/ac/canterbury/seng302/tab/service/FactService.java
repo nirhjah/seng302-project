@@ -19,9 +19,6 @@ public class FactService {
     @Autowired
     FactRepository factRepository;
 
-    @Autowired
-    TeamService teamService;
-
     /**
      * Returns a list of all facts related to an activity
      * @param activity the activity whose facts are wanted to be returned

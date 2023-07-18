@@ -172,9 +172,11 @@ public class ActivityService {
      * @return total time a player has played for a team
      */
     public long getTotalTimeAUserHasPlayedForATeam(User user, Team team) {
-        List<Activity> activities = getAllTeamActivities(team);
+        List<Activity> games = findActivitiesByTeamAndActivityType(team, ActivityType.Game);
+        List<Activity> friendlies = findActivitiesByTeamAndActivityType(team, ActivityType.Friendly);
+        games.addAll(friendlies);
         long totalTime = 0;
-        for (Activity act : activities) {
+        for (Activity act : games) {
             totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes();;
         }
         return totalTime;
@@ -190,4 +192,8 @@ public class ActivityService {
         return getAllTeamActivities(team).size();
     }
 
+
+    public List<Activity> findActivitiesByTeamAndActivityType(Team team, ActivityType activityType) {
+        return activityRepository.findActivitiesByTeamAndActivityType(team, activityType);
+    }
 }
