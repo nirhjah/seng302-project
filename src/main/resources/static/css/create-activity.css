@@ -71,6 +71,8 @@
 .displayTeamMembers {
     float: left;
     border: 1px #000000 solid;
+    max-height: 400px;
+    overflow-y: scroll;
 }
 
 .displayTeamMembers li {

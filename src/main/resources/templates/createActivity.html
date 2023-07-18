@@ -366,10 +366,10 @@
     document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("activityFormationFragment").style.display = "none"
         document.querySelector(".activity-form .wrapper").style.height = "950px"
+        document.getElementById("displayTeamMembers").style.display = "none"
     });
 
     function changeDisplayedFormation() {
-
         if (document.getElementById("formation").value == -1) {
             document.getElementById("activityFormationFragment").style.display = "none"
             document.querySelector(".activity-form .wrapper").style.height = "950px"
@@ -383,6 +383,7 @@
 
 
         }
+
 
         formationString = document.getElementById("formation").options[document.getElementById("formation").selectedIndex].text;
         renderPlayers(formationString);
