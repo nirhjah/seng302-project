@@ -66,19 +66,19 @@
                 <div class="subs-reserves-box">
                     <div class=subs-header>Subs</div>
                     <ul class="subs-ul">
-                        <li th:each="player : ${playersSubs}"
+                       <!-- <li th:each="player : ${playersSubs}"
                               class="subs-li">
                             <span class="title">
-                                <h3 th:text="${player.firstName} + ' ' ${player.lastName}"></h3>
+                                <h3 th:text="${player.getFirstName()} + ' ' ${player.getLastName()}"></h3>
                             </span>
-                        </li>
+                        </li>-->
                     </ul>
                     <div class="reserves-header active">Reserves</div>
                     <ul class="reserves-ul active">
                         <li th:each="player : ${players}"
                             class="reserves-li">
                             <span class="title">
-                                <h3 th:text="${player.firstName} + ' ' ${player.lastName}"></h3>
+                                <h3 th:text="${player.getFirstName()} + ${player.getLastName()}"></h3>
                             </span>
                     </ul>
                 </div>
