@@ -27,23 +27,6 @@
             </div>
         </div>
     </div>
-<!--    <table id="teamTable">-->
-<!--        <tr>-->
-<!--            <th>Profile Picture</th>-->
-<!--            <th>Name</th>-->
-<!--            <th>Sport</th>-->
-<!--            <th>Location</th>-->
-<!--        </tr>-->
-<!--        <tr th:each="team : ${displayTeams}"-->
-<!--            th:onclick="|window.location.href='@{profile(teamID=${team.teamId})}'|">-->
-<!--            <td>-->
-<!--                <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" width="50" height="50"/>-->
-<!--            </td>-->
-<!--            <td th:text="${team.name}"></td>-->
-<!--            <td th:text="${team.sport}"></td>-->
-<!--            <td th:text="${team.location}"></td>-->
-<!--        </tr>-->
-<!--    </table>-->
     <div th:insert="fragments/pagination.html :: pagination(pageName='view-teams')"></div>
     <footer>
         <p>

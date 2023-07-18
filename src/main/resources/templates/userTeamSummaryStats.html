@@ -5,8 +5,6 @@
   <link th:href="@{/css/styles.css}" rel="stylesheet" />
   <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
   <link th:href="@{/css/preloader.css}" rel="stylesheet" />
-  <link th:href="@{/css/profile.css}" rel="stylesheet">
-  <link th:href="@{/css/user-profile.css}" rel="stylesheet">
   <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link th:href="@{/css/view-all.css}" rel="stylesheet">
@@ -14,36 +12,35 @@
   <title>My Stats</title>
 </head>
 
-<body class="team-form-background">
+<body class="view-teams-background">
+<div>
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
-<div class="profile-form">
-  <div class="wrapper-profile">
-    <div class="team-info">
-      <div class="team-display">
-        <h2>My Statistics</h2>
-        <h3>Team Statistics</h3>
-        <div class="card-container">
-          <div class="team-card">
-            <div class="card">
-            <div class="card-wrapper">
-              <div class="card-body">
-              <h4>Team Name</h4>
-              <p>Total Goals Scored:</p>
-              <p>Matches Played:</p>
-              <p>Average Time Per Match:</p>
-              <p>Overall Time Played:</p>
-              <h5>Team Games and Friendlies:</h5>
-              <p>Date: XXX | Time: XXX | Game | Click for More</p>
-              </div>
-            </div>
-            </div>
+  <div class="statistics-title">
+    <h1 th:inline="text">Personal Team Statistics</h1>
+  </div>
+    <div class="card-container">
+        <div th:each="teamStat : ${teamStats}" class="card"
+             th:onclick="|window.location.href='@{teamUserStatistics(teamID=${team.teamId})}'|">
+        <div class="card-wrapper">
+          <div class="card-image">
+            <img th:src="${'data:image/jpeg;base64,' + teamStat.team.pictureString}" class="card-img-top" alt="User image">
           </div>
+          <div class="card-body">
+            <h5 class="card-title">[[|${teamStat.team.name} |]]</h5>
+            <p class="card-text" th:text="'Goals Scored Total: ' + ${teamStat.totalGoalsScored}"></p>
+            <p class="card-text" th:text="'Total Time Played: ' + ${teamStat.totalMinutesPlayed}"></p>
+            <p class="card-text" th:text="'Total Matches Played: ' + ${teamStat.totalMatchesPlayed}"></p>
+            <h5>Click to see more</h5>
+          </div>
+        </div>
       </div>
-      </div>
-    </div>
-    <div class="profile-buttons">
-      <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
-    </div>
+  </div>
+</div>
+<div class="submit-footer">
+  <div class="submit-button">
+    <form>
+      <button type="button" class="registerLoginButton" onclick="window.history.go(-1);">Back</button>
+    </form>
   </div>
 </div>
 <footer>
@@ -53,6 +50,7 @@
     on Freepik
   </p>
 </footer>
+</div>
 </body>
 
 </html>

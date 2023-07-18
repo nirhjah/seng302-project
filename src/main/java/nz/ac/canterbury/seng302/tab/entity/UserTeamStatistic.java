@@ -13,4 +13,20 @@ public class UserTeamStatistic {
         this.totalMinutesPlayed = totalMinutesPlayed;
         this.totalMatchesPlayed = totalMatchesPlayed;
     }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public int getTotalGoalsScored() {
+        return totalGoalsScored;
+    }
+
+    public long getTotalMinutesPlayed() {
+        return totalMinutesPlayed;
+    }
+
+    public long getTotalMatchesPlayed() {
+        return totalMatchesPlayed;
+    }
 }
