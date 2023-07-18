@@ -69,7 +69,8 @@
         </div>
         <div class="user-label">
           <img th:src="@{/image/icons/formation.svg}"/>
-          <h3 th:text="|Formation: ${activity.formation.orElse('None Selected').formation}|"></h3>
+          <h3 th:if="${activity.formation.empty}">Formation: Not Selected</h3>
+          <h3 th:if="${activity.formation.present}" th:text="|Formation: ${activity.formation.get.formation}|"></h3>
         </div>
       </div>
 

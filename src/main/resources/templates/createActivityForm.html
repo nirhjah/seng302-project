@@ -50,7 +50,7 @@
                 <div class="select-box">
                     <label for="team">Activity formation <em>(Team Game and Team Friendly only)</em></label>
                     <select name="formation" id="formation" th:disabled="${#lists.isEmpty(teamFormations)}">
-                        <option value="-1">(No Team)</option>
+                        <option value="-1">(no formation)</option>
                         <option th:each="forma : ${teamFormations}"
                                 th:value="${forma.formationId}"
                                 th:text="${forma.formation}"
