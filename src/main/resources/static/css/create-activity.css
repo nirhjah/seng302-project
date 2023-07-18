@@ -63,14 +63,21 @@
 }
 
 .formation-activity-display {
-    display: flex;
+    display: none;
     box-shadow: rgba(0, 0, 0, 0.2) 0 0 10px 1px inset;
     border-radius: 5px;
     padding: 10px;
-    transition: all 1s ease-in 0s;
+    transition: opacity 1s ease-out;
+    opacity: 0;
     width: 123%;
     margin-left: -10%;
 }
+
+.formation-activity-display.active {
+    opacity: 1;
+    display: flex;
+}
+
 
 .subs-reserves-box {
     width: 100%;
@@ -85,7 +92,6 @@
     font-size: 20px;
     padding: 5px 10px;
     border-radius: 10px 10px 10px 10px;
-    margin-top: 5px;
 }
 
 .reserves-header {
@@ -100,16 +106,50 @@
     border-left: 4px #0b2239 solid;
     border-right: 4px #0b2239 solid;
     border-bottom: 4px #0b2239 solid;
-    padding: 3px 4px 3px 4px;
+    padding: 5px 7px 5px 7px;
     flex: 1;
     overflow: auto;
     list-style: none;
+    border-radius: 0 0 10px 10px;
 }
 
 .subs-ul {
     transition: flex 1s ease-out;
 }
 
+.subs-li, .reserves-li {
+    transition: 0.25s;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    display: flex;
+    cursor: pointer;
+    margin: 0 0 5px;
+}
 
+.subs-li.active, .reserves-li.active {
+    transform: scaleX(1.03) scaleY(1.03);
+    box-shadow: 0 2px 3px 4px rgba(0, 0, 0, 0.2);
+}
+
+.li-player-image {
+    width: 25px;
+    height: 25px;
+    margin-right: 2px;
+    border-radius: 50%;
+    background-color: white;
+}
+
+
+.li-player-name {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+.subs-li.in-formation, .reserves-li.in-formation {
+    display: none;
+}
 
 

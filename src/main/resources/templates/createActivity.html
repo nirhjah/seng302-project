@@ -66,20 +66,30 @@
                 <div class="subs-reserves-box">
                     <div class=subs-header>Subs</div>
                     <ul class="subs-ul">
-                        <li th:each="player : ${playersSubs}"
-                              class="subs-li">
-                            <span class="title">
-                                <h3 th:text="${player.firstName} + ' ' ${player.lastName}"></h3>
-                            </span>
-                        </li>
+
                     </ul>
                     <div class="reserves-header active">Reserves</div>
                     <ul class="reserves-ul active">
                         <li th:each="player : ${players}"
                             class="reserves-li">
                             <span class="title">
-                                <h3 th:text="${player.firstName} + ' ' ${player.lastName}"></h3>
+                                <span class="li-player-name" th:text="${firstName}"></span>
                             </span>
+                        <li class="reserves-li">
+                            <img class="li-player-image" th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
+                            <span class="li-player-name" th:text="${firstName}"></span>
+                        <input type="hidden" class="playerId" value="">
+                    </li>
+                        <li class="reserves-li">
+                            <img class="li-player-image" th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
+                            <span class="li-player-name" th:text="${firstName}"></span>
+                            <input type="hidden" class="playerId" value="">
+                        </li>
+                        <li class="reserves-li">
+                            <img class="li-player-image" th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
+                            <span class="li-player-name" th:text="${firstName}"></span>
+                            <input type="hidden" class="playerId" value="">
+                        </li>
                     </ul>
                 </div>
                 <div th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"></div>
@@ -356,25 +366,99 @@
 </script>
 <script>
 
-
-    document.addEventListener("DOMContentLoaded", function() {
-        document.querySelector(".formation-activity-display").style.display = "none"
-    });
-
     function changeDisplayedFormation() {
         const element = document.getElementById("formation-dropdown");
         const value = element.options[element.selectedIndex].value;
         console.log(value);
         if (value == -1) {
-            document.querySelector(".formation-activity-display").style.display = "none"
+            document.querySelector(".formation-activity-display").classList.remove("active");
         }
         else {
-            document.querySelector(".formation-activity-display").style.display = "flex"
+            document.querySelector(".formation-activity-display").classList.add("active");
             const formationString = element[value].text;
             renderPlayers(formationString);
+            addPositionFunctionality();
         }
     }
 
+    const playersSubs = document.querySelectorAll(".subs-li");
+    const playersReserves = document.querySelectorAll(".reserves-li");
+    const positions = pitch.childNodes;
+    playersSubs.forEach((player) => {
+        playerOnClick(player);
+    });
+    playersReserves.forEach((player) => {
+        playerOnClick(player);
+    });
+
+    function playerOnClick(player) {
+        player.addEventListener('click', () => {
+            playersReserves.forEach(otherReserve => {
+                if (otherReserve !== player) {
+                    otherReserve.classList.remove('active');
+                }
+            });
+            playersSubs.forEach(otherSub => {
+                if (otherSub !== player) {
+                    otherSub.classList.remove('active')
+                }
+            });
+            player.classList.toggle('active');
+            for (let i = 0; i < positions.length; i++) {
+                const position = positions.item(i);
+                if (player.classList.contains('active') && !position.classList.contains("filled")) {
+                    position.classList.add("unfilled");
+                } else {
+                    position.classList.remove("unfilled");
+                }
+            }
+        });
+    }
+
+    function addPositionFunctionality() {
+        for (let i = 0; i < positions.length; i++) {
+            const position = positions.item(i);
+            position.classList.remove("unfilled");
+            const clearPositionButton = position.querySelector(".clear-position-button");
+
+            // Action to carry out when a user selects a position with a player selected
+            position.addEventListener('click', () => {
+                const selectedPlayer = document.querySelector(".subs-li.active, .reserves-li.active");
+                if (selectedPlayer) {
+                    const firstName = selectedPlayer.querySelector(".li-player-name").textContent;
+                    const picture = selectedPlayer.querySelector(".li-player-image").getAttribute("src");
+                    const id = selectedPlayer.querySelector("input").value;
+                    addPlayer(position, firstName, picture, id)
+
+                    fillPosition(position);
+                    selectedPlayer.classList.remove("active");
+                    selectedPlayer.classList.add("in-formation");
+                }
+            });
+
+            // Action to carry out when use clicks button to remove player from formation
+            clearPositionButton.addEventListener('click', () => {
+                const positionPlayerId = position.querySelector("input").value;
+                const players = document.querySelectorAll(".reserves-li");
+                players.forEach(player => {
+                    const playerId = player.querySelector("input").value;
+                    if (playerId === positionPlayerId) {
+                        player.classList.remove("in-formation");
+                        position.classList.remove("filled");
+                    }
+                });
+
+            });
+        }
+    }
+
+    //
+    function fillPosition(position) {
+        position.classList.add("filled");
+        for (let i = 0; i < positions.length; i++) {
+            positions.item(i).classList.remove("unfilled");
+        }
+    }
 
 </script>
 </html>
