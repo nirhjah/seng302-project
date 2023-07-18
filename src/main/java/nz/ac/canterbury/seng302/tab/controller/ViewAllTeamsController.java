@@ -46,15 +46,6 @@ public class ViewAllTeamsController {
     private SportService sportService;
 
     @Autowired
-    GenerateRandomTeams generateRandomTeams;
-
-    @GetMapping("/test_populate_teams")
-    public String testPopulate() throws IOException {
-        generateRandomTeams.createAndSaveRandomTeams(50);
-        return "redirect:/home";
-    }
-
-    @Autowired
     public ViewAllTeamsController(TeamService teamService, UserService userService, LocationService locationService, SportService sportService) {
         this.teamService = teamService;
         this.userService = userService;
