@@ -61,7 +61,7 @@ public class ProfileFormController {
         model.addAttribute("displayName", team.getName());
         model.addAttribute("displaySport", team.getSport());
         model.addAttribute("displayLocation", team.getLocation());
-        model.addAttribute("displayTeamPicture", team.getPictureString());
+        model.addAttribute("displayTeamPicture", teamService.getProfilePictureEncodedString(teamID));
         model.addAttribute("displayToken", team.getToken());
 
         // Is the currently logged in user this team's manager?

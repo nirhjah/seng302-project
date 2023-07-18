@@ -77,6 +77,8 @@ public class ProfileFormControllerTest {
         Mockito.when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         Mockito.doReturn(TEAM_ID).when(team).getTeamId();
 
+        var pictureString = mockTeamService.getProfilePictureEncodedString(TEAM_ID);
+
         mockMvc.perform(get("/profile")
                 .param("teamID", TEAM_ID.toString()))
             .andExpect(status().isOk())
@@ -84,7 +86,7 @@ public class ProfileFormControllerTest {
             .andExpect(MockMvcResultMatchers.model().attribute("teamID", TEAM_ID))
             .andExpect(MockMvcResultMatchers.model().attribute("displayName", TEAM_NAME))
             .andExpect(MockMvcResultMatchers.model().attribute("displaySport", TEAM_SPORT))
-            .andExpect(MockMvcResultMatchers.model().attribute("displayTeamPicture", team.getPictureString()));
+            .andExpect(MockMvcResultMatchers.model().attribute("displayTeamPicture", pictureString));
     }
 
     @Test

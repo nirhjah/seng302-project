@@ -16,7 +16,7 @@
              th:onclick="|window.location.href='@{profile(teamID=${team.teamId})}'|">
             <div class="card-wrapper">
                 <div class="card-image">
-                    <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" class="card-img-top" alt="User image">
+                    <img th:src="${'data:image/jpeg;base64,' + teamPictureString}" class="card-img-top" alt="User image">
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">[[|${team.name} |]]</h5>
