@@ -29,6 +29,7 @@ public class FactServiceTest {
 
     @Autowired
     ActivityRepository activityRepository;
+
     @Test
     public void testActivityLength() throws Exception {
         User u = new User("Test", "Account", "tab.team900@gmail.com", "password",

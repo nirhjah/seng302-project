@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -162,4 +163,31 @@ public class ActivityService {
             return false;
         }
     }
+
+
+    /**
+     * Get A players total time played for a team across all activities
+     * @param user the user whose total time is being requested
+     * @param team the team the user is playing for
+     * @return total time a player has played for a team
+     */
+    public long getTotalTimeAUserHasPlayedForATeam(User user, Team team) {
+        List<Activity> activities = getAllTeamActivities(team);
+        long totalTime = 0;
+        for (Activity act : activities) {
+            totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes();;
+        }
+        return totalTime;
+    }
+
+    /**
+     * Get total matches
+     * TODO Make this dependant on the played matches once formation is complete
+     * @param team the teams matches wanted
+     * @return the total number of played matches.
+     */
+    public long getTotalUserMatches(Team team) {
+        return getAllTeamActivities(team).size();
+    }
+
 }

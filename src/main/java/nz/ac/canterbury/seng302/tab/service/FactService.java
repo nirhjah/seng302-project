@@ -17,9 +17,6 @@ public class FactService {
     @Autowired
     FactRepository factRepository;
 
-    @Autowired
-    ActivityService activityService;
-
     /**
      * Returns a list of all facts related to an activity
      * @param activity the activity whose facts are wanted to be returned
@@ -77,30 +74,4 @@ public class FactService {
     public long getTimePlayed(Activity activity) {
         return Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
     }
-
-    /**
-     * Get A players total time played for a team across all activities
-     * @param user the user whose total time is being requested
-     * @param team the team the user is playing for
-     * @return total time a player has played for a team
-     */
-    public long getTotalTimeAUserHasPlayedForATeam(User user, Team team) {
-        List<Activity> activities = activityService.getAllTeamActivities(team);
-        long totalTime = 0;
-        for (Activity act : activities) {
-            totalTime += getTimePlayed(act);
-        }
-        return totalTime;
-    }
-
-    /**
-     * Get total matches
-     * TODO Make this dependant on the played matches once formation is complete
-     * @param team the teams matches wanted
-     * @return the total number of played matches.
-     */
-    public long getTotalUserMatches(Team team) {
-        return activityService.getAllTeamActivities(team).size();
-    }
-
 }
