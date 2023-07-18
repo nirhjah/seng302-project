@@ -32,13 +32,22 @@ public class Club {
     protected Club() {
     }
 
-    public Club(String name, Location location, String sport) throws IOException {
+    private static String defaultClubLogo;
+    static {
+        // Load default logo once in a shared location.
+        try {
+            defaultClubLogo = Base64.getEncoder().encodeToString(
+                    new ClassPathResource("/static/image/icons/default-profile.png").getInputStream().readAllBytes()
+            );
+        } catch (IOException exception) {
+            // crap!!!
+        }
+    }
+
+    public Club(String name, Location location, String sport) {
         this.name = name;
         this.location = location;
         this.sport = sport;
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        this.clubLogo = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
 
     public long getClubId() {
@@ -62,6 +71,9 @@ public class Club {
     }
 
     public String getClubLogo() {
+        if (clubLogo == null) {
+            return defaultClubLogo;
+        }
         return clubLogo;
     }
 
