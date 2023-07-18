@@ -10,6 +10,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
+import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -34,10 +38,6 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.form.CreateActivityForm;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FormationService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
 
 @Controller
@@ -48,16 +48,19 @@ public class CreateActivityController {
     private ActivityService activityService;
     private FormationService formationService;
 
+    private LineUpRepository lineUpRepository;
+
     private Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
     private static final String TEMPLATE_NAME = "createActivity";
 
     public CreateActivityController(TeamService teamService, UserService userService,
-            ActivityService activityService, FormationService formationService) {
+            ActivityService activityService, FormationService formationService, LineUpRepository lineUpRepository) {
         this.teamService = teamService;
         this.userService = userService;
         this.activityService = activityService;
         this.formationService = formationService;
+        this.lineUpRepository = lineUpRepository;
     }
 
     /**
@@ -220,6 +223,7 @@ public class CreateActivityController {
     @PostMapping("/createActivity")
     public String createActivity(
             @RequestParam(name = "actId", defaultValue = "-1") Long actId,
+            @RequestParam(name = "positions") List<String> positions,
             @Validated CreateActivityForm createActivityForm,
             BindingResult bindingResult,
             HttpServletRequest httpServletRequest,
@@ -279,7 +283,15 @@ public class CreateActivityController {
             // The error checking function checks if this exists, so this should always pass
             activity.setFormation(formation.get());
         }
+
         activity = activityService.updateOrAddActivity(activity);
+
+        LineUp activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
+
+        // LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, , );
+
+        lineUpRepository.save(activityLineUp);
+
         return String.format("redirect:./view-activity?activityID=%s", activity.getId());
     }
 
