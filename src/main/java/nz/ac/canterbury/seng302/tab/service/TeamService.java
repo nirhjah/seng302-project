@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
@@ -37,14 +40,20 @@ public class TeamService {
     private String profile = "test";
 
     @Autowired
-    public TeamService(TeamRepository teamRepository) {
+    public TeamService(TeamRepository teamRepository) throws IOException {
         this.teamRepository = teamRepository;
+
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        InputStream is = resource.getInputStream();
+        defaultProfilePicture = is.readAllBytes();
 
         FileDataSaver.DeploymentType deploymentType = FileDataSaver.getDeploymentType(profile);
         this.fileDataSaver = new FileDataSaver(FileDataSaver.SaveType.TEAM_PFP, deploymentType);
     }
 
     private final FileDataSaver fileDataSaver;
+
+    private final byte[] defaultProfilePicture;
 
     /**
      * Countries and cities can have letters from all alphabets, with hyphens,
@@ -112,8 +121,21 @@ public class TeamService {
             byte[] bytes = file.getBytes();
             fileDataSaver.saveFile(id, bytes);
         } catch (IOException exception) {
-            // TODO: what do we actually do here? Do nothing?
+            // TODO: what do we actually do here (if) the op fails?
+            //  Do nothing???
         }
+    }
+
+    /**
+     * Gets a team's profile picture.
+     * If the team has no profile picture, (or the IO operation fails,)
+     * then the default team profile picture is returned.
+     * @param id the team id
+     * @return The picture bytes, encoded as a string in base64.
+     */
+    public String getProfilePictureEncodedString(long id) {
+        byte[] bytes = fileDataSaver.readFileOrDefault(id, defaultProfilePicture);
+        return Base64.getEncoder().encodeToString(bytes);
     }
 
     /**

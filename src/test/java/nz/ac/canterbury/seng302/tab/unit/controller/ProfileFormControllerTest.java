@@ -125,7 +125,7 @@ public class ProfileFormControllerTest {
             mockMvc.perform(multipart("/profile?teamID={id}", TEAM_ID).file(multipartFile))
                     .andExpect(status().is3xxRedirection());
         }
-        assertNotEquals(team.getPictureString(), Base64.getEncoder().encodeToString(fileBytes));
+        assertNotEquals(mockTeamService.getProfilePictureEncodedString(team.getTeamId()), Base64.getEncoder().encodeToString(fileBytes));
 
     }
 
@@ -140,7 +140,7 @@ public class ProfileFormControllerTest {
             mockMvc.perform(multipart("/profile?teamID={id}", TEAM_ID).file(multipartFile))
                     .andExpect(status().is3xxRedirection());
         }
-        assertNotEquals(team.getPictureString(), Base64.getEncoder().encodeToString(fileBytes));
+        assertNotEquals(mockTeamService.getProfilePictureEncodedString(team.getTeamId()), Base64.getEncoder().encodeToString(fileBytes));
     }
 
 }
