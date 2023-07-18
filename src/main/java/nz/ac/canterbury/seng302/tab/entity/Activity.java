@@ -8,6 +8,7 @@ import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Activity Entity
@@ -28,6 +29,14 @@ public class Activity {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_teamID", referencedColumnName = "teamId")
     private Team team;
+
+    /**
+     * <p>The formation associated with this "Activity".</p>
+     * <em>Should only apply to Game and Friendly activities (U33)</em>
+     */
+    @OneToOne(cascade = CascadeType.ALL, optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name="fk_formation", referencedColumnName = "formationId")
+    private Formation formation;
 
     @Column(nullable = false)
     private String description;
@@ -89,7 +98,24 @@ public class Activity {
         this.activityEnd = activityEnd;
         this.activityOwner = creator;
         this.location = location;
+    }
 
+    /**
+     * <p>Checks whether this Activity can have a formation associated with it.</p>
+     * Currently only <em>Team</em> Activities of type <code>Game</code> or <code>Friendly</code>
+     * can have a formation
+     */
+    public boolean canContainFormation() {
+        return team != null && (activityType != ActivityType.Game || activityType != ActivityType.Friendly);
+    }
+
+    /**
+     * <p>Checks whether an Activity can have a formation associated with it.</p>
+     * Currently only <em>Team</em> Activities of type <code>Game</code> or <code>Friendly</code>
+     * can have a formation
+     */
+    public static boolean canContainFormation(ActivityType activityType, Team team) {
+        return team != null && (activityType == ActivityType.Game || activityType == ActivityType.Friendly);
     }
 
     public long getId() {
@@ -149,6 +175,14 @@ public class Activity {
         return this.activityOwner;
     }
 
+    /**
+     * <p>Returns an Optional containing this activity's associated formation.</p>
+     * @return The formation, or empty if it's not set.
+     */
+    public Optional<Formation> getFormation() {
+        return Optional.ofNullable(this.formation);
+    }
+
     public void addFactList(List<Fact> factList) { this.activityFacts = factList;}
 
     public List<Fact> getFactList() {return this.activityFacts; }
@@ -176,12 +210,35 @@ public class Activity {
 
     public ActivityOutcome getOutcome() {return outcome;}
 
+    /**
+     * Sets the formation for this activity
+     * @param formation This formation should be from the same team as this activity (U33 AC1)
+     * @throws UnsupportedOperationException If this activity doesn't have a formation
+     * @see Activity#canContainFormation()
+     */
+    public void setFormation(Formation formation) throws UnsupportedOperationException {
+        // Don't check if removing a formation, as that's always valid.
+        // It's only adding to unsupported activities that's wrong.
+        if (formation != null && !canContainFormation()) {
+            throw new UnsupportedOperationException("Can not have a formation on an activity of type: " + activityType);
+        }
+
+        this.formation = formation;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Activity activity = (Activity) o;
-        return id == activity.id && activityType == activity.activityType && Objects.equals(team, activity.team) && Objects.equals(description, activity.description) && Objects.equals(activityStart, activity.activityStart) && Objects.equals(activityEnd, activity.activityEnd) && Objects.equals(activityOwner, activity.activityOwner);
+        return id == activity.id
+            && activityType == activity.activityType
+            && Objects.equals(team, activity.team)
+            && Objects.equals(description, activity.description)
+            && Objects.equals(activityStart, activity.activityStart)
+            && Objects.equals(activityEnd, activity.activityEnd)
+            && Objects.equals(activityOwner, activity.activityOwner)
+            && Objects.equals(formation, activity.formation);
     }
 
     @Override

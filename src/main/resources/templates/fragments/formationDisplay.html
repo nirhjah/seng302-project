@@ -1,12 +1,15 @@
 <!--
 Formation strings should be of form e.g. '1-4-4-2' and positions should be strings of form e.g. '20px,30px;40px,60px;'
+Required variables: formationEditable, true if you want the formation to be edited i.e. being able to move players around, false otherwise
 
 -->
-<div th:fragment="formationDisplay">
+<div th:fragment="formationDisplay(formationEditable)">
   <input type="hidden" name="custom" class="custom" value="false">
   <input type="hidden" name="customPlayerPositions" class="custom-player-positions">
   <div id="pitch"></div>
   <script>
+    const formationEditable = [[${formationEditable}]];
+
     const pitch = document.getElementById("pitch");
     const custom = document.querySelector(".custom");
     const customPlayerPositions = document.querySelector(".custom-player-positions");
@@ -40,6 +43,11 @@ Formation strings should be of form e.g. '1-4-4-2' and positions should be strin
         let playersInRow = formation[i]
         while (formation[i] !== 0) {
           let player = players[j]
+
+          if (formationEditable == true) {
+            dragElement(player);
+          }
+
           player.style.bottom = ((i + 1) / (formation.length + 1)) * pitch.offsetHeight - player.offsetHeight / 2 + "px";
           player.style.left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * pitch.offsetWidth - player.offsetWidth / 2 + "px";
           formation[i] -= 1;
@@ -75,7 +83,9 @@ Formation strings should be of form e.g. '1-4-4-2' and positions should be strin
         player.setAttribute("id", "player" + (i + 1))
         player.setAttribute("class", "player")
         pitch.appendChild(player)
-        dragElement(player);
+        if (formationEditable == true) {
+          dragElement(player);
+        }
       }
     }
 
