@@ -3,7 +3,10 @@ package nz.ac.canterbury.seng302.tab.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.entity.UserTeamStatistic;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.service.ActivityService;
+import nz.ac.canterbury.seng302.tab.service.FactService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,12 @@ public class PersonalAggregatedStatisticsController {
 
     @Autowired
     TeamService teamService;
+
+    @Autowired
+    ActivityService activityService;
+
+    @Autowired
+    FactService factService;
 
     /**
      * Prefills the model with required values
@@ -56,7 +65,16 @@ public class PersonalAggregatedStatisticsController {
     public String personalStatistics(Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
         prefillModel(model, httpServletRequest);
         model.addAttribute("httpServletRequest", httpServletRequest);
-
-        return "personalAggregatedStatistics";
+        Optional<User> user = userService.getCurrentUser();
+        List<Team> teams = teamService.findTeamsWithUser(user.get());
+        List<UserTeamStatistic> userStats = new ArrayList<>();
+        for (Team team : teams) {
+            userStats.add(new UserTeamStatistic(team,
+                    factService.getTotalGoalsForTeamPerUser(user.get(), team),
+                    activityService.getTotalTimeAUserHasPlayedForATeam(user.get(), team),
+                    activityService.getTotalUserMatches(team)));
+        }
+        model.addAttribute("teamStats", userStats);
+        return "userTeamSummaryStats";
     }
 }
