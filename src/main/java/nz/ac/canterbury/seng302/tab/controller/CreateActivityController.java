@@ -199,6 +199,7 @@ public class CreateActivityController {
         if (team != null && !team.isCoach(currentUser) && !team.isManager(currentUser)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Incorrect permissions to edit activity");
         }
+        model.addAttribute("teamMembers", team.getTeamMembers().stream().toList());
 
         fillModelWithActivity(model, activity);
         return TEMPLATE_NAME;
@@ -286,7 +287,7 @@ public class CreateActivityController {
      * @return A json object of type <code>{formationId: "formationString", ...}</code>
      */
     @GetMapping(path = "/createActivity/get_team_formation", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<Long, String>> getTeamFormation(@RequestParam("teamId") long teamId) {
+    public ResponseEntity<Map<Long, String>> getTeamFormation(@RequestParam("teamId") long teamId, Model model) {
         logger.info("GET /createActivity/get_team_formation");
         // CHECK: Are we logged in?
         Optional<User> oCurrentUser = userService.getCurrentUser();
@@ -308,6 +309,8 @@ public class CreateActivityController {
         // Return a JSON object of (id -> string)
         Map<Long, String> formations = formationService.getTeamsFormations(teamId).stream()
                     .collect(Collectors.toMap(Formation::getFormationId, Formation::getFormation));
+
+        model.addAttribute("teamMembers", team.getTeamMembers().stream().toList());
 
         return ResponseEntity.ok().body(formations);
     }

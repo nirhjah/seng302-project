@@ -63,9 +63,32 @@
                 <div th:each="err : ${#fields.errors('formation')}" th:text="${err}" class="error-message"></div>
             </div>
 
+            <h1 th:text="${teamMembers}"> </h1>
+            <div class="displayTeamMembers" id="displayTeamMembers">
+
+                <!--  <li th:each="teamMember : ${teamMembers}">
+                      <span>
+                          <h3 th:text="teamMember.firstName"> </h3>
+                      </span>
+                  </li>-->
+
+                <li>
+                    <span>
+                        <h3>Team Member</h3>
+                    </span>
+                </li>
+                <li>
+                    <span>
+                        <h3>Team Member 2</h3>
+                    </span>
+                </li>
+
+
+            </div>
+
+
 
             <div id="activityFormationFragment" th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"></div>
-
 
 
             <!--/* Activity Description */-->
@@ -350,10 +373,15 @@
         if (document.getElementById("formation").value == -1) {
             document.getElementById("activityFormationFragment").style.display = "none"
             document.querySelector(".activity-form .wrapper").style.height = "950px"
+            document.getElementById("displayTeamMembers").style.display = "none"
         }
         else {
             document.getElementById("activityFormationFragment").style.display = "block"
             document.querySelector(".activity-form .wrapper").style.height = "1350px"
+            document.getElementById("activityFormationFragment").style.marginLeft = "100px"
+            document.getElementById("displayTeamMembers").style.display = "block"
+
+
         }
 
         formationString = document.getElementById("formation").options[document.getElementById("formation").selectedIndex].text;
