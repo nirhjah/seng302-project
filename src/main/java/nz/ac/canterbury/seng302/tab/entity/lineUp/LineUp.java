@@ -5,7 +5,9 @@ import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Formation;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 
-
+/**
+ * Line-up entity for describing a line-up and its relationships
+ */
 @Entity(name="LineUp")
 public class LineUp {
 

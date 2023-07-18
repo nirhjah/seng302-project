@@ -3,6 +3,9 @@ package nz.ac.canterbury.seng302.tab.entity.lineUp;
 import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
+/**
+ * Line-up position entity for storing information about the position of a player in a line-up
+ */
 @Entity(name="LineUpPosition")
 public class LineUpPosition {
 
