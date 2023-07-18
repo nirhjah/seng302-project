@@ -94,25 +94,6 @@ public class ProfileFormController {
         }
         User user = oUser.get();
 
-        Activity activity1 = new Activity(ActivityType.Game, team, "First activity",
-                LocalDateTime.of(2023, 1,1,6,30),
-                LocalDateTime.of(2023, 1,1,8,30), user,
-                new Location(null, null, null, "Christchurch", null, "New Zealand"));
-        Activity activity2 = new Activity(ActivityType.Friendly, team, "Second activity",
-                LocalDateTime.of(2023, 1,1,6,30),
-                LocalDateTime.of(2023, 1,1,8,30), user,
-                new Location(null, null, null, "Christchurch", null, "New Zealand"));
-        Activity activity3 = new Activity(ActivityType.Other, team, "First activity",
-                LocalDateTime.of(2023, 1,1,6,30),
-                LocalDateTime.of(2023, 1,1,8,30), user,
-                new Location(null, null, null, "Christchurch", null, "New Zealand"));
-        activity1.addFactList(List.of(new Goal("dasdas", "asdas", activity1, user)));
-        activity1.setActivityOutcome(ActivityOutcome.Win);
-        activity2.setActivityOutcome(ActivityOutcome.Loss);
-        activityService.updateOrAddActivity(activity1);
-        activityService.updateOrAddActivity(activity2);
-        activityService.updateOrAddActivity(activity3);
-
         int totalWins = activityService.getNumberOfWins(team);
         int totalLosses = activityService.getNumberOfLoses(team);
         int totalDraws = activityService.getNumberOfDraws(team);
