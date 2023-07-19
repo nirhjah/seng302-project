@@ -64,10 +64,19 @@ public class ViewActivityController {
         ActivityType type = activity.getActivityType();
 
         model.addAttribute("canShowScores", type == ActivityType.Friendly || type == ActivityType.Game);
-        model.addAttribute("canShowFacts", type != ActivityType.Training);
         model.addAttribute("canShowPlayers", type == ActivityType.Friendly || type == ActivityType.Game);
 
-        model.addAttribute("possibleFactTypes", FactType.values());
+        /*
+        Different activity types have different sets of allowed FactTypes they can hold.
+         */
+        List<FactType> possible = switch (type) {
+            case Competition, Other -> List.of(FactType.FACT);
+            case Friendly, Game -> List.of(FactType.GOAL, FactType.OPPOSITION_GOAL, FactType.SUBSTITUTION, FactType.FACT);
+            case Training -> List.of();
+        };
+
+        model.addAttribute("possibleFactTypes", possible);
+        model.addAttribute("noFacts", possible.size() == 0);
     }
 
     /**

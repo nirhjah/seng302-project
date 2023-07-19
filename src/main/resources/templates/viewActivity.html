@@ -72,7 +72,7 @@
                 </div>
             </div>
 
-            <button onclick="modal.style.display = 'block'" type="button">Add New Event</button>
+            <button th:unless="${noFacts}" onclick="modal.style.display = 'block'" type="button">Add New Event</button>
         </div>
                 
         <div id="addEventModal" class="modal" th:style="${tokenInvalid != null ? 'display:block' : 'display:none'}">
@@ -82,7 +82,7 @@
                 <form th:action="@{view-activity}" id="createEventForm" method="post" th:object="${createEventForm}">
                     <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
 
-                    <div th:if="${canShowFacts}" class="select-container">
+                    <div th:if="${noFacts}" class="select-container">
                         <div class="select-box">
                             <label for="factType">Choose an Event type <span class="required">*</span></label>
                             <select id="factType" name="factType">
@@ -91,10 +91,6 @@
                                         th:text="${fact}"></option>
                             </select>
                         </div>
-                    </div>
-                    <div th:unless="${canShowFacts}">
-                        <label for="factType" th:value="${defaultFactType}">
-                        </label>
                     </div>
 
                     <div class="select-container">
@@ -117,7 +113,7 @@
             </div>
 
         </div>
-        <div class="act-facts">
+        <div th:unless="${noFacts}" class="act-facts">
             <h4> Facts </h4>
             <div class="facts-table">
                 <ul>
