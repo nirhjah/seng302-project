@@ -18,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.TaskScheduler;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,13 +34,14 @@ import java.util.Optional;
 @Service
 public class TeamService {
     Logger logger = LoggerFactory.getLogger(getClass());
-    @Autowired
+
     private final TeamRepository teamRepository;
 
     @Autowired
     public TeamService(TeamRepository teamRepository) {
         this.teamRepository = teamRepository;
     }
+
 
     /**
      * Countries and cities can have letters from all alphabets, with hyphens,
@@ -78,6 +77,10 @@ public class TeamService {
 
     public List<Team> getTeamList() {
         return teamRepository.findAll();
+    }
+
+    public long getNumberOfTeams() {
+        return teamRepository.count();
     }
 
     public Team addTeam(Team team) {
@@ -130,17 +133,16 @@ public class TeamService {
      * a list of both to filter by selected by the user
      *
      * @param pageable          page object
-     * @param searchedLocations list of locations to filter by selected by the user
+     * @param searchedCities list of locations to filter by selected by the user
      * @param searchedSports    list of sports to filter by selected by the user
      * @param name              the team name or club name query inputted by the user
      * @return Page(s) of teams filtered by city/cities and sport/sports
      */
-    public Page<Team> findPaginatedTeamsByCityAndSports(Pageable pageable, List<String> searchedLocations, List<String> searchedSports, String name) {
-
-        if (searchedLocations == null) {
-            searchedLocations = List.of();
+    public Page<Team> findPaginatedTeamsByCityAndSports(Pageable pageable, List<String> searchedCities, List<String> searchedSports, String name) {
+        if (searchedCities == null) {
+            searchedCities = List.of();
         } else {
-            searchedLocations = searchedLocations.stream().map(String::toLowerCase).toList();
+            searchedCities = searchedCities.stream().map(String::toLowerCase).toList();
         }
 
         if (searchedSports == null) {
@@ -148,7 +150,7 @@ public class TeamService {
         } else {
             searchedSports = searchedSports.stream().map(String::toLowerCase).toList();
         }
-        return teamRepository.findTeamByFilteredLocationsAndSports(pageable, searchedLocations, searchedSports, name);
+        return teamRepository.findTeamByFilteredLocationsAndSports(pageable, searchedCities, searchedSports, name);
     }
 
     public Optional<Team> findByToken(String token) {
@@ -267,7 +269,10 @@ public class TeamService {
         // checks if there is a double whitespace inside the string
         String filtered = string.trim().replaceAll("\\s+", " ");
         return filtered;
+    }
 
+    public List<String> getAllTeamNames() {
+        return teamRepository.getAllTeamNames();
     }
 
     public boolean userRolesAreValid(List<String> userRoles) {
