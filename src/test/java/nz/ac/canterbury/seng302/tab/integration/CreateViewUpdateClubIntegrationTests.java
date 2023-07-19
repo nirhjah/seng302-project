@@ -118,7 +118,7 @@ public class CreateViewUpdateClubIntegrationTests {
         teamDifferentSport = new Team("test3", "Rugby", new Location("3 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"));
 
         teamAlreadyInClub = new Team("TeamInAClubAlready", "Hockey", new Location("5 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"));
-        teamsClub = new Club("TeamsClub", new Location("4 test lane", null, null, "Christchurch", "8041", "NZ"), "Hockey");
+        teamsClub = new Club("TeamsClub", new Location("4 test lane", null, null, "Christchurch", "8041", "NZ"), "Hockey",null);
         clubRepository.save(teamsClub);
         teamAlreadyInClub.setTeamClub(teamsClub);
 
