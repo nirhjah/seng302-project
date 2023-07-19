@@ -87,9 +87,9 @@ public class Formation {
         return customPlayerPositions;
     }
 
-    @Override
-    public String toString() {
-        return String.format("Formation(formation='%s', team='%s')", getFormation(), getTeam());
-    }
+//    @Override
+//    public String toString() {
+//        return String.format("Formation(formation='%s', team='%s')", getFormation(), getTeam());
+//    }
 
 }
