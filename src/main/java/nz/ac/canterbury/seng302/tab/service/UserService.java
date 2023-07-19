@@ -69,6 +69,8 @@ public class UserService {
         Order.asc("firstName").ignoreCase()
     );
 
+
+
     /**
      * Gets a page of users.
      * 
@@ -257,6 +259,10 @@ public class UserService {
      */
     public Optional<User> getCurrentUser() {
 
+        // getContext() only returns null if we're inside a test
+        if (SecurityContextHolder.getContext() == null) {
+            return Optional.empty();
+        }
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         // Issue: The security context chain gives you "Anonymous Authentication"

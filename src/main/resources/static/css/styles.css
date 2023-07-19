@@ -1,3 +1,6 @@
+* {
+    font-family: "Noto Sans", sans-serif;
+}
 
 ul.search {
     display: flex;
@@ -78,11 +81,6 @@ td {
 }
 
 .wrapper,.wrapper-profile,.wrapper-edit-profile{
-    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
-    border-radius: 20px;
-}
-
-.wrapper,.wrapper-profile,.wrapper-edit-profile{
     border: 2px solid rgba(255, 255, 255, .5);
     box-shadow: 0 0 30px rgba(0, 0, 0, .5);
     border-radius: 20px;
@@ -144,7 +142,7 @@ footer {
 
 
 .team-form .create-team, .user-form .user-header,.login-header,
-.register-form .register-header, .activity-form .create-activity-header{
+.register-form .register-header, .activity-form .create-activity-header, .create-club-header {
     font-family: "Noto Sans",sans-serif;
     /*color: #0B1B2A;*/
     text-align: center;
@@ -216,7 +214,7 @@ input:invalid + label:after {
 }
 
 
-.input-box input {
+.input-box input, .create-formation-display input {
     width: 99%;
     height: 100%;
     background: transparent;
@@ -225,9 +223,7 @@ input:invalid + label:after {
     font-weight: 500;
     border: none;
     outline: none;
-    cursor: pointer;
 }
-
 
 
 .profile-buttons button:hover, .wrapper-profile .back-button:hover, .submit-button button:hover, .file-label-border:hover {
@@ -281,7 +277,7 @@ input:invalid + label:after {
     font-family: "Noto Sans", sans-serif;
     font-weight: 300;
     color: red;
-    text-align: center;
+    text-align: left;
     font-style: italic;
 }
 .Welcome-header {
@@ -365,9 +361,9 @@ ul {
     border: none;
     padding: .1em .5em;
     cursor: pointer;
-    /* position: absolute; */
     display: table;
-    margin-left: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
     height: 30px;
     box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
 }
@@ -441,21 +437,16 @@ ul {
     display: flex;
 }
 
-.filter-by-city-button {
+.apply-filters-button {
     border: 0;
     text-decoration: none;
-    font-size: 17px;
-    font-weight: 500;
+    /* font-size: 17px; */
+    font-weight: bold;
     padding: 0 15px;
     border-radius: 20px;
     background-color: #415A77;
     color: white;
     font-family: "Noto Sans", sans-serif;
-}
-
-.search-team-button-div {
-    width: 41px;
-    margin-right: -17px;
 }
 
 .selectBox {
@@ -501,14 +492,6 @@ ul.autocomplete-result{
     right: 30px;
     object-fit: cover;
 }
-.team-error-message {
-    font-size: 13px;
-    font-family: "Noto Sans", sans-serif;
-    font-weight: 300;
-    color: red;
-    text-align: center;
-    width: 85%;
-}
 
 .password-error-message {
     font-size: 13px;
@@ -550,3 +533,16 @@ ul.autocomplete-result{
     content: '\2022'; /* Unicode character for bullet point */
     margin-right: 0.5em; /* Add some space between the bullet point and the text */
 }
+
+.statistics-title {
+    font-family: "Noto Sans",sans-serif;
+    /*color: #0B1B2A;*/
+    text-align: center;
+    /*width: 500px;*/
+    font-size: 40px;
+    font-weight: 600;
+    color: #0D1B2A;
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+

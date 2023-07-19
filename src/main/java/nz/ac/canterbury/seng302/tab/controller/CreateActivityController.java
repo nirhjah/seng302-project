@@ -1,19 +1,23 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.form.CreateActivityForm;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
-import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
+import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,56 +26,65 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Formation;
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.form.CreateActivityForm;
+import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
 
 @Controller
 public class CreateActivityController {
 
-    @Autowired
-    TeamService teamService;
+    private TeamService teamService;
+    private UserService userService;
+    private ActivityService activityService;
+    private FormationService formationService;
 
-    @Autowired
-    UserService userService;
+    private LineUpRepository lineUpRepository;
 
-    @Autowired
-    ActivityService activityService;
+    private Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
-    Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
+    private static final String TEMPLATE_NAME = "createActivityForm";
+
+    public CreateActivityController(TeamService teamService, UserService userService,
+            ActivityService activityService, FormationService formationService, LineUpRepository lineUpRepository) {
+        this.teamService = teamService;
+        this.userService = userService;
+        this.activityService = activityService;
+        this.formationService = formationService;
+        this.lineUpRepository = lineUpRepository;
+    }
 
     /**
      * Prefills the model with required values
      * @param model the model to be filled
      * @param httpServletRequest the request
-     * @throws MalformedURLException
+     * @throws MalformedURLException can be thrown by getting the path if invalid
      */
     public void prefillModel(Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
-        Optional<User> user = userService.getCurrentUser();
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
+        User user = userService.getCurrentUser().get();
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("displayPicture", user.getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
-        List<Team> allUserTeams = teamService.findTeamsWithUser(user.get());
-        List<Team> teamList = new ArrayList<>();
-        for (Team team : allUserTeams) {
-            if (team.isManager(user.get()) || team.isCoach(user.get())) {
-                teamList.add(team);
-            }
-        }
+        List<Team> teamList = teamService.findTeamsWithUser(user).stream()
+                .filter(team -> team.isManager(user) || team.isCoach(user))
+                .toList();
         model.addAttribute("teamList", teamList);
-        model.addAttribute("activityTypes", Activity.ActivityType.values());
+        model.addAttribute("activityTypes", ActivityType.values());
         URL url = new URL(httpServletRequest.getRequestURL().toString());
         String path = (url.getPath() + "/..");
         model.addAttribute("path", path);
     }
 
-    public void fillModelWithActivity(Model model, Activity activity) {
+    private void fillModelWithActivity(Model model, Activity activity) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         LocalDateTime startDateTime =  activity.getActivityStart();
         String formattedStartDateTime = startDateTime.format(formatter);
@@ -81,6 +94,10 @@ public class CreateActivityController {
         model.addAttribute("activityType", activity.getActivityType());
         if (activity.getTeam() != null) {
             model.addAttribute("teamName", activity.getTeam().getName());
+            model.addAttribute("teamFormations", formationService.getTeamsFormations(activity.getTeam().getTeamId()));
+            model.addAttribute("selectedFormation", activity.getFormation().orElse(null));
+            model.addAttribute("players", activity.getTeam().getTeamMembers());
+            logger.info(activity.getTeam().getTeamMembers().toString());
         }
         model.addAttribute("actId", activity.getId());
         model.addAttribute("startDateTime",formattedStartDateTime);
@@ -95,6 +112,56 @@ public class CreateActivityController {
     }
 
     /**
+     * Performs various error checks for this form, on top of the Jakarta annotations in the form.
+     * @param bindingResult Any found errors are added to this
+     * @param createActivityForm The form containing the data we're validating
+     * @param team The team picked by this form
+     * @param currentUser The user making the request
+     */
+    private void postCreateActivityErrorChecking(
+            BindingResult bindingResult,
+            CreateActivityForm createActivityForm,
+            Team team,
+            User currentUser) {
+        // The startDate is before endDate
+        if (!activityService.validateStartAndEnd(createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
+            bindingResult.addError(new FieldError("CreateActivityForm", "startDateTime", ActivityFormValidators.END_BEFORE_START_MSG));
+        }
+        
+        if (team != null) {
+            // The dates are after the team's creation date
+            if (!activityService.validateActivityDateTime(team.getCreationDate(), createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                bindingResult.addError(new FieldError("CreateActivityForm", "endDateTime",
+                        ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + team.getCreationDate().format(formatter)));
+            }
+            // This user needs the authority to create/update activities
+            boolean hasCreateAuth = team.isCoach(currentUser) || team.isManager(currentUser);
+            if (!hasCreateAuth) {
+                bindingResult.addError(new FieldError("CreateActivityForm", "team", ActivityFormValidators.NOT_A_COACH_OR_MANAGER));
+            }
+        }
+        // The activity type might require a team
+        if (!activityService.validateTeamSelection(createActivityForm.getActivityType(), team)) {
+            bindingResult.addError(new FieldError("CreateActivityForm", "team",
+                    ActivityFormValidators.TEAM_REQUIRED_MSG));
+        }
+
+        // Formations can only exist under certain circumstances.
+        // However, if the conditions aren't met, we simply don't add the formation.
+        // This is because the front-end greys out the Formation dropdown if the conditions aren't met,
+        // so the value may be set but it's invalid.
+        long formationId = createActivityForm.getFormation();
+        if (formationId != -1 && (Activity.canContainFormation(createActivityForm.getActivityType(), team))) {
+            // Check that your team has this formation
+            if (formationService.findFormationById(formationId).map(form -> form.getTeam().equals(team)).isEmpty()) {
+                bindingResult.addError(new FieldError("CreateActivityForm", "formation",
+                    ActivityFormValidators.FORMATION_DOES_NOT_EXIST_MSG));
+            }
+        }
+    }
+
+    /**
      * This controller handles both the edit and creation of an activity
      * @param actId the ID if activity if editing, otherwise null
      * @param createActivityForm the form to be used
@@ -104,131 +171,158 @@ public class CreateActivityController {
      * @throws MalformedURLException thrown in some cases
      */
     @GetMapping("/createActivity")
-    public String activityForm( @RequestParam(name="edit", required=false) Long actId,CreateActivityForm createActivityForm,
-                                        Model model,
-                                        HttpServletRequest httpServletRequest) throws MalformedURLException {
+    public String activityForm(
+            @RequestParam(name="edit", required=false) Long actId,
+            CreateActivityForm createActivityForm,
+            Model model,
+            HttpServletRequest httpServletRequest) throws MalformedURLException {
+        logger.info("GET /createActivity");
         model.addAttribute("httpServletRequest", httpServletRequest);
         prefillModel(model, httpServletRequest);
-        logger.info("GET /createActivity");
 
-
-        Activity activity;
-        if (actId !=null){
-            if ((activity = activityService.findActivityById(actId))!=null){
-                fillModelWithActivity(model, activity);
-            }
+        // If you're creating an activity, just return a blank field
+        if (actId == null) {
+            return TEMPLATE_NAME;
         }
-        return "createActivity";
+            
+        User currentUser = userService.getCurrentUser().get();
+        Activity activity = activityService.findActivityById(actId);
+
+        // You can't edit an activity that doesn't exist
+        if (activity == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Specified activity does not exist");
+        }
+
+        Team team = activity.getTeam();
+        // If it's a teamless activity, only the original creator can edit it
+        if (team == null && !activity.getActivityOwner().equals(currentUser)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Incorrect permissions to edit activity");
+        }
+
+        // If it's an activity with a team, you must be the manager or coach
+        if (team != null && !team.isCoach(currentUser) && !team.isManager(currentUser)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Incorrect permissions to edit activity");
+        }
+
+        fillModelWithActivity(model, activity);
+        return TEMPLATE_NAME;
     }
 
     /**
      * Handles creating or adding activities
-     * @param actId the id of activity if editting, otherwise null
-     * @param activityType the type of actvity
-     * @param teamId the ID of the team, (optional)
-     * @param description description of the activity
-     * @param startDateTime start date time of the activity
-     * @param endDateTime end date time of the activity
-     * @param addressLine1 address line 1 of the activity
-     * @param addressLine2 address line 2 of the activity
-     * @param city city the activity takes place in
-     * @param country country that activity takes place in
-     * @param postcode postcode of activity
-     * @param suburb suburb of event
+     * @param actId the id of activity if editing, otherwise null
      * @param createActivityForm form used to create activity
      * @param bindingResult holds the results of validating the form
-     * @param httpServletResponse the response to send
      * @param model model mapping of information
      * @param httpServletRequest the request
+     * @param httpServletResponse the response to send
      * @return returns my activity page iff the details are valid, returns to activity page otherwise
      * @throws MalformedURLException thrown in some cases
      */
     @PostMapping("/createActivity")
     public String createActivity(
-            @RequestParam(name = "actId", defaultValue = "-1") long actId,
-            @RequestParam(name = "activityType", required = false) Activity.ActivityType activityType,
-            @RequestParam(name = "team", defaultValue = "-1") long teamId,
-            @RequestParam(name="description", required = false) String description,
-            @RequestParam(name="startDateTime", required = false) LocalDateTime startDateTime,
-            @RequestParam(name="endDateTime", required = false) LocalDateTime endDateTime,
-            @RequestParam(name = "addressLine1") String addressLine1,
-            @RequestParam(name = "addressLine2") String addressLine2,
-            @RequestParam(name = "city") String city,
-            @RequestParam(name = "country") String country,
-            @RequestParam(name = "postcode") String postcode,
-            @RequestParam(name = "suburb") String suburb,
+            @RequestParam(name = "actId", defaultValue = "-1") Long actId,
+            @RequestParam(name = "positions") List<String> positions,
             @Validated CreateActivityForm createActivityForm,
             BindingResult bindingResult,
+            HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
-            Model model,
-            HttpServletRequest httpServletRequest) throws MalformedURLException {
+            Model model) throws MalformedURLException {
+
+        logger.info("POST /createActivity");
         model.addAttribute("httpServletRequest", httpServletRequest);
         prefillModel(model, httpServletRequest);
 
-        if (!activityService.validateStartAndEnd(startDateTime, endDateTime)) {
-            if (!bindingResult.hasFieldErrors("startDateTime")) {
-                bindingResult.addError(new FieldError("CreateActivityForm", "startDateTime",
-                        ActivityFormValidators.END_BEFORE_START_MSG));
-            }
-        }
-        addressLine1.trim();
-        if (addressLine1.isEmpty()) {
-            bindingResult.addError(new FieldError("CreateActivityForm", "addressLine1", "This is a required field"));
-        }
-        postcode.trim();
-        if (postcode.isEmpty()) {
-            bindingResult.addError(new FieldError("CreateActivityForm", "postcode", "This is a required field"));
-        }
+        User currentUser = userService.getCurrentUser().get();
+        Team team = teamService.getTeam(createActivityForm.getTeam());
+        Activity activity = activityService.findActivityById(actId);
 
-        User user = userService.getCurrentUser().get();
-        Team team = teamService.getTeam(teamId);
-        if (team!=null) {
-            if (!activityService.validateActivityDateTime(team.getCreationDate(), startDateTime, endDateTime)) {
-                if (!bindingResult.hasFieldErrors("endDateTime")) {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-                    bindingResult.addError(new FieldError("CreateActivityForm", "endDateTime",
-                            ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + team.getCreationDate().format(formatter)));
-                }
-            }
-            boolean hasCreateAuth = team.isCoach(user) || team.isManager(user);
-            if (!hasCreateAuth) {
-                bindingResult.addError(new FieldError("CreateActivityForm", "team", ActivityFormValidators.NOT_A_COACH_OR_MANAGER));
-            }
-        } else if (!activityService.validateTeamSelection(activityType, team)) {
-            bindingResult.addError(new FieldError("CreateActivityForm", "team",
-                    ActivityFormValidators.TEAM_REQUIRED_MSG));
-        }
+        postCreateActivityErrorChecking(bindingResult, createActivityForm, team, currentUser);
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            if (actId != -1) {
+            if (activity != null) {
                 model.addAttribute("actId", actId);
-                //return "redirect:./createActivity" + (actId != -1 ? "?edit=" + actId : "");
-                Activity activity = activityService.findActivityById(actId);
                 fillModelWithActivity(model, activity);
-                return "createActivity";
-            } else {
-                return "createActivity";
+            }
+            return TEMPLATE_NAME;
+        }
+
+        Location location = new Location(
+            createActivityForm.getAddressLine1(),
+            createActivityForm.getAddressLine2(),
+            createActivityForm.getSuburb(),
+            createActivityForm.getCity(),
+            createActivityForm.getPostcode(),
+            createActivityForm.getCountry()
+        );
+
+        if (actId == -1) {  // Creating a new activity
+            logger.info("Creating new activity");
+            activity = new Activity();
+        } else {            // Updating an existing activity
+            logger.info("Updating existing activity");
+            activity = activityService.findActivityById(actId);
+            if (activity == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Specified activity does not exist");
             }
         }
-        Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
-        if (actId !=-1) {
-            Activity editActivity = activityService.findActivityById(actId);
-            editActivity.setActivityType(activityType);
-            editActivity.setTeam(team);
-            editActivity.setActivityEnd(endDateTime);
-            editActivity.setActivityStart(startDateTime);
-            editActivity.setActivityOwner(userService.getCurrentUser().get());
-            editActivity.setLocation(location);
-            editActivity.setDescription(description);
-            editActivity = activityService.updateOrAddActivity(editActivity);
-            return "redirect:./view-activities";
+        activity.setActivityType(createActivityForm.getActivityType());
+        activity.setTeam(team);
+        activity.setActivityEnd(createActivityForm.getEndDateTime());
+        activity.setActivityStart(createActivityForm.getStartDateTime());
+        activity.setActivityOwner(currentUser);
+        activity.setLocation(location);
+        activity.setDescription(createActivityForm.getDescription());
+        // Add formation if possible
+        if (createActivityForm.getFormation() == -1 || !Activity.canContainFormation(createActivityForm.getActivityType(), team)) {
+            activity.setFormation(null);
         } else {
-
-            Activity activity = new Activity(activityType, team,
-                    description, startDateTime, endDateTime, userService.getCurrentUser().get(), location);
-            activity = activityService.updateOrAddActivity(activity);
-            return "redirect:./view-activities";
+            Optional<Formation> formation = formationService.findFormationById(createActivityForm.getFormation());
+            // The error checking function checks if this exists, so this should always pass
+            activity.setFormation(formation.get());
         }
+
+        activity = activityService.updateOrAddActivity(activity);
+
+        LineUp activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
+
+        // LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, , );
+
+        lineUpRepository.save(activityLineUp);
+
+        return String.format("redirect:./view-activity?activityID=%s", activity.getId());
     }
+
+    /**
+     * A JSON API endpoint, which gives the formations of an associated team.. Used by the createActivity page to update
+     * @return A json object of type <code>{formationId: "formationString", ...}</code>
+     */
+    @GetMapping(path = "/createActivity/get_team_formation", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<Long, String>> getTeamFormation(@RequestParam("teamId") long teamId) {
+        logger.info("GET /createActivity/get_team_formation");
+        // CHECK: Are we logged in?
+        Optional<User> oCurrentUser = userService.getCurrentUser();
+        if (oCurrentUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        User currentUser = oCurrentUser.get();
+        // CHECK: Does our requested team exist?
+        Team team = teamService.getTeam(teamId);
+        if (team == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        // CHECK: Do you have permission to edit this team's formations?
+        // (This doubles as an "Are you in this team" check)
+        if (!team.isCoach(currentUser) && !team.isManager(currentUser)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        // Return a JSON object of (id -> string)
+        Map<Long, String> formations = formationService.getTeamsFormations(teamId).stream()
+                    .collect(Collectors.toMap(Formation::getFormationId, Formation::getFormation));
+
+        return ResponseEntity.ok().body(formations);
+    }
+
 }

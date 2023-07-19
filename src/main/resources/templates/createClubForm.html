@@ -2,64 +2,42 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org" lang="en">
 <head>
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
-    <link th:href="@{/css/create-activity.css}" rel="stylesheet"/>
+    <link th:href="@{/css/create-club.css}" rel="stylesheet">
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <title>[[${actId != null ? 'Edit' : 'Create'}]] Activity</title>
+    <title>[[${clubId != null ? 'Edit' : 'Create'}]] Club</title>
 </head>
-<body class="create-activity-background">
+<body class="view-teams-background">
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
-<div class="activity-form">
-    <div class="create-activity-header">
-        <h1>[[${actId != null ? 'Edit' : 'Create'}]] Activity</h1>
+<div class="club-form">
+
+    <div class="create-club-header">
+        <h1>[[${clubId != null ? 'Edit' : 'Create'}]] Club</h1>
     </div>
+
     <div class="wrapper">
-        <form th:action="@{createActivity}" th:object="${createActivityForm}" id="createActivityForm" method="post">
-            <input type="hidden" th:if="${actId != null}" th:name="actId" th:value="${actId}"/>
-            <div class="select-container">
-                <label for="activityType">Choose An Activity Type <span class="required">*</span> </label>
-                <select name="activityType" id="activityType">
-                    <option th:each="type : ${activityTypes}"
-                            th:value="${type}"
-                            th:text="${type}"
-                            th:selected="${type == activityType}">
-                    </option>
-                </select>
-                <div th:each="err : ${#fields.errors('activityType')}" th:text="${err}" class="error-message"></div>
+        <form th:action="@{createClub}" th:object="${createAndEditClubForm}" id="createAndEditClubForm" method="post">
+            <input type="hidden" th:if="${clubId != null}" th:name="clubId" th:value="${clubId}"/>
+
+
+
+
+            <div class="input-box">
+                <input type="text" class="form-control" id="name" th:name="name" th:value="${name}"
+                       data-cy="name" autofocus placeholder=""
+                       title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
+                <label for="name">Club Name <span class="required">*</span></label>
+                <div th:each="err : ${#fields.errors('name')}" th:text="${err}" class="error-message"></div>
             </div>
-            <div class="select-container">
-                <div class="select-box">
-                    <label for="team">Select Team For Activity <span class="required">*</span></label>
-                    <select name="team" id="team">
-                        <option value="-1">(No Team)</option>
-                        <option th:each="team : ${teamList}" th:value="${team.getTeamId()}"
-                                th:text="${team.getName()}" th:selected="${team.getName() == teamName}"></option>
-                    </select>
-                </div>
-                <div th:each="err : ${#fields.errors('team')}" th:text="${err}" class="error-message"></div>
+
+            <div class="input-box">
+                <input type="text" class="form-control" id="sport" th:name="sport" th:value="${sport}"
+                       data-cy="sport" autofocus placeholder=""
+                       title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
+                <label for="sport">Club Sport <span class="required">*</span></label>
+                <div th:each="err : ${#fields.errors('sport')}" th:text="${err}" class="error-message"></div>
             </div>
-            <div class="description-box">
-                <label for="description">Description: <span class="required">*</span></label>
-                <textarea class="description-text" id="description" th:name="description" autofocus placeholder=""
-                          th:text="${description}"></textarea>
-                <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
-                <p id="charCount" class="charCount"></p>
-            </div>
-            <div class="input-boxes">
-                <div class="input-box">
-                    <input type="datetime-local" class="datetime-input" id="startDateTime" name="startDateTime"
-                           th:value="${startDateTime}">
-                    <label for="startDateTime">Start date & time of activity<span class="required">*</span> </label>
-                    <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}"
-                         class="error-message"></div>
-                </div>
-                <div class="input-box">
-                    <input type="datetime-local" class="datetime-input" id="endDateTime" name="endDateTime"
-                           th:value="${endDateTime}">
-                    <label for="endDateTime">End date & time of activity<span class="required">*</span> </label>
-                    <div th:each="err : ${#fields.errors('endDateTime')}" th:text="${err}" class="error-message"></div>
-                </div>
-            </div>
+
 
             <div class="input-boxes">
                 <div class="input-box">
@@ -80,6 +58,9 @@
                 </div>
                 <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message"></div>
             </div>
+
+            <div class="input-boxes">
+
             <div class="input-box">
                 <input type="text" class="form-control" id="suburb" th:name="suburb"
                        data-cy="location" autofocus placeholder="" th:value="${suburb}">
@@ -90,25 +71,42 @@
                 <input type="text" class="form-control" id="postcode" th:name="postcode"
                        data-cy="location" autofocus placeholder="" th:value="${postcode}">
                 <label for="postcode">Postcode<span class="required">*</span></label>
+                <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
             </div>
-            <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
+            </div>
 
+            <div class="input-boxes">
             <div class="input-box">
                 <input type="text" class="form-control" id="city" th:name="city"
                        data-cy="location" autofocus placeholder="" th:value="${city}">
                 <label for="city">City <span class="required">*</span></label>
+                <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
             </div>
-            <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
 
             <div class="input-box">
                 <input type="text" class="form-control" id="country" th:name="country"
                        data-cy="location" autofocus placeholder="" th:value="${country}">
                 <label for="country">Country <span class="required">*</span></label>
+                <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
             </div>
-            <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
+            </div>
+
+            <label class="selectTeamsLabel"> Select Teams </label>
+            <select name="selectedTeams" id="selectedTeams" multiple>
+                <option class="selectTeamsOption" th:each="team : ${listOfTeams}"
+                        th:value="${team.teamId}"
+                        th:text="${team}"
+                        th:selected="${selectedTeams != null && selectedTeams.contains(team)}"></option>
+            </select>
+
+            <label style="font-family: 'Noto Sans', sans-serif"> Hold ctrl and click on teams to select/deselect multiple </label>
+
+            <div th:each="err : ${#fields.errors('selectedTeams')}" th:text="${err}" class="error-message"></div>
+
+
             <div class="submit-button">
                 <a th:href="@{home}">
-                    <button type="submit" th:text="${actId != null ? 'Save' : 'Create'}"></button>
+                    <button type="submit" th:text="${clubId != null ? 'Save' : 'Create'}"></button>
 
                 </a>
             </div>
@@ -223,23 +221,7 @@
             resultsContainer.innerHTML = "";
         }
     });
-    const textarea = document.getElementById('description');
-    const charCount = document.getElementById('charCount');
-    const limit = 150;
 
-    textarea.addEventListener('input', function() {
-        const value = textarea.value;
-        const remainingChars = limit - value.length;
-        charCount.textContent = `Characters remaining: ${remainingChars}`;
-
-        if (remainingChars <= 0) {
-            textarea.style.borderColor = 'red';
-            charCount.style.color='red';
-        } else {
-            textarea.style.borderColor = '#415a77';
-            charCount.style.color='#888888';
-        }
-    });
 
 
 

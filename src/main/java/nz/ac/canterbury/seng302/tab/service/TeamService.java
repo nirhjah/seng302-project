@@ -1,10 +1,14 @@
 package nz.ac.canterbury.seng302.tab.service;
 
+import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
+import nz.ac.canterbury.seng302.tab.entity.Club;
 import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.TeamRole;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +20,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Spring Boot Service class for Team Service
@@ -27,43 +28,53 @@ import java.util.Optional;
 @Service
 public class TeamService {
     Logger logger = LoggerFactory.getLogger(getClass());
+
+    private final TeamRepository teamRepository;
+
     @Autowired
-    private TeamRepository teamRepository;
+    public TeamService(TeamRepository teamRepository) {
+        this.teamRepository = teamRepository;
+    }
+
 
     /**
      * Countries and cities can have letters from all alphabets, with hyphens,
      * apostrophes and
      * spaces. Must start with an alphabetical character
      */
-    public final String countryCitySuburbNameRegex = "^\\p{L}+[\\- '\\p{L}]*$";
+    public final String countryCitySuburbNameRegex = TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX;
 
     /**
      * Addresses can have letters, numbers, spaces, commas, periods, hyphens,
      * forward slashes, apostrophes and pound signs. Must include
      * at least one alphanumeric character
      **/
-    public final String addressRegex = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
+    public final String addressRegex = TeamFormValidators.VALID_ADDRESS_REGEX;
 
     /**
      * Allow letters, numbers, forward slashes and hyphens. Must start with an
      * alphanumeric character.
      */
-    public final String postcodeRegex = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
+    public final String postcodeRegex = TeamFormValidators.VALID_POSTCODE_REGEX;
 
     /**
      * A team name can be alphanumeric, dots and curly braces. Must start with on
      * alphabetical character
      **/
-    public final String teamNameUnicodeRegex = "^[\\p{L}\\p{N}\\s]+[}{.\\p{L}\\p{N}\\s]+$";
+    public final String teamNameUnicodeRegex = TeamFormValidators.VALID_TEAM_NAME_REGEX;
 
     /**
      * A sport can be letters, space, apostrophes or hyphens. Must start with on
      * alphabetical character
      **/
-    public final String sportUnicodeRegex = "^\\p{L}+[\\- '\\p{L}]*$";
+    public final String sportUnicodeRegex = TeamFormValidators.VALID_TEAM_SPORT_REGEX;
 
     public List<Team> getTeamList() {
         return teamRepository.findAll();
+    }
+
+    public long getNumberOfTeams() {
+        return teamRepository.count();
     }
 
     public Team addTeam(Team team) {
@@ -116,17 +127,16 @@ public class TeamService {
      * a list of both to filter by selected by the user
      *
      * @param pageable          page object
-     * @param searchedLocations list of locations to filter by selected by the user
+     * @param searchedCities list of locations to filter by selected by the user
      * @param searchedSports    list of sports to filter by selected by the user
-     * @param name              the team name query inputted by the use
+     * @param name              the team name or club name query inputted by the user
      * @return Page(s) of teams filtered by city/cities and sport/sports
      */
-    public Page<Team> findPaginatedTeamsByCityAndSports(Pageable pageable, List<String> searchedLocations, List<String> searchedSports, String name) {
-
-        if (searchedLocations == null) {
-            searchedLocations = List.of();
+    public Page<Team> findPaginatedTeamsByCityAndSports(Pageable pageable, List<String> searchedCities, List<String> searchedSports, String name) {
+        if (searchedCities == null) {
+            searchedCities = List.of();
         } else {
-            searchedLocations = searchedLocations.stream().map(String::toLowerCase).toList();
+            searchedCities = searchedCities.stream().map(String::toLowerCase).toList();
         }
 
         if (searchedSports == null) {
@@ -134,25 +144,7 @@ public class TeamService {
         } else {
             searchedSports = searchedSports.stream().map(String::toLowerCase).toList();
         }
-        return teamRepository.findTeamByFilteredLocationsAndSports(pageable, searchedLocations, searchedSports, name);
-    }
-
-    /**
-     * gets a page of teams filtered by their name and sport
-     *
-     * @param pageable     a page object showing how the page should be shown
-     * @param filterSports List of sports to be filtered by
-     * @param nameSearch   the search query
-     * @return a slice of teams that meet the name conditions and filter conditions
-     */
-    public Page<Team> findTeamsByNameOrSport(Pageable pageable, List<String> filterSports, String nameSearch) {
-        if (filterSports == null) {
-            filterSports = List.of();
-        }
-        if (nameSearch != null && nameSearch.isEmpty()) {
-            nameSearch = null;
-        }
-        return teamRepository.findTeamByNameAndSportIn(pageable, filterSports, nameSearch);
+        return teamRepository.findTeamByFilteredLocationsAndSports(pageable, searchedCities, searchedSports, name);
     }
 
     public Optional<Team> findByToken(String token) {
@@ -162,10 +154,8 @@ public class TeamService {
 
     /**
      * gets a page of all teams the given user is a member of
-     *
-     * @param pageNo a page object showing how the page should be shown
-     * @param user   user to filter teams by
-     * @return all teams the user is apart of
+     * @param user          user to filter teams by
+     * @return              all teams the user is apart of
      */
     public Page<Team> findTeamsByUser(int pageNo, int pageSize, User user) {
 
@@ -273,35 +263,10 @@ public class TeamService {
         // checks if there is a double whitespace inside the string
         String filtered = string.trim().replaceAll("\\s+", " ");
         return filtered;
-
     }
 
     public List<String> getAllTeamNames() {
         return teamRepository.getAllTeamNames();
-    }
-
-    public void setTeamMember(Team team, User user) {
-        Role memberRole = Role.MEMBER;
-        team.setRole(user, memberRole);
-        teamRepository.save(team);
-        // updateTeam(team);
-    }
-
-    public User getTeamManager(Long teamId) {
-        TeamRole manager = teamRepository.findTeamManager(teamId, Role.MANAGER);
-        return manager != null ? manager.getUser() : null;
-    }
-
-    public boolean isUserManagerOfTeam(Long userId, Long teamId) {
-        Team team = teamRepository.findById(teamId).orElse(null);
-        if (team == null) {
-            return false;
-        }
-        User manager = getTeamManager(teamId);
-        if (manager == null) {
-            return false;
-        }
-        return manager.getUserId() == userId;
     }
 
     public boolean userRolesAreValid(List<String> userRoles) {
@@ -310,4 +275,9 @@ public class TeamService {
     }
 
     public List<Team> findTeamsWithUser(User user) {return teamRepository.findTeamsWithUser_List(user);}
+
+    public List<Team> findTeamsByClub(Club club) {
+        long id = club.getClubId();
+        return teamRepository.findTeamsByTeamClubClubId(id);
+    }
 }

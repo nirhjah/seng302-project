@@ -1,26 +1,20 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Activity Entity
  */
 @Entity(name = "Activity")
 public class Activity {
-
-    /**
-     * Enum of all possible activity types
-     */
-    public enum ActivityType {
-        Game,
-        Friendly,
-        Training,
-        Competition,
-        Other
-    }
 
     public ActivityType[] getActivityTypes() {return ActivityType.values();}
     @Id
@@ -36,6 +30,14 @@ public class Activity {
     @JoinColumn(name = "fk_teamID", referencedColumnName = "teamId")
     private Team team;
 
+    /**
+     * <p>The formation associated with this "Activity".</p>
+     * <em>Should only apply to Game and Friendly activities (U33)</em>
+     */
+    @OneToOne(cascade = CascadeType.ALL, optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name="fk_formation", referencedColumnName = "formationId")
+    private Formation formation;
+
     @Column(nullable = false)
     private String description;
 
@@ -45,13 +47,33 @@ public class Activity {
     @Column(nullable = false)
     private LocalDateTime activityEnd;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, optional = true)
     @JoinColumn(name = "fk_userID", referencedColumnName = "Id")
     private User activityOwner;
 
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
+
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL)
+    private List<Fact> activityFacts;
+
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    @Column(name = "activityScore", nullable = false)
+    private List<String> activityScore;
+
+
+    @Column
+    private String activityTeamScore;
+
+    @Column
+    private String otherTeamScore;
+
+    @Column
+    @Enumerated(EnumType.ORDINAL)
+    private ActivityOutcome outcome;
+
+
 
 
     /**
@@ -76,7 +98,24 @@ public class Activity {
         this.activityEnd = activityEnd;
         this.activityOwner = creator;
         this.location = location;
+    }
 
+    /**
+     * <p>Checks whether this Activity can have a formation associated with it.</p>
+     * Currently only <em>Team</em> Activities of type <code>Game</code> or <code>Friendly</code>
+     * can have a formation
+     */
+    public boolean canContainFormation() {
+        return team != null && (activityType != ActivityType.Game || activityType != ActivityType.Friendly);
+    }
+
+    /**
+     * <p>Checks whether an Activity can have a formation associated with it.</p>
+     * Currently only <em>Team</em> Activities of type <code>Game</code> or <code>Friendly</code>
+     * can have a formation
+     */
+    public static boolean canContainFormation(ActivityType activityType, Team team) {
+        return team != null && (activityType == ActivityType.Game || activityType == ActivityType.Friendly);
     }
 
     public long getId() {
@@ -90,7 +129,6 @@ public class Activity {
     public void setTeam(Team team) {
         this.team = team;
     }
-
     public LocalDateTime getActivityStart() {
         return activityStart;
     }
@@ -137,16 +175,91 @@ public class Activity {
         return this.activityOwner;
     }
 
+    /**
+     * <p>Returns an Optional containing this activity's associated formation.</p>
+     * @return The formation, or empty if it's not set.
+     */
+    public Optional<Formation> getFormation() {
+        return Optional.ofNullable(this.formation);
+    }
+
+    public void addFactList(List<Fact> factList) { this.activityFacts = factList;}
+
+    public List<Fact> getFactList() {return this.activityFacts; }
+
+    public void addFactToFactList(Fact fact) {this.activityFacts.add(fact); }
+
+
+    public String getActivityTeamScore() {
+        return activityTeamScore;
+    }
+
+    public void setActivityTeamScore(String activityTeamScore) {
+        this.activityTeamScore = activityTeamScore;
+    }
+
+    public String getOtherTeamScore() {
+        return otherTeamScore;
+    }
+
+    public void setOtherTeamScore(String otherTeamScore) {
+        this.otherTeamScore = otherTeamScore;
+    }
+
+    public void setActivityOutcome(ActivityOutcome activityOutcome) {this.outcome = activityOutcome;}
+
+    public ActivityOutcome getOutcome() {return outcome;}
+
+    /**
+     * Sets the formation for this activity
+     * @param formation This formation should be from the same team as this activity (U33 AC1)
+     * @throws UnsupportedOperationException If this activity doesn't have a formation
+     * @see Activity#canContainFormation()
+     */
+    public void setFormation(Formation formation) throws UnsupportedOperationException {
+        // Don't check if removing a formation, as that's always valid.
+        // It's only adding to unsupported activities that's wrong.
+        if (formation != null && !canContainFormation()) {
+            throw new UnsupportedOperationException("Can not have a formation on an activity of type: " + activityType);
+        }
+
+        this.formation = formation;
+    }
+    
+
+//    public ActivityOutcome getOutcome() {return outcome;}
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Activity activity = (Activity) o;
-        return id == activity.id && activityType == activity.activityType && Objects.equals(team, activity.team) && Objects.equals(description, activity.description) && Objects.equals(activityStart, activity.activityStart) && Objects.equals(activityEnd, activity.activityEnd) && Objects.equals(activityOwner, activity.activityOwner);
+        return id == activity.id
+            && activityType == activity.activityType
+            && Objects.equals(team, activity.team)
+            && Objects.equals(description, activity.description)
+            && Objects.equals(activityStart, activity.activityStart)
+            && Objects.equals(activityEnd, activity.activityEnd)
+            && Objects.equals(activityOwner, activity.activityOwner)
+            && Objects.equals(formation, activity.formation);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, activityType, team, description, activityStart, activityEnd, activityOwner);
     }
+
+    @Override
+    public String toString() {
+        return "Activity{" +
+                "id=" + id +
+                ", activityType=" + activityType +
+                ", team=" + team +
+                ", description='" + description + '\'' +
+                ", activityStart=" + activityStart +
+                ", activityEnd=" + activityEnd +
+                ", activityOwner=" + activityOwner +
+                '}';
+    }
+
 }

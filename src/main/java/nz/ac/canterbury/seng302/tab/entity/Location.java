@@ -9,6 +9,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Location entity for storing information about a location
+ */
 @Entity
 public class Location {
 

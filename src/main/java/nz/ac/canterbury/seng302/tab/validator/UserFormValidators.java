@@ -39,13 +39,13 @@ public class UserFormValidators {
     public static final String WEAK_PASSWORD_MESSAGE = "Password does not meet the requirements";
 
     public static final String VALID_EMAIL_REGEX = "(?i)[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}";
-    public static final String INVALID_NAME_MSG = "Contains Invalid characters";
+    public static final String INVALID_NAME_MSG = "Field contains invalid values";
     public static final String VALID_COUNTRY_SUBURB_CITY_REGEX = "^\\p{L}+[\\- '\\p{L}]*$";
-    public static final String INVALID_COUNTRY_SUBURB_CITY_MSG = "Contains Invalid characters";
+    public static final String INVALID_COUNTRY_SUBURB_CITY_MSG = "Field contains invalid values";
     public static final String VALID_ADDRESS_REGEX = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
-    public static final String INVALID_ADDRESS_MSG = "Contains Invalid characters";
+    public static final String INVALID_ADDRESS_MSG = "Field contains invalid values";
     public static final String VALID_POSTCODE_REGEX = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
-    public static final String INVALID_POSTCODE_MSG = "Contains Invalid characters";
+    public static final String INVALID_POSTCODE_MSG = "Field contains invalid values";
 
     /**
      * Checks that the provided name is valid.

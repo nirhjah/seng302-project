@@ -16,6 +16,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.service.ActivityService;
+import nz.ac.canterbury.seng302.tab.service.FactService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -50,6 +52,12 @@ public class ProfileFormControllerTest {
     @MockBean
     private TeamService mockTeamService;
 
+    @MockBean
+    private ActivityService activityService;
+
+    @MockBean
+    private FactService factService;
+
     private User user;
     private Team team;
 
@@ -76,7 +84,12 @@ public class ProfileFormControllerTest {
     public void testGettingTeamList() throws Exception {
         Mockito.when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         Mockito.doReturn(TEAM_ID).when(team).getTeamId();
-
+        Mockito.when(activityService.getNumberOfWins(team)).thenReturn(0);
+        Mockito.when(activityService.getNumberOfDraws(team)).thenReturn(0);
+        Mockito.when(activityService.getNumberOfLoses(team)).thenReturn(0);
+        Mockito.when(activityService.numberOfTotalGamesAndFriendlies(team)).thenReturn(0);
+        Mockito.when(activityService.getLast5GamesOrFriendliesForTeamWithOutcome(team)).thenReturn(null);
+        Mockito.when(factService.getTop5Scorers(team)).thenReturn(null);
         mockMvc.perform(get("/profile")
                 .param("teamID", TEAM_ID.toString()))
             .andExpect(status().isOk())
@@ -85,6 +98,17 @@ public class ProfileFormControllerTest {
             .andExpect(MockMvcResultMatchers.model().attribute("displayName", TEAM_NAME))
             .andExpect(MockMvcResultMatchers.model().attribute("displaySport", TEAM_SPORT))
             .andExpect(MockMvcResultMatchers.model().attribute("displayTeamPicture", team.getPictureString()));
+    }
+
+    @Test
+    public void testGettingInvalidTeam() throws Exception {
+        Mockito.when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
+        Mockito.doReturn(TEAM_ID).when(team).getTeamId();
+
+        mockMvc.perform(get("/profile")
+                        .param("teamID", "2"))
+                .andExpect(status().isNotFound())
+                .andExpect(view().name("error"));
     }
 
     @Test

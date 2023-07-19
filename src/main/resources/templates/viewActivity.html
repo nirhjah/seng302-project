@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
+  <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
+  <link th:href="@{/css/styles.css}" rel="stylesheet">
+  <link th:href="@{/css/profile.css}" rel="stylesheet">
+  <link th:href="@{/css/view-activity.css}" rel="stylesheet">
+  <title>View Activity</title>
+</head>
+<body class="profile-background">
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+<div class="team-profile-form">
+  <div class="wrapper-profile">
+
+
+
+    <div class="team-info">
+      <div class="team-display">
+        <h2 th:text="${activity.activityType}"></h2>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="team-info">
+      <div class="team-display">
+        <h2 class="activity-type" th:text="${activity.activityType}"></h2>
+
+
+        <div class="test" style="float: right; margin-right: 80px">
+          <div class="user-label" style="margin-top: 10%; margin-left: 10%;">
+            <img  th:src="@{/image/icons/calendar.svg}"/>
+            <span class="details" th:with="startDate=${#temporals.format(activity.activityStart, 'dd MMM yyyy')},
+                                                              endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')}"
+
+                  th:text="${startDate} + (${startDate} != ${endDate} ? ' - ' + ${endDate} : '')">
+                              </span>
+          </div>
+
+          <div class="user-label" style="margin-left: 10%;">
+            <img  th:src="@{/image/icons/clock.svg}"/>
+            <span class="details" th:with="
+                                            startTime=${#temporals.format(activity.activityStart, 'hh:mma')},
+                                                              endTime=${#temporals.format(activity.activityEnd, 'hh:mma')}"
+                  th:text="${startTime} + ' - ' + ${endTime}">
+                              </span>
+          </div>
+        </div>
+
+
+
+
+        <div class="user-label" th:if="${activity.team != null}">
+          <img th:src="@{/image/icons/name.svg}"/>
+          <h3 th:text="|Team: ${activity.team}|"></h3>
+        </div>
+        <div class="user-label">
+          <img th:src="@{/image/icons/location.svg}"/>
+          <h3 th:text="|Location: ${activity.location}|"></h3>
+        </div>
+        <div class="user-label">
+          <img th:src="@{/image/icons/sports.svg}"/>
+          <h3 th:text="|Description: ${activity.description}|"></h3>
+        </div>
+        <div class="user-label">
+          <img th:src="@{/image/icons/formation.svg}"/>
+          <h3 th:if="${activity.formation.empty}">Formation: Not Selected</h3>
+          <h3 th:if="${activity.formation.present}" th:text="|Formation: ${activity.formation.get.formation}|"></h3>
+        </div>
+      </div>
+
+
+    </div>
+
+<div class="profile-buttons">
+    <a th:if="${(activity.team!=null && (activity.team.isManager(activity.activityOwner) ||
+    activity.team.isCoach(activity.activityOwner))) || activity.team==null}" class="edit-button" th:href="@{createActivity(edit=${activity.id})}">
+      <button type="button">Edit Activity</button>
+    </a>
+</div>
+
+  <footer>
+    <p>
+      Image by <a
+            href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+      on Freepik
+    </p>
+  </footer>
+</div>
+</body>
+</html>
