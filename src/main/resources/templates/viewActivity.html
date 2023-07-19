@@ -1,96 +1,278 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
-  <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
-  <link th:href="@{/css/styles.css}" rel="stylesheet">
-  <link th:href="@{/css/profile.css}" rel="stylesheet">
-  <link th:href="@{/css/view-activity.css}" rel="stylesheet">
-  <title>View Activity</title>
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <link th:href="@{/css/profile.css}" rel="stylesheet">
+    <link th:href="@{/css/view-activity.css}" rel="stylesheet">
+    <link th:href="@{/css/formation.css}" rel="stylesheet">
+    <link th:href="@{/css/view-all.css}" rel="stylesheet">
+    <link th:href="@{/css/create-activity.css}" rel="stylesheet"/>
+
+    <title>View Activity</title>
 </head>
 <body class="profile-background">
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
-<div class="team-profile-form">
-  <div class="wrapper-profile">
+<div class="act-container">
+    <div class="act-info">
+        <div class="act-details">
+            <h3 th:if="${activity.team != null}" th:text="${activity.team} + 's'"></h3>
 
+            <h3> Activity Information </h3>
+            <h4 th:text="|Type:&nbsp&nbsp ${activity.activityType}|"></h4>
+            <h4 th:text="|Location:&nbsp&nbsp ${activity.location}|"></h4>
+            <h4 th:text="|Description:&nbsp&nbsp ${activity.description}|"></h4>
 
+            <div class="edit-act-button">
+                <a th:if="${(activity.team!=null && (activity.team.isManager(activity.activityOwner) ||
+                activity.team.isCoach(activity.activityOwner))) || activity.team==null}" class="edit-button"
+                   th:href="@{createActivity(edit=${activity.id})}">
+                    <button type="button"><img th:src="@{image/icons/pencil.svg}"> <span>Edit Activity</span></button>
+                </a>
+            </div>
 
-    <div class="team-info">
-      <div class="team-display">
-        <h2 th:text="${activity.activityType}"></h2>
+        </div>
+        <div class="nested-grid">
+            <div class="act-date-time">
+                <div class="start-date-time">
+                    <h4> Start </h4>
+                    <span class="date"
+                          th:with="startDate=${#temporals.format(activity.activityStart, 'dd MMM yyyy')}"
+                          th:text="${startDate}">
 
-      </div>
+                    </span>
+                    <span class="time" th:with="startTime=${#temporals.format(activity.activityStart, 'hh:mma')}"
+                          th:text="${startTime}">
 
+                    </span>
+
+                </div>
+                <div class="end-date-time">
+                    <h4> End </h4>
+                    <span class="date" th:with="endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')}"
+                          th:text="${endDate}">
+                    </span>
+                    <span class="time" th:with="endTime=${#temporals.format(activity.activityEnd, 'hh:mma')}"
+                          th:text="${endTime}">
+
+                    </span>
+
+                </div>
+            </div>
+            <div class="act-score" th:if="${canShowScores}">
+                <div class ="team-names">
+                    <span>Team A</span>
+                    <span> vs </span>
+                    <span> Team B </span>
+                </div>
+                <div class="score">
+                    <span th:text="${activity.activityTeamScore != null && activity.otherTeamScore != null ? activity.activityTeamScore + ' : ' + activity.otherTeamScore : 'NA'}"></span>
+                </div>
+            </div>
+
+            <button th:unless="${noFacts}" onclick="modal.style.display = 'block'" type="button">Add New Event</button>
+        </div>
+                
+        <div id="addEventModal" class="modal" th:style="${tokenInvalid != null ? 'display:block' : 'display:none'}">
+
+            <div class="modal-content">
+                <h1>Create New Event</h1>
+                <form th:action="@{view-activity}" id="createEventForm" method="post" th:object="${createEventForm}">
+                    <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
+
+                    <div th:if="${!noFacts}" class="select-container">
+                        <div class="select-box">
+                            <label for="factType">Choose an Event type <span class="required">*</span></label>
+                            <select id="factType" name="factType">
+                                <option th:each="fact : ${possibleFactTypes}"
+                                        th:value="${fact}"
+                                        th:text="${fact}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="select-container">
+                        <div class="description-box">
+                        <label for="description">Description: <span class="required">*</span></label>
+                        <textarea class="description-text" id="description" th:name="description" autofocus placeholder=""
+                          th:text="${description}"></textarea>
+                        </div>
+                        <label for="time"></label>
+                        <input type="text-area" name="time" value="time">
+                        <label for="time"></label>
+                        <div id="additionalFields"></div>
+                    </div>
+                    <div class="submit-button">
+                        <button id="createEvent" type="submit" class="registerLoginButton">Create Event</button>
+                    </div>
+                    
+                </form>
+
+            </div>
+
+        </div>
+        <div th:unless="${noFacts}" class="act-facts">
+            <h4> Facts </h4>
+            <div class="facts-table">
+                <ul>
+                    <li th:each="fact : ${activityFacts}">
+                        <span class="description" th:text="${fact.description}"></span>
+                        <span class="time" th:text="${fact.timeOfEvent}"></span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
     </div>
 
-
-
-    <div class="team-info">
-      <div class="team-display">
-        <h2 class="activity-type" th:text="${activity.activityType}"></h2>
-
-
-        <div class="test" style="float: right; margin-right: 80px">
-          <div class="user-label" style="margin-top: 10%; margin-left: 10%;">
-            <img  th:src="@{/image/icons/calendar.svg}"/>
-            <span class="details" th:with="startDate=${#temporals.format(activity.activityStart, 'dd MMM yyyy')},
-                                                              endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')}"
-
-                  th:text="${startDate} + (${startDate} != ${endDate} ? ' - ' + ${endDate} : '')">
-                              </span>
-          </div>
-
-          <div class="user-label" style="margin-left: 10%;">
-            <img  th:src="@{/image/icons/clock.svg}"/>
-            <span class="details" th:with="
-                                            startTime=${#temporals.format(activity.activityStart, 'hh:mma')},
-                                                              endTime=${#temporals.format(activity.activityEnd, 'hh:mma')}"
-                  th:text="${startTime} + ' - ' + ${endTime}">
-                              </span>
-          </div>
+    <div class="act-game-friendly" th:if="${canShowPlayers}">
+        <div class="act-lineup">
+            <h3> Line Up </h3>
+            <div th:insert="~{fragments/formationDisplay.html}"></div>
+            <input type="hidden" onload=renderPlayers("4-1-2-2") />
         </div>
+        <div class="act-subs" th:if="${canShowPlayers}">
+            <h4> Substitutions </h4>
+            <div class="subs-table">
+                <ul>
+                    <li th:each="fact : ${activitySubstitutions}">
+                        <span class="sub-pic">
+                            <img th:src="*{'data:image/jpeg;base64,'+{displayPicture}}"/>
+                        </span>
+                        <span class="description"
+                              th:text="${fact.playerOn.firstName} + '         ' + ${fact.playerOn.lastName}"></span>
 
+                        <span class="description" th:text="${fact.timeOfEvent}"></span>
 
-
-
-        <div class="user-label" th:if="${activity.team != null}">
-          <img th:src="@{/image/icons/name.svg}"/>
-          <h3 th:text="|Team: ${activity.team}|"></h3>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div class="user-label">
-          <img th:src="@{/image/icons/location.svg}"/>
-          <h3 th:text="|Location: ${activity.location}|"></h3>
-        </div>
-        <div class="user-label">
-          <img th:src="@{/image/icons/sports.svg}"/>
-          <h3 th:text="|Description: ${activity.description}|"></h3>
-        </div>
-        <div class="user-label">
-          <img th:src="@{/image/icons/formation.svg}"/>
-          <h3 th:if="${activity.formation.empty}">Formation: Not Selected</h3>
-          <h3 th:if="${activity.formation.present}" th:text="|Formation: ${activity.formation.get.formation}|"></h3>
-        </div>
-      </div>
 
 
     </div>
-
-<div class="profile-buttons">
-    <a th:if="${(activity.team!=null && (activity.team.isManager(activity.activityOwner) ||
-    activity.team.isCoach(activity.activityOwner))) || activity.team==null}" class="edit-button" th:href="@{createActivity(edit=${activity.id})}">
-      <button type="button">Edit Activity</button>
-    </a>
 </div>
-
-  <footer>
-    <p>
-      Image by <a
-            href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
-      on Freepik
-    </p>
-  </footer>
+<script>
+    window.onload = function() {
+        renderPlayers("4-1-2-2");
+    };
+</script>
 </div>
 </body>
+<footer>
+    <p>
+        Image by <a
+            href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+        on Freepik
+    </p>
+</footer>
+
 </html>
+
+<script>
+    var modal = document.getElementById("addEventModal");
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+<script th:inline="javascript">
+    // TODO: clean up plz 
+    // Get a reference to the dropdown select element
+    var factTypeSelect = document.getElementById("factType");
+
+    // Get a reference to the div that will contain the additional fields
+    var additionalFieldsDiv = document.getElementById("additionalFields");
+
+    // Function to handle the change event of the dropdown
+    function handleDropdownChange() {
+        // Clear the additional fields div
+        additionalFieldsDiv.innerHTML = "";
+
+        // Get the selected option value
+        var selectedOption = factTypeSelect.value;
+
+        // Check if the selected option has additional fields
+        if (selectedOption === "GOAL") {
+            // Create a new select element for the scorer
+            var selectScorer = document.createElement("select");
+            selectScorer.name = "scorer";
+
+            // add scorer to show what its for TODO: probably remove 
+            var defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.text = "Scorer";
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            selectScorer.appendChild(defaultOption);
+
+            /*[# th:each="player : ${activity.getInvolvedMembers()}"]*/
+            // Create an option element for each team member
+            var option = document.createElement("option");
+            option.value = /*[[${player.getUserId()}]]*/ '';
+            option.text = /*[[${player.firstName}]]*/ '';
+            selectScorer.appendChild(option);
+            /*[/]*/
+
+            // Append the select element to the additional fields div
+            additionalFieldsDiv.appendChild(selectScorer);
+        }
+
+        if (selectedOption === 'SUBSTITUTION') {
+            // new select element for the player subbed off 
+            var selectScorer = document.createElement("select");
+            selectScorer.name = "playerOff";
+
+            // add off to show the purpose TODO: probibly remove
+            var defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.text = "Player Off";
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            selectScorer.appendChild(defaultOption);
+            
+            /*[# th:each="player : ${activity.getInvolvedMembers()}"]*/
+            // Create an option element for each team member
+            var option = document.createElement("option");
+            option.value = /*[[${player.getUserId()}]]*/ '';
+            option.text = /*[[${player.firstName}]]*/ '';
+            selectScorer.appendChild(option);
+            /*[/]*/
+
+            // Append the select element to the additional fields div
+            additionalFieldsDiv.appendChild(selectScorer);
+            
+            // new select element for the player subbed on 
+            var selectScorer = document.createElement("select");
+            selectScorer.name = "playerOn";
+
+            // add off to show the purpose TODO: probibly remove
+            var defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.text = "Player On";
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            selectScorer.appendChild(defaultOption);
+            
+            /*[# th:each="player : ${activity.getInvolvedMembers()}"]*/
+            // Create an option element for each team member
+            var option = document.createElement("option");
+            option.value = /*[[${player.getUserId()}]]*/ '';
+            option.text = /*[[${player.firstName}]]*/ '';
+            selectScorer.appendChild(option);
+            /*[/]*/
+
+            // Append the select element to the additional fields div
+            additionalFieldsDiv.appendChild(selectScorer);
+        }
+    }
+
+    handleDropdownChange()
+
+    // Attach the event listener to the dropdown select element
+    factTypeSelect.addEventListener("change", handleDropdownChange);
+</script>
