@@ -14,6 +14,7 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
+import nz.ac.canterbury.seng302.tab.repository.FactRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
@@ -76,6 +77,8 @@ public class ViewMyActivitiesIntegrationTests {
 
     private TeamRepository teamRepository;
 
+    private FactRepository factRepository;
+
     private ActivityRepository activityRepository;
 
     @Autowired
@@ -108,6 +111,7 @@ public class ViewMyActivitiesIntegrationTests {
         userRepository = applicationContext.getBean(UserRepository.class);
         teamRepository = applicationContext.getBean(TeamRepository.class);
         activityRepository = applicationContext.getBean(ActivityRepository.class);
+        factRepository = applicationContext.getBean(FactRepository.class);
 
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
         EmailService emailService = applicationContext.getBean(EmailService.class);
@@ -118,7 +122,7 @@ public class ViewMyActivitiesIntegrationTests {
 
         activityService = Mockito.spy(new ActivityService(activityRepository));
 
-        factService = Mockito.spy(new FactService());
+        factService = Mockito.spy(new FactService(factRepository));
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ProfileFormController(userService, teamService, activityService, factService, formationService)).build();
 
