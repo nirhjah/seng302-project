@@ -14,7 +14,7 @@
 <div class="view-club-form">
     <div class="wrapper">
         <div class ="logo">
-            <img th:src="@{'data:image/jpeg;base64,' + club.clubLogo}"/>
+            <img th:src="'data:image/png;base64,' + ${clubLogo}" />
         </div>
         <div class="club-info">
             <h1 class="club-header">Club Profile</h1>
@@ -26,6 +26,11 @@
             </div>
             <div class="club-label">
                 <h3 th:text="|Location: *{location}|"></h3>
+            </div>
+            <div class="edit-club-button">
+                <a th:href = "@{createClub(edit=${club.clubId})}">
+                    <button type="button"> Edit Club</button>
+                </a>
             </div>
         </div>
     </div>

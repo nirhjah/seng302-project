@@ -60,4 +60,21 @@
     height: auto;
 }
 
+.edit-club-button button{
+    border:none;
+    outline:none;
+    cursor:pointer;
+    color:#fff;
+    background-color:#0b2239;
+    padding:5px;
+    border-radius: 30px;
+    font-weight: bold;
+    width:40%;
+}
+
+.edit-club-button button :hover{
+    background:#415a77;
+}
+
+
 

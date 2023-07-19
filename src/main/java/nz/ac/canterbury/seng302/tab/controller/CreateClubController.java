@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditClubForm;
-import nz.ac.canterbury.seng302.tab.form.ForgotPasswordForm;
 import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
 import nz.ac.canterbury.seng302.tab.service.ClubService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -12,6 +11,8 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,8 +23,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.Option;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -98,8 +99,8 @@ public class CreateClubController {
     @PostMapping("/createClub")
     public String createClub(
             @RequestParam(name = "clubId", defaultValue = "-1") long clubId,
-            @RequestParam(name = "logo") MultipartFile file,
             @RequestParam(name="name") String name,
+            @RequestParam(name="file") MultipartFile clubLogo,
             @RequestParam(name = "addressLine1") String addressLine1,
             @RequestParam(name = "addressLine2") String addressLine2,
             @RequestParam(name = "city") String city,
@@ -143,17 +144,36 @@ public class CreateClubController {
                 return "createClubForm";
             }
 
-            updateClubLogo(editClub, file);
             editClub.setName(name);
             editClub.setLocation(location);
+
+            if (clubLogo.getOriginalFilename()==""){
+                logger.info("default");
+                Resource resource = new ClassPathResource("/static/image/default-club-logo.png");
+                InputStream is = resource.getInputStream();
+                editClub.setClubLogo(Base64.getEncoder().encodeToString(is.readAllBytes()));
+            }
+            else{
+                editClub.setClubLogo(Base64.getEncoder().encodeToString(clubLogo.getBytes()));
+            }
+
 
             clubService.updateOrAddClub(editClub);
             return "redirect:/view-club?clubID=" + editClub.getClubId();
 
         } else {
             User manager = optUser.get(); // manager is the current user
-            Club club = new Club(name, location, sport, manager);
-            updateClubLogo(club, file);
+            Club club;
+            if (clubLogo.getOriginalFilename()==""){
+                logger.info("default");
+                Resource resource = new ClassPathResource("/static/image/default-club-logo.png");
+                InputStream is = resource.getInputStream();
+                String defaultLogo = Base64.getEncoder().encodeToString(is.readAllBytes());
+                club= new Club(name, location, sport, manager,defaultLogo);
+            }
+            else {
+                club = new Club(name, location, sport, manager, Base64.getEncoder().encodeToString(clubLogo.getBytes()));
+            }
 
             setTeamsClub(selectedTeams, club, bindingResult);
 

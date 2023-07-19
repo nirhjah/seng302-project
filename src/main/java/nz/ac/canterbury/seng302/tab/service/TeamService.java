@@ -113,7 +113,6 @@ public class TeamService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         // Saved the updated picture string in the database.
         teamRepository.save(team);
     }

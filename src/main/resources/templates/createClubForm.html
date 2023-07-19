@@ -17,7 +17,7 @@
     </div>
 
     <div class="wrapper">
-        <form th:action="@{createClub}" th:object="${createAndEditClubForm}" id="createAndEditClubForm" method="post">
+        <form th:action="@{createClub}" th:object="${createAndEditClubForm}" id="createAndEditClubForm" method="post" enctype="multipart/form-data">
             <input type="hidden" th:if="${clubId != null}" th:name="clubId" th:value="${clubId}"/>
 
             <div class="preview-logo">
@@ -29,7 +29,7 @@
                         <label for="file" class="file-label">
                             Upload Logo </label>
                     </div>
-                    <input id ="file" type='file' onchange="readImageURL(this);"/>
+                    <input id ="file" type='file' th:name="file" onchange="readImageURL(this);"/>
                 </div>
             </div>
 

@@ -32,26 +32,26 @@ public class Club {
     @ManyToOne
     private User manager;
 
-    protected Club() {
+    protected Club() throws IOException {
     }
 
-    private static String defaultClubLogo;
-    static {
-        // Load default logo once in a shared location.
-        try {
-            defaultClubLogo = Base64.getEncoder().encodeToString(
-                    new ClassPathResource("/static/image/icons/default-profile.png").getInputStream().readAllBytes()
-            );
-        } catch (IOException exception) {
-            // crap!!!
-        }
-    }
-
-    public Club(String name, Location location, String sport, User manager) {
+    public Club(String name, Location location, String sport, User manager) throws IOException {
         this.name = name;
         this.location = location;
         this.sport = sport;
         this.manager = manager;
+
+        Resource resource = new ClassPathResource("/static/image/default-club-logo.png");
+        InputStream is = resource.getInputStream();
+        this.clubLogo = Base64.getEncoder().encodeToString(is.readAllBytes());
+    }
+
+    public Club(String name, Location location, String sport, User manager, String clubLogo) throws IOException {
+        this.name = name;
+        this.location = location;
+        this.sport = sport;
+        this.manager = manager;
+        this.clubLogo=clubLogo;
     }
 
     public long getClubId() {
@@ -74,13 +74,6 @@ public class Club {
         this.location = location;
     }
 
-    public String getClubLogo() {
-        if (clubLogo == null) {
-            return defaultClubLogo;
-        }
-        return clubLogo;
-    }
-
     public User getManager() {
         return manager;
     }
@@ -91,6 +84,10 @@ public class Club {
 
     public void setClubLogo(String clubLogo) {
         this.clubLogo = clubLogo;
+    }
+
+    public String getClubLogo(){
+        return this.clubLogo;
     }
 
     public String getSport() {
