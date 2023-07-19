@@ -15,8 +15,12 @@ import java.util.Map;
 @Service
 public class FactService {
 
+    private final FactRepository factRepository;
+
     @Autowired
-    FactRepository factRepository;
+    public FactService(FactRepository factRepository) {
+        this.factRepository=factRepository;
+    }
 
     /**
      * Returns a list of all facts related to an activity

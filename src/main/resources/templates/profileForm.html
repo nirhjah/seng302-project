@@ -28,7 +28,7 @@
             <div class="tab">
 <!--                this is a temporary icon for statistic, which is probably going to be replaced when working-->
 <!--                on the team aggregated statistic task-->
-                <img class ="tab-icon" th:src="@{/image/icons/formation.svg}"/>
+                <img class ="tab-icon" th:src="@{/image/icons/statistics.svg}"/>
                 <button class="tab-button" >Statistics &nbsp;</button>
                 <div class="tab-line"></div>
             </div>
@@ -139,9 +139,40 @@
                 </form>
             </div>
         </div>
-        <div class="content-box" id="statistics-tab">
+
+        <div class="content-box" id="statistics-tab" style="margin-bottom: 300px">
             <div class="content">
-                <p> This is where the 'Team Aggregated Statistics' is going to be displayed</p>
+                <form th:action="@{profile}" class="profile-buttons" method="post">
+                    <a class="edit-button" th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
+                        <button type="button">View Team Activities</button>
+                    </a>
+                </form>
+                <div class="col-wrapper">
+                    <div class="third-col" style="padding-bottom: 20px">
+                        <h3>Outcome of Games and Friendlies:</h3>
+                        <h4 th:text="|Wins: ${totalWins}|"></h4>
+                        <h4 th:text="|Losses: ${totalLosses}|"></h4>
+                        <h4 th:text="|Draws: ${totalDraws}|"></h4>
+                        <h4 th:text="|Total (incl future): ${totalGOrF}|"></h4>
+                        </br>
+                        </br>
+                        <h3>Last 5 Games: </h3>
+                        <h4 th:each="act : ${last5GOrF}"
+                           th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
+                           endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')},
+                           startTime=${#temporals.format(act.activityStart, 'hh:mma')},
+                           endTime=${#temporals.format(act.activityEnd, 'hh:mma')}"
+                           th:text="|Date: ${startDate} ${startTime} ${act.outcome.name()} - ${act.activityType.name()}|" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|"></h4>
+                    </div>
+                    <div class="third-col">
+                        <h3>Top Scorers:</h3>
+                        <h4 th:each="score : ${top5Scorers}" th:text="|${score.keySet().toArray()[0].firstName} ${score.keySet().toArray()[0].lastName} ${score.values().toArray()[0]}|"></h4>
+                    </div>
+                    <div class="third-col">
+                        <h3>Substitutions:</h3>
+                        <h4>n/a</h4>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
