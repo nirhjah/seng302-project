@@ -226,9 +226,8 @@ public class Activity {
         this.formation = formation;
     }
     
-    public void setActivityOutcome(ActivityOutcome activityOutcome) {this.outcome = activityOutcome;}
 
-    public ActivityOutcome getOutcome() {return outcome;}
+//    public ActivityOutcome getOutcome() {return outcome;}
 
     @Override
     public boolean equals(Object o) {
