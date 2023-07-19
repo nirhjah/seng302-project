@@ -31,6 +31,14 @@ public class ViewClubController {
     private ClubService clubService;
     Logger logger = LoggerFactory.getLogger(getClass());
 
+
+    public ViewClubController(UserService userService, TeamService teamService,ClubService clubService) {
+        this.userService = userService;
+        this.teamService = teamService;
+        this.clubService=clubService;
+    }
+
+
     @PostMapping("/view-club/update-club-logo")
     public void updateClubLogo(
             @RequestParam(name = "clubId", defaultValue = "-1") long clubId,

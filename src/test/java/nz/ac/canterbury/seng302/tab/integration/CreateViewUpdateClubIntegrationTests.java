@@ -5,6 +5,8 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import nz.ac.canterbury.seng302.tab.controller.CreateClubController;
+import nz.ac.canterbury.seng302.tab.controller.ProfileFormController;
+import nz.ac.canterbury.seng302.tab.controller.ViewClubController;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
@@ -99,7 +101,8 @@ public class CreateViewUpdateClubIntegrationTests {
         clubService = Mockito.spy(new ClubService(clubRepository));
         teamService = Mockito.spy(new TeamService(teamRepository));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService), new ProfileFormController(userService,teamService), new ViewClubController(userService,teamService,clubService)).build();
+
 
         Authentication authentication = Mockito.mock(Authentication.class);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
@@ -341,6 +344,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @Given("I am on the team’s profile page and the team belongs to a club,")
     public void i_am_on_the_team_s_profile_page_and_the_team_belongs_to_a_club() throws Exception {
+        System.out.println(team.getTeamId());
         mockMvc.perform(get("/profile")
                 .param("teamID", team.getTeamId().toString()))
                 .andExpect(status().isOk());
@@ -351,14 +355,14 @@ public class CreateViewUpdateClubIntegrationTests {
         result=mockMvc.perform(get("/view-club").param("clubID",String.valueOf(teamsClub.getClubId())))
                 .andExpect(status().isOk())
                 .andExpect(view().name("viewClub"))
-                .andReturn();;
+                .andReturn();
     }
 
     @Then("I will see their club details \\(Not sure if this is what the link does)")
     public void i_will_see_their_club_details_not_sure_if_this_is_what_the_link_does() {
         Club actualClub = (Club) result.getModelAndView().getModel().get("club");
         Assertions.assertEquals(teamsClub.getName(), actualClub.getName());
-        Assertions.assertEquals(teamsClub.getLocation(), actualClub.getLocation());
+        Assertions.assertEquals(teamsClub.getLocation().toString(), actualClub.getLocation().toString());
         Assertions.assertEquals(teamsClub.getSport(), actualClub.getSport());
 
     }

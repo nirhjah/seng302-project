@@ -82,6 +82,9 @@ select[multiple] {
     width:40%
 }
 
+.file-label-border label{
+    padding-bottom:3px;
+}
 
 
 
