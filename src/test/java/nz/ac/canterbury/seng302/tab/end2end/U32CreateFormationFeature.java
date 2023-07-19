@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.end2end;
 
 import com.microsoft.playwright.ElementHandle;
+import com.microsoft.playwright.options.LoadState;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;

@@ -1,9 +1,13 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.*;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.ClubRepository;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +19,13 @@ import java.util.Optional;
 @Service
 public class ClubService {
 
+
+    private final ClubRepository clubRepository;
+
     @Autowired
-    ClubRepository clubRepository;
+    public ClubService(ClubRepository clubRepository) {
+        this.clubRepository = clubRepository;
+    }
 
     /**
      * Gets list of all clubs

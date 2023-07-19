@@ -73,15 +73,15 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
     Page<Team> findTeamByFilteredLocations(@Param("filteredLocations") List<String> filteredLocations,
             Pageable pageable, @Param("name") String name);
 
-    @Query("""
-            SELECT t FROM Team t
-            WHERE (:#{#filteredLocations.size} = 0 OR lower(t.location.city) in (:filteredLocations))
-            AND (:#{#filteredSports.size} = 0 OR lower(t.sport) in (:filteredSports))
-            AND (:name IS NULL
-            OR (lower(t.name) LIKE LOWER(CONCAT('%', :name, '%')))
-            OR (lower(t.location.city) like lower(concat('%', :name, '%'))))
-            """)
-    public Page<Team> findTeamByFilteredLocationsAndSports(
+    @Query("SELECT t FROM Team t left join Club c on t.teamClub.clubId = c.clubId " +
+            "WHERE (:#{#filteredLocations.size} = 0 OR lower(t.location.city) in (:filteredLocations)) " +
+            "AND (:#{#filteredSports.size} = 0 OR lower(t.sport) in (:filteredSports)) " +
+            "AND (:name IS NOT NULL " +
+            "AND ((lower(t.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
+            "OR (lower(t.location.city) like lower(concat('%', :name, '%'))))) " +
+            "OR lower(c.name) like lower(concat('%', :name, '%')) " +
+            "ORDER BY LOWER(t.name) ASC, LOWER(t.location.city) ASC ")
+    Page<Team> findTeamByFilteredLocationsAndSports(
             Pageable pageable,
             @Param("filteredLocations") List<String> filteredLocations,
             @Param("filteredSports") List<String> filteredSports,

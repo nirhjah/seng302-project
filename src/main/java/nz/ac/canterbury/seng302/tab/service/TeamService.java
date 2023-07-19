@@ -135,7 +135,7 @@ public class TeamService {
      * @param pageable          page object
      * @param searchedCities list of locations to filter by selected by the user
      * @param searchedSports    list of sports to filter by selected by the user
-     * @param name              the team name query inputted by the use
+     * @param name              the team name or club name query inputted by the user
      * @return Page(s) of teams filtered by city/cities and sport/sports
      */
     public Page<Team> findPaginatedTeamsByCityAndSports(Pageable pageable, List<String> searchedCities, List<String> searchedSports, String name) {
