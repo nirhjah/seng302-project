@@ -47,6 +47,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -103,7 +104,7 @@ public class ViewMyActivitiesIntegrationTests {
     private final List<Activity> activityList = new ArrayList<>();
 
 
-    @Before
+    @Before("@view_my_activities")
     public void setup() throws IOException {
         userRepository = applicationContext.getBean(UserRepository.class);
         teamRepository = applicationContext.getBean(TeamRepository.class);
@@ -143,7 +144,7 @@ public class ViewMyActivitiesIntegrationTests {
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
-        when(userService.getCurrentUser()).thenReturn(Optional.of(user));
+        doReturn(Optional.of(user)).when(userService).getCurrentUser();
     }
 
     @Given("I have personal and team activities")

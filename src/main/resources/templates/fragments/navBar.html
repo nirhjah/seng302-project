@@ -34,10 +34,7 @@
                     <a th:href="@{register}" th:classappend="${httpServletRequest.requestURI == '/register' ? 'active' : ''}">Register</a>
                 </li>
                 <li sec:authorize="isAuthenticated()">
-                    <a th:href="@{searchTeams}" th:classappend="${httpServletRequest.requestURI == '/searchTeams' ? 'active' : ''}">Search Teams</a>
-                </li>
-                <li sec:authorize="isAuthenticated()">
-                    <a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">See All Teams</a>
+                    <a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a>
                 </li>
                 <li sec:authorize="isAuthenticated()">
                     <a th:href="@{view-users(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
@@ -76,15 +73,6 @@
         </li>
         <form id="logoutForm" th:action="@{logout}" method="POST"></form>
     </div>
-
-<!--    <div class="preloader" id="preloader">-->
-<!--        <div class="bounceball"></div>-->
-<!--        <label class="loading">Loading-->
-<!--            <span class="loading-dot">.</span>-->
-<!--            <span class="loading-dot">.</span>-->
-<!--            <span class="loading-dot">.</span>-->
-<!--        </label>-->
-<!--    </div>-->
     <script>
         let hamburger = document.querySelector(".hamburger")
         hamburger.onclick = function () {
@@ -128,21 +116,6 @@
                  }
              });
         }
-
-        // // preloader loading is only displayed if pages are taking a while to load
-        // window.onload = function() {
-        //     var preloader = document.getElementById("preloader");
-        //     preloader.style.display = "none";
-        // }
-
-
-        // // To see the preloader animation uncomment below and comment out above code
-        // window.onload = loader;
-        // function loader(){
-        //   setTimeout(function() {
-        //     document.getElementById("preloader").style.visibility = "hidden";
-        //   }, 3000);
-        // }
 
     </script>
 </header>
