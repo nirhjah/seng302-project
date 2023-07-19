@@ -1,3 +1,4 @@
+@ViewActivityStatistics
 Feature: U35 – View activity statistics
   Scenario: AC1: Statistics of activity shown when viewing activity
     Given I am viewing my activities or team activities

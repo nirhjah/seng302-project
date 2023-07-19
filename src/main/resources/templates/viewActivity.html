@@ -52,9 +52,7 @@
                     <h4> End </h4>
                     <span class="date" th:with="endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')}"
                           th:text="${endDate}">
-
                     </span>
-
                     <span class="time" th:with="endTime=${#temporals.format(activity.activityEnd, 'hh:mma')}"
                           th:text="${endTime}">
 
@@ -62,21 +60,19 @@
 
                 </div>
             </div>
-            <div class="act-score" th:if="${activity.activityType.toString() == 'Game' || activity.activityType.toString() ==
-      'Friendly'}">
+            <div class="act-score" th:if="${(activity.activityType.toString() == 'Game' || activity.activityType.toString() ==
+      'Friendly')}">
                 <div class ="team-names">
                     <span>Team A</span>
                     <span> vs </span>
                     <span> Team B </span>
                 </div>
                 <div class="score">
-                    <span th:text=" ${activity.activityTeamScore}"></span>
-                    <span> : </span>
-                    <span th:text=" ${activity.otherTeamScore} "></span>
+                    <span th:text="${activity.activityTeamScore != null && activity.otherTeamScore != null ? activity.activityTeamScore + ' : ' + activity.otherTeamScore : 'NA'}"></span>
                 </div>
                         <button onclick="modal.style.display = 'block'" type="button">Add New Event</button>
-            </div>
 
+            </div>
 
         </div>
                 

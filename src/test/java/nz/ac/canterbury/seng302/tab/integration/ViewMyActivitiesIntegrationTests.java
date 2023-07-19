@@ -97,7 +97,7 @@ public class ViewMyActivitiesIntegrationTests {
     private final List<Activity> activityList = new ArrayList<>();
 
 
-    @Before
+    @Before("@ViewActivities")
     public void setup() throws IOException {
         userRepository = applicationContext.getBean(UserRepository.class);
         teamRepository = applicationContext.getBean(TeamRepository.class);
