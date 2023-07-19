@@ -66,12 +66,14 @@
                 <input type="hidden" id="positions" name="positions">
                 <div class="subs-reserves-box">
                     <div class=subs-header>Subs</div>
-                    <ul class="subs-ul"></ul>
+                    <ul class="subs-ul">
+                    </ul>
                     <div class="reserves-header active">Reserves</div>
                     <ul class="reserves-ul active">
                         <li th:each="player : ${players}" class="reserves-li">
                             <img class="li-player-image" th:src="${'data:image/jpeg;base64,' + player.getPictureString}" alt="My Profile"/>
                             <span class="li-player-name" th:text="${player.getFirstName}"></span>
+                            <button class="switch" type="button"></button>
                             <input type="hidden" class="playerId" th:value="${player.getUserId}">
                         </li>
                     </ul>
@@ -421,6 +423,7 @@
                     selectedPlayer.classList.remove("active");
                     selectedPlayer.classList.add("in-formation");
                 }
+                checkSubsActive();
             });
 
             // Action to carry out when use clicks button to remove player from formation
@@ -428,13 +431,14 @@
                 const positionPlayerId = position.querySelector("input").value;
                 const players = document.querySelectorAll(".reserves-li");
                 players.forEach(player => {
+                    console.log()
                     const playerId = player.querySelector("input").value;
                     if (playerId === positionPlayerId) {
                         player.classList.remove("in-formation");
                         position.classList.remove("filled");
                     }
                 });
-
+                deactivateSubs();
             });
         }
     }
@@ -446,6 +450,79 @@
             positions.item(i).classList.remove("unfilled");
         }
     }
+
+    function checkSubsActive() {
+        let subsActive = true;
+        const subsUl = document.querySelector(".subs-ul");
+        const subsLi = document.querySelectorAll(".subs-li");
+        const subsHeader = document.querySelector(".subs-header");
+        const reservesLi = document.querySelectorAll(".reserves-li");
+        for (let i = 0; i < positions.length; i++) {
+            position = positions.item(i)
+            if (!position.classList.contains("filled")) {
+                subsActive = false;
+                break;
+            }
+        }
+        if (subsActive) {
+            deactivateSubs()
+        } else {
+            subsUl.classList.remove("active");
+            subsHeader.classList.remove("active");
+            subsLi.forEach(li => {
+                const switchButton = li.querySelector(".switch")
+                switchButton.classList.remove("active");
+            })
+            reservesLi.forEach(li => {
+                const switchButton = li.querySelector(".switch")
+                switchButton.classList.remove("active");
+            })
+        }
+    }
+
+    function deactivateSubs() {
+        const subsUl = document.querySelector(".subs-ul");
+        const subsLi = document.querySelectorAll(".subs-li");
+        const subsHeader = document.querySelector(".subs-header");
+        const reservesLi = document.querySelectorAll(".reserves-li");
+        subsUl.classList.add("active");
+        subsHeader.classList.add("active");
+        subsLi.forEach(li => {
+            const switchButton = li.querySelector(".switch")
+            switchButton.classList.add("active");
+        })
+        reservesLi.forEach(li => {
+            const switchButton = li.querySelector(".switch")
+            switchButton.classList.add("active");
+        })
+    }
+
+    const switchButtons = document.querySelectorAll('.switch');
+
+    // Iterate over each switch button
+    switchButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const listItem = button.parentElement;
+            const reservesUL = document.querySelector('.reserves-ul');
+            const subsUL = document.querySelector('.subs-ul');
+            const parentUl = listItem.parentElement;
+
+            if (button.classList.contains('active')) {
+                // Move the li element to subs-ul
+                if (parentUl.classList.contains("reserves-ul")) {
+                    subsUL.appendChild(listItem);
+                    listItem.classList.add("subs-li");
+                    listItem.classList.remove("reserves-li");
+                } else {
+                    reservesUL.appendChild(listItem);
+                    listItem.classList.add("reserves-li");
+                    listItem.classList.remove("subs-li");
+                }
+                parentUl.removeChild(listItem);
+            }
+        });
+    });
+
 
 </script>
 </html>
