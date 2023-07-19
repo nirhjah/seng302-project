@@ -2,7 +2,6 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.*;
-import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import nz.ac.canterbury.seng302.tab.service.FactService;
@@ -16,10 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class PersonalAggregatedStatisticsController {
@@ -43,15 +40,15 @@ public class PersonalAggregatedStatisticsController {
      * @throws MalformedURLException can be thrown by getting the path if invalid
      */
     public void prefillModel(Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
-        Optional<User> user = userService.getCurrentUser();
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
+        User user = userService.getCurrentUser().orElseThrow();
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("displayPicture", user.getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
-        List<Team> allUserTeams = teamService.findTeamsWithUser(user.get());
+        List<Team> allUserTeams = teamService.findTeamsWithUser(user);
         List<Team> teamList = new ArrayList<>();
         for (Team team : allUserTeams) {
-            if (team.isManager(user.get()) || team.isCoach(user.get())) {
+            if (team.isManager(user) || team.isCoach(user)) {
                 teamList.add(team);
             }
         }
@@ -66,13 +63,13 @@ public class PersonalAggregatedStatisticsController {
     public String personalStatistics(Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
         prefillModel(model, httpServletRequest);
         model.addAttribute("httpServletRequest", httpServletRequest);
-        Optional<User> user = userService.getCurrentUser();
-        List<Team> teams = teamService.findTeamsWithUser(user.get());
+        User user = userService.getCurrentUser().orElseThrow();
+        List<Team> teams = teamService.findTeamsWithUser(user);
         List<UserTeamStatistic> userStats = new ArrayList<>();
         for (Team team : teams) {
             userStats.add(new UserTeamStatistic(team,
-                    factService.getTotalGoalsForTeamPerUser(user.get(), team),
-                    activityService.getTotalTimeAUserHasPlayedForATeam(user.get(), team),
+                    factService.getTotalGoalsForTeamPerUser(user, team),
+                    activityService.getTotalTimeAUserHasPlayedForATeam(user, team),
                     activityService.getTotalUserMatches(team)));
         }
         model.addAttribute("teamStats", userStats);
@@ -84,7 +81,7 @@ public class PersonalAggregatedStatisticsController {
         prefillModel(model, httpServletRequest);
         model.addAttribute("httpServletRequest", httpServletRequest);
         Team team = teamService.getTeam(teamID);
-        User user = userService.getCurrentUser().get();
+        User user = userService.getCurrentUser().orElseThrow();
 
         List<Activity> activities = activityService.getAllTeamActivities(team);
         List<UserTeamActivityStatistic> userTeamActStats = new ArrayList<>();
