@@ -172,21 +172,29 @@ public class ViewActivityStatisticIntegrationTests {
         Assertions.assertEquals(game.getActivityType(), actualActivity.getActivityType());
     }
 
-    @When("there are statistics about scoring players")
-    public void there_are_statistics_about_scoring_players() {
-    }
-
-    @Then("I can see the time that player scored next to their icon on the line-up")
-    public void i_can_see_the_time_that_player_scored_next_to_their_icon_on_the_line_up() {
-    }
-
     @When("there are statistics about substitute players")
     public void there_are_statistics_about_substitute_players() {
+        List<Substitution> actualSubstitution= (List<Substitution>) result.getModelAndView().getModel().get("activitySubstitutions");
+        Assertions.assertNotNull(actualSubstitution);
+        Assertions.assertEquals(1, actualSubstitution.size());
+
 
     }
 
     @Then("I can see the icon, name and time of substitution of the player")
     public void i_can_see_the_icon_name_and_time_of_substitution_of_the_player() {
+        List<Substitution> actualSubstitution= (List<Substitution>) result.getModelAndView().getModel().get("activitySubstitutions");
+        String description= actualSubstitution.get(0).getDescription();
+        User userOff= actualSubstitution.get(0).getPlayerOff();
+        String time = actualSubstitution.get(0).getTimeOfEvent();
+
+        Assertions.assertNotNull(userOff);
+        Assertions.assertEquals("Player was taken off",description);
+        Assertions.assertEquals(user.getFirstName(), userOff.getFirstName());
+        Assertions.assertEquals(user.getLastName(), userOff.getLastName());
+        Assertions.assertEquals("1h 40m", time);
+
+
     }
 
     @Given("I am viewing an activity")
@@ -213,10 +221,14 @@ public class ViewActivityStatisticIntegrationTests {
     @When("that activity has statistics and facts with times")
     public void that_activity_has_statistics_and_facts_with_times() {
         List<Fact> actualFacts= (List<Fact>) result.getModelAndView().getModel().get("activityFacts");
+        List<Substitution> actualSubstitution= (List<Substitution>) result.getModelAndView().getModel().get("activitySubstitutions");
+        Assertions.assertNotNull(actualSubstitution);
+        Assertions.assertNotNull(actualFacts);
 
     }
 
     @Then("they are listed and sorted by their time in ascending order")
     public void they_are_listed_and_sorted_by_their_time_in_ascending_order() {
+
     }
 }
