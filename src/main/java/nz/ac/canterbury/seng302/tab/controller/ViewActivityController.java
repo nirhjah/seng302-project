@@ -9,6 +9,7 @@ import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.OppositionGoal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.form.CreateEventForm;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
@@ -59,6 +60,15 @@ public class ViewActivityController {
     }
 
 
+    private void populateOther(Model model, Activity activity) {
+        ActivityType type = activity.getActivityType();
+
+        model.addAttribute("canShowScores", type == ActivityType.Friendly || type == ActivityType.Game);
+        model.addAttribute("canShowFacts", type != ActivityType.Training);
+        model.addAttribute("canShowPlayers", type == ActivityType.Friendly || type == ActivityType.Game);
+
+        model.addAttribute("possibleFactTypes", FactType.values());
+    }
 
     /**
      *
@@ -119,6 +129,9 @@ public class ViewActivityController {
         model.addAttribute("navTeams", teamList);
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("possibleFactTypes", FactType.values());
+        model.addAttribute("defaultFactType", FactType.FACT);
+
+        populateOther(model, activity);
 
         return "viewActivity";
     }
