@@ -26,7 +26,13 @@
         <div class="card-body">
           <h5 class="card-title">Activity</h5>
           <p class="card-text" th:text="'Goals Scored: ' + ${actStat.goalsScored}"></p>
-          <p class="card-text" th:text="'Time Played: ' + ${actStat.minutesPlayed}"></p>
+          <th:block th:with="hours=${actStat.minutesPlayed / 60},
+                             minutes=${actStat.minutesPlayed % 60}">
+          <p class="card-text">Time Played:
+            <th:block th:if="${hours != 0}" th:text="|${hours}h |"></th:block>
+            <th:block th:text="|${minutes}m |"></th:block>
+          </p>
+          </th:block>
           <p class="card-text" th:text="'Sub Off: ' + ${actStat.subOffTimings}"></p>
           <p class="card-text" th:text="'Sub Ons: ' + ${actStat.subOnTimings}"></p>
           <h5>Click to see activity details</h5>
