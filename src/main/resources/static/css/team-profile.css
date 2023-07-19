@@ -298,6 +298,7 @@
     padding: 0 10px;
     height: 34px;
     margin-left: 5px;
+    white-space: nowrap;
 }
 
 .formation-display button:hover {

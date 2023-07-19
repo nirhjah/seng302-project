@@ -3,8 +3,7 @@ package nz.ac.canterbury.seng302.tab.entity;
 import jakarta.persistence.*;
 
 /**
- * The Formation entity which contains the information involved with the
- * formation.
+ * The Formation entity which contains the information involved with the formation.
  */
 @Entity(name = "Formation")
 public class Formation {
@@ -76,7 +75,9 @@ public class Formation {
         return this.formation;
     }
 
-    public long getFormationId(){ return this.formationId;}
+    public long getFormationId() {
+        return this.formationId;
+    }
 
     public boolean isCustom() {
         return custom;

@@ -206,6 +206,10 @@ public class Activity {
         this.otherTeamScore = otherTeamScore;
     }
 
+    public void setActivityOutcome(ActivityOutcome activityOutcome) {this.outcome = activityOutcome;}
+
+    public ActivityOutcome getOutcome() {return outcome;}
+
     /**
      * Sets the formation for this activity
      * @param formation This formation should be from the same team as this activity (U33 AC1)

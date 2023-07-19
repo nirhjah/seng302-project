@@ -1,12 +1,15 @@
 <!--
 Formation strings should be of form e.g. '1-4-4-2' and positions should be strings of form e.g. '20px,30px;40px,60px;'
+Required variables: formationEditable, true if you want the formation to be edited i.e. being able to move players around, false otherwise
 
 -->
-<div th:fragment="formationDisplay">
+<div th:fragment="formationDisplay(formationEditable)">
   <input type="hidden" name="custom" class="custom" value="false">
   <input type="hidden" name="customPlayerPositions" class="custom-player-positions">
-  <div id="pitch"></div>
+  <div id="pitch" class="pitch"></div>
   <script>
+    const formationEditable = [[${formationEditable}]];
+
     const pitch = document.getElementById("pitch");
     const custom = document.querySelector(".custom");
     const customPlayerPositions = document.querySelector(".custom-player-positions");
@@ -40,6 +43,11 @@ Formation strings should be of form e.g. '1-4-4-2' and positions should be strin
         let playersInRow = formation[i]
         while (formation[i] !== 0) {
           let player = players[j]
+
+          if (formationEditable === true) {
+            dragElement(player);
+          }
+
           player.style.bottom = ((i + 1) / (formation.length + 1)) * pitch.offsetHeight - player.offsetHeight / 2 + "px";
           player.style.left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * pitch.offsetWidth - player.offsetWidth / 2 + "px";
           formation[i] -= 1;
@@ -71,12 +79,64 @@ Formation strings should be of form e.g. '1-4-4-2' and positions should be strin
 
     function generatePlayers(numPlayers) {
       for (let i = 0; i < numPlayers; i++) {
-        let player = document.createElement('div')
-        player.setAttribute("id", "player" + (i + 1))
-        player.setAttribute("class", "player")
-        pitch.appendChild(player)
-        dragElement(player);
+        let player = document.createElement('div');
+        player.setAttribute("id", "player" + (i + 1));
+        pitch.appendChild(player);
+
+        if (formationEditable === true) {
+          dragElement(player);
+          player.setAttribute("class", "player");
+        } else {
+          player.setAttribute("class", "player uneditable");
+        }
+
+        const name = document.createElement('h3');
+        const image = document.createElement('img');
+        const id = document.createElement('input');
+        const close = document.createElement('img');
+
+        image.setAttribute("class", "player-profile-img");
+        close.setAttribute("class", "clear-position-button");
+        close.setAttribute("onclick", "clearPlayer(this.parentNode)");
+        close.setAttribute("src", "../image/icons/remove.svg");
+        id.setAttribute("type", "hidden");
+
+        player.appendChild(name);
+        player.appendChild(image);
+        player.appendChild(id);
+        player.appendChild(close);
       }
+    }
+
+
+    function addPlayer(position, name, picture, id) {
+      const nameObject = position.querySelector('h3');
+      const imageObject = position.querySelector('.player-profile-img');
+      const idObject = position.querySelector('input');
+      const close = position.querySelector('.clear-position-button');
+      nameObject.textContent = name;
+
+      // Left margin of name set dynamically to ensure it is centered as object has absolute position
+      nameObject.style.display = 'inline-block'; // Make sure it's visible
+      nameObject.style.width = 'auto'; // Reset width to auto
+      const marginLeft = (position.clientWidth - nameObject.offsetWidth) / 2;
+      nameObject.style.marginLeft = marginLeft + "px";
+      nameObject.style.marginLeft = (position.width - nameObject.width) / 2 + "px";
+
+      imageObject.setAttribute('src', picture);
+      idObject.value = id;
+      close.classList.add('active')
+    }
+
+    function clearPlayer(position) {
+      const nameObject = position.querySelector('h3');
+      const imageObject = position.querySelector('.player-profile-img');
+      const idObject = position.querySelector('input');
+      const close = position.querySelector('.clear-position-button');
+      nameObject.textContent = "";
+      imageObject.removeAttribute('src');
+      idObject.value = "";
+      close.classList.remove('active')
     }
 
     function dragElement(player) {
