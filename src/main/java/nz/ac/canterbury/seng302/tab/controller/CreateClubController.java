@@ -20,10 +20,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,6 +50,24 @@ public class CreateClubController {
         this.userService = userService;
         this.teamService = teamService;
     }
+
+    public void updateClubLogo(Club club, MultipartFile file) throws IOException {
+        Optional<User> optUser = userService.getCurrentUser();
+        if (optUser.isEmpty()) {
+            return;
+        }
+
+        User user = optUser.get();
+
+        if (!club.isManagedBy(user)) {
+            // club isn't managed by current user! return.
+            return;
+        }
+
+        String data = Base64.getEncoder().encodeToString(file.getBytes());
+        club.setClubLogo(data);
+    }
+
 
     /**
      * Gets club form
@@ -78,6 +98,7 @@ public class CreateClubController {
     @PostMapping("/createClub")
     public String createClub(
             @RequestParam(name = "clubId", defaultValue = "-1") long clubId,
+            @RequestParam(name = "logo") MultipartFile file,
             @RequestParam(name="name") String name,
             @RequestParam(name = "addressLine1") String addressLine1,
             @RequestParam(name = "addressLine2") String addressLine2,
@@ -99,19 +120,20 @@ public class CreateClubController {
             return "redirect:/home";
         }
 
-        addressLine1.trim();
+        addressLine1 = addressLine1.trim();
         if (addressLine1.isEmpty()) {
             bindingResult.addError(new FieldError("CreateAndEditClubForm", "addressLine1", "Field cannot be empty"));
         }
-        postcode.trim();
+        postcode = postcode.trim();
         if (postcode.isEmpty()) {
             bindingResult.addError(new FieldError("CreateAndEditClubForm", "postcode", "Field cannot be empty"));
         }
 
         Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
 
-        if (clubId !=-1) {
-            Club editClub = clubService.findClubById(clubId).get();
+        Optional<Club> optClub = clubService.findClubById(clubId);
+        if (optClub.isPresent()) {
+            Club editClub = optClub.get();
             editClub.setSport(sport);
             setTeamsClub(selectedTeams, editClub, bindingResult);
 
@@ -121,6 +143,7 @@ public class CreateClubController {
                 return "createClubForm";
             }
 
+            updateClubLogo(editClub, file);
             editClub.setName(name);
             editClub.setLocation(location);
 
@@ -130,6 +153,7 @@ public class CreateClubController {
         } else {
             User manager = optUser.get(); // manager is the current user
             Club club = new Club(name, location, sport, manager);
+            updateClubLogo(club, file);
 
             setTeamsClub(selectedTeams, club, bindingResult);
 
@@ -141,7 +165,6 @@ public class CreateClubController {
 
             clubService.updateOrAddClub(club);
             return "redirect:/view-club?clubID=" + club.getClubId();
-
         }
     }
 

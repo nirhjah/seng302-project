@@ -41,30 +41,6 @@ public class ViewClubController {
     }
 
 
-    @PostMapping("/view-club/update-club-logo")
-    public void updateClubLogo(
-            @RequestParam(name = "clubId", defaultValue = "-1") long clubId,
-            @RequestParam("file") MultipartFile file,
-            Model model
-    ) throws IOException {
-        Optional<User> optUser = userService.getCurrentUser();
-        Optional<Club> optClub = clubService.findClubById(clubId);
-
-        if (optUser.isEmpty() || optClub.isEmpty()) {
-            return;
-        }
-
-        User user = optUser.get();
-        Club club = optClub.get();
-
-        if (!club.isManagedBy(user)) {
-            // club isn't managed by current user! return.
-            return;
-        }
-
-        String data = Base64.getEncoder().encodeToString(file.getBytes());
-        club.setClubLogo(data);
-    }
 
     /**
      * Retrieves the club profile.

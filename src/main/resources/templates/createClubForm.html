@@ -176,23 +176,25 @@
             return;
         }
 
-        else if (input.files && input.files[0]) {
-            const file = input.files[0];
-
-            if (file.size > 10000000) {
-                alert("File size must be less than 10MB");
-                input.value = "";
-                return;
-            }
-            const reader = new FileReader();
-            const image = document.getElementById('club-logo');
-
-            reader.onload = function (e) {
-                image.src = e.target.result;
-            };
-
-            reader.readAsDataURL(input.files[0]);
+        if (!(input.files && input.files[0])) {
+            return; // No input, invalid
         }
+
+        const file = input.files[0];
+
+        if (file.size > 10000000) {
+            alert("File size must be less than 10MB");
+            input.value = "";
+            return;
+        }
+        const reader = new FileReader();
+        const image = document.getElementById('club-logo');
+
+        reader.onload = function (e) {
+            image.src = e.target.result;
+        };
+
+        reader.readAsDataURL(input.files[0]);
     }
 
     /**
