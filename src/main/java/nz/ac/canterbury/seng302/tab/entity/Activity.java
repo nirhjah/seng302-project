@@ -86,6 +86,8 @@ public class Activity {
         this.activityEnd = activityEnd;
         this.activityOwner = creator;
         this.location = location;
+        this.setOtherTeamScore("0");
+        this.setActivityTeamScore("0");
 
     }
 
