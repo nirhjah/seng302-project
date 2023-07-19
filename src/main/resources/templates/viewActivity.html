@@ -9,6 +9,7 @@
     <link th:href="@{/css/view-activity.css}" rel="stylesheet">
     <link th:href="@{/css/formation.css}" rel="stylesheet">
     <link th:href="@{/css/view-all.css}" rel="stylesheet">
+    <link th:href="@{/css/create-activity.css}" rel="stylesheet"/>
 
     <title>View Activity</title>
 </head>
@@ -80,23 +81,28 @@
 
             <div class="modal-content">
                 <h1>Create New Event</h1>
-                <p th:text="${activity.team.getTeamMembers[0].firstName}"></p>
                 <form th:action="@{view-activity}" id="createEventForm" method="post" th:object="${createEventForm}">
                     <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
                     <div class="select-container">
-                        <label for="factType"></label>
-                        <select id="factType" name="factType">
-                                    <option th:each="fact : ${possibleFactTypes}"
-                                            th:value="${fact}"
-                                            th:text="${fact}"></option> 
-                        </select>
-                        <label for="description"></label>
-                        <input type="text-area" name="description" value="description">
+                        <div class="select-box">
+                            <label for="factType">Choose an Event type <span class="required">*</span></label>
+                            <select id="factType" name="factType">
+                                        <option th:each="fact : ${possibleFactTypes}"
+                                                th:value="${fact}"
+                                                th:text="${fact}"></option> 
+                            </select>
+                        </div>
+                    </div>
+                    <div class="select-container">
+                        <div class="description-box">
+                        <label for="description">Description: <span class="required">*</span></label>
+                        <textarea class="description-text" id="description" th:name="description" autofocus placeholder=""
+                          th:text="${description}"></textarea>
+                        </div>
                         <label for="time"></label>
                         <input type="text-area" name="time" value="time">
                         <label for="time"></label>
                         <div id="additionalFields"></div>
-
                     </div>
                     <div class="submit-button">
                         <button id="createEvent" type="submit" class="registerLoginButton">Create Event</button>
