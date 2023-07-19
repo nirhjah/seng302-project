@@ -48,4 +48,12 @@ public class Fact {
         this.description = description;
         this.timeOfEvent = timeOfEvent;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getTimeOfEvent() {
+        return timeOfEvent;
+    }
 }

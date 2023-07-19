@@ -5,7 +5,6 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import jakarta.validation.constraints.Email;
 import nz.ac.canterbury.seng302.tab.controller.RegisterController;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.RegisterForm;
@@ -14,17 +13,12 @@ import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.utility.RegisterTestUtil;
-import org.junit.jupiter.api.Disabled;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,7 +29,6 @@ import java.io.IOException;
 import java.util.Objects;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.times;
 import static org.springframework.test.util.AssertionErrors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -162,7 +155,7 @@ public class RegisterConfirmEmailIntegrationTests {
     }
 
     @Then("I receive an email containing a valid registration link")
-    public void iReceiveAnEmailContainingAValidRegistrationLink() throws Exception {
+    public void iReceiveAnEmailContainingAValidRegistrationLink() {
         assertNotNull("expected sent email", sentMailContent);
         var body = sentMailContent.getMsgBody();
         assertNotNull("Email body was null", body);

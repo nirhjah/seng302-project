@@ -2,6 +2,9 @@
     font-family: "Noto Sans", sans-serif;
 }
 
+*{
+    font-family: "Noto Sans", sans-serif;
+}
 ul.search {
     display: flex;
     list-style: none;

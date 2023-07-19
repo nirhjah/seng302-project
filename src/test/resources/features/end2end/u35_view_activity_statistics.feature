@@ -1,4 +1,3 @@
-@ViewActivityStatistics
 Feature: U35 – View activity statistics
   Scenario: AC1: Statistics of activity shown when viewing activity
     Given I am viewing my activities or team activities
@@ -6,10 +5,10 @@ Feature: U35 – View activity statistics
     Then I can see the details of that activity together with its statistics
 
 
-#  Scenario: AC2: Time player scored shown on line up on statistics page
-#    Given I am viewing an activity that is a game or friendly with lineups
-#    When there are statistics about scoring players
-#    Then I can see the time that player scored next to their icon on the line-up
+  Scenario: AC2: Time player scored shown on line up on statistics page
+    Given I am viewing an activity that is a game or friendly with lineups
+    When there are statistics about scoring players
+    Then I can see the time that player scored next to their icon on the line-up
 
   Scenario: AC3: Information about substitution of player shown on statistics page
     Given I am viewing an activity that is a game or friendly with lineups
