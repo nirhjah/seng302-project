@@ -212,7 +212,7 @@
             defaultOption.selected = true;
             selectScorer.appendChild(defaultOption);
 
-            /*[# th:each="player : ${activity.team.getTeamMembers()}"]*/
+            /*[# th:each="player : ${activity.getTeamMembers()}"]*/
             // Create an option element for each team member
             var option = document.createElement("option");
             option.value = /*[[${player.getUserId()}]]*/ '';
@@ -237,7 +237,7 @@
             defaultOption.selected = true;
             selectScorer.appendChild(defaultOption);
             
-            /*[# th:each="player : ${activity.team.getTeamMembers()}"]*/
+            /*[# th:each="player : ${activity.getTeamMembers()}"]*/
             // Create an option element for each team member
             var option = document.createElement("option");
             option.value = /*[[${player.getUserId()}]]*/ '';
@@ -260,7 +260,7 @@
             defaultOption.selected = true;
             selectScorer.appendChild(defaultOption);
             
-            /*[# th:each="player : ${activity.team.getTeamMembers()}"]*/
+            /*[# th:each="player : ${activity.getTeamMembers()}"]*/
             // Create an option element for each team member
             var option = document.createElement("option");
             option.value = /*[[${player.getUserId()}]]*/ '';

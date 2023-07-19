@@ -171,6 +171,20 @@ public class Activity {
         this.otherTeamScore = otherTeamScore;
     }
 
+    /**
+     * Gets all the users involved in an activity.
+     * The reason we need this method is because thymeleaf needs it,
+     * and JS doesn't have access to the entity, only thymeleaf does.
+     * If there's no team, then an empty list is returned.
+     * @return A list of team
+     */
+    public List<User> getInvolvedMembers() {
+        if (team != null) {
+            return new ArrayList<>(team.getTeamMembers());
+        }
+        return List.of();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
