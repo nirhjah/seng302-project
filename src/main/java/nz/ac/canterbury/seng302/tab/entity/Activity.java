@@ -75,12 +75,15 @@ public class Activity {
     private ActivityOutcome outcome;
 
 
-
+    private static final String START_SCORE = "0";
 
     /**
      * Empty Constructor for JPA
      */
-    public Activity() {}
+    public Activity() {
+        setActivityTeamScore(START_SCORE);
+        setOtherTeamScore(START_SCORE);
+    }
 
     /**
      * Generic Constructor for Activity
