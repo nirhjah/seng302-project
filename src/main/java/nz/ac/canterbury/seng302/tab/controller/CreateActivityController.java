@@ -285,11 +285,13 @@ public class CreateActivityController {
 
         activity = activityService.updateOrAddActivity(activity);
 
-        LineUp activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
+        if (activity.getFormation().isPresent()) {
+            LineUp activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
+            lineUpRepository.save(activityLineUp);
+        }
 
         // LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, , );
 
-        lineUpRepository.save(activityLineUp);
 
         return String.format("redirect:./view-activity?activityID=%s", activity.getId());
     }
