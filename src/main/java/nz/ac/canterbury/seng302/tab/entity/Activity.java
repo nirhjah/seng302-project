@@ -6,6 +6,7 @@ import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;

@@ -18,11 +18,6 @@ public class FactService {
     private final FactRepository factRepository;
 
     @Autowired
-    public FactService(FactRepository factRepository) {
-        this.factRepository=factRepository;
-    }
-
-    @Autowired
     public FactService( FactRepository factRepository) {
         this.factRepository = factRepository;
     }
