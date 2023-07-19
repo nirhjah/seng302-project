@@ -148,7 +148,7 @@ public class ViewActivityController {
     @PostMapping("/view-activity")
     public String createEvent(
             @RequestParam(name = "actId", defaultValue = "-1") long actId, 
-            @RequestParam(name = "factType")  FactType factType,
+            @RequestParam(name = "factType", defaultValue = "FACT")  FactType factType,
             @RequestParam(name = "description") String description,
             @RequestParam(name = "time") String time,
             @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,

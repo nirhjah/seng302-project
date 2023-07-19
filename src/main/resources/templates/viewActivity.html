@@ -82,7 +82,7 @@
                 <form th:action="@{view-activity}" id="createEventForm" method="post" th:object="${createEventForm}">
                     <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
 
-                    <div th:if="${noFacts}" class="select-container">
+                    <div th:if="${!noFacts}" class="select-container">
                         <div class="select-box">
                             <label for="factType">Choose an Event type <span class="required">*</span></label>
                             <select id="factType" name="factType">
