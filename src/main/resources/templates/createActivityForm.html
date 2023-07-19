@@ -16,9 +16,11 @@
     <div class="wrapper">
         <form th:action="@{createActivity}" th:object="${createActivityForm}" id="createActivityForm" method="post">
             <input type="hidden" th:if="${actId != null}" th:name="actId" th:value="${actId}"/>
+
+            <!--/* Activity Type dropdown */-->
             <div class="select-container">
-                <label for="activityType">Choose An Activity Type <span class="required">*</span> </label>
-                <select name="activityType" id="activityType">
+                <label for="activityType">Activity Type <span class="required">*</span> </label>
+                <select name="activityType" id="activityType" onchange="updateFormationList()">
                     <option th:each="type : ${activityTypes}"
                             th:value="${type}"
                             th:text="${type}"
@@ -27,17 +29,38 @@
                 </select>
                 <div th:each="err : ${#fields.errors('activityType')}" th:text="${err}" class="error-message"></div>
             </div>
+
+            <!--/* Team selection dropdown */-->
             <div class="select-container">
                 <div class="select-box">
-                    <label for="team">Select Team For Activity <span class="required">*</span></label>
-                    <select name="team" id="team">
+                    <label for="team">Activity Team <span class="required">*</span></label>
+                    <select name="team" id="team" onchange="updateFormationList()">
                         <option value="-1">(No Team)</option>
-                        <option th:each="team : ${teamList}" th:value="${team.getTeamId()}"
-                                th:text="${team.getName()}" th:selected="${team.getName() == teamName}"></option>
+                        <option th:each="team : ${teamList}"
+                                th:value="${team.getTeamId()}"
+                                th:text="${team.getName()}"
+                                th:selected="${team.getName() == teamName}"></option>
                     </select>
                 </div>
                 <div th:each="err : ${#fields.errors('team')}" th:text="${err}" class="error-message"></div>
             </div>
+
+            <!--/* Formation selection dropdown (Only active if the activity supports it) */-->
+            <div class="select-container">
+                <div class="select-box">
+                    <label for="team">Activity formation <em>(Team Game and Team Friendly only)</em></label>
+                    <select name="formation" id="formation" th:disabled="${#lists.isEmpty(teamFormations)}">
+                        <option value="-1">(no formation)</option>
+                        <option th:each="forma : ${teamFormations}"
+                                th:value="${forma.formationId}"
+                                th:text="${forma.formation}"
+                                th:selected="${forma == selectedFormation}"></option>
+                    </select>
+                </div>
+                <div th:each="err : ${#fields.errors('formation')}" th:text="${err}" class="error-message"></div>
+            </div>
+
+            <!--/* Activity Description */-->
             <div class="description-box">
                 <label for="description">Description: <span class="required">*</span></label>
                 <textarea class="description-text" id="description" th:name="description" autofocus placeholder=""
@@ -45,7 +68,9 @@
                 <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
                 <p id="charCount" class="charCount"></p>
             </div>
+
             <div class="input-boxes">
+                <!--/* Start Date */-->
                 <div class="input-box">
                     <input type="datetime-local" class="datetime-input" id="startDateTime" name="startDateTime"
                            th:value="${startDateTime}">
@@ -53,6 +78,8 @@
                     <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}"
                          class="error-message"></div>
                 </div>
+
+                <!--/* End Date */-->
                 <div class="input-box">
                     <input type="datetime-local" class="datetime-input" id="endDateTime" name="endDateTime"
                            th:value="${endDateTime}">
@@ -240,9 +267,65 @@
             charCount.style.color='#888888';
         }
     });
+</script>
+<script>
+    function typeCanHaveFormation(activityType) {
+        return (activityType == "Game" || activityType == "Friendly");
+    }
 
+    function updateFormationList() {
+        const formationDropdown = document.querySelector("#formation");
+        const currentTeamId = document.querySelector("#team").value;
+        const currentActivity = document.querySelector("#activityType").value;
 
+        // Can't select formations if you've selected 'no team'
+        if (currentTeamId == -1) {
+            formationDropdown.disabled = true;
+            return;
+        }
+        // Can't select formations if your activity isn't a "friendly" or "game"
+        if (!typeCanHaveFormation(currentActivity)) {
+            formationDropdown.disabled = true;
+            return;
+        }
 
+        // Otherwise, get the list of formations
+        populateFormationDropdown(false, "(loading...)", {});
+        axios.get("createActivity/get_team_formation", {params: {teamId: currentTeamId}})
+            .then(response => {
+                console.log(response);
+                const formationList = response.data;
+                if (formationList.length == 0) {
+                    populateFormationDropdown(false, "(team has no formations)", {});
+                } else {
+                    populateFormationDropdown(true, "(no formation)", formationList);
+                }
+            })
+            .catch(error => {
+                alert("ERROR see console");
+                console.error(error);
+            });
 
+        
+    }
+
+    function populateFormationDropdown(isEnabled, emptyValueName, otherFields) {
+        const formationDropdown = document.querySelector("#formation");
+        // Set visibility
+        formationDropdown.disabled = !isEnabled;
+        formationDropdown.innerHTML = "";
+        // Create the default "no value" field
+        let item = document.createElement("option");
+            item.value = -1;
+            item.innerText = emptyValueName;
+            formationDropdown.appendChild(item);
+        // Add the remaining fields
+        for (const [formationId, formation] of Object.entries(otherFields)) {
+            let item = document.createElement("option");
+            item.value = formationId;
+            item.innerText = formation;
+            formationDropdown.appendChild(item);
+        }
+    }
 </script>
 </html>
