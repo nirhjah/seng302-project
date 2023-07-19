@@ -26,14 +26,14 @@ public class ClubServiceTest {
 
     @Test
     public void testFindClubById() throws IOException {
-        Club club = new Club("Rugby Club", location, "soccer");
+        Club club = new Club("Rugby Club", location, "soccer",null);
         clubService.updateOrAddClub(club);
         Assertions.assertEquals(clubService.findClubById(1L).get(), club);
     }
 
     @Test
     public void testUpdatingOrAddingClub() throws IOException {
-        Club club = new Club("Rugby Club", location, "Rugby");
+        Club club = new Club("Rugby Club", location, "Rugby",null);
         clubService.updateOrAddClub(club);
         Assertions.assertEquals(clubService.findAll().size(), 1);
     }

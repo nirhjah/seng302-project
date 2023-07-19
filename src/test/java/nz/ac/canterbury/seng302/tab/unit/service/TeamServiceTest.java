@@ -340,7 +340,7 @@ public class TeamServiceTest {
 
         var SPORT = "Soccer";
 
-        Club club = new Club("Real Madrid", location, SPORT);
+        Club club = new Club("Real Madrid", location, SPORT,null);
         clubService.updateOrAddClub(club);
 
         for (int i=0; i<10; i++) {
@@ -367,7 +367,7 @@ public class TeamServiceTest {
             var CLUB_SPORT = "Soccer";
             var TEAM_SPORT = "Hockey";
 
-            Club club = new Club("Real Madrid", location, CLUB_SPORT);
+            Club club = new Club("Real Madrid", location, CLUB_SPORT,null);
             clubService.updateOrAddClub(club);
 
             Team team = new Team("Test", TEAM_SPORT);
@@ -379,7 +379,7 @@ public class TeamServiceTest {
     public void testClubAssignedOk() throws IOException {
         var SPORT = "Soccer";
         var location = new Location("address1", "address2", "suburb", "chch", "8052", "new zealand");
-        Club club = new Club("Real Madrid", location, SPORT);
+        Club club = new Club("Real Madrid", location, SPORT,null);
         clubService.updateOrAddClub(club);
 
         Team team = new Team("Test", SPORT);
