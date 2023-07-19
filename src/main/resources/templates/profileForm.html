@@ -107,7 +107,7 @@
             </div>
         </div>
 
-        <div class="content-box">
+        <div class="content-box" style="margin-bottom: 300px">
             <div class="content">
                 <form th:action="@{profile}" class="profile-buttons" method="post">
                     <a class="edit-button" th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
@@ -115,12 +115,12 @@
                     </a>
                 </form>
                 <div class="col-wrapper">
-                    <div class="third-col">
-                        <h3>Outcome of Games:</h3>
+                    <div class="third-col" style="padding-bottom: 20px">
+                        <h3>Outcome of Games and Friendlies:</h3>
                         <h4 th:text="|Wins: ${totalWins}|"></h4>
                         <h4 th:text="|Losses: ${totalLosses}|"></h4>
                         <h4 th:text="|Draws: ${totalDraws}|"></h4>
-                        <h4 th:text="|Total: ${totalGOrF}|"></h4>
+                        <h4 th:text="|Total (incl future): ${totalGOrF}|"></h4>
                         </br>
                         </br>
                         <h3>Last 5 Games: </h3>
