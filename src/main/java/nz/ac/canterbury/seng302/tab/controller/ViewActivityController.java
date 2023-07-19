@@ -232,9 +232,7 @@ public class ViewActivityController {
         int parsedScore = Integer.parseInt(score);
         parsedScore++;
         
-        logger.info("the parsed score is " + String.valueOf(parsedScore));
         activity.setOtherTeamScore(String.valueOf(parsedScore));
-        logger.info(activity.getOtherTeamScore());
     }
 
 }
