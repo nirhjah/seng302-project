@@ -21,8 +21,8 @@
         </div>
         <div style="display: flex; flex-direction: column;">
             <div class="filter-bar">
-                <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cities')}"></div>
-                <div th:replace="~{/fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sports')}"></div>
+                <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cities')}"></div>
+                <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sports')}"></div>
                 <button class="apply-filters-button" type="submit">Apply Filters</button>
             </div>
         </div>
@@ -80,3 +80,4 @@
         });
     </script>
 </body>
+</html>

@@ -537,3 +537,15 @@ ul.autocomplete-result{
     margin-right: 0.5em; /* Add some space between the bullet point and the text */
 }
 
+.statistics-title {
+    font-family: "Noto Sans",sans-serif;
+    /*color: #0B1B2A;*/
+    text-align: center;
+    /*width: 500px;*/
+    font-size: 40px;
+    font-weight: 600;
+    color: #0D1B2A;
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
