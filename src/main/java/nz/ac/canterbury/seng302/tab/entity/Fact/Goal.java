@@ -28,4 +28,8 @@ public class Goal extends Fact{
         super(description, timeOfEvent, activity);
         this.scorer = scorer;
     }
+
+    public User getScorer() {
+        return this.scorer;
+    }
 }

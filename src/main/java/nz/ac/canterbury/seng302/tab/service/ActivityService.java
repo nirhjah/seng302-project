@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.PageRequest;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -124,6 +125,10 @@ public class ActivityService {
         return activityRepository.findActivityByTeam(team, pageable);
     }
 
+    public List<Activity> getAllTeamActivities(Team team) {
+        return activityRepository.findActivityByTeam(team);
+    }
+
     /**
      * Checks that the scores provided for both teams are of the same format
      * First checks if the first team's score is of appropriate hyphen format, if
@@ -205,4 +210,36 @@ public class ActivityService {
      * @return a list of only the games and friendlies a team has
      */
     public List<Activity> getAllGamesAndFriendliesForTeam(Team team) {return activityRepository.getAllGamesAndFriendliesForTeam(team);}
+
+    /**
+     * Get A players total time played for a team across all activities
+     * @param user the user whose total time is being requested
+     * @param team the team the user is playing for
+     * @return total time a player has played for a team
+     */
+    public long getTotalTimeAUserHasPlayedForATeam(User user, Team team) {
+        List<Activity> games = findActivitiesByTeamAndActivityType(team, ActivityType.Game);
+        List<Activity> friendlies = findActivitiesByTeamAndActivityType(team, ActivityType.Friendly);
+        games.addAll(friendlies);
+        long totalTime = 0;
+        for (Activity act : games) {
+            totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes();;
+        }
+        return totalTime;
+    }
+
+    /**
+     * Get total matches
+     * TODO Make this dependant on the played matches once formation is complete
+     * @param team the teams matches wanted
+     * @return the total number of played matches.
+     */
+    public long getTotalUserMatches(Team team) {
+        return getAllTeamActivities(team).size();
+    }
+
+
+    public List<Activity> findActivitiesByTeamAndActivityType(Team team, ActivityType activityType) {
+        return activityRepository.findActivitiesByTeamAndActivityType(team, activityType);
+    }
 }
