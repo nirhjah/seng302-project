@@ -125,7 +125,7 @@ public class ViewActivityController {
     @PostMapping("/view-activity")
     public String createEvent(
             @RequestParam(name = "actId", defaultValue = "-1") long actId, 
-            @RequestParam(name = "factType") FactType factType,
+            @RequestParam(name = "factType")  FactType factType,
             @RequestParam(name = "description") String description,
             @RequestParam(name = "time") String time,
             @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
@@ -184,6 +184,12 @@ public class ViewActivityController {
                 
                 fact = new Substitution(description, time, activity, playerOff, playerOn);
                 break;
+
+            case OPPOSITION_GOAL:
+                updateAwayTeamsScore(activity);
+                logger.info("got in here");
+                activity = activityService.updateOrAddActivity(activity);
+                return String.format("redirect:./view-activity?activityID=%s", actId);
                 
             default:
                 logger.error("fact type unknown value");
@@ -214,5 +220,21 @@ public class ViewActivityController {
         activity.setActivityTeamScore(String.valueOf(parsedScore));
     }
 
+    /**
+     * TODO: maybe move into activity service?
+     * increments the away teams score by one 
+     **/
+    private void updateAwayTeamsScore(Activity activity) {
+        String score = activity.getOtherTeamScore();
+        if (score == null) {
+            score = "0";
+        }
+        int parsedScore = Integer.parseInt(score);
+        parsedScore++;
+        
+        logger.info("the parsed score is " + String.valueOf(parsedScore));
+        activity.setOtherTeamScore(String.valueOf(parsedScore));
+        logger.info(activity.getOtherTeamScore());
+    }
 
 }
