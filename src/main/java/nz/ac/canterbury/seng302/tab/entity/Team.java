@@ -27,7 +27,7 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Location location;
 
     @Column(nullable = false)
@@ -286,6 +286,10 @@ public class Team {
             throw new UnmatchedSportException(teamClub.getSport(), getSport());
         }
         this.teamClub = teamClub;
+    }
+
+    public void clearTeamClub() {
+        this.teamClub = null;
     }
 
     @Override

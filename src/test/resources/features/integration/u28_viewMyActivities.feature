@@ -1,4 +1,4 @@
-@ViewActivities
+@view_my_activities
 Feature: U23 - View my activities
   Scenario: AC1 Given I am anywhere on the system, when I click on a UI element to see all my activities, then I see a list of all activities from all the teams I belong to and all the personal activities I created for myself.
     Given I have personal and team activities

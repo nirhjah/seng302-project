@@ -1,14 +1,12 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
-import org.springframework.stereotype.Controller;
-
-import java.util.List;
 
 /**
- * The Formation entity which contains the information involved with the formation.
+ * The Formation entity which contains the information involved with the
+ * formation.
  */
-@Entity(name="Formation")
+@Entity(name = "Formation")
 public class Formation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +14,8 @@ public class Formation {
     private long formationId;
 
     /**
-     * The formation string is in the form of dash separated numbers used to describe the players position.
+     * The formation string is in the form of dash separated numbers used to
+     * describe the players position.
      * e.g “1-4-3-3" for football, “1-1-3-3-3" for hockey
      */
     @Column(nullable = false)
@@ -41,7 +40,6 @@ public class Formation {
      */
     protected Formation() {}
 
-
     /**
      * Constructs a Formation with the specified formation string and team.
      *
@@ -49,7 +47,7 @@ public class Formation {
      *                  e.g “1-4-3-3",“1-1-3-3-3"
      * @param team      The team associated with the formation.
      */
-    public Formation(String formation,  Team team) {
+    public Formation(String formation, Team team) {
         this.formation = formation;
         this.team = team;
     }
@@ -70,11 +68,11 @@ public class Formation {
         this.formation = formation;
     }
 
-    public Team getTeam(){
+    public Team getTeam() {
         return this.team;
     }
 
-    public String getFormation(){
+    public String getFormation() {
         return this.formation;
     }
 
@@ -88,5 +86,9 @@ public class Formation {
         return customPlayerPositions;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Formation(formation='%s', team='%s')", getFormation(), getTeam());
+    }
 
 }

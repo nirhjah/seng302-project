@@ -315,6 +315,18 @@
     margin-top: 5px;
 }
 
+.col-wrapper {
+    width: 100%;
+}
+
+.third-col {
+    padding: 10px;
+    float: left;
+    display: block;
+    width: 33%;
+    text-align: center;
+}
+
 
 
 

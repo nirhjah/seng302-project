@@ -1,12 +1,19 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.time.LocalDateTime;
+
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.service.ActivityService;
+import nz.ac.canterbury.seng302.tab.service.FactService;
 import nz.ac.canterbury.seng302.tab.entity.Formation;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.FormationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,10 +50,18 @@ public class ProfileFormController {
     @Autowired
     private FormationService formationService;
 
-    public ProfileFormController(UserService userService, TeamService teamService, FormationService formationService) {
+    @Autowired
+    private ActivityService activityService;
+
+    @Autowired
+    private FactService factService;
+
+    public ProfileFormController(UserService userService, TeamService teamService, ActivityService activityService, FactService factService, FormationService formationService) {
         this.userService = userService;
         this.formationService = formationService;
         this.teamService = teamService;
+        this.activityService = activityService;
+        this.factService = factService;
     }
 
     /**
@@ -85,6 +100,21 @@ public class ProfileFormController {
         }
         User user = oUser.get();
 
+        int totalWins = activityService.getNumberOfWins(team);
+        int totalLosses = activityService.getNumberOfLoses(team);
+        int totalDraws = activityService.getNumberOfDraws(team);
+        int totalGamesAndFriendlies = activityService.numberOfTotalGamesAndFriendlies(team);
+
+        List<Activity> activities = activityService.getLast5GamesOrFriendliesForTeamWithOutcome(team);
+        List<Map<User, Long>> scorerAndPoints = factService.getTop5Scorers(team);
+
+        model.addAttribute("top5Scorers", scorerAndPoints);
+        model.addAttribute("last5GOrF", activities);
+        model.addAttribute("totalWins", totalWins);
+        model.addAttribute("totalLosses", totalLosses);
+        model.addAttribute("totalDraws", totalDraws);
+        model.addAttribute("totalGOrF", totalGamesAndFriendlies);
+
         // Rambling that's required for navBar.html
         List<Team> teamList = teamService.getTeamList();
         List<Formation> formationsList = formationService.getTeamsFormations(teamID);
@@ -107,7 +137,7 @@ public class ProfileFormController {
      * Byte array.
      *
      * @param file               uploaded MultipartFile file
-     * @return
+     * @return Takes user back to profile page
      */
     @PostMapping("/profile")
     public String uploadPicture(
@@ -118,6 +148,19 @@ public class ProfileFormController {
         return "redirect:/profile?teamID=" + teamID;
     }
 
+    /**
+     * Saves formation into the system or updates formation.
+     *
+     * @param newFormation formation string
+     * @param teamID id of the team to add the formation to
+     * @param formationID if a formation is being updated, then this will represent the id of said formation
+     * @param customPlayerPositions if the formation is a 'custom' formation then this will be a string of px elements
+     *                              describing the left and bottom displacement for each player in a form such as
+     *                              "20px30px;40px20px"
+     * @param custom boolean to represent whether a formation has been manually changed by dragging and dropping the
+     *               players rather than simply being from a generated formation string
+     * @return reloads the page
+     */
     @PostMapping("/profile/create-formation")
     public String createAndUpdateFormation(
             @RequestParam("formation") String newFormation,
@@ -125,7 +168,6 @@ public class ProfileFormController {
             @RequestParam(name="formationID", defaultValue = "-1") long formationID,
             @RequestParam("customPlayerPositions") String customPlayerPositions,
             @RequestParam("custom") Boolean custom) {
-        logger.info(newFormation + " " + teamID + " " + formationID + " " + customPlayerPositions + " " + custom);
         logger.info("POST /profile");
         Team team = teamService.getTeam(teamID);
         Optional<Formation> formationOptional = formationService.getFormation(formationID);
