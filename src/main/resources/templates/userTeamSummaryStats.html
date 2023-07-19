@@ -27,9 +27,17 @@
           </div>
           <div class="card-body">
             <h5 class="card-title">[[|${teamStat.team.name} |]]</h5>
-            <p class="card-text" th:text="'Goals Scored Total: ' + ${teamStat.totalGoalsScored}"></p>
-            <p class="card-text" th:text="'Total Time Played: ' + ${teamStat.totalMinutesPlayed}"></p>
-            <p class="card-text" th:text="'Total Matches Played: ' + ${teamStat.totalMatchesPlayed}"></p>
+            <p class="card-text" th:text="|Goals Scored Total: ${teamStat.totalGoalsScored}|"></p>
+            <th:block th:with="hours=${teamStat.totalMinutesPlayed / 60},
+                             minutes=${teamStat.totalMinutesPlayed % 60}">
+              <p class="card-text">
+                Total Time Played:
+                <br>
+                <th:block th:if="${hours != 0}" th:text="|${hours}h |"></th:block>
+                <th:block th:text="|${minutes}m |"></th:block>
+              </p>
+            </th:block>
+            <p class="card-text" th:text="|Total Matches Played: ${teamStat.totalMatchesPlayed}|"></p>
             <h5 style="text-align: center">Click to see more</h5>
           </div>
         </div>
