@@ -29,6 +29,9 @@ public class Club {
     @Column(columnDefinition = "MEDIUMBLOB")
     private String clubLogo;
 
+    @ManyToOne
+    private User manager;
+
     protected Club() {
     }
 
@@ -44,10 +47,11 @@ public class Club {
         }
     }
 
-    public Club(String name, Location location, String sport) {
+    public Club(String name, Location location, String sport, User manager) {
         this.name = name;
         this.location = location;
         this.sport = sport;
+        this.manager = manager;
     }
 
     public long getClubId() {
@@ -75,6 +79,14 @@ public class Club {
             return defaultClubLogo;
         }
         return clubLogo;
+    }
+
+    public User getManager() {
+        return manager;
+    }
+
+    public boolean isManagedBy(User user) {
+        return user.getUserId() == getManager().getUserId();
     }
 
     public void setClubLogo(String clubLogo) {

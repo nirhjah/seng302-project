@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.Optional;
 @Controller
 public class ViewClubController {
@@ -36,7 +38,7 @@ public class ViewClubController {
             @RequestParam(name = "clubId", defaultValue = "-1") long clubId,
             @RequestParam("file") MultipartFile file,
             Model model
-    ) {
+    ) throws IOException {
         Optional<User> optUser = userService.getCurrentUser();
         Optional<Club> optClub = clubService.findClubById(clubId);
 
@@ -47,10 +49,13 @@ public class ViewClubController {
         User user = optUser.get();
         Club club = optClub.get();
 
-        // TODO: Check if the user manages the club.
-        //  if not, return.
+        if (!club.isManagedBy(user)) {
+            // club isn't managed by current user! return.
+            return;
+        }
 
-        // TODO: update logo here.
+        String data = Base64.getEncoder().encodeToString(file.getBytes());
+        club.setClubLogo(data);
     }
 
     /**
