@@ -75,11 +75,13 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
 
     @Query("""
             SELECT t FROM Team t
+            LEFT JOIN Club c ON (t.teamClub.clubId = c.clubId)
             WHERE (:#{#filteredLocations.size} = 0 OR lower(t.location.city) in (:filteredLocations))
             AND (:#{#filteredSports.size} = 0 OR lower(t.sport) in (:filteredSports))
-            AND (:name IS NULL
+            AND (:name IS NULL OR :name = ''
             OR (lower(t.name) LIKE LOWER(CONCAT('%', :name, '%')))
-            OR (lower(t.location.city) like lower(concat('%', :name, '%'))))
+            OR (lower(t.location.city) like lower(concat('%', :name, '%')))
+            OR (lower(c.name) like lower(concat('%', :name, '%'))))
             """)
     Page<Team> findTeamByFilteredLocationsAndSports(
             Pageable pageable,
