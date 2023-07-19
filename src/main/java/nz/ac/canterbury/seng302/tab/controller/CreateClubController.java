@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,12 +65,10 @@ public class CreateClubController {
         logger.info("GET /createClub");
         prefillModel(model, request);
 
-
-        Club club;
-
         if (clubId != null) {
-            if ((club = clubService.findClubById(clubId).get()) != null) {
-                prefillModelWithClub(model, club);
+            Optional<Club> optClub = clubService.findClubById(clubId);
+            if (optClub.isPresent()) {
+                prefillModelWithClub(model, optClub.get());
             }
         }
         return "createClubForm";
@@ -94,6 +93,11 @@ public class CreateClubController {
             Model model,
             HttpServletRequest httpServletRequest) throws IOException {
         prefillModel(model, httpServletRequest);
+
+        Optional<User> optUser = userService.getCurrentUser();
+        if (optUser.isEmpty()) {
+            return "redirect:/home";
+        }
 
         addressLine1.trim();
         if (addressLine1.isEmpty()) {
@@ -124,8 +128,8 @@ public class CreateClubController {
             return "redirect:/view-club?clubID=" + editClub.getClubId();
 
         } else {
-
-            Club club = new Club(name, location, sport);
+            User manager = optUser.get(); // manager is the current user
+            Club club = new Club(name, location, sport, manager);
 
             setTeamsClub(selectedTeams, club, bindingResult);
 
