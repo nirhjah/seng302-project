@@ -146,14 +146,14 @@
     background: #778DA9;
 }
 
-.content input {
-    width: 293px;
-    height: 25px;
-    border-bottom-left-radius: 11px;
-    border-bottom-right-radius: 11px;
-    border: 2px solid #778DA9;
-    border-top: none;
-}
+/*.content input {*/
+/*    width: 293px;*/
+/*    height: 25px;*/
+/*    border-bottom-left-radius: 11px;*/
+/*    border-bottom-right-radius: 11px;*/
+/*    border: 2px solid #778DA9;*/
+/*    border-top: none;*/
+/*}*/
 
 .sport-box::-webkit-scrollbar {
     width: 8px;

@@ -17,6 +17,7 @@ import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
+import nz.ac.canterbury.seng302.tab.service.FormationService;
 import nz.ac.canterbury.seng302.tab.service.FactService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
@@ -43,6 +44,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -65,6 +68,9 @@ public class ViewMyActivitiesIntegrationTests {
 
     @SpyBean
     private FactService factService;
+
+    @Autowired
+    private FormationService formationService;
 
     private UserRepository userRepository;
 
@@ -97,7 +103,7 @@ public class ViewMyActivitiesIntegrationTests {
     private final List<Activity> activityList = new ArrayList<>();
 
 
-    @Before
+    @Before("@view_my_activities")
     public void setup() throws IOException {
         userRepository = applicationContext.getBean(UserRepository.class);
         teamRepository = applicationContext.getBean(TeamRepository.class);
@@ -114,7 +120,7 @@ public class ViewMyActivitiesIntegrationTests {
 
         factService = Mockito.spy(new FactService());
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ProfileFormController(userService, teamService, activityService, factService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ProfileFormController(userService, teamService, activityService, factService, formationService)).build();
 
         userRepository.deleteAll();
         teamRepository.deleteAll();
@@ -139,7 +145,7 @@ public class ViewMyActivitiesIntegrationTests {
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
-        when(userService.getCurrentUser()).thenReturn(Optional.of(user));
+        doReturn(Optional.of(user)).when(userService).getCurrentUser();
     }
 
     @Given("I have personal and team activities")

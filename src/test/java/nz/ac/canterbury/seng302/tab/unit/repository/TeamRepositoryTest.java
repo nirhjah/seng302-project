@@ -1,8 +1,10 @@
 package nz.ac.canterbury.seng302.tab.unit.repository;
 
+import nz.ac.canterbury.seng302.tab.entity.Club;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.repository.ClubRepository;
 import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
@@ -42,6 +44,9 @@ public class TeamRepositoryTest {
 
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    private ClubRepository clubRepository;
 
     @Test
     public void testGettingTeamById() throws IOException {
@@ -470,6 +475,35 @@ public class TeamRepositoryTest {
         userRepository.save(user1);
         Page<Team> teamsWithUser1 = teamRepository.findTeamsWithUser(user1, pageable);
         assertEquals("[]", teamsWithUser1.toList().toString());
+    }
+
+    @Test
+    void filteringByCityAndSport_emptyFilters_searchClubName_returnTeamWithNameAndClubTeams() throws Exception {
+        Location chchLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
+        Location auckLocation = new Location(null, null, null, "Auckland", null, "New Zealand");
+
+        Team team1 = new Team("uno", "Hockey", chchLocation);
+        Team team2 = new Team("dos", "Hockey", auckLocation);
+        Team team3 = new Team("tres", "Netball", chchLocation);
+        Team team4 = new Team("one", "Netball", auckLocation);
+        Team team5 = new Team("two", "Netball", chchLocation);
+        Club club = new Club("uno", chchLocation, "Netball");
+        clubRepository.save(club);
+        team4.setTeamClub(club);
+        team5.setTeamClub(club);
+        teamRepository.save(team1);
+        teamRepository.save(team2);
+        teamRepository.save(team3);
+        teamRepository.save(team4);
+        teamRepository.save(team5);
+
+        List<String> sports = List.of();
+        List<String> cities = List.of();
+        var pageable = PageRequest.of(0, 10);
+        var output = teamService.findPaginatedTeamsByCityAndSports(pageable, cities, sports, "uno").toSet();
+
+        assertEquals(3, output.size());
+        assertEquals(Set.of(team1, team4, team5), output);
     }
 
 }

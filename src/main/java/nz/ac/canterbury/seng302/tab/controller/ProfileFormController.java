@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,6 +13,8 @@ import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import nz.ac.canterbury.seng302.tab.service.FactService;
+import nz.ac.canterbury.seng302.tab.entity.Formation;
+import nz.ac.canterbury.seng302.tab.service.FormationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,14 +48,17 @@ public class ProfileFormController {
     private UserService userService;
 
     @Autowired
+    private FormationService formationService;
+
+    @Autowired
     private ActivityService activityService;
 
     @Autowired
     private FactService factService;
 
-    public ProfileFormController(UserService userService, TeamService teamService,
-                                 ActivityService activityService, FactService factService) {
+    public ProfileFormController(UserService userService, TeamService teamService, ActivityService activityService, FactService factService, FormationService formationService) {
         this.userService = userService;
+        this.formationService = formationService;
         this.teamService = teamService;
         this.activityService = activityService;
         this.factService = factService;
@@ -111,6 +117,7 @@ public class ProfileFormController {
 
         // Rambling that's required for navBar.html
         List<Team> teamList = teamService.getTeamList();
+        List<Formation> formationsList = formationService.getTeamsFormations(teamID);
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
         model.addAttribute("displayPicture", user.getPictureString());
@@ -118,6 +125,7 @@ public class ProfileFormController {
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("isUserManager", team.isManager(user));
         model.addAttribute("isUserManagerOrCoach", team.isManager(user) || team.isCoach(user));
+        model.addAttribute("formations", formationsList);
 
         return "profileForm";
     }
@@ -137,6 +145,42 @@ public class ProfileFormController {
             @RequestParam("teamID") long teamID) {
         logger.info("POST /profile");
         teamService.updatePicture(file, teamID);
+        return "redirect:/profile?teamID=" + teamID;
+    }
+
+    /**
+     * Saves formation into the system or updates formation.
+     *
+     * @param newFormation formation string
+     * @param teamID id of the team to add the formation to
+     * @param formationID if a formation is being updated, then this will represent the id of said formation
+     * @param customPlayerPositions if the formation is a 'custom' formation then this will be a string of px elements
+     *                              describing the left and bottom displacement for each player in a form such as
+     *                              "20px30px;40px20px"
+     * @param custom boolean to represent whether a formation has been manually changed by dragging and dropping the
+     *               players rather than simply being from a generated formation string
+     * @return reloads the page
+     */
+    @PostMapping("/profile/create-formation")
+    public String createAndUpdateFormation(
+            @RequestParam("formation") String newFormation,
+            @RequestParam("teamID") long teamID,
+            @RequestParam(name="formationID", defaultValue = "-1") long formationID,
+            @RequestParam("customPlayerPositions") String customPlayerPositions,
+            @RequestParam("custom") Boolean custom) {
+        logger.info("POST /profile");
+        Team team = teamService.getTeam(teamID);
+        Optional<Formation> formationOptional = formationService.getFormation(formationID);
+        Formation formation;
+        if (formationOptional.isPresent()) {
+            formation = formationOptional.get();
+            formation.setFormation(newFormation);
+        } else {
+            formation = new Formation(newFormation, team);
+        }
+        formation.setCustomPlayerPositions(customPlayerPositions);
+        formation.setCustom(custom);
+        formationService.addOrUpdateFormation(formation);
         return "redirect:/profile?teamID=" + teamID;
     }
 
