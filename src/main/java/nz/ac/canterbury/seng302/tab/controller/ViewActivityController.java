@@ -7,6 +7,7 @@ import java.util.Optional;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
+import nz.ac.canterbury.seng302.tab.entity.Fact.OppositionGoal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.form.CreateEventForm;
@@ -187,9 +188,9 @@ public class ViewActivityController {
 
             case OPPOSITION_GOAL:
                 updateAwayTeamsScore(activity);
-                logger.info("got in here");
-                activity = activityService.updateOrAddActivity(activity);
-                return String.format("redirect:./view-activity?activityID=%s", actId);
+
+                fact = new OppositionGoal(description, time, activity);
+                break;
                 
             default:
                 logger.error("fact type unknown value");
