@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
-import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
 import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,19 +46,19 @@ public class CreateActivityController {
     private ActivityService activityService;
     private FormationService formationService;
 
-    private LineUpRepository lineUpRepository;
+    private LineUpService lineUpService;
 
     private Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
     private static final String TEMPLATE_NAME = "createActivityForm";
 
     public CreateActivityController(TeamService teamService, UserService userService,
-            ActivityService activityService, FormationService formationService, LineUpRepository lineUpRepository) {
+            ActivityService activityService, FormationService formationService, LineUpService lineUpService) {
         this.teamService = teamService;
         this.userService = userService;
         this.activityService = activityService;
         this.formationService = formationService;
-        this.lineUpRepository = lineUpRepository;
+        this.lineUpService = lineUpService;
     }
 
     /**
@@ -286,7 +285,7 @@ public class CreateActivityController {
 
         if (activity.getFormation().isPresent()) {
             LineUp activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
-            lineUpRepository.save(activityLineUp);
+            lineUpService.updateOrAddLineUp(activityLineUp);
         }
 
         return String.format("redirect:./view-activity?activityID=%s", activity.getId());
