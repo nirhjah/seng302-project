@@ -4,14 +4,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
+import nz.ac.canterbury.seng302.tab.repository.LineUpPositionRepository;
 import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
 import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
@@ -50,17 +48,20 @@ public class CreateActivityController {
 
     private LineUpRepository lineUpRepository;
 
+    private LineUpPositionRepository lineUpPositionRepository;
+
     private Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
     private static final String TEMPLATE_NAME = "createActivity";
 
     public CreateActivityController(TeamService teamService, UserService userService,
-            ActivityService activityService, FormationService formationService, LineUpRepository lineUpRepository) {
+            ActivityService activityService, FormationService formationService, LineUpRepository lineUpRepository, LineUpPositionRepository lineUpPositionRepository) {
         this.teamService = teamService;
         this.userService = userService;
         this.activityService = activityService;
         this.formationService = formationService;
         this.lineUpRepository = lineUpRepository;
+        this.lineUpPositionRepository = lineUpPositionRepository;
     }
 
     /**
@@ -223,7 +224,7 @@ public class CreateActivityController {
     @PostMapping("/createActivity")
     public String createActivity(
             @RequestParam(name = "actId", defaultValue = "-1") Long actId,
-            @RequestParam(name = "positions") List<String> positions,
+            @RequestParam(name = "playerAndPositions") String playerAndPositions,
             @Validated CreateActivityForm createActivityForm,
             BindingResult bindingResult,
             HttpServletRequest httpServletRequest,
@@ -284,13 +285,27 @@ public class CreateActivityController {
             activity.setFormation(formation.get());
         }
 
+        List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
+        System.out.println("positions and players " + positionsAndPlayers);
+
         activity = activityService.updateOrAddActivity(activity);
 
         LineUp activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
-
-        // LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, , );
-
         lineUpRepository.save(activityLineUp);
+
+        for (String positionPlayer : positionsAndPlayers) {
+            if (Objects.equals(Arrays.stream(positionPlayer.split(" ")).toList().get(1), "X")) {
+                System.out.println("No player was set at the position " + Arrays.stream(positionPlayer.split(" ")).toList().get(0));
+                //TODO Throw bindingResult error here as not all positions were filled with a player
+            } else {
+                System.out.println("Valid player so creating line up position object now..");
+                User player = userService.findUserById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).get();
+                int position = Integer.parseInt(Arrays.stream(positionPlayer.split(" ")).toList().get(0));
+                LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, player, position);
+                lineUpPositionRepository.save(lineUpPosition);
+            }
+        }
+
 
         return String.format("redirect:./view-activity?activityID=%s", activity.getId());
     }

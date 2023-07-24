@@ -63,7 +63,7 @@
             </div>
 
             <div class="formation-activity-display" >
-                <input type="hidden" id="positions" name="positions">
+                <input type="hidden" id="playerAndPositions" name="playerAndPositions">
                 <div class="subs-reserves-box">
                     <div class=subs-header>Subs</div>
                     <ul class="subs-ul">
@@ -156,7 +156,7 @@
             <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
             <div class="submit-button">
                 <a th:href="@{home}">
-                    <button type="submit" th:text="${actId != null ? 'Save' : 'Create'}"></button>
+                    <button onclick="getPlayersAndPositions()" type="submit" th:text="${actId != null ? 'Save' : 'Create'}"> </button>
                 </a>
                 <div class="cancel-link">
                     <a th:if="${actId != null}" th:href="@{view-activity(activityID=${actId})}">Cancel</a>
@@ -424,6 +424,7 @@
                     selectedPlayer.classList.add("in-formation");
                 }
                 checkSubsActive();
+                getPlayersAndPositions()
             });
 
             // Action to carry out when use clicks button to remove player from formation
@@ -522,6 +523,24 @@
             }
         });
     });
+
+    function getPlayersAndPositions() {
+                let playersAndPositions = "";
+                for (let i = 0; i < positions.length; i++) {
+                        const position = positions.item(i);
+                       // console.log(position.querySelector("input").value);
+                            console.log(position.querySelector("input").value + "value")
+
+                        if (position.querySelector("input").value != "") {
+                                playersAndPositions = playersAndPositions + position.id.replace("player", "") + " " + position.querySelector("input").value  + ", "
+                                }
+                        else { //if position isn't filled by player, use an X in its place so we know to call an error
+                                playersAndPositions = playersAndPositions + position.id.replace("player", "") + " " + "X"  + ", "
+                                }
+                    }
+                console.log(playersAndPositions)
+                document.getElementById("playerAndPositions").setAttribute("value", playersAndPositions)
+            }
 
 
 </script>
