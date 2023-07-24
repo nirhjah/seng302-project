@@ -18,4 +18,7 @@ public class LineUpService {
         return lineUpRepository.findLineUpByTeamTeamId(id);
     }
 
+    public void updateOrAddLineUp(LineUp lineUp) {
+        lineUpRepository.save(lineUp);
+    }
 }

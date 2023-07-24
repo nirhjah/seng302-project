@@ -105,7 +105,10 @@ public class EditActivityFormControllerTest {
         LocalDateTime end = LocalDateTime.of(2023, 7,1,8,30);
         Location activityLocation = new Location(ACTVITY_ADDRESS_LINE_1, ACTVITY_ADDRESS_LINE_2, ACTVITY_SUBURB,
                 ACTVITY_CITY, ACTVITY_POSTCODE, ACTVITY_COUNTRY);
+
         activity= new Activity(ActivityType.Game,team, "testing the description",start,end,testUser, activityLocation);
+        when(mockActivityService.getAllTeamActivities(team)).thenReturn(List.of(activity));
+        // mockActivityService.updateOrAddActivity(activity);
 
         when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));

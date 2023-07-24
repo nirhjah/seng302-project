@@ -2,7 +2,8 @@ package nz.ac.canterbury.seng302.tab.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -14,10 +15,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -36,10 +40,6 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FormationService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 
 /**
  * Unfortunately, due to non-stop issues around
@@ -61,6 +61,7 @@ public class U33EditLineupForGameFeature {
     private UserService userService;
     private ActivityService activityService;
     private FormationService formationService;
+    private LineUpService lineUpService;
 
     private User user;
     private Team team;
@@ -77,10 +78,12 @@ public class U33EditLineupForGameFeature {
         teamService = Mockito.spy(applicationContext.getBean(TeamService.class));
         activityService = Mockito.spy(applicationContext.getBean(ActivityService.class));
         formationService = Mockito.spy(applicationContext.getBean(FormationService.class));
+        lineUpService = Mockito.mock(LineUpService.class);
 
         // create mockMvc manually with spied services
         var controller = new CreateActivityController(
-                teamService, userService, activityService, formationService);
+                teamService, userService, activityService, formationService, lineUpService
+        );
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
