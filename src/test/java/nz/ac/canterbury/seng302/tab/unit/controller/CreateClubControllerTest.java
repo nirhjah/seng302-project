@@ -66,6 +66,8 @@ public class CreateClubControllerTest {
 
     @BeforeEach
     void beforeEach() throws IOException {
+        teamRepository.deleteAll();
+        clubRepository.deleteAll();
         userRepository.deleteAll();
 
         Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");

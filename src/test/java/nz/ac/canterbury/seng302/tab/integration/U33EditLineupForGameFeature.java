@@ -80,7 +80,8 @@ public class U33EditLineupForGameFeature {
 
         // create mockMvc manually with spied services
         var controller = new CreateActivityController(
-                teamService, userService, activityService, formationService);
+                teamService, userService, activityService, formationService, null
+        );
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
