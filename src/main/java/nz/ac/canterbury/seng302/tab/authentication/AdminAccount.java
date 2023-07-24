@@ -16,12 +16,6 @@ public class AdminAccount implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private TeamRepository teamRepository;
-
-    @Autowired
-    private FormationRepository formationRepository;
-
     // TODO: This SHOULD NOT be hard coded in. Either remove this account, or make it an env variable.
     private static final String ADMIN_PW = "1";
 
@@ -43,10 +37,7 @@ public class AdminAccount implements CommandLineRunner {
         Location location = new Location("admin", "admin", "admin", "admin", "admin", "admin");
 
         User admin = new User("Admin", "Admin", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), EMAIL, passwordEncoder.encode(ADMIN_PW), location);
-        Team team = new Team("Team", "Soccer", new Location("admin", "admin", "admin", "admin", "admin", "admin"), admin);
-        Formation formation = new Formation("1-4-4-2", team);
-        formationRepository.save(formation);
-        teamRepository.save(team);
+
         admin.confirmEmail();
         userRepository.save(admin);
 

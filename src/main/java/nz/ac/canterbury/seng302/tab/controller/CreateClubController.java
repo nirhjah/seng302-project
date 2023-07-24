@@ -33,14 +33,13 @@ public class CreateClubController {
 
     Logger logger = LoggerFactory.getLogger(CreateClubController.class);
 
-    @Autowired
     private ClubService clubService;
 
-    @Autowired
     private final UserService userService;
 
     private final TeamService teamService;
 
+    @Autowired
     public CreateClubController(ClubService clubService,UserService userService, TeamService teamService) {
         this.clubService = clubService;
         this.userService = userService;
