@@ -20,7 +20,7 @@ public class Formation {
     @Column(nullable = false)
     private String formation;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "fk_teamID", referencedColumnName = "teamId")
     private Team team;
 
@@ -86,5 +86,10 @@ public class Formation {
     public String getCustomPlayerPositions() {
         return customPlayerPositions;
     }
+
+//    @Override
+//    public String toString() {
+//        return String.format("Formation(formation='%s', team='%s')", getFormation(), getTeam());
+//    }
 
 }

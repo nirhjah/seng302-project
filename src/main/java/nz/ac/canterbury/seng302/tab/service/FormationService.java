@@ -18,7 +18,7 @@ public class FormationService {
         return formationRepository.findById(id);
     }
 
-    public Optional<Formation> findTeamById(long teamId) {
+    public List<Formation> findTeamById(long teamId) {
         return formationRepository.findByTeamTeamId(teamId);
     }
 

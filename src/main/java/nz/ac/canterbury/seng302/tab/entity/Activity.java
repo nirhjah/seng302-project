@@ -6,6 +6,7 @@ import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -47,7 +48,7 @@ public class Activity {
     @Column(nullable = false)
     private LocalDateTime activityEnd;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, optional = true)
     @JoinColumn(name = "fk_userID", referencedColumnName = "Id")
     private User activityOwner;
 
@@ -74,12 +75,15 @@ public class Activity {
     private ActivityOutcome outcome;
 
 
-
+    private static final String START_SCORE = "0";
 
     /**
      * Empty Constructor for JPA
      */
-    public Activity() {}
+    public Activity() {
+        setActivityTeamScore(START_SCORE);
+        setOtherTeamScore(START_SCORE);
+    }
 
     /**
      * Generic Constructor for Activity
@@ -98,6 +102,8 @@ public class Activity {
         this.activityEnd = activityEnd;
         this.activityOwner = creator;
         this.location = location;
+        this.setOtherTeamScore("0");
+        this.setActivityTeamScore("0");
     }
 
     /**
@@ -206,9 +212,19 @@ public class Activity {
         this.otherTeamScore = otherTeamScore;
     }
 
-    public void setActivityOutcome(ActivityOutcome activityOutcome) {this.outcome = activityOutcome;}
-
-    public ActivityOutcome getOutcome() {return outcome;}
+    /**
+     * Gets all the users involved in an activity.
+     * The reason we need this method is because thymeleaf needs it,
+     * and JS doesn't have access to the entity, only thymeleaf does.
+     * If there's no team, then an empty list is returned.
+     * @return A list of team
+     */
+    public List<User> getInvolvedMembers() {
+        if (team != null) {
+            return new ArrayList<>(team.getTeamMembers());
+        }
+        return List.of();
+    }
 
     /**
      * Sets the formation for this activity
@@ -225,6 +241,10 @@ public class Activity {
 
         this.formation = formation;
     }
+
+    public void setActivityOutcome(ActivityOutcome activityOutcome) {this.outcome = activityOutcome;}
+
+    public ActivityOutcome getOutcome() {return outcome;}
 
     @Override
     public boolean equals(Object o) {

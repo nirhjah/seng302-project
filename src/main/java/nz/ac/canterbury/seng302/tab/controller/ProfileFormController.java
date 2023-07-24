@@ -1,9 +1,18 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.time.LocalDateTime;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.service.ActivityService;
+import nz.ac.canterbury.seng302.tab.service.FactService;
 import nz.ac.canterbury.seng302.tab.entity.Formation;
 import nz.ac.canterbury.seng302.tab.service.FormationService;
 import org.slf4j.Logger;
@@ -41,10 +50,18 @@ public class ProfileFormController {
     @Autowired
     private FormationService formationService;
 
-    public ProfileFormController(UserService userService, TeamService teamService, FormationService formationService) {
+    @Autowired
+    private ActivityService activityService;
+
+    @Autowired
+    private FactService factService;
+
+    public ProfileFormController(UserService userService, TeamService teamService, ActivityService activityService, FactService factService, FormationService formationService) {
         this.userService = userService;
         this.formationService = formationService;
         this.teamService = teamService;
+        this.activityService = activityService;
+        this.factService = factService;
     }
 
     /**
@@ -83,6 +100,21 @@ public class ProfileFormController {
         }
         User user = oUser.get();
 
+        int totalWins = activityService.getNumberOfWins(team);
+        int totalLosses = activityService.getNumberOfLoses(team);
+        int totalDraws = activityService.getNumberOfDraws(team);
+        int totalGamesAndFriendlies = activityService.numberOfTotalGamesAndFriendlies(team);
+
+        List<Activity> activities = activityService.getLast5GamesOrFriendliesForTeamWithOutcome(team);
+        List<Map<User, Long>> scorerAndPoints = factService.getTop5Scorers(team);
+
+        model.addAttribute("top5Scorers", scorerAndPoints);
+        model.addAttribute("last5GOrF", activities);
+        model.addAttribute("totalWins", totalWins);
+        model.addAttribute("totalLosses", totalLosses);
+        model.addAttribute("totalDraws", totalDraws);
+        model.addAttribute("totalGOrF", totalGamesAndFriendlies);
+
         // Rambling that's required for navBar.html
         List<Team> teamList = teamService.getTeamList();
         List<Formation> formationsList = formationService.getTeamsFormations(teamID);
@@ -105,7 +137,7 @@ public class ProfileFormController {
      * Byte array.
      *
      * @param file               uploaded MultipartFile file
-     * @return
+     * @return Takes user back to profile page
      */
     @PostMapping("/profile")
     public String uploadPicture(

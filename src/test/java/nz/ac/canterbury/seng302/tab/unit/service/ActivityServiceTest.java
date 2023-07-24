@@ -251,4 +251,22 @@ public class ActivityServiceTest {
         Assertions.assertEquals(training, activityService.findActivityById(training.getId()));
     }
 
+    @Test
+    public void getTotalTimePlayerHasPlayedForTeam() throws Exception {
+        Team team = new Team("adfds", "hello");
+        User u = new User("Test", "Account", "tab.team900@gmail.com", "password",
+                new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
+        Activity training = new Activity(ActivityType.Training, team, "A Test Game",
+                LocalDateTime.of(2026, 1,1,6,30),
+                LocalDateTime.of(2026, 1,1,8,30), u,
+                new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
+        Activity game = new Activity(ActivityType.Game, team, "A Test Game",
+                LocalDateTime.of(2026, 1,1,6,30),
+                LocalDateTime.of(2026, 1,1,8,30), u,
+                new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
+        activityRepository.save(training);
+        activityRepository.save(game);
+        Assertions.assertEquals(120, activityService.getTotalTimeAUserHasPlayedForATeam(u, team));
+    }
+
 }

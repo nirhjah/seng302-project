@@ -4,6 +4,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,22 +49,21 @@ public class CreateActivityController {
     private ActivityService activityService;
     private FormationService formationService;
 
-    private LineUpRepository lineUpRepository;
+    private LineUpService lineUpService;
 
     private LineUpPositionRepository lineUpPositionRepository;
 
     private Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
-    private static final String TEMPLATE_NAME = "createActivity";
+    private static final String TEMPLATE_NAME = "createActivityForm";
 
     public CreateActivityController(TeamService teamService, UserService userService,
-            ActivityService activityService, FormationService formationService, LineUpRepository lineUpRepository, LineUpPositionRepository lineUpPositionRepository) {
+            ActivityService activityService, FormationService formationService, LineUpService lineUpService) {
         this.teamService = teamService;
         this.userService = userService;
         this.activityService = activityService;
         this.formationService = formationService;
-        this.lineUpRepository = lineUpRepository;
-        this.lineUpPositionRepository = lineUpPositionRepository;
+        this.lineUpService = lineUpService;
     }
 
     /**
@@ -290,8 +292,10 @@ public class CreateActivityController {
 
         activity = activityService.updateOrAddActivity(activity);
 
-        LineUp activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
-        lineUpRepository.save(activityLineUp);
+        if (activity.getFormation().isPresent()) {
+            LineUp activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
+            lineUpService.updateOrAddLineUp(activityLineUp);
+        }
 
         for (String positionPlayer : positionsAndPlayers) {
             if (Objects.equals(Arrays.stream(positionPlayer.split(" ")).toList().get(1), "X")) {

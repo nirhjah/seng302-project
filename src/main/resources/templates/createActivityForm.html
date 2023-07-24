@@ -52,7 +52,7 @@
                 <div class="select-box">
                     <label for="team">Activity formation <em>(Team Game and Team Friendly only)</em></label>
                     <select onchange="changeDisplayedFormation()" name="formation" id="formation-dropdown" th:disabled="${#lists.isEmpty(teamFormations)}">
-                        <option value="-1">(No Team)</option>
+                        <option value="-1">(No Formation)</option>
                         <option th:each="forma : ${teamFormations}"
                                 th:value="${forma.formationId}"
                                 th:text="${forma.formation} + (${forma.custom} ? ' Custom' : '')"
@@ -181,7 +181,6 @@
      * @type {number}
      */
     const DEBOUNCE_DELAY = 450; // set the debounce delay to 450ms
-
     const searchBox = document.querySelector('#address-line-1');
     const resultsContainer = document.querySelector('#autocomplete-container');
     const countryInput = document.querySelector('#country');
