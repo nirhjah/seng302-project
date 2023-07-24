@@ -9,6 +9,7 @@ import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.ClubService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,12 +65,15 @@ public class CreateClubControllerTest {
     private Club club;
 
 
-    @BeforeEach
-    void beforeEach() throws IOException {
+    @AfterEach
+    void afterEach() {
         teamRepository.deleteAll();
         clubRepository.deleteAll();
         userRepository.deleteAll();
+    }
 
+    @BeforeEach
+    void beforeEach() throws IOException {
         Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
         team = new Team("test", "Hockey", location);
         team2 = new Team("test2", "Hockey", new Location("2 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"));
