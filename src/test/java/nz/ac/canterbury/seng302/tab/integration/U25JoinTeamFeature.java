@@ -26,7 +26,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -163,7 +162,7 @@ public class U25JoinTeamFeature {
 
     @Then("An error message tells me the token is invalid")
     @WithMockUser()
-    public void an_error_message_tells_me_the_token_is_invalid() throws Exception {
+    public void an_error_message_tells_me_the_token_is_invalid() {
         verify(userService, times(0)).userJoinTeam(any(User.class), any(Team.class));
         Assertions.assertTrue(user.getJoinedTeams().size() == 0);
     }

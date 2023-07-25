@@ -5,11 +5,16 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+=import java.util.stream.Collectors;
 
 import nz.ac.canterbury.seng302.tab.api.response.FormationInfo;
 import nz.ac.canterbury.seng302.tab.api.response.PlayerFormationInfo;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
+import nz.ac.canterbury.seng302.tab.repository.LineUpPositionRepository;
 import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
 import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
@@ -46,19 +51,23 @@ public class CreateActivityController {
     private ActivityService activityService;
     private FormationService formationService;
 
-    private LineUpRepository lineUpRepository;
+    private LineUpService lineUpService;
 
+    private LineUpPositionRepository lineUpPositionRepository;
+
+    LineUp activityLineUp;
     private Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
-    private static final String TEMPLATE_NAME = "createActivity";
+    private static final String TEMPLATE_NAME = "createActivityForm";
 
     public CreateActivityController(TeamService teamService, UserService userService,
-            ActivityService activityService, FormationService formationService, LineUpRepository lineUpRepository) {
+            ActivityService activityService, FormationService formationService, LineUpService lineUpService, LineUpPositionRepository lineUpPositionRepository) {
         this.teamService = teamService;
         this.userService = userService;
         this.activityService = activityService;
         this.formationService = formationService;
-        this.lineUpRepository = lineUpRepository;
+        this.lineUpService = lineUpService;
+        this.lineUpPositionRepository = lineUpPositionRepository;
     }
 
     /**
@@ -220,7 +229,7 @@ public class CreateActivityController {
     @PostMapping("/createActivity")
     public String createActivity(
             @RequestParam(name = "actId", defaultValue = "-1") Long actId,
-            @RequestParam(name = "positions") List<String> positions,
+            @RequestParam(name = "playerAndPositions", required = false) String playerAndPositions,
             @Validated CreateActivityForm createActivityForm,
             BindingResult bindingResult,
             HttpServletRequest httpServletRequest,
@@ -281,13 +290,33 @@ public class CreateActivityController {
             activity.setFormation(formation.get());
         }
 
+
         activity = activityService.updateOrAddActivity(activity);
 
-        LineUp activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
+        if (activity.getFormation().isPresent()) {
+            activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
+            lineUpService.updateOrAddLineUp(activityLineUp);
+        }
 
-        // LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, , );
+        if (playerAndPositions != null) {
+            List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
+            System.out.println("positions and players " + positionsAndPlayers);
 
-        lineUpRepository.save(activityLineUp);
+            for (String positionPlayer : positionsAndPlayers) {
+                if (Objects.equals(Arrays.stream(positionPlayer.split(" ")).toList().get(1), "X")) {
+                    System.out.println("No player was set at the position " + Arrays.stream(positionPlayer.split(" ")).toList().get(0));
+                    //TODO Throw bindingResult error here as not all positions were filled with a player
+                } else {
+                    System.out.println("Valid player so creating line up position object now..");
+                    User player = userService.findUserById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).get();
+                    int position = Integer.parseInt(Arrays.stream(positionPlayer.split(" ")).toList().get(0));
+                    LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, player, position);
+                    lineUpPositionRepository.save(lineUpPosition);
+                }
+            }
+
+        }
+
 
         return String.format("redirect:./view-activity?activityID=%s", activity.getId());
     }

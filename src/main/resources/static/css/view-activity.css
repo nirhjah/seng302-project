@@ -1,37 +1,6 @@
-.team-profile-form .wrapper-profile {
-    height: 430px;
-    width: 900px;
-}
-
-.wrapper-profile .team-info {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    justify-content: flex-start;
-    align-items: center;
-    padding-top: 5%;
-    left: 10%;
-    transition: 0.5s;
-}
-
-.details {
-    float: right;
-    /*
-    margin-right: 20%;
-    */
-    margin-top: 2%;
-    font-family: "Noto Sans", sans-serif;
-    font-weight: 600;
-    font-size: 22px;
-    color: #1B263B;
-    width: 344px;
-}
-
 .activity-type {
     display: inline-block;
 }
-
-
 
 
 /* width is ~ current width / 90 * 100 */
@@ -58,9 +27,284 @@
         position: static !important;
         padding-top: 0 !important;
     }
+}
 
+.activity-score {
+    width: 50%;
+    margin-left: 15%;
+    text-align: center;
+}
+
+.act-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.act-game-friendly, .act-info{
+    display: grid;
+    gap: 25px;
+    padding: 50px 50px 0;
+}
+
+.act-info {
+    grid-template-columns: 420px 400px 400px;
+}
+
+.act-game-friendly {
+    grid-template-columns: 600px 400px;
+}
+.act-details,.act-facts,
+.act-game-friendly > div {
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+    border-radius: 20px;
+    position: relative;
+    flex: 1;
+}
+
+.act-details,
+.act-facts,
+.act-lineup,
+.act-subs {
+    height: 280px;
+    display: flex;
+}
+.act-subs{
+    grid-row: span 2;
+    top:35px;
+}
+.nested-grid {
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.act-date-time .start-date-time,.act-date-time .end-date-time{
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+    border-radius: 20px;
+    background:#415A77;
+    color:white;
+}
+
+.act-score{
+    display: grid;
+    grid-template-columns: 400px;
+    grid-gap: 5px;
+    background:whitesmoke;
+    height:100px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+    border-radius: 20px;
+    text-align:center;
 
 }
+.act-date-time {
+    grid-gap:35px;
+    padding-top:10px;
+    display: grid;
+    grid-template-columns: 180px 180px;
+    height:120px;
+}
+
+.start-date-time, .end-date-time{
+    display: block;
+    margin-top: 5px;
+    text-align:center;
+    font-family:sans-serif;
+}
+
+.start-date-time .date, .end-date-time .date{
+    font-size:28px;
+}
+
+.start-date-time .time, .end-date-time .time{
+    color:rgba(255,255,255,.8);
+}
+
+
+.act-date-time h4{
+    text-align:center;
+    padding-top:10px;
+    color: rgba(255,255,255,.4);
+    font-size:18px;
+}
+
+.act-details{
+    background:#415A77;
+    color:white;
+}
+.act-details h3,
+.act-details h4 {
+    margin: 10px 0;
+}
+
+.act-details h3{
+    text-align:center;
+    padding-top:15px;
+    font-size:23px;
+}
+
+.act-details h4{
+    padding-left:28px;
+    font-size:19px;
+}
+
+.edit-act-button{
+    cursor:pointer;
+    position:absolute;
+    bottom:20px;
+    right:30px;
+}
+
+.edit-act-button button{
+    width:120px;
+    height:23px;
+    border-radius: 30px;
+    font-size:15px;
+    display: flex;
+    align-items: center;
+    border:none;
+    background:rgba(255,255,255,.6);
+    color:#555;
+    cursor:pointer;
+
+}
+
+.edit-act-button button img{
+    height:18px;
+    margin: 0 5px;
+}
+.edit-act-button button span{
+    line-height:1.2;
+}
+
+.act-facts, .act-subs,.act-lineup{
+    background:whitesmoke;
+    color:#1B263B;
+}
+
+
+.act-facts .facts-table ul, .act-subs .subs-table ul{
+    position:absolute;
+    width:90%;
+    margin:15px 17px 0;
+    padding: 10px;
+    box-sizing: border-box;
+    background:rgba(0,0,0,.1);
+    box-shadow:inset 0 0 15px rgba(0,0,0,.2);
+    overflow-x: hidden;
+    overflow-y: scroll;
+    height:200px;
+}
+
+.act-facts .facts-table ul li, .act-subs .subs-table ul li{
+    display:flex;
+    background: rgba(255,255,255,.1);
+    padding:10px 20px;
+    color:#1b263b;
+    margin:5px 0;
+    transition: .5s;
+    align-items:center;
+}
+
+.act-facts .facts-table ul li:nth-child(1), .act-subs .subs-table ul li:nth-child(1){
+    background: rgba(255,255,255,.6);
+}
+
+.act-facts .facts-table ul li:nth-child(2),.act-subs .subs-table ul li:nth-child(2){
+    background: rgba(255,255,255,.4);
+}
+
+.act-facts .facts-table ul li:nth-child(3),.act-subs .subs-table ul li:nth-child(3){
+    background: rgba(255,255,255,.3);
+}
+
+.act-facts .facts-table ul li span:nth-child(1){
+    width: 300px;
+}
+
+.act-facts .facts-table ul li span:nth-child(2){
+    width: 100px;
+}
+
+.act-facts h4,.act-subs h4{
+    padding-top:15px;
+    text-align:center;
+    font-size:17px;
+    color:#1b263b;
+}
+
+.subs-table .sub-pic img{
+    height:35px;
+}
+
+.act-subs .subs-table ul li span:nth-child(1){
+    width: 100px;
+}
+
+.act-subs .subs-table ul li span:nth-child(2){
+    width: 300px;
+}
+
+.act-subs .subs-table ul li span:nth-child(3){
+    width: 100px;
+}
+
+.act-score .team-names{
+    padding-top:10px;
+}
+
+.act-score .score{
+    font-family:sans-serif;
+}
+
+.act-score .team-names span{
+    padding-right:25px;
+    font-size:18px;
+    color:#415A77;
+}
+
+.act-score .score span{
+    font-size:30px;
+    padding-right:25px;
+}
+
+.act-lineup{
+    grid-row: span 2;
+    height:350px !important;
+    align-items: center;
+    justify-items: center;
+}
+
+.act-lineup h3{
+    padding-top:15px;
+    padding-left:15px;
+    text-align: left;
+    align-self: start;
+}
+
+.act-lineup #pitch{
+    transform: rotate(90deg);
+    height: 400px;
+    width: 320px;
+    bottom:50px;
+}
+
+.act-lineup .player{
+    transform: rotate(270deg);
+}
+
+
+
+
+
+
+
+
+
 
 
 
