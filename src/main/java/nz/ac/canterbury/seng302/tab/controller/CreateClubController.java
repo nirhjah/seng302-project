@@ -22,10 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Spring Boot Controller class for the Create Club Form
@@ -168,7 +165,7 @@ public class CreateClubController {
             editClub.setName(name);
             editClub.setLocation(location);
 
-            if (clubLogo.getOriginalFilename()==""){
+            if (Objects.equals(clubLogo.getOriginalFilename(), "")){
                 editClub.setClubLogo(clubService.setDefaultLogo());
             }
             else{
@@ -182,7 +179,7 @@ public class CreateClubController {
         } else {
             User manager = optUser.get(); // manager is the current user
             Club club;
-            if (clubLogo.getOriginalFilename()==""){
+            if (Objects.equals(clubLogo.getOriginalFilename(), "")){
                 club= new Club(name, location, sport, manager,clubService.setDefaultLogo());
             }
             else {

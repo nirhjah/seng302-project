@@ -32,7 +32,7 @@ public class Club {
     @ManyToOne
     private User manager;
 
-    protected Club() throws IOException {
+    protected Club() {
     }
 
     public Club(String name, Location location, String sport, User manager) throws IOException {
@@ -46,7 +46,7 @@ public class Club {
         this.clubLogo = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
 
-    public Club(String name, Location location, String sport, User manager, String clubLogo) throws IOException {
+    public Club(String name, Location location, String sport, User manager, String clubLogo) {
         this.name = name;
         this.location = location;
         this.sport = sport;
