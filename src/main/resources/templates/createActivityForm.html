@@ -119,7 +119,6 @@
                     <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="error-message"></div>
                 </div>
 
-
                 <div class="input-box">
                     <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
                            data-cy="location" autofocus placeholder="" th:value="${addressLine2}"
@@ -316,7 +315,6 @@
         axios.get("createActivity/get_team_formation", {params: {teamId: currentTeamId}})
             .then(response => {
                 const formationList = response.data;
-                console.log(formationList);
                 if (formationList.length == 0) {
                     populateFormationDropdown(false, "(team has no formations)", {});
                 } else {
@@ -350,7 +348,47 @@
             option.setAttribute("data-custom", formation.custom);
             option.addEventListener("click", onFormationOptionClick);
             formationDropdown.appendChild(option);
+            if (i==0) {
+                populateReserves(formation);
+            }
         }
+    }
+
+    function populateReserves(players) {
+        const playerReserveList = document.querySelector(".reserves-ul");
+        while (playerReserveList.firstChild) {
+            playerReserveList.removeChild(playerReserveList.lastChild);
+        }
+        players.forEach(player => {
+            console.log("here")
+            const playerLi = document.createElement("li");
+            playerLi.className = "reserves-li";
+            playerReserveList.append(playerLi);
+
+            const liPlayerImage = document.createElement("img");
+            liPlayerImage.className = "li-player-image";
+            liPlayerImage.src = "ata:image/jpeg;base64," + player.pictureString;
+            liPlayerImage.alt = "My Profile";
+            playerLi.append(liPlayerImage);
+
+            const liPlayerName = document.createElement("span");
+            liPlayerName.className = "li-player-name";
+            liPlayerName.text = player.firstName;
+            playerLi.append(liPlayerName);
+
+            const button = document.createElement("button");
+            button.className = "switch";
+            button.type = "button";
+            playerLi.append(button);
+
+            const playerId = document.createElement("input");
+            playerId.className = "playerId"
+            playerId.type = "hidden";
+            playerId.value = player.playerID;
+            playerLi.append(playerId);
+
+            playerOnClick(playerLi);
+        });
     }
 
     updateFormationList();
@@ -362,7 +400,6 @@
         const formation = event.target.textContent;
         const custom = event.target.getAttribute("data-custom")
         const customPlayerPositions = event.target.getAttribute("data-custom-positions");
-        console.log(formationId, formation, custom, customPlayerPositions)
         if (formationId == -1) {
             document.querySelector(".formation-activity-display").classList.remove("active");
         } else {
@@ -371,7 +408,7 @@
         }
     }
 
-        const playersSubs = document.querySelectorAll(".subs-li");
+    const playersSubs = document.querySelectorAll(".subs-li");
     const playersReserves = document.querySelectorAll(".reserves-li");
     const positions = pitch.childNodes;
     playersSubs.forEach((player) => {
@@ -380,6 +417,7 @@
     playersReserves.forEach((player) => {
         playerOnClick(player);
     });
+
 
     // Adds functionality for selecting a player from the reserves
     function playerOnClick(player) {
@@ -435,7 +473,6 @@
                 const positionPlayerId = position.querySelector("input").value;
                 const players = document.querySelectorAll(".reserves-li");
                 players.forEach(player => {
-                    console.log()
                     const playerId = player.querySelector("input").value;
                     if (playerId === positionPlayerId) {
                         player.classList.remove("in-formation");
@@ -456,9 +493,7 @@
     }
 
     const subsUl = document.querySelector(".subs-ul");
-    const subsLi = document.querySelectorAll(".subs-li");
     const subsHeader = document.querySelector(".subs-header");
-    const reservesLi = document.querySelectorAll(".reserves-li");
 
     // Checks to see if the subs list can be activated whenever all the positions on the pitch are filled
     function checkSubsActive() {
@@ -481,11 +516,11 @@
     function activateSubs() {
         subsUl.classList.add("active");
         subsHeader.classList.add("active");
-        subsLi.forEach(li => {
+        playersSubs.forEach(li => {
             const switchButton = li.querySelector(".switch")
             switchButton.classList.add("active");
         })
-        reservesLi.forEach(li => {
+        playersReserves.forEach(li => {
             const switchButton = li.querySelector(".switch")
             switchButton.classList.add("active");
         })
@@ -495,11 +530,11 @@
     function deactivateSubs() {
         subsUl.classList.remove("active");
         subsHeader.classList.remove("active");
-        subsLi.forEach(li => {
+        playersSubs.forEach(li => {
             const switchButton = li.querySelector(".switch")
             switchButton.classList.remove("active");
         })
-        reservesLi.forEach(li => {
+        playersReserves.forEach(li => {
             const switchButton = li.querySelector(".switch")
             switchButton.classList.remove("active");
         })
@@ -536,7 +571,6 @@
                 for (let i = 0; i < positions.length; i++) {
                         const position = positions.item(i);
                        // console.log(position.querySelector("input").value);
-                            console.log(position.querySelector("input").value + "value")
 
                         if (position.querySelector("input").value != "") {
                                 playersAndPositions = playersAndPositions + position.id.replace("player", "") + " " + position.querySelector("input").value  + ", "
@@ -545,7 +579,6 @@
                                 playersAndPositions = playersAndPositions + position.id.replace("player", "") + " " + "X"  + ", "
                                 }
                     }
-                console.log(playersAndPositions)
                 document.getElementById("playerAndPositions").setAttribute("value", playersAndPositions)
             }
 
