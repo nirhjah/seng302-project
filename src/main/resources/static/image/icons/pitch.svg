@@ -1,10 +1,10 @@
-<svg width="544" height="717" viewBox="0 0 544 717" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="544" height="717" fill="#5DBB63"/>
-<rect x="106.5" y="548.5" width="330" height="138" stroke="white" stroke-width="5"/>
-<rect x="36.5" y="25.5" width="471" height="661" stroke="white" stroke-width="5"/>
-<line x1="37" y1="353.5" x2="510" y2="353.5" stroke="white" stroke-width="5"/>
-<rect x="177.5" y="25.5" width="191" height="63" stroke="white" stroke-width="5"/>
-<rect x="177.5" y="623.5" width="191" height="63" stroke="white" stroke-width="5"/>
-<rect x="106.5" y="26.5" width="330" height="138" stroke="white" stroke-width="5"/>
-<circle cx="272" cy="356" r="67.5" stroke="white" stroke-width="5"/>
+<svg width="560" height="700" viewBox="0 0 560 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="560" height="700" fill="#5DBB63"/>
+<rect x="109.559" y="535.554" width="339.853" height="134.609" stroke="white" stroke-width="5"/>
+<rect x="37.5" y="24.9547" width="485" height="645.209" stroke="white" stroke-width="5"/>
+<line x1="38.0882" y1="345.059" x2="525" y2="345.059" stroke="white" stroke-width="5"/>
+<rect x="182.647" y="24.9547" width="196.765" height="61.3877" stroke="white" stroke-width="5"/>
+<rect x="182.647" y="608.776" width="196.765" height="61.3877" stroke="white" stroke-width="5"/>
+<rect x="109.559" y="25.9309" width="339.853" height="134.609" stroke="white" stroke-width="5"/>
+<path d="M349.559 347.559C349.559 383.799 318.543 413.4 280 413.4C241.457 413.4 210.441 383.799 210.441 347.559C210.441 311.32 241.457 281.719 280 281.719C318.543 281.719 349.559 311.32 349.559 347.559Z" stroke="white" stroke-width="5"/>
 </svg>
