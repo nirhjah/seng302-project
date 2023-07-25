@@ -45,24 +45,6 @@ public class CreateClubController {
         this.teamService = teamService;
     }
 
-    public void updateClubLogo(Club club, MultipartFile file) throws IOException {
-        Optional<User> optUser = userService.getCurrentUser();
-        if (optUser.isEmpty()) {
-            return;
-        }
-
-        User user = optUser.get();
-
-        if (!club.isManagedBy(user)) {
-            // club isn't managed by current user! return.
-            return;
-        }
-
-        String data = Base64.getEncoder().encodeToString(file.getBytes());
-        club.setClubLogo(data);
-    }
-
-
     /**
      * Gets club form
      * @param clubId  if editing, get club through clubId

@@ -3,7 +3,6 @@ package nz.ac.canterbury.seng302.tab.unit.service;
 import nz.ac.canterbury.seng302.tab.entity.Club;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
@@ -385,5 +384,19 @@ public class TeamServiceTest {
         Team team = new Team("Test", SPORT);
         team.setTeamClub(club);
         assertEquals(team.getTeamClub(), club);
+    }
+
+    @Test
+    public void testGetClubId() throws IOException {
+        Location location = new Location("address1", "address2", "suburb", "chch", "8052", "new zealand");
+        Club club = new Club("Real Madrid", location, "Soccer",null);
+        clubService.updateOrAddClub(club);
+
+        Team team = new Team("Test", "Soccer");
+        team.setTeamClub(club);
+
+        Assertions.assertEquals(club.getClubId(), teamService.getTeamClubId(team));
+
+
     }
 }

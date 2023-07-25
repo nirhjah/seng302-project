@@ -2,17 +2,18 @@ package nz.ac.canterbury.seng302.tab.unit.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Club;
 import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.ClubService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStream;
+import java.util.Base64;
 
 @DataJpaTest
 @Import(ClubService.class)
@@ -36,5 +37,18 @@ public class ClubServiceTest {
         Club club = new Club("Rugby Club", location, "Rugby",null);
         clubService.updateOrAddClub(club);
         Assertions.assertEquals(clubService.findAll().size(), 1);
+    }
+
+    @Test
+    public void testSetDefaultLogo() throws IOException {
+        Club club = new Club("Rugby Club", location, "Rugby",null);
+        clubService.setDefaultLogo();
+        Assertions.assertNotNull(club.getClubLogo());
+
+        Resource resource = new ClassPathResource("/static/image/default-club-logo.png");
+        InputStream is = resource.getInputStream();
+        String expectByteLogo= Base64.getEncoder().encodeToString(is.readAllBytes());
+
+        Assertions.assertEquals(expectByteLogo,club.getClubLogo());
     }
 }
