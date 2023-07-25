@@ -1,121 +1,187 @@
+<!--<header th:fragment="navbar">-->
+<!--    <link th:href="@{/css/navbar.css}" rel="stylesheet">-->
+<!--    <div class="header-left">-->
+<!--        <div class="hamburger">-->
+<!--            <div class="line"></div>-->
+<!--            <div class="line"></div>-->
+<!--            <div class="line"></div>-->
+<!--        </div>-->
+<!--        <nav class="nav-bar">-->
+<!--            <ul>-->
+<!--                <li>-->
+<!--                    <a th:href="@{home}" th:classappend="${httpServletRequest.requestURI == '/home' ? 'active' : ''}">Home</a>-->
+<!--                </li>-->
+
+<!--                <div class="create-header">-->
+<!--                    <li class="navbar-create-button" sec:authorize="isAuthenticated()">-->
+<!--                        <div class="navbar-create-dropdown">-->
+<!--                            <a th:href="@{createTeam}">Create Team</a>-->
+<!--                            <a th:href="@{createActivity}">Create Activity</a>-->
+<!--                            <a th:href="@{createClub}">Create Club</a>-->
+<!--                        </div>-->
+<!--                        <a>-->
+<!--                            <span th:text="Create"></span>-->
+<!--                            <i class="triangle"></i>-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                </div>-->
+
+<!--                <li sec:authorize="isAnonymous()">-->
+<!--                    <a th:href="@{login}" th:classappend="${httpServletRequest.requestURI == '/login' ? 'active' : ''}">Login</a>-->
+<!--                </li>-->
+<!--                <li sec:authorize="isAnonymous()">-->
+<!--                    <a th:href="@{register}" th:classappend="${httpServletRequest.requestURI == '/register' ? 'active' : ''}">Register</a>-->
+<!--                </li>-->
+<!--                <li sec:authorize="isAuthenticated()">-->
+<!--                    <a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a>-->
+<!--                </li>-->
+<!--                <li sec:authorize="isAuthenticated()">-->
+<!--                    <a th:href="@{view-users(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>-->
+<!--                </li>-->
+
+<!--                <div sec:authorize="isAuthenticated()" class="view-profile">-->
+<!--                    View Profile:-->
+<!--                    <select class="form-control" id="dropDownList" name="teamSelector"-->
+<!--                            onchange="if(this.value != '-1') window.location.href = 'profile?teamID=' + this.value;">-->
+<!--                        <option value="-1" selected>Select a Team</option>-->
+<!--                        <option th:each="team : ${navTeams}"-->
+<!--                                th:value="${team.teamId}"-->
+<!--                                th:text="${team}"-->
+<!--                                th:selected="${team.teamId.equals(teamID)}"></option>-->
+<!--                    </select>-->
+<!--                </div>-->
+
+<!--            </ul>-->
+<!--        </nav>-->
+<!--    </div>-->
+
+<!--    <div class="header-right">-->
+<!--        <li class="navbar-user-button" sec:authorize="isAuthenticated()">-->
+<!--            <div class="navbar-user-dropdown">-->
+<!--                <a th:href="@{user-info/self}">Profile</a>-->
+<!--                <a th:href="@{my-teams}">My Teams</a>-->
+<!--                <a th:href="@{view-activities(page=1)}">My Activities</a>-->
+<!--                <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>-->
+<!--            </div>-->
+<!--            <a>-->
+<!--                <img class="navbar-profile-picture"-->
+<!--                     th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>-->
+<!--                <span th:text="${#strings.length(firstName + ' ' + lastName) &lt;= 24 ? firstName + ' ' + lastName : #strings.substring(firstName + ' ' + lastName, 0, 21) + '...'}"></span>-->
+<!--                <i class="triangle"></i>-->
+<!--            </a>-->
+<!--        </li>-->
+<!--        <form id="logoutForm" th:action="@{logout}" method="POST"></form>-->
+<!--    </div>-->
+<!--    <script>-->
+<!--        let hamburger = document.querySelector(".hamburger")-->
+<!--        hamburger.onclick = function () {-->
+<!--            navBar = document.querySelector(".nav-bar");-->
+<!--            navBar.classList.toggle("active");-->
+<!--        };-->
+
+<!--        let navbarUserButton = document.querySelector(".navbar-user-button");-->
+<!--        if (navbarUserButton !== null){-->
+<!--            let triangle = navbarUserButton.querySelector(".triangle");-->
+<!--            let navbarUserDropdown = navbarUserButton.querySelector(".navbar-user-dropdown");-->
+<!--            navbarUserButton.addEventListener("click", function (event) {-->
+<!--                event.stopPropagation();-->
+<!--                navbarUserDropdown.classList.toggle("show");-->
+<!--                triangle.classList.toggle("up");-->
+<!--            });-->
+
+<!--            document.addEventListener("click", function (event) {-->
+<!--                if (!navbarUserButton.contains(event.target)) {-->
+<!--                    navbarUserDropdown.classList.remove("show");-->
+<!--                    triangle.classList.remove("up");-->
+<!--                }-->
+<!--            });-->
+<!--        }-->
+
+
+<!--        let navbarCreateButton = document.querySelector(".navbar-create-button");-->
+<!--        if (navbarCreateButton !== null){-->
+<!--            let triangle = navbarCreateButton.querySelector(".triangle");-->
+<!--            let navbarCreateDropdown = navbarCreateButton.querySelector(".navbar-create-dropdown");-->
+<!--            navbarCreateButton.addEventListener("click", function (event_create) {-->
+<!--                event_create.stopPropagation();-->
+<!--                navbarCreateDropdown.classList.toggle("show");-->
+<!--                triangle.classList.toggle("up");-->
+<!--            });-->
+
+<!--             document.addEventListener("click", function (event) {-->
+<!--                 if (!navbarCreateButton.contains(event.target)) {-->
+<!--                     navbarCreateDropdown.classList.remove("show");-->
+<!--                     triangle.classList.remove("up");-->
+<!--                 }-->
+<!--             });-->
+<!--        }-->
+
+<!--    </script>-->
+<!--</header>-->
+
 <header th:fragment="navbar">
     <link th:href="@{/css/navbar.css}" rel="stylesheet">
-    <link th:href="@{/css/preloader.css}" rel="stylesheet">
-    <div class="header-left">
-        <div class="hamburger">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-        </div>
-        <nav class="nav-bar">
-            <ul>
-                <li>
-                    <a th:href="@{home}" th:classappend="${httpServletRequest.requestURI == '/home' ? 'active' : ''}">Home</a>
-                </li>
+    <nav>
+<!--        this is a skeleton, the user dropdown should be placed here-->
+        <div class="user-dropdown">User DropDown</div>
+        <label for="btn" class="hamburger">
+            <span><img th:src="@{/image/icons/hamburger.svg}"/></span>
+        </label>
+        <input type="checkbox" id="btn">
+        <ul>
+            <li><a th:href="@{home}">Home</a></li>
 
-                <div class="create-header">
-                    <li class="navbar-create-button" sec:authorize="isAuthenticated()">
-                        <div class="navbar-create-dropdown">
-                            <a th:href="@{createTeam}">Create Team</a>
-                            <a th:href="@{createActivity}">Create Activity</a>
-                            <a th:href="@{createClub}">Create Club</a>
-                        </div>
-                        <a>
-                            <span th:text="Create"></span>
-                            <i class="triangle"></i>
-                        </a>
-                    </li>
-                </div>
+            <li sec:authorize="isAnonymous()">
+                <a th:href="@{login}">Login</a>
+            </li>
+            <li sec:authorize="isAnonymous()">
+                <a th:href="@{register}">Register</a>
+            </li>
 
-                <li sec:authorize="isAnonymous()">
-                    <a th:href="@{login}" th:classappend="${httpServletRequest.requestURI == '/login' ? 'active' : ''}">Login</a>
-                </li>
-                <li sec:authorize="isAnonymous()">
-                    <a th:href="@{register}" th:classappend="${httpServletRequest.requestURI == '/register' ? 'active' : ''}">Register</a>
-                </li>
-                <li sec:authorize="isAuthenticated()">
-                    <a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a>
-                </li>
-                <li sec:authorize="isAuthenticated()">
-                    <a th:href="@{view-users(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
-                </li>
+            <li sec:authorize="isAuthenticated()">
+                <a th:href="@{view-teams(page=1)}">View All Teams</a>
+            </li>
+            <li sec:authorize="isAuthenticated()">
+                <a th:href="@{view-users(page=1)}">View All Users</a>
+            </li>
+            <li sec:authorize="isAuthenticated()" class="create-dropdown">
+                <label for="btn-1" class="show">Create +</label>
+                <a href="">Create +</a>
+                <input type="checkbox" id="btn-1">
+                <ul>
+                    <li><a th:href="@{createActivity}">Activity</a></li>
+                    <li><a th:href="@{createClub}">Club</a></li>
+                    <li><a th:href="@{createTeam}">Team</a></li>
+                </ul>
+            </li>
 
-                <div sec:authorize="isAuthenticated()" class="view-profile">
-                    View Profile:
-                    <select class="form-control" id="dropDownList" name="teamSelector"
-                            onchange="if(this.value != '-1') window.location.href = 'profile?teamID=' + this.value;">
-                        <option value="-1" selected>Select a Team</option>
-                        <option th:each="team : ${navTeams}"
-                                th:value="${team.teamId}"
-                                th:text="${team}"
-                                th:selected="${team.teamId.equals(teamID)}"></option>
-                    </select>
-                </div>
-
-            </ul>
-        </nav>
-    </div>
-
-    <div class="header-right">
-        <li class="navbar-user-button" sec:authorize="isAuthenticated()">
-            <div class="navbar-user-dropdown">
-                <a th:href="@{user-info/self}">Profile</a>
-                <a th:href="@{my-teams}">My Teams</a>
-                <a th:href="@{view-activities(page=1)}">My Activities</a>
-                <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
+            <div sec:authorize="isAuthenticated()" class="view-profile">
+                View Profile:
+                <select class="form-control" id="dropDownList" name="teamSelector"
+                        onchange="if(this.value != '-1') window.location.href = 'profile?teamID=' + this.value;">
+                    <option value="-1" selected>Select a Team</option>
+                    <option th:each="team : ${navTeams}"
+                            th:value="${team.teamId}"
+                            th:text="${team}"
+                            th:selected="${team.teamId.equals(teamID)}"></option>
+                </select>
             </div>
-            <a>
-                <img class="navbar-profile-picture"
-                     th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
-                <span th:text="${#strings.length(firstName + ' ' + lastName) &lt;= 24 ? firstName + ' ' + lastName : #strings.substring(firstName + ' ' + lastName, 0, 21) + '...'}"></span>
-                <i class="triangle"></i>
-            </a>
-        </li>
-        <form id="logoutForm" th:action="@{logout}" method="POST"></form>
-    </div>
-    <script>
-        let hamburger = document.querySelector(".hamburger")
-        hamburger.onclick = function () {
-            navBar = document.querySelector(".nav-bar");
-            navBar.classList.toggle("active");
-        };
 
-        let navbarUserButton = document.querySelector(".navbar-user-button");
-        if (navbarUserButton !== null){
-            let triangle = navbarUserButton.querySelector(".triangle");
-            let navbarUserDropdown = navbarUserButton.querySelector(".navbar-user-dropdown");
-            navbarUserButton.addEventListener("click", function (event) {
-                event.stopPropagation();
-                navbarUserDropdown.classList.toggle("show");
-                triangle.classList.toggle("up");
-            });
+<!--            <li class="navbar-user-button" sec:authorize="isAuthenticated()">-->
+<!--                <div class="navbar-user-dropdown">-->
+<!--                    <a th:href="@{user-info/self}">Profile</a>-->
+<!--                    <a th:href="@{my-teams}">My Teams</a>-->
+<!--                    <a th:href="@{view-activities(page=1)}">My Activities</a>-->
+<!--                    <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>-->
+<!--                </div>-->
+<!--                <a>-->
+<!--                    <img class="navbar-profile-picture"-->
+<!--                         th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>-->
+<!--                    <span th:text="${#strings.length(firstName + ' ' + lastName) &lt;= 24 ? firstName + ' ' + lastName : #strings.substring(firstName + ' ' + lastName, 0, 21) + '...'}"></span>-->
+<!--                    <i class="triangle"></i>-->
+<!--                </a>-->
+<!--            </li>-->
+        </ul>
+    </nav>
 
-            document.addEventListener("click", function (event) {
-                if (!navbarUserButton.contains(event.target)) {
-                    navbarUserDropdown.classList.remove("show");
-                    triangle.classList.remove("up");
-                }
-            });
-        }
-
-
-        let navbarCreateButton = document.querySelector(".navbar-create-button");
-        if (navbarCreateButton !== null){
-            let triangle = navbarCreateButton.querySelector(".triangle");
-            let navbarCreateDropdown = navbarCreateButton.querySelector(".navbar-create-dropdown");
-            navbarCreateButton.addEventListener("click", function (event_create) {
-                event_create.stopPropagation();
-                navbarCreateDropdown.classList.toggle("show");
-                triangle.classList.toggle("up");
-            });
-
-             document.addEventListener("click", function (event) {
-                 if (!navbarCreateButton.contains(event.target)) {
-                     navbarCreateDropdown.classList.remove("show");
-                     triangle.classList.remove("up");
-                 }
-             });
-        }
-
-    </script>
 </header>
