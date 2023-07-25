@@ -72,11 +72,17 @@
                 </div>
                 <div class="profile-buttons">
                     <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
-                    <div th:if="${canEdit}" class="edit-button">
+                    <div th:if="${canEdit}" class="edit-button" style="float: right; padding: 10px">
                         <a th:href="@{editUser}">
                             <button type="button">Edit Profile</button>
                         </a>
                     </div>
+                    <div th:if="${canEdit}" class="edit-button" style="float: right; padding: 10px">
+                        <a th:href="@{myStats}">
+                            <button type="button">View My Stats</button>
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>

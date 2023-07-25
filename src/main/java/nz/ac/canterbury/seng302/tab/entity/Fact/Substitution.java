@@ -32,4 +32,13 @@ public class Substitution extends Fact{
         this.playerOff = playerOff;
         this.playerOn = playerOn;
     }
+
+
+    public User getPlayerOff() {
+        return playerOff;
+    }
+
+    public User getPlayerOn() {
+        return playerOn;
+    }
 }

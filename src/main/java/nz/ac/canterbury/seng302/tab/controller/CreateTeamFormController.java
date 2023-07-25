@@ -46,8 +46,6 @@ public class CreateTeamFormController {
     /**
      * Gets createTeamForm to be displayed and contains name, sport,
      * location and teamID model attributes to be added to html.
-     *
-     * @return thymeleaf createTeamForm
      */
     public void prefillModel(Model model) {
         model.addAttribute("postcodeRegex", TeamFormValidators.VALID_POSTCODE_REGEX);
@@ -160,9 +158,9 @@ public class CreateTeamFormController {
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            model.addAttribute("teamID", teamID);
             logger.info("bad request");
             return "createTeamForm";
-            //return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
         }
 
 

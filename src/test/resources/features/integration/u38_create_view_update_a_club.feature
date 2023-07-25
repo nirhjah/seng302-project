@@ -51,3 +51,8 @@
 ##    Given I am on the teams search form,
 ##    When the search string contains the name of the club,
 ##    Then the teams belonging to that club is shown in the list of results.
+
+    Scenario: AC9: When creating a club, I must specify a name, sport (PO APPROVED) and a location, i.e. address line 1, address line 2, suburb, postcode, city, and country, with address line 1, postcode, city and country being compulsory. I can add an optional logo. If none given, a generic club image is used.
+      Given I am on the create club page
+      When I enter an empty club sport or a sport with invalid characters (i.e. any non-letters except spaces, apostrophes and dashes)
+      Then An error message tells me the sport is invalid

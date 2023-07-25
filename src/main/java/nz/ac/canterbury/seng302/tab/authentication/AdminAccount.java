@@ -1,7 +1,8 @@
 package nz.ac.canterbury.seng302.tab.authentication;
 
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.entity.*;
+import nz.ac.canterbury.seng302.tab.repository.FormationRepository;
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -35,9 +36,10 @@ public class AdminAccount implements CommandLineRunner {
 
         Location location = new Location("admin", "admin", "admin", "admin", "admin", "admin");
 
-        User admin = new User("Admin", "Admin", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
-                EMAIL, passwordEncoder.encode(ADMIN_PW), location);
+        User admin = new User("Admin", "Admin", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), EMAIL, passwordEncoder.encode(ADMIN_PW), location);
+
         admin.confirmEmail();
         userRepository.save(admin);
+
     }
 }
