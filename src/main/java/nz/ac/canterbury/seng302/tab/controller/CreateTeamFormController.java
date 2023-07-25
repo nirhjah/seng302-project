@@ -165,7 +165,7 @@ public class CreateTeamFormController {
             URL url = new URL(httpServletRequest.getRequestURL().toString());
             String path = (url.getPath() + "/..");
             model.addAttribute("path", path);
-            return "createTeam";
+            return "createTeamForm";
         }
 
         Location location = new Location(trimmedAddressLine1, trimmedAddressLine2, trimmedSuburb, trimmedCity,
