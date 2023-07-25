@@ -18,6 +18,7 @@ Required variables: formationEditable, true if you want the formation to be edit
       if (custom) {
         renderPlayersCustom(customPlayerPositions)
       } else {
+        console.log("not-custom")
         renderPlayers(formation)
       }
     }
@@ -176,6 +177,7 @@ Required variables: formationEditable, true if you want the formation to be edit
         const newLeft = player.offsetLeft - pos1;
 
         // restrict the player's movement within the pitch
+        console.log(player.offsetWidth, player.offsetHeight, pitch.offsetHeight, pitch.offsetWidth);
         const minTop = 0;
         const minLeft = 0;
         const maxTop = pitch.offsetHeight - player.offsetHeight;
@@ -190,7 +192,6 @@ Required variables: formationEditable, true if you want the formation to be edit
                 : Math.max(minLeft, newLeft);
         // set the element's new position:
         player.style.top = constrainedTop + "px";
-        player.style.bottom = pitch.offsetHeight - constrainedTop - player.offsetHeight + "px";
         player.style.left = constrainedLeft + "px";
       }
 

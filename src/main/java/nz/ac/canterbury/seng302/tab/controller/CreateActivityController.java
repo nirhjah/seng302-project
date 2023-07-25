@@ -4,12 +4,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.*;
 import java.util.stream.Collectors;
 
+import nz.ac.canterbury.seng302.tab.api.response.FormationInfo;
+import nz.ac.canterbury.seng302.tab.api.response.PlayerFormationInfo;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.repository.LineUpPositionRepository;
@@ -103,7 +105,6 @@ public class CreateActivityController {
             model.addAttribute("teamFormations", formationService.getTeamsFormations(activity.getTeam().getTeamId()));
             model.addAttribute("selectedFormation", activity.getFormation().orElse(null));
             model.addAttribute("players", activity.getTeam().getTeamMembers());
-            logger.info(activity.getTeam().getTeamMembers().toString());
         }
         model.addAttribute("actId", activity.getId());
         model.addAttribute("startDateTime",formattedStartDateTime);
@@ -325,7 +326,7 @@ public class CreateActivityController {
      * @return A json object of type <code>{formationId: "formationString", ...}</code>
      */
     @GetMapping(path = "/createActivity/get_team_formation", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<Long, String>> getTeamFormation(@RequestParam("teamId") long teamId) {
+    public ResponseEntity<List<FormationInfo>> getTeamFormation(@RequestParam("teamId") long teamId) {
         logger.info("GET /createActivity/get_team_formation");
         // CHECK: Are we logged in?
         Optional<User> oCurrentUser = userService.getCurrentUser();
@@ -344,9 +345,22 @@ public class CreateActivityController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        // Return a JSON object of (id -> string)
-        Map<Long, String> formations = formationService.getTeamsFormations(teamId).stream()
-                    .collect(Collectors.toMap(Formation::getFormationId, Formation::getFormation));
+        // Return a JSON object of type FormationInfo
+        List<FormationInfo> formations = formationService.getTeamsFormations(teamId).stream()
+                .map(formation -> {
+                    List<PlayerFormationInfo> players = team.getTeamMembers().stream()
+                            .map(player -> new PlayerFormationInfo(player.getFirstName(), player.getPictureString()))
+                            .collect(Collectors.toList());
+
+                    return new FormationInfo(
+                            formation.getFormationId(),
+                            formation.getFormation(),
+                            formation.getCustomPlayerPositions(),
+                            formation.isCustom(),
+                            players
+                    );
+                })
+                .collect(Collectors.toList());
 
         return ResponseEntity.ok().body(formations);
     }
