@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.repository.LineUpPositionRepository;
 import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
 import nz.ac.canterbury.seng302.tab.service.*;
 import org.mockito.Mockito;
@@ -63,6 +64,8 @@ public class U33EditLineupForGameFeature {
     private FormationService formationService;
     private LineUpService lineUpService;
 
+    private LineUpPositionRepository lineUpPositionRepository;
+
     private User user;
     private Team team;
     private Activity activity;
@@ -79,10 +82,11 @@ public class U33EditLineupForGameFeature {
         activityService = Mockito.spy(applicationContext.getBean(ActivityService.class));
         formationService = Mockito.spy(applicationContext.getBean(FormationService.class));
         lineUpService = Mockito.mock(LineUpService.class);
+        lineUpPositionRepository = Mockito.mock(LineUpPositionRepository.class);
 
         // create mockMvc manually with spied services
         var controller = new CreateActivityController(
-                teamService, userService, activityService, formationService, lineUpService
+                teamService, userService, activityService, formationService, lineUpService, lineUpPositionRepository
         );
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
