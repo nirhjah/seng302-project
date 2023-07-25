@@ -26,8 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,8 +50,6 @@ public class CreateTeamFormController {
     /**
      * Gets createTeamForm to be displayed and contains name, sport,
      * location and teamID model attributes to be added to html.
-     *
-     * @return thymeleaf createTeamForm
      */
     public void prefillModel(Model model) {
         model.addAttribute("postcodeRegex", TeamFormValidators.VALID_POSTCODE_REGEX);
@@ -168,7 +164,6 @@ public class CreateTeamFormController {
             model.addAttribute("teamID", teamID);
             logger.info("bad request");
             return "createTeamForm";
-            //return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
         }
 
 
