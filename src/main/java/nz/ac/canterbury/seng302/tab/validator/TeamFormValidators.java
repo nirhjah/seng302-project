@@ -19,7 +19,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public class TeamFormValidators {
 
     public static final String NOT_BLANK_MSG = "Field cannot be empty";
-    public static final String INVALID_CHARACTERS_MSG = "Field contains invalid values";
+    public static final String INVALID_CHARACTERS_MSG= "Field contains invalid values";
+    public static final String INVALID_CHARACTERS_MSG_TEAM_NAME = "Field contains invalid values \n Valid Values: Alphanumeric, dots, and curly brackets ";
     public static final String VALID_TEAM_NAME_REGEX = "[\\p{L}\\p{N}\\{\\}\\. ]*$";
     public static final String VALID_COUNTRY_SUBURB_CITY_REGEX = "[\\- '\\p{L}]*$";
     public static final String VALID_TEAM_SPORT_REGEX = "[\\- '\\p{L}]*$";

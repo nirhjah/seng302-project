@@ -62,6 +62,7 @@ public class CreateTeamFormController {
         model.addAttribute("addressRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
         model.addAttribute("countryCitySuburbNameRegex", TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
         model.addAttribute("countryCitySuburbNameRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
+        model.addAttribute("teamNameRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG_TEAM_NAME);
     }
 
     @PostMapping("/generateTeamToken")
