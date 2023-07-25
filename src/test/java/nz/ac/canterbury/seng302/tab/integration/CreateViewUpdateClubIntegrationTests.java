@@ -13,9 +13,7 @@ import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.ClubRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import nz.ac.canterbury.seng302.tab.service.ClubService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +67,15 @@ public class CreateViewUpdateClubIntegrationTests {
     @Autowired
     private TeamService teamService;
 
+    @Autowired
+    private ActivityService activityService;
+
+    @Autowired
+    private FactService factService;
+
+    @Autowired
+    private FormationService formationService;
+
     private ClubRepository clubRepository;
 
     private User user;
@@ -101,7 +108,7 @@ public class CreateViewUpdateClubIntegrationTests {
         clubService = Mockito.spy(new ClubService(clubRepository));
         teamService = Mockito.spy(new TeamService(teamRepository));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService), new ProfileFormController(userService,teamService), new ViewClubController(userService,teamService,clubService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService), new ProfileFormController(userService,teamService,activityService,factService,formationService), new ViewClubController(userService,teamService,clubService)).build();
 
 
         Authentication authentication = Mockito.mock(Authentication.class);

@@ -11,8 +11,6 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -97,6 +94,29 @@ public class CreateClubController {
     }
 
 
+    /**
+     * Handles the creation or editing of a club based on the provided form data.
+     * This method is invoked when a POST request is made to "/createClub" endpoint.
+     *
+     * @param clubId                The ID of the club being edited.
+     * @param name                  The name of the club.
+     * @param clubLogo              The logo image file of the club as a multipart file.
+     * @param addressLine1          The first line of the club's address.
+     * @param addressLine2          The second line of the club's address.
+     * @param city                  The city where the club is located.
+     * @param country               The country where the club is located.
+     * @param postcode              The postal code of the club's address.
+     * @param suburb                The suburb where the club is located.
+     * @param sport                 The sport associated with the club.
+     * @param selectedTeams         (Optional) A list of selected teams associated with the club.
+     * @param createAndEditClubForm The form object containing additional club-related data for validation.
+     * @param bindingResult         The result of data binding and validation for form object.
+     * @param httpServletResponse   The response object used for setting HTTP status codes.
+     * @param model                 The model object to hold attributes for the view.
+     * @param httpServletRequest    The request object to get additional information about the HTTP request.
+     * @return The view name to be displayed after the club creation/edit process.
+     * @throws IOException If an I/O error occurs during file handling.
+     */
     @PostMapping("/createClub")
     public String createClub(
             @RequestParam(name = "clubId", defaultValue = "-1") long clubId,
@@ -149,10 +169,7 @@ public class CreateClubController {
             editClub.setLocation(location);
 
             if (clubLogo.getOriginalFilename()==""){
-                logger.info("default");
-                Resource resource = new ClassPathResource("/static/image/default-club-logo.png");
-                InputStream is = resource.getInputStream();
-                editClub.setClubLogo(Base64.getEncoder().encodeToString(is.readAllBytes()));
+                editClub.setClubLogo(clubService.setDefaultLogo());
             }
             else{
                 editClub.setClubLogo(Base64.getEncoder().encodeToString(clubLogo.getBytes()));
@@ -166,11 +183,7 @@ public class CreateClubController {
             User manager = optUser.get(); // manager is the current user
             Club club;
             if (clubLogo.getOriginalFilename()==""){
-                logger.info("default");
-                Resource resource = new ClassPathResource("/static/image/default-club-logo.png");
-                InputStream is = resource.getInputStream();
-                String defaultLogo = Base64.getEncoder().encodeToString(is.readAllBytes());
-                club= new Club(name, location, sport, manager,defaultLogo);
+                club= new Club(name, location, sport, manager,clubService.setDefaultLogo());
             }
             else {
                 club = new Club(name, location, sport, manager, Base64.getEncoder().encodeToString(clubLogo.getBytes()));
