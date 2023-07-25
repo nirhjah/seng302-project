@@ -144,9 +144,9 @@ public class CreateTeamFormController {
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            model.addAttribute("teamID", teamID);
             logger.info("bad request");
             return "createTeamForm";
-            //return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
         }
 
 
