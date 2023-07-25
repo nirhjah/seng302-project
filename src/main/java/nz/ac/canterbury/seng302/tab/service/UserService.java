@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
 import nz.ac.canterbury.seng302.tab.authentication.TokenVerification;
@@ -341,6 +342,11 @@ public class UserService {
         }
         EmailDetails details = new EmailDetails(user.getEmail(), tokenVerificationLink, EmailDetails.RESET_PASSWORD_HEADER);
         String outcome = emailService.sendSimpleMail(details);
+        try {
+            emailService.HTMLEmail(user);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
         logger.info(outcome);
     }
 

@@ -1,11 +1,14 @@
 package nz.ac.canterbury.seng302.tab.mail;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -81,5 +84,17 @@ public class EmailService {
         EmailDetails details = new EmailDetails(user.getEmail(),url, EmailDetails.CONFIRMATION_EMAIL_HEADER );
         String outcome= this.sendSimpleMail(details);
         logger.info(outcome);
+    }
+
+    public void HTMLEmail(User user) throws MessagingException {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+        String htmlMsg = "<div><h3>Hello World!</h3></br><a href=\"google.com\">Link text</a></div>";
+        helper.setText(htmlMsg, true); // Use this or above line.
+        helper.setTo(user.getEmail());
+        helper.setSubject("Test Email");
+        helper.setFrom("team900.tab@gmail.com");
+        javaMailSender.send(mimeMessage);
+
     }
 }
