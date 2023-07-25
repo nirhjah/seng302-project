@@ -10,7 +10,6 @@ import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,23 +45,6 @@ public class CreateTeamFormController {
     @Autowired
     private UserService userService;
 
-
-    /**
-     * Gets createTeamForm to be displayed and contains name, sport,
-     * location and teamID model attributes to be added to html.
-     *
-     * @return thymeleaf createTeamForm
-     */
-    public void prefillModel(Model model) {
-        model.addAttribute("postcodeRegex", TeamFormValidators.VALID_POSTCODE_REGEX);
-        model.addAttribute("postcodeRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
-        model.addAttribute("addressRegex", TeamFormValidators.VALID_ADDRESS_REGEX);
-        model.addAttribute("addressRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
-        model.addAttribute("countryCitySuburbNameRegex", TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
-        model.addAttribute("countryCitySuburbNameRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
-        model.addAttribute("teamNameRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG_TEAM_NAME);
-    }
-
     @PostMapping("/generateTeamToken")
     public String generateTeamToken(@RequestParam(name = "teamID") Long teamID) {
         var team = teamService.getTeam(teamID);
@@ -83,7 +65,6 @@ public class CreateTeamFormController {
             HttpServletRequest request, CreateAndEditTeamForm createAndEditTeamForm) throws MalformedURLException {
 
         logger.info("GET /createTeam");
-        prefillModel(model);
         model.addAttribute("httpServletRequest", request);
 
         URL url = new URL(request.getRequestURL().toString());
@@ -148,7 +129,6 @@ public class CreateTeamFormController {
         logger.info("POST /createTeam");
 
 
-        prefillModel(model);
         // client side validation
         model.addAttribute("countryOrCityNameRegex", teamService.countryCitySuburbNameRegex);
         model.addAttribute("postcodeRegex", teamService.postcodeRegex);
