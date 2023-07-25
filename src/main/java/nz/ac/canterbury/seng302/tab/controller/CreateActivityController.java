@@ -297,7 +297,7 @@ public class CreateActivityController {
             lineUpService.updateOrAddLineUp(activityLineUp);
         }
 
-        if (playerAndPositions != null) {
+        if (!playerAndPositions.isEmpty()) {
             List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
             System.out.println("positions and players " + positionsAndPlayers);
 
