@@ -199,14 +199,6 @@ public class User {
         this.location = location;
     }
 
-    public String getPictureString() {
-        return this.pictureString;
-    }
-
-    public void setPictureString(String pictureString) {
-        this.pictureString = pictureString;
-    }
-
     public void setToken(String token) {
         this.token = token;
     }
