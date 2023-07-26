@@ -20,21 +20,14 @@ public class TeamFormValidators {
 
     public static final String NOT_BLANK_MSG = "Field cannot be empty";
     public static final String INVALID_CHARACTERS_MSG= "Field contains invalid values";
-    public static final String INVALID_CHARACTERS_MSG_TEAM_NAME = "Field contains invalid values or has no alphanumeric values. Only alphanumeric, dots, spaces & curly brackets";
-    public static final String VALID_TEAM_NAME_REGEX = "^(?=.*[a-zA-Z0-9])[a-zA-Z0-9.'\\s{}]+$";
+    public static final String INVALID_CHARACTERS_MSG_TEAM_NAME = "Must contain alphanumeric values. It may also contain dots, spaces, & curly brackets";
+    public static final String VALID_TEAM_NAME_REGEX = "^(?=.*[a-zA-Z0-9])[a-zA-Z0-9.\\s{}]+$";
     public static final String VALID_COUNTRY_SUBURB_CITY_REGEX = "[\\- '\\p{L}]*$";
     public static final String VALID_TEAM_SPORT_REGEX = "[\\- '\\p{L}]*$";
-    public static final String INVALID_TEAM_SPORT_MSG = "May include letters, hyphens, apostrophes and spaces. Must start with letter";
-    public static final String INVALID_TEAM_NAME_MSG = "May include letters, hyphens, apostrophes and spaces. Must start with letter";
-    public static final String INVALID_COUNTRY_SUBURB_CITY_MSG = "May include letters, hyphens, apostrophes and spaces. Must start with letter";
 
     public static final String VALID_ADDRESS_REGEX = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
 
-    public static final String INVALID_ADDRESS_MSG = "May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must start with letter or number";
-
     public static final String VALID_POSTCODE_REGEX = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
-
-    public static final String INVALID_POSTCODE_MSG = "May include letters, numbers, forward slashes, and hyphens. Must start with letter or number";
 
     /**
      * Checks the team sport is not blank and matches
