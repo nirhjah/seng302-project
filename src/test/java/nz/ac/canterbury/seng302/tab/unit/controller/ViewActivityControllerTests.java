@@ -10,11 +10,14 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.service.FactService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +69,9 @@ public class ViewActivityControllerTests {
     @MockBean
     private ActivityService mockActivityService;
 
+    @MockBean
+    private FactService mockFactService;
+
     private Team team;
 
     private Activity activity;
@@ -89,9 +95,17 @@ public class ViewActivityControllerTests {
                 ACTVITY_CITY, ACTVITY_POSTCODE, ACTVITY_COUNTRY);
         activity= new Activity(ActivityType.Game, team, "description",start, end, testUser, activityLocation);
 
+        List<Fact> factList = new ArrayList<>();
+        factList.add(new Fact("Someone fell over", "1h 25m", activity));
+        factList.add(new Fact("Someone fell over again", "1h 30m", activity));
+        factList.add(new Fact("Someone fell over yet again", "1h 42m", activity));
+        factList.add(new Fact("Testing scrollable feature", "1h 25m", activity));
+
         when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
         when(mockTeamService.findTeamsWithUser(testUser)).thenReturn(List.of(team));
+        when(mockFactService.getAllFactsForActivity(activity)).thenReturn(factList);
+
     }
 
     @Test

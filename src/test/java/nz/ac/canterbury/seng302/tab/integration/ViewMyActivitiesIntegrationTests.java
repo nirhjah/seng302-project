@@ -14,10 +14,12 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
-import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
+import nz.ac.canterbury.seng302.tab.repository.FactRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
+import nz.ac.canterbury.seng302.tab.service.FormationService;
+import nz.ac.canterbury.seng302.tab.service.FactService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -42,14 +44,12 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -67,9 +67,17 @@ public class ViewMyActivitiesIntegrationTests {
     @SpyBean
     private TeamService teamService;
 
+    @SpyBean
+    private FactService factService;
+
+    @Autowired
+    private FormationService formationService;
+
     private UserRepository userRepository;
 
     private TeamRepository teamRepository;
+
+    private FactRepository factRepository;
 
     private ActivityRepository activityRepository;
 
@@ -98,11 +106,12 @@ public class ViewMyActivitiesIntegrationTests {
     private final List<Activity> activityList = new ArrayList<>();
 
 
-    @Before
+    @Before("@view_my_activities")
     public void setup() throws IOException {
         userRepository = applicationContext.getBean(UserRepository.class);
         teamRepository = applicationContext.getBean(TeamRepository.class);
         activityRepository = applicationContext.getBean(ActivityRepository.class);
+        factRepository = applicationContext.getBean(FactRepository.class);
 
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
         EmailService emailService = applicationContext.getBean(EmailService.class);
@@ -113,7 +122,9 @@ public class ViewMyActivitiesIntegrationTests {
 
         activityService = Mockito.spy(new ActivityService(activityRepository));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ProfileFormController(userService, teamService)).build();
+        factService = Mockito.spy(new FactService(factRepository));
+
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ProfileFormController(userService, teamService, activityService, factService, formationService)).build();
 
         userRepository.deleteAll();
         teamRepository.deleteAll();
@@ -138,7 +149,7 @@ public class ViewMyActivitiesIntegrationTests {
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
-        when(userService.getCurrentUser()).thenReturn(Optional.of(user));
+        doReturn(Optional.of(user)).when(userService).getCurrentUser();
     }
 
     @Given("I have personal and team activities")
