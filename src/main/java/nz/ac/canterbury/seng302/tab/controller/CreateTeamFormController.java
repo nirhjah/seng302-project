@@ -144,7 +144,9 @@ public class CreateTeamFormController {
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            model.addAttribute("teamID", teamID);
+            if (teamID != -1) {
+                model.addAttribute("teamID", teamID);
+            }
             logger.info("bad request");
             return "createTeamForm";
         }
