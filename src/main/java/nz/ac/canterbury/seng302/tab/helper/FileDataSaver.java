@@ -79,6 +79,7 @@ public abstract class FileDataSaver {
     /**
      * WARNING: Be very (very) careful when calling this.
      * This will purge the filesystem database if called incorrectly!
+     * (Also it will purge your computer's filesystem if called incorrectly too)
      */
     private static boolean deleteFolder(File folder) {
         boolean success = true;
