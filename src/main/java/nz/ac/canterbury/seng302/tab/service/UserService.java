@@ -285,7 +285,7 @@ public class UserService {
         // Issue: The security context chain gives you "Anonymous Authentication"
         // if you're not logged in, so `isAuthenticated()` can be true.
         // To get around this, check if you're anonymous.
-        if (!auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
             return Optional.empty();
         }
         String email = auth.getName();

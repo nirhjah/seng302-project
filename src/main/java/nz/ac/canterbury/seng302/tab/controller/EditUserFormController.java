@@ -72,10 +72,6 @@ public class EditUserFormController {
         }
         User user = optionalUser.get();
         editUserForm.prepopulate(user);
-        model.addAttribute("firstName", user.getFirstName());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("displayPicture", user.getPictureString());
-        model.addAttribute("knownSports", sportService.getAllSportNames());
         model.addAttribute("favouriteSports", user.getFavouriteSportNames());
         model.addAttribute("user", user);
         URL url = new URL(request.getRequestURL().toString());
