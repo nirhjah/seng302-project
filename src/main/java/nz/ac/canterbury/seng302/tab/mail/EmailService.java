@@ -28,9 +28,11 @@ import java.util.concurrent.TimeUnit;
 public class EmailService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private SpringTemplateEngine templateEngine;
+    private final SpringTemplateEngine templateEngine;
 
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
+
+    private static final String sender = System.getenv().get("GMAIL_USERNAME");
 
     /**
      * Manual dependency injection for tests.
@@ -43,8 +45,6 @@ public class EmailService {
         this.templateEngine = templateEngine;
         this.javaMailSender = javaMailSender;
     }
-
-    private static final String sender = System.getenv().get("GMAIL_USERNAME");
 
     /**
      *

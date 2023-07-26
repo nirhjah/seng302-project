@@ -24,7 +24,17 @@ public class EmailTemplateConfig {
     public SpringTemplateEngine springTemplateEngine() {
         SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
         springTemplateEngine.addTemplateResolver(emailTemplateResolver());
+        springTemplateEngine.addTemplateResolver(genericTemplateResolver());
         return springTemplateEngine;
+    }
+
+    public ClassLoaderTemplateResolver genericTemplateResolver() {
+        ClassLoaderTemplateResolver generic = new ClassLoaderTemplateResolver();
+        generic.setPrefix("/templates/");
+        generic.setSuffix(".html");
+        generic.setOrder(0);
+        generic.setCheckExistence(false);
+        return generic;
     }
 
     /**
@@ -33,11 +43,12 @@ public class EmailTemplateConfig {
      */
     public ClassLoaderTemplateResolver emailTemplateResolver() {
         ClassLoaderTemplateResolver emailTemplateResolver = new ClassLoaderTemplateResolver();
-        emailTemplateResolver.setPrefix("/templates/");
+        emailTemplateResolver.setPrefix("/template/mail/");
         emailTemplateResolver.setSuffix(".html");
         emailTemplateResolver.setTemplateMode(TemplateMode.HTML);
         emailTemplateResolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
         emailTemplateResolver.setCacheable(false);
+        emailTemplateResolver.setOrder(1);
         return emailTemplateResolver;
     }
 
