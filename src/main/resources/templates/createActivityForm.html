@@ -55,7 +55,7 @@
                         <option value="-1">(No Team)</option>
                         <option th:each="forma : ${teamFormations}"
                                 th:value="${forma.formationId}"
-                                th:text="${forma.formation})"
+                                th:text="${forma.formation}"
                                 th:selected="${forma == selectedFormation}"></option>
                     </select>
                 </div>
@@ -302,6 +302,7 @@
         // Can't select formations if you've selected 'no team'
         if (currentTeamId == -1) {
             formationDropdown.disabled = true;
+            document.querySelector(".formation-activity-display").classList.remove("active");
             return;
         }
         // Can't select formations if your activity isn't a "friendly" or "game"
@@ -349,7 +350,7 @@
             option.addEventListener("click", onFormationOptionClick);
             formationDropdown.appendChild(option);
             if (i==0) {
-                populateReserves(formation);
+                populateReserves(formation.players);
             }
         }
     }
@@ -359,21 +360,24 @@
         while (playerReserveList.firstChild) {
             playerReserveList.removeChild(playerReserveList.lastChild);
         }
-        players.forEach(player => {
-            console.log("here")
+        console.log(players)
+        for (let i = 0; i < players.length; i++) {
+            const player = players[i];
+            console.log(player)
+            console.log(player.playerID, player.firstName, player.pictureString)
             const playerLi = document.createElement("li");
             playerLi.className = "reserves-li";
             playerReserveList.append(playerLi);
 
             const liPlayerImage = document.createElement("img");
             liPlayerImage.className = "li-player-image";
-            liPlayerImage.src = "ata:image/jpeg;base64," + player.pictureString;
+            liPlayerImage.src = "data:image/jpeg;base64," + player.pictureString;
             liPlayerImage.alt = "My Profile";
             playerLi.append(liPlayerImage);
 
             const liPlayerName = document.createElement("span");
             liPlayerName.className = "li-player-name";
-            liPlayerName.text = player.firstName;
+            liPlayerName.textContent = player.firstName;
             playerLi.append(liPlayerName);
 
             const button = document.createElement("button");
@@ -388,7 +392,7 @@
             playerLi.append(playerId);
 
             playerOnClick(playerLi);
-        });
+        }
     }
 
     updateFormationList();
@@ -405,6 +409,7 @@
         } else {
             document.querySelector(".formation-activity-display").classList.add("active");
             generatedOrCustom(formation, custom === "true", customPlayerPositions);
+            addPositionFunctionality();
         }
     }
 
@@ -474,6 +479,7 @@
                 const players = document.querySelectorAll(".reserves-li");
                 players.forEach(player => {
                     const playerId = player.querySelector("input").value;
+                    console.log(playerId, positionPlayerId)
                     if (playerId === positionPlayerId) {
                         player.classList.remove("in-formation");
                         position.classList.remove("filled");
@@ -483,6 +489,7 @@
             });
         }
     }
+
 
     // Prevents filled position from acting as an unfilled position and removes response from position when player is selected
     function fillPosition(position) {
