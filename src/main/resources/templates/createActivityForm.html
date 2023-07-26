@@ -476,6 +476,7 @@
             // Action to carry out when use clicks button to remove player from formation
             clearPositionButton.addEventListener('click', () => {
                 const positionPlayerId = position.querySelector("input").value;
+                console.log(positionPlayerId);
                 const players = document.querySelectorAll(".reserves-li");
                 players.forEach(player => {
                     const playerId = player.querySelector("input").value;
@@ -485,6 +486,7 @@
                         position.classList.remove("filled");
                     }
                 });
+                clearPlayer(position)
                 deactivateSubs();
             });
         }
