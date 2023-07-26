@@ -343,7 +343,7 @@ public class UserService {
         EmailDetails details = new EmailDetails(user.getEmail(), tokenVerificationLink, EmailDetails.RESET_PASSWORD_HEADER);
         String outcome = emailService.sendSimpleMail(details);
         try {
-            emailService.HTMLEmail(user);
+            emailService.testHTMLEmail(user);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }

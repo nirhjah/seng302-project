@@ -10,6 +10,7 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.RegisterForm;
 import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
+import nz.ac.canterbury.seng302.tab.mail.EmailTemplateConfig;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.utility.RegisterTestUtil;
@@ -83,7 +84,9 @@ public class RegisterConfirmEmailIntegrationTests {
         // We don't want to spam emails, as we have a limited number that we can
         // send with our API key.  So in tests, we should mock.
         var javaMailSender = applicationContext.getBean(JavaMailSender.class);
-        var emailServ = Mockito.spy(new EmailService(javaMailSender));
+        EmailTemplateConfig emailTemplateConfig = new EmailTemplateConfig();
+        var springEngineTemplate = emailTemplateConfig.springTemplateEngine();
+        var emailServ = Mockito.spy(new EmailService(javaMailSender, springEngineTemplate));
 
         Mockito.when(emailServ.sendSimpleMail(any())).then(invocation -> {
             sentMailContent = invocation.getArgument(0, EmailDetails.class);

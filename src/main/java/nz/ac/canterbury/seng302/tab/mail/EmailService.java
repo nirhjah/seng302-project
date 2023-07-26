@@ -10,7 +10,13 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -22,6 +28,8 @@ import java.util.concurrent.TimeUnit;
 public class EmailService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    private SpringTemplateEngine templateEngine;
+
     private JavaMailSender javaMailSender;
 
     /**
@@ -31,7 +39,8 @@ public class EmailService {
      * @param javaMailSender
      */
     @Autowired
-    public EmailService(JavaMailSender javaMailSender) {
+    public EmailService(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine) {
+        this.templateEngine = templateEngine;
         this.javaMailSender = javaMailSender;
     }
 
@@ -70,7 +79,6 @@ public class EmailService {
 
     /**
      * Creates and sends email informing the user that their password has been updated.
-     * TODO add the update functionality to this method as well.
      * @param user the user whose password was updated
      * @return the outcome of the email sending
      */
@@ -86,15 +94,26 @@ public class EmailService {
         logger.info(outcome);
     }
 
-    public void HTMLEmail(User user) throws MessagingException {
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-        String htmlMsg = "<div><h3>Hello World!</h3></br><a href=\"google.com\">Link text</a></div>";
-        helper.setText(htmlMsg, true); // Use this or above line.
-        helper.setTo(user.getEmail());
-        helper.setSubject("Test Email");
-        helper.setFrom("team900.tab@gmail.com");
-        javaMailSender.send(mimeMessage);
+    public void testHTMLEmail(User user) throws MessagingException {
+        EmailDetails email = new EmailDetails(user.getEmail(), null, "Test", "testEmail.html");
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("name", user.getFirstName());
+        properties.put("subscriptionDate", user.getDateOfBirth());
+        email.setProperties(properties);
+        sendHtmlMessage(email);
+    }
 
+    public void sendHtmlMessage(EmailDetails email) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message,
+                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
+        Context context = new Context();
+        context.setVariables(email.getProperties());
+        helper.setFrom("team900.tab@gmail.com");
+        helper.setTo(email.getRecipient());
+        helper.setSubject(email.getSubject());
+        String html = templateEngine.process(email.getTemplate(), context);
+        helper.setText(html, true);
+        javaMailSender.send(message);
     }
 }
