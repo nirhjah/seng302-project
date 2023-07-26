@@ -1,12 +1,10 @@
 package nz.ac.canterbury.seng302.tab.integration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -15,14 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import io.cucumber.java.en.And;
 import nz.ac.canterbury.seng302.tab.repository.LineUpPositionRepository;
-import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
 import nz.ac.canterbury.seng302.tab.service.*;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -181,4 +178,28 @@ public class U33EditLineupForGameFeature {
         assertTrue(activity.getFormation().isPresent());
         assertEquals(formationStr, activity.getFormation().get().getFormation());
     }
+
+    @And("the activity has a selected formation")
+    public void theActivityHasASelectedFormation() {
+        requestBuilder = requestBuilder.param("formation",
+                String.valueOf(formationMap.get("4-5-6").getFormationId()));
+
+    }
+
+    @And("the activity has a selected formation {string}")
+    public void theActivityHasASelectedFormation(String formationStr) {
+        requestBuilder = requestBuilder.param("formation",
+                String.valueOf(formationMap.get(formationStr).getFormationId()));
+    }
+    @When("I attempt to cancel editing the activity")
+    public void i_attempt_to_cancel_editing_the_activity() throws Exception {
+        mockMvc.perform(get("/view-activity?activityID={id}", activity.getId()));
+    }
+
+    @Then("the activity will return to the state it was prior to editing")
+    public void the_activity_will_return_to_the_state_it_was_prior_to_editing() {
+        assertFalse(activity.getFormation().isPresent());
+    }
+
+
 }

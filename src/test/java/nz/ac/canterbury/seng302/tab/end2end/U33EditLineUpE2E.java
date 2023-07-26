@@ -127,16 +127,4 @@ public class U33EditLineUpE2E {
         throw new io.cucumber.java.PendingException();
     }
 
-    @When("I attempt to cancel editing the activity")
-    public void i_attempt_to_cancel_editing_the_activity() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
-    }
-
-    @Then("the activity will return to the state it was prior to editing")
-    public void the_activity_will_return_to_the_state_it_was_prior_to_editing() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
-    }
-
 }
