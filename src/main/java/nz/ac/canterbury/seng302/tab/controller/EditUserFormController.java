@@ -81,7 +81,7 @@ public class EditUserFormController {
         URL url = new URL(request.getRequestURL().toString());
         String path = (url.getPath() + "/..");
         model.addAttribute("path", path);
-        return "editUserForm";
+        return "editUser";
     }
 
     @PostMapping("/editUser")
@@ -142,7 +142,7 @@ public class EditUserFormController {
             URL url = new URL(httpServletRequest.getRequestURL().toString());
             String path = (url.getPath() + "/..");
             model.addAttribute("path", path);
-            return "editUserForm";
+            return "editUser";
         }
 
         // Log-out if the user changes their email
