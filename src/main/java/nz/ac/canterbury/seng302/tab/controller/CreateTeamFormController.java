@@ -57,7 +57,7 @@ public class CreateTeamFormController {
             if (user.isPresent() && team.isManager(user.get())) {
                 team.generateToken(teamService);
                 teamService.updateTeam(team);
-                logger.info("POST /generateTeamToken, new token: " + team.getToken());
+                logger.info("POST /generateTeamToken, new token: ".concat(team.getToken()));
             }
         }
         return String.format("redirect:./profile?teamID=%s", teamID);
