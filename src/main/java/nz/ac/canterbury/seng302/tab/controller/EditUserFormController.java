@@ -131,7 +131,7 @@ public class EditUserFormController {
         user.setFavoriteSports(newFavSports);
 
         if (!editUserForm.getEmail().matches(UserFormValidators.VALID_EMAIL_REGEX)) {
-            bindingResult.addError(new FieldError("editUserForm", "email", UserFormValidators.WELL_FORMED_EMAIL));
+            // bindingResult.addError(new FieldError("editUserForm", "email", UserFormValidators.WELL_FORMED_EMAIL));
         } else if (userService.emailIsUsedByAnother(user, editUserForm.getEmail())) {
             bindingResult.addError(new FieldError("editUserForm", "email", "Email is already in use."));
         }
