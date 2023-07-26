@@ -63,10 +63,9 @@ public class ClubService {
      * @throws IOException If an I/O error occurs while reading the default logo image.
      */
     public String setDefaultLogo() throws IOException {
-        Resource resource = new ClassPathResource("/static/image/default-club-logo.png");
+        Resource resource = new ClassPathResource("/static/image/icons/club-logo.svg");
         InputStream is = resource.getInputStream();
         return Base64.getEncoder().encodeToString(is.readAllBytes());
     }
-
 
 }

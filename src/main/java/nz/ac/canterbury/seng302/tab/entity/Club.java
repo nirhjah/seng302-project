@@ -32,6 +32,8 @@ public class Club {
     @ManyToOne
     private User manager;
 
+    private boolean hasCustomLogo;
+
     protected Club() {
     }
 
@@ -96,6 +98,14 @@ public class Club {
 
     public void setSport(String sport) {
         this.sport = sport;
+    }
+
+    public boolean getHasCustomLogo(){
+        return this.hasCustomLogo;
+    }
+
+    public void setHasCustomLogo(boolean flag){
+        this.hasCustomLogo= flag;
     }
 
 

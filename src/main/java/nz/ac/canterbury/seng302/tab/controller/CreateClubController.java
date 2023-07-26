@@ -152,6 +152,7 @@ public class CreateClubController {
             }
             else{
                 editClub.setClubLogo(Base64.getEncoder().encodeToString(clubLogo.getBytes()));
+                editClub.setHasCustomLogo(true);
             }
 
 
@@ -166,6 +167,7 @@ public class CreateClubController {
             }
             else {
                 club = new Club(name, location, sport, manager, Base64.getEncoder().encodeToString(clubLogo.getBytes()));
+                club.setHasCustomLogo(true);
             }
 
             setTeamsClub(selectedTeams, club, bindingResult);
