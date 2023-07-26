@@ -5,20 +5,21 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.junit.jupiter.api.Assertions;
 
 public class U33EditLineUpE2E {
 
 
     private static boolean isSetupExecuted = false;
 
+    int counter = 0;
     @Before("@edit_line_up_e2e")
     public void setup() {
         DefaultFunctions.pwLogin();
         if (!isSetupExecuted) {
-            DefaultFunctions.pwCreateTeam();
-            DefaultFunctions.pwCreateFormation();
-            DefaultFunctions.pwCreateActivity();
+          /*  DefaultFunctions.pwCreateTeam();
+            DefaultFunctions.pwCreateFormation();*/
+            DefaultFunctions.pwCreateNewTeamWithFormationAndActivity();
+           // DefaultFunctions.pwCreateActivity();
             isSetupExecuted = true;
         }
     }
@@ -26,10 +27,8 @@ public class U33EditLineUpE2E {
 
     @Given("I am the manager of a team")
     public void i_am_the_manager_of_a_team() {
-        // Go to team profile, check edit team role button is available that means youre manager
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/profile?teamID=1");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/profile?teamID=2");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
-
 
     }
 
@@ -61,10 +60,9 @@ public class U33EditLineUpE2E {
 
     @Given("the activity has type game or friendly and has a selected formation")
     public void the_activity_has_type_game_or_friendly_and_has_a_selected_formation() {
-        //check that the activityType is "Game"
+
         PlaywrightBrowser.page.locator("#activityType").selectOption("Game");
-        // PlaywrightBrowser.page.locator("#team").selectOption("team");
-        //select formation from formation-dropdown 1-4-4-2
+         PlaywrightBrowser.page.locator("#team").selectOption("team");
         PlaywrightBrowser.page.locator("#formation-dropdown").selectOption("1-4-4-2");
 
     }

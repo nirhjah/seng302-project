@@ -32,6 +32,8 @@ public class DefaultFunctions {
         PlaywrightBrowser.page.locator("button#create-formation-button").click();
     }
 
+    //create a new team first with different name then create activity or whatevwr
+
     public static void pwCreateActivity() {
         PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createActivity");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
@@ -47,5 +49,50 @@ public class DefaultFunctions {
         PlaywrightBrowser.page.locator("input#country").type("New Zealand");
         PlaywrightBrowser.page.locator("div.submit-button button[type='submit']").click();
     }
+
+
+    public static void pwCreateNewTeamWithFormationAndActivity() {
+
+
+        for (int i = 0; i < 10; i++) {
+
+            String teamName = String.valueOf(i);
+            //create team
+            PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createTeam");
+            PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
+
+            PlaywrightBrowser.page.locator("input#name").type(teamName);
+            PlaywrightBrowser.page.locator("input#sport").type("football");
+            PlaywrightBrowser.page.locator("input#city").type("Christchurch");
+            PlaywrightBrowser.page.locator("input#country").type("New Zealand");
+            PlaywrightBrowser.page.locator("div.submit-button button[type='submit']").click();
+
+            //create formation
+            PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
+            PlaywrightBrowser.page.locator("div.tab#formations-tab").click();
+            PlaywrightBrowser.page.locator("li#create-formation-li").click();
+            PlaywrightBrowser.page.locator("button#create-formation-button").click();
+
+            //create activity
+            PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createActivity");
+            PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
+
+            PlaywrightBrowser.page.locator("#activityType").selectOption("Game");
+            PlaywrightBrowser.page.locator("#team").selectOption(teamName);
+            PlaywrightBrowser.page.fill("#description", "desc");
+            PlaywrightBrowser.page.fill("#startDateTime", "2025-04-02T05:15");
+            PlaywrightBrowser.page.fill("#endDateTime", "2026-04-02T05:15");
+            PlaywrightBrowser.page.locator("input#address-line-1").type("1");
+            PlaywrightBrowser.page.locator("input#postcode").type("8042");
+            PlaywrightBrowser.page.locator("input#city").type("Christchurch");
+            PlaywrightBrowser.page.locator("input#country").type("New Zealand");
+            PlaywrightBrowser.page.locator("div.submit-button button[type='submit']").click();
+
+        }
+
+
+
+    }
+
 }
 
