@@ -45,6 +45,10 @@ public class CreateTeamFormController {
     @Autowired
     private UserService userService;
 
+    private static final String CREATE_TEAM_TEMPLATE = "createTeamForm";
+
+    private static final String REDIRECT_HOME = "redirect:./profile?teamID=%s";
+
     @PostMapping("/generateTeamToken")
     public String generateTeamToken(@RequestParam(name = "teamID") Long teamID) {
         var team = teamService.getTeam(teamID);
@@ -69,7 +73,6 @@ public class CreateTeamFormController {
 
         URL url = new URL(request.getRequestURL().toString());
         String path = (url.getPath() + "/..");
-        String protocolAndAuthority = String.format("%s://%s", url.getProtocol(), url.getAuthority());
         model.addAttribute("path", path);
 
         Team team;
@@ -93,11 +96,16 @@ public class CreateTeamFormController {
         List<String> knownSports = sportService.getAllSportNames();
         model.addAttribute("knownSports", knownSports);
         Optional<User> user = userService.getCurrentUser();
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
-        model.addAttribute("navTeams", teamService.getTeamList());
-        return "createTeamForm";
+        if (user.isPresent()) {
+            model.addAttribute("firstName", user.get().getFirstName());
+            model.addAttribute("lastName", user.get().getLastName());
+            model.addAttribute("displayPicture", user.get().getPictureString());
+            model.addAttribute("navTeams", teamService.getTeamList());
+            return CREATE_TEAM_TEMPLATE;
+        } else {
+            return REDIRECT_HOME;
+        }
+
     }
 
     /**
@@ -136,6 +144,9 @@ public class CreateTeamFormController {
         model.addAttribute("sportUnicodeRegex", teamService.sportUnicodeRegex);
         model.addAttribute("httpServletRequest", httpServletRequest);
         Optional<User> user = userService.getCurrentUser();
+        if (user.isEmpty()) {
+            return REDIRECT_HOME;
+        }
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
         model.addAttribute("displayPicture", user.get().getPictureString());
@@ -148,7 +159,7 @@ public class CreateTeamFormController {
                 model.addAttribute("teamID", teamID);
             }
             logger.info("bad request");
-            return "createTeamForm";
+            return CREATE_TEAM_TEMPLATE;
         }
 
 
@@ -167,7 +178,7 @@ public class CreateTeamFormController {
             URL url = new URL(httpServletRequest.getRequestURL().toString());
             String path = (url.getPath() + "/..");
             model.addAttribute("path", path);
-            return "createTeamForm";
+            return CREATE_TEAM_TEMPLATE;
         }
 
         Location location = new Location(trimmedAddressLine1, trimmedAddressLine2, trimmedSuburb, trimmedCity,
