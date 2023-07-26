@@ -89,7 +89,6 @@ public class CreateTeamFormController {
             CreateAndEditTeamForm createAndEditTeamForm) throws MalformedURLException {
 
         logger.info("GET /createTeam");
-        prefillModel(model);
         model.addAttribute("httpServletRequest", request);
 
         URL url = new URL(request.getRequestURL().toString());
@@ -141,7 +140,6 @@ public class CreateTeamFormController {
         logger.info("POST /createTeam");
 
 
-        prefillModel(model);
         // client side validation
         model.addAttribute("httpServletRequest", httpServletRequest);
 
