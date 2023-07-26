@@ -131,7 +131,7 @@ public class EditUserFormController {
         user.setFavoriteSports(newFavSports);
 
         // TODO: WIP, testing this to check if the emoji stuff works
-        if (bindingResult.hasFieldErrors("email")) {
+        if (!bindingResult.hasFieldErrors("email")) {
             // Manual email uniqueness check
             if (userService.emailIsUsedByAnother(user, editUserForm.getEmail())) {
                 bindingResult.addError(new FieldError("editUserForm", "email", "Email is already in use."));
