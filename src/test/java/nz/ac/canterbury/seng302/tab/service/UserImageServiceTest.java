@@ -4,7 +4,6 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
 import nz.ac.canterbury.seng302.tab.helper.GenerateRandomUsers;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 @Import({UserImageService.class})
 /*
@@ -37,13 +37,13 @@ class UserImageServiceTest {
     @Autowired
     private GenerateRandomUsers generateRandomUsers;
 
-    private byte[] fakeImageData = new byte[] {
+    private static final byte[] fakeImageData = new byte[] {
             1,2,3,4,5,6,7,8
     };
 
-    private List<User> users = new ArrayList<>();
+    private final List<User> users = new ArrayList<>();
 
-    private static int NUM_USERS = 30;
+    private static final int NUM_USERS = 30;
 
     @BeforeEach
     public void beforeEach() throws IOException {
@@ -55,7 +55,7 @@ class UserImageServiceTest {
         users.clear(); // clear test users
 
         // Clear files for test
-        UserImageService.clearTestFolder();
+         UserImageService.clearTestFolder();
 
         // Generate our mock users
         for (int i=0; i<NUM_USERS; i++) {
@@ -73,7 +73,8 @@ class UserImageServiceTest {
         userImageService.updateProfilePicture(id, fakeImageData);
 
         byte[] result = userImageService.readFileOrDefault(id);
-        assertEquals(fakeImageData, result);
+
+        assertArrayEquals(fakeImageData, result);
     }
 
 
@@ -98,20 +99,21 @@ class UserImageServiceTest {
             long id = usr.getUserId();
             byte[] data = profileData.get(i);
             byte[] result = userImageService.readFileOrDefault(id);
-            assertEquals(data, result);
+            assertArrayEquals(data, result);
         }
     }
 
     @Test
     public void testDefaultsAreConsistent() {
         User a, b;
-        a = users.get(0);
-        b = users.get(1);
+        int size = users.size();
+        a = users.get(size - 1);
+        b = users.get(size - 2);
 
         byte[] dataA = userImageService.readFileOrDefault(a.getUserId());
         byte[] dataB = userImageService.readFileOrDefault(b.getUserId());
 
-        assertEquals(dataA, dataB);
+        assertArrayEquals(dataA, dataB);
     }
 
     @AfterAll
