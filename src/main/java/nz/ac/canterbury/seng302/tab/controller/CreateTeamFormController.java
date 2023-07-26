@@ -55,7 +55,7 @@ public class CreateTeamFormController {
      * Gets createTeamForm to be displayed and contains name, sport,
      * location and teamID model attributes to be added to html.
      */
-    public void prefillModel(Model model, HttpServletRequest httpServletRequest) {
+    private void prefillModel(Model model, HttpServletRequest httpServletRequest) {
         model.addAttribute("postcodeRegex", TeamFormValidators.VALID_POSTCODE_REGEX);
         model.addAttribute("postcodeRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
         model.addAttribute("addressRegex", TeamFormValidators.VALID_ADDRESS_REGEX);
@@ -70,6 +70,23 @@ public class CreateTeamFormController {
         model.addAttribute("displayPicture", user.getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("httpServletRequest", httpServletRequest);
+    }
+
+    /**
+     * Creates a location entity from details provided in the form
+     * @param createAndEditTeamForm The response from our users
+     * @return A location object, with whitespace before/after each field trimmed.
+     */
+    private Location createLocationFromTrimmedForm(CreateAndEditTeamForm createAndEditTeamForm) {
+        String trimmedCountry = teamService.clipExtraWhitespace(createAndEditTeamForm.getCountry());
+        String trimmedAddressLine1 = teamService.clipExtraWhitespace(createAndEditTeamForm.getAddressLine1());
+        String trimmedAddressLine2 = teamService.clipExtraWhitespace(createAndEditTeamForm.getAddressLine2());
+        String trimmedCity = teamService.clipExtraWhitespace(createAndEditTeamForm.getCity());
+        String trimmedPostcode = teamService.clipExtraWhitespace(createAndEditTeamForm.getPostcode());
+        String trimmedSuburb = teamService.clipExtraWhitespace(createAndEditTeamForm.getSuburb());
+
+        return new Location(trimmedAddressLine1, trimmedAddressLine2, trimmedSuburb, trimmedCity,
+                trimmedPostcode, trimmedCountry);
     }
 
     @PostMapping("/generateTeamToken")
@@ -129,12 +146,12 @@ public class CreateTeamFormController {
         if (user.isEmpty()) {
             return "redirect:login";
         }
-        // Does the team we wanna edit exist?
+        // Does the team exist?
         Team team = teamService.getTeam(teamID);
         if (team == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team with given ID does not exist");
         }
-        // Can you even edit this team?
+        // Are you allow to edit this team?
         if (!team.isManager(user.get())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is unable to modify this team");
         }
@@ -162,7 +179,7 @@ public class CreateTeamFormController {
      */
     @PostMapping("/createTeam")
     public String submitTeamForm(
-            @RequestParam(name = "teamID", required = true) long teamID,
+            @RequestParam(name = "teamID", defaultValue = "-1") long teamID,
             @Validated CreateAndEditTeamForm createAndEditTeamForm,
             BindingResult bindingResult,
             HttpServletResponse httpServletResponse,
@@ -171,59 +188,54 @@ public class CreateTeamFormController {
         logger.info("POST /createTeam - update team");
 
 
-        // client side validation
-        model.addAttribute("httpServletRequest", httpServletRequest);
+        // I'm starting to regret this pattern
+        Optional<User> user = userService.getCurrentUser();
+        if (user.isEmpty()) {
+            return "redirect:login";
+        }
 
+        boolean editingTeam = (teamID != -1);
+
+        // Are there form errors?
         if (bindingResult.hasErrors()) {
+            prefillModel(model, httpServletRequest);
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("teamID", teamID);
             logger.info("bad request");
             return TEMPLATE_NAME;
         }
-
-
+        
+        Team team;
+        if (editingTeam) {  // Updating an existing team
+            // Does the team exist?
+            team = teamService.getTeam(teamID);
+            if (team == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team with given ID does not exist");
+            }
+            // Are you allowed to edit this team?
+            if (!team.isManager(user.get())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is unable to modify this team");
+            }
+        } else { // create a new team
+            team = new Team(null, null, null, user.get());
+        }
+        // Either way, we need to add these details
         // trim all extra whitespace and trailing/leading whitespace
         String trimmedName = teamService.clipExtraWhitespace(createAndEditTeamForm.getName());
         String trimmedSport = teamService.clipExtraWhitespace(createAndEditTeamForm.getSport());
-        String trimmedCountry = teamService.clipExtraWhitespace(createAndEditTeamForm.getCountry());
-        String trimmedAddressLine1 = teamService.clipExtraWhitespace(createAndEditTeamForm.getAddressLine1());
-        String trimmedAddressLine2 = teamService.clipExtraWhitespace(createAndEditTeamForm.getAddressLine2());
-        String trimmedCity = teamService.clipExtraWhitespace(createAndEditTeamForm.getCity());
-        String trimmedPostcode = teamService.clipExtraWhitespace(createAndEditTeamForm.getPostcode());
-        String trimmedSuburb = teamService.clipExtraWhitespace(createAndEditTeamForm.getSuburb());
-
-        Location location = new Location(trimmedAddressLine1, trimmedAddressLine2, trimmedSuburb, trimmedCity,
-                trimmedPostcode, trimmedCountry);
-
-        Team team = teamService.getTeam(teamID);
-        boolean teamExists = team != null;
-        if (teamExists) {
-            // edit existing team
-            team.setName(trimmedName);
-            team.setSport(trimmedSport);
-            team.setLocation(location);
-            team = teamService.updateTeam(team);
-        } else {
-            // create a new team
-            logger.info("creating new user ");
-            Optional<User> currentUser = userService.getCurrentUser();
-            if (currentUser.isPresent()) {
-                logger.info("creating new user with manager");
-                team = new Team(trimmedName, trimmedSport, location, currentUser.get());
-            } else {
-                logger.info("creating new user without manager");
-                team = new Team(trimmedName, trimmedSport, location);
-            }
-            team.generateToken(teamService);
-            team = teamService.addTeam(team);
-        }
-        teamID = team.getTeamId();
+        Location location = createLocationFromTrimmedForm(createAndEditTeamForm);
+        
+        team.setName(trimmedName);
+        team.setSport(trimmedSport);
+        team.setLocation(location);
+        team.generateToken(teamService);
+        team = teamService.addTeam(team);
 
         List<String> knownSports = sportService.getAllSportNames();
         if (!knownSports.contains(trimmedSport)) {
             sportService.addSport(new Sport(trimmedSport));
         }
 
-        return String.format("redirect:./profile?teamID=%s", teamID);
+        return String.format("redirect:./profile?teamID=%s", team.getTeamId());
     }
 }
