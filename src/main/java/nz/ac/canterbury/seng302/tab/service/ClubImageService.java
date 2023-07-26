@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @Service
-public class TeamImageService extends FileDataSaver {
+public class ClubImageService extends FileDataSaver {
 
     private final byte[] defaultProfilePicture;
 
@@ -19,7 +19,7 @@ public class TeamImageService extends FileDataSaver {
      * inside the project's directory
      * @param profile The deployment environment, which determines the
      */
-    public TeamImageService(@Value("${spring.profiles.active:unknown}") String profile) throws IOException {
+    public ClubImageService(@Value("${spring.profiles.active:unknown}") String profile) throws IOException {
         super(getDeploymentType(profile));
 
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
