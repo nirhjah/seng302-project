@@ -45,7 +45,7 @@ public class ClubServiceTest {
         clubService.setDefaultLogo();
         Assertions.assertNotNull(club.getClubLogo());
 
-        Resource resource = new ClassPathResource("/static/image/default-club-logo.png");
+        Resource resource = new ClassPathResource("/static/image/icons/club-logo.svg");
         InputStream is = resource.getInputStream();
         String expectByteLogo= Base64.getEncoder().encodeToString(is.readAllBytes());
 

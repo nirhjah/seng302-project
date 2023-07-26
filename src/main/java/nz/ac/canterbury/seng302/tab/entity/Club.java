@@ -43,7 +43,7 @@ public class Club {
         this.sport = sport;
         this.manager = manager;
 
-        Resource resource = new ClassPathResource("/static/image/default-club-logo.png");
+        Resource resource = new ClassPathResource("/static/image/icons/club-logo.svg");
         InputStream is = resource.getInputStream();
         this.clubLogo = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
