@@ -8,6 +8,7 @@ import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.ClubService;
+import nz.ac.canterbury.seng302.tab.service.TeamImageService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 
 import org.junit.jupiter.api.Assertions;
@@ -36,6 +37,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TeamServiceTest {
 
     Logger logger = LoggerFactory.getLogger(TeamServiceTest.class);
+
+    @Autowired
+    private TeamImageService teamImageService;
 
     @Autowired
     private TeamService teamService;
@@ -83,12 +87,12 @@ public class TeamServiceTest {
 
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
-        String pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+        byte[] fileBytes = Files.readAllBytes(file.toPath());
         try (FileInputStream input = new FileInputStream(file)) {
-            MultipartFile multipartFile = new MockMultipartFile("file",
+            MultipartFile multipartFile = new MockMultipartFile("file.png",
                     file.getName(), "image/png", input.readAllBytes());
-            teamService.updatePicture(multipartFile, team.getTeamId());
-            assertEquals(pictureString, Base64.getEncoder().encodeToString(multipartFile.getBytes()));
+            teamImageService.updateProfilePicture(team.getTeamId(), multipartFile);
+            assertArrayEquals(fileBytes, multipartFile.getBytes());
         }
     }
 

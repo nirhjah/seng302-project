@@ -1,15 +1,17 @@
 package nz.ac.canterbury.seng302.tab.helper;
 
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Base64;
-import java.util.Optional;
+import java.util.*;
 
 
 /**
@@ -26,6 +28,14 @@ public abstract class FileDataSaver {
     private final Path initialPath;
 
     private final DeploymentType deploymentType;
+
+    private final FileRestrictions fileRestrictions;
+
+    public static final FileRestrictions DEFAULT_IMAGE_RESTRICTIONS = new FileRestrictions(
+            // TODO: Check that these values are valid!!!!
+            //  We want 10MB max upload, and check that the image types match the ACs too.
+            100_000_000, Set.of("jpg", "png")
+    );
 
     private Path getPath(Long id) {
         String idString = String.valueOf(id);
@@ -56,6 +66,70 @@ public abstract class FileDataSaver {
         } else {
             return DeploymentType.TEST;
         }
+    }
+
+    static class FileRestrictions {
+        public FileRestrictions(int maxSize, Collection<String> validExtensions) {
+            this.maxSize = maxSize;
+            this.validExtensions = validExtensions;
+        }
+        int maxSize;
+        Collection<String> validExtensions;
+    }
+
+    /**
+     * Gets a filename's extension by subbing the last characters.
+     * This is kinda bad, we should be using a library for this probably.
+     * @param filename The filename to check
+     * @return The extension, excluding dot. (i.e. jpg)
+     */
+    private Optional<String> getExtension(String filename) {
+        int i = filename.lastIndexOf(".");
+        if (i >= 0) {
+            String extension = filename.substring(i + 1);
+            if (extension.length() > 0) {
+                return Optional.of(extension);
+            } else {
+                return Optional.empty();
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Checks if a file is valid.
+     * @param file The file to check
+     * @param restrictions The restrictions object to pass in.
+     * @return true if all OK, false otherwise.
+     */
+    public boolean isFileValid(MultipartFile file) {
+        String originalName = file.getOriginalFilename();
+        if (Objects.isNull(originalName)) {
+            // If there's no filename, return false.
+            logger.error("No filename!");
+            return false;
+        }
+
+        originalName = StringUtils.cleanPath(file.getOriginalFilename());
+        Optional<String> optExtension = getExtension(originalName);
+        if (optExtension.isEmpty()) {
+            // If we can't find an extension, return false.
+            logger.error("Couldn't find an extension for file");
+            return false;
+        }
+
+        if (!fileRestrictions.validExtensions.contains(optExtension.get())) {
+            // If the extension is not whitelisted, return false.
+            logger.error("Extension was not whitelisted");
+            return false;
+        }
+
+        if (file.getSize() > fileRestrictions.maxSize) {
+            logger.error("File too big");
+            return false; // File is too darn big!
+        }
+
+        return true; // OK.
     }
 
 
@@ -157,8 +231,10 @@ public abstract class FileDataSaver {
      * otherwise, deploymentType is TEST.
      * @param deploymentType the deploymentType
      */
-    public FileDataSaver(DeploymentType deploymentType) {
+    public FileDataSaver(DeploymentType deploymentType, FileRestrictions fileRestrictions) {
         String prefix = getFolderName();
+
+        this.fileRestrictions = fileRestrictions;
 
         this.deploymentType = deploymentType;
         initialPath = getDeploymentPath(deploymentType).resolve(prefix);
@@ -169,12 +245,30 @@ public abstract class FileDataSaver {
     }
 
     /**
-     * Saves bytes to a file, and returns true on success, false on failure.
+     * Saves a file directly.
+     * @param id
+     * @param file
+     * @return
+     */
+    public boolean saveFile(Long id, MultipartFile file) {
+        if (isFileValid(file)) {
+            try {
+                byte[] bytes = file.getBytes();
+                return saveBytes(id, bytes);
+            } catch (IOException e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Saves bytes directly to a file, and returns true on success, false on failure.
      * @param id A unique ID for the context (e.g. user entity primary key)
      * @param data Bytes of data to save
      * @return true on success, false on failure
      */
-    public boolean saveFile(Long id, byte[] data) {
+    public boolean saveBytes(Long id, byte[] data) {
         Path fullPath = getPath(id);
         try {
             Files.createDirectories(fullPath.getParent());

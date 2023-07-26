@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,9 +39,9 @@ class UserImageServiceTest {
     @Autowired
     private GenerateRandomUsers generateRandomUsers;
 
-    private static final byte[] fakeImageData = new byte[] {
-            1,2,3,4,5,6,7,8
-    };
+    private static final MultipartFile fakeImageFile = new MockMultipartFile(
+            "hello.jpg", new byte[] {1,2,3,4,5,6,7,8}
+    );
 
     private byte[] defaultBytes;
 
@@ -71,39 +73,43 @@ class UserImageServiceTest {
         }
     }
 
+    private MockMultipartFile getMockedFile(byte[] data) {
+        return new MockMultipartFile("my_file.jpg", data);
+    }
+
     @Test
-    public void testSingularImageIsSaved() {
+    public void testSingularImageIsSaved() throws IOException {
         // Take a user, check that the file is saved.
         User usr = users.get(0);
         long id = usr.getUserId();
-        userImageService.updateProfilePicture(id, fakeImageData);
+        userImageService.updateProfilePicture(id, fakeImageFile);
 
         byte[] result = userImageService.readFileOrDefault(id);
 
-        assertArrayEquals(fakeImageData, result);
+        assertArrayEquals(fakeImageFile.getBytes(), result);
     }
 
 
     @Test
-    public void givenExistingUsers_givenDataIsSaved_testDataCanBeRetrieved() {
+    public void givenExistingUsers_givenDataIsSaved_testDataCanBeRetrieved() throws IOException {
         // Multiple users, check that they all end up with unique data.
-        var profileData = List.of(
-                new byte[] {1,2,3,4,5,6},
-                new byte[] {5,6,7,67,43,45},
-                new byte[] {9,8,6,5,8,6,5}
+        var files = List.of(
+                getMockedFile(new byte[] {1,2,3,4,5,6}),
+                getMockedFile(new byte[] {5,6,7,67,43,45}),
+                getMockedFile(new byte[] {9,8,6,5,8,6,5})
         );
 
-        for (int i=0; i<profileData.size(); i++) {
+        for (int i=0; i<files.size(); i++) {
             User usr = users.get(i);
             long id = usr.getUserId();
-            byte[] data = profileData.get(i);
-            userImageService.updateProfilePicture(id, data);
+            var file = files.get(i);
+            userImageService.updateProfilePicture(id, file);
         }
 
-        for (int i=0; i<profileData.size(); i++) {
+        for (int i=0; i<files.size(); i++) {
             User usr = users.get(i);
             long id = usr.getUserId();
-            byte[] data = profileData.get(i);
+            byte[] data = files.get(i).getBytes();
             byte[] result = userImageService.readFileOrDefault(id);
             assertArrayEquals(data, result);
         }
@@ -136,7 +142,7 @@ class UserImageServiceTest {
         }
 
         // This file should not be saved, because the user ID doesn't exist.
-        userImageService.updateProfilePicture(invalidId, fakeImageData);
+        userImageService.updateProfilePicture(invalidId, fakeImageFile);
 
         byte[] savedData = userImageService.readFileOrDefault(invalidId);
         assertArrayEquals(savedData, defaultBytes);

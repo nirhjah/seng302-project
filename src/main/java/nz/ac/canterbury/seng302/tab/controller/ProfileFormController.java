@@ -1,9 +1,11 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +23,6 @@ import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Formation;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FactService;
-import nz.ac.canterbury.seng302.tab.service.FormationService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 
 /**
  * Spring Boot Controller class for the ProfileForm
@@ -34,6 +31,9 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 public class ProfileFormController {
 
     Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private TeamImageService teamImageService;
 
     @Autowired
     private TeamService teamService;
@@ -80,11 +80,11 @@ public class ProfileFormController {
         if (team == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
+
         model.addAttribute("teamID", teamID);
         model.addAttribute("displayName", team.getName());
         model.addAttribute("displaySport", team.getSport());
         model.addAttribute("displayLocation", team.getLocation());
-        model.addAttribute("displayTeamPicture", team.getPictureString());
         model.addAttribute("displayToken", team.getToken());
 
         // Is the currently logged in user this team's manager?
@@ -131,9 +131,9 @@ public class ProfileFormController {
     @PostMapping("/profile")
     public String uploadPicture(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("teamID") long teamID) {
+            @RequestParam("teamID") long teamID) throws IOException {
         logger.info("POST /profile");
-        teamService.updatePicture(file, teamID);
+        teamImageService.updateProfilePicture(teamID, file);
         return "redirect:/profile?teamID=" + teamID;
     }
 

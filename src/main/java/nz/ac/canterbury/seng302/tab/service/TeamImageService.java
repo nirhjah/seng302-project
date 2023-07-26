@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +25,7 @@ public class TeamImageService extends FileDataSaver {
      * @param profile The deployment environment, which determines the
      */
     public TeamImageService(@Value("${spring.profiles.active:unknown}") String profile) throws IOException {
-        super(getDeploymentType(profile));
+        super(getDeploymentType(profile), FileDataSaver.DEFAULT_IMAGE_RESTRICTIONS);
 
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
@@ -54,11 +55,11 @@ public class TeamImageService extends FileDataSaver {
      * Updates a team's profile picture.
      *
      * @param id The userId
-     * @param bytes The bytes that represent the image
+     * @param file The file that represents the image
      */
-    public void updateProfilePicture(long id, byte[] bytes) {
+    public void updateProfilePicture(long id, MultipartFile file) {
         if (teamService.findTeamById(id).isPresent()) {
-            saveFile(id, bytes);
+            saveFile(id, file);
         }
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +25,7 @@ public class ClubImageService extends FileDataSaver {
      * @param profile The deployment environment, which determines the
      */
     public ClubImageService(@Value("${spring.profiles.active:unknown}") String profile) throws IOException {
-        super(getDeploymentType(profile));
+        super(getDeploymentType(profile), FileDataSaver.DEFAULT_IMAGE_RESTRICTIONS);
 
         // TODO: We probably need to have a different default club logo here.
         //  maybe a shield or banner or something?
@@ -48,11 +49,11 @@ public class ClubImageService extends FileDataSaver {
      * Updates a club logo
      *
      * @param id The userId
-     * @param bytes The bytes that represent the image
+     * @param file The file that represents the image
      */
-    public void updateClubLogo(long id, byte[] bytes) {
+    public void updateClubLogo(long id, MultipartFile file) {
         if (clubService.findClubById(id).isPresent()) {
-            saveFile(id, bytes);
+            saveFile(id, file);
         }
     }
 }

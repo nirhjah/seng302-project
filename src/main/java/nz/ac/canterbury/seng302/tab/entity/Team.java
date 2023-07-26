@@ -67,9 +67,6 @@ public class Team {
         this.name = name;
         this.location = location;
         this.sport = sport;
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.token = generateToken();
         this.creationDate = LocalDateTime.now();
     }
@@ -90,9 +87,6 @@ public class Team {
         this.name = name;
         this.location = location;
         this.sport = sport;
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         // set the manager
         this.setManager(manager);
         this.creationDate = LocalDateTime.now();
@@ -110,9 +104,6 @@ public class Team {
         // create a dummy location
         this.location = new Location("address1", "address2", "suburb", "chch", "8052", "new zealand");
         this.sport = sport;
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.creationDate = LocalDateTime.now();
     }
 
@@ -140,10 +131,6 @@ public class Team {
         this.name = name;
     }
 
-
-    public String getPictureString() {
-        return this.pictureString;
-    }
 
     public void setPictureString(String pictureString) {
         this.pictureString = pictureString;

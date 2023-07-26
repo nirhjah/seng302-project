@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +29,7 @@ public class UserImageService extends FileDataSaver {
      * @param profile The deployment environment, which determines the
      */
     public UserImageService(@Value("${spring.profiles.active:unknown}") String profile) throws IOException {
-        super(getDeploymentType(profile));
+        super(getDeploymentType(profile), FileDataSaver.DEFAULT_IMAGE_RESTRICTIONS);
 
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
@@ -59,11 +60,11 @@ public class UserImageService extends FileDataSaver {
      * If the user doesn't exist, this method is a NOOP.
      *
      * @param userId The userId
-     * @param bytes The bytes that represent the image
+     * @param file The file that represents the image
      */
-    public void updateProfilePicture(long userId, byte[] bytes) {
+    public void updateProfilePicture(long userId, MultipartFile file) {
         if (userService.findUserById(userId).isPresent()) {
-            saveFile(userId, bytes);
+            saveFile(userId, file);
         }
     }
 }

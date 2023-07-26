@@ -52,19 +52,6 @@ public class HomeFormController {
     @Autowired
     private UserImageService userImageService;
 
-    @GetMapping("/save1")
-    public String upload1() {
-        System.out.println(userImageService.saveFile(1L, new byte[] {1,2,3,4,5,6,7}));
-        return "redirect:./home";
-    }
-
-    @GetMapping("/read1")
-    public String read() {
-        logger.info(Arrays.toString(userImageService.readFile(1L).get()));
-        return "redirect:./home";
-    }
-
-
     /**
      * Gets the thymeleaf page representing the /home page (a basic welcome screen with nav bar)
      *
