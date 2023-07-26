@@ -85,7 +85,7 @@ class UserImageServiceTest {
 
 
     @Test
-    public void testMultipleImagesAreSaved() {
+    public void givenExistingUsers_givenDataIsSaved_testDataCanBeRetrieved() {
         // Multiple users, check that they all end up with unique data.
         var profileData = List.of(
                 new byte[] {1,2,3,4,5,6},
@@ -114,7 +114,7 @@ class UserImageServiceTest {
     doesn't have a valid profile picture.
      */
     @Test
-    public void testDefaultsAreConsistent() {
+    public void givenNoProfilePicture_testDefaultsAreGiven() {
         User a, b;
         int size = users.size();
         a = users.get(size - 1);
@@ -128,7 +128,7 @@ class UserImageServiceTest {
     }
 
     @Test
-    public void testSaveDeniedOnCrash() {
+    public void givenNoUser_testFileIsNotSaved() {
         long invalidId = 3290;
         while (userService.findUserById(invalidId).isPresent()) {
             // Just in case!
