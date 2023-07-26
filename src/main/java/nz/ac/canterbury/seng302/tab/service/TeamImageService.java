@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -11,6 +12,9 @@ import java.io.InputStream;
 
 @Service
 public class TeamImageService extends FileDataSaver {
+
+    @Autowired
+    private TeamService teamService;
 
     private final byte[] defaultProfilePicture;
 
@@ -53,6 +57,8 @@ public class TeamImageService extends FileDataSaver {
      * @param bytes The bytes that represent the image
      */
     public void updateProfilePicture(long id, byte[] bytes) {
-        saveFile(id, bytes);
+        if (teamService.findTeamById(id).isPresent()) {
+            saveFile(id, bytes);
+        }
     }
 }

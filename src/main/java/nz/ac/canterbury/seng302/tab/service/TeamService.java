@@ -280,4 +280,8 @@ public class TeamService {
         long id = club.getClubId();
         return teamRepository.findTeamsByTeamClubClubId(id);
     }
+
+    public Optional<Team> findTeamById(long id) {
+        return teamRepository.findById(id);
+    }
 }
