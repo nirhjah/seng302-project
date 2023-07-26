@@ -12,6 +12,10 @@ import java.util.Base64;
 import java.util.Optional;
 
 
+/**
+ * An abstract class that Services should extend,
+ * that allows for saving/loading files from the filesystem.
+ */
 public abstract class FileDataSaver {
 
     // DON'T CHANGE THESE PATH NAMES!
@@ -20,6 +24,8 @@ public abstract class FileDataSaver {
     private static final Logger logger = LoggerFactory.getLogger(FileDataSaver.class);
 
     private final Path initialPath;
+
+    private final DeploymentType deploymentType;
 
     private Path getPath(Long id) {
         String idString = String.valueOf(id);
@@ -153,7 +159,12 @@ public abstract class FileDataSaver {
     public FileDataSaver(DeploymentType deploymentType) {
         String prefix = getFolderName();
 
+        this.deploymentType = deploymentType;
         initialPath = getDeploymentPath(deploymentType).resolve(prefix);
+    }
+
+    public DeploymentType getDeploymentType() {
+        return deploymentType;
     }
 
     /**
