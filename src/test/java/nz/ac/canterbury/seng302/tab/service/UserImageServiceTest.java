@@ -41,6 +41,8 @@ class UserImageServiceTest {
             1,2,3,4,5,6,7,8
     };
 
+    private byte[] defaultBytes;
+
     private final List<User> users = new ArrayList<>();
 
     private static final int NUM_USERS = 30;
@@ -52,7 +54,11 @@ class UserImageServiceTest {
         // (This will mess up our filesystem on prod if it fails!!!)
         assertEquals(userImageService.getDeploymentType(), FileDataSaver.DeploymentType.TEST);
 
-        users.clear(); // clear test users
+        // Set default bytes (think of this like a fallback value)
+        defaultBytes = userImageService.getDefaultBytes();
+
+        // clear test users
+        users.clear();
 
         // Clear files for test
          UserImageService.clearTestFolder();
@@ -103,6 +109,10 @@ class UserImageServiceTest {
         }
     }
 
+    /*
+    Check that default bytes are returned, given the user
+    doesn't have a valid profile picture.
+     */
     @Test
     public void testDefaultsAreConsistent() {
         User a, b;
@@ -113,7 +123,23 @@ class UserImageServiceTest {
         byte[] dataA = userImageService.readFileOrDefault(a.getUserId());
         byte[] dataB = userImageService.readFileOrDefault(b.getUserId());
 
-        assertArrayEquals(dataA, dataB);
+        assertArrayEquals(dataA, defaultBytes);
+        assertArrayEquals(dataB, defaultBytes);
+    }
+
+    @Test
+    public void testSaveDeniedOnCrash() {
+        long invalidId = 3290;
+        while (userService.findUserById(invalidId).isPresent()) {
+            // Just in case!
+            invalidId++;
+        }
+
+        // This file should not be saved, because the user ID doesn't exist.
+        userImageService.updateProfilePicture(invalidId, fakeImageData);
+
+        byte[] savedData = userImageService.readFileOrDefault(invalidId);
+        assertArrayEquals(savedData, defaultBytes);
     }
 
     @AfterAll
