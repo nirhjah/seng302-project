@@ -30,10 +30,13 @@ public class HomeFormController {
     private TeamService teamService;
 
     @Autowired
-    private SportService sportService;
+    private UserService userService;
 
     @Autowired
-    private UserService userService;
+    public HomeFormController(UserService userService, TeamService teamService) {
+        this.userService = userService;
+        this.teamService = teamService;
+    }
 
     /**
      * Redirects GET default url '/' to '/home'

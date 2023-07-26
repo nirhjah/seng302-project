@@ -1,11 +1,16 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
+import nz.ac.canterbury.seng302.tab.entity.Club;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
+import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.service.ClubService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -19,10 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@Import(TeamService.class)
+@Import({TeamService.class, ClubService.class})
 public class TeamServiceTest {
 
     Logger logger = LoggerFactory.getLogger(TeamServiceTest.class);
@@ -40,6 +42,9 @@ public class TeamServiceTest {
 
     @Autowired
     private TeamRepository teamRepository;
+
+    @Autowired
+    private ClubService clubService;
 
     Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
     Location location2 = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
@@ -275,17 +280,6 @@ public class TeamServiceTest {
 
     }
 
-    // @Test
-    // public void
-    // givenIHaveCreatedATeam_WhenGeneratingANewToken_TheTokenIsNotTheSameAsThePrevious()
-    // throws IOException {
-    // Team team = new Team("Liverpool", "football");
-    // String oldToken = team.getToken();
-    // teamService.generateNewTokenForTeam();
-    // String newToken = team.getToken();
-    // assertNotEquals(oldToken, newToken);
-    // }
-
     @Test
     public void givenATeamHasValidNumberOfManagers_returnTrue() {
         List<String> userRoles = List.of(Role.MANAGER.toString(), Role.COACH.toString(), Role.MEMBER.toString());
@@ -304,4 +298,92 @@ public class TeamServiceTest {
         assertFalse(teamService.userRolesAreValid(userRoles));
     }
 
+    @Test
+    public void getTeamWithTeam_ReturnsTeam() throws IOException {
+        Team team = new Team("Test", "Hockey");
+        teamRepository.save(team);
+        Assertions.assertEquals(team, teamService.getTeam(team.getTeamId()));
+    }
+
+    @Test
+    public void getTeamWithNoTeam_ReturnsNull() throws IOException {
+        Assertions.assertNull(teamService.getTeam(-1));
+    }
+
+    @Test
+    public void givenICreateATeam_whenIChangeAndSaveItsName_thenTheSavedEntityIsUpdated() throws IOException {
+        Team team = new Team("Test", "Hockey");
+        teamRepository.save(team);
+        team.setName("New Name");
+        teamService.updateTeam(team);
+        Assertions.assertEquals(team, teamService.getTeam(team.getTeamId()));
+        Assertions.assertTrue(team.getName().equals("New Name"));
+    }
+
+    @Test
+    public void ifNoTeam_getPaginatedTeam_returnsEmpty() {
+        Assertions.assertEquals(List.of(), teamService.findPaginated(1, 10).toList());
+    }
+
+    @Test
+    public void ifTeam_getPaginatedTeam_returnsTeam() throws IOException {
+        Team team = new Team("Test", "Hockey");
+        teamRepository.save(team);
+        Assertions.assertEquals(List.of(team), teamService.findPaginated(1, 10).toList());
+    }
+
+    @Test
+    public void testFindTeamsByClub() throws IOException {
+        List<Team> teamsInClub = new ArrayList<>();
+        var NUM_TEAMS_IN_CLUB = 5;
+        var location = new Location("address1", "address2", "suburb", "chch", "8052", "new zealand");
+
+        var SPORT = "Soccer";
+
+        Club club = new Club("Real Madrid", location, SPORT);
+        clubService.updateOrAddClub(club);
+
+        for (int i=0; i<10; i++) {
+            Team team = new Team("Test", SPORT);
+            if (i < NUM_TEAMS_IN_CLUB) {
+                team.setTeamClub(club);
+                teamsInClub.add(team);
+            }
+            teamService.addTeam(team);
+        }
+
+        var teamsInClubFromDB = teamService.findTeamsByClub(club);
+        assertEquals(teamsInClubFromDB.size(), teamsInClub.size());
+
+        var set1 = new HashSet<>(teamsInClubFromDB);
+        var set2 = new HashSet<>(teamsInClub);
+        assertEquals(set1, set2);
+    }
+
+    @Test
+    public void testExceptionThrownWhenAssigningInvalidClub() throws IOException {
+        Assertions.assertThrows(UnmatchedSportException.class, () -> {
+            var location = new Location("address1", "address2", "suburb", "chch", "8052", "new zealand");
+            var CLUB_SPORT = "Soccer";
+            var TEAM_SPORT = "Hockey";
+
+            Club club = new Club("Real Madrid", location, CLUB_SPORT);
+            clubService.updateOrAddClub(club);
+
+            Team team = new Team("Test", TEAM_SPORT);
+            team.setTeamClub(club);
+        });
+    }
+
+    @Test
+    public void testClubAssignedOk() throws IOException {
+        var SPORT = "Soccer";
+        var location = new Location("address1", "address2", "suburb", "chch", "8052", "new zealand");
+        Club club = new Club("Real Madrid", location, SPORT);
+        clubService.updateOrAddClub(club);
+
+        Team team = new Team("Test", SPORT);
+        team.setTeamClub(club);
+        assertEquals(team.getTeamClub(), club);
+    }
 }

@@ -1,0 +1,75 @@
+#pitch {
+    height: 400px;
+    width: 320px;
+    position: relative;
+    background-image: url('../image/icons/pitch.svg');
+    background-repeat:no-repeat;
+    background-size: 100% 100%;
+    border-radius: 2px;
+}
+
+.player {
+    width: 40px;
+    height: 40px;
+    background-image: url('../image/icons/player.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: absolute;
+    cursor: move;
+    transition: 0.2s ease-out;
+}
+
+.player.filled {
+    background-image: none;
+}
+
+.player.uneditable {
+    cursor: unset;
+}
+
+.player.uneditable.unfilled:hover {
+    cursor: pointer;
+    transform: scaleX(1.1) scale(1.1);
+}
+
+.clear-position-button.active {
+    display: block;
+}
+
+.clear-position-button {
+    right: 0;
+    top: 0;
+    max-width: 18px;
+    margin-right: -8px;
+    margin-top: -2px;
+    display: none;
+}
+
+.player-profile-img {
+    width: 40px;
+    border-radius: 50px;
+    background: white;
+    bottom: 0;
+}
+
+.player h3 {
+    color: white;
+    bottom: 0;
+    padding-top: -10px;
+    margin-bottom: -18px;
+    text-shadow: 2px 3px 5px rgba(0,0,0,0.5);
+    font-size: 16px;
+    left: 0;
+}
+
+.clear-position-button:hover {
+    cursor: pointer;
+}
+
+.player h3, .player img {
+    position: absolute;
+}
+
+
+
+

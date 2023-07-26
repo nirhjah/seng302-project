@@ -9,6 +9,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -359,11 +360,6 @@ public class User {
     public void joinTeam(Team team) {
         this.joinedTeams.add(team);
         team.setRole(this, Role.MEMBER);
-    }
-
-    public void leaveTeam(Team team) {
-        this.joinedTeams.remove(team);
-        team.getTeamMembers().remove(this);
     }
 
     public Set<Team> getJoinedTeams() {

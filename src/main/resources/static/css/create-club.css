@@ -1,0 +1,50 @@
+@media (max-width: 700px) {
+    .club-form .wrapper {
+        width: 90vw;
+    }
+}
+
+.club-form {
+    justify-content: center;
+    align-items: center;
+    display:flex;
+    flex-direction:column
+}
+
+.club-form .wrapper form {
+    width: 65%;
+}
+
+.club-form .wrapper {
+    width: 630px;
+    height: 600px;
+    font-size: 15px;
+
+}
+
+.create-club-header {
+    padding-bottom: 15px;
+}
+
+select[multiple] {
+    padding-right: 0;
+    width: 100%;
+    margin-top: 10%;
+}
+
+.selectTeamsLabel {
+    font-family: "Noto Sans", sans-serif;
+    position: absolute;
+    transform: translateY(-50%);
+    font-size: 1em;
+    font-weight: 500;
+    transition: 0.5s;
+    color: #888888;
+    border-bottom: none;
+    margin-top: 4%
+
+}
+
+.selectTeamsOption {
+    padding: 0.5em;
+}

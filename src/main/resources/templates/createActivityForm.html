@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org" lang="en">
+<head>
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+    <link th:href="@{/css/create-activity.css}" rel="stylesheet"/>
+    <link th:href="@{/css/formation.css}" rel="stylesheet"/>
+
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>[[${actId != null ? 'Edit' : 'Create'}]] Activity</title>
+</head>
+<body class="create-activity-background">
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+<div class="activity-form">
+    <div class="create-activity-header">
+        <h1>[[${actId != null ? 'Edit' : 'Create'}]] Activity</h1>
+    </div>
+    <div class="wrapper">
+        <form th:action="@{createActivity}" th:object="${createActivityForm}" id="createActivityForm" method="post">
+            <input type="hidden" th:if="${actId != null}" th:name="actId" th:value="${actId}"/>
+
+            <!--/* Activity Type dropdown */-->
+            <div class="select-container">
+                <label for="activityType">Activity Type <span class="required">*</span> </label>
+                <select name="activityType" id="activityType" onchange="updateFormationList()">
+                    <option th:each="type : ${activityTypes}"
+                            th:value="${type}"
+                            th:text="${type}"
+                            th:selected="${type == activityType}">
+                    </option>
+                </select>
+                <div th:each="err : ${#fields.errors('activityType')}" th:text="${err}" class="error-message"></div>
+            </div>
+
+            <!--/* Team selection dropdown */-->
+            <div class="select-container">
+                <div class="select-box">
+                    <label for="team">Activity Team <span class="required">*</span></label>
+                    <select name="team" id="team" onchange="updateFormationList()">
+                        <option value="-1">(No Team)</option>
+                        <option th:each="team : ${teamList}"
+                                th:value="${team.getTeamId()}"
+                                th:text="${team.getName()}"
+                                th:selected="${team.getName() == teamName}"></option>
+                    </select>
+                </div>
+                <div th:each="err : ${#fields.errors('team')}" th:text="${err}" class="error-message"></div>
+            </div>
+
+            <!--/* Formation selection dropdown (Only active if the activity supports it) */-->
+            <div class="select-container">
+                <div class="select-box">
+                    <label for="team">Activity formation <em>(Team Game and Team Friendly only)</em></label>
+                    <select onchange="changeDisplayedFormation()" name="formation" id="formation-dropdown" th:disabled="${#lists.isEmpty(teamFormations)}">
+                        <option value="-1">(No Formation)</option>
+                        <option th:each="forma : ${teamFormations}"
+                                th:value="${forma.formationId}"
+                                th:text="${forma.formation} + (${forma.custom} ? ' Custom' : '')"
+                                th:selected="${forma == selectedFormation}"></option>
+                    </select>
+                </div>
+                <div th:each="err : ${#fields.errors('formation')}" th:text="${err}" class="error-message"></div>
+            </div>
+
+            <div class="formation-activity-display" >
+                <input type="hidden" id="positions" name="positions">
+                <div class="subs-reserves-box">
+                    <div class=subs-header>Subs</div>
+                    <ul class="subs-ul">
+                    </ul>
+                    <div class="reserves-header active">Reserves</div>
+                    <ul class="reserves-ul active">
+                        <li th:each="player : ${players}" class="reserves-li">
+                            <img class="li-player-image" th:src="${'data:image/jpeg;base64,' + player.getPictureString}" alt="My Profile"/>
+                            <span class="li-player-name" th:text="${player.getFirstName}"></span>
+                            <button class="switch" type="button"></button>
+                            <input type="hidden" class="playerId" th:value="${player.getUserId}">
+                        </li>
+                    </ul>
+                </div>
+                <div th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"></div>
+            </div>
+
+            <!--/* Activity Description */-->
+            <div class="description-box">
+                <label for="description">Description: <span class="required">*</span></label>
+                <textarea class="description-text" id="description" th:name="description" autofocus placeholder=""
+                          th:text="${description}"></textarea>
+                <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
+                <p id="charCount" class="charCount"></p>
+            </div>
+
+            <div class="input-boxes">
+                <!--/* Start Date */-->
+                <div class="input-box">
+                    <input type="datetime-local" class="datetime-input" id="startDateTime" name="startDateTime"
+                           th:value="${startDateTime}">
+                    <label for="startDateTime">Start date & time of activity<span class="required">*</span> </label>
+                    <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}"
+                         class="error-message"></div>
+                </div>
+
+                <!--/* End Date */-->
+                <div class="input-box">
+                    <input type="datetime-local" class="datetime-input" id="endDateTime" name="endDateTime"
+                           th:value="${endDateTime}">
+                    <label for="endDateTime">End date & time of activity<span class="required">*</span> </label>
+                    <div th:each="err : ${#fields.errors('endDateTime')}" th:text="${err}" class="error-message"></div>
+                </div>
+            </div>
+
+            <div class="input-boxes">
+                <div class="input-box">
+                    <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
+                           data-cy="location" autofocus placeholder="" autocomplete="off" th:value="${addressLine1}"
+                           title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
+                    <label for="address-line-1">Address Line 1<span class="required">*</span></label>
+                    <div class="autocomplete-container" id="autocomplete-container"></div>
+                    <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="error-message"></div>
+                </div>
+
+
+                <div class="input-box">
+                    <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
+                           data-cy="location" autofocus placeholder="" th:value="${addressLine2}"
+                           title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
+                    <label for="address-line-2">Address Line 2</label>
+                </div>
+                <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message"></div>
+            </div>
+            <div class="input-box">
+                <input type="text" class="form-control" id="suburb" th:name="suburb"
+                       data-cy="location" autofocus placeholder="" th:value="${suburb}">
+                <label for="suburb">Suburb</label>
+            </div>
+            <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
+            <div class="input-box">
+                <input type="text" class="form-control" id="postcode" th:name="postcode"
+                       data-cy="location" autofocus placeholder="" th:value="${postcode}">
+                <label for="postcode">Postcode<span class="required">*</span></label>
+            </div>
+            <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
+
+            <div class="input-box">
+                <input type="text" class="form-control" id="city" th:name="city"
+                       data-cy="location" autofocus placeholder="" th:value="${city}">
+                <label for="city">City <span class="required">*</span></label>
+            </div>
+            <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
+
+            <div class="input-box">
+                <input type="text" class="form-control" id="country" th:name="country"
+                       data-cy="location" autofocus placeholder="" th:value="${country}">
+                <label for="country">Country <span class="required">*</span></label>
+            </div>
+            <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
+            <div class="submit-button">
+                <a th:href="@{home}">
+                    <button type="submit" th:text="${actId != null ? 'Save' : 'Create'}"></button>
+                </a>
+                <div class="cancel-link">
+                    <a th:if="${actId != null}" th:href="@{view-activity(activityID=${actId})}">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" th:inline="javascript">
+    /**
+     ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
+     * @type {string}
+     */
+    const path = /*[[${path}]]*/ "";
+    const ENDPOINT = path + "/geocode/autocomplete";
+</script>
+<script th:inline="javascript">
+    /**
+     * The delay time (in milliseconds) for debouncing the search input.
+     * @type {number}
+     */
+    const DEBOUNCE_DELAY = 450; // set the debounce delay to 450ms
+    const searchBox = document.querySelector('#address-line-1');
+    const resultsContainer = document.querySelector('#autocomplete-container');
+    const countryInput = document.querySelector('#country');
+    const cityInput = document.querySelector('#city');
+    const suburbInput = document.querySelector('#suburb');
+    const postcodeInput = document.querySelector('#postcode');
+
+    let timeoutId;
+
+    /**
+     * Debounces the given function with the given delay time.
+     * @param {Function} fn - The function to be debounced.
+     * @param {number} delay - The delay time (in milliseconds) for debouncing.
+     * @returns {Function} The debounced function.
+     */
+    function debounce(fn, delay) {
+        return function () {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => fn.apply(this, arguments), delay);
+        }
+    }
+
+    /**
+     * Searches the OpenRouteService Geocoding API for autocomplete results based on the current search input value.
+     * Displays the results in the results container element.
+     */
+    function searchAutocomplete() {
+        const searchTerm = this.value.trim();
+
+        if (searchTerm.length >= 3) {
+            axios.get(ENDPOINT, {
+                params: {
+                    text: searchTerm,
+                    language: 'en'
+                }
+            })
+                .then(response => {
+                    const results = response.data.features.slice(0, 5);
+                    let html = '';
+                    if (results.length > 0) {
+                        html = '<ul class ="autocomplete-result">';
+                        results.forEach(result => {
+                            html += `<li class="location-autocomplete-value" data-country="${result.properties.country}" data-city="${result.properties.locality}" data-suburb="${result.properties.localadmin}" data-postcode="${result.properties.postalcode}" data-house-number="${result.properties.housenumber}" data-street="${result.properties.street}">${result.properties.label}</li>`;
+                        });
+                        html += '</ul>';
+                    } else {
+                        html = '<p>No results found</p>';
+                    }
+                    resultsContainer.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error(error);
+                    resultsContainer.innerHTML = '<p>Error fetching results</p>';
+                });
+        } else {
+            resultsContainer.innerHTML = '';
+        }
+    }
+
+    /**
+     * Adds an event listener to the search input element for debouncing the searchAutocomplete function.
+     */
+    searchBox.addEventListener('input', debounce(searchAutocomplete, DEBOUNCE_DELAY));
+
+
+    /**
+     * Adds an event listener to the results container element for handling the click event on an autocomplete result.
+     * Updates the search input and the selected address elements with the clicked result data.
+     */
+    resultsContainer.addEventListener('click', function (event) {
+        if (event.target.tagName === 'LI') {
+            let address = event.target.getAttribute('data-house-number') === "undefined" ? "" : event.target.getAttribute('data-house-number') + " ";
+            address += event.target.getAttribute('data-street') === "undefined" ? "" : event.target.getAttribute('data-street');
+            searchBox.value = address;
+            const country = event.target.getAttribute('data-country') === "undefined" ? "" : event.target.getAttribute('data-country');
+            const city = event.target.getAttribute('data-city') === "undefined" ? "" : event.target.getAttribute('data-city');
+            const suburb = event.target.getAttribute('data-suburb') === "undefined" ? "" : event.target.getAttribute('data-suburb');
+            const postcode = event.target.getAttribute('data-postcode') === "undefined" ? "" : event.target.getAttribute('data-postcode');
+            countryInput.value = country;
+            cityInput.value = suburb;
+            suburbInput.value = city;
+            postcodeInput.value = postcode;
+            resultsContainer.innerHTML = "";
+        }
+    });
+
+    document.addEventListener('click', function (event) {
+        if (resultsContainer.innerHTML !== '' && !resultsContainer.contains(event.target)) {
+            resultsContainer.innerHTML = "";
+        }
+    });
+    const textarea = document.getElementById('description');
+    const charCount = document.getElementById('charCount');
+    const limit = 150;
+
+    textarea.addEventListener('input', function() {
+        const value = textarea.value;
+        const remainingChars = limit - value.length;
+        charCount.textContent = `Characters remaining: ${remainingChars}`;
+
+        if (remainingChars <= 0) {
+            textarea.style.borderColor = 'red';
+            charCount.style.color='red';
+        } else {
+            textarea.style.borderColor = '#415a77';
+            charCount.style.color='#888888';
+        }
+    });
+</script>
+<script>
+    function typeCanHaveFormation(activityType) {
+        return (activityType === "Game" || activityType === "Friendly");
+    }
+
+    function updateFormationList() {
+        const formationDropdown = document.querySelector("#formation-dropdown");
+        const currentTeamId = document.querySelector("#team").value;
+        const currentActivity = document.querySelector("#activityType").value;
+
+        // Can't select formations if you've selected 'no team'
+        if (currentTeamId == -1) {
+            formationDropdown.disabled = true;
+            return;
+        }
+        // Can't select formations if your activity isn't a "friendly" or "game"
+        if (!typeCanHaveFormation(currentActivity)) {
+            formationDropdown.disabled = true;
+            return;
+        }
+
+        // Otherwise, get the list of formations
+        populateFormationDropdown(false, "(loading...)", {});
+        axios.get("createActivity/get_team_formation", {params: {teamId: currentTeamId}})
+            .then(response => {
+                console.log(response);
+                const formationList = response.data;
+                if (formationList.length == 0) {
+                    populateFormationDropdown(false, "(team has no formations)", {});
+                } else {
+                    populateFormationDropdown(true, "(no formation)", formationList);
+                }
+            })
+            .catch(error => {
+                alert("ERROR see console");
+                console.error(error);
+            });
+
+        
+    }
+
+    function populateFormationDropdown(isEnabled, emptyValueName, otherFields) {
+        const formationDropdown = document.querySelector("#formation-dropdown");
+        // Set visibility
+        formationDropdown.disabled = !isEnabled;
+        formationDropdown.innerHTML = "";
+        // Create the default "no value" field
+        let item = document.createElement("option");
+            item.value = -1;
+            item.innerText = emptyValueName;
+            formationDropdown.appendChild(item);
+        // Add the remaining fields
+        for (const [formationId, formation] of Object.entries(otherFields)) {
+            let item = document.createElement("option");
+            item.value = formationId;
+            item.innerText = formation;
+            formationDropdown.appendChild(item);
+        }
+    }
+
+    updateFormationList()
+</script>
+<script>
+
+    function changeDisplayedFormation() {
+        const element = document.getElementById("formation-dropdown");
+        const value = element.options[element.selectedIndex].value;
+        console.log(value);
+        if (value == -1) {
+            document.querySelector(".formation-activity-display").classList.remove("active");
+        }
+        else {
+            document.querySelector(".formation-activity-display").classList.add("active");
+            const formationString = element[value].text;
+            renderPlayers(formationString);
+            addPositionFunctionality();
+        }
+    }
+
+    const playersSubs = document.querySelectorAll(".subs-li");
+    const playersReserves = document.querySelectorAll(".reserves-li");
+    const positions = pitch.childNodes;
+    playersSubs.forEach((player) => {
+        playerOnClick(player);
+    });
+    playersReserves.forEach((player) => {
+        playerOnClick(player);
+    });
+
+    function playerOnClick(player) {
+        player.addEventListener('click', () => {
+            playersReserves.forEach(otherReserve => {
+                if (otherReserve !== player) {
+                    otherReserve.classList.remove('active');
+                }
+            });
+            playersSubs.forEach(otherSub => {
+                if (otherSub !== player) {
+                    otherSub.classList.remove('active')
+                }
+            });
+            player.classList.toggle('active');
+            for (let i = 0; i < positions.length; i++) {
+                const position = positions.item(i);
+                if (player.classList.contains('active') && !position.classList.contains("filled")) {
+                    position.classList.add("unfilled");
+                } else {
+                    position.classList.remove("unfilled");
+                }
+            }
+        });
+    }
+
+    function addPositionFunctionality() {
+        for (let i = 0; i < positions.length; i++) {
+            const position = positions.item(i);
+            position.classList.remove("unfilled");
+            const clearPositionButton = position.querySelector(".clear-position-button");
+
+            // Action to carry out when a user selects a position with a player selected
+            position.addEventListener('click', () => {
+                const selectedPlayer = document.querySelector(".subs-li.active, .reserves-li.active");
+                if (selectedPlayer) {
+                    const firstName = selectedPlayer.querySelector(".li-player-name").textContent;
+                    const picture = selectedPlayer.querySelector(".li-player-image").getAttribute("src");
+                    const id = selectedPlayer.querySelector("input").value;
+                    addPlayer(position, firstName, picture, id)
+
+                    fillPosition(position);
+                    selectedPlayer.classList.remove("active");
+                    selectedPlayer.classList.add("in-formation");
+                }
+                checkSubsActive();
+            });
+
+            // Action to carry out when use clicks button to remove player from formation
+            clearPositionButton.addEventListener('click', () => {
+                const positionPlayerId = position.querySelector("input").value;
+                const players = document.querySelectorAll(".reserves-li");
+                players.forEach(player => {
+                    console.log()
+                    const playerId = player.querySelector("input").value;
+                    if (playerId === positionPlayerId) {
+                        player.classList.remove("in-formation");
+                        position.classList.remove("filled");
+                    }
+                });
+                deactivateSubs();
+            });
+        }
+    }
+
+    //
+    function fillPosition(position) {
+        position.classList.add("filled");
+        for (let i = 0; i < positions.length; i++) {
+            positions.item(i).classList.remove("unfilled");
+        }
+    }
+
+    function checkSubsActive() {
+        let subsActive = true;
+        const subsUl = document.querySelector(".subs-ul");
+        const subsLi = document.querySelectorAll(".subs-li");
+        const subsHeader = document.querySelector(".subs-header");
+        const reservesLi = document.querySelectorAll(".reserves-li");
+        for (let i = 0; i < positions.length; i++) {
+            position = positions.item(i)
+            if (!position.classList.contains("filled")) {
+                subsActive = false;
+                break;
+            }
+        }
+        if (subsActive) {
+            deactivateSubs()
+        } else {
+            subsUl.classList.remove("active");
+            subsHeader.classList.remove("active");
+            subsLi.forEach(li => {
+                const switchButton = li.querySelector(".switch")
+                switchButton.classList.remove("active");
+            })
+            reservesLi.forEach(li => {
+                const switchButton = li.querySelector(".switch")
+                switchButton.classList.remove("active");
+            })
+        }
+    }
+
+    function deactivateSubs() {
+        const subsUl = document.querySelector(".subs-ul");
+        const subsLi = document.querySelectorAll(".subs-li");
+        const subsHeader = document.querySelector(".subs-header");
+        const reservesLi = document.querySelectorAll(".reserves-li");
+        subsUl.classList.add("active");
+        subsHeader.classList.add("active");
+        subsLi.forEach(li => {
+            const switchButton = li.querySelector(".switch")
+            switchButton.classList.add("active");
+        })
+        reservesLi.forEach(li => {
+            const switchButton = li.querySelector(".switch")
+            switchButton.classList.add("active");
+        })
+    }
+
+    const switchButtons = document.querySelectorAll('.switch');
+
+    // Iterate over each switch button
+    switchButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const listItem = button.parentElement;
+            const reservesUL = document.querySelector('.reserves-ul');
+            const subsUL = document.querySelector('.subs-ul');
+            const parentUl = listItem.parentElement;
+
+            if (button.classList.contains('active')) {
+                // Move the li element to subs-ul
+                if (parentUl.classList.contains("reserves-ul")) {
+                    subsUL.appendChild(listItem);
+                    listItem.classList.add("subs-li");
+                    listItem.classList.remove("reserves-li");
+                } else {
+                    reservesUL.appendChild(listItem);
+                    listItem.classList.add("reserves-li");
+                    listItem.classList.remove("subs-li");
+                }
+                parentUl.removeChild(listItem);
+            }
+        });
+    });
+
+
+</script>
+</html>
