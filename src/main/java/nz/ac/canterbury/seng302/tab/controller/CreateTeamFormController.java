@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -46,12 +48,14 @@ public class CreateTeamFormController {
     @Autowired
     private UserService userService;
 
+    private static final String TEMPLATE_NAME = "createTeamForm";
+
 
     /**
      * Gets createTeamForm to be displayed and contains name, sport,
      * location and teamID model attributes to be added to html.
      */
-    public void prefillModel(Model model) {
+    public void prefillModel(Model model, HttpServletRequest httpServletRequest) {
         model.addAttribute("postcodeRegex", TeamFormValidators.VALID_POSTCODE_REGEX);
         model.addAttribute("postcodeRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
         model.addAttribute("addressRegex", TeamFormValidators.VALID_ADDRESS_REGEX);
@@ -65,6 +69,7 @@ public class CreateTeamFormController {
         model.addAttribute("lastName", user.getLastName());
         model.addAttribute("displayPicture", user.getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
+        model.addAttribute("httpServletRequest", httpServletRequest);
     }
 
     @PostMapping("/generateTeamToken")
@@ -81,49 +86,75 @@ public class CreateTeamFormController {
         return String.format("redirect:./profile?teamID=%s", teamID);
     }
 
+    /**
+     * Endpoint for creating a new team. This form will not be pre-populated
+     */
     @GetMapping("/createTeam")
-    public String teamForm(
-            @RequestParam(name = "edit", required = false) Long teamID,
+    public String createTeamForm(
             Model model,
             HttpServletRequest request,
             CreateAndEditTeamForm createAndEditTeamForm) throws MalformedURLException {
 
-        logger.info("GET /createTeam");
-        model.addAttribute("httpServletRequest", request);
+        logger.info("GET /createTeam - new team");
+
+        prefillModel(model, request);
 
         URL url = new URL(request.getRequestURL().toString());
         String path = (url.getPath() + "/..");
         model.addAttribute("path", path);
 
-        Team team;
-        if (teamID != null) {
-            if ((team = teamService.getTeam(teamID)) != null) {
-                model.addAttribute("name", team.getName());
-                model.addAttribute("sport", team.getSport());
-                model.addAttribute("addressLine1", team.getLocation().getAddressLine1());
-                model.addAttribute("addressLine2", team.getLocation().getAddressLine2());
-                model.addAttribute("city", team.getLocation().getCity());
-                model.addAttribute("suburb", team.getLocation().getSuburb());
-                model.addAttribute("country", team.getLocation().getCountry());
-                model.addAttribute("postcode", team.getLocation().getPostcode());
-                model.addAttribute("teamID", team.getTeamId());
-                model.addAttribute("path", path);
-            } else {
-                model.addAttribute("invalid_team", "Invalid team ID, creating a new team instead.");
-            }
-        }
 
         List<String> knownSports = sportService.getAllSportNames();
         model.addAttribute("knownSports", knownSports);
  
-        return "createTeamForm";
+        return TEMPLATE_NAME;
+    }
+
+
+    /**
+     * Endpoint for *updating* a team.
+     */
+    @GetMapping(value = "/createTeam", params = {"edit"})
+    public String editTeamForm(
+            @RequestParam(name = "edit", required = true) long teamID,
+            Model model,
+            HttpServletRequest request,
+            CreateAndEditTeamForm createAndEditTeamForm) throws MalformedURLException {
+
+        logger.info("GET /createTeam - updated team with ID={}", teamID);
+        prefillModel(model, request);
+        
+        // I'm starting to regret this pattern
+        Optional<User> user = userService.getCurrentUser();
+        if (user.isEmpty()) {
+            return "redirect:login";
+        }
+        // Does the team we wanna edit exist?
+        Team team = teamService.getTeam(teamID);
+        if (team == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team with given ID does not exist");
+        }
+        // Can you even edit this team?
+        if (!team.isManager(user.get())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is unable to modify this team");
+        }
+
+        createAndEditTeamForm.prepopulate(team);
+
+        List<String> knownSports = sportService.getAllSportNames();
+        model.addAttribute("knownSports", knownSports);
+        model.addAttribute("httpServletRequest", request);
+
+        URL url = new URL(request.getRequestURL().toString());
+        String path = (url.getPath() + "/..");
+        model.addAttribute("path", path);
+ 
+        return TEMPLATE_NAME;
     }
 
     /**
      * Posts a form response with team name, sport and location
      *
-     * @param name  name if user
-     * @param sport users team sport
      * @param model (map-like) representation of name, language and isJava boolean
      *              for use in thymeleaf,
      *              with values being set to relevant parameters provided
@@ -131,13 +162,13 @@ public class CreateTeamFormController {
      */
     @PostMapping("/createTeam")
     public String submitTeamForm(
-            @RequestParam(name = "teamID", defaultValue = "-1") long teamID,
+            @RequestParam(name = "teamID", required = true) long teamID,
             @Validated CreateAndEditTeamForm createAndEditTeamForm,
             BindingResult bindingResult,
             HttpServletResponse httpServletResponse,
             Model model,
             HttpServletRequest httpServletRequest) throws IOException {
-        logger.info("POST /createTeam");
+        logger.info("POST /createTeam - update team");
 
 
         // client side validation
@@ -147,13 +178,13 @@ public class CreateTeamFormController {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("teamID", teamID);
             logger.info("bad request");
-            return "createTeamForm";
+            return TEMPLATE_NAME;
         }
 
 
         // trim all extra whitespace and trailing/leading whitespace
-        String trimmedName = teamService.clipExtraWhitespace(name);
-        String trimmedSport = teamService.clipExtraWhitespace(sport);
+        String trimmedName = teamService.clipExtraWhitespace(createAndEditTeamForm.getName());
+        String trimmedSport = teamService.clipExtraWhitespace(createAndEditTeamForm.getSport());
         String trimmedCountry = teamService.clipExtraWhitespace(createAndEditTeamForm.getCountry());
         String trimmedAddressLine1 = teamService.clipExtraWhitespace(createAndEditTeamForm.getAddressLine1());
         String trimmedAddressLine2 = teamService.clipExtraWhitespace(createAndEditTeamForm.getAddressLine2());
