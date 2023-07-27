@@ -19,11 +19,6 @@
         <form th:action="@{createClub}" th:object="${createAndEditClubForm}" id="createAndEditClubForm" method="post">
             <input type="hidden" th:if="${clubId != null}" th:name="clubId" th:value="${clubId}"/>
 
-            <div class="create-competition-header">
-                <h2>Details</h2>
-                <img th:src="@{/image/icons/team.svg}"/>
-            </div>
-
             <div class="input-box">
                 <input type="text" class="form-control" id="name" th:name="name" th:value="${name}"
                        data-cy="name" autofocus placeholder="">
