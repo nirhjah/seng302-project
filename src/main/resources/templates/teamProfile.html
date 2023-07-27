@@ -101,20 +101,22 @@
                 <div class="profile-bottom-content">
                     <form th:action="@{profile}" class="profile-buttons" method="post">
                         <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
-                        <div class="edit-button">
-                            <a th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
-                                <button type="button">Edit Profile</button>
-                            </a>
-                        </div>
-                        <div class="edit-button">
-                            <a th:href="@{editTeamRole(edit=${teamID})}" th:if="${isUserManager}">
-                                <button type="button">Edit Team Roles</button>
-                            </a>
-                        </div>
-                        <div class="edit-button">
-                            <a th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
-                                <button type="button">View Team Activities</button>
-                            </a>
+                        <div class="grouped-buttons">
+                            <div class="edit-button">
+                                <a th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
+                                    <button id="edit-profile" type="button">Edit Profile</button>
+                                </a>
+                            </div>
+                            <div class="edit-button">
+                                <a th:href="@{editTeamRole(edit=${teamID})}" th:if="${isUserManager}">
+                                    <button id="edit-roles" type="button">Edit Roles</button>
+                                </a>
+                            </div>
+                            <div class="edit-button">
+                                <a th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
+                                    <button id="activities" type="button">Activities</button>
+                                </a>
+                            </div>
                         </div>
                     </form>
                 </div>

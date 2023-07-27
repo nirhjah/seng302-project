@@ -14,11 +14,10 @@
 @media (max-width: 1000px) {
     .wrapper-profile {
         width: 90vw !important;
-        display: block !important;
     }
 }
 
-@media (max-width: 850px) {
+@media (max-width: 960px) {
     .wrapper-profile {
         display: flex !important;
         flex-direction: column !important;
@@ -31,28 +30,95 @@
     .wrapper-profile .profile-pic {
         width: 100% !important;
         position: static !important;
-        height: 310px;
     }
 
     .wrapper-profile .team-info {
-        width: 90% !important;
+        width: 100% !important;
         position: static !important;
-        padding-top: 0 !important;
+        padding: 0 5% 0 5%;
     }
 
     .wrapper-profile .profile-buttons {
         position: static !important;
-        width: 90% !important;
-        margin: 20px 0 !important;
+        width: 100% !important;
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
     }
 
     .wrapper-profile .join-token {
         position: static !important;
         width: 90% !important;
-        margin: 0 0 20px !important;
         padding-top: 0;
+        align-items: unset;
+        margin: 20px 0;
+    }
+
+    .profile-top-content, .team-display .profile-top-content {
+        display: block !important;
+    }
+
+    .content-box {
+        width: inherit;
+    }
+
+    .team-display {
+        width: unset;
+    }
+
+    .team-profile-form {
+        min-height: 107vh;
+    }
+
+    .grouped-buttons {
+        order: 1;
+        margin-bottom: 15px;
+    }
+
+    .back-button {
+        order: 2;
+    }
+    .back-button {
+        max-width: 100px;
+    }
+}
+
+@media (max-width:  500px) {
+    .profile-buttons button {
+        padding: 0 15px;
+    }
+
+    #edit-profile {
+        border-radius: 30px 7px 7px 30px;
+        margin-right: 3px;
+    }
+
+    #edit-roles {
+        border-radius: 7px;
+        margin-right: 3px;
+    }
+
+    #activities {
+        border-radius: 7px 30px 30px 7px;
+        margin-right: 0;
+    }
+
+    .profile-buttons {
+        display: unset;
+    }
+
+    .grouped-buttons {
+        justify-content: left !important;
+    }
+
+    .grouped-buttons button {
+        white-space: unset !important;
+    }
+
+}
+
+@media (max-width: 540px) {
+    .tab .tab-button {
+        display: none;
     }
 }
 
@@ -78,6 +144,7 @@
     border-radius: 0 50px 50px 0;
     font-weight: 600;
     margin-right: 20px;
+    border-right: 6px solid #1B263B;
 }
 
 .join-token label {
@@ -93,7 +160,6 @@
     background: none;
     border: none;
     height: 30px;
-    margin: 0 2px 0 12px;
     cursor: pointer;
 }
 
@@ -206,6 +272,7 @@
 .tab{
     display: flex;
     align-items: center;
+    cursor: pointer;
 }
 
 .formation-list {
@@ -324,12 +391,22 @@
 
 .team-display .profile-top-content {
     justify-content: space-between;
+    display: flex;
 }
 
 .back-button {
-    margin-right: 10%;
+    margin-right: 14vw;
 }
 
+.grouped-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: inherit;
+}
+
+.grouped-buttons button {
+    white-space: nowrap;
+}
 
 
 
