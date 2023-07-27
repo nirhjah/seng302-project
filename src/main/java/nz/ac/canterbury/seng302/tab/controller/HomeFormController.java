@@ -62,7 +62,7 @@ public class HomeFormController {
         }
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("navTeams", teamService.getTeamList());
-        return "createCompetition";
+        return "homeForm";
     }
 }
 
