@@ -122,20 +122,7 @@ public class ViewActivityController {
         model.addAttribute("activityFacts", activityFacts);
 
 
-
-
-        Optional<User> oUser = userService.getCurrentUser();
-        if (oUser.isEmpty()) {
-            return "redirect:login";
-        }
-        User user = oUser.get();
-
         // Rambling that's required for navBar.html
-        List<Team> teamList = teamService.getTeamList();
-        model.addAttribute("firstName", user.getFirstName());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("displayPicture", user.getPictureString());
-        model.addAttribute("navTeams", teamList);
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("possibleFactTypes", FactType.values());
         model.addAttribute("defaultFactType", FactType.FACT);
