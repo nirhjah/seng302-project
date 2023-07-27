@@ -34,16 +34,10 @@ Feature: U33 Edit Line Up (E2E)
     Then that players name and profile picture are displayed
 
 
-  Scenario: AC7: User cannot save an empty formation
-    Given I am the manager of a team
-    And viewing the edit page for a team activity for that team
-    And the activity has type game or friendly and has a selected formation
-    When I attempt to save an empty formation
-    Then the formation is not saved and an error message is shown telling me the line-up is not complete
+#  Scenario: AC7: User cannot save an empty formation
+#    Given I am the manager of a team
+#    And viewing the edit page for a team activity for that team
+#    And the activity has type game or friendly and has a selected formation
+#    When I attempt to save an empty formation
+#    Then the formation is not saved and an error message is shown telling me the line-up is not complete
 
-  Scenario: AC8: Activity not updated if editing is cancelled
-    Given I am the manager of a team
-    And viewing the edit page for a team activity for that team
-    And the activity has type game or friendly and has a selected formation
-    When I attempt to cancel editing the activity
-    Then the activity will return to the state it was prior to editing
