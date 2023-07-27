@@ -52,11 +52,15 @@
                 <div class="select-box">
                     <label for="team">Activity formation <em>(Team Game and Team Friendly only)</em></label>
                     <select name="formation" id="formation-dropdown" th:disabled="${#lists.isEmpty(teamFormations)}">
-                        <option value="-1">(No Team)</option>
+                        <option value="-1" onclick="onFormationOptionClick(event)">(No Team)</option>
                         <option th:each="forma : ${teamFormations}"
                                 th:value="${forma.formationId}"
                                 th:text="${forma.formation}"
-                                th:selected="${forma == selectedFormation}"></option>
+                                th:selected="${forma == selectedFormation}"
+                                onclick="onFormationOptionClick(event)"
+                                th:data-custom="${forma.custom}"
+                                th:data-custom-positions="${forma.customPlayerPositions}"
+                        ></option>
                     </select>
                 </div>
                 <div th:each="err : ${#fields.errors('formation')}" th:text="${err}" class="error-message"></div>
@@ -108,6 +112,7 @@
                     <div th:each="err : ${#fields.errors('endDateTime')}" th:text="${err}" class="error-message"></div>
                 </div>
             </div>
+
 
             <div class="input-boxes">
                 <div class="input-box">
@@ -288,6 +293,7 @@
             charCount.style.color='#888888';
         }
     });
+
 </script>
 <script>
     function typeCanHaveFormation(activityType) {
@@ -295,6 +301,7 @@
     }
 
     function updateFormationList() {
+        console.log("here")
         const formationDropdown = document.querySelector("#formation-dropdown");
         const currentTeamId = document.querySelector("#team").value;
         const currentActivity = document.querySelector("#activityType").value;
@@ -328,8 +335,38 @@
             });
     }
 
+    function onFormationOptionClick(event) {
+        loadFormation(event.target);
+    }
+
+    function loadFormation(target) {
+        const formationId = target.value;
+        const formation = target.textContent;
+        const custom = target.getAttribute("data-custom")
+        const customPlayerPositions = target.getAttribute("data-custom-positions");
+        if (formationId == -1) {
+            document.querySelector(".formation-activity-display").classList.remove("active");
+        } else {
+            document.querySelector(".formation-activity-display").classList.add("active");
+            generatedOrCustom(formation, custom === "true", customPlayerPositions);
+            addPositionFunctionality();
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const formationDropdown = document.querySelector("#formation-dropdown");
+        const selectedFormationId  = formationDropdown.value;
+        const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex]
+        if (selectedFormationId != -1) {
+            loadFormation(selectedFormation);
+        }
+    });
+
     function populateFormationDropdown(isEnabled, emptyValueName, formationList) {
         const formationDropdown = document.querySelector("#formation-dropdown");
+        while (formationDropdown.firstChild) {
+            formationDropdown.removeChild(formationDropdown.lastChild);
+        }
         // Set visibility
         formationDropdown.disabled = !isEnabled;
         formationDropdown.innerHTML = "";
@@ -355,16 +392,14 @@
         }
     }
 
+
     function populateReserves(players) {
         const playerReserveList = document.querySelector(".reserves-ul");
         while (playerReserveList.firstChild) {
             playerReserveList.removeChild(playerReserveList.lastChild);
         }
-        console.log(players)
         for (let i = 0; i < players.length; i++) {
             const player = players[i];
-            console.log(player)
-            console.log(player.playerID, player.firstName, player.pictureString)
             const playerLi = document.createElement("li");
             playerLi.className = "reserves-li";
             playerReserveList.append(playerLi);
@@ -395,23 +430,9 @@
         }
     }
 
-    updateFormationList();
+
 </script>
 <script>
-
-    function onFormationOptionClick(event) {
-        const formationId = event.target.value;
-        const formation = event.target.textContent;
-        const custom = event.target.getAttribute("data-custom")
-        const customPlayerPositions = event.target.getAttribute("data-custom-positions");
-        if (formationId == -1) {
-            document.querySelector(".formation-activity-display").classList.remove("active");
-        } else {
-            document.querySelector(".formation-activity-display").classList.add("active");
-            generatedOrCustom(formation, custom === "true", customPlayerPositions);
-            addPositionFunctionality();
-        }
-    }
 
     const playersSubs = document.querySelectorAll(".subs-li");
     const playersReserves = document.querySelectorAll(".reserves-li");
@@ -476,11 +497,9 @@
             // Action to carry out when use clicks button to remove player from formation
             clearPositionButton.addEventListener('click', () => {
                 const positionPlayerId = position.querySelector("input").value;
-                console.log(positionPlayerId);
                 const players = document.querySelectorAll(".reserves-li");
                 players.forEach(player => {
                     const playerId = player.querySelector("input").value;
-                    console.log(playerId, positionPlayerId)
                     if (playerId === positionPlayerId) {
                         player.classList.remove("in-formation");
                         position.classList.remove("filled");

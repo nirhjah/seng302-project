@@ -189,6 +189,7 @@ Required variables: formationEditable, true if you want the formation to be edit
                 : Math.max(minLeft, newLeft);
         // set the element's new position:
         player.style.top = constrainedTop + "px";
+        player.style.bottom = pitch.offsetHeight - constrainedTop - player.offsetHeight + "px";
         player.style.left = constrainedLeft + "px";
       }
 
