@@ -89,12 +89,12 @@
             <div class="profile-bottom-content">
                 <div class="profile-buttons">
                     <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
-                    <div th:if="${canEdit}" class="edit-button" style="float: right; padding: 10px">
+                    <div th:if="${canEdit}" class="edit-button">
                         <a th:href="@{editUser}">
                             <button type="button">Edit Profile</button>
                         </a>
                     </div>
-                    <div th:if="${canEdit}" class="edit-button" style="float: right; padding: 10px">
+                    <div th:if="${canEdit}" class="edit-button">
                         <a th:href="@{myStats}">
                             <button type="button">View My Stats</button>
                         </a>
@@ -138,10 +138,9 @@
     const previousPage = document.referrer;
     if (previousPage.includes(legal_url)) {
         backButton.style.visibility = '';
-        buttons.style.display = 'flex';
     } else {
+        buttons.width = '50%';
         backButton.remove();
-        buttons.style.display = 'block'
     }
   </script>
 

@@ -77,6 +77,7 @@
     height: 50px;
     border-radius: 0 50px 50px 0;
     font-weight: 600;
+    margin-right: 20px;
 }
 
 .join-token label {
@@ -253,7 +254,7 @@
 
 .content.formations {
     display: flex;
-    height: 500px;
+    height: 480px;
 }
 
 .formation-display {
@@ -325,6 +326,9 @@
     justify-content: space-between;
 }
 
+.back-button {
+    margin-right: 10%;
+}
 
 
 

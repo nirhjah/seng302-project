@@ -17,7 +17,7 @@
     display: inline-block;
     transition: 0.5s;
     padding-top: 40px;
-    width: 62%;
+    width: 65%;
 }
 
 .team-info h3, .user-info h3 {
@@ -163,7 +163,7 @@
 }
 
 .team-display {
-    width: 100%;
+    width: 90%;
 }
 
 .user-label{
@@ -196,6 +196,7 @@
 .profile-bottom-content {
     display: flex;
     justify-content: right;
+    width: inherit;
 }
 
 
