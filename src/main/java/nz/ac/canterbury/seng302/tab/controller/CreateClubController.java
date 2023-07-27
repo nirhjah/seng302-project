@@ -196,10 +196,6 @@ public class CreateClubController {
         }
         model.addAttribute("httpServletRequest", httpServletRequest);
         model.addAttribute("listOfTeams", teamsUserManagerOf);
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
-        model.addAttribute("navTeams", teamService.getTeamList());
     }
 
 }
