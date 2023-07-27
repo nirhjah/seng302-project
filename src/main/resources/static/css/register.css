@@ -58,9 +58,13 @@
 
 
 @media (max-width: 655px) {
-  .register-form .wrapper {
-    width: 90vw;
-  }
+    .register-form .wrapper {
+        width: 90vw;
+    }
+
+    .register-header {
+        font-size: 7vw !important;
+    }
 }
 
 .register-form form {
