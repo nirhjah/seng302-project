@@ -10,7 +10,7 @@
     }
 
     .header {
-        width: unset;
+        width: unset !important;
         font-size: 5vw !important;
     }
 
