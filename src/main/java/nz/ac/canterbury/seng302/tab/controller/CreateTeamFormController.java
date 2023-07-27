@@ -49,6 +49,11 @@ public class CreateTeamFormController {
 
     private static final String REDIRECT_HOME = "redirect:./profile?teamID=%s";
 
+    /**
+     * Triggers the generation of a new token for a team
+     * @param teamID the id of the team.
+     * @return
+     */
     @PostMapping("/generateTeamToken")
     public String generateTeamToken(@RequestParam(name = "teamID") Long teamID) {
         var team = teamService.getTeam(teamID);
@@ -63,6 +68,17 @@ public class CreateTeamFormController {
         return String.format("redirect:./profile?teamID=%s", teamID);
     }
 
+    /**
+     * Gets the create team form for the user or editting a user
+     * @param teamID Id of team
+     * @param model (map-like) representation of name, language and isJava boolean
+     *      *              for use in thymeleaf,
+     *      *              with values being set to relevant parameters provided
+     * @param request the HTTP request
+     * @param createAndEditTeamForm the form that's being displayed
+     * @return
+     * @throws MalformedURLException
+     */
     @GetMapping("/createTeam")
     public String teamForm(@RequestParam(name = "edit", required = false) Long teamID,
             Model model,

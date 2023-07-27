@@ -68,10 +68,6 @@ public class ViewActivitiesController {
         Page<Activity> page = activityService.getPaginatedActivities(pageable,currentUser);
         System.out.println(page.getContent());
         List<Activity> listActivities = page.getContent();
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
-        model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("page", pageNo);
         model.addAttribute("totalPages", page.getTotalPages() == 0 ? 1 : page.getTotalPages());

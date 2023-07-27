@@ -62,13 +62,9 @@ public class ViewAllTeamsController {
         return teamService.findPaginatedTeamsByCityAndSports(pageable, cities, sports, currentSearch);
     }
 
-    private void populateModelBasics(Model model, User user, Page<Team> page) {
+    private void populateModelBasics(Model model, Page<Team> page) {
         List<Team> listOfTeams = page.getContent();
         model.addAttribute("listOfTeams", listOfTeams);
-        model.addAttribute("firstName", user.getFirstName());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("displayPicture", user.getPictureString());
-        model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
     }
@@ -121,14 +117,7 @@ public class ViewAllTeamsController {
         // Internally, pagination starts at 0 (page 0 is the first)
         // However, we want it to start at 1 for the user.
 
-        Optional<User> opt = userService.getCurrentUser();
-        if (opt.isEmpty()) {
-            logger.info("GET /view-teams: getCurrentUser() failed!");
-            return "redirect:login";
-        }
-        var user = opt.get();
-
-        populateModelBasics(model, user, page);
+        populateModelBasics(model, page);
         populateFilterDropdowns(model);
 
         model.addAttribute("page", pageNo);

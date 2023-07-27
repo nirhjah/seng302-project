@@ -69,10 +69,6 @@ public class CreateActivityController {
      */
     public void prefillModel(Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
         User user = userService.getCurrentUser().get();
-        model.addAttribute("firstName", user.getFirstName());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("displayPicture", user.getPictureString());
-        model.addAttribute("navTeams", teamService.getTeamList());
         List<Team> teamList = teamService.findTeamsWithUser(user).stream()
                 .filter(team -> team.isManager(user) || team.isCoach(user))
                 .toList();
