@@ -56,19 +56,12 @@ public class CreateTeamFormController {
      * location and teamID model attributes to be added to html.
      */
     private void prefillModel(Model model, HttpServletRequest httpServletRequest) {
-        model.addAttribute("postcodeRegex", TeamFormValidators.VALID_POSTCODE_REGEX);
-        model.addAttribute("postcodeRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
-        model.addAttribute("addressRegex", TeamFormValidators.VALID_ADDRESS_REGEX);
-        model.addAttribute("addressRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
         model.addAttribute("countryCitySuburbNameRegex", TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
-        model.addAttribute("countryCitySuburbNameRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
+        model.addAttribute("countryCitySuburbNameRegexMsg", TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG);
         model.addAttribute("teamNameUnicodeRegex", teamService.teamNameUnicodeRegex);
+        model.addAttribute("teamNameMsg", TeamFormValidators.INVALID_TEAM_NAME_MSG);
         model.addAttribute("sportUnicodeRegex", teamService.sportUnicodeRegex);
-        User user = userService.getCurrentUser().orElseThrow();
-        model.addAttribute("firstName", user.getFirstName());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("displayPicture", user.getPictureString());
-        model.addAttribute("navTeams", teamService.getTeamList());
+        model.addAttribute("sportUnicodeMsg", TeamFormValidators.INVALID_TEAM_SPORT_MSG);
         model.addAttribute("httpServletRequest", httpServletRequest);
     }
 
@@ -198,6 +191,7 @@ public class CreateTeamFormController {
 
         // Are there form errors?
         if (bindingResult.hasErrors()) {
+            logger.error("{}", bindingResult);
             prefillModel(model, httpServletRequest);
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("teamID", teamID);
@@ -224,7 +218,7 @@ public class CreateTeamFormController {
         String trimmedName = teamService.clipExtraWhitespace(createAndEditTeamForm.getName());
         String trimmedSport = teamService.clipExtraWhitespace(createAndEditTeamForm.getSport());
         Location location = createLocationFromTrimmedForm(createAndEditTeamForm);
-        
+
         team.setName(trimmedName);
         team.setSport(trimmedSport);
         team.setLocation(location);
