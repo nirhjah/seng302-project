@@ -35,70 +35,89 @@
         </div>
         <div class="content-box active" id="team-profile-tab">
             <div class="content">
-                <div class="profile-pic">
-                    <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
-                        <div class="image-styling">
-                            <img th:src="'data:image/png;base64,' + ${displayTeamPicture}" width="200" height="200"/>
-                            </br>
-                        </div>
-                        </br>
-                        <div class="file-upload" th:if="${isUserManagerOrCoach}">
-                            <div class="file-label-border">
-                                <label for="file" class="file-label">
-                                    Edit Profile Picture </label>
+                <div class="profile-top-content">
+                    <div class="profile-pic">
+                        <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
+                            <div class="image-styling">
+                                <img th:src="'data:image/png;base64,' + ${displayTeamPicture}" width="200" height="200"/>
+                                </br>
                             </div>
-                            <input type="file" name="file" class="form-control-file" id="file">
-                            <input type="hidden" name="teamID" th:value="${teamID}">
+                            </br>
+                            <div class="file-upload" th:if="${isUserManagerOrCoach}">
+                                <div class="file-label-border">
+                                    <label for="file" class="file-label">
+                                        Edit Profile Picture </label>
+                                </div>
+                                <input type="file" name="file" class="form-control-file" id="file">
+                                <input type="hidden" name="teamID" th:value="${teamID}">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="team-info">
+                        <div class="team-display">
+                            <div class="profile-top-content">
+                                <h2>Team Profile</h2>
+                                <div class="join-token" th:if="${isUserManagerOrCoach}">
+                                    <label> Join Token</label>
+                                    <div class="join-token-box-outer">
+                                        <a href="#" class="copy-token">
+                                            <img th:src="@{image/icons/copy.svg}">
+                                        </a>
+                                        <div class="join-token-box">
+                                            <span class="token-value" th:text="${displayToken}"></span>
+                                            <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}" th:method="post">
+                                                <button type="submit">
+                                                    <img th:src="@{image/icons/reload.svg}">
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="user-label">
+                                <img th:src="@{/image/icons/name.svg}"/>
+                                <div>
+                                    <h3 class="attribute-type">Name</h3>
+                                    <h3 th:text="*{displayName}"></h3>
+                                </div>
+                            </div>
+                            <div class="user-label">
+                                <img th:src="@{/image/icons/sports-alt.svg}"/>
+                                <div>
+                                    <h3 class="attribute-type">Sport</h3>
+                                    <h3 th:text="*{displaySport}"></h3>
+                                </div>
+                            </div>
+                            <div class="user-label">
+                                <img th:src="@{/image/icons/location.svg}"/>
+                                <div>
+                                    <h3 class="attribute-type">Location</h3>
+                                    <h3 th:text="*{displayLocation}"></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-bottom-content">
+                    <form th:action="@{profile}" class="profile-buttons" method="post">
+                        <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+                        <div class="edit-button">
+                            <a th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
+                                <button type="button">Edit Profile</button>
+                            </a>
+                        </div>
+                        <div class="edit-button">
+                            <a th:href="@{editTeamRole(edit=${teamID})}" th:if="${isUserManager}">
+                                <button type="button">Edit Team Roles</button>
+                            </a>
+                        </div>
+                        <div class="edit-button">
+                            <a th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
+                                <button type="button">View Team Activities</button>
+                            </a>
                         </div>
                     </form>
                 </div>
-                <div class="join-token" th:if="${isUserManagerOrCoach}">
-                    <label> Join Token</label>
-                    <div class="join-token-box-outer">
-                        <a href="#" class="copy-token">
-                            <img th:src="@{image/icons/copy.svg}">
-                        </a>
-                        <div class="join-token-box">
-                            <span class="token-value" th:text="${displayToken}"></span>
-                            <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}" th:method="post">
-                                <button type="submit">
-                                    <img th:src="@{image/icons/reload.svg}">
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="team-info">
-                    <div class="team-display">
-                        <h2>Team Profile</h2>
-                        <div class="user-label">
-                            <img th:src="@{/image/icons/name.svg}"/>
-                            <h3 th:text="|Name: *{displayName}|"></h3>
-                        </div>
-                        <div class="user-label">
-                            <img th:src="@{/image/icons/sports.svg}"/>
-                            <h3 th:text="|Sport: *{displaySport}|"></h3>
-                        </div>
-                        <div class="user-label">
-                            <img th:src="@{/image/icons/location.svg}"/>
-                            <h3 th:text="|Location: *{displayLocation}|"></h3>
-                        </div>
-                    </div>
-
-                </div>
-                <form th:action="@{profile}" class="profile-buttons" method="post">
-                    <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
-                    <a class="edit-button" th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
-                        <button type="button">Edit Profile</button>
-                    </a>
-                    <a class="edit-button" th:href="@{editTeamRole(edit=${teamID})}" th:if="${isUserManager}">
-                        <button type="button">Edit Team Roles</button>
-                    </a>
-                    <a class="edit-button" th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
-                        <button type="button">View Team Activities</button>
-                    </a>
-                </form>
             </div>
         </div>
         <div class="content-box">
@@ -139,7 +158,6 @@
                 </form>
             </div>
         </div>
-
         <div class="content-box" id="statistics-tab" style="margin-bottom: 300px">
             <div class="content">
                 <form th:action="@{profile}" class="profile-buttons" method="post">
