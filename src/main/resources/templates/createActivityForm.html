@@ -344,6 +344,10 @@
         const formation = target.textContent;
         const custom = target.getAttribute("data-custom")
         const customPlayerPositions = target.getAttribute("data-custom-positions");
+        const reservesLi = document.querySelectorAll(".reserves-li");
+        reservesLi.forEach(li => {
+            li.classList.remove("in-formation");
+        })
         if (formationId == -1) {
             document.querySelector(".formation-activity-display").classList.remove("active");
         } else {
