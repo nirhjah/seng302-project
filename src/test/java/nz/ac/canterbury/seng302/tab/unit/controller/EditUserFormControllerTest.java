@@ -206,6 +206,26 @@ public class EditUserFormControllerTest {
 
         @Test
         @WithMockUser()
+        void givenEmailContainsAnEmoji_ThenFormIsRejected() throws Exception {
+                mockMvc.perform(
+                                post(URL)
+                                                .param(P_FNAME, USER_FNAME)
+                                                .param(P_LNAME, USER_LNAME)
+                                                .param(P_EMAIL, "🫶")
+                                                .param(P_DOB, USER_DOB)
+                                                .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                                .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                                .param(P_SUBURB, USER_SUBURB)
+                                                .param(P_POSTCODE, USER_POSTCODE)
+                                                .param(P_CITY, USER_CITY)
+                                                .param(P_COUNTRY, USER_COUNTRY))
+                                .andExpect(status().isBadRequest());
+
+                verify(mockUserService, times(0)).updateOrAddUser(any());
+        }
+
+        @Test
+        @WithMockUser()
         void givenUserIsYoungerThan13_ThenFormIsRejected() throws Exception {
                 LocalDate date = LocalDate.now();
                 String dateString = String.format("%s-%s-%s",
