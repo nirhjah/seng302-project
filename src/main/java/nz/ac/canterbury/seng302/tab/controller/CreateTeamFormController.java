@@ -7,7 +7,6 @@ import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,19 +42,15 @@ public class CreateTeamFormController {
     @Autowired
     private UserService userService;
 
-    /**
-     * Gets createTeamForm to be displayed and contains name, sport,
-     * location and teamID model attributes to be added to html.
-     */
-    public void prefillModel(Model model) {
-        model.addAttribute("postcodeRegex", TeamFormValidators.VALID_POSTCODE_REGEX);
-        model.addAttribute("postcodeRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
-        model.addAttribute("addressRegex", TeamFormValidators.VALID_ADDRESS_REGEX);
-        model.addAttribute("addressRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
-        model.addAttribute("countryCitySuburbNameRegex", TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
-        model.addAttribute("countryCitySuburbNameRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
-    }
+    private static final String CREATE_TEAM_TEMPLATE = "createTeamForm";
 
+    private static final String REDIRECT_HOME = "redirect:./profile?teamID=%s";
+
+    /**
+     * Triggers the generation of a new token for a team
+     * @param teamID the id of the team.
+     * @return
+     */
     @PostMapping("/generateTeamToken")
     public String generateTeamToken(@RequestParam(name = "teamID") Long teamID) {
         var team = teamService.getTeam(teamID);
@@ -64,12 +59,23 @@ public class CreateTeamFormController {
             if (user.isPresent() && team.isManager(user.get())) {
                 team.generateToken(teamService);
                 teamService.updateTeam(team);
-                logger.info("POST /generateTeamToken, new token: " + team.getToken());
+                logger.info("POST /generateTeamToken, new token: ".concat(team.getToken()));
             }
         }
         return String.format("redirect:./profile?teamID=%s", teamID);
     }
 
+    /**
+     * Gets the create team form for the user or editting a user
+     * @param teamID Id of team
+     * @param model (map-like) representation of name, language and isJava boolean
+     *      *              for use in thymeleaf,
+     *      *              with values being set to relevant parameters provided
+     * @param request the HTTP request
+     * @param createAndEditTeamForm the form that's being displayed
+     * @return
+     * @throws MalformedURLException
+     */
     @GetMapping("/createTeam")
     public String teamForm(@RequestParam(name = "edit", required = false) Long teamID,
             Model model,
@@ -77,12 +83,10 @@ public class CreateTeamFormController {
 
 
         logger.info("GET /createTeam");
-        prefillModel(model);
         model.addAttribute("httpServletRequest", request);
 
         URL url = new URL(request.getRequestURL().toString());
         String path = (url.getPath() + "/..");
-        String protocolAndAuthority = String.format("%s://%s", url.getProtocol(), url.getAuthority());
         model.addAttribute("path", path);
 
         Team team;
@@ -105,7 +109,17 @@ public class CreateTeamFormController {
 
         List<String> knownSports = sportService.getAllSportNames();
         model.addAttribute("knownSports", knownSports);
-        return "createTeamForm";
+        Optional<User> user = userService.getCurrentUser();
+        if (user.isPresent()) {
+            model.addAttribute("firstName", user.get().getFirstName());
+            model.addAttribute("lastName", user.get().getLastName());
+            model.addAttribute("displayPicture", user.get().getPictureString());
+            model.addAttribute("navTeams", teamService.getTeamList());
+            return CREATE_TEAM_TEMPLATE;
+        } else {
+            return REDIRECT_HOME;
+        }
+
     }
 
     /**
@@ -137,20 +151,29 @@ public class CreateTeamFormController {
         logger.info("POST /createTeam");
 
 
-        prefillModel(model);
         // client side validation
         model.addAttribute("countryOrCityNameRegex", teamService.countryCitySuburbNameRegex);
         model.addAttribute("postcodeRegex", teamService.postcodeRegex);
         model.addAttribute("teamNameUnicodeRegex", teamService.teamNameUnicodeRegex);
         model.addAttribute("sportUnicodeRegex", teamService.sportUnicodeRegex);
         model.addAttribute("httpServletRequest", httpServletRequest);
+        Optional<User> user = userService.getCurrentUser();
+        if (user.isEmpty()) {
+            return REDIRECT_HOME;
+        }
+        model.addAttribute("firstName", user.get().getFirstName());
+        model.addAttribute("lastName", user.get().getLastName());
+        model.addAttribute("displayPicture", user.get().getPictureString());
+        model.addAttribute("navTeams", teamService.getTeamList());
 
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            model.addAttribute("teamID", teamID);
+            if (teamID != -1) {
+                model.addAttribute("teamID", teamID);
+            }
             logger.info("bad request");
-            return "createTeamForm";
+            return CREATE_TEAM_TEMPLATE;
         }
 
 
@@ -169,7 +192,7 @@ public class CreateTeamFormController {
             URL url = new URL(httpServletRequest.getRequestURL().toString());
             String path = (url.getPath() + "/..");
             model.addAttribute("path", path);
-            return "createTeam";
+            return CREATE_TEAM_TEMPLATE;
         }
 
         Location location = new Location(trimmedAddressLine1, trimmedAddressLine2, trimmedSuburb, trimmedCity,
