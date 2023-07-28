@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
@@ -20,16 +21,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.servlet.http.HttpServletRequest;
-import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Spring Boot Controller class for the View Activity Page
@@ -93,6 +97,17 @@ public class ViewActivityController {
             HttpServletRequest request,
             CreateEventForm createEventForm) {
 
+
+        model.addAttribute("createEventForm", new CreateEventForm());
+
+        if (model.asMap().containsKey("createEventFormBindingResult"))
+        {
+            model.addAttribute("org.springframework.validation.BindingResult.createEventForm",
+                    model.asMap().get("createEventFormBindingResult"));
+        }
+
+
+
         Activity activity = activityService.findActivityById(activityID);
         if (activity == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
@@ -134,14 +149,21 @@ public class ViewActivityController {
 
     @PostMapping("/view-activity")
     public String createEvent(
-            @RequestParam(name = "actId", defaultValue = "-1") long actId, 
+            @RequestParam(name = "actId", defaultValue = "-1") long actId,
             @RequestParam(name = "factType", defaultValue = "FACT")  FactType factType,
             @RequestParam(name = "description") String description,
+            @RequestParam(name = "overallScoreTeam") String overallScoreTeam,
+            @RequestParam(name = "overallScoreOpponent") String overallScoreOpponent,
             @RequestParam(name = "time") String time,
             @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
             @RequestParam(name = "playerOff", defaultValue = "-1") int subOffId,
             @RequestParam(name = "playerOn", defaultValue = "-1") int subOnId,
-            HttpServletRequest request) {
+            @Validated CreateEventForm createEventForm,
+            BindingResult bindingResult,
+            HttpServletRequest request,
+            Model model,
+            HttpServletResponse httpServletResponse,
+            RedirectAttributes redirectAttributes) {
 
         // create the new fact of facttype 
         logger.info("POST /view-activity");
@@ -152,11 +174,28 @@ public class ViewActivityController {
         logger.info(String.format("got the player on id: %s", subOffId));
         logger.info(String.format("got the scorer id: %s", scorerId));
 
+        model.addAttribute("overallScoreTeam", overallScoreTeam);
+        model.addAttribute("httpServletRequest", request);
             
         Activity activity = activityService.findActivityById(actId);
-
-
         Fact fact;
+
+
+        if (!activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent)) {
+            logger.info("scores not same type");
+            bindingResult.addError(new FieldError("createEventForm", "overallScoreTeam", "Both teams require scores of the same type"));
+
+        }
+
+        if (bindingResult.hasErrors()) {
+            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            redirectAttributes.addFlashAttribute("scoreInvalid", "Leave Modal Open");
+            redirectAttributes.addFlashAttribute("createEventFormBindingResult", bindingResult);
+
+            return String.format("redirect:./view-activity?activityID=%s", actId);
+        }
+
+
 
         switch (factType) {
             case FACT:
@@ -174,7 +213,7 @@ public class ViewActivityController {
 
                 // update the score 
                 // activity.setOtherTeamScore("13");
-                updateTeamsScore(activity);
+                activityService.updateTeamsScore(activity);
                 break;
                 
             case SUBSTITUTION:
@@ -196,7 +235,7 @@ public class ViewActivityController {
                 break;
 
             case OPPOSITION_GOAL:
-                updateAwayTeamsScore(activity);
+                activityService.updateAwayTeamsScore(activity);
 
                 fact = new OppositionGoal(description, time, activity);
                 break;
@@ -209,40 +248,16 @@ public class ViewActivityController {
         List<Fact> factList = new ArrayList<>();
         factList.add(fact);
         activity.addFactList(factList);
+
+
+
+
+
+
         activity = activityService.updateOrAddActivity(activity);
         
 
         return String.format("redirect:./view-activity?activityID=%s", actId);
-    }
-
-    /**
-     * TODO: maybe move into activity service?
-     * increments the home teams score by one 
-     **/
-    private void updateTeamsScore(Activity activity) {
-        String score = activity.getActivityTeamScore();
-        if (score == null) {
-            score = "0";
-        }
-        int parsedScore = Integer.parseInt(score);
-        parsedScore++;
-        
-        activity.setActivityTeamScore(String.valueOf(parsedScore));
-    }
-
-    /**
-     * TODO: maybe move into activity service?
-     * increments the away teams score by one 
-     **/
-    private void updateAwayTeamsScore(Activity activity) {
-        String score = activity.getOtherTeamScore();
-        if (score == null) {
-            score = "0";
-        }
-        int parsedScore = Integer.parseInt(score);
-        parsedScore++;
-        
-        activity.setOtherTeamScore(String.valueOf(parsedScore));
     }
 
 }

@@ -298,7 +298,8 @@
 }
 
 .overall-scores-box {
-    padding-bottom: 10%;
+    padding-bottom: 8%;
+    margin-top: 3%;
 }
 
 .add-event-btn {
@@ -317,12 +318,15 @@
     font-size:17px;
 }
 
+.overall-score-input {
+    width: 50%;
+    padding: 5px;
+}
 
 
-
-
-
-
-
-
-
+hr.rounded {
+    border-top: 8px solid #bbb;
+    border-radius: 5px;
+    margin-bottom: 5%;
+    margin-top: 2%;
+}

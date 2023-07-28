@@ -299,7 +299,7 @@ Join team modal styling
 .modal-content.event {
     width: 40%;
     position: relative;
-    bottom: 20%;
+    bottom: 40%;
 }
 
 .close {

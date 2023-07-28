@@ -242,4 +242,32 @@ public class ActivityService {
     public List<Activity> findActivitiesByTeamAndActivityType(Team team, ActivityType activityType) {
         return activityRepository.findActivitiesByTeamAndActivityType(team, activityType);
     }
+
+    /**
+     * increments the home teams score by one
+     **/
+    public void updateTeamsScore(Activity activity) {
+        String score = activity.getActivityTeamScore();
+        if (score == null) {
+            score = "0";
+        }
+        int parsedScore = Integer.parseInt(score);
+        parsedScore++;
+
+        activity.setActivityTeamScore(String.valueOf(parsedScore));
+    }
+
+    /**
+     * increments the away teams score by one
+     **/
+    public void updateAwayTeamsScore(Activity activity) {
+        String score = activity.getOtherTeamScore();
+        if (score == null) {
+            score = "0";
+        }
+        int parsedScore = Integer.parseInt(score);
+        parsedScore++;
+
+        activity.setOtherTeamScore(String.valueOf(parsedScore));
+    }
 }
