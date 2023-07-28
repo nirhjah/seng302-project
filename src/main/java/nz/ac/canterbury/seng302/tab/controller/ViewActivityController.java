@@ -55,6 +55,8 @@ public class ViewActivityController {
     @Autowired
     private FactService factService;
 
+    String createEventFormBindingResult = "createEventFormBindingResult";
+
     @Autowired
     public ViewActivityController(UserService userService, ActivityService activityService, TeamService teamService,FactService factService) {
         this.userService = userService;
@@ -99,10 +101,10 @@ public class ViewActivityController {
 
         model.addAttribute("createEventForm", new CreateEventForm());
 
-        if (model.asMap().containsKey("createEventFormBindingResult"))
+        if (model.asMap().containsKey(createEventFormBindingResult))
         {
             model.addAttribute("org.springframework.validation.BindingResult.createEventForm",
-                    model.asMap().get("createEventFormBindingResult"));
+                    model.asMap().get(createEventFormBindingResult));
         }
 
         Activity activity = activityService.findActivityById(activityID);
@@ -194,6 +196,7 @@ public class ViewActivityController {
             
         Activity activity = activityService.findActivityById(actId);
         Fact fact;
+        String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
 
 
         if (!activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent)) {
@@ -205,9 +208,9 @@ public class ViewActivityController {
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             redirectAttributes.addFlashAttribute("scoreInvalid", "Leave Modal Open");
-            redirectAttributes.addFlashAttribute("createEventFormBindingResult", bindingResult);
+            redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
 
-            return String.format("redirect:./view-activity?activityID=%s", actId);
+            return viewActivityRedirectUrl;
         }
 
         switch (factType) {
@@ -219,7 +222,7 @@ public class ViewActivityController {
                 Optional<User> potentialScorer = userService.findUserById(scorerId);
                 if (potentialScorer.isEmpty()) {
                     logger.error("Scorer Id not found");
-                    return String.format("redirect:./view-activity?activityID=%s", actId);
+                    return viewActivityRedirectUrl;
                 }
                 User scorer = potentialScorer.get();
                 fact = new Goal(description, time, activity, scorer);
@@ -233,14 +236,14 @@ public class ViewActivityController {
                 Optional<User> potentialSubOff = userService.findUserById(subOffId);
                 if (potentialSubOff.isEmpty()){
                     logger.error("subbed off player Id not found");
-                    return String.format("redirect:./view-activity?activityID=%s", actId);
+                    return viewActivityRedirectUrl;
                 }
                 User playerOff = potentialSubOff.get();
 
                 Optional<User> potentialSubOn = userService.findUserById(subOnId);
                 if (potentialSubOff.isEmpty()){
                     logger.error("subbed on player Id not found");
-                    return String.format("redirect:./view-activity?activityID=%s", actId);
+                    return viewActivityRedirectUrl;
                 }
                 User playerOn = potentialSubOn.get();
 
@@ -255,7 +258,7 @@ public class ViewActivityController {
 
             default:
                 logger.error("fact type unknown value");
-                return String.format("redirect:./view-activity?activityID=%s", actId);
+                return viewActivityRedirectUrl;
         }
         
         List<Fact> factList = new ArrayList<>();
@@ -264,7 +267,7 @@ public class ViewActivityController {
 
         activity = activityService.updateOrAddActivity(activity);
 
-        return String.format("redirect:./view-activity?activityID=%s", actId);
+        return viewActivityRedirectUrl;
     }
 
 }
