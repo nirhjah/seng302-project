@@ -11,7 +11,7 @@ import java.util.Set;
  */
 @Entity(name = "Competition")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "competition_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "competitionType", discriminatorType = DiscriminatorType.STRING)
 public abstract class Competition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
