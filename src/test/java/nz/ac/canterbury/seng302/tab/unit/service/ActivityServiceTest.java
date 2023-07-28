@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
-import io.cucumber.java.en_old.Ac;
 import nz.ac.canterbury.seng302.tab.enums.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
@@ -116,6 +115,16 @@ public class ActivityServiceTest {
     public void ifActivityScoreBothSameFormat_NumberOnly_returnTrue() {
         String activityTeamScore = "141";
         String otherTeamScore = "94";
+        Assertions.assertTrue(activityService.validateActivityScore(activityTeamScore, otherTeamScore));
+    }
+
+    /**
+     * Tests if both teams scores for an activity are both empty, return false
+     */
+    @Test
+    public void ifActivityScoreBothEmpty_returnTrue() {
+        String activityTeamScore = "";
+        String otherTeamScore = "";
         Assertions.assertTrue(activityService.validateActivityScore(activityTeamScore, otherTeamScore));
     }
 

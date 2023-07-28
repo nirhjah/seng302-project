@@ -139,7 +139,7 @@ public class ActivityService {
      *
      * @param activityTeamScore score for the team associated with the activity
      * @param otherTeamScore    score for the other team
-     * @return true if the scores are both of same format, false otherwise
+     * @return true if the scores are both of same format or if both are empty, false otherwise
      */
     public boolean validateActivityScore(String activityTeamScore, String otherTeamScore) {
 

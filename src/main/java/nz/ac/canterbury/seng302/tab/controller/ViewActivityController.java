@@ -63,7 +63,6 @@ public class ViewActivityController {
         this.factService=factService;
     }
 
-
     private void populateOther(Model model, Activity activity) {
         ActivityType type = activity.getActivityType();
 
@@ -88,6 +87,7 @@ public class ViewActivityController {
      * @param model      the model to be filled
      * @param activityID the activity ID of the activity to be displayed on the page
      * @param request    http request
+     * @param createEventForm CreateEventForm object used for validation
      * @return           view activity page
      */
     @GetMapping("/view-activity")
@@ -97,7 +97,6 @@ public class ViewActivityController {
             HttpServletRequest request,
             CreateEventForm createEventForm) {
 
-
         model.addAttribute("createEventForm", new CreateEventForm());
 
         if (model.asMap().containsKey("createEventFormBindingResult"))
@@ -106,13 +105,10 @@ public class ViewActivityController {
                     model.asMap().get("createEventFormBindingResult"));
         }
 
-
-
         Activity activity = activityService.findActivityById(activityID);
         if (activity == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
-
 
         List<Fact> activityFacts = factService.getAllFactsForActivity(activity);
         if (!activityFacts.isEmpty()){
@@ -147,6 +143,25 @@ public class ViewActivityController {
         return "viewActivity";
     }
 
+    /**
+     * Handles creating an event and adding overall scores
+     * @param actId       activity ID to add stats/event to
+     * @param factType    selected fact type
+     * @param description description of event
+     * @param overallScoreTeam  overall score for team
+     * @param overallScoreOpponent overall score for opponent
+     * @param time                 time of event
+     * @param scorerId             user ID of scorer
+     * @param subOffId             user ID of sub off
+     * @param subOnId              user ID of sub on
+     * @param createEventForm      CreateEventForm object used for validation
+     * @param bindingResult        BindingResult used for errors
+     * @param request              request
+     * @param model                model to be filled
+     * @param httpServletResponse   httpServerletResponse
+     * @param redirectAttributes    stores error message to be displayed
+     * @return                       view activity page
+     */
     @PostMapping("/view-activity")
     public String createEvent(
             @RequestParam(name = "actId", defaultValue = "-1") long actId,
@@ -195,13 +210,11 @@ public class ViewActivityController {
             return String.format("redirect:./view-activity?activityID=%s", actId);
         }
 
-
-
         switch (factType) {
             case FACT:
                 fact = new Fact(description, time, activity);
                 break;
-                
+
             case GOAL:
                 Optional<User> potentialScorer = userService.findUserById(scorerId);
                 if (potentialScorer.isEmpty()) {
@@ -211,26 +224,26 @@ public class ViewActivityController {
                 User scorer = potentialScorer.get();
                 fact = new Goal(description, time, activity, scorer);
 
-                // update the score 
+                // update the score
                 // activity.setOtherTeamScore("13");
                 activityService.updateTeamsScore(activity);
                 break;
-                
+
             case SUBSTITUTION:
                 Optional<User> potentialSubOff = userService.findUserById(subOffId);
                 if (potentialSubOff.isEmpty()){
                     logger.error("subbed off player Id not found");
                     return String.format("redirect:./view-activity?activityID=%s", actId);
                 }
-                User playerOff = potentialSubOff.get(); 
-                
+                User playerOff = potentialSubOff.get();
+
                 Optional<User> potentialSubOn = userService.findUserById(subOnId);
                 if (potentialSubOff.isEmpty()){
                     logger.error("subbed on player Id not found");
                     return String.format("redirect:./view-activity?activityID=%s", actId);
                 }
-                User playerOn = potentialSubOn.get(); 
-                
+                User playerOn = potentialSubOn.get();
+
                 fact = new Substitution(description, time, activity, playerOff, playerOn);
                 break;
 
@@ -239,7 +252,7 @@ public class ViewActivityController {
 
                 fact = new OppositionGoal(description, time, activity);
                 break;
-                
+
             default:
                 logger.error("fact type unknown value");
                 return String.format("redirect:./view-activity?activityID=%s", actId);
@@ -249,13 +262,7 @@ public class ViewActivityController {
         factList.add(fact);
         activity.addFactList(factList);
 
-
-
-
-
-
         activity = activityService.updateOrAddActivity(activity);
-        
 
         return String.format("redirect:./view-activity?activityID=%s", actId);
     }
