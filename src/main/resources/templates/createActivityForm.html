@@ -340,11 +340,13 @@
     }
 
     function loadFormation(target) {
+
         const formationId = target.value;
         const formation = target.textContent;
         const custom = target.getAttribute("data-custom")
         const customPlayerPositions = target.getAttribute("data-custom-positions");
         const reservesLi = document.querySelectorAll(".reserves-li");
+        console.log(target, formationId, formation, custom, customPlayerPositions)
         reservesLi.forEach(li => {
             li.classList.remove("in-formation");
         })
@@ -402,6 +404,7 @@
         while (playerReserveList.firstChild) {
             playerReserveList.removeChild(playerReserveList.lastChild);
         }
+
         for (let i = 0; i < players.length; i++) {
             const player = players[i];
             const playerLi = document.createElement("li");
@@ -431,6 +434,7 @@
             playerLi.append(playerId);
 
             playerOnClick(playerLi);
+
         }
     }
 
@@ -441,12 +445,24 @@
     const playersSubs = document.querySelectorAll(".subs-li");
     const playersReserves = document.querySelectorAll(".reserves-li");
     const positions = pitch.childNodes;
+    positions.forEach((position) => {
+        positionOnClick(position);
+    });
+
     playersSubs.forEach((player) => {
         playerOnClick(player);
     });
     playersReserves.forEach((player) => {
         playerOnClick(player);
     });
+
+    function positionOnClick(position) {
+        position.addEventListener('click', () => {
+            position.classList.add('active');
+        });
+    }
+
+
 
 
     // Adds functionality for selecting a player from the reserves
@@ -468,7 +484,7 @@
                 if (player.classList.contains('active') && !position.classList.contains("filled")) {
                     position.classList.add("unfilled");
                 } else {
-                    position.classList.remove("unfilled");
+                    //position.classList.remove("unfilled");
                 }
             }
         });
@@ -478,7 +494,7 @@
     function addPositionFunctionality() {
         for (let i = 0; i < positions.length; i++) {
             const position = positions.item(i);
-            position.classList.remove("unfilled");
+           // position.classList.remove("unfilled");
             const clearPositionButton = position.querySelector(".clear-position-button");
 
             // Action to carry out when a user selects a position with a player selected
@@ -507,6 +523,7 @@
                     if (playerId === positionPlayerId) {
                         player.classList.remove("in-formation");
                         position.classList.remove("filled");
+                        position.classList.add("unfilled");
                     }
                 });
                 clearPlayer(position)
