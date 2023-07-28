@@ -36,4 +36,10 @@ public abstract class Competition {
 
     @Column(nullable = false)
     private String sport;
+
+    public Competition(String name, Set<User> federationAdmins, String grade) {
+        this.name = name;
+        this.federationAdmins = federationAdmins;
+        this.grade = grade;
+    }
 }

@@ -25,4 +25,13 @@ public class UserCompetition extends Competition {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> players = new HashSet<>();
+
+    public UserCompetition(String name, HashSet<User> federationAdmins, String grade) {
+    super(name, federationAdmins, grade);
+    }
+
+    public UserCompetition(String name, Set<User> federationAdmins, String grade, Set<User> players) {
+    super(name, federationAdmins, grade);
+    this.players = players;
+    }
 }
