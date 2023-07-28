@@ -297,11 +297,25 @@
     transform: rotate(270deg);
 }
 
+.overall-scores-box {
+    padding-bottom: 10%;
+}
 
+.add-event-btn {
+    background-color: #0b2239;
+    font-weight: 500;
+}
 
-
-
-
+.select-container select {
+    text-align: center;
+    width: 100%;
+    height:50px;
+    border-radius:8px;
+    background:#ffffff;
+    border-color:#415a77;
+    margin-bottom:15px;
+    font-size:17px;
+}
 
 
 

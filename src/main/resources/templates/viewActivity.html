@@ -72,15 +72,34 @@
                 </div>
             </div>
 
-            <button th:unless="${noFacts}" onclick="modal.style.display = 'block'" type="button">Add New Event</button>
+            <div class="submit-button">
+                <button th:unless="${noFacts}" onclick="modal.style.display = 'block'" type="button">Add New Event</button>
+            </div>
         </div>
                 
         <div id="addEventModal" class="modal" th:style="${tokenInvalid != null ? 'display:block' : 'display:none'}">
 
-            <div class="modal-content">
-                <h1>Create New Event</h1>
+            <div class="modal-content event">
+                <h1 style="padding-bottom: 5%">Create New Event</h1>
                 <form th:action="@{view-activity}" id="createEventForm" method="post" th:object="${createEventForm}">
                     <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
+                    <label>Overall Score:</label>
+
+                    <div class="overall-scores-box">
+
+                        <div style="float: left">
+                        <label for="overall-score-team">Team:</label>
+                            <input id="overall-score-team" type="text-area">
+                        </div>
+
+                        <div style="float: right">
+                            <label for="overall-score-opponent">Opponent:</label>
+                            <input id="overall-score-opponent" type="text-area">
+
+                        </div>
+
+                    </div>
+
 
                     <div th:if="${!noFacts}" class="select-container">
                         <div class="select-box">
