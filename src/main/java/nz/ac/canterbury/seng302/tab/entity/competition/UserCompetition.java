@@ -3,12 +3,6 @@ package nz.ac.canterbury.seng302.tab.entity.competition;
 import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
 
