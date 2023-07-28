@@ -1,10 +1,7 @@
 package nz.ac.canterbury.seng302.tab.form;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.enums.FactType;
-import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
-import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
 public class CreateEventForm {
   
