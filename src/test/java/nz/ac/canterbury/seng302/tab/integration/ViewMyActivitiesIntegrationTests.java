@@ -55,7 +55,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class ViewMyActivitiesIntegrationTests {
 
     @SpyBean
@@ -117,13 +116,9 @@ public class ViewMyActivitiesIntegrationTests {
         EmailService emailService = applicationContext.getBean(EmailService.class);
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
-
         teamService = Mockito.spy(new TeamService(teamRepository));
-
         activityService = Mockito.spy(new ActivityService(activityRepository));
-
         factService = Mockito.spy(new FactService(factRepository));
-
         this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ProfileFormController(userService, teamService, activityService, factService, formationService)).build();
 
         userRepository.deleteAll();
