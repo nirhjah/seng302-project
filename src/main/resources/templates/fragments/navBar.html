@@ -1,10 +1,7 @@
-
-
 <header th:fragment="navbar">
     <link th:href="@{/css/navbar.css}" rel="stylesheet">
     <nav>
-        <link rel="stylesheet" href="nav.css">
-        <label for="drop" class="toggle"><img th:src = "@{/image/icons/hamburger.svg}"></label>
+        <label for="drop" class="toggle"><img th:src="@{/image/icons/hamburger.svg}"></label>
         <input type="checkbox" id="drop"/>
         <ul class="menu">
             <li><a th:href="@{home}">Home</a></li>
@@ -49,23 +46,43 @@
             </div>
         </ul>
     </nav>
-    <script>
-        let navbarUserButton = document.querySelector(".navbar-user-button");
-        if (navbarUserButton !== null) {
-            let triangle = navbarUserButton.querySelector(".triangle");
-            let navbarUserDropdown = navbarUserButton.querySelector(".navbar-user-dropdown");
-            navbarUserButton.addEventListener("click", function (event) {
-                event.stopPropagation();
-                navbarUserDropdown.classList.toggle("show");
-                triangle.classList.toggle("up");
-            });
+    <div class="action" sec:authorize="isAuthenticated()">
+        <div class="profile" onclick="menuToggle();">
+            <img class="navbar-profile-picture"
+                 th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
+        </div>
 
-            document.addEventListener("click", function (event) {
-                if (!navbarUserButton.contains(event.target)) {
-                    navbarUserDropdown.classList.remove("show");
-                    triangle.classList.remove("up");
-                }
-            });
+        <div class="profile-menu">
+            <h3>
+                User Account
+                <div>
+                    User Account
+                </div>
+            </h3>
+            <ul>
+                <li>
+                    <a th:href="@{user-info/self}">My Profile</a>
+                </li>
+                <li>
+                    <a th:href="@{editUser}"> Edit Account</a>
+                </li>
+                <li>
+                    <a th:href="@{my-teams}">My Teams</a>
+                </li>
+                <li>
+                    <a th:href="@{view-activities(page=1)}">My Activities</a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
+                </li>
+            </ul>
+        </div>
+        <form id="logoutForm" th:action="@{logout}" method="POST"></form>
+    </div>
+    <script>
+        function menuToggle() {
+            const toggleMenu = document.querySelector('.profile-menu');
+            toggleMenu.classList.toggle('active')
         }
     </script>
 </header>

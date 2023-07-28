@@ -42,7 +42,7 @@ nav ul {
 }
 
 nav ul li {
-  margin: 0px;
+  margin: 0;
   display:inline-block;
   float: left;
   background-color: #0b2239;
@@ -110,7 +110,7 @@ li > a:only-child:after { content: ''; }
     background-color: #0b2239;
     padding:14px 20px;
     color:#FFF;
-    font-size:17px;
+    font-size: 1.3em;
     text-decoration:none;
     border:none;
   }
@@ -147,7 +147,7 @@ li > a:only-child:after { content: ''; }
   nav ul ul ul a{
     padding:14px 20px;
     color:#FFF;
-    font-size:17px;
+    font-size: 1.3em;
   }
 
 
@@ -260,14 +260,6 @@ header .header-right {
   width: 96%
 }
 
-.navbar-profile-picture {
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  background-color: white;
-  margin: 3px 10px 3px 3px;
-}
-
 .triangle {
   display: inline-block;
   width: 0;
@@ -286,4 +278,103 @@ header .header-right {
 
 .toggle img{
   height:28px;
+}
+
+.icons-size{
+  color: #333;
+  font-size: 14px;
+}
+.action{
+  position: fixed;
+  right: 30px;
+  top:0;
+}
+.action .profile{
+  border-radius: 50%;
+  cursor: pointer;
+  height: 60px;
+  overflow: hidden;
+  position: relative;
+  width: 60px;
+  background:white;
+}
+.action .profile img{
+  width: 100%;
+  top:0;
+  position: absolute;
+  object-fit: cover;
+  left: 0;
+  height: 100%;
+}
+.action .profile-menu{
+  background-color:#FFF;
+  box-sizing:0 5px 25px rgba(0,0,0,0.1);
+  border-radius: 15px;
+  padding: 10px 20px;
+  position: absolute;
+  right: -10px;
+  width: 200px;
+  transition: 0.5s;
+  top: 120px;
+  visibility: hidden;
+  opacity: 0;
+}
+.action .profile-menu.active{
+  opacity: 1;
+  top: 80px;
+  visibility: visible;
+}
+.action .profile-menu::before{
+  background-color:#fff;
+  content: '';
+  height: 20px;
+  position: absolute;
+  right: 30px;
+  transform:rotate(45deg);
+  top:-5px;
+  width: 20px;
+}
+.action .profile-menu h3{
+  color: #555;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3em;
+  padding: 20px 0;
+  text-align: left;
+  width: 100%;
+}
+.action .profile-menu h3 div{
+  color: #818181;
+  font-size: 14px;
+  font-weight: 400;
+}
+.action .profile-menu ul li{
+  align-items: center;
+  border-top:1px solid rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: left;
+  list-style: none;
+  padding: 10px 0;
+}
+.action .profile-menu ul li img{
+  max-width: 20px;
+  margin-right: 10px;
+  opacity: 0.5;
+  transition:0.5s
+}
+.action .profile-menu ul li a{
+  display: inline-block;
+  color: #555;
+  font-size: 14px;
+  font-weight: 600;
+  padding-left: 15px;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: 0.5s;
+}
+.action .profile-menu ul li:hover img{
+  opacity: 1;
+}
+.action .profile-menu ul li:hover a{
+  color:#ff00ff;
 }
