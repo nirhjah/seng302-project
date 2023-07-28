@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -141,6 +142,11 @@ public class ActivityService {
      * @return true if the scores are both of same format, false otherwise
      */
     public boolean validateActivityScore(String activityTeamScore, String otherTeamScore) {
+
+        if (Objects.equals(activityTeamScore, "") && Objects.equals(otherTeamScore, "")) {
+            return true;
+        }
+
         if (activityTeamScore.matches(activityScoreHyphenRegex)) {
             if (otherTeamScore.matches(activityScoreHyphenRegex)) {
                 return true;
