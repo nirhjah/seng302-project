@@ -89,14 +89,14 @@
                     <div class="overall-scores-box">
 
                         <div style="float: left">
-                        <label for="overall-score-team">Team:</label>
+                        <label style="display:block;" for="overall-score-team">Team:</label>
                             <input class="overall-score-input" name="overallScoreTeam" id="overall-score-team" type="text-area" th:field="*{overallScoreTeam}" th:value="${overallScoreTeam}" data-cy="overallScoreTeam">
                             <div th:each="err : ${#fields.errors('overallScoreTeam')}" th:text="${err}" class="error-message"></div>
 
                         </div>
 
-                        <div style="float: right">
-                            <label for="overall-score-opponent">Opponent:</label>
+                        <div class="opponentScoreDiv">
+                            <label style="display:block;" for="overall-score-opponent">Opponent:</label>
                             <input class="overall-score-input" name="overallScoreOpponent" id="overall-score-opponent" type="text-area">
 
                         </div>

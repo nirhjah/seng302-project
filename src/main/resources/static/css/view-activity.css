@@ -330,3 +330,25 @@ hr.rounded {
     margin-bottom: 5%;
     margin-top: 2%;
 }
+
+.opponentScoreDiv {
+    float: right;
+}
+
+@media (max-width: 700px) {
+    .modal-content.event {
+      /*  position: absolute; !important
+        top: 10%; !important;
+        left: 2.4%; !important;*/
+        transform: translate(-69%, 70%) !important;
+    }
+
+    .overall-scores-box {
+        padding-bottom: 1% !important; /*30*/
+    }
+
+    .opponentScoreDiv {
+        float: none !important;
+        margin-left: 50% !important;
+    }
+}
