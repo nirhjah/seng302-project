@@ -48,8 +48,6 @@ public class CreateTeamFormController {
     @Autowired
     private UserService userService;
 
-    private static final String TEMPLATE_NAME = "createTeamForm";
-
 
     /**
      * Gets createTeamForm to be displayed and contains name, sport,
@@ -82,6 +80,15 @@ public class CreateTeamFormController {
                 trimmedPostcode, trimmedCountry);
     }
 
+    private static final String CREATE_TEAM_TEMPLATE = "createTeamForm";
+
+    private static final String REDIRECT_HOME = "redirect:./profile?teamID=%s";
+
+    /**
+     * Triggers the generation of a new token for a team
+     * @param teamID the id of the team.
+     * @return
+     */
     @PostMapping("/generateTeamToken")
     public String generateTeamToken(@RequestParam(name = "teamID") Long teamID) {
         var team = teamService.getTeam(teamID);
@@ -117,7 +124,7 @@ public class CreateTeamFormController {
         List<String> knownSports = sportService.getAllSportNames();
         model.addAttribute("knownSports", knownSports);
  
-        return TEMPLATE_NAME;
+        return CREATE_TEAM_TEMPLATE;
     }
 
 
@@ -159,7 +166,7 @@ public class CreateTeamFormController {
         String path = (url.getPath() + "/..");
         model.addAttribute("path", path);
  
-        return TEMPLATE_NAME;
+        return CREATE_TEAM_TEMPLATE;
     }
 
     /**
@@ -184,7 +191,7 @@ public class CreateTeamFormController {
         // I'm starting to regret this pattern
         Optional<User> user = userService.getCurrentUser();
         if (user.isEmpty()) {
-            return "redirect:login";
+            return REDIRECT_HOME;
         }
 
         boolean editingTeam = (teamID != -1);
@@ -194,9 +201,11 @@ public class CreateTeamFormController {
             logger.error("{}", bindingResult);
             prefillModel(model, httpServletRequest);
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            model.addAttribute("teamID", teamID);
+            if (teamID != -1) {
+                model.addAttribute("teamID", teamID);
+            }
             logger.info("bad request");
-            return TEMPLATE_NAME;
+            return CREATE_TEAM_TEMPLATE;
         }
         
         Team team;
