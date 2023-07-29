@@ -225,6 +225,19 @@
         // Check if the selected option has additional fields
         if (selectedOption === "GOAL") {
             // Create a new select element for the scorer
+            var goalValueInput = document.createElement("input");
+            var goalValueLabel = document.createElement("label");
+            goalValueLabel.innerHTML = "Goal value:";
+            goalValueLabel.style.display = "block";
+
+            var requiredSpan = document.createElement("span");
+            requiredSpan.innerText = "*";
+            requiredSpan.classList.add("required");
+            goalValueLabel.appendChild(requiredSpan);
+
+            goalValueInput.name = "goalValue"
+            goalValueInput.classList.add("overall-score-input")
+
             var selectScorer = document.createElement("select");
             selectScorer.name = "scorer";
 
@@ -246,6 +259,8 @@
 
             // Append the select element to the additional fields div
             additionalFieldsDiv.appendChild(selectScorer);
+            additionalFieldsDiv.appendChild(goalValueLabel);
+            additionalFieldsDiv.appendChild(goalValueInput);
         }
 
         if (selectedOption === 'SUBSTITUTION') {

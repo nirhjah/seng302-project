@@ -172,6 +172,7 @@ public class ViewActivityController {
             @RequestParam(name = "overallScoreTeam") String overallScoreTeam,
             @RequestParam(name = "overallScoreOpponent") String overallScoreOpponent,
             @RequestParam(name = "time") String time,
+            @RequestParam(name = "goalValue", defaultValue = "1") int goalValue,
             @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
             @RequestParam(name = "playerOff", defaultValue = "-1") int subOffId,
             @RequestParam(name = "playerOn", defaultValue = "-1") int subOnId,
@@ -225,11 +226,12 @@ public class ViewActivityController {
                     return viewActivityRedirectUrl;
                 }
                 User scorer = potentialScorer.get();
-                fact = new Goal(description, time, activity, scorer);
+                fact = new Goal(description, time, activity, scorer, goalValue);
 
                 // update the score
                 // activity.setOtherTeamScore("13");
                 activityService.updateTeamsScore(activity);
+
                 break;
 
             case SUBSTITUTION:
