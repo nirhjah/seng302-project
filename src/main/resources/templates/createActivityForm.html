@@ -52,7 +52,7 @@
                 <div class="select-box">
                     <label for="team">Activity formation <em>(Team Game and Team Friendly only)</em></label>
                     <select name="formation" id="formation-dropdown" th:disabled="${#lists.isEmpty(teamFormations)}">
-                        <option value="-1" onclick="onFormationOptionClick(event)">(No Team)</option>
+                        <option value="-1" onclick="onFormationOptionClick(event)">(No Formation)</option>
                         <option th:each="forma : ${teamFormations}"
                                 th:value="${forma.formationId}"
                                 th:text="${forma.formation}"
@@ -82,7 +82,7 @@
                         </li>
                     </ul>
                 </div>
-                <div th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"></div>
+                <div th:if="${actId != null}" th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"></div>
             </div>
 
             <!--/* Activity Description */-->
@@ -445,9 +445,6 @@
     const playersSubs = document.querySelectorAll(".subs-li");
     const playersReserves = document.querySelectorAll(".reserves-li");
     const positions = pitch.childNodes;
-    positions.forEach((position) => {
-        positionOnClick(position);
-    });
 
     playersSubs.forEach((player) => {
         playerOnClick(player);
@@ -455,15 +452,6 @@
     playersReserves.forEach((player) => {
         playerOnClick(player);
     });
-
-    function positionOnClick(position) {
-        position.addEventListener('click', () => {
-            position.classList.add('active');
-        });
-    }
-
-
-
 
     // Adds functionality for selecting a player from the reserves
     function playerOnClick(player) {
@@ -484,7 +472,7 @@
                 if (player.classList.contains('active') && !position.classList.contains("filled")) {
                     position.classList.add("unfilled");
                 } else {
-                    //position.classList.remove("unfilled");
+                    position.classList.remove("unfilled");
                 }
             }
         });
@@ -494,7 +482,7 @@
     function addPositionFunctionality() {
         for (let i = 0; i < positions.length; i++) {
             const position = positions.item(i);
-           // position.classList.remove("unfilled");
+            position.classList.remove("unfilled");
             const clearPositionButton = position.querySelector(".clear-position-button");
 
             // Action to carry out when a user selects a position with a player selected
@@ -523,7 +511,6 @@
                     if (playerId === positionPlayerId) {
                         player.classList.remove("in-formation");
                         position.classList.remove("filled");
-                        position.classList.add("unfilled");
                     }
                 });
                 clearPlayer(position)

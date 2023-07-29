@@ -40,16 +40,14 @@ public class U33EditLineUpE2E {
         PlaywrightBrowser.page.locator("#editActivityBtn").first().click();
     }
 
-    @When("I select a position")
-    public void i_select_a_position() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+    @When("I select a player")
+    public void i_select_a_player() {
+        PlaywrightBrowser.page.locator(".reserves-li").first().click();
     }
 
-    @Then("I can set a player from the team to that position")
-    public void i_can_set_a_player_from_the_team_to_that_position() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+    @Then("I can set a position for that player to be in")
+    public void i_can_set_a_position_for_that_player_to_be_in() {
+        PlaywrightBrowser.page.locator("#player6").click();
     }
 
     @Given("the activity has type game or friendly and has a selected formation")
