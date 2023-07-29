@@ -16,12 +16,29 @@ public class TeamCompetition extends Competition {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Team> teams = new HashSet<>();
 
-  public TeamCompetition(String name, Set<User> federationAdmins, String grade) {
-    super(name, federationAdmins, grade);
-  }
+    public TeamCompetition(String name, Set<User> federationAdmins, String grade, String sport) {
+      super(name, federationAdmins, grade, sport);
+    }
+    
+    public TeamCompetition(String name, Set<User> federationAdmins, String grade, String sport, HashSet<Team> teams) {
+      super(name, federationAdmins, grade, sport);
+      this.teams = teams;
+    }
   
-  public TeamCompetition(String name, Set<User> federationAdmins, String grade, HashSet<Team> teams) {
-    super(name, federationAdmins, grade);
-    this.teams = teams;
-  }
+    public TeamCompetition(String name, Set<User> federationAdmins, String grade, String sport, Team team) {
+      super(name, federationAdmins, grade, sport);
+      this.teams.add(team);
+    }
+
+    public TeamCompetition(String name, String grade, String sport) {
+      super(name, grade, sport);
+    }
+
+    /**
+     * adds a team to the competition
+     * @param team
+     */
+    public void addTeam(Team team) {
+      this.teams.add(team);
+    }
 }

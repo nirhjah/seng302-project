@@ -37,9 +37,54 @@ public abstract class Competition {
     @Column(nullable = false)
     private String sport;
 
-    public Competition(String name, Set<User> federationAdmins, String grade) {
+    public Competition(String name, Set<User> federationAdmins, String grade, String sport) {
         this.name = name;
         this.federationAdmins = federationAdmins;
         this.grade = grade;
+        this.sport = sport;
+    }
+
+    /**
+     * constructor without setting federation admin
+     * @param name
+     * @param grade
+     * @param sport
+    */
+    public Competition(String name, String grade, String sport) {
+        this.name = name;
+        this.grade = grade;
+        this.sport = sport;
+    }
+
+    public long getCompetitionId() {
+        return this.competitionId;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Set<User> getFederationAdmins() {
+        return this.federationAdmins;
+    }
+
+    public String getGrade() {
+        return this.grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public String getSport() {
+        return this.sport;
+    }
+
+    public void setSport(String sport) {
+        this.sport = sport;
     }
 }

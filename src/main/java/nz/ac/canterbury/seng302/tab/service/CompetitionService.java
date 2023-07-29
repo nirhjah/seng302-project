@@ -25,11 +25,47 @@ public class CompetitionService {
       this.competitionRepository = competitionRepository;
     }
 
+    /**
+     * Gets list of all competitions 
+     * @return list of all competitons
+     */
+    public List<Competition> findAll() {
+        return competitionRepository.findAll();
+    }
+    
+    /**
+     * Finds competitions by id
+     *
+     * @param id id of competition to find
+     * @return competition or null
+     */
+    public Optional<Competition> findCompetitionById(Long id) {
+        return competitionRepository.findById(id);
+
+    }
+
+    /**
+     * Gets list of all team competitions
+     * @return list of all team competitions 
+    */
     public List<Competition> getAllTeamCompetitions() {
       return competitionRepository.findByCompetitionType("TEAM");
     }
 
+    /**
+     * Gets list of all user competitions 
+     * @return list of all user competitions 
+    */
     public List<Competition> getAllUserCompetitions() {
       return competitionRepository.findByCompetitionType("USER");
+    }
+
+    /**
+     * update or add a competition
+     * @param competition
+     * @return the saved competition
+     */
+    public Competition updateOrAddCompetition(Competition competition) {
+        return competitionRepository.save(competition);
     }
 }
