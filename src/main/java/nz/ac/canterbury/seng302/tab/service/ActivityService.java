@@ -250,8 +250,9 @@ public class ActivityService {
     }
 
     /**
-     * increments the home teams score by one
-     **/
+     * Increments home team score by 1
+     * @param activity The activity used to update the team's score
+     */
     public void updateTeamsScore(Activity activity) {
         String score = activity.getActivityTeamScore();
         if (score == null) {
@@ -265,6 +266,7 @@ public class ActivityService {
 
     /**
      * increments the away teams score by one
+     * @param activity The activity to update the other team's score
      **/
     public void updateAwayTeamsScore(Activity activity) {
         String score = activity.getOtherTeamScore();

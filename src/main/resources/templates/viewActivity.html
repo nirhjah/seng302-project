@@ -125,9 +125,8 @@
                         <textarea class="description-text" id="description" th:name="description" autofocus placeholder=""
                           th:text="${description}"></textarea>
                         </div>
-                        <label for="time"></label>
+                        <label id="time" for="time"></label>
                         <input type="text-area" name="time" value="time">
-                        <label for="time"></label>
                         <div id="additionalFields"></div>
                     </div>
                     <div class="submit-button">
@@ -180,7 +179,7 @@
 
     </div>
 </div>
-<script>
+<script type="text/javascript" th:inline="javascript">
     window.onload = function() {
         renderPlayers("4-1-2-2");
     };
