@@ -316,6 +316,7 @@
     border-color:#415a77;
     margin-bottom:15px;
     font-size:17px;
+    margin-top: 1%;
 }
 
 .overall-score-input {
@@ -327,7 +328,7 @@
 hr.rounded {
     border-top: 8px solid #bbb;
     border-radius: 5px;
-    margin-bottom: 5%;
+    margin-bottom: 2%;
     margin-top: 2%;
 }
 
