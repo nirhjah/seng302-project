@@ -78,49 +78,49 @@ public class ResetPasswordIntegrationTests {
     
     @Given("I see the forgot password button on the login page")
     public void i_see_the_forgot_password_button_on_the_login_page() throws Exception {
-        mockMvc.perform(get("/forgot-password"));
+        mockMvc.perform(get("/lost-password"));
     }
 
 
     @When("I hit the lost password button")
     public void i_hit_the_lost_password_button() throws Exception {
-        mockMvc.perform(get("/forgot-password"));
+        mockMvc.perform(get("/lost-password"));
     }
 
     @Then("I see a form asking me for my email address")
     public void i_see_a_form_asking_me_for_my_email_address() throws Exception {
-        mockMvc.perform(get("/forgot-password")).andExpect(status().isOk());
+        mockMvc.perform(get("/lost-password")).andExpect(status().isOk());
     }
 
     @Given("I am on the lost password form")
     public void i_am_on_the_lost_password_form() throws Exception {
-        mockMvc.perform(get("/forgot-password"));
+        mockMvc.perform(get("/lost-password"));
     }
 
     @When("I enter an email with invalid format")
     public void i_enter_an_email_with_invalid_format() throws Exception {
-        mockMvc.perform(post("/forgot-password", 42L)
+        mockMvc.perform(post("/lost-password", 42L)
                 .with(csrf())
                 .param("email", "test@"));
     }
 
     @Then("An error message tells me the email address is invalid")
     public void an_error_message_tells_me_the_email_address_is_invalid() throws Exception {
-        mockMvc.perform(post("/forgot-password", 42L)
+        mockMvc.perform(post("/lost-password", 42L)
                 .with(csrf())
                 .param("email", "test@")).andExpect(status().isBadRequest());
     }
 
     @When("I enter a valid email that is not known to the system")
     public void i_enter_a_valid_email_that_is_not_known_to_the_system() throws Exception {
-        mockMvc.perform(post("/forgot-password", 42L)
+        mockMvc.perform(post("/lost-password", 42L)
                 .with(csrf())
                 .param("email", "test@gmail.com"));
     }
 
     @Then("A confirmation message tells me that an email was sent to the address if it was recognised")
     public void a_confirmation_message_tells_me_that_an_email_was_sent_to_the_address_if_it_was_recognised() throws Exception {
-        mockMvc.perform(post("/forgot-password", 42L)
+        mockMvc.perform(post("/lost-password", 42L)
                 .with(csrf())
                 .param("email", "test@gmail.com")).andExpect(status().isOk());
     }
@@ -128,9 +128,9 @@ public class ResetPasswordIntegrationTests {
 
     @When("I enter a email known to the system")
     public void i_enter_a_email_known_to_the_system() throws Exception {
-        mockMvc.perform(post("/forgot-password")
+        mockMvc.perform(post("/lost-password")
                 .with(csrf())
-                .param("email", "johndoe@example.com")).andExpect(status().isOk()).andExpect(view().name("forgotPassword"));
+                .param("email", "johndoe@example.com")).andExpect(status().isOk()).andExpect(view().name("lostPassword"));
     }
 
     @Then("An email is sent with a unique link to update the password of the associated email")

@@ -26,7 +26,7 @@ public class LostPasswordControllerTests {
      */
     @Test
     public void testForgotPasswordPage() throws Exception {
-        mockMvc.perform(get("/forgot-password")
+        mockMvc.perform(get("/lost-password")
         ).andExpect(status().isOk());
     }
 
@@ -37,10 +37,10 @@ public class LostPasswordControllerTests {
      */
     @Test
     void whenTheEmailIsValid_return200() throws Exception {
-        mockMvc.perform(post("/forgot-password")
+        mockMvc.perform(post("/lost-password")
                         .param("email", "test@gmail.com"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("forgotPassword"));
+                .andExpect(view().name("lostPassword"));
     }
 
     /**
@@ -49,10 +49,10 @@ public class LostPasswordControllerTests {
      */
     @Test
     void whenTheEmailIsInvalid_return400() throws Exception {
-        mockMvc.perform(post("/forgot-password")
+        mockMvc.perform(post("/lost-password")
                         .param("email", "test@"))
                 .andExpect(status().isBadRequest())
-                .andExpect(view().name("forgotPassword"));
+                .andExpect(view().name("lostPassword"));
     }
 
     /**
@@ -61,10 +61,10 @@ public class LostPasswordControllerTests {
      */
     @Test
     void whenTheEmailIsBlank_return400() throws Exception {
-        mockMvc.perform(post("/forgot-password")
+        mockMvc.perform(post("/lost-password")
                         .param("email", ""))
                 .andExpect(status().isBadRequest())
-                .andExpect(view().name("forgotPassword"));
+                .andExpect(view().name("lostPassword"));
     }
 
 }
