@@ -6,7 +6,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 import jakarta.servlet.http.HttpServletRequest;
-import nz.ac.canterbury.seng302.tab.controller.ForgotPasswordController;
+import nz.ac.canterbury.seng302.tab.controller.LostPasswordController;
 import nz.ac.canterbury.seng302.tab.controller.ResetPasswordController;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -65,7 +65,7 @@ public class ResetPasswordIntegrationTests {
 
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new ForgotPasswordController(userService), new ResetPasswordController(userService, passwordEncoder)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new LostPasswordController(userService), new ResetPasswordController(userService, passwordEncoder)).build();
 
         userRepository.deleteAll();
         Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");

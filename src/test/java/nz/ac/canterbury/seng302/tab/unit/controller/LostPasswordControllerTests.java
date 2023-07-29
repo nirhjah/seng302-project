@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class ForgotPasswordControllerTests {
+public class LostPasswordControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
