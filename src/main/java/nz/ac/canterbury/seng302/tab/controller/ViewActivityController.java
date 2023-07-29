@@ -230,7 +230,7 @@ public class ViewActivityController {
 
                 // update the score
                 // activity.setOtherTeamScore("13");
-                activityService.updateTeamsScore(activity);
+                activityService.updateTeamsScore(activity, goalValue);
 
                 break;
 
@@ -253,9 +253,9 @@ public class ViewActivityController {
                 break;
 
             case OPPOSITION_GOAL:
-                activityService.updateAwayTeamsScore(activity);
+                activityService.updateAwayTeamsScore(activity, goalValue);
 
-                fact = new OppositionGoal(description, time, activity);
+                fact = new OppositionGoal(description, time, activity, goalValue);
                 break;
 
             default:

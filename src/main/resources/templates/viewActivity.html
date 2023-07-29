@@ -131,7 +131,7 @@
                         <div id="additionalFields"></div>
                     </div>
                     <div class="submit-button">
-                        <button id="createEvent" type="submit" class="registerLoginButton">Create Event</button>
+                        <button id="createEvent" type="submit" class="registerLoginButton">Add activity statistics</button>
                     </div>
                     
                 </form>
@@ -309,6 +309,24 @@
 
             // Append the select element to the additional fields div
             additionalFieldsDiv.appendChild(selectScorer);
+        }
+
+        if (selectedOption === "OPPOSITION_GOAL") {
+            var goalValueInput = document.createElement("input");
+            var goalValueLabel = document.createElement("label");
+            goalValueLabel.innerHTML = "Goal value:";
+            goalValueLabel.style.display = "block";
+
+            var requiredSpan = document.createElement("span");
+            requiredSpan.innerText = "*";
+            requiredSpan.classList.add("required");
+            goalValueLabel.appendChild(requiredSpan);
+
+            goalValueInput.name = "goalValue"
+            goalValueInput.classList.add("overall-score-input")
+
+            additionalFieldsDiv.appendChild(goalValueLabel);
+            additionalFieldsDiv.appendChild(goalValueInput);
         }
     }
 

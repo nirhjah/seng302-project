@@ -252,13 +252,13 @@ public class ActivityService {
     /**
      * increments the home teams score by one
      **/
-    public void updateTeamsScore(Activity activity) {
+    public void updateTeamsScore(Activity activity, int goalValue) {
         String score = activity.getActivityTeamScore();
         if (score == null) {
             score = "0";
         }
         int parsedScore = Integer.parseInt(score);
-        parsedScore++;
+        parsedScore += goalValue;
 
         activity.setActivityTeamScore(String.valueOf(parsedScore));
     }
@@ -266,13 +266,13 @@ public class ActivityService {
     /**
      * increments the away teams score by one
      **/
-    public void updateAwayTeamsScore(Activity activity) {
+    public void updateAwayTeamsScore(Activity activity, int goalValue) {
         String score = activity.getOtherTeamScore();
         if (score == null) {
             score = "0";
         }
         int parsedScore = Integer.parseInt(score);
-        parsedScore++;
+        parsedScore += goalValue;
 
         activity.setOtherTeamScore(String.valueOf(parsedScore));
     }
