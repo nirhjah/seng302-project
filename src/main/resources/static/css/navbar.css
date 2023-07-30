@@ -1,9 +1,9 @@
 
-body {
+/*body {*/
 
-  line-height: 32px;
-  word-wrap:break-word !important;
-}
+/*  line-height: 32px;*/
+/*  word-wrap:break-word !important;*/
+/*}*/
 .toggle,
 [id^=drop] {
   display: none;
@@ -13,6 +13,8 @@ nav {
   margin:0;
   padding: 0;
   background-color: #0b2239;
+  line-height: 32px;
+  word-wrap:break-word !important;
 }
 
 #logo {
@@ -92,7 +94,7 @@ li > a:after { content:  ' +'; }
 li > a:only-child:after { content: ''; }
 
 
-@media all and (max-width : 768px) {
+@media all and (max-width : 1000px) {
   nav {
     margin: 0;
   }
@@ -101,9 +103,9 @@ li > a:only-child:after { content: ''; }
   .menu {
     display: none;
   }
-  .menu{
-    z-index:10000
-  }
+  /*.menu{*/
+  /*  z-index:10000*/
+  /*}*/
 
   .toggle {
     display: block;

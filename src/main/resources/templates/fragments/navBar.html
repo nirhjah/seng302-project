@@ -1,88 +1,89 @@
-<header th:fragment="navbar">
+<nav th:fragment="navbar">
     <link th:href="@{/css/navbar.css}" rel="stylesheet">
-    <nav>
-        <label for="drop" class="toggle"><img th:src="@{/image/icons/hamburger.svg}"></label>
-        <input type="checkbox" id="drop"/>
-        <ul class="menu">
-            <li><a th:href="@{home}">Home</a></li>
-            <li sec:authorize="isAnonymous()">
-                <a th:href="@{login}" th:classappend="${httpServletRequest.requestURI == '/login' ? 'active' : ''}">Login</a>
-            </li>
-            <li sec:authorize="isAnonymous()">
-                <a th:href="@{register}"
-                   th:classappend="${httpServletRequest.requestURI == '/register' ? 'active' : ''}">Register</a>
-            </li>
+    <label for="drop" class="toggle"><img th:src="@{/image/icons/hamburger.svg}"></label>
+    <input type="checkbox" id="drop"/>
+    <ul class="menu">
+        <li><a th:href="@{home}">Home</a></li>
+        <li sec:authorize="isAnonymous()">
+            <a th:href="@{login}"
+               th:classappend="${httpServletRequest.requestURI == '/login' ? 'active' : ''}">Login</a>
+        </li>
+        <li sec:authorize="isAnonymous()">
+            <a th:href="@{register}"
+               th:classappend="${httpServletRequest.requestURI == '/register' ? 'active' : ''}">Register</a>
+        </li>
 
-            <li sec:authorize="isAuthenticated()">
-                <a th:href="@{view-teams(page=1)}"
-                   th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a>
-            </li>
+        <li sec:authorize="isAuthenticated()">
+            <a th:href="@{view-teams(page=1)}"
+               th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a>
+        </li>
 
-            <li sec:authorize="isAuthenticated()">
-                <a th:href="@{view-users(page=1)}"
-                   th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
-            </li>
-            <li sec:authorize="isAuthenticated()">
-                <label for="drop-1" class="toggle">Create +</label>
-                <a href="">Create</a>
-                <input type="checkbox" id="drop-1"/>
-                <ul>
-                    <li><a th:href="@{createActivity}">Activity</a></li>
-                    <li><a th:href="@{createClub}">Club</a></li>
-                    <li><a th:href="@{createTeam}">Team</a></li>
-                </ul>
-
-            </li>
-            <div sec:authorize="isAuthenticated()" class="view-profile">
-                View Profile:
-                <select class="form-control" id="profiledropdown" name="teamSelector"
-                        onchange="if(this.value != '-1') window.location.href = 'profile?teamID=' + this.value;">
-                    <option value="-1" selected>Select a Team</option>
-                    <option th:each="team : ${navTeams}"
-                            th:value="${team.teamId}"
-                            th:text="${team}"
-                            th:selected="${team.teamId.equals(teamID)}"></option>
-                </select>
-            </div>
-        </ul>
-    </nav>
-    <div class="action" sec:authorize="isAuthenticated()">
-        <div class="profile" onclick="menuToggle();">
-            <img class="navbar-profile-picture"
-                 th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
-        </div>
-
-        <div class="profile-menu">
-            <h3>
-                User Account
-                <div>
-                    User Account
-                </div>
-            </h3>
+        <li sec:authorize="isAuthenticated()">
+            <a th:href="@{view-users(page=1)}"
+               th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
+        </li>
+        <li sec:authorize="isAuthenticated()">
+            <label for="drop-1" class="toggle">Create +</label>
+            <a href="">Create</a>
+            <input type="checkbox" id="drop-1"/>
             <ul>
-                <li>
-                    <a th:href="@{user-info/self}">My Profile</a>
-                </li>
-                <li>
-                    <a th:href="@{editUser}"> Edit Account</a>
-                </li>
-                <li>
-                    <a th:href="@{my-teams}">My Teams</a>
-                </li>
-                <li>
-                    <a th:href="@{view-activities(page=1)}">My Activities</a>
-                </li>
-                <li>
-                    <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
-                </li>
+                <li><a th:href="@{createActivity}">Activity</a></li>
+                <li><a th:href="@{createClub}">Club</a></li>
+                <li><a th:href="@{createTeam}">Team</a></li>
             </ul>
+
+        </li>
+        <div sec:authorize="isAuthenticated()" class="view-profile">
+            View Profile:
+            <select class="form-control" id="profiledropdown" name="teamSelector"
+                    onchange="if(this.value != '-1') window.location.href = 'profile?teamID=' + this.value;">
+                <option value="-1" selected>Select a Team</option>
+                <option th:each="team : ${navTeams}"
+                        th:value="${team.teamId}"
+                        th:text="${team}"
+                        th:selected="${team.teamId.equals(teamID)}"></option>
+            </select>
         </div>
-        <form id="logoutForm" th:action="@{logout}" method="POST"></form>
+    </ul>
+<div class="action" sec:authorize="isAuthenticated()">
+    <div class="profile" onclick="menuToggle();">
+        <img class="navbar-profile-picture"
+             th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
     </div>
+
+    <div class="profile-menu">
+        <h3>
+            User Account
+            <div>
+                User Account
+            </div>
+        </h3>
+        <ul>
+            <li>
+                <a th:href="@{user-info/self}">My Profile</a>
+            </li>
+            <li>
+                <a th:href="@{editUser}"> Edit Account</a>
+            </li>
+            <li>
+                <a th:href="@{my-teams}">My Teams</a>
+            </li>
+            <li>
+                <a th:href="@{view-activities(page=1)}">My Activities</a>
+            </li>
+            <li>
+                <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
+            </li>
+        </ul>
+    </div>
+    <form id="logoutForm" th:action="@{logout}" method="POST"></form>
+</div>
     <script>
         function menuToggle() {
             const toggleMenu = document.querySelector('.profile-menu');
             toggleMenu.classList.toggle('active')
         }
     </script>
-</header>
+</nav>
+
+
