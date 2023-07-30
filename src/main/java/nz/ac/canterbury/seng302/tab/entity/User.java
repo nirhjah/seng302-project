@@ -104,16 +104,12 @@ public class User {
      * a hashed password
      * (By Autowiring a <code>PasswordEncoder</code>)
      */
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location)
-            throws IOException {
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.hashedPassword = password;
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.favoriteSports = new ArrayList<>();
         this.location = location;
     }

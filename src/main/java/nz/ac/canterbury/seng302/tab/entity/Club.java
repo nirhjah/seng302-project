@@ -26,9 +26,6 @@ public class Club {
     @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
 
-    @Column(columnDefinition = "MEDIUMBLOB")
-    private String clubLogo;
-
     protected Club() {
     }
 
@@ -36,9 +33,6 @@ public class Club {
         this.name = name;
         this.location = location;
         this.sport = sport;
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        this.clubLogo = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
 
     public long getClubId() {
@@ -59,14 +53,6 @@ public class Club {
 
     public void setLocation(Location location) {
         this.location = location;
-    }
-
-    public String getClubLogo() {
-        return clubLogo;
-    }
-
-    public void setClubLogo(String clubLogo) {
-        this.clubLogo = clubLogo;
     }
 
     public String getSport() {
