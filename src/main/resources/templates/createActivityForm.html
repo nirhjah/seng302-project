@@ -485,22 +485,28 @@
             position.classList.remove("unfilled");
             const clearPositionButton = position.querySelector(".clear-position-button");
 
-            // Action to carry out when a user selects a position with a player selected
-            position.addEventListener('click', () => {
-                const selectedPlayer = document.querySelector(".subs-li.active, .reserves-li.active");
-                if (selectedPlayer) {
-                    const firstName = selectedPlayer.querySelector(".li-player-name").textContent;
-                    const picture = selectedPlayer.querySelector(".li-player-image").getAttribute("src");
-                    const id = selectedPlayer.querySelector("input").value;
-                    addPlayer(position, firstName, picture, id)
+                // Action to carry out when a user selects a position with a player selected
+                position.addEventListener('click', () => {
+                    if (!position.classList.contains("filled")) {
 
-                    fillPosition(position);
-                    selectedPlayer.classList.remove("active");
-                    selectedPlayer.classList.add("in-formation");
-                }
-                checkSubsActive();
-                getPlayersAndPositions()
-            });
+                        const selectedPlayer = document.querySelector(".subs-li.active, .reserves-li.active");
+                        if (selectedPlayer) {
+                            const firstName = selectedPlayer.querySelector(".li-player-name").textContent;
+                            const picture = selectedPlayer.querySelector(".li-player-image").getAttribute("src");
+                            const id = selectedPlayer.querySelector("input").value;
+                            addPlayer(position, firstName, picture, id)
+
+                            fillPosition(position);
+                            selectedPlayer.classList.remove("active");
+                            selectedPlayer.classList.add("in-formation");
+                        }
+                        checkSubsActive();
+                        getPlayersAndPositions()
+                    }
+                });
+
+
+
 
             // Action to carry out when use clicks button to remove player from formation
             clearPositionButton.addEventListener('click', () => {
