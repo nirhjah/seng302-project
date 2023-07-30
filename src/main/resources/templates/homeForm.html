@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      lang="en">
 <head>
     <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
@@ -8,13 +9,11 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <title>Home</title>
 </head>
-<header th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></header>
 <body class="home-background">
-    <div class="Welcome-header">
-        <h1>Welcome!</h1>
-    </div>
-</body>
-
+<header th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></header>
+<div class="Welcome-header">
+    <h1>Welcome!</h1>
+</div>
 <footer>
     <p>
         Image by <a
@@ -22,4 +21,5 @@
         on Freepik
     </p>
 </footer>
+</body>
 </html>

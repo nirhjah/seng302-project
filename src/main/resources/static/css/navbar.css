@@ -1,9 +1,4 @@
 
-/*body {*/
-
-/*  line-height: 32px;*/
-/*  word-wrap:break-word !important;*/
-/*}*/
 .toggle,
 [id^=drop] {
   display: none;
@@ -15,6 +10,7 @@ nav {
   background-color: #0b2239;
   line-height: 32px;
   word-wrap:break-word !important;
+  top: 0;
 }
 
 #logo {
@@ -69,7 +65,7 @@ nav a:hover {
 nav ul ul {
   display: none;
   position: absolute;
-  top: 60px;
+  top: 100%;
   z-index:1000
 }
 
@@ -95,6 +91,11 @@ li > a:only-child:after { content: ''; }
 
 
 @media all and (max-width : 1000px) {
+  /*html,*/
+  /*body{*/
+  /*  width:100%;*/
+  /*  overflow-x:hidden;*/
+  /*}*/
   nav {
     margin: 0;
   }
@@ -102,6 +103,11 @@ li > a:only-child:after { content: ''; }
   .toggle + a,
   .menu {
     display: none;
+  }
+
+  .menu{
+    width:100%;
+    text-align:center;
   }
   /*.menu{*/
   /*  z-index:10000*/
@@ -190,7 +196,7 @@ li > a:only-child:after { content: ''; }
 
 }
 .view-profile{
-  float:left;
+  justify-content: center;
   display: flex;
   color: #fefefe;
   font-size: 1.3em;
@@ -292,6 +298,7 @@ header .header-right {
   top:0;
 }
 .action .profile{
+  line-height: 0 !important;
   border-radius: 50%;
   cursor: pointer;
   height: 60px;
@@ -309,6 +316,7 @@ header .header-right {
   height: 100%;
 }
 .action .profile-menu{
+  line-height: 0 !important;
   background-color:#FFF;
   box-sizing:0 5px 25px rgba(0,0,0,0.1);
   border-radius: 15px;
@@ -357,6 +365,7 @@ header .header-right {
   justify-content: left;
   list-style: none;
   padding: 10px 0;
+  background:white;
 }
 .action .profile-menu ul li img{
   max-width: 20px;
@@ -379,4 +388,5 @@ header .header-right {
 }
 .action .profile-menu ul li:hover a{
   color:#ff00ff;
+  background:white;
 }
