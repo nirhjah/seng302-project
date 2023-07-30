@@ -91,11 +91,11 @@ li > a:only-child:after { content: ''; }
 
 
 @media all and (max-width : 1000px) {
-  /*html,*/
-  /*body{*/
-  /*  width:100%;*/
-  /*  overflow-x:hidden;*/
-  /*}*/
+  .view-profile{
+    background:#0b2239;
+    margin:0 !important;
+    border-radius:0 !important;
+  }
   nav {
     margin: 0;
   }
@@ -103,15 +103,14 @@ li > a:only-child:after { content: ''; }
   .toggle + a,
   .menu {
     display: none;
+    position:absolute;
+    z-index:1000;
   }
 
   .menu{
     width:100%;
     text-align:center;
   }
-  /*.menu{*/
-  /*  z-index:10000*/
-  /*}*/
 
   .toggle {
     display: block;
