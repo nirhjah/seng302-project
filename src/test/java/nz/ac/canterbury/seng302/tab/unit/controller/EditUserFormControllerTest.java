@@ -21,7 +21,6 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -192,6 +191,26 @@ public class EditUserFormControllerTest {
                                                 .param(P_FNAME, USER_FNAME)
                                                 .param(P_LNAME, USER_LNAME)
                                                 .param(P_EMAIL, "a@b")
+                                                .param(P_DOB, USER_DOB)
+                                                .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
+                                                .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
+                                                .param(P_SUBURB, USER_SUBURB)
+                                                .param(P_POSTCODE, USER_POSTCODE)
+                                                .param(P_CITY, USER_CITY)
+                                                .param(P_COUNTRY, USER_COUNTRY))
+                                .andExpect(status().isBadRequest());
+
+                verify(mockUserService, times(0)).updateOrAddUser(any());
+        }
+
+        @Test
+        @WithMockUser()
+        void givenEmailContainsAnEmoji_ThenFormIsRejected() throws Exception {
+                mockMvc.perform(
+                                post(URL)
+                                                .param(P_FNAME, USER_FNAME)
+                                                .param(P_LNAME, USER_LNAME)
+                                                .param(P_EMAIL, "🫶")
                                                 .param(P_DOB, USER_DOB)
                                                 .param(P_ADDRESS_LINE_1, USER_ADDRESS_LINE_1)
                                                 .param(P_ADDRESS_LINE_2, USER_ADDRESS_LINE_2)
