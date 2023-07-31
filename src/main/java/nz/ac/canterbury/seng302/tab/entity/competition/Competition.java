@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -46,7 +47,6 @@ public abstract class Competition {
 
     public Competition() {}
     
-
     /**
      * constructor without setting federation admin
      * @param name
@@ -57,6 +57,14 @@ public abstract class Competition {
         this.name = name;
         this.grade = grade;
         this.sport = sport;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Competition competition = (Competition) o;
+        return Objects.equals(competitionId, competition.getCompetitionId());
     }
 
     public long getCompetitionId() {
