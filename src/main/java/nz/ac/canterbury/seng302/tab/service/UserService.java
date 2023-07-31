@@ -192,17 +192,6 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-
-    public String getPictureString(long id) {
-//        Optional<byte[]> optionalBytes = fileDataSaver.readFile(id);
-//
-//        if (optionalBytes.isPresent()) {
-//            return Base64.getEncoder().encodeToString(optionalBytes.get());
-//        }
-//        return null;
-        return null;
-    }
-
     /**
      * <h4>For Editing</h4>
      * <p>

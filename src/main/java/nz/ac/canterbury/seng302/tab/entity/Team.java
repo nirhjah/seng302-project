@@ -36,9 +36,6 @@ public class Team {
     @Column(nullable = false)
     private String sport;
 
-    @Column(columnDefinition = "MEDIUMBLOB")
-    private String pictureString;
-
     @Column
     private String token;
 
@@ -129,11 +126,6 @@ public class Team {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-
-    public void setPictureString(String pictureString) {
-        this.pictureString = pictureString;
     }
 
     public void setTeamId(long teamId) {

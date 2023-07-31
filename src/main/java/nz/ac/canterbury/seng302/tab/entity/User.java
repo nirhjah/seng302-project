@@ -45,9 +45,6 @@ public class User {
     @JoinColumn(name = "fk_locationId", referencedColumnName = "locationId")
     private Location location;
 
-    @Column(columnDefinition = "MEDIUMBLOB")
-    private String pictureString;
-
     @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags = Pattern.Flag.CASE_INSENSITIVE)
     @Column(nullable = false, unique = true)
     private String email;
@@ -126,9 +123,6 @@ public class User {
         this.dateOfBirth = new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime();
         this.hashedPassword = password;
         this.location = location;
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
 
     @ManyToMany(mappedBy = "teamMembers")

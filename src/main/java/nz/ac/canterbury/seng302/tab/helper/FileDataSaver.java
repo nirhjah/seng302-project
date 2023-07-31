@@ -34,7 +34,7 @@ public abstract class FileDataSaver {
     public static final FileRestrictions DEFAULT_IMAGE_RESTRICTIONS = new FileRestrictions(
             // TODO: Check that these values are valid!!!!
             //  We want 10MB max upload, and check that the image types match the ACs too.
-            100_000_000, Set.of("jpg", "png")
+            100_000_000, Set.of("jpg", "png", "jpeg", "svg")
     );
 
     private Path getPath(Long id) {
