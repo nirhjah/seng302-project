@@ -6,7 +6,7 @@ import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
 public class CreateAndEditTeamForm {
 
-    @TeamFormValidators.teamNameValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG)
+    @TeamFormValidators.teamNameValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG_TEAM_NAME)
     private String name;
 
     @TeamFormValidators.teamSportValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG)

@@ -1,20 +1,9 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.time.LocalDateTime;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
-import nz.ac.canterbury.seng302.tab.enums.ActivityType;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FactService;
-import nz.ac.canterbury.seng302.tab.entity.Formation;
-import nz.ac.canterbury.seng302.tab.service.FormationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +17,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Formation;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.service.ActivityService;
+import nz.ac.canterbury.seng302.tab.service.FactService;
+import nz.ac.canterbury.seng302.tab.service.FormationService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 
@@ -116,12 +110,7 @@ public class ProfileFormController {
         model.addAttribute("totalGOrF", totalGamesAndFriendlies);
 
         // Rambling that's required for navBar.html
-        List<Team> teamList = teamService.getTeamList();
         List<Formation> formationsList = formationService.getTeamsFormations(teamID);
-        model.addAttribute("firstName", user.getFirstName());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("displayPicture", user.getPictureString());
-        model.addAttribute("navTeams", teamList);
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("isUserManager", team.isManager(user));
         model.addAttribute("isUserManagerOrCoach", team.isManager(user) || team.isCoach(user));
