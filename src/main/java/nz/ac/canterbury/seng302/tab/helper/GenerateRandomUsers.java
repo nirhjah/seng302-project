@@ -76,7 +76,6 @@ public class GenerateRandomUsers {
      */
     public User createRandomUserWithSports() throws IOException {
         Team teamToJoin = teamRepository.findAll().get(0);
-        System.out.println("nirhjah");
         System.out.println(teamToJoin);
         User user = createRandomUser();
         // Generate random sports
