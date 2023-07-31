@@ -17,6 +17,7 @@ header {
     z-index: 1000;
     position: sticky;
     top: 0;
+    margin-bottom: 10px;
 }
 
 header .header-left {
