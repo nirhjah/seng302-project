@@ -76,13 +76,14 @@ class UserImageServiceTest {
     }
 
     private MockMultipartFile getMockedFile(byte[] data) {
-        return new MockMultipartFile("my_file.jpg", data);
+        return new MockMultipartFile("/my_file.jpg", data);
     }
 
     @Test
     public void as1() {
         System.out.println("FILE NAME:::");
         System.out.println(fakeImageFile.getOriginalFilename());
+        System.out.println(fakeImageFile.getName());
     }
 
     @Test

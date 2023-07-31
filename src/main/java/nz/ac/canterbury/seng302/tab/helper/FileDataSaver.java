@@ -34,7 +34,7 @@ public abstract class FileDataSaver {
     public static final FileRestrictions DEFAULT_IMAGE_RESTRICTIONS = new FileRestrictions(
             // TODO: Check that these values are valid!!!!
             //  We want 10MB max upload, and check that the image types match the ACs too.
-            100_000_000, Set.of(".jpg", ".png")
+            100_000_000, Set.of("jpg", "png")
     );
 
     private Path getPath(Long id) {
@@ -97,19 +97,32 @@ public abstract class FileDataSaver {
     }
 
     /**
+     * Gets a file's filename, prioritizing the original name.
+     * @param file the file
+     * @return String filename
+     */
+    private String getFilename(MultipartFile file) {
+        String name = file.getOriginalFilename();
+        if (!Objects.isNull(name) && name.length() > 0) {
+            return name;
+        }
+        return file.getName();
+    }
+
+    /**
      * Checks if a file is valid.
      * @param file The file to check
      * @return true if all OK, false otherwise.
      */
     public boolean isFileValid(MultipartFile file) {
-        String originalName = file.getOriginalFilename();
+        String originalName = getFilename(file);
         if (Objects.isNull(originalName)) {
             // If there's no filename, return false.
             logger.error("No filename!");
             return false;
         }
 
-        originalName = StringUtils.cleanPath(file.getOriginalFilename());
+        originalName = StringUtils.cleanPath(getFilename(file));
         System.out.println("ORIGINAL NAME: " + originalName);
         Optional<String> optExtension = getExtension(originalName);
         if (optExtension.isEmpty()) {
