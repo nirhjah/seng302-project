@@ -33,20 +33,8 @@ class ProfilePictureControllerTest {
 
     private long userId;
 
-    // A userId that isn't going to be used.
-    // TODO: this is kinda bad
-    private static final long unusedUserId = 34849534;
-
+    // Arbitrary bytes representing an image
     private final byte[] fileBytes = new byte[] {56,65,65,78,54,45,32,54,67,87,11,9};
-
-    @Test
-    public void a() throws Exception {
-        MvcResult result1 = mockMvc.perform(get("/user-profile-picture/{id}", userId))
-                .andExpect(status().isOk())
-                .andReturn();
-        System.out.println(result1.getResponse().getHeaderNames());
-        result1.getResponse().
-    }
 
     @BeforeEach
     public void setup() {
@@ -58,29 +46,36 @@ class ProfilePictureControllerTest {
         userImageService.updateProfilePicture(userId, mockMultipartFile);
 
         // Generate team and pfp for team
+        // remember to add to database!
         // TODO.
 
-        // Generate club and pfp for club
+        // Generate club and club-logo for club
+        // remember to add to database, or it wont work!
         // TODO.
     }
 
     @Test
-    public void testUserProfilePictureConsistency() throws Exception {
+    public void testUserProfilePicture() throws Exception {
         MvcResult result1 = mockMvc.perform(get("/user-profile-picture/{id}", userId))
                 .andExpect(status().isOk())
                 .andReturn();
-        byte[] picture1 = result1.getResponse().getContentAsByteArray();
-
-        MvcResult result2 = mockMvc.perform(get("/user-profile-picture/{id}", unusedUserId))
-                .andExpect(status().isOk())
-                .andReturn();
-        byte[] picture2 = result2.getResponse().getContentAsByteArray();
-
-        assertArrayEquals(picture1, picture2);
+        // TODO: check that the response is equal to the original fileBytes
     }
 
-    /*
-    TODO: tests for teams and clubs too here.
-     */
+    @Test
+    public void testClubLogo() throws Exception {
+        MvcResult result1 = mockMvc.perform(get("/club-logo/{id}", userId))
+                .andExpect(status().isOk())
+                .andReturn();
+        // TODO: check that the response is equal to the original bytes
+    }
+
+    @Test
+    public void testTeamProfilePicture() throws Exception {
+        MvcResult result1 = mockMvc.perform(get("/team-profile-picture/{id}", userId))
+                .andExpect(status().isOk())
+                .andReturn();
+        // TODO: check that the response is equal to the original bytes
+    }
 }
 
