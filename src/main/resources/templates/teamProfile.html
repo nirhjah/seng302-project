@@ -124,22 +124,25 @@
         </div>
         <div class="content-box">
             <div class="content formations">
-                <ul class="formation-list">
-                    <li id="create-formation-li" onclick="render('1-4-4-2', null)">
-                        <h3>Create a Formation</h3>
-                        <img th:src="@{/image/icons/add-symbol.svg}" alt=""/>
-                        <input type="hidden" class="formation-id" value="-1"/>
-                    </li>
-                    <li th:each="formation : ${formations}"
-                        th:attr="onclick='renderSavedFormation(\'' + ${formation.formation} + '\',' + ${formation.custom} + ',\'' + ${formation.customPlayerPositions} + '\');'"
-                        class="formation-li">
-                        <span class="title">
-                            <h3 th:text="${formation.formation} + (${formation.custom} ? ' Custom' : '')"></h3>
-                        </span>
-                        <input type="hidden" class="formation-id" th:value="${formation.formationId}" />
-                    </li>
+                <div class="formation-list-outer">
+                    <ul class="formation-list active">
+                        <li id="create-formation-li" onclick="render('1-4-4-2', null)">
+                            <h3>Create a Formation</h3>
+                            <img th:src="@{/image/icons/add-symbol.svg}" alt=""/>
+                            <input type="hidden" class="formation-id" value="-1"/>
+                        </li>
+                        <li th:each="formation : ${formations}"
+                            th:attr="onclick='renderSavedFormation(\'' + ${formation.formation} + '\',' + ${formation.custom} + ',\'' + ${formation.customPlayerPositions} + '\');'"
+                            class="formation-li">
+                            <span class="title">
+                                <h3 th:text="${formation.formation} + (${formation.custom} ? ' Custom' : '')"></h3>
+                            </span>
+                            <input type="hidden" class="formation-id" th:value="${formation.formationId}" />
+                        </li>
 
-                </ul>
+                    </ul>
+                    <button class="toggle-formation-button"><</button>
+                </div>
                 <form class="formation-display" method="post" th:action="@{/profile/create-formation}" onsubmit="return submissionCheck(document.getElementById('formation-string').value)">
                     <div class="formation-LHS">
                         <div class="create-formation-display">
@@ -152,7 +155,7 @@
                         <div class="error-message">Formation must match specified form e.g. 1-4-4-2</div>
                     </div>
                     <div class="formation-RHS">
-                        <div th:insert="~{fragments/formationDisplay.html::formationDisplay(true)}"></div>
+                        <div class="formation-outer" th:insert="~{fragments/formationDisplay.html::formationDisplay(true)}"></div>
                         <input type="hidden" name="teamID" th:value="${teamID}" />
                         <input type="hidden" name="formationID" class="current-formation-id"/>
                         <button type="submit" class="create-formation" id="create-formation-button">Create Formation</button>
@@ -346,6 +349,18 @@
             }
             return true;
         }
+
+        const toggleFormationButton = document.querySelector(".toggle-formation-button");
+        const formationList = document.querySelector(".formation-list");
+        toggleFormationButton.addEventListener("click", () => {
+            if (toggleFormationButton.textContent === "<") {
+                toggleFormationButton.textContent = ">";
+            } else {
+                toggleFormationButton.textContent = "<";
+            }
+            formationList.classList.toggle("active");
+        });
+
 
     </script>
 </div>
