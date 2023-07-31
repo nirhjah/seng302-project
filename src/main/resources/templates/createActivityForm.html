@@ -505,23 +505,22 @@
                     }
                 });
 
-
-
-
             // Action to carry out when use clicks button to remove player from formation
-            clearPositionButton.addEventListener('click', () => {
-                const positionPlayerId = position.querySelector("input").value;
-                const players = document.querySelectorAll(".reserves-li");
-                players.forEach(player => {
-                    const playerId = player.querySelector("input").value;
-                    if (playerId === positionPlayerId) {
-                        player.classList.remove("in-formation");
-                        position.classList.remove("filled");
+                clearPositionButton.addEventListener('click', () => {
+                    if (!position.classList.contains("filled")) {
+                        const positionPlayerId = position.querySelector("input").value;
+                        const players = document.querySelectorAll(".reserves-li");
+                        players.forEach(player => {
+                            const playerId = player.querySelector("input").value;
+                            if (playerId === positionPlayerId) {
+                                player.classList.remove("in-formation");
+                                position.classList.remove("filled");
+                            }
+                        });
+                        clearPlayer(position)
+                        deactivateSubs();
                     }
                 });
-                clearPlayer(position)
-                deactivateSubs();
-            });
         }
     }
 
