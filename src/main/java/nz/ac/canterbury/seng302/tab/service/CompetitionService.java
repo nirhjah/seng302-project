@@ -2,8 +2,11 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
+import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
+import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
 import nz.ac.canterbury.seng302.tab.repository.CompetitionRepository;
 
+import org.aspectj.util.Reflection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,15 +52,20 @@ public class CompetitionService {
      * @return list of all team competitions 
     */
     public List<Competition> getAllTeamCompetitions() {
-        return competitionRepository.findTeamCompetitions();
+        return competitionRepository.findAll().stream().filter(
+                (x) -> x.getClass() == TeamCompetition.class
+        ).toList();
     }
 
+
     /**
-     * Gets list of all user competitions 
-     * @return list of all user competitions 
-    */
+     * Gets list of all user competitions
+     * @return list of all user competitions
+     */
     public List<Competition> getAllUserCompetitions() {
-      return competitionRepository.findUserCompetitions();
+        return competitionRepository.findAll().stream().filter(
+                (x) -> x.getClass() == UserCompetition.class
+        ).toList();
     }
 
     /**

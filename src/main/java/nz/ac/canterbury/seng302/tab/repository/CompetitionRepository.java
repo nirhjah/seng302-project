@@ -20,10 +20,4 @@ public interface CompetitionRepository extends CrudRepository<Competition, Long>
     Optional<Competition> findById(long id);
 
     List<Competition> findAll();
-
-    @Query("SELECT c FROM TeamCompetition c")
-    List<Competition> findTeamCompetitions();
-
-    @Query("SELECT c FROM UserCompetition c")
-    List<Competition> findUserCompetitions();
 }
