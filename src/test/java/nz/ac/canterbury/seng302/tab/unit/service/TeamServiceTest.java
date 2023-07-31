@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@Import({TeamService.class, ClubService.class})
+@Import({TeamService.class, ClubService.class, TeamImageService.class})
 public class TeamServiceTest {
 
     Logger logger = LoggerFactory.getLogger(TeamServiceTest.class);

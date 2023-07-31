@@ -32,9 +32,6 @@ public class TeamService {
     private final TeamRepository teamRepository;
 
     @Autowired
-    private TeamImageService teamImageService;
-
-    @Autowired
     public TeamService(TeamRepository teamRepository) {
         this.teamRepository = teamRepository;
     }

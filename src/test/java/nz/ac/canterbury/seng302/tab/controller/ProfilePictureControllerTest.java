@@ -11,13 +11,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Arrays;
 
 import static org.springframework.test.util.AssertionErrors.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -33,19 +31,19 @@ class ProfilePictureControllerTest {
     @Autowired
     private UserService userService;
 
-    private GenerateRandomUsers generator = new GenerateRandomUsers();
+    private final GenerateRandomUsers generator = new GenerateRandomUsers();
 
     private long userId;
-    private MockMultipartFile mockMultipartFile;
 
-    private byte[] fileBytes = new byte[] {56,65,65,78,54,45,32,54,67,87,11,9}
+    private final byte[] fileBytes = new byte[] {56,65,65,78,54,45,32,54,67,87,11,9};
 
     @BeforeEach
     public void setup() {
         // Generate user and pfp for user
         var u = generator.createRandomUser();
         userId = u.getUserId();
-        mockMultipartFile = new MockMultipartFile("my_image.jpg", fileBytes);
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("my_image.jpg", fileBytes);
+        userService.updateOrAddUser(u);
         userImageService.updateProfilePicture(userId, mockMultipartFile);
 
         // Generate team and pfp for team
@@ -63,5 +61,9 @@ class ProfilePictureControllerTest {
         byte[] picture = result.getResponse().getContentAsByteArray();
         assertTrue("Picture not equal!", Arrays.equals(picture, fileBytes));
     }
+
+    /*
+    TODO: tests for teams and clubs too here.
+     */
 }
 

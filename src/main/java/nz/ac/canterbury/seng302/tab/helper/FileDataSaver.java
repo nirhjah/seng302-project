@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.helper;
 
-import nz.ac.canterbury.seng302.tab.entity.Team;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -21,6 +20,7 @@ import java.util.*;
 public abstract class FileDataSaver {
 
     // DON'T CHANGE THESE PATH NAMES!
+    // This is like, the global path prefix where all files are saved under.
     private static final String TAB900_FILE_MODIFIER = "team900_seng302";
 
     private static final Logger logger = LoggerFactory.getLogger(FileDataSaver.class);
@@ -34,7 +34,7 @@ public abstract class FileDataSaver {
     public static final FileRestrictions DEFAULT_IMAGE_RESTRICTIONS = new FileRestrictions(
             // TODO: Check that these values are valid!!!!
             //  We want 10MB max upload, and check that the image types match the ACs too.
-            100_000_000, Set.of("jpg", "png")
+            100_000_000, Set.of(".jpg", ".png")
     );
 
     private Path getPath(Long id) {
@@ -99,7 +99,6 @@ public abstract class FileDataSaver {
     /**
      * Checks if a file is valid.
      * @param file The file to check
-     * @param restrictions The restrictions object to pass in.
      * @return true if all OK, false otherwise.
      */
     public boolean isFileValid(MultipartFile file) {

@@ -10,8 +10,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+/**
+ * ProfilePictureController.
+ * -
+ * This controller takes URLs as input, and spits out images.
+ * (Usually, the URL contains the JPA id of whatever entity owns the profile picture.)
+ * -
+ * For example:  user-profiles-pictures/120934 will return the profile picture
+ * of user `120934`, as a jpg.
+ * If the entity doesn't exist, then a default image is returned. (For example, default user pfp.)
+ * Try it if you are curious!
+ * -
+ * Note that we are using jpg, but actually, other image types would work too.
+ */
 @Controller
 public class ProfilePictureController {
+
+    /**
+     * All of these services inherit from the abstract FileDataSaver class.
+     * Most of the logic is in there.
+     */
     private final UserImageService userImageService;
     private final TeamImageService teamImageService;
     private final ClubImageService clubImageService;
@@ -39,7 +57,6 @@ public class ProfilePictureController {
     public @ResponseBody byte[] getTeamProfilePicture(@PathVariable long id) {
         return teamImageService.readFileOrDefault(id);
     }
-
 
     @GetMapping(
             value = "/club-logo/{id}",
