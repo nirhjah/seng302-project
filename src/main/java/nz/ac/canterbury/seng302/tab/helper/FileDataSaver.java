@@ -251,6 +251,7 @@ public abstract class FileDataSaver {
      */
     public boolean saveFile(Long id, MultipartFile file) {
         if (isFileValid(file)) {
+            System.out.println("FILE IS VALID!");
             try {
                 byte[] bytes = file.getBytes();
                 return saveBytes(id, bytes);

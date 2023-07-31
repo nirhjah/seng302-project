@@ -78,6 +78,12 @@ class UserImageServiceTest {
     }
 
     @Test
+    public void as1() {
+        System.out.println("FILE NAME:::");
+        System.out.println(fakeImageFile.getOriginalFilename());
+    }
+
+    @Test
     public void testSingularImageIsSaved() throws IOException {
         // Take a user, check that the file is saved.
         User usr = users.get(0);
