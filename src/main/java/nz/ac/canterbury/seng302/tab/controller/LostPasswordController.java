@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.form.ForgotPasswordForm;
+import nz.ac.canterbury.seng302.tab.form.LostPasswordForm;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,39 +21,39 @@ import java.util.Optional;
  * Spring Boot Controller class for the Forgot Password Class.
  */
 @Controller
-public class ForgotPasswordController {
+public class LostPasswordController {
 
     private Optional<User> user;
     private User currentUser;
     private final UserService userService;
 
     @Autowired
-    public ForgotPasswordController(UserService userService) {
+    public LostPasswordController(UserService userService) {
         this.userService = userService;
     }
 
 
-    @GetMapping("/forgot-password")
-    public String forgotPasswordForm(Model model,HttpServletRequest request) {
-        model.addAttribute("forgotPasswordForm", new ForgotPasswordForm());
+    @GetMapping("/lost-password")
+    public String lostPasswordForm(Model model,HttpServletRequest request) {
+        model.addAttribute("lostPasswordForm", new LostPasswordForm());
         model.addAttribute("httpServletRequest",request);
-        return "forgotPassword";
+        return "lostPassword";
     }
 
     /**
      *
      * @param email                 email for the reset password token link to be sent to
-     * @param forgotPasswordForm    forgot password form
+     * @param lostPasswordForm    forgot password form
      * @param bindingResult         errors attatched to this
      * @param model                 model to store model attributes
      * @param httpServletResponse   httpServerletResponse
      * @param request               request
      * @return forgot password page
      */
-    @PostMapping("/forgot-password")
+    @PostMapping("/lost-password")
     public String submitEmail(
             @RequestParam("email") String email,
-            @Validated ForgotPasswordForm forgotPasswordForm,
+            @Validated LostPasswordForm lostPasswordForm,
             BindingResult bindingResult,
             Model model,
             HttpServletResponse httpServletResponse, HttpServletRequest request
@@ -65,7 +65,7 @@ public class ForgotPasswordController {
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("submitted_form", null);
-            return "forgotPassword";
+            return "lostPassword";
         }
 
         model.addAttribute("submitted_form_message", "If your email is registered with our system, you will receive a link to reset your password shortly.");
@@ -75,7 +75,7 @@ public class ForgotPasswordController {
             currentUser = user.get();
             userService.resetPasswordEmail(currentUser, request);
         }
-        return "forgotPassword";
+        return "lostPassword";
     }
 
 
