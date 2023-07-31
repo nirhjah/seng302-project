@@ -111,8 +111,14 @@ li > a:only-child:after { content: ''; }
     width:100%;
     text-align:center;
   }
+  .toggle1{
+    width:80px;
+  }
+  .toggle{
+    cursor:pointer;
+  }
 
-  .toggle {
+  .toggle,.toggle1 {
     display: block;
     background-color: #0b2239;
     padding:14px 20px;
@@ -283,8 +289,9 @@ header .header-right {
   border-color: transparent transparent white transparent;
 }
 
-.toggle img{
+.toggle1 img{
   height:28px;
+  cursor: pointer;
 }
 
 .icons-size{
