@@ -41,6 +41,10 @@ public class ProfilePictureController {
         this.clubImageService = clubImageService;
     }
 
+    /*
+    TODO: We need to allow SVGs here!!!!
+        Currently only pngs, jpgs, and jpegs are supported.
+     */
     @GetMapping(
             value = "/user-profile-picture/{id}",
             produces = MediaType.IMAGE_JPEG_VALUE

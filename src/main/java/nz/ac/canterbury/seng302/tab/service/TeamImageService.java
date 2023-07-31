@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.service;
 
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 @Service
 public class TeamImageService extends FileDataSaver {
@@ -58,6 +60,9 @@ public class TeamImageService extends FileDataSaver {
      * @param file The file that represents the image
      */
     public void updateProfilePicture(long id, MultipartFile file) {
+        Optional<User> currentUser = getCurrentUser();
+        // TODO: Check if the current user is a manager of team before changing.
+
         if (teamService.findTeamById(id).isPresent()) {
             saveFile(id, file);
         }
