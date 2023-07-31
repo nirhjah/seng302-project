@@ -56,18 +56,15 @@ public class EmailService {
         try {
 
             ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 10, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            executor.execute(() -> {
+                SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
-                    simpleMailMessage.setFrom(sender);
-                    simpleMailMessage.setTo(emailDetails.getRecipient());
-                    simpleMailMessage.setText(emailDetails.getMsgBody());
-                    simpleMailMessage.setSubject(emailDetails.getSubject());
+                simpleMailMessage.setFrom(sender);
+                simpleMailMessage.setTo(emailDetails.getRecipient());
+                simpleMailMessage.setText(emailDetails.getMsgBody());
+                simpleMailMessage.setSubject(emailDetails.getSubject());
 
-                    javaMailSender.send(simpleMailMessage);
-                }
+                javaMailSender.send(simpleMailMessage);
             });
             return "Mail Sent Successfully";
 
@@ -95,7 +92,7 @@ public class EmailService {
     }
 
     public void testHTMLEmail(User user) throws MessagingException {
-        EmailDetails email = new EmailDetails(user.getEmail(), null, "Test", "testEmail.html");
+        EmailDetails email = new EmailDetails(user.getEmail(), null, "Test", "mail/testEmail.html");
         Map<String, Object> properties = new HashMap<>();
         properties.put("name", user.getFirstName());
         properties.put("subscriptionDate", user.getDateOfBirth());
