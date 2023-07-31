@@ -19,13 +19,13 @@ import java.util.concurrent.TimeUnit;
 public class EmailService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
 
     /**
      * Manual dependency injection for tests.
      * Following morgan's solution in origin/feat/morgan-fix.
      * NOTE: This ctor SHOULD NOT be called outside of tests!!!!
-     * @param javaMailSender
+     * @param javaMailSender the mail sender
      */
     @Autowired
     public EmailService(JavaMailSender javaMailSender) {
@@ -67,9 +67,7 @@ public class EmailService {
 
     /**
      * Creates and sends email informing the user that their password has been updated.
-     * TODO add the update functionality to this method as well.
      * @param user the user whose password was updated
-     * @return the outcome of the email sending
      */
     public void updatePassword(User user) {
         EmailDetails details = new EmailDetails(user.getEmail(), EmailDetails.UPDATE_PASSWORD_BODY, EmailDetails.UPDATE_PASSWORD_HEADER);
@@ -77,9 +75,15 @@ public class EmailService {
         logger.info(outcome);
     }
 
-    public void confirmationEmail(User user, String url){
+    public void confirmationEmail(User user, String url) {
         EmailDetails details = new EmailDetails(user.getEmail(),url, EmailDetails.CONFIRMATION_EMAIL_HEADER );
         String outcome= this.sendSimpleMail(details);
+        logger.info(outcome);
+    }
+
+    public void joinFederationManager(User user, String url) {
+        EmailDetails details = new EmailDetails(user.getEmail(), url, EmailDetails.JOIN_FEDERATION_MANAGER);
+        String outcome = this.sendSimpleMail(details);
         logger.info(outcome);
     }
 }

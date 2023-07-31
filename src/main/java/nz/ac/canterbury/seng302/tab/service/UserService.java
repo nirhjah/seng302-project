@@ -8,8 +8,7 @@ import java.util.*;
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
 import nz.ac.canterbury.seng302.tab.authentication.TokenVerification;
-import nz.ac.canterbury.seng302.tab.entity.Sport;
-import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import org.slf4j.Logger;
@@ -31,8 +30,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 
 /**
@@ -178,7 +175,7 @@ public class UserService {
     /**
      * Find a user by their email. Most likely used for signing in.
      * 
-     * @param email
+     * @param email the email that's being checked to see if it already has an associated account
      * @return An optional object, containing either the user if they exist,
      *         otherwise it's empty.
      */
@@ -307,7 +304,6 @@ public class UserService {
      * Updates the user's password then creates and sends email informing the user that their password has been updated.
      * @param user the user whose password was updated
      * @param password the password to update the user with
-     * @return the outcome of the email sending
      */
     public void updatePassword(User user, String password) {
         user.setPassword(passwordEncoder.encode(password));
@@ -356,4 +352,24 @@ public class UserService {
         updateOrAddUser(user);
     }
 
+
+    /**
+     * Creates the invitation to be a federation manager
+     * Including storing the invite and sending the email
+     * @param user the user whose invited to become a federation manager
+     */
+    public void inviteToFederationManger(User user, HttpServletRequest request) {
+        FederationManagerInvite fedManInvite = new FederationManagerInvite(user);
+
+        String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "")
+                + "/federationManager?token=" + fedManInvite.getToken();
+
+        if (request.getRequestURL().toString().contains("test")) {
+            tokenVerificationLink =  "https://csse-s302g9.canterbury.ac.nz/test/federationManager?token=" + fedManInvite.getToken();
+        }
+        if (request.getRequestURL().toString().contains("prod")) {
+            tokenVerificationLink =  "https://csse-s302g9.canterbury.ac.nz/prod/federationManager?token=" + fedManInvite.getToken();
+        }
+        emailService.joinFederationManager(user, tokenVerificationLink);
+    }
 }
