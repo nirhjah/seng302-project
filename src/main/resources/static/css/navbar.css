@@ -300,17 +300,17 @@ header .header-right {
 }
 .action{
   position: fixed;
-  right: 30px;
-  top:0;
+  top: 7px;
+  right: 20px;
 }
 .action .profile{
   line-height: 0 !important;
   border-radius: 50%;
   cursor: pointer;
-  height: 60px;
+  height: 50px;
   overflow: hidden;
   position: relative;
-  width: 60px;
+  width: 50px;
   background:white;
 }
 .action .profile img{
@@ -324,12 +324,10 @@ header .header-right {
 .action .profile-menu{
   line-height: 0 !important;
   background-color:#FFF;
-  box-sizing:0 5px 25px rgba(0,0,0,0.1);
   border-radius: 15px;
   padding: 10px 20px;
   position: absolute;
   right: -10px;
-  width: 200px;
   transition: 0.5s;
   top: 120px;
   visibility: hidden;
@@ -388,11 +386,12 @@ header .header-right {
   text-decoration: none;
   text-transform: uppercase;
   transition: 0.5s;
+  white-space: nowrap;
 }
 .action .profile-menu ul li:hover img{
   opacity: 1;
 }
 .action .profile-menu ul li:hover a{
-  color:#ff00ff;
+  color: #0b2239;
   background:white;
 }

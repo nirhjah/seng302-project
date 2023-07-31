@@ -52,18 +52,10 @@
     </div>
 
     <div class="profile-menu">
-        <h3>
-            User Account
-            <div>
-                User Account
-            </div>
-        </h3>
+        <h3 th:text="${firstName} + ' ' + ${lastName}"></h3>
         <ul>
             <li>
                 <a th:href="@{user-info/self}">My Profile</a>
-            </li>
-            <li>
-                <a th:href="@{editUser}"> Edit Account</a>
             </li>
             <li>
                 <a th:href="@{my-teams}">My Teams</a>
