@@ -4,6 +4,7 @@ import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,6 +21,9 @@ public interface CompetitionRepository extends CrudRepository<Competition, Long>
 
     List<Competition> findAll();
 
-    @Query("SELECT c FROM Competition c WHERE TYPE(c) = :competitionType")
-    Optional<List<Competition>> findByCompetitionType(String competitionType);
+    @Query("SELECT c FROM TeamCompetition c")
+    List<Competition> findTeamCompetitions();
+
+    @Query("SELECT c FROM UserCompetition c")
+    List<Competition> findUserCompetitions();
 }

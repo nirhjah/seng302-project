@@ -2,13 +2,20 @@ package nz.ac.canterbury.seng302.tab.unit.service;
 
 import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
 import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
+import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
+import nz.ac.canterbury.seng302.tab.repository.CompetitionRepository;
 import nz.ac.canterbury.seng302.tab.service.CompetitionService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+
+import io.cucumber.java.AfterAll;
+
 import java.util.*;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 
 import org.slf4j.Logger;
@@ -22,16 +29,24 @@ public class CompetitionServiceTest {
   @Autowired
   private CompetitionService competitionService;
 
+  @Autowired
+  private CompetitionRepository competitionRepository;
+  
+  @AfterEach
+  public void tearDown() {
+    competitionRepository.deleteAll();
+  }
+
   @Test 
   public void testGettingAllCompetitions() throws Exception {
 	  Competition competition1 = new TeamCompetition("Test1", "U10", "football");
-	  Competition competition2 = new TeamCompetition("Test2", "U10", "football");
+	  Competition competition2 = new UserCompetition("Test2", "U10", "football");
     competitionService.updateOrAddCompetition(competition1);
     competitionService.updateOrAddCompetition(competition2);
 
     List<Competition> allCompetitions = competitionService.findAll();
 
-    Assertions.assertEquals(3, allCompetitions.size());
+    Assertions.assertEquals(2, allCompetitions.size());
     Assertions.assertTrue(allCompetitions.contains(competition1));
     Assertions.assertTrue(allCompetitions.contains(competition2));
   }
@@ -47,25 +62,20 @@ public class CompetitionServiceTest {
     Assertions.assertEquals(competition.getCompetitionId(), foundCompetition.get().getCompetitionId());
   }
 
-  // @Test
-  // public void testGettingAllTeamCompetitions() throws Exception {
-  //   // given i have two 
-  //   Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
-  //   locationRepository.save(location);
-  //   Team team = new Team("test", "Hockey", location);
-  //   teamRepository.save(team);
-	 //  User user = new User("test", "test", "test@gmail.com", "1", location);
-	 //  userRepository.save(user);
-	 //  Set<User> users = new HashSet<User>();
-	 //  users.add(user);
-	 //  
-	 //  Competition competition = new TeamCompetition("Test", users, "U10", "football", team);
-  //   competitionService.updateOrAddCompetition(competition);
-  //
-	 //  List<Competition> expectedCompetitions = new ArrayList<Competition>();
-	 //  expectedCompetitions.add(competition);
-	 //  List<Competition> actualCompetitions = competitionService.getAllTeamCompetitions();
-  //
-	 //  assertEquals(expectedCompetitions, actualCompetitions);
-  // }
+  @Test 
+  void testGettingAllTeamCompetitions() throws Exception {
+	  Competition competition1 = new TeamCompetition("Test1", "U10", "football");
+	  Competition competition2 = new UserCompetition("Test2", "U10", "football");
+    competition1 = competitionService.updateOrAddCompetition(competition1);
+    competition2 = competitionService.updateOrAddCompetition(competition2);
+
+    List<Competition> expectedCompetitions = new ArrayList<Competition>();
+    expectedCompetitions.add(competition1);
+    expectedCompetitions.add(competition2);
+
+	  List<Competition> foundCompetitions = competitionService.getAllTeamCompetitions();
+
+	  Assertions.assertEquals(1, foundCompetitions.size());
+	  Assertions.assertTrue(expectedCompetitions.contains(competition1));
+  }
 }
