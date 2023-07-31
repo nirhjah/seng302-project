@@ -42,15 +42,18 @@ class ProfilePictureControllerTest {
         var u = generator.createRandomUser();
         userId = u.getUserId();
         MockMultipartFile mockMultipartFile = new MockMultipartFile("my_image.jpg", fileBytes);
+        // We need to save the user before we save profile picture
         userService.updateOrAddUser(u);
         userImageService.updateProfilePicture(userId, mockMultipartFile);
 
-        // Generate team and pfp for team
+        // Generate team and pfp for team.
         // remember to add to database!
+        // ALSO note: You can only update the pfp if you are a manager/coach of team.
         // TODO.
 
         // Generate club and club-logo for club
         // remember to add to database, or it wont work!
+        // ALSO note: You can only update the pfp if you are a manager of the club
         // TODO.
     }
 

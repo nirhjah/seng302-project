@@ -60,7 +60,7 @@ public class TeamImageService extends FileDataSaver {
      * @param file The file that represents the image
      */
     public void updateProfilePicture(long id, MultipartFile file) {
-        Optional<User> currentUser = getCurrentUser();
+        // Optional<User> currentUser = getCurrentUser();
         // TODO: Check if the current user is a manager of team before changing.
 
         if (teamService.findTeamById(id).isPresent()) {
