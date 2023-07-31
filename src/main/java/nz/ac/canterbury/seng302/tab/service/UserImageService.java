@@ -18,8 +18,7 @@ import java.io.InputStream;
 @ComponentScan("nz.ac.canterbury.seng302.tab.service")
 public class UserImageService extends FileDataSaver {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     private final byte[] defaultProfilePicture;
 
@@ -28,8 +27,10 @@ public class UserImageService extends FileDataSaver {
      * inside the project's directory
      * @param profile The deployment environment, which determines the
      */
-    public UserImageService(@Value("${spring.profiles.active:unknown}") String profile) throws IOException {
+    @Autowired
+    public UserImageService(@Value("${spring.profiles.active:unknown}") String profile, UserService userService) throws IOException {
         super(getDeploymentType(profile), FileDataSaver.DEFAULT_IMAGE_RESTRICTIONS);
+        this.userService = userService;
 
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
