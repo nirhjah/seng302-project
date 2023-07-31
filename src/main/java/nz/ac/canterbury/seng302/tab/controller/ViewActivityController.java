@@ -183,9 +183,10 @@ public class ViewActivityController {
             HttpServletResponse httpServletResponse,
             RedirectAttributes redirectAttributes) {
 
-        // create the new fact of facttype 
+        // create the new fact of facttype
         logger.info("POST /view-activity");
         logger.info("got the desc " + description);
+
         logger.info(factType.name());
         logger.info(String.format("got the act id: %s", actId));
         logger.info(String.format("got the player on id: %s", subOnId));
@@ -194,7 +195,7 @@ public class ViewActivityController {
 
         model.addAttribute("overallScoreTeam", overallScoreTeam);
         model.addAttribute("httpServletRequest", request);
-            
+
         Activity activity = activityService.findActivityById(actId);
         Fact fact;
         String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
@@ -204,6 +205,13 @@ public class ViewActivityController {
             logger.info("scores not same type");
             bindingResult.addError(new FieldError("createEventForm", "overallScoreTeam", "Both teams require scores of the same type"));
 
+        }
+
+        if (factType == FactType.FACT) {
+            if (description.isEmpty()) {
+                logger.info("description was not provided for fact");
+                bindingResult.addError(new FieldError("createEventForm", "description", "Fact type events require a description"));
+            }
         }
 
         if (bindingResult.hasErrors()) {
@@ -262,7 +270,7 @@ public class ViewActivityController {
                 logger.error("fact type unknown value");
                 return viewActivityRedirectUrl;
         }
-        
+
         List<Fact> factList = new ArrayList<>();
         factList.add(fact);
         activity.addFactList(factList);

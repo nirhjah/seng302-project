@@ -102,7 +102,7 @@
                     <div th:each="err : ${#fields.errors('overallScoreTeam')}" th:text="${err}" class="error-message"></div>
 
 
-                    <label style="font-family: 'Noto Sans', sans-serif; font-size: 80%; color:#888888;"> Scores for both teams should be of same type i.e either 12-4 and 9-3 or 23 and 18 </label>
+                    <label class="helpText"> Scores for both teams should be of same type i.e either 12-4 and 9-3 or 23 and 18 </label>
 
                     <hr class="rounded">
                     <h3 style="margin-bottom: 3%;">Add a new event</h3>
@@ -124,6 +124,8 @@
                         <textarea class="description-text" id="description" th:name="description" autofocus placeholder=""
                           th:text="${description}"></textarea>
                         </div>
+                        <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
+
                         <label for="time"></label>
                         <input type="text-area" name="time" value="time">
                         <label for="time"></label>
@@ -225,6 +227,10 @@
         requiredSpan.innerText = "*";
         requiredSpan.classList.add("required");
 
+        var oppositionGoalValueLabelHelpText = document.createElement("label");
+        oppositionGoalValueLabelHelpText.classList.add("helpText");
+        oppositionGoalValueLabelHelpText.innerHTML = "Default is 1 if not entered"
+
 
         // Check if the selected option has additional fields
         if (selectedOption === "GOAL") {
@@ -259,6 +265,8 @@
             additionalFieldsDiv.appendChild(selectScorer);
             additionalFieldsDiv.appendChild(goalValueLabel);
             additionalFieldsDiv.appendChild(goalValueInput);
+            additionalFieldsDiv.appendChild(oppositionGoalValueLabelHelpText);
+
         }
 
         if (selectedOption === 'SUBSTITUTION') {
@@ -318,6 +326,8 @@
 
             additionalFieldsDiv.appendChild(oppositionGoalValueLabel);
             additionalFieldsDiv.appendChild(oppositionGoalValueInput);
+            additionalFieldsDiv.appendChild(oppositionGoalValueLabelHelpText);
+
         }
     }
 
