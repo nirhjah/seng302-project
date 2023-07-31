@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.authentication;
 
+import nz.ac.canterbury.seng302.tab.controller.TestPopulateUsersController;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.repository.FormationRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
@@ -15,12 +16,12 @@ import java.util.GregorianCalendar;
 public class AdminAccount implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-//
-//    @Autowired
-//    private TeamRepository teamRepository;
-//
-//    @Autowired
-//    private FormationRepository formationRepository;
+
+    @Autowired
+    private TeamRepository teamRepository;
+
+    @Autowired
+    private FormationRepository formationRepository;
 
 
     // TODO: This SHOULD NOT be hard coded in. Either remove this account, or make it an env variable.
@@ -29,9 +30,11 @@ public class AdminAccount implements CommandLineRunner {
     private static final String EMAIL = "admin@gmail.com";
 
     @Autowired
-    public AdminAccount(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AdminAccount(UserRepository userRepository, PasswordEncoder passwordEncoder, TeamRepository teamRepository, FormationRepository formationRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.formationRepository = formationRepository;
+        this.teamRepository = teamRepository;
     }
 
     @Override
@@ -44,11 +47,12 @@ public class AdminAccount implements CommandLineRunner {
         Location location = new Location("admin", "admin", "admin", "admin", "admin", "admin");
 
         User admin = new User("Admin", "Admin", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), EMAIL, passwordEncoder.encode(ADMIN_PW), location);
-//        Team team = new Team("Team", "Soccer", new Location("admin", "admin", "admin", "admin", "admin", "admin"), admin);
-//        Formation formation = new Formation("1-4-4-2", team);
-//        teamRepository.save(team);
-//        formationRepository.save(formation);
+        Team team = new Team("Team", "Soccer", new Location("admin", "admin", "admin", "admin", "admin", "admin"), admin);
+        Formation formation = new Formation("1-4-4-2", team);
+        teamRepository.save(team);
+        formationRepository.save(formation);
         admin.confirmEmail();
         userRepository.save(admin);
+
     }
 }
