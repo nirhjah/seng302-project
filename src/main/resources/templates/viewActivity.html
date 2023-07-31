@@ -164,13 +164,11 @@
                 <ul>
                     <li th:each="fact : ${activitySubstitutions}">
                         <span class="sub-pic">
-                            <img th:src="*{'data:image/jpeg;base64,'+{displayPicture}}"/>
+                            <img th:src="@{/user-profile-picture/{id}(id = ${fact.playerOn.userId})}"  alt="User image">
                         </span>
                         <span class="description"
                               th:text="${fact.playerOn.firstName} + '         ' + ${fact.playerOn.lastName}"></span>
-
                         <span class="description" th:text="${fact.timeOfEvent}"></span>
-
                     </li>
                 </ul>
             </div>

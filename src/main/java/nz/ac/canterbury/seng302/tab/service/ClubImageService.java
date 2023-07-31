@@ -1,6 +1,9 @@
 package nz.ac.canterbury.seng302.tab.service;
 
+import nz.ac.canterbury.seng302.tab.controller.EditUserFormController;
 import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -13,6 +16,8 @@ import java.io.InputStream;
 
 @Service
 public class ClubImageService extends FileDataSaver {
+
+    private final Logger logger = LoggerFactory.getLogger(ClubImageService.class);
 
     @Autowired
     private ClubService clubService;
@@ -53,7 +58,10 @@ public class ClubImageService extends FileDataSaver {
      */
     public void updateClubLogo(long id, MultipartFile file) {
         if (clubService.findClubById(id).isPresent()) {
-            saveFile(id, file);
+            boolean ok = saveFile(id, file);
+            if (!ok) {
+                logger.error("Couldn't save file: " + id);
+            }
         }
     }
 }

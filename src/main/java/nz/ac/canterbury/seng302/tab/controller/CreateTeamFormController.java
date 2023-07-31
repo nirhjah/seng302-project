@@ -115,7 +115,6 @@ public class CreateTeamFormController {
         if (user.isPresent()) {
             model.addAttribute("firstName", user.get().getFirstName());
             model.addAttribute("lastName", user.get().getLastName());
-            model.addAttribute("displayPicture", user.get().getPictureString());
             model.addAttribute("navTeams", teamService.getTeamList());
             return CREATE_TEAM_TEMPLATE;
         } else {
@@ -165,9 +164,7 @@ public class CreateTeamFormController {
         }
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
-
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -177,7 +174,6 @@ public class CreateTeamFormController {
             logger.info("bad request");
             return CREATE_TEAM_TEMPLATE;
         }
-
 
         // trim all extra whitespace and trailing/leading whitespace
         String trimmedName = teamService.clipExtraWhitespace(name);
