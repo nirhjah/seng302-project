@@ -110,6 +110,7 @@ public abstract class FileDataSaver {
         }
 
         originalName = StringUtils.cleanPath(file.getOriginalFilename());
+        System.out.println("ORIGINAL NAME: " + originalName);
         Optional<String> optExtension = getExtension(originalName);
         if (optExtension.isEmpty()) {
             // If we can't find an extension, return false.
