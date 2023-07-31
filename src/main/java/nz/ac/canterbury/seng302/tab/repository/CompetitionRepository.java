@@ -21,5 +21,5 @@ public interface CompetitionRepository extends CrudRepository<Competition, Long>
     List<Competition> findAll();
 
     @Query("SELECT c FROM Competition c WHERE TYPE(c) = :competitionType")
-    List<Competition> findByCompetitionType(String competitionType);
+    Optional<List<Competition>> findByCompetitionType(String competitionType);
 }

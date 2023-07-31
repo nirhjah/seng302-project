@@ -44,6 +44,9 @@ public abstract class Competition {
         this.sport = sport;
     }
 
+    public Competition() {}
+    
+
     /**
      * constructor without setting federation admin
      * @param name

@@ -48,7 +48,7 @@ public class CompetitionService {
      * Gets list of all team competitions
      * @return list of all team competitions 
     */
-    public List<Competition> getAllTeamCompetitions() {
+    public Optional<List<Competition>> getAllTeamCompetitions() {
       return competitionRepository.findByCompetitionType("TEAM");
     }
 
@@ -56,7 +56,7 @@ public class CompetitionService {
      * Gets list of all user competitions 
      * @return list of all user competitions 
     */
-    public List<Competition> getAllUserCompetitions() {
+    public Optional<List<Competition>> getAllUserCompetitions() {
       return competitionRepository.findByCompetitionType("USER");
     }
 

@@ -20,7 +20,7 @@ public class TeamCompetition extends Competition {
       super(name, federationAdmins, grade, sport);
     }
     
-    public TeamCompetition(String name, Set<User> federationAdmins, String grade, String sport, HashSet<Team> teams) {
+    public TeamCompetition(String name, Set<User> federationAdmins, String grade, String sport, Set<Team> teams) {
       super(name, federationAdmins, grade, sport);
       this.teams = teams;
     }
@@ -33,6 +33,8 @@ public class TeamCompetition extends Competition {
     public TeamCompetition(String name, String grade, String sport) {
       super(name, grade, sport);
     }
+    
+    public TeamCompetition() {}
 
     /**
      * adds a team to the competition

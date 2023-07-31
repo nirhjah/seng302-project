@@ -23,8 +23,6 @@ import org.junit.jupiter.api.Assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @Import(CompetitionService.class)
 public class CompetitionServiceTest {
@@ -33,17 +31,39 @@ public class CompetitionServiceTest {
   @Autowired
   private CompetitionService competitionService;
 
-  @Test 
-  public void testGettingAllCompetitions() throws Exception {
-	  Competition competition = new TeamCompetition("Test", "U10", "football");
-    competitionService.updateOrAddCompetition(competition);
+  // @Test 
+  // public void testGettingAllCompetitions() throws Exception {
+	 //  Competition competition = new TeamCompetition("Test", "U10", "football");
+  //   competitionService.updateOrAddCompetition(competition);
+  //
+	 //  List<Competition> expectedCompetitions = new ArrayList<Competition>();
+	 //  expectedCompetitions.add(competition);
+  //
+  //   Assertions.assertEquals(competitionService.findCompetitionById(1L).get(), competition);
+  // }
 
-	  List<Competition> expectedCompetitions = new ArrayList<Competition>();
-	  expectedCompetitions.add(competition);
-
-    Assertions.assertEquals(competitionService.findCompetitionById(1L).get(), competition);
-  }
   
+  @Test
+  public void testFindingCompetitionById() throws Exception {
+    Competition competition = new TeamCompetition("Test", "U10", "football");
+    competition = competitionService.updateOrAddCompetition(competition);
+
+    logger.info("Competition ID: {}", competition.getCompetitionId());
+
+    // Retrieve the competition by its ID and log if it is present or empty
+    Optional<Competition> foundCompetition = competitionService.findCompetitionById(competition.getCompetitionId());
+    if (foundCompetition.isPresent()) {
+      logger.info("Found Competition: {}", foundCompetition.get());
+    } else {
+      logger.info("Competition not found for ID: {}", competition.getCompetitionId());
+    }
+
+    Assertions.assertTrue(foundCompetition.isPresent());
+    Assertions.assertEquals(competition.getCompetitionId(), foundCompetition.get().getCompetitionId());
+
+    // Clean up: Remove the competition after testing
+    // competitionService.deleteCompetitionById(competition.getCompetitionId());
+  }
   // @Test
   // public void testGettingAllTeamCompetitions() throws Exception {
   //   // given i have two 
