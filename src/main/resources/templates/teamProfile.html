@@ -155,7 +155,7 @@
                         <div th:insert="~{fragments/formationDisplay.html::formationDisplay(true)}"></div>
                         <input type="hidden" name="teamID" th:value="${teamID}" />
                         <input type="hidden" name="formationID" class="current-formation-id"/>
-                        <button type="submit" class="submit-button" id="create-formation-button">Create Formation</button>
+                        <button type="submit" class="create-formation" id="create-formation-button">Create Formation</button>
                     </div>
                 </form>
             </div>
@@ -272,7 +272,7 @@
         });
 
         const formationListItems = document.querySelectorAll('.formation-list li')
-        const submitButton = document.querySelector('.submit-button')
+        const createFormation = document.querySelector('.create-formation')
         const currentFormationId = document.querySelector('.current-formation-id')
 
         formationListItems.forEach((formation, index) => {
@@ -283,9 +283,9 @@
                 formation.classList.add('active');
                 currentFormationId.value = document.querySelector('li.active .formation-id').value;
                 if (index > 0) {
-                    submitButton.innerHTML = "Update Formation"
+                    createFormation.innerHTML = "Update Formation"
                 } else {
-                    submitButton.innerHTML = "Create Formation"
+                    createFormation.innerHTML = "Create Formation"
                 }
             });
         });

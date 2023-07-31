@@ -68,7 +68,7 @@
 
 .profile-buttons {
     transition: 0.5s;
-    padding: 20px;
+    padding: 20px 54px 30px 54px;
     display: flex;
     justify-content: space-between;
     width: 100%;
