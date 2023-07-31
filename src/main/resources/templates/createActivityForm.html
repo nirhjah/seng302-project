@@ -71,7 +71,7 @@
                     <div class="reserves-header active">Reserves</div>
                     <ul class="reserves-ul active">
                         <li th:each="player : ${players}" class="reserves-li">
-                            <img th:src="@{/user-profile-picture/{id}(id = ${user.userId})}"  class="li-player-image"  alt="My Profile">
+                            <img th:src="@{/user-profile-picture/{id}(id = ${player.userId})}"  class="li-player-image"  alt="Player Image">
                             <span class="li-player-name" th:text="${player.getFirstName}"></span>
                             <button class="switch" type="button"></button>
                             <input type="hidden" class="playerId" th:value="${player.getUserId}">

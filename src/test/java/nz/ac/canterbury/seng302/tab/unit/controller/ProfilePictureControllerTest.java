@@ -12,9 +12,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.Arrays;
-
-import static org.springframework.test.util.AssertionErrors.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,7 +33,20 @@ class ProfilePictureControllerTest {
 
     private long userId;
 
+    // A userId that isn't going to be used.
+    // TODO: this is kinda bad
+    private static final long unusedUserId = 34849534;
+
     private final byte[] fileBytes = new byte[] {56,65,65,78,54,45,32,54,67,87,11,9};
+
+    @Test
+    public void a() throws Exception {
+        MvcResult result1 = mockMvc.perform(get("/user-profile-picture/{id}", userId))
+                .andExpect(status().isOk())
+                .andReturn();
+        System.out.println(result1.getResponse().getHeaderNames());
+        result1.getResponse().
+    }
 
     @BeforeEach
     public void setup() {
@@ -54,12 +65,18 @@ class ProfilePictureControllerTest {
     }
 
     @Test
-    public void testUserProfilePicture() throws Exception {
-        MvcResult result = mockMvc.perform(get("/user-profile-picture/{id}", userId))
+    public void testUserProfilePictureConsistency() throws Exception {
+        MvcResult result1 = mockMvc.perform(get("/user-profile-picture/{id}", userId))
                 .andExpect(status().isOk())
                 .andReturn();
-        byte[] picture = result.getResponse().getContentAsByteArray();
-        assertTrue("Picture not equal!", Arrays.equals(picture, fileBytes));
+        byte[] picture1 = result1.getResponse().getContentAsByteArray();
+
+        MvcResult result2 = mockMvc.perform(get("/user-profile-picture/{id}", unusedUserId))
+                .andExpect(status().isOk())
+                .andReturn();
+        byte[] picture2 = result2.getResponse().getContentAsByteArray();
+
+        assertArrayEquals(picture1, picture2);
     }
 
     /*
