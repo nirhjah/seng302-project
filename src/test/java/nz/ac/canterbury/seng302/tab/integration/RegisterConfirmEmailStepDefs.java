@@ -10,7 +10,6 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.RegisterForm;
 import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
-import nz.ac.canterbury.seng302.tab.mail.EmailTemplateConfig;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.utility.RegisterTestUtil;
@@ -25,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -37,13 +37,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
-public class RegisterConfirmEmailIntegrationTests {
+public class RegisterConfirmEmailStepDefs {
 
     @Autowired
     private UserService userService;
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private SpringTemplateEngine springTemplateEngine;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -84,9 +87,7 @@ public class RegisterConfirmEmailIntegrationTests {
         // We don't want to spam emails, as we have a limited number that we can
         // send with our API key.  So in tests, we should mock.
         var javaMailSender = applicationContext.getBean(JavaMailSender.class);
-        EmailTemplateConfig emailTemplateConfig = new EmailTemplateConfig();
-        var springEngineTemplate = emailTemplateConfig.springTemplateEngine();
-        var emailServ = Mockito.spy(new EmailService(javaMailSender, springEngineTemplate));
+        var emailServ = Mockito.spy(new EmailService(javaMailSender, springTemplateEngine));
 
         Mockito.when(emailServ.sendSimpleMail(any())).then(invocation -> {
             sentMailContent = invocation.getArgument(0, EmailDetails.class);
