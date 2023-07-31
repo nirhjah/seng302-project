@@ -23,9 +23,9 @@
                th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
         </li>
         <li sec:authorize="isAuthenticated()">
-            <label for="drop-1" class="toggle">Create +</label>
+            <label for="drop-1" class="toggle" onclick ='createToggle()' >Create +</label>
             <a href="">Create</a>
-            <input type="checkbox" id="drop-1"/>
+            <input class ="checkbox" type="checkbox" id="drop-1"/>
             <ul>
                 <li><a th:href="@{createActivity}">Activity</a></li>
                 <li><a th:href="@{createClub}">Club</a></li>
@@ -79,10 +79,25 @@
     <form id="logoutForm" th:action="@{logout}" method="POST"></form>
 </div>
     <script>
+
+        function createToggle(){
+            const createLabel = document.querySelector('.toggle');
+            if (createLabel.innerHTML ==='Create +') {
+                createLabel.innerHTML = 'Create -'
+                createLabel.style.background = "#415a77";
+            }
+            else{
+                createLabel.innerHTML = 'Create +'
+                createLabel.style.background = "#0b2239";
+            }
+        }
+
         function menuToggle() {
             const toggleMenu = document.querySelector('.profile-menu');
             toggleMenu.classList.toggle('active')
         }
+
+
     </script>
 </nav>
 
