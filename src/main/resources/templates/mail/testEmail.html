@@ -1,20 +1,79 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title th:remove="all">Template for HTML email</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title th:remove="all">Template for HTML email</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <style>
+
+    table {
+      margin: auto;
+    }
+
+    td {
+      text-align: center;
+    }
+
+    button {
+      padding: 1em;
+      background-color: #1b263b;
+      font-weight: bold;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      font-family: "Noto Sans", sans-serif;
+      font-size: 1em;
+      border-radius: 30px;
+      font-weight: bold;
+    }
+
+    a {
+      padding: 1em;
+      text-decoration: none;
+      color: white
+    }
+
+    * {
+      font-family: 'Noto Sans', sans-serif;
+      font-weight: 600;
+    }
+
+    header {
+      font-size: 7em;
+      text-align: center;
+      margin: auto;
+      color: white;
+      background-color: #0b2239;
+    }
+  </style>
 </head>
+
 <body>
-<p>
-    Hello, <span th:text="${name}">Peter Static</span>!
-</p>
-<p>
-    You have the date of birth set as
-    <span th:text="${subscriptionDate}">28-12-2012</span>
-</p>
-<p>
-    Regards, <br/>
-    <em>TAB - Team 900</em>
-</p>
+  <header>TAB</header>
+  <table>
+    <tbody>
+      <tr>
+        <td>
+          <p>
+          <h1>Hello, <span th:text="${name}">Peter Static</span>!</h1>
+          </p>
+          <p>
+            You have the date of birth set as
+            <em th:text="${subscriptionDate}">28-12-2012</em>
+          </p>
+          <button>
+            <a href="">Hey look a button :p</a>
+          </button>
+          <p>
+            Regards, <br />
+            <em>TAB - Team 900</em>
+          </p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </body>
+
 </html>
