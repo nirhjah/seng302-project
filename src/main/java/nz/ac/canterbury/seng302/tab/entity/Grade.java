@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
+import org.thymeleaf.util.StringUtils;
 
 /**
  * Grade level for sports.
@@ -62,15 +63,32 @@ public class Grade {
         OTHER
     }
 
+    public enum Competitiveness {
+        COMPETITIVE,
+        SOCIAL,
+    }
+
     @Enumerated(EnumType.STRING)
     private Sex sex;
 
     @Enumerated(EnumType.STRING)
     private Age age;
 
+    @Enumerated(EnumType.STRING)
+    private Competitiveness competitiveness;
+
+    public Grade(Age age, Sex sex, Competitiveness competitiveness) {
+        this.age = age;
+        this.sex = sex;
+        this.competitiveness = competitiveness;
+    }
+
     public Grade(Age age, Sex sex) {
         this.age = age;
         this.sex = sex;
+        // We take COMPETITIVE as the default,
+        // because serious sportspeople are the people who are most likely to be using our app
+        this.competitiveness = Competitiveness.COMPETITIVE;
     }
 
     /**
@@ -81,7 +99,11 @@ public class Grade {
     public Grade(Sex sex) {
         this.sex = sex;
         this.age = Age.ADULT;
+        this.competitiveness = Competitiveness.COMPETITIVE;
     }
+
+    public static final Age DEFAULT_AGE = Age.ADULT;
+    public static final Competitiveness DEFAULT_COMPETITIVENESS = Competitiveness.COMPETITIVE;
 
     public String getDisplayString() {
         String sexDisplay = switch (sex) {
@@ -92,11 +114,34 @@ public class Grade {
         };
 
         String ageDisplay = age.getDescription();
+        String compDisplay = StringUtils.capitalize(competitiveness.name());
 
-        if (ageDisplay.length() > 0) {
+        if (competitiveness != DEFAULT_COMPETITIVENESS) {
+            // If competitiveness is custom, display it.
+            if (ageDisplay.length() > 0) {
+                return sexDisplay + " " + ageDisplay + " " + compDisplay;
+            }
+            return sexDisplay + " " + compDisplay;
+        }
+        if (age != DEFAULT_AGE) {
+            // If ageDisplay is not ADULT, display it.
             return sexDisplay + " " + ageDisplay;
         }
         return sexDisplay;
+    }
+
+    /**
+     * Whoever is doing the front-end dropdown for this,
+     * make sure that you call these functions for the dropdowns!
+     */
+    public static Age[] getAgesForDropDown() {
+        return Age.values();
+    }
+    public static Sex[] getSexesForDropdown() {
+        return Sex.values();
+    }
+    public static Competitiveness[] getCompetitivenessForDropdown() {
+        return Competitiveness.values();
     }
 
     public Sex getSex() {
