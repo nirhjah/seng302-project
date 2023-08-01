@@ -1,8 +1,11 @@
 package nz.ac.canterbury.seng302.tab.mail;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import nz.ac.canterbury.seng302.tab.entity.User;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +16,9 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import nz.ac.canterbury.seng302.tab.entity.User;
 
 /**
  * Email Service class manages sending the emails.
@@ -79,10 +78,15 @@ public class EmailService {
      * @param user the user whose password was updated
      * @return the outcome of the email sending
      */
-    public void updatePassword(User user) {
-        EmailDetails details = new EmailDetails(user.getEmail(), EmailDetails.UPDATE_PASSWORD_BODY, EmailDetails.UPDATE_PASSWORD_HEADER);
-        String outcome = this.sendSimpleMail(details);
-        logger.info(outcome);
+    public void updatePassword(User user) throws MessagingException {
+        EmailDetails email = new EmailDetails(user.getEmail(), null,
+            EmailDetails.UPDATE_PASSWORD_HEADER, "mail/updatePasswordConfirmationEmail.html");
+        
+        Map<String, Object> model = Map.of(
+            "name", user.getFirstName()
+        );
+        email.setProperties(model);
+        sendHtmlMessage(email);
     }
 
     public void confirmationEmail(User user, String url){
@@ -93,9 +97,10 @@ public class EmailService {
 
     public void testHTMLEmail(User user) throws MessagingException {
         EmailDetails email = new EmailDetails(user.getEmail(), null, "Test", "mail/testEmail.html");
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("name", user.getFirstName());
-        properties.put("subscriptionDate", user.getDateOfBirth());
+        Map<String, Object> properties = Map.of(
+                "name", user.getFirstName(),
+                "subscriptionDate", user.getDateOfBirth()
+        );
         email.setProperties(properties);
         sendHtmlMessage(email);
     }

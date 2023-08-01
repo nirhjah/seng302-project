@@ -18,11 +18,11 @@ public class EmailDetails {
 
     public static final String UPDATE_PASSWORD_BODY = "Your password has been updated.";
 
-    public static final String UPDATE_PASSWORD_HEADER = "Password Updated";
+    public static final String UPDATE_PASSWORD_HEADER = "TAB - Password Updated";
 
-    public static final String RESET_PASSWORD_HEADER = "Link to reset password";
+    public static final String RESET_PASSWORD_HEADER = "TAB - Link to reset password";
 
-    public static final String CONFIRMATION_EMAIL_HEADER = "Confirm your registration";
+    public static final String CONFIRMATION_EMAIL_HEADER = "TAB - Confirm your registration";
 
     public EmailDetails(String recipient, String msgBody, String subject, String template) {
         this.recipient = recipient;
