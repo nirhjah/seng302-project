@@ -59,7 +59,7 @@ public class Team {
     @JoinColumn(name="clubId")
     private Club teamClub;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
     private Grade grade;
 

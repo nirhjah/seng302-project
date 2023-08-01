@@ -70,9 +70,10 @@ class GradeTest {
 
     @Test
     public void testAdultGradeDisplay() {
-        assertEquals(grade1.getDisplayString(), "Over 50s Women's");
+        assertEquals(grade1.getDisplayString(), "Women's Over 50s");
         // TODO: We should change this to "Under 7s boys" as opposed to Mens
-        assertEquals(grade2.getDisplayString(), "Under 7s Mens");
+        //  Or just "Under 7s"?
+        assertEquals(grade2.getDisplayString(), "Men's Under 7s");
     }
 
     @Test
