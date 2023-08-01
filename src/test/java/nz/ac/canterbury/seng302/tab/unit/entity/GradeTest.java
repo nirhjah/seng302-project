@@ -34,7 +34,7 @@ class GradeTest {
 
 
     @BeforeEach
-    public void beforeEach() throws IOException {
+    void beforeEach() throws IOException {
         team1 = generateRandomTeams.createRandomTeam();
         grade1 = new Grade(Grade.Age.OVER_50S, Grade.Sex.WOMENS);
         team1.setGrade(grade1);
@@ -63,19 +63,19 @@ class GradeTest {
     If this test is failing, check the cascadeType, it should be ALL
      */
     @Test
-    public void testGradesAreSaved() {
+    void testGradesAreSaved() {
         testGradesAreSaved(team1);
         testGradesAreSaved(team2);
     }
 
     @Test
-    public void testAdultGradeDisplay() {
-        assertEquals(grade1.getDisplayString(), "Women's Over 50s");
-        assertEquals(grade2.getDisplayString(), "Men's Under 18s");
+    void testAdultGradeDisplay() {
+        assertEquals("Women's Over 50s", grade1.getDisplayString());
+        assertEquals("Men's Under 18s", grade2.getDisplayString());
     }
 
     @Test
-    public void testAdultAgeRangeDisplay() {
+    void testAdultAgeRangeDisplay() {
         /*
         When the age range is ADULT, we should just have the sex displayed.
         This is because the Adult division is kinda like the "Open" division.
@@ -84,48 +84,48 @@ class GradeTest {
         var g = new Grade(Grade.Age.ADULT, Grade.Sex.MIXED);
         var g2 = new Grade(Grade.Age.ADULT, Grade.Sex.OTHER);
 
-        assertEquals(g.getDisplayString(), "Mixed");
-        assertEquals(g2.getDisplayString(), "Other");
+        assertEquals("Mixed", g.getDisplayString());
+        assertEquals("Other", g2.getDisplayString());
     }
 
     @Test
-    public void testSexDisplayForYounglings() {
+    void testSexDisplayForYounglings() {
         /*
         Checks that younglings are mapped to "Boys" and "Girls" as opposed
         to "Men" and "Women".
          */
         var g = new Grade(Grade.Age.UNDER_7S, Grade.Sex.MENS, Grade.Competitiveness.UNSPECIFIED);
-        assertEquals(g.getDisplayString(), "Boy's Under 7s");
+        assertEquals("Boy's Under 7s", g.getDisplayString());
 
         var g2 = new Grade(Grade.Age.UNDER_6S, Grade.Sex.WOMENS);
-        assertEquals(g2.getDisplayString(), "Girl's Under 6s");
+        assertEquals("Girl's Under 6s", g2.getDisplayString());
 
         assertEquals(g.getCompetitiveness(), g2.getCompetitiveness());
     }
 
     @Test
-    public void testYoungEdgeCases() {
+    void testYoungEdgeCases() {
         /*
         Anything 14 or older is "Mens / womens"
         Anything younger is "Boys / girls"
          */
         var boy = new Grade(Grade.Age.UNDER_13S, Grade.Sex.MENS);
-        assertEquals(boy.getDisplayString(), "Boy's Under 13s");
+        assertEquals("Boy's Under 13s", boy.getDisplayString());
 
         var man = new Grade(Grade.Age.UNDER_14S, Grade.Sex.MENS);
-        assertEquals(man.getDisplayString(), "Men's Under 14s");
+        assertEquals("Men's Under 14s", man.getDisplayString());
     }
 
     @Test
-    public void testCompetitiveness() {
+    void testCompetitiveness() {
         /*
         Checks that competitiveness is not shown when it's regular.
          */
         var g = new Grade(Grade.Age.ADULT, Grade.Sex.MENS, Grade.Competitiveness.SOCIAL);
-        assertEquals(g.getDisplayString(), "Men's Social");
+        assertEquals("Men's Social", g.getDisplayString());
 
         var g2 = new Grade(Grade.Age.UNDER_10S, Grade.Sex.MIXED, Grade.Competitiveness.SOCIAL);
-        assertEquals(g2.getDisplayString(), "Mixed Under 10s Social");
+        assertEquals("Mixed Under 10s Social", g2.getDisplayString());
     }
 }
 
