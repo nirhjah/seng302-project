@@ -487,8 +487,6 @@
 
                 // Action to carry out when a user selects a position with a player selected
                 position.addEventListener('click', () => {
-                    if (!position.classList.contains("filled")) {
-
                         const selectedPlayer = document.querySelector(".subs-li.active, .reserves-li.active");
                         if (selectedPlayer) {
                             const firstName = selectedPlayer.querySelector(".li-player-name").textContent;
@@ -502,7 +500,7 @@
                         }
                         checkSubsActive();
                         getPlayersAndPositions()
-                    }
+
                 });
 
             // Action to carry out when use clicks button to remove player from formation
