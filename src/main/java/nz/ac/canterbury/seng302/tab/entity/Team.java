@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
@@ -62,7 +61,7 @@ public class Team {
 
     @OneToOne
     @JoinColumn
-    private GradeLevel gradeLevel;
+    private Grade grade;
 
     protected Team() {
     }
@@ -76,7 +75,7 @@ public class Team {
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.token = generateToken();
         this.creationDate = LocalDateTime.now();
-        this.gradeLevel = new GradeLevel(GradeLevel.Age.ADULT, GradeLevel.Sex.OTHER);
+        this.grade = new Grade(Grade.Age.ADULT, Grade.Sex.OTHER);
     }
 
     /**
@@ -101,7 +100,7 @@ public class Team {
         // set the manager
         this.setManager(manager);
         this.creationDate = LocalDateTime.now();
-        this.gradeLevel = new GradeLevel(GradeLevel.Age.ADULT, GradeLevel.Sex.OTHER);
+        this.grade = new Grade(Grade.Age.ADULT, Grade.Sex.OTHER);
     }
 
     /**
@@ -122,8 +121,12 @@ public class Team {
         this.creationDate = LocalDateTime.now();
     }
 
-    private GradeLevel getGradeLevel() {
-        return gradeLevel;
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
     }
 
     public Long getTeamId() {

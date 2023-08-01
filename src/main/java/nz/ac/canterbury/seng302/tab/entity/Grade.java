@@ -7,14 +7,15 @@ import jakarta.persistence.*;
  * For example, "Under 13s mens",
  * Or "Senior womens".
  * -
- * Note that we don't have a repository / service for this class.
+ * IMPORTANT THING TO NOTE:
+ * We don't have a repository / service for this class.
  * This is because this entity should ALWAYS be owned by a parent entity,
  * with cascadeType = ALL.
  * (For example, owned by a team.)
  */
-@Entity(name = "GradeLevel")
-public class GradeLevel {
-    public GradeLevel() {}
+@Entity(name = "Grade")
+public class Grade {
+    public Grade() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +38,7 @@ public class GradeLevel {
         UNDER_6S("Under 6s"),
         UNDER_5S("Under 5s"),
         JUNIOR("Junior"),
-        ADULT("Adults"),
+        ADULT(""),
         SENIOR("Senior"),
         OVER_50s("Over 50s"),
         OVER_60s("Over 60s"),
@@ -67,22 +68,35 @@ public class GradeLevel {
     @Enumerated(EnumType.STRING)
     private Age age;
 
-    public GradeLevel(Age age, Sex sex) {
+    public Grade(Age age, Sex sex) {
         this.age = age;
         this.sex = sex;
     }
 
-    public String getDisplayName() {
+    /**
+     * "Adult" should be the default age range.
+     * aka, the open age range.
+     * @param sex The sex
+     */
+    public Grade(Sex sex) {
+        this.sex = sex;
+        this.age = Age.ADULT;
+    }
+
+    public String getDisplayString() {
         String sexDisplay = switch (sex) {
-            case MENS -> "Mens";
-            case WOMENS -> "Womens";
+            case MENS -> "Men's";
+            case WOMENS -> "Women's";
             case MIXED -> "Mixed";
             case OTHER -> "Other";
         };
 
         String ageDisplay = age.getDescription();
 
-        return sexDisplay + " " + ageDisplay;
+        if (ageDisplay.length() > 0) {
+            return sexDisplay + " " + ageDisplay;
+        }
+        return sexDisplay;
     }
 
     public Sex getSex() {
