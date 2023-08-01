@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-public class ViewClubControllerTest {
+class ViewClubControllerTest {
     @Autowired
     MockMvc mockMvc;
     @Autowired
@@ -82,7 +82,7 @@ public class ViewClubControllerTest {
 
     @WithMockUser(username = "johndoe@example.com", password = "Password123!", roles = "USER")
     @Test
-    public void testGettingViewClubPageOfValidClub() throws Exception {
+    void testGettingViewClubPageOfValidClub() throws Exception {
         mockMvc.perform(get("/view-club?clubID={id}",club.getClubId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("viewClub"))
@@ -93,7 +93,7 @@ public class ViewClubControllerTest {
 
     @WithMockUser(username = "johndoe@example.com", password = "Password123!", roles = "USER")
     @Test
-    public void testGettingViewClubPageOfInvalidClub() throws Exception {
+    void testGettingViewClubPageOfInvalidClub() throws Exception {
         mockMvc.perform(get("/view-club?clubID={id}",-1))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/home"));

@@ -26,21 +26,21 @@ public class ClubServiceTest {
             "New Zealand");
 
     @Test
-    public void testFindClubById() throws IOException {
+    void testFindClubById() throws IOException {
         Club club = new Club("Rugby Club", location, "soccer",null);
         clubService.updateOrAddClub(club);
         Assertions.assertEquals(clubService.findClubById(1L).get(), club);
     }
 
     @Test
-    public void testUpdatingOrAddingClub() throws IOException {
+    void testUpdatingOrAddingClub() throws IOException {
         Club club = new Club("Rugby Club", location, "Rugby",null);
         clubService.updateOrAddClub(club);
         Assertions.assertEquals(clubService.findAll().size(), 1);
     }
 
     @Test
-    public void testSetDefaultLogo() throws IOException {
+    void testSetDefaultLogo() throws IOException {
         Club club = new Club("Rugby Club", location, "Rugby",null);
         clubService.setDefaultLogo();
         Assertions.assertNotNull(club.getClubLogo());

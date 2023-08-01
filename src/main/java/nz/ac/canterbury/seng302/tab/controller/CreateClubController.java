@@ -50,19 +50,15 @@ public class CreateClubController {
      * @param clubId  if editing, get club through clubId
      * @param model   model
      * @param request http request
-     * @param createAndEditClubForm form data
      * @return create club form
      */
     @GetMapping("/createClub")
     public String clubForm(@RequestParam(name = "edit", required = false) Long clubId,
                            Model model,
-                           HttpServletRequest request, CreateAndEditClubForm createAndEditClubForm) {
+                           HttpServletRequest request) {
 
         logger.info("GET /createClub");
         prefillModel(model, request);
-
-        Club club;
-
         if (clubId != null) {
             Optional<Club> optClub = clubService.findClubById(clubId);
             if (optClub.isPresent()) {
@@ -70,6 +66,27 @@ public class CreateClubController {
             }
         }
         return "createClubForm";
+    }
+
+    /**
+     * Performs error checking on the addressline1 and postcode fields of a creating or editing club.
+     * If the required fields are empty, errors are added to the BindingResult.
+     *
+     * @param bindingResult       The BindingResult object that holds the validation errors.
+     * @param createAndEditClubForm The CreateAndEditClubForm object containing the form data to be checked.
+     */
+    private void postCreateClubErrorChecking(BindingResult bindingResult,
+                                                 CreateAndEditClubForm createAndEditClubForm
+                                                 ){
+        String addressLine1= createAndEditClubForm.getAddressLine1().trim();
+        if (addressLine1.isEmpty()) {
+            bindingResult.addError(new FieldError("CreateAndEditClubForm", "addressLine1", "Field cannot be empty"));
+        }
+        String postcode = createAndEditClubForm.getPostcode().trim();
+        if (postcode.isEmpty()) {
+            bindingResult.addError(new FieldError("CreateAndEditClubForm", "postcode", "Field cannot be empty"));
+        }
+
     }
 
 
@@ -80,12 +97,6 @@ public class CreateClubController {
      * @param clubId                The ID of the club being edited.
      * @param name                  The name of the club.
      * @param clubLogo              The logo image file of the club as a multipart file.
-     * @param addressLine1          The first line of the club's address.
-     * @param addressLine2          The second line of the club's address.
-     * @param city                  The city where the club is located.
-     * @param country               The country where the club is located.
-     * @param postcode              The postal code of the club's address.
-     * @param suburb                The suburb where the club is located.
      * @param sport                 The sport associated with the club.
      * @param selectedTeams         (Optional) A list of selected teams associated with the club.
      * @param createAndEditClubForm The form object containing additional club-related data for validation.
@@ -101,12 +112,6 @@ public class CreateClubController {
             @RequestParam(name = "clubId", defaultValue = "-1") long clubId,
             @RequestParam(name="name") String name,
             @RequestParam(name="file") MultipartFile clubLogo,
-            @RequestParam(name = "addressLine1") String addressLine1,
-            @RequestParam(name = "addressLine2") String addressLine2,
-            @RequestParam(name = "city") String city,
-            @RequestParam(name = "country") String country,
-            @RequestParam(name = "postcode") String postcode,
-            @RequestParam(name = "suburb") String suburb,
             @RequestParam(name = "sport") String sport,
             @RequestParam(name = "selectedTeams", required = false) List<String> selectedTeams,
             @Validated CreateAndEditClubForm createAndEditClubForm,
@@ -120,17 +125,10 @@ public class CreateClubController {
         if (optUser.isEmpty()) {
             return "redirect:/home";
         }
+        postCreateClubErrorChecking(bindingResult, createAndEditClubForm);
 
-        addressLine1 = addressLine1.trim();
-        if (addressLine1.isEmpty()) {
-            bindingResult.addError(new FieldError("CreateAndEditClubForm", "addressLine1", "Field cannot be empty"));
-        }
-        postcode = postcode.trim();
-        if (postcode.isEmpty()) {
-            bindingResult.addError(new FieldError("CreateAndEditClubForm", "postcode", "Field cannot be empty"));
-        }
 
-        Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
+        Location location = new Location(createAndEditClubForm.getAddressLine1(), createAndEditClubForm.getAddressLine2(), createAndEditClubForm.getSuburb(), createAndEditClubForm.getCity(), createAndEditClubForm.getPostcode(), createAndEditClubForm.getCountry());
 
         Optional<Club> optClub = clubService.findClubById(clubId);
         if (optClub.isPresent()) {
