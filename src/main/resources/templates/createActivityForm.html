@@ -82,7 +82,7 @@
                         </li>
                     </ul>
                 </div>
-                <div th:if="${actId != null}" th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"></div>
+                <div th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"></div>
             </div>
 
             <!--/* Activity Description */-->
@@ -100,8 +100,7 @@
                     <input type="datetime-local" class="datetime-input" id="startDateTime" name="startDateTime"
                            th:value="${startDateTime}">
                     <label for="startDateTime">Start date & time of activity<span class="required">*</span> </label>
-                    <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}"
-                         class="error-message"></div>
+                    <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}" class="error-message"></div>
                 </div>
 
                 <!--/* End Date */-->
@@ -404,7 +403,6 @@
         while (playerReserveList.firstChild) {
             playerReserveList.removeChild(playerReserveList.lastChild);
         }
-
         for (let i = 0; i < players.length; i++) {
             const player = players[i];
             const playerLi = document.createElement("li");
@@ -426,15 +424,16 @@
             button.className = "switch";
             button.type = "button";
             playerLi.append(button);
+            button.addEventListener("click", () => {
+                switchOnClick(button);
+            });
 
             const playerId = document.createElement("input");
             playerId.className = "playerId"
             playerId.type = "hidden";
             playerId.value = player.playerID;
             playerLi.append(playerId);
-
-            playerOnClick(playerLi);
-
+            playerOnClick(playerLi)
         }
     }
 
@@ -453,20 +452,33 @@
         playerOnClick(player);
     });
 
-    // Adds functionality for selecting a player from the reserves
+    // Adds functionality for selecting a player from the reserves and subs
     function playerOnClick(player) {
         player.addEventListener('click', () => {
-            playersReserves.forEach(otherReserve => {
+            const playersReservesDynamic = document.querySelectorAll(".reserves-li");
+            const playersSubsDynamic = document.querySelectorAll(".subs-li");
+            // Removes active from other players in subs/reserves
+            playersReservesDynamic.forEach(otherReserve => {
                 if (otherReserve !== player) {
                     otherReserve.classList.remove('active');
                 }
             });
-            playersSubs.forEach(otherSub => {
+            playersSubsDynamic.forEach(otherSub => {
                 if (otherSub !== player) {
                     otherSub.classList.remove('active')
                 }
             });
-            player.classList.toggle('active');
+
+            if (!subsUl.classList.contains('active') || !checkFilled()) {
+                player.classList.toggle('active');
+            }
+
+            if (subsUl.classList.contains('active') && checkFilled()) {
+                player.style.cursor = "default";
+            } else {
+                player.style.cursor = "pointer";
+            }
+
             for (let i = 0; i < positions.length; i++) {
                 const position = positions.item(i);
                 if (player.classList.contains('active') && !position.classList.contains("filled")) {
@@ -488,7 +500,6 @@
                 // Action to carry out when a user selects a position with a player selected
                 position.addEventListener('click', () => {
                     if (!position.classList.contains("filled")) {
-
                         const selectedPlayer = document.querySelector(".subs-li.active, .reserves-li.active");
                         if (selectedPlayer) {
                             const firstName = selectedPlayer.querySelector(".li-player-name").textContent;
@@ -501,7 +512,7 @@
                             selectedPlayer.classList.add("in-formation");
                         }
                         checkSubsActive();
-                        getPlayersAndPositions()
+                        getPlayersAndPositions();
                     }
                 });
 
@@ -517,7 +528,9 @@
                             }
                         });
                         clearPlayer(position)
-                        deactivateSubs();
+                        if (subsUl.children.length==0) {
+                            deactivateSubs();
+                        }
 
                 });
         }
@@ -537,32 +550,38 @@
 
     // Checks to see if the subs list can be activated whenever all the positions on the pitch are filled
     function checkSubsActive() {
+        console.log(checkFilled());
+        if (checkFilled()) {
+            activateSubs();
+        } else if (subsUl.children.length==0) {
+            deactivateSubs();
+        }
+    }
+
+    // Checks whether all positions on the line-up are filled
+    function checkFilled() {
         let subsActive = true;
         for (let i = 0; i < positions.length; i++) {
-            position = positions.item(i)
+            const position = positions.item(i)
             if (!position.classList.contains("filled")) {
                 subsActive = false;
                 break;
             }
         }
-        if (subsActive) {
-            activateSubs();
-        } else {
-            deactivateSubs();
-        }
+        return subsActive;
     }
 
     // Activates Subs
     function activateSubs() {
         subsUl.classList.add("active");
         subsHeader.classList.add("active");
-        playersSubs.forEach(li => {
-            const switchButton = li.querySelector(".switch")
-            switchButton.classList.add("active");
+        const switches = document.querySelectorAll(".switch");
+        switches.forEach(sw => {
+            sw.classList.add("active");
         })
-        playersReserves.forEach(li => {
-            const switchButton = li.querySelector(".switch")
-            switchButton.classList.add("active");
+        const players = document.querySelectorAll(".reserves-li, .subs-li");
+        players.forEach(player => {
+            player.style.cursor = "default";
         })
     }
 
@@ -570,13 +589,13 @@
     function deactivateSubs() {
         subsUl.classList.remove("active");
         subsHeader.classList.remove("active");
-        playersSubs.forEach(li => {
-            const switchButton = li.querySelector(".switch")
-            switchButton.classList.remove("active");
+        const switches = document.querySelectorAll(".switch");
+        switches.forEach(sw => {
+            sw.classList.remove("active");
         })
-        playersReserves.forEach(li => {
-            const switchButton = li.querySelector(".switch")
-            switchButton.classList.remove("active");
+        const players = document.querySelectorAll(".reserves-li, .subs-li");
+        players.forEach(player => {
+            player.style.cursor = "pointer";
         })
     }
 
@@ -585,26 +604,73 @@
     // Iterate over each switch button
     switchButtons.forEach((button) => {
         button.addEventListener('click', () => {
-            const listItem = button.parentElement;
-            const reservesUL = document.querySelector('.reserves-ul');
-            const subsUL = document.querySelector('.subs-ul');
-            const parentUl = listItem.parentElement;
-
-            if (button.classList.contains('active')) {
-                // Move the li element to subs-ul
-                if (parentUl.classList.contains("reserves-ul")) {
-                    subsUL.appendChild(listItem);
-                    listItem.classList.add("subs-li");
-                    listItem.classList.remove("reserves-li");
-                } else {
-                    reservesUL.appendChild(listItem);
-                    listItem.classList.add("reserves-li");
-                    listItem.classList.remove("subs-li");
-                }
-                parentUl.removeChild(listItem);
-            }
+            switchOnClick(button);
         });
     });
+
+    // Onclick functionality for switch buttons
+    function switchOnClick(button) {
+        const listItem = button.parentElement;
+        const reservesUL = document.querySelector('.reserves-ul');
+        const subsUL = document.querySelector('.subs-ul');
+        // Different methods for subs and reserves as player objects should remain in reserves
+        if (button.classList.contains('active')) {
+            // Move the li element to subs-ul
+            if (listItem.classList.contains("reserves-li")) {
+                subsUL.appendChild(clonePlayer(listItem))
+                listItem.classList.add("in-formation")
+            } else {
+                const playerId = listItem.querySelector('input').value;
+                const reserves = reservesUL.querySelectorAll('.reserves-li');
+                for (const player of reserves) {
+                    const input = player.querySelector('input');
+                    if (input.value === playerId) {
+                        player.classList.remove("in-formation")
+                        break;
+                    }
+                }
+                subsUL.removeChild(listItem);
+            }
+        }
+        checkSubsActive();
+    }
+
+    function clonePlayer(player) {
+        const pictureString = player.querySelector("img").src
+        const firstName = player.querySelector("span").textContent;
+        const playerId = player.querySelector("input").value;
+
+        const playerLi = document.createElement("li");
+        playerLi.className = "subs-li";
+
+        const liPlayerImage = document.createElement("img");
+        liPlayerImage.className = "li-player-image";
+        liPlayerImage.src = pictureString;
+        liPlayerImage.alt = "My Profile";
+        playerLi.append(liPlayerImage);
+
+        const liPlayerName = document.createElement("span");
+        liPlayerName.className = "li-player-name";
+        liPlayerName.textContent = firstName;
+        playerLi.append(liPlayerName);
+
+        const button = document.createElement("button");
+        button.className = "switch";
+        button.type = "button";
+        playerLi.append(button);
+        button.addEventListener("click", () => {
+            switchOnClick(button);
+        });
+
+        const playerIdInput = document.createElement("input");
+        playerIdInput.className = "playerId"
+        playerIdInput.type = "hidden";
+        playerIdInput.value = playerId;
+        playerLi.append(playerIdInput);
+        playerOnClick(playerLi)
+
+        return playerLi;
+    }
 
     function getPlayersAndPositions() {
                 let playersAndPositions = "";

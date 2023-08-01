@@ -64,6 +64,7 @@
 
 .clear-position-button:hover {
     cursor: pointer;
+    transform: scale(1.1);
 }
 
 .player h3, .player img {
