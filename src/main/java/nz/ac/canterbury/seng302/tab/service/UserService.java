@@ -1,27 +1,20 @@
 package nz.ac.canterbury.seng302.tab.service;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.*;
-
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
 import nz.ac.canterbury.seng302.tab.authentication.TokenVerification;
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -33,12 +26,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Service class for User database entries, defined by the @link{Service}
@@ -62,12 +55,11 @@ public class UserService {
 
 
     @Autowired
-    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService, PasswordEncoder passwordEncoder) throws IOException {
+    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.taskScheduler = taskScheduler;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
-
     }
 
     public static final Sort SORT_BY_LAST_AND_FIRST_NAME = Sort.by(

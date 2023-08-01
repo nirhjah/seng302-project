@@ -32,9 +32,7 @@ public abstract class FileDataSaver {
     private final FileRestrictions fileRestrictions;
 
     public static final FileRestrictions DEFAULT_IMAGE_RESTRICTIONS = new FileRestrictions(
-            // TODO: Check that these values are valid!!!!
-            //  We want 10MB max upload, and check that the image types match the ACs too.
-            100_000_000, Set.of("jpg", "png", "jpeg", "svg")
+            10_000_000, Set.of("jpg", "png", "jpeg", "svg")
     );
 
     private Path getPath(Long id) {
@@ -123,7 +121,6 @@ public abstract class FileDataSaver {
         }
 
         originalName = StringUtils.cleanPath(getFilename(file));
-        System.out.println("ORIGINAL NAME: " + originalName);
         Optional<String> optExtension = getExtension(originalName);
         if (optExtension.isEmpty()) {
             // If we can't find an extension, return false.
@@ -235,7 +232,7 @@ public abstract class FileDataSaver {
      * @return An array of bytes as the default.
      */
     public byte[] getDefaultBytes() {
-        return null;
+        return new byte[] {};
     };
 
     /**
@@ -244,7 +241,7 @@ public abstract class FileDataSaver {
      * otherwise, deploymentType is TEST.
      * @param deploymentType the deploymentType
      */
-    public FileDataSaver(DeploymentType deploymentType, FileRestrictions fileRestrictions) {
+    protected FileDataSaver(DeploymentType deploymentType, FileRestrictions fileRestrictions) {
         String prefix = getFolderName();
 
         this.fileRestrictions = fileRestrictions;
@@ -294,7 +291,6 @@ public abstract class FileDataSaver {
         try (FileOutputStream writer = new FileOutputStream(newFile)) {
             writer.write(data);
         } catch (IOException e) {
-            e.printStackTrace();
             return false;
         }
 

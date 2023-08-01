@@ -37,7 +37,7 @@ class ProfilePictureControllerTest {
     private final byte[] fileBytes = new byte[] {56,65,65,78,54,45,32,54,67,87,11,9};
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         // Generate user and pfp for user
         var u = generator.createRandomUser();
         userId = u.getUserId();
@@ -58,7 +58,7 @@ class ProfilePictureControllerTest {
     }
 
     @Test
-    public void testUserProfilePicture() throws Exception {
+    void testUserProfilePicture() throws Exception {
         MvcResult result1 = mockMvc.perform(get("/user-profile-picture/{id}", userId))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -66,7 +66,7 @@ class ProfilePictureControllerTest {
     }
 
     @Test
-    public void testClubLogo() throws Exception {
+    void testClubLogo() throws Exception {
         MvcResult result1 = mockMvc.perform(get("/club-logo/{id}", userId))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -74,7 +74,7 @@ class ProfilePictureControllerTest {
     }
 
     @Test
-    public void testTeamProfilePicture() throws Exception {
+    void testTeamProfilePicture() throws Exception {
         MvcResult result1 = mockMvc.perform(get("/team-profile-picture/{id}", userId))
                 .andExpect(status().isOk())
                 .andReturn();

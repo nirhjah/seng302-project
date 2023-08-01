@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.service;
 
-import nz.ac.canterbury.seng302.tab.controller.EditUserFormController;
 import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +59,7 @@ public class ClubImageService extends FileDataSaver {
         if (clubService.findClubById(id).isPresent()) {
             boolean ok = saveFile(id, file);
             if (!ok) {
-                logger.error("Couldn't save file: " + id);
+                logger.error(String.format("Couldn't save file: %d", id));
             }
         }
     }

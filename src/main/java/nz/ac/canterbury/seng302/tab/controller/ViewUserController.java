@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.util.Base64;
 import java.util.Optional;
 
 @Controller
@@ -118,7 +117,7 @@ public class ViewUserController {
             @RequestParam("file") MultipartFile file,
             RedirectAttributes redirectAttributes,
             Model model
-    ) throws IOException {
+    ) {
         Optional<User> user = userService.getCurrentUser();
         if (user.isEmpty()) {
             return "redirect:/login";
@@ -129,7 +128,6 @@ public class ViewUserController {
         // Saving the file in the file system
         userImageService.updateProfilePicture(userId, file);
 
-        // userService.updatePicture(file, userId);
         return "redirect:/user-info?name=" + authUser.getUserId();
     }
 }

@@ -131,7 +131,7 @@ public class ProfileFormController {
     @PostMapping("/profile")
     public String uploadPicture(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("teamID") long teamID) throws IOException {
+            @RequestParam("teamID") long teamID) {
         logger.info("POST /profile");
         teamImageService.updateProfilePicture(teamID, file);
         return "redirect:/profile?teamID=" + teamID;

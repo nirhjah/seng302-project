@@ -56,7 +56,7 @@ class UserImageServiceTest {
         // Check that we are on test.
         // If we aren't on test, we shouldn't run the test!!!
         // (This will mess up our filesystem on prod if it fails!!!)
-        assertEquals(userImageService.getDeploymentType(), FileDataSaver.DeploymentType.TEST);
+        assertEquals(FileDataSaver.DeploymentType.TEST, userImageService.getDeploymentType());
 
         // Set default bytes (think of this like a fallback value)
         defaultBytes = userImageService.getDefaultBytes();
@@ -77,13 +77,6 @@ class UserImageServiceTest {
 
     private MockMultipartFile getMockedFile(byte[] data) {
         return new MockMultipartFile("/my_file.jpg", data);
-    }
-
-    @Test
-    public void as1() {
-        System.out.println("FILE NAME:::");
-        System.out.println(fakeImageFile.getOriginalFilename());
-        System.out.println(fakeImageFile.getName());
     }
 
     @Test
