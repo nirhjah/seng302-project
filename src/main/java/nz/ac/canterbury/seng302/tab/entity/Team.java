@@ -60,6 +60,10 @@ public class Team {
     @JoinColumn(name="clubId")
     private Club teamClub;
 
+    @OneToOne
+    @JoinColumn
+    private GradeLevel gradeLevel;
+
     protected Team() {
     }
 
@@ -72,6 +76,7 @@ public class Team {
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.token = generateToken();
         this.creationDate = LocalDateTime.now();
+        this.gradeLevel = new GradeLevel(GradeLevel.Age.ADULT, GradeLevel.Sex.OTHER);
     }
 
     /**
@@ -96,6 +101,7 @@ public class Team {
         // set the manager
         this.setManager(manager);
         this.creationDate = LocalDateTime.now();
+        this.gradeLevel = new GradeLevel(GradeLevel.Age.ADULT, GradeLevel.Sex.OTHER);
     }
 
     /**
@@ -114,6 +120,10 @@ public class Team {
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.creationDate = LocalDateTime.now();
+    }
+
+    private GradeLevel getGradeLevel() {
+        return gradeLevel;
     }
 
     public Long getTeamId() {
