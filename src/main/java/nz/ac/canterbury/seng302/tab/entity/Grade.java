@@ -3,6 +3,8 @@ package nz.ac.canterbury.seng302.tab.entity;
 import jakarta.persistence.*;
 import org.thymeleaf.util.StringUtils;
 
+import java.util.Set;
+
 /**
  * Grade level for sports.
  * For example, "Under 13s mens",
@@ -23,27 +25,27 @@ public class Grade {
     private Long gradeId;
 
     public enum Age {
-        UNDER_19s("Under 19s"),
-        UNDER_18s("Under 18s"),
-        UNDER_17s("Under 17s"),
-        UNDER_16s("Under 16s"),
-        UNDER_15s("Under 15s"),
-        UNDER_14s("Under 14s"),
-        UNDER_13S("Under 13s"),
-        UNDER_12S("Under 12s"),
-        UNDER_11S("Under 11s"),
-        UNDER_10S("Under 10s"),
-        UNDER_9S("Under 9s"),
-        UNDER_8S("Under 8s"),
-        UNDER_7S("Under 7s"),
-        UNDER_6S("Under 6s"),
         UNDER_5S("Under 5s"),
+        UNDER_6S("Under 6s"),
+        UNDER_7S("Under 7s"),
+        UNDER_8S("Under 8s"),
+        UNDER_9S("Under 9s"),
+        UNDER_10S("Under 10s"),
+        UNDER_11S("Under 11s"),
+        UNDER_12S("Under 12s"),
+        UNDER_13S("Under 13s"),
+        UNDER_14S("Under 14s"),
+        UNDER_15S("Under 15s"),
+        UNDER_16S("Under 16s"),
+        UNDER_17S("Under 17s"),
+        UNDER_18S("Under 18s"),
+        UNDER_19S("Under 19s"),
         JUNIOR("Junior"),
         ADULT(""),
         SENIOR("Senior"),
-        OVER_50s("Over 50s"),
-        OVER_60s("Over 60s"),
-        OVER_70s("Over 70s");
+        OVER_50S("Over 50s"),
+        OVER_60S("Over 60s"),
+        OVER_70S("Over 70s");
 
         private final String description;
 
@@ -64,7 +66,11 @@ public class Grade {
     }
 
     public enum Competitiveness {
-        COMPETITIVE,
+
+        // Unspecified implies Competitive league.
+        // This is because serious sportspeople will likely
+        // be the main users of our app.  (Also this is what most people assume too)
+        UNSPECIFIED,
         SOCIAL,
     }
 
@@ -86,10 +92,13 @@ public class Grade {
     public Grade(Age age, Sex sex) {
         this.age = age;
         this.sex = sex;
-        // We take COMPETITIVE as the default,
-        // because serious sportspeople are the people who are most likely to be using our app
-        this.competitiveness = Competitiveness.COMPETITIVE;
+        this.competitiveness = DEFAULT_COMPETITIVENESS;
     }
+
+    // Any age under 13 is regarded as "Boy / girl" as opposed to "Men / women"
+    private final Set<Age> YOUNG_AGES = Set.of(
+        Age.UNDER_5S,Age.UNDER_6S,Age.UNDER_7S,Age.UNDER_8S,Age.UNDER_9S,Age.UNDER_10S,Age.UNDER_11S,Age.UNDER_12S,Age.UNDER_13S
+    );
 
     /**
      * "Adult" should be the default age range.
@@ -99,22 +108,35 @@ public class Grade {
     public Grade(Sex sex) {
         this.sex = sex;
         this.age = Age.ADULT;
-        this.competitiveness = Competitiveness.COMPETITIVE;
+        this.competitiveness = DEFAULT_COMPETITIVENESS;
     }
 
     public static final Age DEFAULT_AGE = Age.ADULT;
-    public static final Competitiveness DEFAULT_COMPETITIVENESS = Competitiveness.COMPETITIVE;
 
-    public String getDisplayString() {
-        String sexDisplay = switch (sex) {
+    public static final Competitiveness DEFAULT_COMPETITIVENESS = Competitiveness.UNSPECIFIED;
+
+    private String getSexString() {
+        boolean isYoung = YOUNG_AGES.contains(age);
+        if (isYoung) {
+            return switch (sex) {
+                case MENS -> "Boy's";
+                case WOMENS -> "Girl's";
+                case MIXED -> "Mixed";
+                case OTHER -> "Other";
+            };
+        }
+        return switch (sex) {
             case MENS -> "Men's";
             case WOMENS -> "Women's";
             case MIXED -> "Mixed";
             case OTHER -> "Other";
         };
+    }
 
+    public String getDisplayString() {
+        String sexDisplay = getSexString();
         String ageDisplay = age.getDescription();
-        String compDisplay = StringUtils.capitalize(competitiveness.name());
+        String compDisplay = StringUtils.capitalize(competitiveness.name().toLowerCase());
 
         if (competitiveness != DEFAULT_COMPETITIVENESS) {
             // If competitiveness is custom, display it.
@@ -130,25 +152,15 @@ public class Grade {
         return sexDisplay;
     }
 
-    /**
-     * Whoever is doing the front-end dropdown for this,
-     * make sure that you call these functions for the dropdowns!
-     */
-    public static Age[] getAgesForDropDown() {
-        return Age.values();
-    }
-    public static Sex[] getSexesForDropdown() {
-        return Sex.values();
-    }
-    public static Competitiveness[] getCompetitivenessForDropdown() {
-        return Competitiveness.values();
-    }
-
     public Sex getSex() {
         return sex;
     }
 
     public Age getAge() {
         return age;
+    }
+
+    public Competitiveness getCompetitiveness() {
+        return competitiveness;
     }
 }

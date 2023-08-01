@@ -36,11 +36,11 @@ class GradeTest {
     @BeforeEach
     public void beforeEach() throws IOException {
         team1 = generateRandomTeams.createRandomTeam();
-        grade1 = new Grade(Grade.Age.OVER_50s, Grade.Sex.WOMENS);
+        grade1 = new Grade(Grade.Age.OVER_50S, Grade.Sex.WOMENS);
         team1.setGrade(grade1);
 
         team2 = generateRandomTeams.createRandomTeam();
-        grade2 = new Grade(Grade.Age.UNDER_7S, Grade.Sex.MENS);
+        grade2 = new Grade(Grade.Age.UNDER_18S, Grade.Sex.MENS);
         team2.setGrade(grade2);
 
         teamService.addTeam(team1);
@@ -71,13 +71,11 @@ class GradeTest {
     @Test
     public void testAdultGradeDisplay() {
         assertEquals(grade1.getDisplayString(), "Women's Over 50s");
-        // TODO: We should change this to "Under 7s boys" as opposed to Mens
-        //  Or just "Under 7s"?
-        assertEquals(grade2.getDisplayString(), "Men's Under 7s");
+        assertEquals(grade2.getDisplayString(), "Men's Under 18s");
     }
 
     @Test
-    public void testAdultAgeRange() {
+    public void testAdultAgeRangeDisplay() {
         /*
         When the age range is ADULT, we should just have the sex displayed.
         This is because the Adult division is kinda like the "Open" division.
@@ -88,6 +86,46 @@ class GradeTest {
 
         assertEquals(g.getDisplayString(), "Mixed");
         assertEquals(g2.getDisplayString(), "Other");
+    }
+
+    @Test
+    public void testSexDisplayForYounglings() {
+        /*
+        Checks that younglings are mapped to "Boys" and "Girls" as opposed
+        to "Men" and "Women".
+         */
+        var g = new Grade(Grade.Age.UNDER_7S, Grade.Sex.MENS, Grade.Competitiveness.UNSPECIFIED);
+        assertEquals(g.getDisplayString(), "Boy's Under 7s");
+
+        var g2 = new Grade(Grade.Age.UNDER_6S, Grade.Sex.WOMENS);
+        assertEquals(g2.getDisplayString(), "Girl's Under 6s");
+
+        assertEquals(g.getCompetitiveness(), g2.getCompetitiveness());
+    }
+
+    @Test
+    public void testYoungEdgeCases() {
+        /*
+        Anything 14 or older is "Mens / womens"
+        Anything younger is "Boys / girls"
+         */
+        var boy = new Grade(Grade.Age.UNDER_13S, Grade.Sex.MENS);
+        assertEquals(boy.getDisplayString(), "Boy's Under 13s");
+
+        var man = new Grade(Grade.Age.UNDER_14S, Grade.Sex.MENS);
+        assertEquals(man.getDisplayString(), "Men's Under 14s");
+    }
+
+    @Test
+    public void testCompetitiveness() {
+        /*
+        Checks that competitiveness is not shown when it's regular.
+         */
+        var g = new Grade(Grade.Age.ADULT, Grade.Sex.MENS, Grade.Competitiveness.SOCIAL);
+        assertEquals(g.getDisplayString(), "Men's Social");
+
+        var g2 = new Grade(Grade.Age.UNDER_10S, Grade.Sex.MIXED, Grade.Competitiveness.SOCIAL);
+        assertEquals(g2.getDisplayString(), "Mixed Under 10s Social");
     }
 }
 
