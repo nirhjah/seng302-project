@@ -107,7 +107,7 @@ public class Grade {
      */
     public Grade(Sex sex) {
         this.sex = sex;
-        this.age = Age.ADULT;
+        this.age = DEFAULT_AGE;
         this.competitiveness = DEFAULT_COMPETITIVENESS;
     }
 
