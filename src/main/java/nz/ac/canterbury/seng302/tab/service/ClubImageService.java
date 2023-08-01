@@ -59,7 +59,7 @@ public class ClubImageService extends FileDataSaver {
         if (clubService.findClubById(id).isPresent()) {
             boolean ok = saveFile(id, file);
             if (!ok) {
-                logger.error(String.format("Couldn't save file: %d", id));
+                logger.error("Couldn't save file: {}", id);
             }
         }
     }

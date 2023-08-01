@@ -52,7 +52,7 @@ class UserImageServiceTest {
     private static final int NUM_USERS = 30;
 
     @BeforeEach
-    public void beforeEach() throws IOException {
+    void beforeEach() throws IOException {
         // Check that we are on test.
         // If we aren't on test, we shouldn't run the test!!!
         // (This will mess up our filesystem on prod if it fails!!!)
@@ -80,7 +80,7 @@ class UserImageServiceTest {
     }
 
     @Test
-    public void testSingularImageIsSaved() throws IOException {
+    void testSingularImageIsSaved() throws IOException {
         // Take a user, check that the file is saved.
         User usr = users.get(0);
         long id = usr.getUserId();
@@ -93,7 +93,7 @@ class UserImageServiceTest {
 
 
     @Test
-    public void givenExistingUsers_givenDataIsSaved_testDataCanBeRetrieved() throws IOException {
+    void givenExistingUsers_givenDataIsSaved_testDataCanBeRetrieved() throws IOException {
         // Multiple users, check that they all end up with unique data.
         var files = List.of(
                 getMockedFile(new byte[] {1,2,3,4,5,6}),
@@ -122,7 +122,7 @@ class UserImageServiceTest {
     doesn't have a valid profile picture.
      */
     @Test
-    public void givenNoProfilePicture_testDefaultsAreGiven() {
+    void givenNoProfilePicture_testDefaultsAreGiven() {
         User a, b;
         int size = users.size();
         a = users.get(size - 1);
@@ -136,7 +136,7 @@ class UserImageServiceTest {
     }
 
     @Test
-    public void givenNoUser_testFileIsNotSaved() {
+    void givenNoUser_testFileIsNotSaved() {
         long invalidId = 3290;
         while (userService.findUserById(invalidId).isPresent()) {
             // Just in case!
@@ -151,7 +151,7 @@ class UserImageServiceTest {
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         // Clear files
         UserImageService.clearTestFolder();
     }

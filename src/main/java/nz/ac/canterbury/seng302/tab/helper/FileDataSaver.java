@@ -233,7 +233,7 @@ public abstract class FileDataSaver {
      */
     public byte[] getDefaultBytes() {
         return new byte[] {};
-    };
+    }
 
     /**
      * Creates a FileDataSaver.
