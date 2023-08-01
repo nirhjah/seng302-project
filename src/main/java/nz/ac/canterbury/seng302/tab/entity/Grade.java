@@ -96,7 +96,7 @@ public class Grade {
     }
 
     // Any age under 13 is regarded as "Boy / girl" as opposed to "Men / women"
-    private final Set<Age> YOUNG_AGES = Set.of(
+    private final Set<Age> youngAges = Set.of(
         Age.UNDER_5S,Age.UNDER_6S,Age.UNDER_7S,Age.UNDER_8S,Age.UNDER_9S,Age.UNDER_10S,Age.UNDER_11S,Age.UNDER_12S,Age.UNDER_13S
     );
 
@@ -116,7 +116,7 @@ public class Grade {
     public static final Competitiveness DEFAULT_COMPETITIVENESS = Competitiveness.UNSPECIFIED;
 
     private String getSexString() {
-        boolean isYoung = YOUNG_AGES.contains(age);
+        boolean isYoung = youngAges.contains(age);
         if (isYoung) {
             return switch (sex) {
                 case MENS -> "Boy's";
