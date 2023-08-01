@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -18,6 +17,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
 /**
@@ -31,7 +31,7 @@ public class EmailService {
 
     private final JavaMailSender javaMailSender;
 
-    private static final String sender = System.getenv().get("GMAIL_USERNAME");
+    private static final String SENDER = System.getenv().get("GMAIL_USERNAME");
 
     /**
      * Manual dependency injection for tests.
@@ -39,7 +39,6 @@ public class EmailService {
      * NOTE: This ctor SHOULD NOT be called outside of tests!!!!
      * @param javaMailSender
      */
-    @Autowired
     public EmailService(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
         this.javaMailSender = javaMailSender;
@@ -58,7 +57,7 @@ public class EmailService {
             executor.execute(() -> {
                 SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
-                simpleMailMessage.setFrom(sender);
+                simpleMailMessage.setFrom(SENDER);
                 simpleMailMessage.setTo(emailDetails.getRecipient());
                 simpleMailMessage.setText(emailDetails.getMsgBody());
                 simpleMailMessage.setSubject(emailDetails.getSubject());
@@ -87,6 +86,39 @@ public class EmailService {
         );
         email.setProperties(model);
         sendHtmlMessage(email);
+    }
+
+    /**
+     * Creates a reset password link with unique token for the user and sends it to their email
+     * @param user      user to send reset password link to
+     * @param request   to get current url to create the link
+     */
+    public void resetPasswordEmail(User user, HttpServletRequest request) {
+
+        String tokenVerificationLink;
+
+        // We should probably have a global BASE_URL variables
+        if (request.getRequestURL().toString().contains("test")) {
+            tokenVerificationLink = "https://csse-s302g9.canterbury.ac.nz/test";
+        } else if (request.getRequestURL().toString().contains("prod")) {
+            tokenVerificationLink = "https://csse-s302g9.canterbury.ac.nz/prod";
+        } else {
+            tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "");
+        }
+        tokenVerificationLink += "/reset-password?token=" + user.getToken();
+        EmailDetails email = new EmailDetails(user.getEmail(), null,
+            EmailDetails.RESET_PASSWORD_HEADER, "mail/resetPasswordEmail.html");
+        
+        Map<String, Object> model = Map.of(
+            "name", user.getFirstName(),
+            "linkUrl", tokenVerificationLink
+        );
+        email.setProperties(model);
+        try {
+            sendHtmlMessage(email);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void confirmationEmail(User user, String url){

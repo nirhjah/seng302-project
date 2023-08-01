@@ -310,12 +310,11 @@ public class UserService {
      * @param password the password to update the user with
      * @return the outcome of the email sending
      */
-    public void updatePassword(User user, String password) {
+    public void updatePassword(User user, String password) throws MessagingException {
         user.setPassword(passwordEncoder.encode(password));
         updateOrAddUser(user);
-        EmailDetails details = new EmailDetails(user.getEmail(), EmailDetails.UPDATE_PASSWORD_BODY, EmailDetails.UPDATE_PASSWORD_HEADER);
-        String outcome = emailService.sendSimpleMail(details);
-        logger.info(outcome);
+
+        emailService.updatePassword(user);
     }
 
 
@@ -331,23 +330,7 @@ public class UserService {
 
         taskScheduler.schedule(new TokenVerification(user, this), Instant.now().plus(Duration.ofHours(1)));
 
-        String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "")
-                + "/reset-password?token=" + user.getToken();
-
-        if (request.getRequestURL().toString().contains("test")) {
-            tokenVerificationLink =  "https://csse-s302g9.canterbury.ac.nz/test/reset-password?token=" + user.getToken();
-        }
-        if (request.getRequestURL().toString().contains("prod")) {
-            tokenVerificationLink =  "https://csse-s302g9.canterbury.ac.nz/prod/reset-password?token=" + user.getToken();
-        }
-        EmailDetails details = new EmailDetails(user.getEmail(), tokenVerificationLink, EmailDetails.RESET_PASSWORD_HEADER);
-        String outcome = emailService.sendSimpleMail(details);
-        try {
-            emailService.testHTMLEmail(user);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
-        logger.info(outcome);
+        emailService.resetPasswordEmail(user, request);
     }
 
 

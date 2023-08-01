@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
@@ -23,11 +24,12 @@ public class TESTDELETEMESendEmail {
     @GetMapping("/TEST-send-email")
     public String sendTestEmail(
         @RequestParam("email") String email,
-        Model model
-    ) throws MessagingException {
+        HttpServletRequest request
+    ) {
         User user = userService.getCurrentUser().orElseThrow();
         user.setEmail(email);
-        emailService.testHTMLEmail(user);
+        user.setToken("IThinkYouAreCool");
+        emailService.resetPasswordEmail(user, request);
         return "redirect:home";
     }
 }
