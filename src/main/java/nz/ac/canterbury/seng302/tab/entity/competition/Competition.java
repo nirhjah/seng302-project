@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.entity.competition;
 
 import jakarta.persistence.*;
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
 import java.util.HashSet;
@@ -29,11 +30,27 @@ public abstract class Competition {
     @Column(nullable = false)
     private String sport;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Location location;
 
     public Competition() {}
     
     /**
-     * constructor without setting
+     * main constructor
+     * @param name competition name
+     * @param grade competition grade
+     * @param sport competition sport
+     * @param location competition location 
+    */
+    public Competition(String name, String grade, String sport, Location location) {
+        this.name = name;
+        this.grade = grade;
+        this.sport = sport;
+        this.location = location;
+    }
+    
+    /**
+     * constructor without setting location -- for testing purposes 
      * @param name
      * @param grade
      * @param sport
@@ -43,7 +60,7 @@ public abstract class Competition {
         this.grade = grade;
         this.sport = sport;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
