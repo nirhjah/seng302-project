@@ -1,4 +1,5 @@
-#Feature: U34 – Add activity statistics
+@add_activity_statistics
+Feature: U34 – Add activity statistics
 #  Scenario: AC1: Score added to the team is in same format for both teams
 #    Given I have created a activity type that is a game or friendly,
 #    When I add a score to each team,
@@ -35,27 +36,27 @@
 #    When I specify a time,
 #    Then it is given in the format of the hours and minutes into a game
 #
-#  Scenario: AC3: Player and time must be specified when adding substitution
-#    Given there is an activity type of game or friendly
-#    When I am adding a substitution,
-#    Then I must specify the player who was taken off, the one who was put on and the time that this occured.
-#
-#
-#  Scenario: AC3: Person who scored must be in team  when adding substitution
-#    Given I am adding a substitution
-#    When I select the person who scored
-#    Then  they must be a member of the team
-#
-#  Scenario: AC3: Time of substitution should be within timing of game when adding substitution
-#    Given I am adding a substitution,
-#    When I specify a time for the substitution
-#    Then it must be within the timing of the game.
-#
-#
-#  Scenario: AC3: The time is in the correct format when adding a substitution
-#    Given I am adding a substitution
-#    When I specify a time
-#    Then it is the amount of hours, minutes, seconds into the activity
+  Scenario: AC3: Player and time must be specified when adding substitution
+    Given there is an activity type of game or friendly
+    When I am adding a substitution,
+    Then I must specify the player who was taken off, the one who was put on and the time that this occured.
+
+
+  Scenario: AC3: Person who scored must be in team  when adding substitution
+    Given I am adding a substitution,
+    When I select the person who scored
+    Then  they must be a member of the team
+
+  Scenario: AC3: Time of substitution should be within timing of game when adding substitution
+    Given I am adding a substitution,
+    When I specify a time for the substitution
+    Then it must be within the timing of the game.
+
+
+  Scenario: AC3: The time is in the correct format when adding a substitution
+    Given I am adding a substitution,
+    When I specify a time
+    Then it is the amount of hours, minutes, seconds into the activity
 #
 #  Scenario: AC4: A description should be specified when adding a fact
 #    Given There is an activity type that is not training

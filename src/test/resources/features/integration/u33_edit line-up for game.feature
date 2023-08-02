@@ -1,4 +1,4 @@
-@edit_lineup_for_game
+#@edit_lineup_for_game
 
 #Feature: U33 – Edit line-up for game
 #  Scenario: AC1: Add line-up to activity from existing team formations as manager
