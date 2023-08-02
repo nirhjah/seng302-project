@@ -13,6 +13,8 @@ import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.utility.RegisterTestUtil;
+
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,11 +25,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.io.IOException;
 import java.util.Objects;
 
-import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.util.AssertionErrors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -35,13 +37,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
-public class RegisterConfirmEmailIntegrationTests {
+public class RegisterConfirmEmailStepDefs {
 
     @Autowired
     private UserService userService;
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private SpringTemplateEngine springTemplateEngine;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -56,12 +61,12 @@ public class RegisterConfirmEmailIntegrationTests {
 
     private User user;
 
+    private ArgumentCaptor<EmailDetails> emailDetailsCaptor;
+
     private static final String EMAIL = "myemail@gmail.com";
     private static final String PASSWORD = "SEcure_@hello9994";
 
     private static final String CONFIRM_URL = "/confirm";
-
-    private EmailDetails sentMailContent;
 
     private RegisterForm getRegisterForm() {
         var form = RegisterForm.getDummyRegisterForm();
@@ -78,21 +83,20 @@ public class RegisterConfirmEmailIntegrationTests {
         userService.updateOrAddUser(user);
     }
 
-    private EmailService emailServiceMock() {
+    private EmailService emailServiceMock() throws Exception {
         // We don't want to spam emails, as we have a limited number that we can
         // send with our API key.  So in tests, we should mock.
         var javaMailSender = applicationContext.getBean(JavaMailSender.class);
-        var emailServ = Mockito.spy(new EmailService(javaMailSender));
+        var emailServ = Mockito.spy(new EmailService(javaMailSender, springTemplateEngine));
 
-        Mockito.when(emailServ.sendSimpleMail(any())).then(invocation -> {
-            sentMailContent = invocation.getArgument(0, EmailDetails.class);
-            return "Mocked Success";
-        });
+        emailDetailsCaptor = ArgumentCaptor.forClass(EmailDetails.class);
+
+        Mockito.doNothing().when(emailServ).sendHtmlMessage(emailDetailsCaptor.capture());
 
         return emailServ;
     }
 
-    private void setupMorganMocking() {
+    private void setupMorganMocking() throws Exception {
         // get all the necessary beans
         userRepository = applicationContext.getBean(UserRepository.class);
         userService = applicationContext.getBean(UserService.class);
@@ -107,8 +111,7 @@ public class RegisterConfirmEmailIntegrationTests {
     }
 
     @Before("@register_confirm_email")
-    public void beforeTest() {
-        sentMailContent = null;
+    public void beforeTest() throws Exception {
         userRepository.deleteAll();
         setupMorganMocking();
     }
@@ -154,6 +157,7 @@ public class RegisterConfirmEmailIntegrationTests {
 
     @Then("I receive an email containing a valid registration link")
     public void iReceiveAnEmailContainingAValidRegistrationLink() {
+        EmailDetails sentMailContent = emailDetailsCaptor.getValue();
         assertNotNull("expected sent email", sentMailContent);
         var body = sentMailContent.getMsgBody();
         assertNotNull("Email body was null", body);

@@ -9,17 +9,10 @@ import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -487,7 +480,7 @@ public class TeamRepositoryTest {
         Team team3 = new Team("tres", "Netball", chchLocation);
         Team team4 = new Team("one", "Netball", auckLocation);
         Team team5 = new Team("two", "Netball", chchLocation);
-        Club club = new Club("uno", chchLocation, "Netball");
+        Club club = new Club("uno", chchLocation, "Netball",null);
         clubRepository.save(club);
         team4.setTeamClub(club);
         team5.setTeamClub(club);

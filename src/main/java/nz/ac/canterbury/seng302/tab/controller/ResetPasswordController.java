@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -90,7 +91,6 @@ public class ResetPasswordController {
         model.addAttribute("resetPasswordForm", new ResetPasswordForm());
         model.addAttribute("httpServletRequest",request);
 
-        System.out.println(token);
         user = userService.findByToken(token);
         if (user.isEmpty()) {
             redirectAttributes.addFlashAttribute("invalidTokenMessage", "Token is invalid or expired.");
@@ -122,7 +122,7 @@ public class ResetPasswordController {
             Model model,
             HttpServletResponse httpServletResponse,
             HttpServletRequest request,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) throws MessagingException {
 
         user = userService.findByToken(currentToken);
         if (user.isPresent()) {
