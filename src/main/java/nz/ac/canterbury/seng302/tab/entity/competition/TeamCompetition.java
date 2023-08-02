@@ -34,7 +34,7 @@ public class TeamCompetition extends Competition {
 
     /**
      * adds a team to the competition
-     * @param team
+     * @param team the team to be added to the competition
      */
     public void addTeam(Team team) {
       this.teams.add(team);

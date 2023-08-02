@@ -48,9 +48,9 @@ public abstract class Competition {
     
     /**
      * constructor without setting location -- for testing purposes 
-     * @param name
-     * @param grade
-     * @param sport
+     * @param name competition name
+     * @param grade competition grade
+     * @param sport competition sport
     */
     public Competition(String name, String grade, String sport) {
         this.name = name;

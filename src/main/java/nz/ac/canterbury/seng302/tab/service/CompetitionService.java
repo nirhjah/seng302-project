@@ -55,7 +55,6 @@ public class CompetitionService {
         ).toList();
     }
 
-
     /**
      * Gets list of all user competitions
      * @return list of all user competitions
