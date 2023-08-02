@@ -170,16 +170,6 @@ public class EmailService {
         }
     }
 
-    public void testHTMLEmail(User user) throws MessagingException {
-        EmailDetails email = new EmailDetails(user.getEmail(), null, "Test", "mail/testEmail.html");
-        Map<String, Object> properties = Map.of(
-                "name", user.getFirstName(),
-                "subscriptionDate", user.getDateOfBirth()
-        );
-        email.setProperties(properties);
-        sendHtmlMessage(email);
-    }
-
     /**
      * This method takes the email details and puts it together and sends it via threading
      * @param email the email details
@@ -197,11 +187,8 @@ public class EmailService {
         String html = templateEngine.process(email.getTemplate(), context);
         helper.setText(html, true);
         try {
-
             ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 10, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-            executor.execute(() -> {
-                javaMailSender.send(message);
-            });
+            executor.execute(() -> javaMailSender.send(message));
         } catch (Exception e) {
             logger.error("MAIL NOT SENT");
         }
