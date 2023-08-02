@@ -164,6 +164,11 @@ public abstract class FileDataSaver {
      * WARNING: Be very (very) careful when calling this.
      * This will purge the filesystem database if called incorrectly!
      * (Also it will purge your computer's filesystem if called incorrectly too)
+     * To clarify: You should never really be calling this method!!!!
+     * Pls be careful with it.
+     *
+     * @param folder The folder to be deleted
+     * @return boolean true if success, false if failure.
      */
     private static boolean deleteFolder(File folder) {
         boolean success = true;
