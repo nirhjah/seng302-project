@@ -1,9 +1,9 @@
 package nz.ac.canterbury.seng302.tab.enums;
 
 public enum AuthorityType {
-    USER("ROLE_USER"),
-    ADMIN("ROLE_ADMIN"),
-    FEDERATION_MANAGER("ROLE_FEDMAN");
+    USER(Constants.USER),
+    ADMIN(Constants.ADMIN),
+    FEDERATION_MANAGER(Constants.FEDERATION_MANAGER);
 
     private String role;
 
@@ -13,5 +13,13 @@ public enum AuthorityType {
 
     public String role() {
         return this.role;
+    }
+
+    public class Constants {
+        public static final String USER = "ROLE_USER";
+        public static final String ADMIN = "ROLE_ADMIN";
+        public static final String FEDERATION_MANAGER = "ROLE_FEDERATION_MANAGER";
+        
+        private Constants() {/* Hiding the constructor */}
     }
 }

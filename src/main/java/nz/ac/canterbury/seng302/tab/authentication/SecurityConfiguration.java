@@ -13,6 +13,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import nz.ac.canterbury.seng302.tab.entity.Authority;
+import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
+
 
 
 /**
@@ -78,10 +81,14 @@ public class SecurityConfiguration {
                 .requestMatchers("/", "/register", "/login", "/home",
                 "/geocode/autocomplete", "/lost-password", "/reset-password", "/confirm")
                 .permitAll()
+                // TODO DELETE THIS
+                // Only Federation Managers (maybe admins) can access this
+                .requestMatchers("/fedman")
+                .hasRole(AuthorityType.FEDERATION_MANAGER.name())
                 // Only allow admins to reach the "/admin" and "/populate_database" page
                 .requestMatchers("/admin", "/populate_database")
                 // note we do not need the "ROLE_" prefix as we are calling "hasRole()"
-                .hasRole("ADMIN")
+                .hasRole(AuthorityType.ADMIN.name())
                 // Any other request requires authentication
                 .anyRequest()
                 .authenticated()
