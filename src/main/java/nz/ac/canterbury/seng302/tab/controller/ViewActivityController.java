@@ -59,6 +59,8 @@ public class ViewActivityController {
 
     String createEventFormString = "createEventForm";
 
+    String overallScoreTeamString = "overallScoreTeam";
+
     @Autowired
     public ViewActivityController(UserService userService, ActivityService activityService, TeamService teamService,FactService factService) {
         this.userService = userService;
@@ -190,16 +192,13 @@ public class ViewActivityController {
             HttpServletResponse httpServletResponse,
             RedirectAttributes redirectAttributes) {
 
-        // create the new fact of facttype
-        logger.info("got the desc " + description);
-
         logger.info(factType.name());
         logger.info(String.format("got the act id: %s", actId));
         logger.info(String.format("got the player on id: %s", subOnId));
         logger.info(String.format("got the player on id: %s", subOffId));
         logger.info(String.format("got the scorer id: %s", scorerId));
 
-        model.addAttribute("overallScoreTeam", overallScoreTeam);
+        model.addAttribute(overallScoreTeamString, overallScoreTeam);
         model.addAttribute("httpServletRequest", request);
 
         Activity activity = activityService.findActivityById(actId);
@@ -209,12 +208,12 @@ public class ViewActivityController {
 
         if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 1) {
             logger.info("scores not same type");
-            bindingResult.addError(new FieldError(createEventFormString, "overallScoreTeam", "Both teams require scores of the same type"));
+            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "Both teams require scores of the same type"));
         }
 
         if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 2) {
             logger.info("one score is empty");
-            bindingResult.addError(new FieldError(createEventFormString, "overallScoreTeam", "Other score field cannot be empty"));
+            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "Other score field cannot be empty"));
         }
 
         if (factType == FactType.SUBSTITUTION && subOffId == subOnId) {
