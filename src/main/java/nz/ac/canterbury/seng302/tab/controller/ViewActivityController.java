@@ -172,7 +172,7 @@ public class ViewActivityController {
             @RequestParam(name = "description") String description,
             @RequestParam(name = "overallScoreTeam") String overallScoreTeam,
             @RequestParam(name = "overallScoreOpponent") String overallScoreOpponent,
-            @RequestParam(name = "time") LocalTime time,
+            @RequestParam(name = "time") String time,
             @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
             @RequestParam(name = "playerOff", defaultValue = "-1") int subOffId,
             @RequestParam(name = "playerOn", defaultValue = "-1") int subOnId,
@@ -205,6 +205,9 @@ public class ViewActivityController {
             bindingResult.addError(new FieldError("createEventForm", "overallScoreTeam", "Other score field cannot be empty"));
         }
 
+        validateEmptyTimeField(bindingResult,time);
+        validateSubbingSamePlayers(bindingResult,subOffId,subOnId);
+
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             redirectAttributes.addFlashAttribute("scoreInvalid", "Leave Modal Open");
@@ -213,10 +216,12 @@ public class ViewActivityController {
             return viewActivityRedirectUrl;
         }
 
+        LocalTime localTime = LocalTime.parse(time);
+
         switch (factType) {
             case FACT:
                 logger.info("is fact");
-                fact = new Fact(description, activity,time);
+                fact = new Fact(description, activity,localTime);
                 break;
 
             case GOAL:
@@ -226,7 +231,7 @@ public class ViewActivityController {
                     return viewActivityRedirectUrl;
                 }
                 User scorer = potentialScorer.get();
-                fact = new Goal(description, activity, scorer,time);
+                fact = new Goal(description, activity, scorer,localTime);
 
                 // update the score
                 // activity.setOtherTeamScore("13");
@@ -247,14 +252,13 @@ public class ViewActivityController {
                     return viewActivityRedirectUrl;
                 }
                 User playerOn = potentialSubOn.get();
-
-                fact = new Substitution(description, activity, playerOff, playerOn,time);
+                fact = new Substitution(description, activity, playerOff, playerOn,localTime);
                 break;
 
             case OPPOSITION_GOAL:
                 activityService.updateAwayTeamsScore(activity);
 
-                fact = new OppositionGoal(description, time, activity);
+                fact = new OppositionGoal(description, localTime, activity);
                 break;
 
             default:
@@ -269,6 +273,34 @@ public class ViewActivityController {
         activityService.updateOrAddActivity(activity);
 
         return viewActivityRedirectUrl;
+    }
+
+
+    /**
+     * Validates whether the given time field is empty or not and adds an error message to the BindingResult
+     * if it is empty.
+     *
+     * @param bindingResult The BindingResult object that holds validation errors.
+     * @param time The time string to be validated.
+     */
+    private void validateEmptyTimeField(BindingResult bindingResult, String time){
+        if (time.isEmpty()) {
+            bindingResult.addError(new FieldError("createEventForm", "time", "Time field cannot be empty"));
+        }
+    }
+
+    /**
+     * Validates whether the players involved in a substitution are the same and adds an error message
+     * to the BindingResult if they are identical.
+     *
+     * @param bindingResult The BindingResult object that holds validation errors.
+     * @param subOnOff The ID of the player who is being substituted off.
+     * @param subOnId The ID of the player who is being substituted on.
+     */
+    private void validateSubbingSamePlayers(BindingResult bindingResult,long subOnOff, long subOnId){
+        if (subOnOff==subOnId) {
+            bindingResult.addError(new FieldError("createEventForm", "playerOn", "Cannot substitute the same player"));
+        }
     }
 
 }

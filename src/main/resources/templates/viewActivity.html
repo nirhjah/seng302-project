@@ -43,7 +43,7 @@
                           th:text="${startDate}">
 
                     </span>
-                    <span class="time" th:with="startTime=${#temporals.format(activity.activityStart, 'hh:mma')}"
+                    <span class="time" th:with="startTime=${#strings.toLowerCase(#temporals.format(activity.activityStart, 'hh:mm a'))}"
                           th:text="${startTime}">
 
                     </span>
@@ -54,7 +54,7 @@
                     <span class="date" th:with="endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')}"
                           th:text="${endDate}">
                     </span>
-                    <span class="time" th:with="endTime=${#temporals.format(activity.activityEnd, 'hh:mma')}"
+                    <span class="time" th:with="endTime=${#strings.toLowerCase(#temporals.format(activity.activityEnd, 'hh:mm a'))}"
                           th:text="${endTime}">
 
                     </span>
@@ -127,8 +127,10 @@
                         </div>
                         <label for="time"></label>
                         <input id="time" type="time" th:name="time" value="time">
+                        <div th:each="err : ${#fields.errors('time')}" th:text="${err}" class="error-message"></div>
                         <div id="additionalFields"></div>
                     </div>
+                    <div th:each="err : ${#fields.errors('playerOn')}" th:text="${err}" class="error-message"></div>
                     <div class="submit-button">
                         <button id="createEvent" type="submit" class="registerLoginButton">Create Event</button>
                     </div>
@@ -169,7 +171,7 @@
                         </span>
                         <span class="description"
                               th:text="${fact.playerOn.firstName} + '         ' + ${fact.playerOn.lastName}"></span>
-                        <span class="description" th:text="${fact.timeOfEvent}"></span>
+                        <span class="description" th:text="${#strings.toLowerCase(#temporals.format(fact.timeOfEvent, 'hh:mm a'))}"></span>
 
                     </li>
                 </ul>

@@ -17,6 +17,11 @@ public class CreateEventForm {
 
   private String overallScoreOpponent;
 
+  private String playerOn;
+
+  public String getPlayerOn(){ return this.playerOn;}
+  public void setPlayerOn(String playerOn){ this.playerOn = playerOn;}
+
   public String getOverallScoreTeam() {
     return overallScoreTeam;
   }
