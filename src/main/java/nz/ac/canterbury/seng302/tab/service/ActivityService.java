@@ -37,7 +37,6 @@ public class ActivityService {
 
     /**
      * Returns all activities
-     *
      * @return list of all stored activities
      */
     public List<Activity> findAll() {
@@ -121,11 +120,23 @@ public class ActivityService {
         }
     }
 
+    /**
+     * Gets page of all team activities
+     * @param team team to get activities from
+     * @param pageNo page number
+     * @param pageSize page size
+     * @return  page of all team activities
+     */
     public Page<Activity> getAllTeamActivitiesPage(Team team, int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         return activityRepository.findActivityByTeam(team, pageable);
     }
 
+    /**
+     * Get list of all team activities
+     * @param team team to get activities from
+     * @return list of all team activities
+     */
     public List<Activity> getAllTeamActivities(Team team) {
         return activityRepository.findActivityByTeam(team);
     }

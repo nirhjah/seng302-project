@@ -65,6 +65,11 @@ public class ViewActivityController {
         this.factService=factService;
     }
 
+    /**
+     * Gets all fact types and other information for statistics depending on the activity type
+     * @param model  model to add data to
+     * @param activity  current activity
+     */
     private void populateOther(Model model, Activity activity) {
         ActivityType type = activity.getActivityType();
 
@@ -74,14 +79,14 @@ public class ViewActivityController {
         /*
         Different activity types have different sets of allowed FactTypes they can hold.
          */
-        List<FactType> possible = switch (type) {
+        List<FactType> possibleFactTypesForActivity = switch (type) {
             case Competition, Other -> List.of(FactType.FACT);
             case Friendly, Game -> List.of(FactType.GOAL, FactType.OPPOSITION_GOAL, FactType.SUBSTITUTION, FactType.FACT);
             case Training -> List.of();
         };
 
-        model.addAttribute("possibleFactTypes", possible);
-        model.addAttribute("noFacts", possible.size() == 0);
+        model.addAttribute("possibleFactTypes", possibleFactTypesForActivity);
+        model.addAttribute("noFacts", possibleFactTypesForActivity.size() == 0);
     }
 
     /**
@@ -245,8 +250,6 @@ public class ViewActivityController {
                 User scorer = potentialScorer.get();
                 fact = new Goal(description, time, activity, scorer, goalValue);
 
-                // update the score
-                // activity.setOtherTeamScore("13");
                 activityService.updateTeamsScore(activity, goalValue);
 
                 break;
@@ -264,6 +267,7 @@ public class ViewActivityController {
                     logger.error("subbed on player Id not found");
                     return viewActivityRedirectUrl;
                 }
+
                 User playerOn = potentialSubOn.get();
 
                 fact = new Substitution(description, time, activity, playerOff, playerOn);

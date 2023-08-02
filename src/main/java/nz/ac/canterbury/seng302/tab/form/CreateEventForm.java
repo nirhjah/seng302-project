@@ -21,6 +21,10 @@ public class CreateEventForm {
   public CreateEventForm() {
   }
 
+  private User subOn;
+
+  private int goalValue;
+
   public User getSubOn() {
     return subOn;
   }
@@ -28,10 +32,6 @@ public class CreateEventForm {
   public void setSubOn(User subOn) {
     this.subOn = subOn;
   }
-
-  private User subOn;
-
-  private int goalValue;
 
   public String getOverallScoreTeam() {
     return overallScoreTeam;

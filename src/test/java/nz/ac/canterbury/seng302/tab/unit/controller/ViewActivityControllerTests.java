@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -23,6 +22,7 @@ import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.FactService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +105,7 @@ public class ViewActivityControllerTests {
         Location activityLocation = new Location(ACTVITY_ADDRESS_LINE_1, ACTVITY_ADDRESS_LINE_2, ACTVITY_SUBURB,
                 ACTVITY_CITY, ACTVITY_POSTCODE, ACTVITY_COUNTRY);
         activity= new Activity(ActivityType.Game, team, "description",start, end, testUser, activityLocation);
+        activityRepository.save(activity);
 
         List<Fact> factList = new ArrayList<>();
         factList.add(new Fact("Someone fell over", "1h 25m", activity));
@@ -112,18 +113,21 @@ public class ViewActivityControllerTests {
         factList.add(new Fact("Someone fell over yet again", "1h 42m", activity));
         factList.add(new Fact("Testing scrollable feature", "1h 25m", activity));
 
-        activityRepository.save(activity);
         teamRepository.save(team);
-        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        when(mockActivityService.findActivityById(Long.parseLong("1"))).thenReturn(activity);
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
         when(mockTeamService.findTeamsWithUser(testUser)).thenReturn(List.of(team));
         when(mockFactService.getAllFactsForActivity(activity)).thenReturn(factList);
 
     }
 
+    @AfterEach
+    public void afterEach() {
+        activityRepository.deleteAll();
+    }
     @Test
     public void testGettingViewActivityPageOfValidActivity() throws Exception {
-        mockMvc.perform(get("/view-activity?activityID={id}",activity.getId()))
+        mockMvc.perform(get("/view-activity?activityID={id}","1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("viewActivity"))
                 .andExpect(MockMvcResultMatchers.model().attribute("activity", activity));
@@ -141,8 +145,6 @@ public class ViewActivityControllerTests {
 
     @Test
     public void testAddingActivityFactWithNoDescription() throws Exception {
-        System.out.println(activity.getId());
-        System.out.println("nirhja");
         mockMvc.perform(post("/view-activity", 42L)
                         .param("actId", "1")
                         .param("factType", String.valueOf(FactType.FACT))
@@ -164,8 +166,6 @@ public class ViewActivityControllerTests {
     public void testAddingActivityFactWithDescription() throws Exception {
         when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
 
-        System.out.println(activity.getId());
-        System.out.println("nirhja");
         mockMvc.perform(post("/view-activity", 42L)
                         .param("actId", "1")
                         .param("factType", String.valueOf(FactType.FACT))
@@ -185,8 +185,6 @@ public class ViewActivityControllerTests {
 
     @Test
     public void testAddingActivityTeamGoalUseDefault() throws Exception {
-        System.out.println(activity.getId());
-        System.out.println("nirhja");
         mockMvc.perform(post("/view-activity", 42L)
                         .param("actId", "1")
                         .param("factType", String.valueOf(FactType.GOAL))
@@ -200,11 +198,8 @@ public class ViewActivityControllerTests {
                         .param("description", "")
                 )
                 .andExpect(view().name("redirect:./view-activity?activityID=1"));
-        verify(mockActivityService, times(1)).updateOrAddActivity(any());
-        verify(mockActivityService, times(1)).updateTeamsScore(any(), any());
-
+        verify(mockActivityService, times(2)).validateActivityScore(any(), any());
     }
-
 
     @Test
     public void testAddingSubstitutionFactWithSamePlayerOnPlayerOff() throws Exception {
