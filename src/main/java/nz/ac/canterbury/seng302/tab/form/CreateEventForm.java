@@ -23,7 +23,7 @@ public class CreateEventForm {
 
   private User subOn;
 
-  private int goalValue;
+
 
   public User getSubOn() {
     return subOn;
@@ -82,12 +82,6 @@ public class CreateEventForm {
   }
 
 
-  public int getGoalValue() {
-    return goalValue;
-  }
 
-  public void setGoalValue(int goalValue) {
-    this.goalValue = goalValue;
-  }
 }
 
