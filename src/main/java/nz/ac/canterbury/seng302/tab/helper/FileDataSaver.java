@@ -74,6 +74,12 @@ public abstract class FileDataSaver {
         }
     }
 
+    /**
+     * A data class that holds restriction values for files.
+     * For example, we can restrict files:
+     *      Max size:  10mb
+     *      Valid extensions:  {"png", "jpg"}
+     */
     static class FileRestrictions {
         public FileRestrictions(int maxSize, Collection<String> validExtensions) {
             this.maxSize = maxSize;
@@ -208,10 +214,15 @@ public abstract class FileDataSaver {
         clearTestFolder();
     }
 
+    /**
+     * The current deployment that is being used.
+     * Defaults to TEST.
+     * On prod, this should be set to PROD.
+     */
     public enum DeploymentType {
-        PROD("PROD"),
-        STAGING("STAGING"),
-        TEST("TEST");
+        PROD("PROD"), // Production deployment
+        STAGING("STAGING"), // Dev deployment
+        TEST("TEST"); // everything else. i.e: Local deployment, JUnit tests, integration tests.
 
         private final String value;
 
