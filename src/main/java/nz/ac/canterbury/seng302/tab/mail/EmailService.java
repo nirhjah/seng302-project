@@ -120,6 +120,11 @@ public class EmailService {
         }
     }
 
+    /**
+     * This method creates the confirm account email, and calls the method to send it.
+     * @param user the receiver of the email
+     * @param request the HTTPRequest, so the correct link will be sent
+     */
     public void confirmationEmail(User user, HttpServletRequest request){
         String tokenVerificationLink;
 
@@ -134,6 +139,38 @@ public class EmailService {
         tokenVerificationLink += "/confirm?token=" + user.getToken();
         EmailDetails email = new EmailDetails(user.getEmail(), null,
                 EmailDetails.CONFIRMATION_EMAIL_HEADER, "mail/confirmAccount.html");
+
+        Map<String, Object> model = Map.of(
+                "name", user.getFirstName(),
+                "linkUrl", tokenVerificationLink
+        );
+        email.setProperties(model);
+        try {
+            sendHtmlMessage(email);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * This method creates and calls the method to send the invitation to become a federation manager
+     * @param user the receiver of the email
+     * @param request the HTTPRequest, so the correct link will be sent
+     */
+    public void federationManagerInvite(User user, HttpServletRequest request){
+        String tokenVerificationLink;
+
+        // We should probably have a global BASE_URL variables
+        if (request.getRequestURL().toString().contains("test")) {
+            tokenVerificationLink = "https://csse-s302g9.canterbury.ac.nz/test";
+        } else if (request.getRequestURL().toString().contains("prod")) {
+            tokenVerificationLink = "https://csse-s302g9.canterbury.ac.nz/prod";
+        } else {
+            tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "");
+        }
+        tokenVerificationLink += "/federationManager?token=" + user.getToken();
+        EmailDetails email = new EmailDetails(user.getEmail(), null,
+                EmailDetails.FEDERATION_MANAGER_INVITE, "mail/federationManagerInvite.html");
 
         Map<String, Object> model = Map.of(
                 "name", user.getFirstName(),

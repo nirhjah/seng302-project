@@ -24,6 +24,8 @@ public class EmailDetails {
 
     public static final String CONFIRMATION_EMAIL_HEADER = "TAB - Confirm your registration";
 
+    public static final String FEDERATION_MANAGER_INVITE = "TAB - Invitation To Become A Federation Manager";
+
     public EmailDetails(String recipient, String msgBody, String subject, String template) {
         this.recipient = recipient;
         this.msgBody = msgBody;
