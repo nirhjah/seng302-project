@@ -201,10 +201,14 @@ public class ViewActivityController {
         String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
 
 
-        if (!activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent)) {
+        if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 1) {
             logger.info("scores not same type");
             bindingResult.addError(new FieldError("createEventForm", "overallScoreTeam", "Both teams require scores of the same type"));
+        }
 
+        if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 2) {
+            logger.info("one score is empty");
+            bindingResult.addError(new FieldError("createEventForm", "overallScoreTeam", "Other score field cannot be empty"));
         }
 
         if (factType == FactType.SUBSTITUTION && subOffId == subOnId) {
