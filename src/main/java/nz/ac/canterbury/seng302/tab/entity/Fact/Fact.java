@@ -3,6 +3,8 @@ package nz.ac.canterbury.seng302.tab.entity.Fact;
 import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 
+import java.time.LocalTime;
+
 /**
  * A fact is information about an activity
  * The inheritance is all kept in a single table as there are many overlapping values
@@ -38,6 +40,8 @@ public class Fact {
 
     private String timeOfEvent;
 
+    private LocalTime timeEventTest;
+
     /**
      * Empty Constructor for JPA
      **/
@@ -47,6 +51,12 @@ public class Fact {
         this.activity = activity;
         this.description = description;
         this.timeOfEvent = timeOfEvent;
+    }
+
+    public Fact(String description, Activity activity, LocalTime timeEventTest) {
+        this.activity = activity;
+        this.description = description;
+        this.timeEventTest= timeEventTest;
     }
 
     public String getDescription() {
