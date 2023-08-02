@@ -323,7 +323,7 @@ public class UserService {
      * @param user      user to send reset password link to
      * @param request   to get current url to create the link
      */
-    public void resetPasswordEmail(User user, HttpServletRequest request) {
+    public void resetPasswordEmail(User user, HttpServletRequest request) throws MessagingException {
 
         user.generateToken(this, 1);
         updateOrAddUser(user);

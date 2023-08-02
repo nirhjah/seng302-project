@@ -1,6 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import jakarta.servlet.ServletException;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,18 +43,13 @@ public class RegisterController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
     /**
      * This ctor should only be called in testing.
      * We need manual dep injection for mocks to be processed properly with cucumber
      */
-    @Autowired
-    public RegisterController(EmailService emailService, UserService userService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+    public RegisterController(EmailService emailService, UserService userService, PasswordEncoder passwordEncoder) {
         this.emailService = emailService;
         this.userService = userService;
-        this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -116,7 +110,6 @@ public class RegisterController {
         logger.info("GET /register");
         URL url = new URL(httpServletRequest.getRequestURL().toString());
         String path = (url.getPath() + "/..");
-        String protocolAndAuthority = String.format("%s://%s", url.getProtocol(), url.getAuthority());
         model.addAttribute("httpServletRequest", httpServletRequest);
         model.addAttribute("path", path);
         return "registerUser";
@@ -135,7 +128,7 @@ public class RegisterController {
             @Valid RegisterForm registerForm,
             BindingResult bindingResult,
             HttpServletRequest request,
-            Model model, RedirectAttributes redirectAttributes, HttpSession session) throws IOException, ServletException {
+            Model model, RedirectAttributes redirectAttributes, HttpSession session) throws IOException, MessagingException {
 
         // Run the custom validation methods
         // TODO: Move validators that might be reused into their own class

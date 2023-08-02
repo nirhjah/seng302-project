@@ -4,7 +4,7 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.controller.LostPasswordController;
 import nz.ac.canterbury.seng302.tab.controller.ResetPasswordController;
@@ -134,7 +134,7 @@ public class ResetPasswordIntegrationTests {
     }
 
     @Then("An email is sent with a unique link to update the password of the associated email")
-    public void an_email_is_sent_with_a_unique_link_to_update_the_password_of_the_associated_email() {
+    public void an_email_is_sent_with_a_unique_link_to_update_the_password_of_the_associated_email() throws MessagingException {
         verify(userService, times(1)).resetPasswordEmail(any(User.class), any(HttpServletRequest.class));
     }
 
