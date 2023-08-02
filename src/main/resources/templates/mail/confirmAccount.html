@@ -2,10 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title th:remove="all">Template for HTML email</title>
+    <title th:remove="all">Confirm Account</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
-
         table {
             margin: auto;
         }
@@ -24,14 +23,7 @@
             font-family: "Noto Sans", sans-serif;
             font-size: 1em;
             border-radius: 30px;
-            font-weight: bold;
             color: white;
-        }
-
-        a {
-            padding: 1em;
-            text-decoration: none;
-            color: white
         }
 
         * {
@@ -56,23 +48,23 @@
     <tr>
         <td>
             <p>
-            <h2>Hello, <span th:text="${firstName} ${lastName}">Test Account</span>!</h2>
+            <h2>Hello, <span th:text="${name}">Peter Static</span>!</h2>
             </p>
             <p>
-                An account was registered for TAB with this email
-                <br>
-                Please use the button or link below to confirm your account
+                Please click below to confirm your account.
             </p>
-            <button>
-                <a th:href="${verifyLink}">Confirm Your Account</a>
-            </button>
-            <p style="font-size: 12px" th:text="${verifyLink}">Raw Link</p>
+            <a th:href="${linkUrl}">
+                <button>
+                    Confirm Account
+                </button>
+            </a>
+            <p>
+                or, go to <strong th:text="${linkUrl}">URL</strong>
+            </p>
             <p>
                 Regards, <br />
                 <em>TAB - Team 900</em>
             </p>
-
-
         </td>
     </tr>
     </tbody>

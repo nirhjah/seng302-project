@@ -121,10 +121,31 @@ public class EmailService {
         }
     }
 
-    public void confirmationEmail(User user, String url){
-        EmailDetails details = new EmailDetails(user.getEmail(),url, EmailDetails.CONFIRMATION_EMAIL_HEADER );
-        String outcome= this.sendSimpleMail(details);
-        logger.info(outcome);
+    public void confirmationEmail(User user, HttpServletRequest request){
+        String tokenVerificationLink;
+
+        // We should probably have a global BASE_URL variables
+        if (request.getRequestURL().toString().contains("test")) {
+            tokenVerificationLink = "https://csse-s302g9.canterbury.ac.nz/test";
+        } else if (request.getRequestURL().toString().contains("prod")) {
+            tokenVerificationLink = "https://csse-s302g9.canterbury.ac.nz/prod";
+        } else {
+            tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "");
+        }
+        tokenVerificationLink += "/confirm?token=" + user.getToken();
+        EmailDetails email = new EmailDetails(user.getEmail(), null,
+                EmailDetails.CONFIRMATION_EMAIL_HEADER, "mail/confirmAccount.html");
+
+        Map<String, Object> model = Map.of(
+                "name", user.getFirstName(),
+                "linkUrl", tokenVerificationLink
+        );
+        email.setProperties(model);
+        try {
+            sendHtmlMessage(email);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void testHTMLEmail(User user) throws MessagingException {
@@ -137,6 +158,11 @@ public class EmailService {
         sendHtmlMessage(email);
     }
 
+    /**
+     * This method takes the email details and puts it together and sends it via threading
+     * @param email the email details
+     * @throws MessagingException - error from
+     */
     public void sendHtmlMessage(EmailDetails email) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message,
@@ -148,6 +174,14 @@ public class EmailService {
         helper.setSubject(email.getSubject());
         String html = templateEngine.process(email.getTemplate(), context);
         helper.setText(html, true);
-        javaMailSender.send(message);
+        try {
+
+            ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 10, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+            executor.execute(() -> {
+                javaMailSender.send(message);
+            });
+        } catch (Exception e) {
+            logger.error("MAIL NOT SENT");
+        }
     }
 }

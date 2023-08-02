@@ -160,17 +160,7 @@ public class RegisterController {
         user.generateToken(userService,2);
         user = userService.updateOrAddUser(user);
 
-        // This url will be added to the email
-        String confirmationUrl = request.getRequestURL().toString().replace(request.getServletPath(), "")
-                + "/confirm?token=" + user.getToken();
-        if (request.getRequestURL().toString().contains("test")) {
-            confirmationUrl =  "https://csse-s302g9.canterbury.ac.nz/test/confirm?token=" + user.getToken();
-        }
-        if (request.getRequestURL().toString().contains("prod")) {
-            confirmationUrl =  "https://csse-s302g9.canterbury.ac.nz/prod/confirm?token=" + user.getToken();
-        }
-
-        emailService.confirmationEmail(user, confirmationUrl);
+        emailService.confirmationEmail(user, request);
 
         session.setAttribute("message", "An email has been sent to your email address. Please follow the instructions to validate your account before you can log in");
         return "redirect:/login";
