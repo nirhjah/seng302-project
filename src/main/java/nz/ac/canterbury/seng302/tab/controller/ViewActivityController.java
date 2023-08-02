@@ -57,6 +57,8 @@ public class ViewActivityController {
 
     String createEventFormBindingResult = "createEventFormBindingResult";
 
+    String createEventFormString = "createEventForm";
+
     @Autowired
     public ViewActivityController(UserService userService, ActivityService activityService, TeamService teamService,FactService factService) {
         this.userService = userService;
@@ -104,7 +106,7 @@ public class ViewActivityController {
             HttpServletRequest request,
             CreateEventForm createEventForm) {
 
-        model.addAttribute("createEventForm", new CreateEventForm());
+        model.addAttribute(createEventFormString, new CreateEventForm());
 
         if (model.asMap().containsKey(createEventFormBindingResult))
         {
@@ -189,7 +191,6 @@ public class ViewActivityController {
             RedirectAttributes redirectAttributes) {
 
         // create the new fact of facttype
-        logger.info("POST /view-activity");
         logger.info("got the desc " + description);
 
         logger.info(factType.name());
@@ -208,30 +209,30 @@ public class ViewActivityController {
 
         if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 1) {
             logger.info("scores not same type");
-            bindingResult.addError(new FieldError("createEventForm", "overallScoreTeam", "Both teams require scores of the same type"));
+            bindingResult.addError(new FieldError(createEventFormString, "overallScoreTeam", "Both teams require scores of the same type"));
         }
 
         if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 2) {
             logger.info("one score is empty");
-            bindingResult.addError(new FieldError("createEventForm", "overallScoreTeam", "Other score field cannot be empty"));
+            bindingResult.addError(new FieldError(createEventFormString, "overallScoreTeam", "Other score field cannot be empty"));
         }
 
         if (factType == FactType.SUBSTITUTION && subOffId == subOnId) {
             logger.info("players cannot sub themselves");
-            bindingResult.addError(new FieldError("createEventForm", "subOn", "Players cannot sub themselves"));
+            bindingResult.addError(new FieldError(createEventFormString, "subOn", "Players cannot sub themselves"));
         }
 
-        if (factType == FactType.FACT) {
-            if (description.isEmpty()) {
+        if (factType == FactType.FACT && description.isEmpty()) {
                 logger.info("description was not provided for fact");
-                bindingResult.addError(new FieldError("createEventForm", "description", "Fact type events require a description"));
-            }
+                bindingResult.addError(new FieldError(createEventFormString, "description", "Fact type events require a description"));
         }
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             redirectAttributes.addFlashAttribute("scoreInvalid", "Leave Modal Open");
             redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
+            System.out.println("nirhjah");
+            System.out.println(bindingResult.getAllErrors());
             return viewActivityRedirectUrl;
         }
 
