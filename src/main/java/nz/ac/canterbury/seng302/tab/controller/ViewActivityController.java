@@ -231,8 +231,6 @@ public class ViewActivityController {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             redirectAttributes.addFlashAttribute("scoreInvalid", "Leave Modal Open");
             redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
-            System.out.println("nirhjah");
-            System.out.println(bindingResult.getAllErrors());
             return viewActivityRedirectUrl;
         }
 
