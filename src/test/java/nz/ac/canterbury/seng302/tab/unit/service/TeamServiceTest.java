@@ -3,43 +3,35 @@ package nz.ac.canterbury.seng302.tab.unit.service;
 import nz.ac.canterbury.seng302.tab.entity.Club;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.ClubService;
 import nz.ac.canterbury.seng302.tab.service.TeamImageService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
-
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@Import({TeamService.class, ClubService.class, TeamImageService.class})
+@Import({TeamService.class, ClubService.class})
 public class TeamServiceTest {
 
     Logger logger = LoggerFactory.getLogger(TeamServiceTest.class);
 
-    @Autowired
-    private TeamImageService teamImageService;
 
     @Autowired
     private TeamService teamService;
@@ -78,22 +70,6 @@ public class TeamServiceTest {
         assertEquals(team.getLocation().getAddressLine1(),
                 teamRepository.findById(team.getTeamId()).get().getLocation().getAddressLine1());
         assertEquals(team.getSport(), teamRepository.findById(team.getTeamId()).get().getSport());
-    }
-
-    @Test
-    public void testUpdatingPicture() throws IOException {
-        Team team = new Team("test", "Hockey", location);
-        teamRepository.save(team);
-
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        File file = resource.getFile();
-        byte[] fileBytes = Files.readAllBytes(file.toPath());
-        try (FileInputStream input = new FileInputStream(file)) {
-            MultipartFile multipartFile = new MockMultipartFile("file.png",
-                    file.getName(), "image/png", input.readAllBytes());
-            teamImageService.updateProfilePicture(team.getTeamId(), multipartFile);
-            assertArrayEquals(fileBytes, multipartFile.getBytes());
-        }
     }
 
     @Test

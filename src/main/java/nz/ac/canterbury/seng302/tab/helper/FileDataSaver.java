@@ -2,6 +2,8 @@ package nz.ac.canterbury.seng302.tab.helper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,8 +21,6 @@ import java.util.*;
  */
 public abstract class FileDataSaver {
 
-    // DON'T CHANGE THESE PATH NAMES!
-    // This is like, the global path prefix where all files are saved under.
     private static final String TAB900_FILE_MODIFIER = "team900_seng302";
 
     private static final Logger logger = LoggerFactory.getLogger(FileDataSaver.class);
@@ -114,6 +114,7 @@ public abstract class FileDataSaver {
      * @return String filename
      */
     private String getFilename(MultipartFile file) {
+        System.out.println("F MOD:" + TAB900_FILE_MODIFIER);
         String name = file.getOriginalFilename();
         if (!Objects.isNull(name) && name.length() > 0) {
             return name;

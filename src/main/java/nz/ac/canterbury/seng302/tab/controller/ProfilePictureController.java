@@ -72,15 +72,20 @@ public class ProfilePictureController {
                 .body(imageData);
     }
 
-    /*
-    TODO: We need to allow SVGs here!!!!
-        Currently only pngs, jpgs, and jpegs are supported.
+    /**
+     * Returns the profile picture of the user with id `id`.
+     * @param id The user id in the database
+     * @return A ResponseEntity containing the image data
      */
     @GetMapping(
             value = "/user-profile-picture/{id}"
     )
     @ResponseBody
     public ResponseEntity<byte[]> getUserProfilePicture(@PathVariable long id) {
+        /*
+        TODO: We need to allow SVGs here!!!!
+            Currently only pngs, jpgs, and jpegs are supported.
+         */
         byte[] bytes = userImageService.readFileOrDefault(id);
 
         // TODO: Change this so it actually works.
@@ -97,6 +102,11 @@ public class ProfilePictureController {
         }
     }
 
+    /**
+     * Returns the profile picture of the team with id `id`.
+     * @param id The team id in the database
+     * @return A ResponseEntity containing the image data
+     */
     @GetMapping(
             value = "/team-profile-picture/{id}",
             produces = MediaType.IMAGE_JPEG_VALUE
@@ -105,6 +115,12 @@ public class ProfilePictureController {
         return teamImageService.readFileOrDefault(id);
     }
 
+    /**
+     * NYI!!
+     * Returns the profile picture of the team with id `id`.
+     * @param id The team id in the database
+     * @return A ResponseEntity containing the image data
+     */
     @GetMapping(
             value = "/club-logo/{id}",
             produces = MediaType.IMAGE_JPEG_VALUE
