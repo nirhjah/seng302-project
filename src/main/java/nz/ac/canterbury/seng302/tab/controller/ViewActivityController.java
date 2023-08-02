@@ -273,7 +273,7 @@ public class ViewActivityController {
         factList.add(fact);
         activity.addFactList(factList);
 
-        activity = activityService.updateOrAddActivity(activity);
+        activityService.updateOrAddActivity(activity);
 
         return viewActivityRedirectUrl;
     }

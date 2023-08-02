@@ -125,8 +125,8 @@
                         <textarea class="description-text" id="description" th:name="description" autofocus placeholder=""
                           th:text="${description}"></textarea>
                         </div>
-                        <label id="time" for="time"></label>
-                        <input type="text-area" name="time" value="time">
+                        <label for="time"></label>
+                        <input id="time" type="time" th:name="time" value="time">
                         <div id="additionalFields"></div>
                     </div>
                     <div class="submit-button">
