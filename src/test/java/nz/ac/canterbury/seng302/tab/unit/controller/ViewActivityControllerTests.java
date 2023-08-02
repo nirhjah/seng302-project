@@ -1,8 +1,10 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
 
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -17,6 +19,9 @@ import java.util.Optional;
 
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.enums.FactType;
+import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.FactService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -72,7 +77,13 @@ public class ViewActivityControllerTests {
     @MockBean
     private FactService mockFactService;
 
+    @Autowired
+    private ActivityRepository activityRepository;
+
     private Team team;
+
+    @Autowired
+    private TeamRepository teamRepository;
 
     private Activity activity;
 
@@ -101,6 +112,8 @@ public class ViewActivityControllerTests {
         factList.add(new Fact("Someone fell over yet again", "1h 42m", activity));
         factList.add(new Fact("Testing scrollable feature", "1h 25m", activity));
 
+        activityRepository.save(activity);
+        teamRepository.save(team);
         when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
         when(mockTeamService.findTeamsWithUser(testUser)).thenReturn(List.of(team));
@@ -121,6 +134,97 @@ public class ViewActivityControllerTests {
         mockMvc.perform(get("/view-activity?activityID={id}",4))
                 .andExpect(status().isNotFound())
                 .andExpect(view().name("error"));
+    }
+
+
+    //Add Activity Stats tests
+
+    @Test
+    public void testAddingActivityFactWithNoDescription() throws Exception {
+        System.out.println(activity.getId());
+        System.out.println("nirhja");
+        mockMvc.perform(post("/view-activity", 42L)
+                        .param("actId", "1")
+                        .param("factType", String.valueOf(FactType.FACT))
+                        .param("overallScoreTeam", "1")
+                        .param("overallScoreOpponent", "1")
+                        .param("time", "1")
+                        .param("goalValue", "1")
+                        .param("scorer", "-1")
+                        .param("playerOn", "1")
+                        .param("playerOff", "1" )
+                        .param("description", "")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID=1"));
+        verify(mockActivityService, times(0)).updateOrAddActivity(any());
+
+    }
+
+    @Test
+    public void testAddingActivityFactWithDescription() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+
+        System.out.println(activity.getId());
+        System.out.println("nirhja");
+        mockMvc.perform(post("/view-activity", 42L)
+                        .param("actId", "1")
+                        .param("factType", String.valueOf(FactType.FACT))
+                        .param("time", "1")
+                        .param("goalValue", "1")
+                        .param("overallScoreTeam", "1")
+                        .param("overallScoreOpponent", "1")
+                        .param("scorer", "-1")
+                        .param("playerOn", "1")
+                        .param("playerOff", "1" )
+                        .param("description", "player fell over")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID=1"));
+        verify(mockActivityService, times(1)).updateOrAddActivity(any());
+
+    }
+
+    @Test
+    public void testAddingActivityTeamGoalUseDefault() throws Exception {
+        System.out.println(activity.getId());
+        System.out.println("nirhja");
+        mockMvc.perform(post("/view-activity", 42L)
+                        .param("actId", "1")
+                        .param("factType", String.valueOf(FactType.GOAL))
+                        .param("overallScoreTeam", "1")
+                        .param("overallScoreOpponent", "1")
+                        .param("time", "1")
+                        .param("goalValue", "")
+                        .param("scorer", "-1")
+                        .param("playerOn", "1")
+                        .param("playerOff", "1" )
+                        .param("description", "")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID=1"));
+        verify(mockActivityService, times(1)).updateOrAddActivity(any());
+        verify(mockActivityService, times(1)).updateTeamsScore(any(), any());
+
+    }
+
+
+    @Test
+    public void testAddingSubstitutionFactWithSamePlayerOnPlayerOff() throws Exception {
+        System.out.println(activity.getId());
+        System.out.println("nirhja");
+        mockMvc.perform(post("/view-activity", 42L)
+                        .param("actId", "1")
+                        .param("factType", String.valueOf(FactType.SUBSTITUTION))
+                        .param("overallScoreTeam", "1")
+                        .param("overallScoreOpponent", "1")
+                        .param("time", "1")
+                        .param("goalValue", "")
+                        .param("scorer", "-1")
+                        .param("playerOn", "1")
+                        .param("playerOff", "1" )
+                        .param("description", "")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID=1"));
+        verify(mockActivityService, times(0)).updateOrAddActivity(any());
+
     }
 
 }

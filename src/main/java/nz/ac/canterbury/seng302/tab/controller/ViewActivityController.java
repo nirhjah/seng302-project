@@ -168,9 +168,9 @@ public class ViewActivityController {
     public String createEvent(
             @RequestParam(name = "actId", defaultValue = "-1") long actId,
             @RequestParam(name = "factType", defaultValue = "FACT")  FactType factType,
-            @RequestParam(name = "description") String description,
-            @RequestParam(name = "overallScoreTeam") String overallScoreTeam,
-            @RequestParam(name = "overallScoreOpponent") String overallScoreOpponent,
+            @RequestParam(name = "description", defaultValue = "") String description,
+            @RequestParam(name = "overallScoreTeam", defaultValue = "") String overallScoreTeam,
+            @RequestParam(name = "overallScoreOpponent", defaultValue = "") String overallScoreOpponent,
             @RequestParam(name = "time") String time,
             @RequestParam(name = "goalValue", defaultValue = "1") int goalValue,
             @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,

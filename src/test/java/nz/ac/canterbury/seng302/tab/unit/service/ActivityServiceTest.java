@@ -288,4 +288,33 @@ public class ActivityServiceTest {
         Assertions.assertEquals(120, activityService.getTotalTimeAUserHasPlayedForATeam(u, team));
     }
 
+    @Test
+    public void testUpdatingTeamsScore() throws Exception {
+        Team team = new Team("test", "soccer");
+        User u = new User("Test", "Account", "tab.team900@gmail.com", "password",
+                new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
+        Activity activity = new Activity(ActivityType.Game, team, "test activity",
+                LocalDateTime.of(2026, 1,1,6,30),
+                LocalDateTime.of(2026, 1,1,8,30), u,
+                new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
+        activityRepository.save(activity);
+        activityService.updateTeamsScore(activity, 3);
+        Assertions.assertEquals(activity.getActivityTeamScore(), String.valueOf(3));
+    }
+
+    @Test
+    public void testUpdatingOpponentTeamsScore() throws Exception {
+        Team team = new Team("test", "soccer");
+        User u = new User("Test", "Account", "tab.team900@gmail.com", "password",
+                new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
+        Activity activity = new Activity(ActivityType.Game, team, "test activity",
+                LocalDateTime.of(2026, 1,1,6,30),
+                LocalDateTime.of(2026, 1,1,8,30), u,
+                new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
+        activityRepository.save(activity);
+        activityService.updateAwayTeamsScore(activity, 2);
+        Assertions.assertEquals(activity.getOtherTeamScore(), String.valueOf(2));
+
+    }
+
 }
