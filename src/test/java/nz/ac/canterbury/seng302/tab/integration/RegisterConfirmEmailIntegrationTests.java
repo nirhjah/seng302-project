@@ -19,7 +19,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -98,13 +97,12 @@ public class RegisterConfirmEmailIntegrationTests {
         userRepository = applicationContext.getBean(UserRepository.class);
         userService = applicationContext.getBean(UserService.class);
         var passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
-        var authenticationManager = applicationContext.getBean(AuthenticationManager.class);
 
         // create email spy with manual DI
         emailService = emailServiceMock();
 
         // create mockMvc manually with spied services
-        var controller = new RegisterController(emailService, userService, passwordEncoder, authenticationManager);
+        var controller = new RegisterController(emailService, userService, passwordEncoder);
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 

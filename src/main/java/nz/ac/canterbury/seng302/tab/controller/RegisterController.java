@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
 import nz.ac.canterbury.seng302.tab.form.RegisterForm;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
@@ -28,7 +29,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,18 +45,13 @@ public class RegisterController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
     /**
      * This ctor should only be called in testing.
      * We need manual dep injection for mocks to be processed properly with cucumber
      */
-    @Autowired
-    public RegisterController(EmailService emailService, UserService userService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+    public RegisterController(EmailService emailService, UserService userService, PasswordEncoder passwordEncoder) {
         this.emailService = emailService;
         this.userService = userService;
-        this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -195,7 +190,7 @@ public class RegisterController {
 
         User user = opt.get();
         user.confirmEmail();
-        user.grantAuthority("ROLE_USER");
+        user.grantAuthority(AuthorityType.USER);
         user.setToken(null);
 
         userService.updateOrAddUser(user);
