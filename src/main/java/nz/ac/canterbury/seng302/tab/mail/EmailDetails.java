@@ -10,13 +10,9 @@ public class EmailDetails {
     private String recipient;
     private String msgBody;
     private String subject;
-    private String attachment;
-
     private String template;
 
     private Map<String, Object> properties;
-
-    public static final String UPDATE_PASSWORD_BODY = "Your password has been updated.";
 
     public static final String UPDATE_PASSWORD_HEADER = "TAB - Password Updated";
 
@@ -31,12 +27,6 @@ public class EmailDetails {
         this.msgBody = msgBody;
         this.subject = subject;
         this.template = template;
-    }
-
-    public EmailDetails(String recipient, String msgBody, String subject) {
-        this.recipient = recipient;
-        this.msgBody = msgBody;
-        this.subject = subject;
     }
 
     public String getRecipient() {

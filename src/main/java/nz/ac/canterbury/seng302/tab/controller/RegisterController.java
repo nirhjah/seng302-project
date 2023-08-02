@@ -28,7 +28,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Optional;
 
@@ -169,8 +168,8 @@ public class RegisterController {
     /**
      * This is the URL you'll click on after getting your confirmation email
      * @param token Your unique token
-     * @param redirectAttributes
-     * @return
+     * @param redirectAttributes holds the messages to be displayed after the redirect
+     * @return a redirect to the login page
      */
     @GetMapping("/confirm")
     public String confirmEmail(@RequestParam("token") String token, RedirectAttributes redirectAttributes, HttpSession session) {
