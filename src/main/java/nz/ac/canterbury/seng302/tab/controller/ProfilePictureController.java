@@ -3,6 +3,8 @@ package nz.ac.canterbury.seng302.tab.controller;
 import nz.ac.canterbury.seng302.tab.service.ClubImageService;
 import nz.ac.canterbury.seng302.tab.service.TeamImageService;
 import nz.ac.canterbury.seng302.tab.service.UserImageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 
 /**
  * ProfilePictureController.
@@ -35,6 +38,8 @@ public class ProfilePictureController {
     private final UserImageService userImageService;
     private final TeamImageService teamImageService;
     private final ClubImageService clubImageService;
+
+    Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     public ProfilePictureController(UserImageService userImageService, TeamImageService teamImageService, ClubImageService clubImageService) {
@@ -92,6 +97,9 @@ public class ProfilePictureController {
         // It could also make more sense to store the file type inside of the FileDataSaver...?
         // Do some thinking about all this.
         boolean isSvg = false;
+
+//        String base64String = Base64.getEncoder().encodeToString(bytes);
+//        logger.info(base64String);
 
         if (isSvg) {
             return getSVGResponse(bytes);
