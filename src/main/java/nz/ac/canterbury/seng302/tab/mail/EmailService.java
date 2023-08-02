@@ -37,7 +37,7 @@ public class EmailService {
      * Manual dependency injection for tests.
      * Following morgan's solution in origin/feat/morgan-fix.
      * NOTE: This ctor SHOULD NOT be called outside of tests!!!!
-     * @param javaMailSender
+     * @param javaMailSender this sends the emails
      */
     public EmailService(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
@@ -75,7 +75,6 @@ public class EmailService {
     /**
      * Creates and sends email informing the user that their password has been updated.
      * @param user the user whose password was updated
-     * @return the outcome of the email sending
      */
     public void updatePassword(User user) throws MessagingException {
         EmailDetails email = new EmailDetails(user.getEmail(), null,
