@@ -29,8 +29,8 @@ public class Substitution extends Fact{
      **/
     public Substitution() {}
 
-    public Substitution(String description, Activity activity, User playerOff, User playerOn, LocalTime timeEventTest) {
-        super(description, activity,timeEventTest);
+    public Substitution(String description, Activity activity, User playerOff, User playerOn, LocalTime timeOfEvent) {
+        super(description, activity,timeOfEvent);
         this.playerOff = playerOff;
         this.playerOn = playerOn;
     }

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -96,10 +97,12 @@ public class ViewActivityControllerTests {
         activity= new Activity(ActivityType.Game, team, "description",start, end, testUser, activityLocation);
 
         List<Fact> factList = new ArrayList<>();
-        factList.add(new Fact("Someone fell over", "1h 25m", activity));
-        factList.add(new Fact("Someone fell over again", "1h 30m", activity));
-        factList.add(new Fact("Someone fell over yet again", "1h 42m", activity));
-        factList.add(new Fact("Testing scrollable feature", "1h 25m", activity));
+
+        factList.add(new Fact("Someone fell over", activity,LocalTime.of(1, 25)));
+        factList.add(new Fact("Someone fell over again", activity,LocalTime.of(1, 30)));
+        factList.add(new Fact("Someone fell over yet again",activity, LocalTime.of(1, 42)));
+        factList.add(new Fact("Testing scrollable feature",activity, LocalTime.of(1, 25)));
+
 
         when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));

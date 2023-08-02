@@ -1,26 +1,18 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
+import java.time.LocalTime;
 import java.util.List;
 
 public class UserTeamActivityStatistic {
+    private final Activity activity;
 
-    public UserTeamActivityStatistic(long goalsScored, long minutesPlayed, List<String> subOffTimings, List<String> subOnTimings, Activity activity) {
-        this.goalsScored = goalsScored;
-        this.minutesPlayed = minutesPlayed;
-        this.subOffTimings = subOffTimings;
-        this.subOnTimings = subOnTimings;
-        this.activity = activity;
-    }
+    private final long goalsScored;
 
-    private Activity activity;
+    private final long minutesPlayed;
 
-    private long goalsScored;
+    private final List<LocalTime> subOffTimings;
 
-    private long minutesPlayed;
-
-    private List<String> subOffTimings;
-
-    private List<String> subOnTimings;
+    private final List<LocalTime> subOnTimings;
 
     public long getGoalsScored() {
         return goalsScored;
@@ -30,13 +22,22 @@ public class UserTeamActivityStatistic {
         return minutesPlayed;
     }
 
-    public List<String> getSubOffTimings() {
+    public List<LocalTime> getSubOffTimings() {
         return subOffTimings;
     }
 
-    public List<String> getSubOnTimings() {
+    public List<LocalTime> getSubOnTimings() {
         return subOnTimings;
     }
 
     public Activity getActivity() {return activity;}
+
+    public UserTeamActivityStatistic(long goalsScored, long minutesPlayed, List<LocalTime> subOffTimings, List<LocalTime> subOnTimings, Activity activity) {
+        this.goalsScored = goalsScored;
+        this.minutesPlayed = minutesPlayed;
+        this.subOffTimings = subOffTimings;
+        this.subOnTimings = subOnTimings;
+        this.activity = activity;
+    }
+
 }

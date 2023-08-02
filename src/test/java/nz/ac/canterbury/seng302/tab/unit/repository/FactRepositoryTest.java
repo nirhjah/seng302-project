@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,9 +46,9 @@ public class FactRepositoryTest {
         activityRepository.save(activity);
 
         List<Fact> factList = new ArrayList<>();
-        factList.add(new Fact("Someone fell over", "1h 30m", activity));
-        factList.add(new Goal("Goal was scored", "1h 40m", activity, creator));
-        factList.add(new Substitution("Player was taken off", "1h 40m", activity, creator, player));
+        factList.add(new Fact("Someone fell over",  activity, LocalTime.of(1, 30)));
+        factList.add(new Goal("Goal was scored", activity, creator,LocalTime.of(1, 40)));
+        factList.add(new Substitution("Player was taken off", activity, creator, player,LocalTime.of(1, 40)));
         activity.addFactList(factList);
         activityRepository.save(activity);
 
@@ -70,11 +71,11 @@ public class FactRepositoryTest {
         activityRepository.save(activity);
 
         List<Fact> factList = new ArrayList<>();
-        factList.add(new Fact("Someone fell over", "1h 30m", activity));
-        Goal goal = new Goal("Goal was scored", "1h 40m", activity, creator);
+        factList.add(new Fact("Someone fell over", activity,LocalTime.of(1, 30)));
+        Goal goal = new Goal("Goal was scored",activity, creator,LocalTime.of(1, 40));
         factRepository.save(goal);
         factList.add(goal);
-        factList.add(new Substitution("Player was taken off", "1h 40m", activity, creator, player));
+        factList.add(new Substitution("Player was taken off",activity, creator, player,LocalTime.of(1, 40)));
         activity.addFactList(factList);
         activityRepository.save(activity);
 
@@ -97,9 +98,9 @@ public class FactRepositoryTest {
         activityRepository.save(activity);
 
         List<Fact> factList = new ArrayList<>();
-        factList.add(new Fact("Someone fell over", "1h 30m", activity));
-        factList.add(new Goal("Goal was scored", "1h 40m", activity, creator));
-        Substitution sub = new Substitution("Player was taken off", "1h 40m", activity, creator, player);
+        factList.add(new Fact("Someone fell over",  activity,LocalTime.of(1, 30)));
+        factList.add(new Goal("Goal was scored",  activity, creator,LocalTime.of(1, 40)));
+        Substitution sub = new Substitution("Player was taken off",  activity, creator, player,LocalTime.of(1, 40));
         factRepository.save(sub);
         factList.add(sub);
         activity.addFactList(factList);
@@ -124,11 +125,11 @@ public class FactRepositoryTest {
         activityRepository.save(activity);
 
         List<Fact> factList = new ArrayList<>();
-        Fact fact = new Fact("Someone fell over", "1h 30m", activity);
+        Fact fact = new Fact("Someone fell over",  activity,LocalTime.of(1, 30));
         factRepository.save(fact);
         factList.add(fact);
-        factList.add(new Goal("Goal was scored", "1h 40m", activity, creator));
-        factList.add(new Substitution("Player was taken off", "1h 40m", activity, creator, player));
+        factList.add(new Goal("Goal was scored", activity, creator,LocalTime.of(1, 40)));
+        factList.add(new Substitution("Player was taken off",activity, creator, player,LocalTime.of(1, 40)));
         activity.addFactList(factList);
         activityRepository.save(activity);
 
@@ -153,13 +154,13 @@ public class FactRepositoryTest {
                 "Christchurch", null, "New Zealand"));
         activityRepository.save(activity);
         List<Fact> factListAct = new ArrayList<>();
-        factListAct.add(new Goal("Goal was scored", "1h 40m", activity, creator));
-        factListAct.add(new Goal("Goal was scored again", "1h 50m", activity, creator));
+        factListAct.add(new Goal("Goal was scored",  activity, creator,LocalTime.of(1, 40)));
+        factListAct.add(new Goal("Goal was scored again", activity, creator,LocalTime.of(1, 50)));
         activity.addFactList(factListAct);
         activityRepository.save(activity);
 
         List<Fact> factListAct1 = new ArrayList<>();
-        factListAct1.add(new Goal("Goal was scored", "1h 40m", activity1, creator));
+        factListAct1.add(new Goal("Goal was scored", activity1, creator,LocalTime.of(1, 40)));
         activity1.addFactList(factListAct1);
         activityRepository.save(activity1);
 
@@ -179,8 +180,8 @@ public class FactRepositoryTest {
                 "Christchurch", null, "New Zealand"));
         activityRepository.save(activity);
         List<Fact> factListAct = new ArrayList<>();
-        factListAct.add(new Goal("Goal was scored", "1h 40m", activity, creator));
-        factListAct.add(new Goal("Goal was scored again", "1h 50m", activity, creator));
+        factListAct.add(new Goal("Goal was scored", activity, creator,LocalTime.of(1, 40)));
+        factListAct.add(new Goal("Goal was scored again", activity, creator,LocalTime.of(1, 50)));
         activity.addFactList(factListAct);
         activityRepository.save(activity);
         Assertions.assertEquals(2, factRepository.getTotalGoalsScoredPerTeam(creator, team));
@@ -205,13 +206,13 @@ public class FactRepositoryTest {
                 "Christchurch", null, "New Zealand"));
         activityRepository.save(activity);
         List<Fact> factListAct = new ArrayList<>();
-        factListAct.add(new Goal("Goal was scored", "1h 40m", activity, creator));
-        factListAct.add(new Goal("Goal was scored again", "1h 50m", activity, creator));
+        factListAct.add(new Goal("Goal was scored", activity, creator,LocalTime.of(1, 40)));
+        factListAct.add(new Goal("Goal was scored again",activity, creator,LocalTime.of(1, 50)));
         activity.addFactList(factListAct);
         activityRepository.save(activity);
 
         List<Fact> factListAct1 = new ArrayList<>();
-        factListAct1.add(new Goal("Goal was scored", "1h 40m", activity1, creator));
+        factListAct1.add(new Goal("Goal was scored",  activity1, creator,LocalTime.of(1, 40)));
         activity1.addFactList(factListAct1);
         activityRepository.save(activity1);
 
@@ -238,14 +239,14 @@ public class FactRepositoryTest {
                 "Christchurch", null, "New Zealand"));
         activityRepository.save(activity);
         List<Fact> factListAct = new ArrayList<>();
-        factListAct.add(new Goal("Goal was scored", "1h 40m", activity, creator));
-        factListAct.add(new Goal("Goal was scored again", "1h 50m", activity, creator));
+        factListAct.add(new Goal("Goal was scored",activity, creator,LocalTime.of(1, 40)));
+        factListAct.add(new Goal("Goal was scored again",activity, creator,LocalTime.of(1, 50)));
         activity.addFactList(factListAct);
         activityRepository.save(activity);
 
         List<Fact> factListAct1 = new ArrayList<>();
-        factListAct1.add(new Goal("Goal was scored", "1h 40m", activity1, creator));
-        factListAct1.add(new Goal("Goal was scored", "1h 40m", activity1, player));
+        factListAct1.add(new Goal("Goal was scored",activity1, creator,LocalTime.of(1, 40)));
+        factListAct1.add(new Goal("Goal was scored", activity1, player,LocalTime.of(1, 40)));
         activity1.addFactList(factListAct1);
         activityRepository.save(activity1);
 
@@ -269,11 +270,11 @@ public class FactRepositoryTest {
         activityRepository.save(activity);
 
         List<Fact> factList = new ArrayList<>();
-        factList.add(new Fact("Someone fell over", "1h 30m", activity));
-        Goal goal = new Goal("Goal was scored", "1h 40m", activity, player);
+        factList.add(new Fact("Someone fell over", activity,LocalTime.of(1, 30)));
+        Goal goal = new Goal("Goal was scored",  activity, player,LocalTime.of(1, 40));
         factRepository.save(goal);
         factList.add(goal);
-        factList.add(new Substitution("Player was taken off", "1h 40m", activity, creator, player));
+        factList.add(new Substitution("Player was taken off",activity, creator, player,LocalTime.of(1, 40)));
         activity.addFactList(factList);
         activityRepository.save(activity);
 

@@ -44,14 +44,14 @@ public class Fact {
      * Empty Constructor for JPA
      **/
     public Fact() {}
-    public Fact(String description, Activity activity, LocalTime timeEventTest) {
+    public Fact(String description, Activity activity, LocalTime timeOfEvent) {
         this.activity = activity;
         this.description = description;
-        this.timeOfEvent= timeEventTest;
+        this.timeOfEvent= timeOfEvent;
     }
 
     public String getDescription() {
         return description;
     }
-    public LocalTime getTimeEventTest(){ return this.timeOfEvent;}
+    public LocalTime getTimeOfEvent(){ return this.timeOfEvent;}
 }

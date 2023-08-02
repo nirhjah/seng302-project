@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -117,8 +118,8 @@ public class ActivityRepositoryTest {
                 LocalDateTime.of(2023, 1,1,8,30), user,
                 new Location(null, null, null, "Christchurch", null, "New Zealand"));
         List<Fact> factList = new ArrayList<>();
-        factList.add(new Substitution("Player was taken off", "1h", activity1, user, player));
-        factList.add(new Fact("We got 4 PCs", "2h", activity1));
+        factList.add(new Substitution("Player was taken off", activity1, user, player, LocalTime.of(1,0)));
+        factList.add(new Fact("We got 4 PCs", activity1,LocalTime.of(2, 00)));
         activity1.addFactList(factList);
         activityRepository.save(activity1);
 
