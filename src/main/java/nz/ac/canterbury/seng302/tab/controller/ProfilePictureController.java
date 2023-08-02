@@ -87,8 +87,6 @@ public class ProfilePictureController {
             Currently only pngs, jpgs, and jpegs are supported.
          */
         byte[] bytes = userImageService.readFileOrDefault(id);
-
-        // TODO: Change this so it actually works.
         // We prolly want to store the image type inside of the entities themselves?
         // Maybe make a new column for it, mapping to enum.
         // It could also make more sense to store the file type inside of the FileDataSaver...?
