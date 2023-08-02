@@ -1,17 +1,17 @@
 package nz.ac.canterbury.seng302.tab.authentication;
 
-import nz.ac.canterbury.seng302.tab.entity.*;
-import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
-import nz.ac.canterbury.seng302.tab.repository.FormationRepository;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
-import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 
 @Component
 public class AdminAccount implements CommandLineRunner {
@@ -22,8 +22,8 @@ public class AdminAccount implements CommandLineRunner {
     private String adminPassword;
 
     public AdminAccount(UserRepository userRepository, PasswordEncoder passwordEncoder,
-            @Value("${adminEmail : 'admin@gmail.com'}") String adminEmail,
-            @Value("${adminPassword : '1'}") String adminPassword) {
+            @Value("${adminEmail:admin@gmail.com}") String adminEmail,
+            @Value("${adminPassword:1}") String adminPassword) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.adminEmail = adminEmail;
