@@ -45,6 +45,22 @@ public class EmailService {
     }
 
     /**
+     * Returns the string of the current base URL
+     * @param request
+     * @return
+     */
+    private String getBaseUrl(HttpServletRequest request) {
+        // We should probably have a global BASE_URL variables
+        if (request.getRequestURL().toString().contains("test")) {
+            return "https://csse-s302g9.canterbury.ac.nz/test";
+        } else if (request.getRequestURL().toString().contains("prod")) {
+            return "https://csse-s302g9.canterbury.ac.nz/prod";
+        } else {
+            return request.getRequestURL().toString().replace(request.getServletPath(), "");
+        }
+    }
+
+    /**
      *
      * @param emailDetails an entity of the details going into an email to be sent
      * Code adapted from stack overflow: <a href="https://stackoverflow.com/a/39359784">...</a>
@@ -94,17 +110,7 @@ public class EmailService {
      */
     public void resetPasswordEmail(User user, HttpServletRequest request) {
 
-        String tokenVerificationLink;
-
-        // We should probably have a global BASE_URL variables
-        if (request.getRequestURL().toString().contains("test")) {
-            tokenVerificationLink = "https://csse-s302g9.canterbury.ac.nz/test";
-        } else if (request.getRequestURL().toString().contains("prod")) {
-            tokenVerificationLink = "https://csse-s302g9.canterbury.ac.nz/prod";
-        } else {
-            tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "");
-        }
-        tokenVerificationLink += "/reset-password?token=" + user.getToken();
+        String tokenVerificationLink = getBaseUrl(request) + "/reset-password?token=" + user.getToken();
         EmailDetails email = new EmailDetails(user.getEmail(), null,
             EmailDetails.RESET_PASSWORD_HEADER, "mail/resetPasswordEmail.html");
         
@@ -126,17 +132,7 @@ public class EmailService {
      * @param request the HTTPRequest, so the correct link will be sent
      */
     public void confirmationEmail(User user, HttpServletRequest request){
-        String tokenVerificationLink;
-
-        // We should probably have a global BASE_URL variables
-        if (request.getRequestURL().toString().contains("test")) {
-            tokenVerificationLink = "https://csse-s302g9.canterbury.ac.nz/test";
-        } else if (request.getRequestURL().toString().contains("prod")) {
-            tokenVerificationLink = "https://csse-s302g9.canterbury.ac.nz/prod";
-        } else {
-            tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "");
-        }
-        tokenVerificationLink += "/confirm?token=" + user.getToken();
+        String tokenVerificationLink = getBaseUrl(request) + "/confirm?token=" + user.getToken();
         EmailDetails email = new EmailDetails(user.getEmail(), null,
                 EmailDetails.CONFIRMATION_EMAIL_HEADER, "mail/confirmAccount.html");
 
@@ -158,17 +154,7 @@ public class EmailService {
      * @param request the HTTPRequest, so the correct link will be sent
      */
     public void federationManagerInvite(User user, HttpServletRequest request){
-        String tokenVerificationLink;
-
-        // We should probably have a global BASE_URL variables
-        if (request.getRequestURL().toString().contains("test")) {
-            tokenVerificationLink = "https://csse-s302g9.canterbury.ac.nz/test";
-        } else if (request.getRequestURL().toString().contains("prod")) {
-            tokenVerificationLink = "https://csse-s302g9.canterbury.ac.nz/prod";
-        } else {
-            tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "");
-        }
-        tokenVerificationLink += "/federationManager?token=" + user.getToken();
+        String tokenVerificationLink = getBaseUrl(request) + "/federationManager?token=" + user.getToken();
         EmailDetails email = new EmailDetails(user.getEmail(), null,
                 EmailDetails.FEDERATION_MANAGER_INVITE, "mail/federationManagerInvite.html");
 
