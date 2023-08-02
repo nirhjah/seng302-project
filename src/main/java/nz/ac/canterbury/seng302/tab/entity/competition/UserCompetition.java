@@ -21,7 +21,7 @@ public class UserCompetition extends Competition {
     private Set<User> players = new HashSet<>();
 
     public UserCompetition(String name, Set<User> federationAdmins, String grade, String sport) {
-    super(name, federationAdmins, grade, sport);
+    super(name, grade, sport);
     }
     
     public UserCompetition() {}
@@ -32,7 +32,7 @@ public class UserCompetition extends Competition {
     
 
     public UserCompetition(String name, Set<User> federationAdmins, String grade, String sport, Set<User> players) {
-    super(name, federationAdmins, grade, sport);
+    super(name, grade, sport);
     this.players = players;
     }
 }

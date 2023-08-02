@@ -22,15 +22,6 @@ public abstract class Competition {
     @Column(nullable = false)
     private String name;
 
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "federation_administrators",
-            joinColumns = @JoinColumn(name = "competition_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private Set<User> federationAdmins = new HashSet<User>();
-
     // TODO: we are asking the PO for permission to change this to a set of predefined grades
     @Column(nullable = false)
     private String grade;
@@ -38,17 +29,11 @@ public abstract class Competition {
     @Column(nullable = false)
     private String sport;
 
-    public Competition(String name, Set<User> federationAdmins, String grade, String sport) {
-        this.name = name;
-        this.federationAdmins = federationAdmins;
-        this.grade = grade;
-        this.sport = sport;
-    }
 
     public Competition() {}
     
     /**
-     * constructor without setting federation admin
+     * constructor without setting
      * @param name
      * @param grade
      * @param sport
@@ -77,10 +62,6 @@ public abstract class Competition {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Set<User> getFederationAdmins() {
-        return this.federationAdmins;
     }
 
     public String getGrade() {
