@@ -32,11 +32,13 @@ public class CreateClubController {
 
     Logger logger = LoggerFactory.getLogger(CreateClubController.class);
 
-    private ClubService clubService;
+    private final ClubService clubService;
 
     private final UserService userService;
 
     private final TeamService teamService;
+
+    private final String createAndEditClubFormString="CreateAndEditClubForm";
 
     @Autowired
     public CreateClubController(ClubService clubService,UserService userService, TeamService teamService) {
@@ -80,11 +82,11 @@ public class CreateClubController {
                                                  ){
         String addressLine1= createAndEditClubForm.getAddressLine1().trim();
         if (addressLine1.isEmpty()) {
-            bindingResult.addError(new FieldError("CreateAndEditClubForm", "addressLine1", "Field cannot be empty"));
+            bindingResult.addError(new FieldError(createAndEditClubFormString, "addressLine1", "Field cannot be empty"));
         }
         String postcode = createAndEditClubForm.getPostcode().trim();
         if (postcode.isEmpty()) {
-            bindingResult.addError(new FieldError("CreateAndEditClubForm", "postcode", "Field cannot be empty"));
+            bindingResult.addError(new FieldError(createAndEditClubFormString, "postcode", "Field cannot be empty"));
         }
 
     }
@@ -195,7 +197,7 @@ public class CreateClubController {
             if (selectedTeams != null) {
                 for (String team : selectedTeams) {
                     if ( teamService.getTeam(Long.parseLong(team)).getTeamClub() != null ) {
-                        bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Team already belongs to another club"));
+                        bindingResult.addError(new FieldError(createAndEditClubFormString, "selectedTeams", "Team already belongs to another club"));
                     }
                     else {
                         teamService.getTeam(Long.parseLong(team)).setTeamClub(club);
@@ -203,7 +205,7 @@ public class CreateClubController {
                 }}
         }
         catch (UnmatchedSportException e) {
-            bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Teams must have the same sport"));
+            bindingResult.addError(new FieldError(createAndEditClubFormString, "selectedTeams", "Teams must have the same sport"));
         }
     }
 

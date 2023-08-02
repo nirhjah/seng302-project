@@ -50,7 +50,7 @@ public class TeamServiceTest {
     Location location3 = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
 
     @Test
-    public void testGettingTeamList() throws IOException {
+    void testGettingTeamList() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
         Team team = new Team("test", "Hockey", location);
@@ -66,7 +66,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void testAddingTeam() throws IOException {
+    void testAddingTeam() throws IOException {
         Team team = new Team("test", "Hockey", location);
         teamService.addTeam(team);
         assertEquals(team.getName(), teamRepository.findById(team.getTeamId()).get().getName());
@@ -76,7 +76,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void testUpdatingPicture() throws IOException {
+    void testUpdatingPicture() throws IOException {
         Team team = new Team("test", "Hockey", location);
         teamRepository.save(team);
 
@@ -92,7 +92,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void givenAllFieldsValid_WhenTeamEditedOrCreated_ValidationReturnsTrue()  {
+    void givenAllFieldsValid_WhenTeamEditedOrCreated_ValidationReturnsTrue()  {
 
         // call the service validation
         String validSport = "Rugby";
@@ -116,7 +116,7 @@ public class TeamServiceTest {
      * 
      **/
     @Test
-    public void givenInvalidSportCharacter_WhenTeamEdited_ValidationReturnsFalse() {
+    void givenInvalidSportCharacter_WhenTeamEdited_ValidationReturnsFalse() {
 
         // call the service validation
         String invalidSport = "%";
@@ -138,7 +138,7 @@ public class TeamServiceTest {
      * 
      **/
     @Test
-    public void givenInvalidNameCharacter_WhenTeamEdited_ValidationReturnsFalse() {
+    void givenInvalidNameCharacter_WhenTeamEdited_ValidationReturnsFalse() {
 
         // call the service validation
         String invalidSport = "Rugby";
@@ -160,7 +160,7 @@ public class TeamServiceTest {
      * 
      **/
     @Test
-    public void givenInvalidCountryCharacter_WhenTeamEdited_ValidationReturnsFalse() {
+    void givenInvalidCountryCharacter_WhenTeamEdited_ValidationReturnsFalse() {
 
         // call the service validation
         String invalidSport = "Rugby";
@@ -182,7 +182,7 @@ public class TeamServiceTest {
      * 
      **/
     @Test
-    public void givenInvalidCityCharacter_WhenTeamEdited_ValidationReturnsFalse() {
+    void givenInvalidCityCharacter_WhenTeamEdited_ValidationReturnsFalse() {
 
         // call the service validation
         String invalidSport = "Rugby";
@@ -204,7 +204,7 @@ public class TeamServiceTest {
      * 
      **/
     @Test
-    public void givenInvalidSuburbCharacter_WhenTeamEdited_ValidationReturnsFalse() throws IOException {
+    void givenInvalidSuburbCharacter_WhenTeamEdited_ValidationReturnsFalse() throws IOException {
 
         // call the service validation
         String invalidSport = "Rugby";
@@ -222,8 +222,8 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void givenSportWithTrailingWhitespace_WhenTeamSubmitted_TrailingWhitespaceRemovedAndValidationReturnsTrue()
-            throws IOException {
+    void givenSportWithTrailingWhitespace_WhenTeamSubmitted_TrailingWhitespaceRemovedAndValidationReturnsTrue()
+            {
         String validSportWithTrailingWhitespace = "Football   ";
         String validTeamName = "All Whites";
         String validCountry = "New Zealand";
@@ -243,7 +243,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void givenAllInputsValid_whenTrimmingWhitespace_noInputschanged()  {
+    void givenAllInputsValid_whenTrimmingWhitespace_noInputschanged()  {
 
         List<String> validInputs = new ArrayList<>();
         validInputs.add("Football");
@@ -260,7 +260,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void givenIHaveCreatedATeam_WhenGeneratingANewToken_TheTokenIsunique()
+    void givenIHaveCreatedATeam_WhenGeneratingANewToken_TheTokenIsunique()
             throws IOException {
         int numTeams = 100;
         Team[] teams = new Team[numTeams];
@@ -280,37 +280,37 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void givenATeamHasValidNumberOfManagers_returnTrue() {
+    void givenATeamHasValidNumberOfManagers_returnTrue() {
         List<String> userRoles = List.of(Role.MANAGER.toString(), Role.COACH.toString(), Role.MEMBER.toString());
         assertTrue(teamService.userRolesAreValid(userRoles));
     }
     @Test
-    public void givenATeamHasNoManagers_returnFalse() {
+    void givenATeamHasNoManagers_returnFalse() {
         List<String> userRoles = List.of(Role.COACH.toString(), Role.COACH.toString(), Role.MEMBER.toString());
         assertFalse(teamService.userRolesAreValid(userRoles));
     }
 
     @Test
-    public void givenATeamHasTooManyManagers_returnFalse() {
+    void givenATeamHasTooManyManagers_returnFalse() {
         List<String> userRoles = List.of(Role.MANAGER.toString(), Role.MANAGER.toString(), Role.MANAGER.toString(),
                 Role.MANAGER.toString());
         assertFalse(teamService.userRolesAreValid(userRoles));
     }
 
     @Test
-    public void getTeamWithTeam_ReturnsTeam() throws IOException {
+    void getTeamWithTeam_ReturnsTeam() throws IOException {
         Team team = new Team("Test", "Hockey");
         teamRepository.save(team);
         Assertions.assertEquals(team, teamService.getTeam(team.getTeamId()));
     }
 
     @Test
-    public void getTeamWithNoTeam_ReturnsNull() throws IOException {
+    void getTeamWithNoTeam_ReturnsNull() throws IOException {
         Assertions.assertNull(teamService.getTeam(-1));
     }
 
     @Test
-    public void givenICreateATeam_whenIChangeAndSaveItsName_thenTheSavedEntityIsUpdated() throws IOException {
+    void givenICreateATeam_whenIChangeAndSaveItsName_thenTheSavedEntityIsUpdated() throws IOException {
         Team team = new Team("Test", "Hockey");
         teamRepository.save(team);
         team.setName("New Name");
@@ -320,19 +320,19 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void ifNoTeam_getPaginatedTeam_returnsEmpty() {
+    void ifNoTeam_getPaginatedTeam_returnsEmpty() {
         Assertions.assertEquals(List.of(), teamService.findPaginated(1, 10).toList());
     }
 
     @Test
-    public void ifTeam_getPaginatedTeam_returnsTeam() throws IOException {
+    void ifTeam_getPaginatedTeam_returnsTeam() throws IOException {
         Team team = new Team("Test", "Hockey");
         teamRepository.save(team);
         Assertions.assertEquals(List.of(team), teamService.findPaginated(1, 10).toList());
     }
 
     @Test
-    public void testFindTeamsByClub() throws IOException {
+    void testFindTeamsByClub() throws IOException {
         List<Team> teamsInClub = new ArrayList<>();
         var NUM_TEAMS_IN_CLUB = 5;
         var location = new Location("address1", "address2", "suburb", "chch", "8052", "new zealand");
@@ -360,7 +360,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void testExceptionThrownWhenAssigningInvalidClub() throws IOException {
+    void testExceptionThrownWhenAssigningInvalidClub() throws IOException {
         Assertions.assertThrows(UnmatchedSportException.class, () -> {
             var location = new Location("address1", "address2", "suburb", "chch", "8052", "new zealand");
             var CLUB_SPORT = "Soccer";
@@ -375,7 +375,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void testClubAssignedOk() throws IOException {
+    void testClubAssignedOk() throws IOException {
         var SPORT = "Soccer";
         var location = new Location("address1", "address2", "suburb", "chch", "8052", "new zealand");
         Club club = new Club("Real Madrid", location, SPORT,null);
@@ -387,7 +387,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void testGetClubId() throws IOException {
+    void testGetClubId() throws IOException {
         Location location = new Location("address1", "address2", "suburb", "chch", "8052", "new zealand");
         Club club = new Club("Real Madrid", location, "Soccer",null);
         clubService.updateOrAddClub(club);
