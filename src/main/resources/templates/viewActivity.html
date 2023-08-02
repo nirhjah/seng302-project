@@ -144,7 +144,8 @@
                 <ul>
                     <li th:each="fact : ${activityFacts}">
                         <span class="description" th:text="${fact.description}"></span>
-                        <span class="time" th:text="${fact.timeOfEvent}"></span>
+                        <span class="time" th:text="${#strings.toLowerCase(#temporals.format(fact.timeEventTest, 'hh:mm a'))}"></span>
+
                     </li>
                 </ul>
             </div>
@@ -164,7 +165,7 @@
                 <ul>
                     <li th:each="fact : ${activitySubstitutions}">
                         <span class="sub-pic">
-                            <img th:src="*{'data:image/jpeg;base64,'+{displayPicture}}"/>
+                            <img th:src="*{'data:image/jpeg;base64,'+${displayPicture}}"/>
                         </span>
                         <span class="description"
                               th:text="${fact.playerOn.firstName} + '         ' + ${fact.playerOn.lastName}"></span>

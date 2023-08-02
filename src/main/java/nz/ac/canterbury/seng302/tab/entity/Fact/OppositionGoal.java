@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
+import java.time.LocalTime;
+
 /**
  * This is a subclass on the Fact entity
  * The Fact entity stores all of its subclasses in 1 table, with a fact type column to differienate between different
@@ -23,8 +25,7 @@ public class OppositionGoal extends Fact{
      * Empty Constructor for JPA
      **/
     public OppositionGoal() {}
-
-    public OppositionGoal(String description, String timeOfEvent, Activity activity) {
-        super(description, timeOfEvent, activity);
+    public OppositionGoal(String description, LocalTime timeOfEvent, Activity activity) {
+        super(description, activity,timeOfEvent);
     }
 }

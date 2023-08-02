@@ -38,32 +38,20 @@ public class Fact {
 
     private String description;
 
-    private String timeOfEvent;
-
-    private LocalTime timeEventTest;
+    private LocalTime timeOfEvent;
 
     /**
      * Empty Constructor for JPA
      **/
     public Fact() {}
-
-    public Fact(String description, String timeOfEvent, Activity activity) {
-        this.activity = activity;
-        this.description = description;
-        this.timeOfEvent = timeOfEvent;
-    }
-
     public Fact(String description, Activity activity, LocalTime timeEventTest) {
         this.activity = activity;
         this.description = description;
-        this.timeEventTest= timeEventTest;
+        this.timeOfEvent= timeEventTest;
     }
 
     public String getDescription() {
         return description;
     }
-
-    public String getTimeOfEvent() {
-        return timeOfEvent;
-    }
+    public LocalTime getTimeEventTest(){ return this.timeOfEvent;}
 }

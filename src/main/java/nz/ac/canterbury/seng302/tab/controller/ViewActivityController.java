@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -171,7 +172,7 @@ public class ViewActivityController {
             @RequestParam(name = "description") String description,
             @RequestParam(name = "overallScoreTeam") String overallScoreTeam,
             @RequestParam(name = "overallScoreOpponent") String overallScoreOpponent,
-            @RequestParam(name = "time") String time,
+            @RequestParam(name = "time") LocalTime time,
             @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
             @RequestParam(name = "playerOff", defaultValue = "-1") int subOffId,
             @RequestParam(name = "playerOn", defaultValue = "-1") int subOnId,
@@ -181,15 +182,6 @@ public class ViewActivityController {
             Model model,
             HttpServletResponse httpServletResponse,
             RedirectAttributes redirectAttributes) {
-
-        // create the new fact of facttype 
-        logger.info("POST /view-activity");
-        logger.info("got the desc " + description);
-        logger.info(factType.name());
-        logger.info(String.format("got the act id: %s", actId));
-        logger.info(String.format("got the player on id: %s", subOnId));
-        logger.info(String.format("got the player on id: %s", subOffId));
-        logger.info(String.format("got the scorer id: %s", scorerId));
 
         model.addAttribute("overallScoreTeam", overallScoreTeam);
         model.addAttribute("httpServletRequest", request);
@@ -223,7 +215,8 @@ public class ViewActivityController {
 
         switch (factType) {
             case FACT:
-                fact = new Fact(description, time, activity);
+                logger.info("is fact");
+                fact = new Fact(description, activity,time);
                 break;
 
             case GOAL:
@@ -233,7 +226,7 @@ public class ViewActivityController {
                     return viewActivityRedirectUrl;
                 }
                 User scorer = potentialScorer.get();
-                fact = new Goal(description, time, activity, scorer);
+                fact = new Goal(description, activity, scorer,time);
 
                 // update the score
                 // activity.setOtherTeamScore("13");
@@ -255,7 +248,7 @@ public class ViewActivityController {
                 }
                 User playerOn = potentialSubOn.get();
 
-                fact = new Substitution(description, time, activity, playerOff, playerOn);
+                fact = new Substitution(description, activity, playerOff, playerOn,time);
                 break;
 
             case OPPOSITION_GOAL:
