@@ -54,7 +54,7 @@ public class CreateClubController {
      */
     @GetMapping("/createClub")
     public String clubForm(@RequestParam(name = "edit", required = false) Long clubId,
-                           Model model,
+                           Model model,CreateAndEditClubForm createAndEditClubForm,
                            HttpServletRequest request) {
 
         logger.info("GET /createClub");
