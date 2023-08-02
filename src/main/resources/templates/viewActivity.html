@@ -233,22 +233,20 @@
         oppositionGoalValueLabelHelpText.classList.add("helpText");
         oppositionGoalValueLabelHelpText.innerHTML = "Default is 1 if not entered"
 
+        var goalValueInput = document.createElement("input");
+        var goalValueLabel = document.createElement("label");
+        goalValueLabel.innerHTML = "Goal value:";
+        goalValueLabel.style.display = "block";
+        goalValueLabel.appendChild(requiredSpan);
+        goalValueInput.name = "goalValue"
+        goalValueInput.classList.add("overall-score-input")
+        goalValueInput.type = "number"
+        goalValueInput.defaultValue = "1"
+        goalValueInput.min = "1"
 
         // Check if the selected option has additional fields
         if (selectedOption === "GOAL") {
             // Create a new select element for the scorer
-            var goalValueInput = document.createElement("input");
-            var goalValueLabel = document.createElement("label");
-            goalValueLabel.innerHTML = "Goal value:";
-            goalValueLabel.style.display = "block";
-            goalValueLabel.appendChild(requiredSpan);
-
-            goalValueInput.name = "goalValue"
-            goalValueInput.classList.add("overall-score-input")
-            goalValueInput.type = "number"
-            goalValueInput.defaultValue = "1"
-            goalValueInput.min = "1"
-
             var selectScorer = document.createElement("select");
             selectScorer.name = "scorer";
 
@@ -285,7 +283,7 @@
             playerOffLabel.appendChild(requiredSpan);
 
             
-            /*[# th:each="player : ${activity.getInvolvedMembers()}"]*/
+            /*[# th:each="player : ${activity.getInvoledMembersNoManager()}"]*/
             // Create an option element for each team member
             var option = document.createElement("option");
             option.value = /*[[${player.getUserId()}]]*/ '';
@@ -306,7 +304,7 @@
             playerOnLabel.style.display = "block";
             playerOnLabel.appendChild(requiredSpan);
 
-            /*[# th:each="player : ${activity.getInvolvedMembers()}"]*/
+            /*[# th:each="player : ${activity.getInvoledMembersNoManager()}"]*/
             // Create an option element for each team member
             var option = document.createElement("option");
             option.value = /*[[${player.getUserId()}]]*/ '';
@@ -320,17 +318,13 @@
         }
 
         if (selectedOption === "OPPOSITION_GOAL") {
-            var oppositionGoalValueInput = document.createElement("input");
             var oppositionGoalValueLabel = document.createElement("label");
             oppositionGoalValueLabel.innerHTML = "Goal value:";
             oppositionGoalValueLabel.style.display = "block";
             oppositionGoalValueLabel.appendChild(requiredSpan);
 
-            oppositionGoalValueInput.name = "goalValue"
-            oppositionGoalValueInput.classList.add("overall-score-input")
-
             additionalFieldsDiv.appendChild(oppositionGoalValueLabel);
-            additionalFieldsDiv.appendChild(oppositionGoalValueInput);
+            additionalFieldsDiv.appendChild(goalValueInput);
             additionalFieldsDiv.appendChild(oppositionGoalValueLabelHelpText);
 
         }

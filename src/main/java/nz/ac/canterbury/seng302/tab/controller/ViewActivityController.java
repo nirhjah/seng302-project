@@ -172,7 +172,7 @@ public class ViewActivityController {
             @RequestParam(name = "overallScoreTeam") String overallScoreTeam,
             @RequestParam(name = "overallScoreOpponent") String overallScoreOpponent,
             @RequestParam(name = "time") String time,
-            @RequestParam(name = "goalValue") int goalValue,
+            @RequestParam(name = "goalValue", defaultValue = "1") int goalValue,
             @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
             @RequestParam(name = "playerOff", defaultValue = "-1") int subOffId,
             @RequestParam(name = "playerOn", defaultValue = "-1") int subOnId,
@@ -279,7 +279,6 @@ public class ViewActivityController {
         List<Fact> factList = new ArrayList<>();
         factList.add(fact);
         activity.addFactList(factList);
-
         activity = activityService.updateOrAddActivity(activity);
 
         return viewActivityRedirectUrl;
