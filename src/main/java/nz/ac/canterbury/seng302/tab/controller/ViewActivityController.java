@@ -172,7 +172,7 @@ public class ViewActivityController {
             @RequestParam(name = "overallScoreTeam") String overallScoreTeam,
             @RequestParam(name = "overallScoreOpponent") String overallScoreOpponent,
             @RequestParam(name = "time") String time,
-            @RequestParam(name = "goalValue", defaultValue = "1") int goalValue,
+            @RequestParam(name = "goalValue") int goalValue,
             @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
             @RequestParam(name = "playerOff", defaultValue = "-1") int subOffId,
             @RequestParam(name = "playerOn", defaultValue = "-1") int subOnId,
@@ -207,6 +207,11 @@ public class ViewActivityController {
 
         }
 
+        if (factType == FactType.SUBSTITUTION && subOffId == subOnId) {
+            logger.info("players cannot sub themselves");
+            bindingResult.addError(new FieldError("createEventForm", "subOn", "Players cannot sub themselves"));
+        }
+
         if (factType == FactType.FACT) {
             if (description.isEmpty()) {
                 logger.info("description was not provided for fact");
@@ -218,7 +223,6 @@ public class ViewActivityController {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             redirectAttributes.addFlashAttribute("scoreInvalid", "Leave Modal Open");
             redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
-
             return viewActivityRedirectUrl;
         }
 
@@ -233,6 +237,7 @@ public class ViewActivityController {
                     logger.error("Scorer Id not found");
                     return viewActivityRedirectUrl;
                 }
+
                 User scorer = potentialScorer.get();
                 fact = new Goal(description, time, activity, scorer, goalValue);
 

@@ -130,6 +130,8 @@
                         <input type="text-area" name="time" value="time">
                         <label for="time"></label>
                         <div id="additionalFields"></div>
+                        <div th:each="err : ${#fields.errors('subOn')}" th:text="${err}" class="error-message"></div>
+
                     </div>
                     <div class="submit-button">
                         <button id="createEvent" type="submit" class="registerLoginButton">Add activity statistics</button>
@@ -243,6 +245,9 @@
 
             goalValueInput.name = "goalValue"
             goalValueInput.classList.add("overall-score-input")
+            goalValueInput.type = "number"
+            goalValueInput.defaultValue = "1"
+            goalValueInput.min = "1"
 
             var selectScorer = document.createElement("select");
             selectScorer.name = "scorer";
