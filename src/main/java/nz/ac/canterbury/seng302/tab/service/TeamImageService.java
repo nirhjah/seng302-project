@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.tab.service;
 
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,12 +12,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 @Service
 public class TeamImageService extends FileDataSaver {
 
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    private UserService userService;
 
     private final byte[] defaultProfilePicture;
 
@@ -53,15 +59,29 @@ public class TeamImageService extends FileDataSaver {
 
     /**
      * Updates a team's profile picture.
+     * If the current user isn't a manager or coach of the team, this operation is denied.
      *
      * @param id The userId
      * @param file The file that represents the image
      */
     public void updateProfilePicture(long id, MultipartFile file) {
-        // Optional<User> currentUser = getCurrentUser();
-        // TODO: Check if the current user is a manager of team before changing.
+        Optional<User> optUser = userService.getCurrentUser();
+        if (optUser.isEmpty()) {
+            // No current user.
+            return;
+        }
 
-        if (teamService.findTeamById(id).isPresent()) {
+        User user = optUser.get();
+        Optional<Team> optTeam = teamService.findTeamById(id);
+        if (optTeam.isEmpty()) {
+            // no team
+            return;
+        }
+
+        Team team = optTeam.get();
+        if (team.isManager(user) || team.isCoach(user)) {
+            // Now, only save the file if the user is a manager or coach.
+            // else, fail
             saveFile(id, file);
         }
     }
