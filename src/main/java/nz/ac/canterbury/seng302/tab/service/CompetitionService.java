@@ -6,7 +6,6 @@ import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
 import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
 import nz.ac.canterbury.seng302.tab.repository.CompetitionRepository;
 
-import org.aspectj.util.Reflection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,6 @@ public class CompetitionService {
      */
     public Optional<Competition> findCompetitionById(Long id) {
         return competitionRepository.findById(id);
-
     }
 
     /**

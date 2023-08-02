@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
-import io.cucumber.java.AfterAll;
-
 import java.util.*;
 
 import org.junit.jupiter.api.AfterEach;
@@ -77,5 +75,22 @@ public class CompetitionServiceTest {
 
 	  Assertions.assertEquals(1, foundCompetitions.size());
 	  Assertions.assertTrue(expectedCompetitions.contains(competition1));
+  }
+
+  @Test
+  void testGettingAllUserCompetitions() throws Exception {
+	  Competition competition1 = new TeamCompetition("Test1", "U10", "football");
+	  Competition competition2 = new UserCompetition("Test2", "U10", "football");
+    competition1 = competitionService.updateOrAddCompetition(competition1);
+    competition2 = competitionService.updateOrAddCompetition(competition2);
+
+    List<Competition> expectedCompetitions = new ArrayList<Competition>();
+    expectedCompetitions.add(competition1);
+    expectedCompetitions.add(competition2);
+
+	  List<Competition> foundCompetitions = competitionService.getAllUserCompetitions();
+
+	  Assertions.assertEquals(1, foundCompetitions.size());
+	  Assertions.assertTrue(expectedCompetitions.contains(competition2));
   }
 }
