@@ -35,6 +35,14 @@ public abstract class FileDataSaver {
             10_000_000, Set.of("jpg", "png", "jpeg", "svg")
     );
 
+    /**
+     * Takes a long id as input, and generates a path from that id.
+     * id should usually be the id of a JPA entity.
+     * For example, TeamImageService:
+     * getPath(1035) --> C:/Users/john/team900_seng302/TEAMS/1035
+     * @param id A unique id (i.e. data
+     * @return The full path as a string
+     */
     private Path getPath(Long id) {
         String idString = String.valueOf(id);
         return initialPath
