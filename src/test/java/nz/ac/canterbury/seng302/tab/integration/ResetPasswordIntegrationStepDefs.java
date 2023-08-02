@@ -25,7 +25,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -40,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc(addFilters = false)
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-public class ResetPasswordIntegrationTests {
+public class ResetPasswordIntegrationStepDefs {
 
     private UserRepository userRepository;
 
@@ -56,15 +55,15 @@ public class ResetPasswordIntegrationTests {
     private String token;
 
     @Before("@reset_password")
-    public void setup() throws IOException {
+    public void setup() throws Exception {
         userRepository = applicationContext.getBean(UserRepository.class);
 
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
-        EmailService emailService = applicationContext.getBean(EmailService.class);
+        EmailService emailService = Mockito.spy(applicationContext.getBean(EmailService.class));
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
 
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
-
+        doNothing().when(emailService).sendHtmlMessage(any());
         this.mockMvc = MockMvcBuilders.standaloneSetup(new LostPasswordController(userService), new ResetPasswordController(userService, passwordEncoder)).build();
 
         userRepository.deleteAll();
@@ -141,7 +140,7 @@ public class ResetPasswordIntegrationTests {
     @Given("I received a reset password email")
     public void i_received_a_reset_password_email() {
         System.out.println("real user token:" + user.getToken());
-        Assertions.assertTrue(user.getToken() != null);
+        Assertions.assertNotNull(user.getToken());
     }
 
     @When("I go to the URL in the link")
