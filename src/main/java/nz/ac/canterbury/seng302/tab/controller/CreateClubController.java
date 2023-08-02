@@ -38,7 +38,8 @@ public class CreateClubController {
 
     private final TeamService teamService;
 
-    private final String createAndEditClubFormString="CreateAndEditClubForm";
+    private final static String createAndEditClubFormString="CreateAndEditClubForm";
+    private final static String selectedTeamString="selectedTeams";
 
     @Autowired
     public CreateClubController(ClubService clubService,UserService userService, TeamService teamService) {
@@ -197,7 +198,7 @@ public class CreateClubController {
             if (selectedTeams != null) {
                 for (String team : selectedTeams) {
                     if ( teamService.getTeam(Long.parseLong(team)).getTeamClub() != null ) {
-                        bindingResult.addError(new FieldError(createAndEditClubFormString, "selectedTeams", "Team already belongs to another club"));
+                        bindingResult.addError(new FieldError(createAndEditClubFormString, selectedTeamString, "Team already belongs to another club"));
                     }
                     else {
                         teamService.getTeam(Long.parseLong(team)).setTeamClub(club);
@@ -205,7 +206,7 @@ public class CreateClubController {
                 }}
         }
         catch (UnmatchedSportException e) {
-            bindingResult.addError(new FieldError(createAndEditClubFormString, "selectedTeams", "Teams must have the same sport"));
+            bindingResult.addError(new FieldError(createAndEditClubFormString, selectedTeamString, "Teams must have the same sport"));
         }
     }
 
@@ -224,7 +225,7 @@ public class CreateClubController {
         model.addAttribute("postcode", club.getLocation().getPostcode());
         model.addAttribute("city", club.getLocation().getCity());
         model.addAttribute("country", club.getLocation().getCountry());
-        model.addAttribute("selectedTeams", teamService.findTeamsByClub(club));
+        model.addAttribute(selectedTeamString, teamService.findTeamsByClub(club));
     }
 
     /**
