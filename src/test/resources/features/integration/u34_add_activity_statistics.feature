@@ -1,4 +1,4 @@
-@add_activity_statistics
+@Add_activity_statistics
 Feature: U34 – Add activity statistics
 #  Scenario: AC1: Score added to the team is in same format for both teams
 #    Given I have created a activity type that is a game or friendly,
