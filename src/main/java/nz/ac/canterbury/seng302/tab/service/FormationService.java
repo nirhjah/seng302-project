@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Formation;
+import nz.ac.canterbury.seng302.tab.repository.FactRepository;
 import nz.ac.canterbury.seng302.tab.repository.FormationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,8 +12,13 @@ import java.util.Optional;
 @Service
 public class FormationService {
 
+
+    private final FormationRepository formationRepository;
+
     @Autowired
-    private FormationRepository formationRepository;
+    public FormationService( FormationRepository formationRepository) {
+        this.formationRepository = formationRepository;
+    }
 
     public Optional<Formation> findFormationById(long id) {
         return formationRepository.findById(id);
