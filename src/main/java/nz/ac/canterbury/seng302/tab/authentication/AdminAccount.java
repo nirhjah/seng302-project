@@ -14,20 +14,20 @@ import org.springframework.stereotype.Component;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
-import nz.ac.canterbury.seng302.tab.service.UserService;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 
 @Component
 public class AdminAccount implements CommandLineRunner {
-    private final UserService userService;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     private String adminEmail;
     private String adminPassword;
 
-    public AdminAccount(UserService userService, PasswordEncoder passwordEncoder,
+    public AdminAccount(UserRepository userRepository, PasswordEncoder passwordEncoder,
             @Value("${adminEmail:admin@gmail.com}") String adminEmail,
             @Value("${adminPassword:1}") String adminPassword) {
-        this.userService = userService;
+        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.adminEmail = adminEmail;
         this.adminPassword = adminPassword;
@@ -51,15 +51,14 @@ public class AdminAccount implements CommandLineRunner {
         }
 
         admin.grantAuthority(role);
-        userService.updateOrAddUser(admin);
     }
 
     /**
-     * Creates and saves an admin account if one doesn't exist, or returns the existing one.
+     * Creates an admin account if one doesn't exist, or returns the existing one.
      */
     private User createOrGetAdminAccount() throws IOException {
         // Don't create a duplicate admin
-        Optional<User> currentAdmin = userService.findUserByEmail(adminEmail);
+        Optional<User> currentAdmin = userRepository.findByEmail(adminEmail);
         if (currentAdmin.isPresent()) {
             return currentAdmin.get();
         }
@@ -72,7 +71,7 @@ public class AdminAccount implements CommandLineRunner {
         // You need to confirm your email before you can log in.
         admin.confirmEmail();
         
-        return userService.updateOrAddUser(admin);
+        return admin;
     }
 
     @Override
@@ -84,7 +83,9 @@ public class AdminAccount implements CommandLineRunner {
         // (Same reason as above, don't want duplicate roles)
         giveRoleIfNotPresent(admin, AuthorityType.ADMIN);
         giveRoleIfNotPresent(admin, AuthorityType.FEDERATION_MANAGER);
-        
 
+        // If anyone could find a way to prevent this class from being
+        // run during tests that'd be great.
+        userRepository.save(admin);
     }
 }
