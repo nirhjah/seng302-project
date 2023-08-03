@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.entity.competition;
 
 import jakarta.persistence.*;
+import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
@@ -16,17 +17,17 @@ public class TeamCompetition extends Competition {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Team> teams = new HashSet<>();
 
-    public TeamCompetition(String name, Set<User> federationAdmins, String grade, String sport, Set<Team> teams) {
+    public TeamCompetition(String name, Set<User> federationAdmins, Grade grade, String sport, Set<Team> teams) {
       super(name, grade, sport);
       this.teams = teams;
     }
   
-    public TeamCompetition(String name, Set<User> federationAdmins, String grade, String sport, Team team) {
+    public TeamCompetition(String name, Set<User> federationAdmins, Grade grade, String sport, Team team) {
       super(name, grade, sport);
       this.teams.add(team);
     }
 
-    public TeamCompetition(String name, String grade, String sport) {
+    public TeamCompetition(String name, Grade grade, String sport) {
       super(name, grade, sport);
     }
     

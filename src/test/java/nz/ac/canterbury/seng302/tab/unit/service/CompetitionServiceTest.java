@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
+import nz.ac.canterbury.seng302.tab.entity.Grade;
+import nz.ac.canterbury.seng302.tab.entity.Grade.Sex;
 import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
 import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
 import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
@@ -37,8 +39,8 @@ public class CompetitionServiceTest {
 
   @Test 
   public void testGettingAllCompetitions() throws Exception {
-	  Competition competition1 = new TeamCompetition("Test1", "U10", "football");
-	  Competition competition2 = new UserCompetition("Test2", "U10", "football");
+	  Competition competition1 = new TeamCompetition("Test1", new Grade(Sex.OTHER), "football");
+	  Competition competition2 = new UserCompetition("Test2", new Grade(Sex.OTHER), "football");
     competitionService.updateOrAddCompetition(competition1);
     competitionService.updateOrAddCompetition(competition2);
 
@@ -51,7 +53,7 @@ public class CompetitionServiceTest {
   
   @Test
   public void testFindingCompetitionById() throws Exception {
-    Competition competition = new TeamCompetition("Test", "U10", "football");
+    Competition competition = new TeamCompetition("Test", new Grade(Sex.OTHER), "football");
     competition = competitionService.updateOrAddCompetition(competition);
 
     Optional<Competition> foundCompetition = competitionService.findCompetitionById(competition.getCompetitionId());
@@ -62,8 +64,8 @@ public class CompetitionServiceTest {
 
   @Test 
   void testGettingAllTeamCompetitions() throws Exception {
-	  Competition competition1 = new TeamCompetition("Test1", "U10", "football");
-	  Competition competition2 = new UserCompetition("Test2", "U10", "football");
+	  Competition competition1 = new TeamCompetition("Test1", new Grade(Sex.OTHER), "football");
+	  Competition competition2 = new UserCompetition("Test2", new Grade(Sex.OTHER), "football");
     competition1 = competitionService.updateOrAddCompetition(competition1);
     competition2 = competitionService.updateOrAddCompetition(competition2);
 
@@ -79,8 +81,9 @@ public class CompetitionServiceTest {
 
   @Test
   void testGettingAllUserCompetitions() throws Exception {
-	  Competition competition1 = new TeamCompetition("Test1", "U10", "football");
-	  Competition competition2 = new UserCompetition("Test2", "U10", "football");
+	  Competition competition1 = new TeamCompetition("Test1", new Grade(Sex.OTHER), "football");
+	  Competition competition2 = new UserCompetition("Test2", new Grade(Sex.OTHER), "football");
+    competition1 = competitionService.updateOrAddCompetition(competition1);
     competition1 = competitionService.updateOrAddCompetition(competition1);
     competition2 = competitionService.updateOrAddCompetition(competition2);
 
