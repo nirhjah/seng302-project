@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.entity.competition;
 
 import jakarta.persistence.*;
+import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 
 import java.util.Objects;
@@ -20,9 +21,9 @@ public abstract class Competition {
     @Column(nullable = false)
     private String name;
 
-    // TODO: we are asking the PO for permission to change this to a set of predefined grades
-    @Column(nullable = false)
-    private String grade;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn
+    private Grade grade;
 
     @Column(nullable = false)
     private String sport;
@@ -39,7 +40,7 @@ public abstract class Competition {
      * @param sport competition sport
      * @param location competition location 
     */
-    public Competition(String name, String grade, String sport, Location location) {
+    public Competition(String name, Grade grade, String sport, Location location) {
         this.name = name;
         this.grade = grade;
         this.sport = sport;
@@ -52,7 +53,7 @@ public abstract class Competition {
      * @param grade competition grade
      * @param sport competition sport
     */
-    public Competition(String name, String grade, String sport) {
+    public Competition(String name, Grade grade, String sport) {
         this.name = name;
         this.grade = grade;
         this.sport = sport;
@@ -78,11 +79,11 @@ public abstract class Competition {
         this.name = name;
     }
 
-    public String getGrade() {
+    public Grade getGrade() {
         return this.grade;
     }
 
-    public void setGrade(String grade) {
+    public void setGrade(Grade grade) {
         this.grade = grade;
     }
 

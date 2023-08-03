@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.entity.competition;
 
 import jakarta.persistence.*;
+import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
 import java.util.HashSet;
@@ -20,17 +21,17 @@ public class UserCompetition extends Competition {
     )
     private Set<User> players = new HashSet<>();
 
-    public UserCompetition(String name, Set<User> federationAdmins, String grade, String sport) {
+    public UserCompetition(String name, Set<User> federationAdmins, Grade grade, String sport) {
     super(name, grade, sport);
     }
     
     public UserCompetition() {}
 
-    public UserCompetition(String name,String grade, String sport) {
+    public UserCompetition(String name, Grade grade, String sport) {
       super(name, grade, sport);
     }
 
-    public UserCompetition(String name, Set<User> federationAdmins, String grade, String sport, Set<User> players) {
+    public UserCompetition(String name, Set<User> federationAdmins, Grade grade, String sport, Set<User> players) {
     super(name, grade, sport);
     this.players = players;
     }
