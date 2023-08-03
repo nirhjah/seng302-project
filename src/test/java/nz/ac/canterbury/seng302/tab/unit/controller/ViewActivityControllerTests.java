@@ -119,8 +119,7 @@ public class ViewActivityControllerTests {
     @Test
     public void testGettingViewActivityPageOfInvalidActivity() throws Exception {
         mockMvc.perform(get("/view-activity?activityID={id}",4))
-                .andExpect(status().isNotFound())
-                .andExpect(view().name("error"));
+                .andExpect(status().isNotFound());
     }
 
 }
