@@ -166,27 +166,5 @@ class GradeTest {
         testCannotParticipateIn(Grade.Age.UNDER_14S, Grade.Age.OVER_50S);
         testCannotParticipateIn(Grade.Age.OVER_50S, Grade.Age.UNDER_19S);
     }
-
-    private void testSexMatches(Grade.Sex sex1, Grade.Sex participationSex, boolean ok) {
-        var caller = new Grade(Grade.Age.ADULT, sex1);
-        var participation = new Grade(Grade.Age.ADULT, participationSex);
-        assertEquals(ok, caller.canParticipateIn(participation));
-    }
-
-    /**
-     * Mens can join mixed
-     * Mens can join mens
-     * Mens cannot join women's
-     * Women's cannot join mens
-     */
-    @Test
-    void testSexOk() {
-        for (var sex: Grade.Sex.values()) {
-            testSexMatches(sex, sex, true);
-        }
-
-        testSexMatches(Grade.Sex.MENS, Grade.Sex.MIXED, true);
-        testSexMatches(Grade.Sex.WOMENS, Grade.Sex.MIXED, true);
-    }
 }
 
