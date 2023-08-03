@@ -20,26 +20,74 @@
     <div class="team-info">
       <div class="team-display">
         <h2>Competition Details</h2>
-        <div class="user-label">
+        <div class="comp-headings">
           <img th:src="@{/image/icons/name.svg}"/>
-          <h3 th:text="|Name: |"></h3>
+
+          <div>
+            <h4>Name</h4>
+
+            <h3>Admin Admin</h3>
+          </div>
+
         </div>
-        <div class="user-label">
+        <div class="comp-headings">
+          <img th:src="@{/image/icons/gradeLevel.svg}"/>
+
+          <div>
+          <h4>Grade</h4>
+          <h3>Under 18s</h3>
+          </div>
+
+        </div>
+        <div class="comp-headings">
           <img th:src="@{/image/icons/sports.svg}"/>
-          <h3 th:text="|Grade: |"></h3>
+
+          <div>
+            <h4>Sport</h4>
+            <h3>Soccer</h3>
+          </div>
+
         </div>
-        <div class="user-label">
-          <img th:src="@{/image/icons/sports.svg}"/>
-          <h3 th:text="|Sport: |"></h3>
-        </div>
-        <div class="user-label">
+        <div class="comp-headings">
           <img th:src="@{/image/icons/location.svg}"/>
-          <h3 th:text="|Location: |"></h3>
+          <div>
+            <h4>Location</h4>
+            <h3>1 Ilam Road, Ilam 8042 Christchurch New Zealand</h3>
+          </div>
         </div>
-
-
       </div>
 
+    </div>
+
+
+    <div class="teamOrUserListDisplay">
+      <h3>Teams</h3>
+      <ul>
+        <li>player 1</li>
+        <li>player 2</li>
+        <li>player 3</li>
+        <li>player 4</li>
+        <li>player 5</li>
+        <li>player 6</li>
+        <li>player 7</li>
+        <li>player 8</li>
+        <li>player 9</li>
+        <li>player 10</li>
+        <li>player 11</li>
+        <li>player 12</li>
+        <li>player 13</li>
+        <li>player 14</li>
+      </ul>
+
+    </div>
+
+    <div class="profile-buttons">
+      <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+      <div  class="edit-button" style="float: right; padding: 10px">
+        <a>
+          <button type="button">Edit Competition</button>
+        </a>
+      </div>
     </div>
 
 
