@@ -53,7 +53,6 @@ public class U33EditLineUpE2E {
     @Given("the activity has type game or friendly and has a selected formation")
     public void the_activity_has_type_game_or_friendly_and_has_a_selected_formation() {
         PlaywrightBrowser.page.locator("#activityType").selectOption("Game");
-         PlaywrightBrowser.page.locator("#team").selectOption("team");
     }
 
     @When("I add a player from the team to selected the formation")

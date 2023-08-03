@@ -339,8 +339,19 @@ public class CreateActivityController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        // Return a JSON object of type FormationInfo
-        List<FormationInfo> formations = formationService.getTeamsFormations(teamId).stream()
+        List<FormationInfo> formations = createFormationsJSON(team);
+
+        return ResponseEntity.ok().body(formations);
+    }
+
+
+    /**
+     * Creates JSON object of type FormationInfo with formation details
+     * @param team team for formation
+     * @return JSON object of type FormationInfo
+     */
+    private List<FormationInfo> createFormationsJSON(Team team) {
+        List<FormationInfo> formations = formationService.getTeamsFormations(team.getTeamId()).stream()
                 .map(formation -> {
                     List<PlayerFormationInfo> players = team.getTeamMembers().stream()
                             .map(player -> new PlayerFormationInfo(player.getUserId(), player.getFirstName(), player.getPictureString()))
@@ -356,7 +367,7 @@ public class CreateActivityController {
                 })
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok().body(formations);
+        return formations;
     }
 
 }
