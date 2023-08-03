@@ -1,6 +1,9 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
+import nz.ac.canterbury.seng302.tab.service.ClubImageService;
+import nz.ac.canterbury.seng302.tab.service.TeamImageService;
 import nz.ac.canterbury.seng302.tab.service.UserImageService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.Arrays;
+import java.util.Base64;
+
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -25,24 +32,29 @@ class ProfilePictureControllerTest {
 
     @MockBean
     private UserImageService userImageService;
-    private long userId=1L;
+
+    @MockBean
+    private TeamImageService teamImageService;
+
+    @MockBean
+    private ClubImageService clubImageService;
+
+    private long id=1L;
 
     // Arbitrary bytes representing an image
     private final byte[] fileBytes = new byte[] {56,65,65,78,54,45,32,54,67,87,11,9};
 
     @BeforeEach
     void setup() {
-        when(userImageService.readFileOrDefault(this.userId)).thenReturn(this.fileBytes);
-
-        // Generate club and club-logo for club
-        // remember to add to database, or it wont work!
-        // ALSO note: You can only update the pfp if you are a manager of the club
-        // TODO.
+        when(userImageService.readFileOrDefault(this.id)).thenReturn(this.fileBytes);
+        // The teamImageService seems to call a different method for some reason - not sure why.
+        when(teamImageService.readFileOrDefaultB64(this.id)).thenReturn(Base64.getEncoder().encodeToString(this.fileBytes));
+        when(clubImageService.readFileOrDefault(this.id)).thenReturn(this.fileBytes);
     }
 
     @Test
     void testUserProfilePicture() throws Exception {
-        mockMvc.perform(get("/user-profile-picture/{id}", this.userId))
+        mockMvc.perform(get("/user-profile-picture/{id}", this.id))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.IMAGE_JPEG))
                 .andExpect(content().bytes(this.fileBytes));
@@ -54,23 +66,25 @@ class ProfilePictureControllerTest {
 //        long userId = 2L;
 //
 //        when(userImageService.readFileOrDefault(userId)).thenReturn(null);
-//        mockMvc.perform(get("/user-profile-picture/{id}", userId))
+//        mockMvc.perform(get("/user-profile-picture/{id}", id))
 //                .andExpect(status().isNotFound());
 //    }
     @Test
     void testClubLogo() throws Exception {
-        MvcResult result1 = mockMvc.perform(get("/club-logo/{id}", userId))
+        MvcResult result1 = mockMvc.perform(get("/club-logo/{id}", id))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.IMAGE_JPEG))
+                .andExpect(content().bytes(this.fileBytes))
                 .andReturn();
-        // TODO: check that the response is equal to the original bytes
     }
 
     @Test
     void testTeamProfilePicture() throws Exception {
-        mockMvc.perform(get("/team-profile-picture/{id}", userId))
+        String encodedFileBytes = Base64.getEncoder().encodeToString(this.fileBytes);
+        MvcResult result = mockMvc.perform(get("/team-profile-picture/{id}", id))
                 .andExpect(status().isOk())
                 .andReturn();
-        // TODO: check that the response is equal to the original bytes
+        Assertions.assertTrue(result.getResponse().getContentAsString().equals(encodedFileBytes));
     }
 }
 
