@@ -199,7 +199,7 @@ public class Grade {
      * @return True if participation allowed, false otherwise.
      */
     public boolean canParticipateIn(Grade other) {
-        boolean sexOk = sex == other.sex;
+        boolean sexOk = (sex == other.sex) || (other.sex == Sex.MIXED);
         boolean ageOk = age.canParticipateIn(other.age);
         return sexOk && ageOk;
     }
