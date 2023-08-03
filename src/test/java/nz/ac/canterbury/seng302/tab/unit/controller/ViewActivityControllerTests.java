@@ -2,9 +2,8 @@ package nz.ac.canterbury.seng302.tab.unit.controller;
 
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -90,18 +89,18 @@ public class ViewActivityControllerTests {
                 USER_POSTCODE, USER_COUNTRY);
         User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD, testLocation);
         team = new Team("test", "Hockey", testLocation, testUser);
-        LocalDateTime start =   LocalDateTime.of(2023, 6,1,6,30);
-        LocalDateTime end = LocalDateTime.of(2023, 7,1,8,30);
+        LocalDateTime start = LocalDateTime.of(2023, 6, 1, 6, 30);
+        LocalDateTime end = LocalDateTime.of(2023, 7, 1, 8, 30);
         Location activityLocation = new Location(ACTVITY_ADDRESS_LINE_1, ACTVITY_ADDRESS_LINE_2, ACTVITY_SUBURB,
                 ACTVITY_CITY, ACTVITY_POSTCODE, ACTVITY_COUNTRY);
-        activity= new Activity(ActivityType.Game, team, "description",start, end, testUser, activityLocation);
+        activity = new Activity(ActivityType.Game, team, "description", start, end, testUser, activityLocation);
 
         List<Fact> factList = new ArrayList<>();
 
-        factList.add(new Fact("Someone fell over", activity,LocalTime.of(1, 25)));
-        factList.add(new Fact("Someone fell over again", activity,LocalTime.of(1, 30)));
-        factList.add(new Fact("Someone fell over yet again",activity, LocalTime.of(1, 42)));
-        factList.add(new Fact("Testing scrollable feature",activity, LocalTime.of(1, 25)));
+        factList.add(new Fact("Someone fell over", activity, LocalTime.of(1, 25)));
+        factList.add(new Fact("Someone fell over again", activity, LocalTime.of(1, 30)));
+        factList.add(new Fact("Someone fell over yet again", activity, LocalTime.of(1, 42)));
+        factList.add(new Fact("Testing scrollable feature", activity, LocalTime.of(1, 25)));
 
 
         when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
@@ -113,7 +112,7 @@ public class ViewActivityControllerTests {
 
     @Test
     public void testGettingViewActivityPageOfValidActivity() throws Exception {
-        mockMvc.perform(get("/view-activity?activityID={id}",activity.getId()))
+        mockMvc.perform(get("/view-activity?activityID={id}", activity.getId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("viewActivity"))
                 .andExpect(MockMvcResultMatchers.model().attribute("activity", activity));
@@ -121,8 +120,40 @@ public class ViewActivityControllerTests {
 
     @Test
     public void testGettingViewActivityPageOfInvalidActivity() throws Exception {
-        mockMvc.perform(get("/view-activity?activityID={id}",4))
+        mockMvc.perform(get("/view-activity?activityID={id}", 4))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    public void testAddingActivityStatisticWithEmptyFields() throws Exception {
+        mockMvc.perform(post("/view-activity")
+                        .param("actId", String.valueOf(activity.getId()))
+                        .param("factType", "")
+                        .param("description", "")
+                        .param("overallScoreTeam", "")
+                        .param("overallScoreOpponent", "")
+                        .param("time", "")
+                        .param("scorer", "")
+                        .param("playerOff", "")
+                        .param("playerOn", ""))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(String.format("./view-activity?activityID=%s", activity.getId())));
+    }
+
+    @Test
+    public void testAddingActivityStatisticWithInvalidFields() throws Exception {
+        mockMvc.perform(post("/view-activity")
+                        .param("actId", String.valueOf(activity.getId()))
+                        .param("factType", "Game")
+                        .param("description", "Testing")
+                        .param("overallScoreTeam", "1")
+                        .param("overallScoreOpponent", "2")
+                        .param("time", "")
+                        .param("scorer", "1")
+                        .param("playerOff", "1")
+                        .param("playerOn", "1"))
+                .andExpect(status().isBadRequest());
+    }
+
 
 }
