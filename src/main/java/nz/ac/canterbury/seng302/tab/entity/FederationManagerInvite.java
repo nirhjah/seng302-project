@@ -38,4 +38,6 @@ public class FederationManagerInvite {
     }
 
     public String getToken() {return token;}
+
+    public User getUser() {return user;}
 }

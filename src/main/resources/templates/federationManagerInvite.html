@@ -22,12 +22,14 @@
         <br>
             <p style="text-align: center">By accepting this invitation you will gain the ability to create competitions.</p>
         <br>
-            <div class="submit-button">
-                <button>Accept</button>
-            </div>
-            <div class="submit-button">
-                <button>Decline</button>
-            </div>
+            <form method="post" name="inviteForm" id="inviteForm">
+                <div class="submit-button">
+                    <button onclick="accept()">Accept</button>
+                </div>
+                <div class="submit-button">
+                    <button onclick="decline()">Decline</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -40,6 +42,31 @@
     </p>
 </footer>
 </body>
+
+<script>
+    function accept()
+    {
+        const form = document.getElementById("inviteForm")
+        const decision = document.createElement("decision")
+        decision.setAttribute("type", "hidden");
+        decision.setAttribute("name", "decision")
+        decision.setAttribute("value", "true")
+        form.appendChild(decision)
+        form.submit()
+    }
+
+    function decline()
+    {
+        const form = document.getElementById("inviteForm")
+        const decision = document.createElement("decision")
+        decision.setAttribute("type", "hidden");
+        decision.setAttribute("name", "decision")
+        decision.setAttribute("value", "false")
+        form.appendChild(decision)
+        form.submit()
+    }
+
+</script>
 
 </html>
 
