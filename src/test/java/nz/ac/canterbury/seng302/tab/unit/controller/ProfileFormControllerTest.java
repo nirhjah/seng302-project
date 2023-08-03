@@ -1,8 +1,10 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -16,8 +18,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Optional;
 
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FactService;
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -35,8 +36,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -48,6 +47,9 @@ public class ProfileFormControllerTest {
 
     @MockBean
     private UserService mockUserService;
+
+    @MockBean
+    private FormationService mockFormationService;
 
     @MockBean
     private TeamService mockTeamService;
@@ -154,6 +156,18 @@ public class ProfileFormControllerTest {
                     .andExpect(status().is3xxRedirection());
         }
         assertNotEquals(team.getPictureString(), Base64.getEncoder().encodeToString(fileBytes));
+    }
+
+    @Test
+    public void testCreatingAValidFormation() throws Exception {
+        mockMvc.perform(post("/profile/create-formation", 42L)
+                        .param("formation", "1-4-4-2")
+                        .param("customPlayerPositions", "")
+                        .param("custom", String.valueOf(false))
+                        .param("teamID", String.valueOf(TEAM_ID)))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/profile?teamID=" + TEAM_ID));
+        verify(mockFormationService, times(1)).addOrUpdateFormation(any());
     }
 
 }
