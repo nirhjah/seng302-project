@@ -58,15 +58,7 @@ class ProfilePictureControllerTest {
                 .andExpect(content().bytes(this.fileBytes));
     }
 
-    //Why is there no validation check on controller? no 404 checks?
-//    @Test
-//    public void testGetUserProfilePictureForNotFound() throws Exception {
-//        long userId = 2L;
-//
-//        when(userImageService.readFileOrDefault(userId)).thenReturn(null);
-//        mockMvc.perform(get("/user-profile-picture/{id}", id))
-//                .andExpect(status().isNotFound());
-//    }
+
     @Test
     void testClubLogo() throws Exception {
         mockMvc.perform(get("/club-logo/{id}", id))
