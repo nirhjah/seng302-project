@@ -13,7 +13,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import nz.ac.canterbury.seng302.tab.entity.Authority;
 import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
 
 
@@ -84,7 +83,7 @@ public class SecurityConfiguration {
                 .requestMatchers("/", "/register", "/login", "/home",
                 "/geocode/autocomplete", "/lost-password", "/reset-password", "/confirm")
                 .permitAll()
-                // TODO DELETE THIS
+                // TODO Add other federation manager endpoints here
                 // Only Federation Managers (maybe admins) can access this
                 .requestMatchers("/fedman")
                 .hasRole(AuthorityType.FEDERATION_MANAGER.name())
