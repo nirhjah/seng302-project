@@ -247,15 +247,18 @@ public class User {
     @JoinColumn(name = "Id")
     private List<Authority> userRoles;
 
+    /**
+     * Assigns this user the provided role.
+     * <p><em>
+     *  Note: There are no duplicate role checks. If that's a problem, roll your own check.
+     * </em></p>
+     * @param authority The authority/role you're providing.
+     */
     public void grantAuthority(AuthorityType authority) {
-        this.grantAuthority(authority.role());
-    }
-
-    public void grantAuthority(String authority) {
         if (userRoles == null) {
             userRoles = new ArrayList<>();
         }
-        userRoles.add(new Authority(authority));
+        userRoles.add(new Authority(authority.role()));
     }
 
     public List<GrantedAuthority> getAuthorities() {
