@@ -1,6 +1,6 @@
 @edit_lineup_for_game
 
-#Feature: U33 – Edit line-up for game
+Feature: U33 – Edit line-up for game
 #  Scenario: AC1: Add line-up to activity from existing team formations as manager
 #    Given I am the manager of a team
 #    And the team has a formation "1-2-3"
