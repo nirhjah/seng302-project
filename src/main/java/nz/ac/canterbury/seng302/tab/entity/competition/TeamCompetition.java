@@ -15,7 +15,7 @@ import java.util.Set;
 @Entity(name ="TeamCompetition") 
 @DiscriminatorValue("TEAM")
 public class TeamCompetition extends Competition {
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<Team> teams = new HashSet<>();
 
     public TeamCompetition(String name, Set<User> federationAdmins, Grade grade, String sport, Set<Team> teams) {

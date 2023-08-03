@@ -25,27 +25,48 @@ public class Grade {
     private Long gradeId;
 
     public enum Age {
-        UNDER_5S("Under 5s"),
-        UNDER_6S("Under 6s"),
-        UNDER_7S("Under 7s"),
-        UNDER_8S("Under 8s"),
-        UNDER_9S("Under 9s"),
-        UNDER_10S("Under 10s"),
-        UNDER_11S("Under 11s"),
-        UNDER_12S("Under 12s"),
-        UNDER_13S("Under 13s"),
-        UNDER_14S("Under 14s"),
-        UNDER_15S("Under 15s"),
-        UNDER_16S("Under 16s"),
-        UNDER_17S("Under 17s"),
-        UNDER_18S("Under 18s"),
-        UNDER_19S("Under 19s"),
-        JUNIOR("Junior"),
-        ADULT(""),
-        SENIOR("Senior"),
-        OVER_50S("Over 50s"),
-        OVER_60S("Over 60s"),
-        OVER_70S("Over 70s");
+        UNDER_5S("Under 5s", 5, true),
+        UNDER_6S("Under 6s", 6, true),
+        UNDER_7S("Under 7s", 7, true),
+        UNDER_8S("Under 8s", 8, true),
+        UNDER_9S("Under 9s", 9, true),
+        UNDER_10S("Under 10s", 10, true),
+        UNDER_11S("Under 11s", 11, true),
+        UNDER_12S("Under 12s", 12, true),
+        UNDER_13S("Under 13s", 13, true),
+        UNDER_14S("Under 14s", 14, true),
+        UNDER_15S("Under 15s", 15, true),
+        UNDER_16S("Under 16s", 16, true),
+        UNDER_17S("Under 17s", 17, true),
+        UNDER_18S("Under 18s", 18, true),
+        UNDER_19S("Under 19s", 19, true),
+        ADULT("", 0, false, false),
+        OVER_50S("Over 50s", 50, false, true),
+        OVER_60S("Over 60s", 60, false, true),
+        OVER_70S("Over 70s", 70, false, true);
+
+
+        private final boolean isUnder;
+        private final boolean isOver;
+        private final int age;
+
+        /**
+         * Checks whether this grade object can participate in another grade.
+         * For example:
+         * U16s can participate in U19s.
+         * But U14s CANNOT participate in U13s.
+         * @param ageRange The ageRange to check if we can participate in
+         * @return True if participation allowed, false otherwise.
+         */
+        private boolean canParticipateIn(Age ageRange) {
+            if (this.isUnder) {
+                return this.age <= ageRange.age;
+            } else if (this.isOver) {
+                return this.age >= ageRange.age;
+            }
+            // Open grade.
+            return true;
+        }
 
         private final String description;
 
@@ -53,9 +74,26 @@ public class Grade {
             return description;
         }
 
-        Age(String description) {
+        Age(String description, int age, boolean isUnder) {
+            this.age = age;
+            this.isUnder = isUnder;
+            this.isOver = false;
             this.description = description;
         }
+
+        /**
+         * Represents an AgeRange for checking whether grades are compatible.
+         * For example:
+         * U16s can participate in U19s.
+         * But U14s CANNOT participate in U13s.
+         */
+        Age(String description, int age, boolean isUnder, boolean isOver) {
+            this.age = age;
+            this.isUnder = isUnder;
+            this.isOver = isOver;
+            this.description = description;
+        }
+
     }
 
     public enum Sex {
@@ -150,6 +188,20 @@ public class Grade {
             return sexDisplay + " " + ageDisplay;
         }
         return sexDisplay;
+    }
+
+    /**
+     * Checks whether this grade object can participate in another grade.
+     * For example:
+     * U16s boys can participate in U19s boys.
+     * But U14s girls CANNOT participate in U13s girls.
+     * @param other The grade to check if we can participate in
+     * @return True if participation allowed, false otherwise.
+     */
+    public boolean canParticipateIn(Grade other) {
+        boolean sexOk = sex == other.sex;
+        boolean ageOk = age.canParticipateIn(other.age);
+        return sexOk && ageOk;
     }
 
     public Sex getSex() {

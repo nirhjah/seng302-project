@@ -13,7 +13,7 @@ import java.util.Set;
 @Entity 
 @DiscriminatorValue("USER")
 public class UserCompetition extends Competition {
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_competition_players",
             joinColumns = @JoinColumn(name = "competition_id"),
@@ -34,5 +34,13 @@ public class UserCompetition extends Competition {
     public UserCompetition(String name, Set<User> federationAdmins, Grade grade, String sport, Set<User> players) {
         super(name, grade, sport);
         this.players = players;
+    }
+
+    public Set<User> getPlayers() {
+        return players;
+    }
+
+    public void addPlayer(User player) {
+        players.add(player);
     }
 }
