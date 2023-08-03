@@ -1,0 +1,57 @@
+.competition-form .wrapper {
+    width: 500px;
+    bottom: 20px;
+}
+
+@media (max-width: 555px) {
+    .competition-form .wrapper {
+        width: 90vw;
+        min-width: 250px;
+    }
+
+    .header {
+        width: unset !important;
+        font-size: 5vw !important;
+    }
+
+
+}
+
+.competition-form {
+    justify-content: center;
+    align-items: center;
+    display:flex;
+    flex-direction:column
+}
+
+.header {
+    padding-bottom: 30px;
+    font-family: "Noto Sans",sans-serif;
+    text-align: center;
+    width: 500px;
+    font-size: 40px;
+    font-weight: 600;
+    color: #0D1B2A;
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+.header h1 {
+    padding: 10px
+}
+
+.wrapper form {
+    width: 65%;
+}
+
+.submit-button {
+    margin: 30px 0 20px !important;
+}
+
+.submit-button button {
+    width: 75%;
+}
+
+.cancel-link {
+    margin: 0 0 20px !important;
+}

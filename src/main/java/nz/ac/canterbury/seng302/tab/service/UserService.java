@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
 import nz.ac.canterbury.seng302.tab.authentication.TokenVerification;
@@ -268,7 +269,7 @@ public class UserService {
         // Issue: The security context chain gives you "Anonymous Authentication"
         // if you're not logged in, so `isAuthenticated()` can be true.
         // To get around this, check if you're anonymous.
-        if (!auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
             return Optional.empty();
         }
         String email = auth.getName();
@@ -309,12 +310,11 @@ public class UserService {
      * @param password the password to update the user with
      * @return the outcome of the email sending
      */
-    public void updatePassword(User user, String password) {
+    public void updatePassword(User user, String password) throws MessagingException {
         user.setPassword(passwordEncoder.encode(password));
         updateOrAddUser(user);
-        EmailDetails details = new EmailDetails(user.getEmail(), EmailDetails.UPDATE_PASSWORD_BODY, EmailDetails.UPDATE_PASSWORD_HEADER);
-        String outcome = emailService.sendSimpleMail(details);
-        logger.info(outcome);
+
+        emailService.updatePassword(user);
     }
 
 
@@ -323,25 +323,14 @@ public class UserService {
      * @param user      user to send reset password link to
      * @param request   to get current url to create the link
      */
-    public void resetPasswordEmail(User user, HttpServletRequest request) {
+    public void resetPasswordEmail(User user, HttpServletRequest request) throws MessagingException {
 
         user.generateToken(this, 1);
         updateOrAddUser(user);
 
         taskScheduler.schedule(new TokenVerification(user, this), Instant.now().plus(Duration.ofHours(1)));
 
-        String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "")
-                + "/reset-password?token=" + user.getToken();
-
-        if (request.getRequestURL().toString().contains("test")) {
-            tokenVerificationLink =  "https://csse-s302g9.canterbury.ac.nz/test/reset-password?token=" + user.getToken();
-        }
-        if (request.getRequestURL().toString().contains("prod")) {
-            tokenVerificationLink =  "https://csse-s302g9.canterbury.ac.nz/prod/reset-password?token=" + user.getToken();
-        }
-        EmailDetails details = new EmailDetails(user.getEmail(), tokenVerificationLink, EmailDetails.RESET_PASSWORD_HEADER);
-        String outcome = emailService.sendSimpleMail(details);
-        logger.info(outcome);
+        emailService.resetPasswordEmail(user, request);
     }
 
 

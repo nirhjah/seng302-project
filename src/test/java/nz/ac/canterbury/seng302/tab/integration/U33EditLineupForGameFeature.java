@@ -72,7 +72,7 @@ public class U33EditLineupForGameFeature {
     private Map<String, Formation> formationMap = new HashMap<>();
     private long formationId = 0;
 
-    private void setupMorganMocking() {
+    private void setupMocking() {
         // get all the necessary beans
         userService = Mockito.spy(applicationContext.getBean(UserService.class));
         teamService = Mockito.spy(applicationContext.getBean(TeamService.class));
@@ -90,7 +90,7 @@ public class U33EditLineupForGameFeature {
 
     @Before("@edit_lineup_for_game")
     public void setup() throws Exception {
-        setupMorganMocking();
+        setupMocking();
         Location location = new Location("abcd", null, null, "chch", null, "nz");
         user = new User("Test", "User", "test@example.com", "insecure", location);
         user = userService.updateOrAddUser(user);

@@ -15,6 +15,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -64,12 +65,8 @@ public class UpdatePasswordController {
     private void prefillModel(Model model, User user, HttpServletRequest request) {
         // The following attribute is required so the "Password Strength" JS can work
         model.addAttribute("user", user);
-        // Everything else here shouldn't be here.
+        // Needed by navBar
         model.addAttribute("httpServletRequest", request);
-        model.addAttribute("navTeams", teamService.getTeamList());
-        model.addAttribute("firstName", user.getFirstName());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("displayPicture", user.getPictureString());
     }
 
     /**
@@ -159,7 +156,7 @@ public class UpdatePasswordController {
             BindingResult bindingResult,
             Model model,
             HttpServletRequest request,
-            HttpServletResponse response){
+            HttpServletResponse response) throws MessagingException {
 
 
         // Get the currently logged in user
