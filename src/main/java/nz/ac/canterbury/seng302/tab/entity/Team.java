@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
@@ -187,6 +186,10 @@ public class Team {
         setToken(token);
     }
 
+    /**
+     * Gets all managers of a team
+     * @return set of managers of team
+     */
     public Set<User> getTeamManagers() {
         Set<User> managers = new HashSet<>();
         Hibernate.initialize(teamRoles);
@@ -198,6 +201,10 @@ public class Team {
         return managers;
     }
 
+    /**
+     * Gets all coaches of a team
+     * @return set of coaches of team
+     */
     public Set<User> getTeamCoaches() {
         Set<User> coaches = new HashSet<>();
         for (var tRole: teamRoles) {
@@ -218,6 +225,11 @@ public class Team {
         return getTeamManagers().stream().anyMatch((u) -> u.getUserId() == userId);
     }
 
+    /**
+     * Returns true if user is a coach, false otherwise
+     * @param user The user in question
+     * @return true if user coaches team, false otherwise
+     */
     public boolean isCoach(User user) {
         var userId = user.getUserId();
         return getTeamCoaches().stream().anyMatch((u) -> u.getUserId() == userId);
@@ -235,7 +247,7 @@ public class Team {
         teamRoles.removeIf(tRole -> tRole.getUser().getUserId() == id);
     }
 
-    /**
+    /** Sets team role for a user
      * @param user, the User we are changing
      * @param role the role we are changing to user to
      */
@@ -288,6 +300,9 @@ public class Team {
         this.teamClub = teamClub;
     }
 
+    /**
+     * Removes the club from a team
+     */
     public void clearTeamClub() {
         this.teamClub = null;
     }
