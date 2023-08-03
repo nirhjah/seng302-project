@@ -24,76 +24,76 @@ import org.slf4j.LoggerFactory;
 @SpringBootTest
 @Import(CompetitionService.class)
 public class CompetitionServiceTest {
-  Logger logger = LoggerFactory.getLogger(CompetitionService.class);
+    Logger logger = LoggerFactory.getLogger(CompetitionService.class);
 
-  @Autowired
-  private CompetitionService competitionService;
+    @Autowired
+    private CompetitionService competitionService;
 
-  @Autowired
-  private CompetitionRepository competitionRepository;
-  
-  @AfterEach
-  public void tearDown() {
-    competitionRepository.deleteAll();
-  }
+    @Autowired
+    private CompetitionRepository competitionRepository;
 
-  @Test 
-  public void testGettingAllCompetitions() throws Exception {
-	  Competition competition1 = new TeamCompetition("Test1", new Grade(Sex.OTHER), "football");
-	  Competition competition2 = new UserCompetition("Test2", new Grade(Sex.OTHER), "football");
-    competitionService.updateOrAddCompetition(competition1);
-    competitionService.updateOrAddCompetition(competition2);
+    @AfterEach
+    public void tearDown() {
+        competitionRepository.deleteAll();
+    }
 
-    List<Competition> allCompetitions = competitionService.findAll();
+    @Test
+    public void testGettingAllCompetitions() throws Exception {
+        Competition competition1 = new TeamCompetition("Test1", new Grade(Sex.OTHER), "football");
+        Competition competition2 = new UserCompetition("Test2", new Grade(Sex.OTHER), "football");
+        competitionService.updateOrAddCompetition(competition1);
+        competitionService.updateOrAddCompetition(competition2);
 
-    Assertions.assertEquals(2, allCompetitions.size());
-    Assertions.assertTrue(allCompetitions.contains(competition1));
-    Assertions.assertTrue(allCompetitions.contains(competition2));
-  }
-  
-  @Test
-  public void testFindingCompetitionById() throws Exception {
-    Competition competition = new TeamCompetition("Test", new Grade(Sex.OTHER), "football");
-    competition = competitionService.updateOrAddCompetition(competition);
+        List<Competition> allCompetitions = competitionService.findAll();
 
-    Optional<Competition> foundCompetition = competitionService.findCompetitionById(competition.getCompetitionId());
+        Assertions.assertEquals(2, allCompetitions.size());
+        Assertions.assertTrue(allCompetitions.contains(competition1));
+        Assertions.assertTrue(allCompetitions.contains(competition2));
+    }
 
-    Assertions.assertTrue(foundCompetition.isPresent());
-    Assertions.assertEquals(competition.getCompetitionId(), foundCompetition.get().getCompetitionId());
-  }
+    @Test
+    public void testFindingCompetitionById() throws Exception {
+        Competition competition = new TeamCompetition("Test", new Grade(Sex.OTHER), "football");
+        competition = competitionService.updateOrAddCompetition(competition);
 
-  @Test 
-  void testGettingAllTeamCompetitions() throws Exception {
-	  Competition competition1 = new TeamCompetition("Test1", new Grade(Sex.OTHER), "football");
-	  Competition competition2 = new UserCompetition("Test2", new Grade(Sex.OTHER), "football");
-    competition1 = competitionService.updateOrAddCompetition(competition1);
-    competition2 = competitionService.updateOrAddCompetition(competition2);
+        Optional<Competition> foundCompetition = competitionService.findCompetitionById(competition.getCompetitionId());
 
-    List<Competition> expectedCompetitions = new ArrayList<Competition>();
-    expectedCompetitions.add(competition1);
-    expectedCompetitions.add(competition2);
+        Assertions.assertTrue(foundCompetition.isPresent());
+        Assertions.assertEquals(competition.getCompetitionId(), foundCompetition.get().getCompetitionId());
+    }
 
-	  List<Competition> foundCompetitions = competitionService.getAllTeamCompetitions();
+    @Test
+    void testGettingAllTeamCompetitions() throws Exception {
+        Competition competition1 = new TeamCompetition("Test1", new Grade(Sex.OTHER), "football");
+        Competition competition2 = new UserCompetition("Test2", new Grade(Sex.OTHER), "football");
+        competition1 = competitionService.updateOrAddCompetition(competition1);
+        competition2 = competitionService.updateOrAddCompetition(competition2);
 
-	  Assertions.assertEquals(1, foundCompetitions.size());
-	  Assertions.assertTrue(expectedCompetitions.contains(competition1));
-  }
+        List<Competition> expectedCompetitions = new ArrayList<Competition>();
+        expectedCompetitions.add(competition1);
+        expectedCompetitions.add(competition2);
 
-  @Test
-  void testGettingAllUserCompetitions() throws Exception {
-	  Competition competition1 = new TeamCompetition("Test1", new Grade(Sex.OTHER), "football");
-	  Competition competition2 = new UserCompetition("Test2", new Grade(Sex.OTHER), "football");
-    competition1 = competitionService.updateOrAddCompetition(competition1);
-    competition1 = competitionService.updateOrAddCompetition(competition1);
-    competition2 = competitionService.updateOrAddCompetition(competition2);
+        List<Competition> foundCompetitions = competitionService.getAllTeamCompetitions();
 
-    List<Competition> expectedCompetitions = new ArrayList<Competition>();
-    expectedCompetitions.add(competition1);
-    expectedCompetitions.add(competition2);
+        Assertions.assertEquals(1, foundCompetitions.size());
+        Assertions.assertTrue(expectedCompetitions.contains(competition1));
+    }
 
-	  List<Competition> foundCompetitions = competitionService.getAllUserCompetitions();
+    @Test
+    void testGettingAllUserCompetitions() throws Exception {
+        Competition competition1 = new TeamCompetition("Test1", new Grade(Sex.OTHER), "football");
+        Competition competition2 = new UserCompetition("Test2", new Grade(Sex.OTHER), "football");
+        competition1 = competitionService.updateOrAddCompetition(competition1);
+        competition1 = competitionService.updateOrAddCompetition(competition1);
+        competition2 = competitionService.updateOrAddCompetition(competition2);
 
-	  Assertions.assertEquals(1, foundCompetitions.size());
-	  Assertions.assertTrue(expectedCompetitions.contains(competition2));
-  }
+        List<Competition> expectedCompetitions = new ArrayList<Competition>();
+        expectedCompetitions.add(competition1);
+        expectedCompetitions.add(competition2);
+
+        List<Competition> foundCompetitions = competitionService.getAllUserCompetitions();
+
+        Assertions.assertEquals(1, foundCompetitions.size());
+        Assertions.assertTrue(expectedCompetitions.contains(competition2));
+    }
 }
