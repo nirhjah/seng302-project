@@ -137,7 +137,7 @@ class GradeTest {
     private void testCannotParticipateIn(Grade.Age age, Grade.Age participationAge) {
         var caller = new Grade(age, Grade.Sex.MENS);
         var participation = new Grade(participationAge, Grade.Sex.MENS);
-        assertTrue(caller.canParticipateIn(participation));
+        assertFalse(caller.canParticipateIn(participation));
     }
 
     @Test

@@ -40,7 +40,7 @@ public class Grade {
         UNDER_17S("Under 17s", 17, true),
         UNDER_18S("Under 18s", 18, true),
         UNDER_19S("Under 19s", 19, true),
-        ADULT("", 0, false, false),
+        ADULT("", 20, false, false),
         OVER_50S("Over 50s", 50, false, true),
         OVER_60S("Over 60s", 60, false, true),
         OVER_70S("Over 70s", 70, false, true);
@@ -59,9 +59,9 @@ public class Grade {
          * @return True if participation allowed, false otherwise.
          */
         private boolean canParticipateIn(Age ageRange) {
-            if (this.isUnder) {
+            if (ageRange.isUnder) {
                 return this.age <= ageRange.age;
-            } else if (this.isOver) {
+            } else if (ageRange.isOver) {
                 return this.age >= ageRange.age;
             }
             // Open grade.
