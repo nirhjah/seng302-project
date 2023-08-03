@@ -16,6 +16,9 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 
+/**
+  Creates an admin user in the database. This class is automatically run on every startup.
+ */
 @Component
 public class AdminAccount implements CommandLineRunner {
     private final UserRepository userRepository;
