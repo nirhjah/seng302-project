@@ -136,7 +136,7 @@ public class ProfileFormControllerTest {
                     .andExpect(status().is3xxRedirection());
         }
 
-        var savedBytes = teamImageService.readFileOrDefault(team.getTeamId());
+        byte[] savedBytes = teamImageService.readFileOrDefault(team.getTeamId());
         assertFalse(Arrays.equals(savedBytes, fileBytes));
     }
 

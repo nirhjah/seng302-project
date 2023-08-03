@@ -114,7 +114,6 @@ public abstract class FileDataSaver {
      * @return String filename
      */
     private String getFilename(MultipartFile file) {
-        System.out.println("F MOD:" + TAB900_FILE_MODIFIER);
         String name = file.getOriginalFilename();
         if (!Objects.isNull(name) && name.length() > 0) {
             return name;
