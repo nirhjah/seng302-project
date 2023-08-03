@@ -14,10 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.Arrays;
 import java.util.Base64;
 
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -39,7 +37,7 @@ class ProfilePictureControllerTest {
     @MockBean
     private ClubImageService clubImageService;
 
-    private long id=1L;
+    private final long id=1L;
 
     // Arbitrary bytes representing an image
     private final byte[] fileBytes = new byte[] {56,65,65,78,54,45,32,54,67,87,11,9};
@@ -71,7 +69,7 @@ class ProfilePictureControllerTest {
 //    }
     @Test
     void testClubLogo() throws Exception {
-        MvcResult result1 = mockMvc.perform(get("/club-logo/{id}", id))
+        mockMvc.perform(get("/club-logo/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.IMAGE_JPEG))
                 .andExpect(content().bytes(this.fileBytes))
@@ -84,7 +82,7 @@ class ProfilePictureControllerTest {
         MvcResult result = mockMvc.perform(get("/team-profile-picture/{id}", id))
                 .andExpect(status().isOk())
                 .andReturn();
-        Assertions.assertTrue(result.getResponse().getContentAsString().equals(encodedFileBytes));
+        Assertions.assertEquals(result.getResponse().getContentAsString(), encodedFileBytes);
     }
 }
 
