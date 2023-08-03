@@ -39,5 +39,4 @@ out/
 .vscode/
 
 ### Our secrets ###
-/src/main/resources/application-default.properties
 .env
