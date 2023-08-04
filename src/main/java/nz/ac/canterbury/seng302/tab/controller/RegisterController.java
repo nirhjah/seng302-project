@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
 import nz.ac.canterbury.seng302.tab.form.RegisterForm;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
@@ -177,7 +178,7 @@ public class RegisterController {
 
         User user = opt.get();
         user.confirmEmail();
-        user.grantAuthority("ROLE_USER");
+        user.grantAuthority(AuthorityType.USER);
         user.setToken(null);
 
         userService.updateOrAddUser(user);

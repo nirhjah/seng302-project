@@ -11,8 +11,13 @@ import java.util.Optional;
 @Service
 public class FormationService {
 
+
+    private final FormationRepository formationRepository;
+
     @Autowired
-    private FormationRepository formationRepository;
+    public FormationService( FormationRepository formationRepository) {
+        this.formationRepository = formationRepository;
+    }
 
     public Optional<Formation> findFormationById(long id) {
         return formationRepository.findById(id);

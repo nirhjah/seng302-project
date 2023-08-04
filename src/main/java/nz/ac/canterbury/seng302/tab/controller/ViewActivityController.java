@@ -57,6 +57,10 @@ public class ViewActivityController {
 
     String createEventFormBindingResult = "createEventFormBindingResult";
 
+    String createEventFormString = "createEventForm";
+
+    String overallScoreTeamString = "overallScoreTeam";
+
     @Autowired
     public ViewActivityController(UserService userService, ActivityService activityService, TeamService teamService,FactService factService) {
         this.userService = userService;
@@ -65,6 +69,11 @@ public class ViewActivityController {
         this.factService=factService;
     }
 
+    /**
+     * Gets all fact types and other information for statistics depending on the activity type
+     * @param model  model to add data to
+     * @param activity  current activity
+     */
     private void populateOther(Model model, Activity activity) {
         ActivityType type = activity.getActivityType();
 
@@ -74,14 +83,14 @@ public class ViewActivityController {
         /*
         Different activity types have different sets of allowed FactTypes they can hold.
          */
-        List<FactType> possible = switch (type) {
+        List<FactType> possibleFactTypesForActivity = switch (type) {
             case Competition, Other -> List.of(FactType.FACT);
             case Friendly, Game -> List.of(FactType.GOAL, FactType.OPPOSITION_GOAL, FactType.SUBSTITUTION, FactType.FACT);
             case Training -> List.of();
         };
 
-        model.addAttribute("possibleFactTypes", possible);
-        model.addAttribute("noFacts", possible.size() == 0);
+        model.addAttribute("possibleFactTypes", possibleFactTypesForActivity);
+        model.addAttribute("noFacts", possibleFactTypesForActivity.size() == 0);
     }
 
     /**
@@ -99,7 +108,7 @@ public class ViewActivityController {
             HttpServletRequest request,
             CreateEventForm createEventForm) {
 
-        model.addAttribute("createEventForm", new CreateEventForm());
+        model.addAttribute(createEventFormString, new CreateEventForm());
 
         if (model.asMap().containsKey(createEventFormBindingResult))
         {
@@ -168,10 +177,11 @@ public class ViewActivityController {
     public String createEvent(
             @RequestParam(name = "actId", defaultValue = "-1") long actId,
             @RequestParam(name = "factType", defaultValue = "FACT")  FactType factType,
-            @RequestParam(name = "description") String description,
-            @RequestParam(name = "overallScoreTeam") String overallScoreTeam,
-            @RequestParam(name = "overallScoreOpponent") String overallScoreOpponent,
+            @RequestParam(name = "description", defaultValue = "") String description,
+            @RequestParam(name = "overallScoreTeam", defaultValue = "") String overallScoreTeam,
+            @RequestParam(name = "overallScoreOpponent", defaultValue = "") String overallScoreOpponent,
             @RequestParam(name = "time") String time,
+            @RequestParam(name = "goalValue", defaultValue = "1") int goalValue,
             @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
             @RequestParam(name = "playerOff", defaultValue = "-1") int subOffId,
             @RequestParam(name = "playerOn", defaultValue = "-1") int subOnId,
@@ -182,18 +192,15 @@ public class ViewActivityController {
             HttpServletResponse httpServletResponse,
             RedirectAttributes redirectAttributes) {
 
-        // create the new fact of facttype 
-        logger.info("POST /view-activity");
-        logger.info("got the desc " + description);
         logger.info(factType.name());
         logger.info(String.format("got the act id: %s", actId));
         logger.info(String.format("got the player on id: %s", subOnId));
         logger.info(String.format("got the player on id: %s", subOffId));
         logger.info(String.format("got the scorer id: %s", scorerId));
 
-        model.addAttribute("overallScoreTeam", overallScoreTeam);
+        model.addAttribute(overallScoreTeamString, overallScoreTeam);
         model.addAttribute("httpServletRequest", request);
-            
+
         Activity activity = activityService.findActivityById(actId);
         Fact fact;
         String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
@@ -201,19 +208,28 @@ public class ViewActivityController {
 
         if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 1) {
             logger.info("scores not same type");
-            bindingResult.addError(new FieldError("createEventForm", "overallScoreTeam", "Both teams require scores of the same type"));
+            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "Both teams require scores of the same type"));
         }
 
         if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 2) {
             logger.info("one score is empty");
-            bindingResult.addError(new FieldError("createEventForm", "overallScoreTeam", "Other score field cannot be empty"));
+            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "Other score field cannot be empty"));
+        }
+
+        if (factType == FactType.SUBSTITUTION && subOffId == subOnId) {
+            logger.info("players cannot sub themselves");
+            bindingResult.addError(new FieldError(createEventFormString, "subOn", "Players cannot sub themselves"));
+        }
+
+        if (factType == FactType.FACT && description.isEmpty()) {
+                logger.info("description was not provided for fact");
+                bindingResult.addError(new FieldError(createEventFormString, "description", "Fact type events require a description"));
         }
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             redirectAttributes.addFlashAttribute("scoreInvalid", "Leave Modal Open");
             redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
-
             return viewActivityRedirectUrl;
         }
 
@@ -228,12 +244,12 @@ public class ViewActivityController {
                     logger.error("Scorer Id not found");
                     return viewActivityRedirectUrl;
                 }
-                User scorer = potentialScorer.get();
-                fact = new Goal(description, time, activity, scorer);
 
-                // update the score
-                // activity.setOtherTeamScore("13");
-                activityService.updateTeamsScore(activity);
+                User scorer = potentialScorer.get();
+                fact = new Goal(description, time, activity, scorer, goalValue);
+
+                activityService.updateTeamsScore(activity, goalValue);
+
                 break;
 
             case SUBSTITUTION:
@@ -249,26 +265,26 @@ public class ViewActivityController {
                     logger.error("subbed on player Id not found");
                     return viewActivityRedirectUrl;
                 }
+
                 User playerOn = potentialSubOn.get();
 
                 fact = new Substitution(description, time, activity, playerOff, playerOn);
                 break;
 
             case OPPOSITION_GOAL:
-                activityService.updateAwayTeamsScore(activity);
+                activityService.updateAwayTeamsScore(activity, goalValue);
 
-                fact = new OppositionGoal(description, time, activity);
+                fact = new OppositionGoal(description, time, activity, goalValue);
                 break;
 
             default:
                 logger.error("fact type unknown value");
                 return viewActivityRedirectUrl;
         }
-        
+
         List<Fact> factList = new ArrayList<>();
         factList.add(fact);
         activity.addFactList(factList);
-
         activity = activityService.updateOrAddActivity(activity);
 
         return viewActivityRedirectUrl;
