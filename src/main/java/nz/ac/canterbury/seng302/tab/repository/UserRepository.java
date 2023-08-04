@@ -83,4 +83,9 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
         @Query("SELECT distinct u.favoriteSports FROM UserEntity u")
         public List<Sport> findAllUserSports();
+
+
+        @Query("SELECT u FROM UserEntity u LEFT JOIN u.userRoles a ON u.Id = a.user.Id " 
+                        + "WHERE a IS NULL OR a.role != 'ROLE_FEDERATION_MANAGER'")
+        public Page<User> findUsersThatArentFedMans(Pageable pageable);
 }

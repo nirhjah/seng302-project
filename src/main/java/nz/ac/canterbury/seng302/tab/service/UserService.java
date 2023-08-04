@@ -11,7 +11,6 @@ import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
 import nz.ac.canterbury.seng302.tab.authentication.TokenVerification;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -343,6 +342,15 @@ public class UserService {
     public void userJoinTeam(User user, Team team) {
         user.joinTeam(team);
         updateOrAddUser(user);
+    }
+
+    /**
+     * gets all users who arent federation managers
+     * @param pageable 
+     * @return all the users who arent federation managers
+    */
+    public Page<User> getAllUsersNotFedMans(Pageable pageable) {
+        return userRepository.findUsersThatArentFedMans(pageable);
     }
 
 }
