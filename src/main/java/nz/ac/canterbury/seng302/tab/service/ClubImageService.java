@@ -7,11 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 @Service
 public class ClubImageService extends FileDataSaver {
@@ -33,7 +36,7 @@ public class ClubImageService extends FileDataSaver {
 
         // TODO: We probably need to have a different default club logo here.
         //  maybe a shield or banner or something?
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        Resource resource = new ClassPathResource("/static/image/club-logo.svg");
         InputStream is = resource.getInputStream();
         defaultClubLogo = is.readAllBytes();
     }
@@ -46,6 +49,16 @@ public class ClubImageService extends FileDataSaver {
     @Override
     public byte[] getDefaultBytes() {
         return defaultClubLogo;
+    }
+
+    @Override
+    public ResponseEntity<byte[]> getDefaultResponseEntity() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "image/svg+xml");
+        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
+        return builder
+                .headers(headers)
+                .body(defaultClubLogo);
     }
 
 

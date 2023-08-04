@@ -82,7 +82,6 @@ public class ViewClubController {
     public void currentUserNavDisplay(User user, Model model){
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("displayPicture", user.getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
     }
 }

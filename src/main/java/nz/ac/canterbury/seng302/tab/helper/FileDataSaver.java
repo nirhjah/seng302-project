@@ -3,6 +3,8 @@ package nz.ac.canterbury.seng302.tab.helper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -250,13 +252,23 @@ public abstract class FileDataSaver {
      * Allows for specification of default bytes.
      * Think of this like a default profile picture, or a default image.
      * (If the IO operation fails, these bytes will be returned when possible)
-     *
      * The reason this is not abstract, is that some FileDataSavers may not have default
      * bytes. We still want to support the optional API in that situation.
      * @return An array of bytes as the default.
      */
     public byte[] getDefaultBytes() {
         return new byte[] {};
+    }
+
+    /**
+     * Allows for specification of default response entities.
+     * Example usage:
+     * If the default profile picture is an SVG,
+     * this should return a response entity to accommodate SVGs.
+     * @return An array of bytes as the default.
+     */
+    public ResponseEntity<byte[]> getDefaultResponseEntity() {
+        return null;
     }
 
     /**
@@ -352,6 +364,29 @@ public abstract class FileDataSaver {
         } else {
             // Else, return default bytes
             return getDefaultBytes();
+        }
+    }
+
+    public ResponseEntity.BodyBuilder getBodyBuilder() {
+        throw new RuntimeException("NYI");
+    }
+
+    /**
+     * Gets the response entity containing the file data
+     * @param id The integer id of the file type
+     * @param builder The response builder
+     * @return The response entity for display.
+     */
+    public ResponseEntity<byte[]> getResponseEntityOrDefault(Long id, ResponseEntity.BodyBuilder builder) {
+        Optional<byte[]> optBytes = readFile(id);
+        if (optBytes.isPresent()) {
+            // If the file exists, get the default bytes,
+            // Then return the responseEntity with the bytes added.
+            byte[] defaultBytes = optBytes.get();
+            return builder.body(defaultBytes);
+        } else {
+            // Else, return the default response
+            return getDefaultResponseEntity();
         }
     }
 

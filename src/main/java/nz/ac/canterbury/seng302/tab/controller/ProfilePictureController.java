@@ -123,8 +123,15 @@ public class ProfilePictureController {
             value = "/club-logo/{id}",
             produces = MediaType.IMAGE_JPEG_VALUE
     )
-    public @ResponseBody byte[] getClubLogo(@PathVariable long id) {
-        return clubImageService.readFileOrDefault(id);
+    public @ResponseBody ResponseEntity<byte[]> getClubLogo(@PathVariable long id) {
+        // It's a regular png/jpg
+        byte[] imageData = clubImageService.readFileOrDefault(id);
+
+        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
+        return builder
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(imageData);
+
     }
 }
 
