@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invite To Become Federation Manager</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <link th:href="@{/css/view-all.css}" rel="stylesheet">
+</head>
+<body class="view-users-background">
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+<form th:action="@{inviteToFederationManager}" method="get">
+  <div class="search-bar">
+    <input class="search-input" type="text" placeholder="Search name" th:name="currentSearch"
+           th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">
+    <button class="search-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
+  </div>
+</form>
+
+
+<div th:if="${listOfUsers.empty}" class="emptySearchResults">
+  No users found.
+</div>
+
+<div th:unless="${listOfUsers.empty}" class="card-container">
+  <div th:each="user : ${listOfUsers}" class="card">
+      <div class="card-wrapper">
+        <div class="card-image">
+          <img th:src="${'data:image/jpeg;base64,' + user.pictureString}" class="card-img-top" alt="User image">
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">[[|${user.firstName} ${user.lastName}|]]</h5>
+          <button>Invite</button>
+        </div>
+      </div>
+  </div>
+</div>
+
+
+
+<div th:insert="~{fragments/pagination.html :: pagination(pageName='view-users')}"></div>
+<footer>
+  <p>
+    Image by <a
+          href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+    on Freepik
+  </p>
+</footer>
+</body>
+</html>
