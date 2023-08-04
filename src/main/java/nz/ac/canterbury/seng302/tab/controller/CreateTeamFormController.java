@@ -59,7 +59,7 @@ public class CreateTeamFormController {
         model.addAttribute("teamNameUnicodeRegex", teamService.teamNameUnicodeRegex);
         model.addAttribute("teamNameMsg", TeamFormValidators.INVALID_CHARACTERS_MSG_TEAM_NAME);
         model.addAttribute("sportUnicodeRegex", teamService.sportUnicodeRegex);
-        model.addAttribute("sportUnicodeMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
+        model.addAttribute("sportUnicodeMsg", TeamFormValidators.INVALID_SPORT_MSG);
         model.addAttribute("httpServletRequest", httpServletRequest);
     }
 

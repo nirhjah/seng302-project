@@ -10,7 +10,7 @@ public class CreateAndEditTeamForm {
     @TeamFormValidators.teamNameValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG_TEAM_NAME)
     private String name;
 
-    @TeamFormValidators.teamSportValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG)
+    @TeamFormValidators.teamSportValidator(message = TeamFormValidators.INVALID_SPORT_MSG)
     private String sport;
     @LocationValidators.addressValidator
     private String addressLine1;
