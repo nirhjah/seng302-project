@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Optional;
 
 @Service
 public class ClubImageService extends FileDataSaver {
@@ -51,7 +50,6 @@ public class ClubImageService extends FileDataSaver {
         return defaultClubLogo;
     }
 
-    @Override
     public ResponseEntity<byte[]> getDefaultResponseEntity() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "image/svg+xml");

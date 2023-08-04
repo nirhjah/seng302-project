@@ -2,10 +2,7 @@ package nz.ac.canterbury.seng302.tab.helper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -366,30 +363,6 @@ public abstract class FileDataSaver {
             return getDefaultBytes();
         }
     }
-
-    public ResponseEntity.BodyBuilder getBodyBuilder() {
-        throw new RuntimeException("NYI");
-    }
-
-    /**
-     * Gets the response entity containing the file data
-     * @param id The integer id of the file type
-     * @param builder The response builder
-     * @return The response entity for display.
-     */
-    public ResponseEntity<byte[]> getResponseEntityOrDefault(Long id, ResponseEntity.BodyBuilder builder) {
-        Optional<byte[]> optBytes = readFile(id);
-        if (optBytes.isPresent()) {
-            // If the file exists, get the default bytes,
-            // Then return the responseEntity with the bytes added.
-            byte[] defaultBytes = optBytes.get();
-            return builder.body(defaultBytes);
-        } else {
-            // Else, return the default response
-            return getDefaultResponseEntity();
-        }
-    }
-
 
     /**
      * Reads bytes from a file.
