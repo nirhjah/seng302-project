@@ -10,10 +10,11 @@ dropdownName: String[opt.] - The parameter name sent to the controller on submit
     <div class="selectBox" th:data-dropdown="${dropdown_id}" onclick="showCheckboxes(this.dataset.dropdown)">
       <!--/* The name shown at the top of the dropdown */-->
       <select>
-        <option th:text="${optionName}">I'm a cool dropdown</option>
+        <option class="dropdown-title" th:text="${optionName}">I'm a cool dropdown</option>
       </select>
       <div class="overSelect"></div>
     </div>
+    <!--/* All of the "selected" items are shown */-->
     <ul class="multi-select-selected">
       <li>Hello
       </li>
@@ -24,14 +25,20 @@ dropdownName: String[opt.] - The parameter name sent to the controller on submit
       <li>Right
       </li>
     </ul>
-    <div th:id="${dropdown_id}" class="checkbox" style="display: none">
-      <th:block th:each="entry: ${listItems}">
-        <label>
+    <div th:id="${dropdown_id}" style="display: none">
+      <!--/* The search bar */-->
+      <div>
+        <input type="text" placeholder="Search" class="dropdown-search-bar">
+      </div>
+      <div class="checkbox">
+        <label th:each="entry: ${listItems}">
           <input type="checkbox" th:name="${dropdownName}" th:value="${entry}" th:text="| ${entry}|">
         </label>
-      </th:block>
+      </div>
     </div>
   </div>
+
+
   <script th:inline="javascript">
     var everyItem;
     if (everyItem === undefined) {

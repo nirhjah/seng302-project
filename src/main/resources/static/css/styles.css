@@ -398,27 +398,7 @@ ul {
 }
 
 
-#checkBoxes {
-    display: none;
-    max-height: 200px;
-    overflow-y: scroll;
-}
 
-.checkbox {
-    display: none;
-    max-height: 200px;
-    overflow-y: scroll;
-}
-
-.checkbox label {
-    display: block;
-    padding: 3px;
-
-}
-
-.checkbox label:hover {
-    background-color: #4F615E;
-}
 
 .filter-boxes div {
     display: inline-block;
@@ -461,25 +441,6 @@ ul {
     right: 0;
     top: 0;
     bottom: 0;
-}
-
-.checkbox {
-    display: none;
-    max-height: 200px;
-    overflow-y: scroll;
-    border-bottom-right-radius: 5px;
-    border-bottom-left-radius: 5px;
-    background-color: #415a77;
-}
-
-.checkbox label {
-    display: block;
-    padding: 7px;
-
-}
-
-.checkbox label:hover {
-    background-color: #4F615E;
 }
 
 ul.autocomplete-result{

@@ -1,0 +1,44 @@
+.checkbox label {
+    display: block;
+    padding: 3px;
+}
+
+.checkbox label:hover {
+    background-color: #4F615E;
+}
+
+.checkbox {
+    max-height: 200px;
+    overflow-y: scroll;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background-color: #415a77;
+}
+
+.dropdown-title {
+    text-align: center;
+}
+.dropdown-search-bar {
+    width: 100%;
+}
+
+.multi-select-selected li {
+    list-style: none;
+    border-radius: 25%;
+    background: #778DA9;
+    padding: 2%;
+    border: 1px solid #1B263B;
+    display: inline-block;
+    white-space: nowrap;
+    font-size: small;
+    font-weight: 600;
+    font-family: "Noto Sans", sans-serif;
+    color: #FFFF;
+    text-align: center;
+}
+
+.multi-select-selected li:after {
+    content: "\00D7";
+    font-size: medium;
+    padding: 5%;
+}
