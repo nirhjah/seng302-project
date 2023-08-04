@@ -133,7 +133,6 @@ public class ProfilePictureController {
         return builder
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(imageData);
-
     }
 }
 

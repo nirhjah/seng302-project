@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,6 +58,20 @@ public class TeamImageService extends FileDataSaver {
         return defaultProfilePicture;
     }
 
+    /**
+     * Gets an image response, as a ResponseEntity.
+     * This is what's displayed on the webpage.
+     * This could be a jpg,png, or svg.
+     * @param team
+     * @return
+     */
+    public ResponseEntity<byte[]> getImageResponse(Team team) {
+        byte[] data = readFileOrDefault(team.getTeamId());
+        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
+        return builder
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(data);
+    }
 
     /**
      * Updates a team's profile picture.
