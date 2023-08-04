@@ -162,7 +162,7 @@ public class FactServiceTest {
 
         List<Fact> factList = new ArrayList<>();
         factList.add(new Fact("Someone fell over", "1h 30m", activity));
-        Goal goal = new Goal("Goal was scored", "1h 40m", activity, player);
+        Goal goal = new Goal("Goal was scored", "1h 40m", activity, player, 1);
         factRepository.save(goal);
         factList.add(goal);
         factList.add(new Substitution("Player was taken off", "1h 40m", activity, creator, player));
@@ -190,9 +190,9 @@ public class FactServiceTest {
 
         List<Fact> factList = new ArrayList<>();
         factList.add(new Fact("Someone fell over", "1h 30m", activity));
-        Goal goal = new Goal("Goal was scored", "1h 40m", activity, player);
-        Goal goal1 = new Goal("A Goal was scored again", "1h 40m", activity, creator);
-        Goal goal2 = new Goal("A Goal", "1h 40m", activity, creator);
+        Goal goal = new Goal("Goal was scored", "1h 40m", activity, player, 1);
+        Goal goal1 = new Goal("A Goal was scored again", "1h 40m", activity, creator, 1);
+        Goal goal2 = new Goal("A Goal", "1h 40m", activity, creator, 1);
         factRepository.save(goal1);
         factRepository.save(goal2);
         factRepository.save(goal);
@@ -231,32 +231,32 @@ public class FactServiceTest {
 
         List<Fact> factList = new ArrayList<>();
 
-        Goal goal = new Goal("Goal was scored", "1h 40m", activity, player);
+        Goal goal = new Goal("Goal was scored", "1h 40m", activity, player, 1);
 
-        Goal goal1 = new Goal("A Goal was scored again", "1h 40m", activity, creator);
-        Goal goal2 = new Goal("A Goal", "1h 40m", activity, creator);
+        Goal goal1 = new Goal("A Goal was scored again", "1h 40m", activity, creator, 1);
+        Goal goal2 = new Goal("A Goal", "1h 40m", activity, creator, 1);
 
-        Goal goal3 = new Goal("A Goal", "1h 40m", activity, player1);
-        Goal goal4 = new Goal("A Goal", "1h 40m", activity, player1);
-        Goal goal5 = new Goal("A Goal", "1h 40m", activity, player1);
+        Goal goal3 = new Goal("A Goal", "1h 40m", activity, player1, 1);
+        Goal goal4 = new Goal("A Goal", "1h 40m", activity, player1, 1);
+        Goal goal5 = new Goal("A Goal", "1h 40m", activity, player1, 1);
 
-        Goal goal6 = new Goal("A Goal", "1h 40m", activity, player2);
-        Goal goal7 = new Goal("A Goal", "1h 40m", activity, player2);
-        Goal goal8 = new Goal("A Goal", "1h 40m", activity, player2);
-        Goal goal9 = new Goal("A Goal", "1h 40m", activity, player2);
+        Goal goal6 = new Goal("A Goal", "1h 40m", activity, player2, 1);
+        Goal goal7 = new Goal("A Goal", "1h 40m", activity, player2, 1);
+        Goal goal8 = new Goal("A Goal", "1h 40m", activity, player2, 1);
+        Goal goal9 = new Goal("A Goal", "1h 40m", activity, player2, 1);
 
-        Goal goal10 = new Goal("A Goal", "1h 40m", activity, player3);
-        Goal goal11 = new Goal("A Goal", "1h 40m", activity, player3);
-        Goal goal12 = new Goal("A Goal", "1h 40m", activity, player3);
-        Goal goal13 = new Goal("A Goal", "1h 40m", activity, player3);
-        Goal goal14 = new Goal("A Goal", "1h 40m", activity, player3);
+        Goal goal10 = new Goal("A Goal", "1h 40m", activity, player3, 1);
+        Goal goal11 = new Goal("A Goal", "1h 40m", activity, player3, 1);
+        Goal goal12 = new Goal("A Goal", "1h 40m", activity, player3, 1);
+        Goal goal13 = new Goal("A Goal", "1h 40m", activity, player3, 1);
+        Goal goal14 = new Goal("A Goal", "1h 40m", activity, player3, 1);
 
-        Goal goal15 = new Goal("A Goal", "1h 40m", activity, player4);
-        Goal goal16 = new Goal("A Goal", "1h 40m", activity, player4);
-        Goal goal17 = new Goal("A Goal", "1h 40m", activity, player4);
-        Goal goal18 = new Goal("A Goal", "1h 40m", activity, player4);
-        Goal goal19 = new Goal("A Goal", "1h 40m", activity, player4);
-        Goal goal20 = new Goal("A Goal", "1h 40m", activity, player4);
+        Goal goal15 = new Goal("A Goal", "1h 40m", activity, player4, 1);
+        Goal goal16 = new Goal("A Goal", "1h 40m", activity, player4, 1);
+        Goal goal17 = new Goal("A Goal", "1h 40m", activity, player4, 1);
+        Goal goal18 = new Goal("A Goal", "1h 40m", activity, player4, 1);
+        Goal goal19 = new Goal("A Goal", "1h 40m", activity, player4, 1);
+        Goal goal20 = new Goal("A Goal", "1h 40m", activity, player4, 1);
 
         factList.add(goal);
         factList.add(goal1);

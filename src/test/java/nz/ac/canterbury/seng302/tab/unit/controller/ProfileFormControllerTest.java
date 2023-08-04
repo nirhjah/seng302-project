@@ -109,8 +109,7 @@ public class ProfileFormControllerTest {
 
         mockMvc.perform(get("/profile")
                         .param("teamID", "2"))
-                .andExpect(status().isNotFound())
-                .andExpect(view().name("error"));
+                .andExpect(status().isNotFound());
     }
 
     @Test

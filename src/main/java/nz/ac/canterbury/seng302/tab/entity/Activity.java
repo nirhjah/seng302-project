@@ -226,6 +226,24 @@ public class Activity {
         return List.of();
     }
 
+
+    /**
+     * Gets all team members minus the manager, used to populate the subs dropdown of activity stats
+     * @return list of team members without manager
+     */
+    public List<User> getInvoledMembersNoManager() {
+        List<User> teamMembersWithoutManagers = new ArrayList<>();
+        if (team != null) {
+            for (User member : team.getTeamMembers()) {
+                if (!team.isManager(member)) {
+                    teamMembersWithoutManagers.add(member);
+                }
+            }
+            return teamMembersWithoutManagers;
+        }
+        return List.of();
+    }
+
     /**
      * Sets the formation for this activity
      * @param formation This formation should be from the same team as this activity (U33 AC1)
