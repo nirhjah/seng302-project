@@ -48,7 +48,7 @@ public class U39CreateViewUpdateCompetition {
         this.mockMvc = MockMvcBuilders.standaloneSetup().build();
     }
 
-    @Before("@edit_lineup_for_game")
+    @Before("@create_view_update_competition")
     public void setup() throws Exception {
         setupMocking();
         Location location = new Location("abcd", null, null, "chch", null, "nz");

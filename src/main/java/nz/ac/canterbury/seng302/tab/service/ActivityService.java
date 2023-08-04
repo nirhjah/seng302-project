@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -36,7 +37,6 @@ public class ActivityService {
 
     /**
      * Returns all activities
-     *
      * @return list of all stored activities
      */
     public List<Activity> findAll() {
@@ -120,42 +120,63 @@ public class ActivityService {
         }
     }
 
+    /**
+     * Gets page of all team activities
+     * @param team team to get activities from
+     * @param pageNo page number
+     * @param pageSize page size
+     * @return  page of all team activities
+     */
     public Page<Activity> getAllTeamActivitiesPage(Team team, int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         return activityRepository.findActivityByTeam(team, pageable);
     }
 
+    /**
+     * Get list of all team activities
+     * @param team team to get activities from
+     * @return list of all team activities
+     */
     public List<Activity> getAllTeamActivities(Team team) {
         return activityRepository.findActivityByTeam(team);
     }
 
     /**
      * Checks that the scores provided for both teams are of the same format
-     * First checks if the first team's score is of appropriate hyphen format, if
+     * First checks if both scores are empty, then true, or if one is empty and the other is not, it is false
+     * Then checks if the first team's score is of appropriate hyphen format, if
      * true will check if second team's score is of same hyphen format
      * Otherwise checks if first team's score is of only number format, if true it
      * will check if second team's score is of same only number format
      *
      * @param activityTeamScore score for the team associated with the activity
      * @param otherTeamScore    score for the other team
-     * @return true if the scores are both of same format, false otherwise
+     * @return 0 (true) if scores are both blank, both have hyphens or both are plain numbers.
+     * 1 (false) if mismatch of hyphen score and plain number score, and
+     * 2 (false) if one score is left empty while the other is not
      */
-    public boolean validateActivityScore(String activityTeamScore, String otherTeamScore) {
+    public int validateActivityScore(String activityTeamScore, String otherTeamScore) {
+        if (Objects.equals(activityTeamScore, "") && Objects.equals(otherTeamScore, "")) {
+            return 0; //return 0
+        }
+        if (Objects.equals(activityTeamScore, "") || Objects.equals(otherTeamScore, "")) {
+            return 2;
+        }
         if (activityTeamScore.matches(activityScoreHyphenRegex)) {
             if (otherTeamScore.matches(activityScoreHyphenRegex)) {
-                return true;
+                return 0;
             } else {
-                return false;
+                return 1;
             }
         } else {
             if (activityTeamScore.matches(activityScoreNumberOnlyRegex)) {
                 if (otherTeamScore.matches(activityScoreNumberOnlyRegex)) {
-                    return true;
+                    return 0;
                 } else {
-                    return false;
+                    return 1;
                 }
             }
-            return false;
+            return 1;
         }
     }
 
@@ -241,5 +262,34 @@ public class ActivityService {
 
     public List<Activity> findActivitiesByTeamAndActivityType(Team team, ActivityType activityType) {
         return activityRepository.findActivitiesByTeamAndActivityType(team, activityType);
+    }
+
+    /**
+     * increments the home teams score by one
+     **/
+    public void updateTeamsScore(Activity activity, int goalValue) {
+        String score = activity.getActivityTeamScore();
+        if (score == null) {
+            score = "0";
+        }
+        int parsedScore = Integer.parseInt(score);
+        parsedScore += goalValue;
+
+        activity.setActivityTeamScore(String.valueOf(parsedScore));
+    }
+
+    /**
+     * increments the away teams score by one
+     * @param activity The activity to update the other team's score
+     **/
+    public void updateAwayTeamsScore(Activity activity, int goalValue) {
+        String score = activity.getOtherTeamScore();
+        if (score == null) {
+            score = "0";
+        }
+        int parsedScore = Integer.parseInt(score);
+        parsedScore += goalValue;
+
+        activity.setOtherTeamScore(String.valueOf(parsedScore));
     }
 }

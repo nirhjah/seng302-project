@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
-import io.cucumber.java.en_old.Ac;
 import nz.ac.canterbury.seng302.tab.enums.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
@@ -95,7 +94,7 @@ public class ActivityServiceTest {
     public void ifActivityScoreBothSameFormat_Hyphen_returnTrue() {
         String activityTeamScore = "141-9";
         String otherTeamScore = "94-3";
-        Assertions.assertTrue(activityService.validateActivityScore(activityTeamScore, otherTeamScore));
+        Assertions.assertEquals(0, activityService.validateActivityScore(activityTeamScore, otherTeamScore));
     }
 
 
@@ -106,7 +105,7 @@ public class ActivityServiceTest {
     public void ifActivityScoreBothDifferentFormat_FirstScoreHyphen_returnFalse() {
         String activityTeamScore = "141-9";
         String otherTeamScore = "94";
-        Assertions.assertFalse(activityService.validateActivityScore(activityTeamScore, otherTeamScore));
+        Assertions.assertEquals(1, activityService.validateActivityScore(activityTeamScore, otherTeamScore));
     }
 
     /**
@@ -116,7 +115,27 @@ public class ActivityServiceTest {
     public void ifActivityScoreBothSameFormat_NumberOnly_returnTrue() {
         String activityTeamScore = "141";
         String otherTeamScore = "94";
-        Assertions.assertTrue(activityService.validateActivityScore(activityTeamScore, otherTeamScore));
+        Assertions.assertEquals(0, activityService.validateActivityScore(activityTeamScore, otherTeamScore));
+    }
+
+    /**
+     * Tests if both teams scores for an activity are both empty, return false
+     */
+    @Test
+    public void ifActivityScoreBothEmpty_returnTrue() {
+        String activityTeamScore = "";
+        String otherTeamScore = "";
+        Assertions.assertEquals(0, activityService.validateActivityScore(activityTeamScore, otherTeamScore));
+    }
+
+    /**
+     * Tests if one team score is empty and the other is not, return false
+     */
+    @Test
+    public void ifOneActivityScoreEmptyAndOtherNot_returnFalse() {
+        String activityTeamScore = "3";
+        String otherTeamScore = "";
+        Assertions.assertEquals(2, activityService.validateActivityScore(activityTeamScore, otherTeamScore));
     }
 
     /**
@@ -126,7 +145,7 @@ public class ActivityServiceTest {
     public void ifActivityScoreBothDifferentFormat_OneScoreNumberOnly_returnFalse() {
         String activityTeamScore = "99";
         String otherTeamScore = "94-23";
-        Assertions.assertFalse(activityService.validateActivityScore(activityTeamScore, otherTeamScore));
+        Assertions.assertEquals(1, activityService.validateActivityScore(activityTeamScore, otherTeamScore));
     }
 
     /**
@@ -267,6 +286,35 @@ public class ActivityServiceTest {
         activityRepository.save(training);
         activityRepository.save(game);
         Assertions.assertEquals(120, activityService.getTotalTimeAUserHasPlayedForATeam(u, team));
+    }
+
+    @Test
+    public void testUpdatingTeamsScore() throws Exception {
+        Team team = new Team("test", "soccer");
+        User u = new User("Test", "Account", "tab.team900@gmail.com", "password",
+                new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
+        Activity activity = new Activity(ActivityType.Game, team, "test activity",
+                LocalDateTime.of(2026, 1,1,6,30),
+                LocalDateTime.of(2026, 1,1,8,30), u,
+                new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
+        activityRepository.save(activity);
+        activityService.updateTeamsScore(activity, 3);
+        Assertions.assertEquals(activity.getActivityTeamScore(), String.valueOf(3));
+    }
+
+    @Test
+    public void testUpdatingOpponentTeamsScore() throws Exception {
+        Team team = new Team("test", "soccer");
+        User u = new User("Test", "Account", "tab.team900@gmail.com", "password",
+                new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
+        Activity activity = new Activity(ActivityType.Game, team, "test activity",
+                LocalDateTime.of(2026, 1,1,6,30),
+                LocalDateTime.of(2026, 1,1,8,30), u,
+                new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
+        activityRepository.save(activity);
+        activityService.updateAwayTeamsScore(activity, 2);
+        Assertions.assertEquals(activity.getOtherTeamScore(), String.valueOf(2));
+
     }
 
 }

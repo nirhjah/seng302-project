@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
@@ -60,6 +59,10 @@ public class Team {
     @JoinColumn(name="clubId")
     private Club teamClub;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn
+    private Grade grade;
+
     protected Team() {
     }
 
@@ -72,6 +75,7 @@ public class Team {
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.token = generateToken();
         this.creationDate = LocalDateTime.now();
+        this.grade = new Grade(Grade.Age.ADULT, Grade.Sex.OTHER);
     }
 
     /**
@@ -96,6 +100,7 @@ public class Team {
         // set the manager
         this.setManager(manager);
         this.creationDate = LocalDateTime.now();
+        this.grade = new Grade(Grade.Age.ADULT, Grade.Sex.OTHER);
     }
 
     /**
@@ -114,6 +119,14 @@ public class Team {
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.creationDate = LocalDateTime.now();
+    }
+
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
     }
 
     public Long getTeamId() {

@@ -19,12 +19,15 @@ public class OppositionGoal extends Fact{
     @JoinColumn(name = "fk_userID", referencedColumnName = "Id")
     private User scorer;
 
+    private int goalValue;
+
     /**
      * Empty Constructor for JPA
      **/
     public OppositionGoal() {}
 
-    public OppositionGoal(String description, String timeOfEvent, Activity activity) {
+    public OppositionGoal(String description, String timeOfEvent, Activity activity, int goalValue) {
         super(description, timeOfEvent, activity);
+        this.goalValue = goalValue;
     }
 }
