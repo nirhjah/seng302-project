@@ -15,4 +15,12 @@ public class FederationService {
     public User getUserByFedInviteToken(String token) {
         return federationRepository.getFederationManagerInviteByToken(token).getUser();
     }
+
+    public FederationManagerInvite getByToken(String token) {
+        return federationRepository.getFederationManagerInviteByToken(token);
+    }
+
+    public void updateOrSave(FederationManagerInvite invite) {
+        federationRepository.save(invite);
+    }
 }

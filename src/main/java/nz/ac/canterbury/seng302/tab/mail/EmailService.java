@@ -116,8 +116,8 @@ public class EmailService {
      * @param user the receiver of the email
      * @param request the HTTPRequest, so the correct link will be sent
      */
-    public void federationManagerInvite(User user, HttpServletRequest request) throws MessagingException {
-        String tokenVerificationLink = getBaseUrl(request) + "/federationManager?token=" + user.getToken();
+    public void federationManagerInvite(User user, HttpServletRequest request, String token) throws MessagingException {
+        String tokenVerificationLink = getBaseUrl(request) + "/federationManager?token=" + token;
         EmailDetails email = new EmailDetails(user.getEmail(), null,
                 EmailDetails.FEDERATION_MANAGER_INVITE, "mail/federationManagerInvite.html");
 

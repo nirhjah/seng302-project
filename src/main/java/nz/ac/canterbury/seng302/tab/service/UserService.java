@@ -53,12 +53,16 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final FederationService federationService;
+
     @Autowired
-    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService,
+                       PasswordEncoder passwordEncoder, FederationService federationService) {
         this.userRepository = userRepository;
         this.taskScheduler = taskScheduler;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
+        this.federationService = federationService;
     }
 
 
@@ -349,16 +353,11 @@ public class UserService {
      */
     public void inviteToFederationManger(User user, HttpServletRequest request) {
         FederationManagerInvite fedManInvite = new FederationManagerInvite(user);
-
-        String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "")
-                + "/federationManager?token=" + fedManInvite.getToken();
-
-        if (request.getRequestURL().toString().contains("test")) {
-            tokenVerificationLink =  "https://csse-s302g9.canterbury.ac.nz/test/federationManager?token=" + fedManInvite.getToken();
+        federationService.updateOrSave(fedManInvite);
+        try {
+            emailService.federationManagerInvite(user, request, fedManInvite.getToken());
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
         }
-        if (request.getRequestURL().toString().contains("prod")) {
-            tokenVerificationLink =  "https://csse-s302g9.canterbury.ac.nz/prod/federationManager?token=" + fedManInvite.getToken();
-        }
-        emailService.joinFederationManager(user, tokenVerificationLink);
     }
 }

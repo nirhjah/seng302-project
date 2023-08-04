@@ -1,7 +1,9 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.entity.FederationManagerInvite;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
 import nz.ac.canterbury.seng302.tab.service.FederationService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
@@ -25,21 +27,24 @@ public class FederationManagerInviteController {
     @Autowired
     UserService userService;
 
-    String tok;
+    FederationManagerInvite fedInvite;
 
     @GetMapping("/federationManager")
     public String fedManagerInvitation(@RequestParam("token") String token, HttpServletRequest request, Model model) {
         model.addAttribute("httpServletRequest", request);
-        tok = token;
+        fedInvite = federationService.getByToken(token);
         return "federationManagerInvite";
     }
 
     @PostMapping("/federationManager")
-    public String federationManager(@RequestParam("token") String token, @RequestParam("decision") boolean decision, Model model) {
-        if (decision) {
+    public String federationManager(@RequestParam(name = "decision") String decision) {
+        boolean choice = Boolean.parseBoolean(decision);
+        if (choice) {
             User u = userService.getCurrentUser().get();
-            //TODO Grant permission
+            userService.updateOrAddUser(u);
             logger.info("FED MANAGER NOW");
+        } else {
+            logger.info("NOT FED MANAGER");
         }
         return "redirect:user-info/self";
     }

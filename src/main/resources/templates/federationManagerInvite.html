@@ -22,12 +22,12 @@
         <br>
             <p style="text-align: center">By accepting this invitation you will gain the ability to create competitions.</p>
         <br>
-            <form method="post" name="inviteForm" id="inviteForm">
+            <form th:action="@{federationManager}" method="post" name="inviteForm" id="inviteForm">
                 <div class="submit-button">
-                    <button onclick="accept()">Accept</button>
+                    <button type="submit" name="decision" value="true">Accept</button>
                 </div>
                 <div class="submit-button">
-                    <button onclick="decline()">Decline</button>
+                    <button type="submit" name="decision" value="false">Decline</button>
                 </div>
             </form>
         </div>
@@ -44,25 +44,24 @@
 </body>
 
 <script>
-    function accept()
-    {
+    async function accept() {
         const form = document.getElementById("inviteForm")
         const decision = document.createElement("decision")
         decision.setAttribute("type", "hidden");
         decision.setAttribute("name", "decision")
         decision.setAttribute("value", "true")
-        form.appendChild(decision)
+        await form.appendChild(decision)
         form.submit()
     }
 
-    function decline()
+    async function decline()
     {
         const form = document.getElementById("inviteForm")
         const decision = document.createElement("decision")
         decision.setAttribute("type", "hidden");
         decision.setAttribute("name", "decision")
         decision.setAttribute("value", "false")
-        form.appendChild(decision)
+        await form.appendChild(decision)
         form.submit()
     }
 
