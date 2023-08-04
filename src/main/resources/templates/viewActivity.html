@@ -109,10 +109,11 @@
                     <label for="activityOutcomes" style="display: block">Outcome of Game for Home Team <span class="required">*</span> </label>
                     <div class="select-box">
                         <select id="activityOutcomes" name="activityOutcomes">
-                            <option value="-1">Outcome of Activity</option>
+                            <option th:value="${noOutcome}">Outcome of Activity</option>
                             <option th:each="outcome : ${activityOutcomes}"
                                     th:value="${outcome}"
-                                    th:text="${outcome}"></option>
+                                    th:text="${outcome}"
+                                    th:selected="${outcome == selectedOutcome}"></option>
                         </select>
                     </div>
                     </div>
@@ -124,6 +125,8 @@
                         <label for="factType" style="display: block">Event Type: <span class="required">*</span> </label>
                         <div class="select-box">
                             <select id="factType" name="factType">
+                                <option th:value="${noFact}">Select Fact Type</option>
+
                                 <option th:each="fact : ${possibleFactTypes}"
                                         th:value="${fact}"
                                         th:text="${fact}"></option>
@@ -131,7 +134,7 @@
                         </div>
                     </div>
 
-                    <div class="select-container">
+                    <div class="select-container" id="factDescBox">
                         <div class="description-box">
                         <label for="description">Description: <span class="required">*</span></label>
                         <textarea class="description-text" id="description" th:name="description" autofocus placeholder=""
@@ -232,6 +235,7 @@
     function handleDropdownChange() {
         // Clear the additional fields div
         additionalFieldsDiv.innerHTML = "";
+        var factDescBox = document.getElementById("factDescBox");
 
         // Get the selected option value
         var selectedOption = factTypeSelect.value;
@@ -256,8 +260,14 @@
         goalValueInput.defaultValue = "1"
         goalValueInput.min = "1"
 
+
+        if (selectedOption === "NONE") {
+            factDescBox.style.display = "none";
+        }
+
         // Check if the selected option has additional fields
         if (selectedOption === "GOAL") {
+            factDescBox.style.display = "block";
             // Create a new select element for the scorer
             var selectScorer = document.createElement("select");
             selectScorer.name = "scorer";
@@ -285,6 +295,8 @@
         }
 
         if (selectedOption === 'SUBSTITUTION') {
+            factDescBox.style.display = "block";
+
             // new select element for the player subbed off 
             var selectPlayerOff = document.createElement("select");
             selectPlayerOff.name = "playerOff";
@@ -330,6 +342,8 @@
         }
 
         if (selectedOption === "OPPOSITION_GOAL") {
+            factDescBox.style.display = "block";
+
             var oppositionGoalValueLabel = document.createElement("label");
             oppositionGoalValueLabel.innerHTML = "Goal value:";
             oppositionGoalValueLabel.style.display = "block";

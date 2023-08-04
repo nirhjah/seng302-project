@@ -91,7 +91,10 @@ public class ViewActivityController {
         };
 
         model.addAttribute("possibleFactTypes", possibleFactTypesForActivity);
+        model.addAttribute("noFact", FactType.NONE);
         model.addAttribute("activityOutcomes", List.of(ActivityOutcome.Win, ActivityOutcome.Loss, ActivityOutcome.Draw));
+        model.addAttribute("noOutcome", ActivityOutcome.None);
+        model.addAttribute("selectedOutcome", activity.getOutcome() != null ? activity.getOutcome() : ActivityOutcome.None);
 
         model.addAttribute("noFacts", possibleFactTypesForActivity.size() == 0);
     }
@@ -184,7 +187,7 @@ public class ViewActivityController {
             @RequestParam(name = "description", defaultValue = "") String description,
             @RequestParam(name = "overallScoreTeam", defaultValue = "") String overallScoreTeam,
             @RequestParam(name = "overallScoreOpponent", defaultValue = "") String overallScoreOpponent,
-            @RequestParam(name = "activityOutcomes", defaultValue = "-1") ActivityOutcome activityOutcome,
+            @RequestParam(name = "activityOutcomes", defaultValue = "NONE") ActivityOutcome activityOutcome,
             @RequestParam(name = "time") String time,
             @RequestParam(name = "goalValue", defaultValue = "1") int goalValue,
             @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
@@ -289,8 +292,9 @@ public class ViewActivityController {
                 return viewActivityRedirectUrl;
         }
 
-        activity.setActivityOutcome(activityOutcome);
-
+        if (activityOutcome != ActivityOutcome.None) {
+            activity.setActivityOutcome(activityOutcome);
+        }
 
         List<Fact> factList = new ArrayList<>();
         factList.add(fact);
