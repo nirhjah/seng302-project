@@ -164,6 +164,7 @@ public class ViewActivityController {
      * @param description description of event
      * @param overallScoreTeam  overall score for team
      * @param overallScoreOpponent overall score for opponent
+     * @param activityOutcome outcome of activity (win loss or draw) for team
      * @param time                 time of event
      * @param scorerId             user ID of scorer
      * @param subOffId             user ID of sub off
@@ -183,6 +184,7 @@ public class ViewActivityController {
             @RequestParam(name = "description", defaultValue = "") String description,
             @RequestParam(name = "overallScoreTeam", defaultValue = "") String overallScoreTeam,
             @RequestParam(name = "overallScoreOpponent", defaultValue = "") String overallScoreOpponent,
+            @RequestParam(name = "activityOutcomes", defaultValue = "-1") ActivityOutcome activityOutcome,
             @RequestParam(name = "time") String time,
             @RequestParam(name = "goalValue", defaultValue = "1") int goalValue,
             @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
@@ -228,6 +230,8 @@ public class ViewActivityController {
                 logger.info("description was not provided for fact");
                 bindingResult.addError(new FieldError(createEventFormString, "description", "Fact type events require a description"));
         }
+
+
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -285,10 +289,14 @@ public class ViewActivityController {
                 return viewActivityRedirectUrl;
         }
 
+        activity.setActivityOutcome(activityOutcome);
+
+
         List<Fact> factList = new ArrayList<>();
         factList.add(fact);
         activity.addFactList(factList);
         activity = activityService.updateOrAddActivity(activity);
+
 
         return viewActivityRedirectUrl;
     }
