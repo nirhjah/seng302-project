@@ -1,19 +1,24 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
-import nz.ac.canterbury.seng302.tab.helper.GenerateRandomUsers;
+import nz.ac.canterbury.seng302.tab.service.ClubImageService;
+import nz.ac.canterbury.seng302.tab.service.TeamImageService;
 import nz.ac.canterbury.seng302.tab.service.UserImageService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import java.util.Base64;
+
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -23,62 +28,53 @@ class ProfilePictureControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
+    @MockBean
     private UserImageService userImageService;
 
-    @Autowired
-    private UserService userService;
+    @MockBean
+    private TeamImageService teamImageService;
 
-    private final GenerateRandomUsers generator = new GenerateRandomUsers();
+    @MockBean
+    private ClubImageService clubImageService;
 
-    private long userId;
+    private final long id=1L;
 
     // Arbitrary bytes representing an image
     private final byte[] fileBytes = new byte[] {56,65,65,78,54,45,32,54,67,87,11,9};
 
     @BeforeEach
     void setup() {
-        // Generate user and pfp for user
-        var u = generator.createRandomUser();
-        userId = u.getUserId();
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("my_image.jpg", fileBytes);
-        // We need to save the user before we save profile picture
-        userService.updateOrAddUser(u);
-        userImageService.updateProfilePicture(userId, mockMultipartFile);
-
-        // Generate team and pfp for team.
-        // remember to add to database!
-        // ALSO note: You can only update the pfp if you are a manager/coach of team.
-        // TODO.
-
-        // Generate club and club-logo for club
-        // remember to add to database, or it wont work!
-        // ALSO note: You can only update the pfp if you are a manager of the club
-        // TODO.
+        when(userImageService.readFileOrDefault(this.id)).thenReturn(this.fileBytes);
+        // The teamImageService seems to call a different method for some reason - not sure why.
+        when(teamImageService.readFileOrDefaultB64(this.id)).thenReturn(Base64.getEncoder().encodeToString(this.fileBytes));
+        when(clubImageService.readFileOrDefault(this.id)).thenReturn(this.fileBytes);
     }
 
     @Test
     void testUserProfilePicture() throws Exception {
-        MvcResult result1 = mockMvc.perform(get("/user-profile-picture/{id}", userId))
+        mockMvc.perform(get("/user-profile-picture/{id}", this.id))
                 .andExpect(status().isOk())
-                .andReturn();
-        // TODO: check that the response is equal to the original fileBytes
+                .andExpect(content().contentType(MediaType.IMAGE_JPEG))
+                .andExpect(content().bytes(this.fileBytes));
     }
+
 
     @Test
     void testClubLogo() throws Exception {
-        MvcResult result1 = mockMvc.perform(get("/club-logo/{id}", userId))
+        mockMvc.perform(get("/club-logo/{id}", id))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.IMAGE_JPEG))
+                .andExpect(content().bytes(this.fileBytes))
                 .andReturn();
-        // TODO: check that the response is equal to the original bytes
     }
 
     @Test
     void testTeamProfilePicture() throws Exception {
-        MvcResult result1 = mockMvc.perform(get("/team-profile-picture/{id}", userId))
+        String encodedFileBytes = Base64.getEncoder().encodeToString(this.fileBytes);
+        MvcResult result = mockMvc.perform(get("/team-profile-picture/{id}", id))
                 .andExpect(status().isOk())
                 .andReturn();
-        // TODO: check that the response is equal to the original bytes
+        Assertions.assertEquals(result.getResponse().getContentAsString(), encodedFileBytes);
     }
 }
 

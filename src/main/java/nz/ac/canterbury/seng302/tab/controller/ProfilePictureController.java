@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+
 /**
  * ProfilePictureController.
  * -
@@ -35,6 +36,7 @@ public class ProfilePictureController {
     private final UserImageService userImageService;
     private final TeamImageService teamImageService;
     private final ClubImageService clubImageService;
+
 
     @Autowired
     public ProfilePictureController(UserImageService userImageService, TeamImageService teamImageService, ClubImageService clubImageService) {
