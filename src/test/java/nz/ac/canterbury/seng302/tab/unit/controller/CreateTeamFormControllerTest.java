@@ -42,13 +42,19 @@ public class CreateTeamFormControllerTest {
     private static final String USER_POSTCODE = "8000";
     private static final String USER_CITY = "Christchurch";
     private static final String USER_COUNTRY = "New Zealand";
+
+    private static final long TEAM_ID = 777;
+    private static final long USER_ID = 999;
+
     @Autowired
     private MockMvc mockMvc;
+
     @MockBean
     private UserService mockUserService;
 
     @MockBean
     private TeamService mockTeamService;
+
     @MockBean
     private SportService mockSportService;
 
@@ -70,14 +76,14 @@ public class CreateTeamFormControllerTest {
         Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY, USER_POSTCODE, USER_COUNTRY);
 
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
-
+        user = userRepository.save(user);
+        
         team = new Team("test", "Rugby", new Location("3 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"), user);
-        teamRepository.save(team);
-        userRepository.save(user);
+        team = teamRepository.save(team);
 
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
         when(mockUserService.emailIsInUse(anyString())).thenReturn(false);
-        when(mockTeamService.getTeam(anyLong())).thenReturn(team);
+        when(mockTeamService.getTeam(team.getTeamId())).thenReturn(team);
         when(mockTeamService.updateTeam(any())).thenReturn(team);
     }
 
@@ -96,7 +102,8 @@ public class CreateTeamFormControllerTest {
                         .param("addressLine2", "addressline2")
                         .param("city", "Christchurch")
                         .param("country", "New Zealand")
-                        .param("postcode", "fghj").param("suburb", "ilam"))
+                        .param("postcode", "fghj")
+                        .param("suburb", "ilam"))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:./profile?teamID=1"));
     }
@@ -130,7 +137,8 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenSportFieldIsInvalid_return302() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L).param("teamID", String.valueOf(team.getTeamId()))
+        mockMvc.perform(post("/createTeam", 42L)
+                        .param("teamID", String.valueOf(team.getTeamId()))
                         .param("name", "test")
                         .param("sport", "###")
                         .param("addressLine1", "addressline1")
@@ -150,7 +158,8 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenCityIsInvalid_return400() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L).param("teamID", String.valueOf(team.getTeamId()))
+        mockMvc.perform(post("/createTeam", 42L)
+                        .param("teamID", String.valueOf(team.getTeamId()))
                         .param("name", "test")
                         .param("sport", "hockey")
                         .param("addressLine1", "addressline1")
@@ -217,8 +226,10 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenCityIsInvalidWithCharsValidForTeam__return400() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L).param("teamID", String.valueOf(team.getTeamId()))
-                        .param("name", "test").param("sport", "hockey")
+        mockMvc.perform(post("/createTeam", 42L)
+                        .param("teamID", String.valueOf(team.getTeamId()))
+                        .param("name", "test")
+                        .param("sport", "hockey")
                         .param("location", "abc123'{}.a")
                         .param("addressLine1", "abc123'{}.a1")
                         .param("addressLine2", "addressline2")
@@ -237,8 +248,10 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenCountryIsInvalidWithCharsValidForTeam__return400() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L).param("teamID", String.valueOf(team.getTeamId()))
-                        .param("name", "test").param("sport", "hockey")
+        mockMvc.perform(post("/createTeam", 42L)
+                        .param("teamID", String.valueOf(team.getTeamId()))
+                        .param("name", "test")
+                        .param("sport", "hockey")
                         .param("addressLine1", "abc123'{}.a1")
                         .param("addressLine2", "addressline2")
                         .param("city", "Christchurch")
@@ -255,8 +268,10 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenSuburbIsInvalidWithCharsValidForTeam__return400() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L).param("teamID", String.valueOf(team.getTeamId()))
-                        .param("name", "test").param("sport", "hockey")
+        mockMvc.perform(post("/createTeam", 42L)
+                        .param("teamID", String.valueOf(team.getTeamId()))
+                        .param("name", "test")
+                        .param("sport", "hockey")
                         .param("addressLine1", "addressline1")
                         .param("addressLine2", "addressline2")
                         .param("city", "Christchurch")
@@ -273,7 +288,8 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenPostcodeIsInvalidWithCharsValidForTeam__return400() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L).param("teamID", String.valueOf(team.getTeamId()))
+        mockMvc.perform(post("/createTeam", 42L)
+                        .param("teamID", String.valueOf(team.getTeamId()))
                         .param("name", "test")
                         .param("sport", "hockey")
                         .param("addressLine1", "addressline1")
@@ -300,7 +316,8 @@ public class CreateTeamFormControllerTest {
                         .param("addressLine2", "addressline2")
                         .param("city", "Christchurch")
                         .param("country", "New Zealand")
-                        .param("postcode", "fghj").param("suburb", "ilam"))
+                        .param("postcode", "fghj")
+                        .param("suburb", "ilam"))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:./profile?teamID=" + team.getTeamId()));
     }
@@ -320,7 +337,8 @@ public class CreateTeamFormControllerTest {
                         .param("addressLine2", "")
                         .param("city", "Christchurch")
                         .param("country", "New Zealand")
-                        .param("postcode", "fghj").param("suburb", "ilam"))
+                        .param("postcode", "fghj")
+                        .param("suburb", "ilam"))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:./profile?teamID=" + team.getTeamId()));
     }
@@ -340,7 +358,8 @@ public class CreateTeamFormControllerTest {
                         .param("addressLine2", "addressline1")
                         .param("city", "Christchurch")
                         .param("country", "New Zealand")
-                        .param("postcode", "fghj").param("suburb", ""))
+                        .param("postcode", "fghj")
+                        .param("suburb", ""))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:./profile?teamID=" + team.getTeamId()));
     }
@@ -360,7 +379,8 @@ public class CreateTeamFormControllerTest {
                         .param("addressLine2", "addressline2")
                         .param("city", "Christchurch")
                         .param("country", "New Zealand")
-                        .param("postcode", "").param("suburb", ""))
+                        .param("postcode", "")
+                        .param("suburb", ""))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:./profile?teamID=" + team.getTeamId()));
     }
@@ -380,7 +400,8 @@ public class CreateTeamFormControllerTest {
                         .param("addressLine2", "")
                         .param("city", "Christchurch")
                         .param("country", "New Zealand")
-                        .param("postcode", "").param("suburb", ""))
+                        .param("postcode", "")
+                        .param("suburb", ""))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:./profile?teamID=" + team.getTeamId()));
 
@@ -396,7 +417,8 @@ public class CreateTeamFormControllerTest {
                         .param("addressLine2", "")
                         .param("city", "Christchurch")
                         .param("country", "New Zealand")
-                        .param("postcode", "7897").param("suburb", ""))
+                        .param("postcode", "7897")
+                        .param("suburb", ""))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrlPattern("**/profile?teamID=" + team.getTeamId()));
         verify(mockSportService, times(1)).addSport(any());
