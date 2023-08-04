@@ -20,6 +20,27 @@ th:nth-child(4) {
     width: 60%;
 }
 
+.multi-select-selected li {
+    list-style: none;
+    border-radius: 25%;
+    background: #778DA9;
+    padding: 2%;
+    border: 1px solid #1B263B;
+    display: inline-block;
+    white-space: nowrap;
+    font-size: small;
+    font-weight: 600;
+    font-family: "Noto Sans", sans-serif;
+    color: #FFFF;
+    text-align: center;
+}
+
+.multi-select-selected li:after {
+    content: "\00D7";
+    font-size: medium;
+    padding: 5%;
+}
+
 .search-bar {
     margin: 10px auto;
     width: 60%;

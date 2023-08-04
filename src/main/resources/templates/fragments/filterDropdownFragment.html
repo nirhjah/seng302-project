@@ -4,32 +4,40 @@ optionName: String - What the dropdown is called "e.g. 'Filter by city'"
 dropdownName: String[opt.] - The parameter name sent to the controller on submit
 */ -->
 <div th:fragment="filterDropdownFragment(listItems, optionName, dropdownName)"
-     th:with="dropdown_id=|checkbox-${dropdownName}|, select_all=|select_all-${dropdownName}|">
+     th:with="dropdown_id=|checkbox-${dropdownName}|">
   <!--/* We set custom ID names so we can use this fragment multiple times on the same page */-->
   <div class="multipleSelection">
     <div class="selectBox" th:data-dropdown="${dropdown_id}" onclick="showCheckboxes(this.dataset.dropdown)">
       <!--/* The name shown at the top of the dropdown */-->
       <select>
-        <option th:text="${optionName}"></option>
+        <option th:text="${optionName}">I'm a cool dropdown</option>
       </select>
       <div class="overSelect"></div>
     </div>
+    <ul class="multi-select-selected">
+      <li>Hello
+      </li>
+      <li>Goodbye
+      </li>
+      <li>Left
+      </li>
+      <li>Right
+      </li>
+    </ul>
     <div th:id="${dropdown_id}" class="checkbox" style="display: none">
-      <label th:for="${select_all}">
-        <input type="checkbox" th:id="${select_all}" th:data-target-checkbox="${dropdownName}"
-          onclick="selectAllCheckboxes(this.checked, this.dataset.targetCheckbox)" />
-        Select all
-      </label>
       <th:block th:each="entry: ${listItems}">
         <label>
-          <input type="checkbox" th:value="${entry}" th:name="${dropdownName}" th:data-select-all-id="${select_all}"
-            onclick="updateSelectAllCheckbox(this.dataset.selectAllId, this.name)">
-          <th:block th:text="${entry}"></th:block>
+          <input type="checkbox" th:name="${dropdownName}" th:value="${entry}" th:text="| ${entry}|">
         </label>
       </th:block>
     </div>
   </div>
   <script th:inline="javascript">
+    var everyItem;
+    if (everyItem === undefined) {
+      everyItem = new Map();
+    }
+    everyItem.set(/*[[${dropdownName}]]*/ "", /*[[${listItems}]]*/ []);
 
     /** Pre-check any boxes checked when the page was last submitted. */
     function init(checkboxName) {
@@ -52,30 +60,6 @@ dropdownName: String[opt.] - The parameter name sent to the controller on submit
         checkboxes.style.display = "none";
       } else {
         console.error("`checkboxes.style.display` was neither 'block' nor 'none', but a secret third thing:", checkboxes.style.display);
-      }
-    }
-
-
-    /* This function unchecks the `Select All` box if all checkboxes aren't checked, then
-        re-checks it all of them are */
-    function updateSelectAllCheckbox(selectAllCheckboxId, otherCheckboxesName) {
-      const selectAll = document.getElementById(selectAllCheckboxId);
-      const checkboxes = Array.from(document.getElementsByName(otherCheckboxesName));
-      const areAllBoxesTicked = checkboxes.every(box => box.checked);
-      if (selectAll.checked && !areAllBoxesTicked) {
-        selectAll.checked = false;
-      } else if (!selectAll.checked && areAllBoxesTicked) {
-        selectAll.checked = true;
-      }
-    }
-
-    /* Set every value in the dropdown to the value of "select all".
-    i.e. Setting "select all" will make every item ticked. Unsetting it deselects them.*/
-    function selectAllCheckboxes(isChecked, checkboxName) {
-      let checkboxes = document.getElementsByName(checkboxName);
-      for (const element of checkboxes) {
-        if (element.type == 'checkbox')
-          element.checked = isChecked;
       }
     }
 

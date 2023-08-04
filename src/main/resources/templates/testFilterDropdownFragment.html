@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+  <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link th:href="@{/css/styles.css}" rel="stylesheet" />
+  <link th:href="@{/css/navbar.css}" rel="stylesheet" />
+  <link th:href="@{/css/view-all.css}" rel="stylesheet">
+  <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <title th:inline="text">Testing the dropdown</title>
+</head>
+
+<body class="background">
+  <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${ {} })}"></div>
+
+  <span style="margin: auto">
+    <div
+      th:insert="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${items}, 'The Items', 'sports')}">
+    </div>
+    <div
+      th:insert="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${secondItems}, 'The Second Items', 'sports2')}">
+    </div>
+  </span>
+</body>
