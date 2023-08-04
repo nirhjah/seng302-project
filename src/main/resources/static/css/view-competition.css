@@ -53,10 +53,30 @@
     margin-top: 5%;
     margin-left: 5%;
     margin-right: 5%;
+    display: flex;
+}
+
+.teamOrUserListDisplay span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.teamOrUserListDisplay img {
+    width: 40px;
+    height: 40px;
+    margin-right: 5%;
+    border-radius: 50%;
+    background-color: white;
 }
 
 .teamOrUserListDisplay h3 {
     font-size: 22px;
+}
+
+.profile-buttons {
+    left: 10%;
+    right: 8%;
 }
 
 @media (max-width: 555px) {
