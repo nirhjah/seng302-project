@@ -104,6 +104,18 @@
 
                     <label class="helpText"> Scores for both teams should be of same type i.e either 12-4 and 9-3 or 23 and 18 </label>
 
+
+                    <div class="select-container">
+                    <label for="activityOutcomes" style="display: block">Outcome of Game for Home Team <span class="required">*</span> </label>
+                    <div class="select-box">
+                        <select id="activityOutcomes" name="activityOutcomes">
+                            <option th:each="outcome : ${activityOutcomes}"
+                                    th:value="${outcome}"
+                                    th:text="${outcome}"></option>
+                        </select>
+                    </div>
+                    </div>
+
                     <hr class="rounded">
                     <h3 style="margin-bottom: 3%;">Add a new event</h3>
 

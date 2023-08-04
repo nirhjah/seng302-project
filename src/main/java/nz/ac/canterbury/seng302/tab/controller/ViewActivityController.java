@@ -10,6 +10,7 @@ import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.OppositionGoal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
+import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.form.CreateEventForm;
@@ -90,6 +91,8 @@ public class ViewActivityController {
         };
 
         model.addAttribute("possibleFactTypes", possibleFactTypesForActivity);
+        model.addAttribute("activityOutcomes", List.of(ActivityOutcome.Win, ActivityOutcome.Loss, ActivityOutcome.Draw));
+
         model.addAttribute("noFacts", possibleFactTypesForActivity.size() == 0);
     }
 
