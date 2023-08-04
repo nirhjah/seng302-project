@@ -212,6 +212,7 @@ public class CreateActivityController {
     /**
      * Handles creating or adding activities
      * @param actId the id of activity if editing, otherwise null
+     * @param playerAndPositions list of player (user ids) and positions (on the lineup)
      * @param createActivityForm form used to create activity
      * @param bindingResult holds the results of validating the form
      * @param model model mapping of information
@@ -294,21 +295,7 @@ public class CreateActivityController {
 
         if (playerAndPositions != null && !playerAndPositions.isEmpty()) {
             List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
-            System.out.println("positions and players " + positionsAndPlayers);
-
-            for (String positionPlayer : positionsAndPlayers) {
-                if (Objects.equals(Arrays.stream(positionPlayer.split(" ")).toList().get(1), "X")) {
-                    System.out.println("No player was set at the position " + Arrays.stream(positionPlayer.split(" ")).toList().get(0));
-                    //TODO Throw bindingResult error here as not all positions were filled with a player
-                } else {
-                    System.out.println("Valid player so creating line up position object now..");
-                    User player = userService.findUserById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).get();
-                    int position = Integer.parseInt(Arrays.stream(positionPlayer.split(" ")).toList().get(0));
-                    LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, player, position);
-                    lineUpPositionRepository.save(lineUpPosition);
-                }
-            }
-
+            saveLineUp(positionsAndPlayers);
         }
 
 
@@ -351,11 +338,11 @@ public class CreateActivityController {
      * @return JSON object of type FormationInfo
      */
     private List<FormationInfo> createFormationsJSON(Team team) {
-        List<FormationInfo> formations = formationService.getTeamsFormations(team.getTeamId()).stream()
+        return formationService.getTeamsFormations(team.getTeamId()).stream()
                 .map(formation -> {
                     List<PlayerFormationInfo> players = team.getTeamMembers().stream()
                             .map(player -> new PlayerFormationInfo(player.getUserId(), player.getFirstName(), player.getPictureString()))
-                            .collect(Collectors.toList());
+                            .toList();
 
                     return new FormationInfo(
                             formation.getFormationId(),
@@ -365,9 +352,29 @@ public class CreateActivityController {
                             players
                     );
                 })
-                .collect(Collectors.toList());
+                .toList();
 
-        return formations;
+    }
+
+    /**
+     * Takes list of positions and players fron the selected line up then creates LineUpPositions for each and saves them with the lineup
+     * @param positionsAndPlayers list of positions and players
+     */
+    private void saveLineUp(List<String> positionsAndPlayers){
+        for (String positionPlayer : positionsAndPlayers) {
+            if (Objects.equals(Arrays.stream(positionPlayer.split(" ")).toList().get(1), "X")) {
+                logger.info("No player was set at the position " + Arrays.stream(positionPlayer.split(" ")).toList().get(0));
+                //TODO Throw bindingResult error here as not all positions were filled with a player
+            } else {
+                logger.info("Valid player so creating line up position object now..");
+                if (userService.findUserById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).isPresent()) {
+                    User player = userService.findUserById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).get();
+                    int position = Integer.parseInt(Arrays.stream(positionPlayer.split(" ")).toList().get(0));
+                    LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, player, position);
+                    lineUpPositionRepository.save(lineUpPosition);
+                }
+            }
+        }
     }
 
 }
