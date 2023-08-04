@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
+import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.springframework.core.io.ClassPathResource;
@@ -225,15 +226,22 @@ public class User {
     @JoinColumn(name = "Id")
     private List<Authority> userRoles;
 
-    public void grantAuthority(String authority) {
+    /**
+     * Assigns this user the provided role.
+     * <p><em>
+     *  Note: There are no duplicate role checks. If that's a problem, roll your own check.
+     * </em></p>
+     * @param authority The authority/role you're providing.
+     */
+    public void grantAuthority(AuthorityType authority) {
         if (userRoles == null) {
-            userRoles = new ArrayList<Authority>();
+            userRoles = new ArrayList<>();
         }
-        userRoles.add(new Authority(authority));
+        userRoles.add(new Authority(authority.role()));
     }
 
     public List<GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+        List<GrantedAuthority> authorities = new ArrayList<>();
         if (userRoles != null) {
             this.userRoles.forEach(authority -> authorities.add(new SimpleGrantedAuthority(authority.getRole())));
         }

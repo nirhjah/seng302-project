@@ -86,6 +86,11 @@ public class ProfileFormController {
         model.addAttribute("displaySport", team.getSport());
         model.addAttribute("displayLocation", team.getLocation());
         model.addAttribute("displayToken", team.getToken());
+        model.addAttribute("clubId",teamService.getTeamClubId(team));
+
+        if( team.getTeamClub()!=null){
+            model.addAttribute("clubName",team.getTeamClub().getName());
+        }
 
         // Is the currently logged in user this team's manager?
         Optional<User> oUser = userService.getCurrentUser();

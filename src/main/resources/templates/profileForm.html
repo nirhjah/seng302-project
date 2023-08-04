@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
@@ -18,7 +17,7 @@
     <div class="wrapper-profile">
         <div class="tab-box">
             <div class="tab active">
-                <img class ="tab-icon" th:src="@{/image/icons/team.svg}"/>
+                <img class="tab-icon" th:src="@{/image/icons/team.svg}"/>
                 <button class="tab-button"> Team Profile &nbsp;</button>
             </div>
             <div class="tab" id="formations-tab">
@@ -84,6 +83,17 @@
                             <img th:src="@{/image/icons/location.svg}"/>
                             <h3 th:text="|Location: *{displayLocation}|"></h3>
                         </div>
+                        <div class="user-label" th:if="${clubId!=null}">
+                            <img th:src="@{image/icons/club-logo.svg}">
+                            <h3>
+                                <a class="club-link" th:href="@{view-club(clubID=${clubId})}" onmouseover="viewClubText(this, true)" onmouseout="viewClubText(this, false)">
+                                    <span id="original-text">View Club</span>
+                                    <span id="hover-text" th:text="|Club: *{clubName}|" style="display: none;"></span>
+                                </a>
+                            </h3>
+
+                        </div>
+
                     </div>
 
                 </div>
@@ -178,6 +188,19 @@
     </div>
 
     <script>
+
+        function viewClubText(link, isHover) {
+            var originalText = link.querySelector("#original-text");
+            var hoverText = link.querySelector("#hover-text");
+            if (isHover) {
+                originalText.style.display = "none";
+                hoverText.style.display = "inline";
+            } else {
+                originalText.style.display = "inline";
+                hoverText.style.display = "none";
+            }
+        }
+
         const input = document.getElementById('file');
 
         input.addEventListener('change', () => {
@@ -228,9 +251,9 @@
                 tab.classList.add('active');
                 if (index === 0) {
                     tabLine.style.left = "64px";
-                } else if (index ===1){
+                } else if (index === 1) {
                     tabLine.style.left = "368px";
-                } else{
+                } else {
                     tabLine.style.left = "670px";
                 }
                 displayBox.forEach(box => {

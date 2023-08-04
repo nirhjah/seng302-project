@@ -26,13 +26,34 @@ public class Club {
     @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
 
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private String clubLogo;
+
+    @ManyToOne
+    private User manager;
+
+    private boolean hasCustomLogo;
+
     protected Club() {
     }
 
-    public Club(String name, Location location, String sport) throws IOException {
+    public Club(String name, Location location, String sport, User manager) throws IOException {
         this.name = name;
         this.location = location;
         this.sport = sport;
+        this.manager = manager;
+
+        Resource resource = new ClassPathResource("/static/image/icons/club-logo.svg");
+        InputStream is = resource.getInputStream();
+        this.clubLogo = Base64.getEncoder().encodeToString(is.readAllBytes());
+    }
+
+    public Club(String name, Location location, String sport, User manager, String clubLogo) {
+        this.name = name;
+        this.location = location;
+        this.sport = sport;
+        this.manager = manager;
+        this.clubLogo=clubLogo;
     }
 
     public long getClubId() {
@@ -55,6 +76,22 @@ public class Club {
         this.location = location;
     }
 
+    public User getManager() {
+        return manager;
+    }
+
+    public boolean isManagedBy(User user) {
+        return user.getUserId() == getManager().getUserId();
+    }
+
+    public void setClubLogo(String clubLogo) {
+        this.clubLogo = clubLogo;
+    }
+
+    public String getClubLogo(){
+        return this.clubLogo;
+    }
+
     public String getSport() {
         return sport;
     }
@@ -63,4 +100,11 @@ public class Club {
         this.sport = sport;
     }
 
+    public boolean getHasCustomLogo(){
+        return this.hasCustomLogo;
+    }
+
+    public void setHasCustomLogo(boolean flag){
+        this.hasCustomLogo= flag;
+    }
 }
