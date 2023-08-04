@@ -76,8 +76,8 @@ public class CreateTeamFormControllerTest {
         Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY, USER_POSTCODE, USER_COUNTRY);
 
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
-        team = Mockito.spy(new Team("test", "Rugby", new Location("3 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"), user));
-        Mockito.doReturn(TEAM_ID).when(team).getTeamId();
+        team = spy(new Team("test", "Rugby", new Location("3 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"), user));
+        doReturn(TEAM_ID).when(team).getTeamId();
 
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
         when(mockUserService.emailIsInUse(anyString())).thenReturn(false);
