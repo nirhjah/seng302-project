@@ -1,4 +1,5 @@
-#Feature: U39 – Create / view / update competition
+# @create_view_update_competition
+# Feature: U39 – Create / view / update competition
 #Scenario: AC1: Federation administrators are a special type of users and are the only one allowed to create or update competitions
 #  Given I am a user of account type federation administrator and I am anywhere on the system,
 #  When I click on a ui element for creating a competition,
@@ -36,6 +37,11 @@
 #    When I click create/update competition,
 #    Then the competition is not created/updated and I am shown an error message stating that the field cannot be empty.
 #
+#  Scenario: AC2: A competition has a name, is for a given sport, and is for a certain grade level, e.g., U10 (under 10-year-old), masters, MAG level 3. All are compulsory fields.
+#    Given I am a user of account type federation administrator
+#    And I am on the create or update competition page
+#    Then There are fields for name, sport and grade level
+
 #
 #    Scenario: AC4: A competition can include teams or individuals. For teams, a competition must include at least one team and all teams must be of the same grade level. For individuals, at least one person needs to be added to the competition.
 #      Given I am a user of account type federation administrator and I am viewing a designated page for a competition that I created and I have selected competition type as individual,

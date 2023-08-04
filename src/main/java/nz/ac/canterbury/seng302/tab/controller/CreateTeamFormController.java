@@ -6,6 +6,14 @@ import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import nz.ac.canterbury.seng302.tab.entity.*;
+
+import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
+import nz.ac.canterbury.seng302.tab.service.SportService;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +27,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
-import nz.ac.canterbury.seng302.tab.service.SportService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
 /**
@@ -55,11 +57,11 @@ public class CreateTeamFormController {
      */
     private void prefillModel(Model model, HttpServletRequest httpServletRequest) {
         model.addAttribute("countryCitySuburbNameRegex", TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
-        model.addAttribute("countryCitySuburbNameRegexMsg", TeamFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG);
+        model.addAttribute("countryCitySuburbNameRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
         model.addAttribute("teamNameUnicodeRegex", teamService.teamNameUnicodeRegex);
-        model.addAttribute("teamNameMsg", TeamFormValidators.INVALID_TEAM_NAME_MSG);
+        model.addAttribute("teamNameMsg", TeamFormValidators.INVALID_CHARACTERS_MSG_TEAM_NAME);
         model.addAttribute("sportUnicodeRegex", teamService.sportUnicodeRegex);
-        model.addAttribute("sportUnicodeMsg", TeamFormValidators.INVALID_TEAM_SPORT_MSG);
+        model.addAttribute("sportUnicodeMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
         model.addAttribute("httpServletRequest", httpServletRequest);
     }
 
@@ -87,7 +89,7 @@ public class CreateTeamFormController {
     /**
      * Triggers the generation of a new token for a team
      * @param teamID the id of the team.
-     * @return
+     * @return redirect back to team profile page
      */
     @PostMapping("/generateTeamToken")
     public String generateTeamToken(@RequestParam(name = "teamID") Long teamID) {

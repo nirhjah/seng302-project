@@ -9,6 +9,7 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 
 import nz.ac.canterbury.seng302.tab.service.SportService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,10 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Optional;
 
@@ -38,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class CreateTeamFormControllerTest {
-    private static final String USER_DOB = "2000-01-01";
     private static final String USER_ADDRESS_LINE_1 = "1 Street Road";
     private static final String USER_ADDRESS_LINE_2 = "A";
     private static final String USER_SUBURB = "Riccarton";
@@ -73,10 +70,11 @@ public class CreateTeamFormControllerTest {
         Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY, USER_POSTCODE, USER_COUNTRY);
 
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
+
+        team = new Team("test", "Rugby", new Location("3 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"), user);
+        teamRepository.save(team);
         userRepository.save(user);
 
-        team = new Team("test", "Rugby", new Location("3 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"));
-        teamRepository.save(team);
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
         when(mockUserService.emailIsInUse(anyString())).thenReturn(false);
         when(mockTeamService.getTeam(anyLong())).thenReturn(team);
@@ -403,4 +401,19 @@ public class CreateTeamFormControllerTest {
                 .andExpect(redirectedUrlPattern("**/profile?teamID=" + team.getTeamId()));
         verify(mockSportService, times(1)).addSport(any());
     }
+
+    @Test
+    public void testGeneratingNewToken() throws Exception {
+        mockMvc.perform(post("/generateTeamToken", 42L)
+                        .param("teamID", String.valueOf(team.getTeamId())))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrlPattern("**/profile?teamID=" + team.getTeamId()));
+
+        verify(mockTeamService, times(1)).updateTeam(any());
+        Assertions.assertNotNull(team.getToken());
+
+
+    }
+
+
 }
