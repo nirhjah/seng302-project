@@ -66,13 +66,12 @@ public class ProfilePictureController {
             value = "/team-profile-picture/{id}",
             produces = MediaType.IMAGE_JPEG_VALUE
     )
-    public @ResponseBody byte[] getTeamProfilePicture(@PathVariable long id) {
-        return teamImageService.readFileOrDefault(id);
+    public @ResponseBody ResponseEntity<byte[]> getTeamProfilePicture(@PathVariable long id) {
+        return teamImageService.getImageResponse(id);
     }
 
     /**
-     * NYI!!
-     * Returns the profile picture of the team with id `id`.
+     * Returns the profile picture of the club with id `id`.
      * @param id The team id in the database
      * @return A ResponseEntity containing the image data
      */
