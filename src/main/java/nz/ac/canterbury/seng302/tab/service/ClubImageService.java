@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Club;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.ImageService;
 import nz.ac.canterbury.seng302.tab.helper.ImageType;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 @Service
 public class ClubImageService extends ImageService<Club> {
@@ -57,16 +59,6 @@ public class ClubImageService extends ImageService<Club> {
         return defaultClubLogo;
     }
 
-    public ResponseEntity<byte[]> getDefaultResponseEntity() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "image/svg+xml");
-        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
-        return builder
-                .headers(headers)
-                .body(defaultClubLogo);
-    }
-
-
     /**
      * Updates a club logo
      *
@@ -82,4 +74,11 @@ public class ClubImageService extends ImageService<Club> {
         }
     }
 
+    public ResponseEntity<byte[]> getImageResponse(long id) {
+        Optional<Club> optClub = clubService.findClubById(id);
+        if (optClub.isPresent()) {
+            return getImageResponse(optClub.get());
+        }
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -91,9 +91,16 @@ public abstract class ImageService<T extends Identifiable & HasImage> extends Fi
         }
     }
 
+    // The set of extensions that are encoded like pngs.
     Set<String> PNGS = Set.of("png", "jpg", "jpeg");
+
+    // The set of extensions that are encoded like SVGs.
     Set<String> SVGS = Set.of("svg");
 
+    /**
+     * @param entity
+     * @param multipartFile
+     */
     public void setImageTypeOf(T entity, MultipartFile multipartFile) {
         Optional<String> optExtension = getExtension(multipartFile.getName());
         if (optExtension.isPresent()) {

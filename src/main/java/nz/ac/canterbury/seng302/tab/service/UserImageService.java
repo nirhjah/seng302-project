@@ -10,11 +10,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 @Service
 @Configuration
@@ -74,5 +76,13 @@ public class UserImageService extends ImageService<User> {
         if (userService.findUserById(userId).isPresent()) {
             saveFile(userId, file);
         }
+    }
+
+    public ResponseEntity<byte[]> getImageResponse(long id) {
+        Optional<User> optUser = userService.findUserById(id);
+        if (optUser.isPresent()) {
+            return getImageResponse(optUser.get());
+        }
+        return ResponseEntity.noContent().build();
     }
 }

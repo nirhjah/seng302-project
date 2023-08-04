@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.service;
 
+import nz.ac.canterbury.seng302.tab.entity.Club;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.ImageService;
@@ -65,21 +66,6 @@ public class TeamImageService extends ImageService<Team> {
     }
 
     /**
-     * Gets an image response, as a ResponseEntity.
-     * This is what's displayed on the webpage.
-     * This could be a jpg,png, or svg.
-     * @param team
-     * @return
-     */
-    public ResponseEntity<byte[]> getImageResponse(Team team) {
-        byte[] data = readFileOrDefault(team.getTeamId());
-        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
-        return builder
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(data);
-    }
-
-    /**
      * Updates a team's profile picture.
      * If the current user isn't a manager or coach of the team, this operation is denied.
      *
@@ -106,5 +92,13 @@ public class TeamImageService extends ImageService<Team> {
             // else, fail
             saveFile(id, file);
         }
+    }
+
+    public ResponseEntity<byte[]> getImageResponse(long id) {
+        Optional<Team> optTeam = teamService.findTeamById(id);
+        if (optTeam.isPresent()) {
+            return getImageResponse(optTeam.get());
+        }
+        return ResponseEntity.noContent().build();
     }
 }

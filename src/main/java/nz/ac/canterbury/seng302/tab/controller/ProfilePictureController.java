@@ -4,7 +4,6 @@ import nz.ac.canterbury.seng302.tab.service.ClubImageService;
 import nz.ac.canterbury.seng302.tab.service.TeamImageService;
 import nz.ac.canterbury.seng302.tab.service.UserImageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -45,35 +44,6 @@ public class ProfilePictureController {
         this.clubImageService = clubImageService;
     }
 
-
-    /**
-     * Returns an SVG response, given imageData.
-     * @param imageData The imagedata in bytes
-     * @return a ResponseEntity that will be displayed on the webpage.
-     */
-    private ResponseEntity<byte[]> getSVGResponse(byte[] imageData) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "image/svg+xml");
-        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
-        return builder
-                .headers(headers)
-                .body(imageData);
-    }
-
-
-    /**
-     * Gets a regular image response (jpg, png, or jpeg)
-     * @param imageData The imagedata in bytes
-     * @return a ResponseEntity that will be displayed on the webpage.
-     */
-    private ResponseEntity<byte[]> getImageResponse(byte[] imageData) {
-        // It's a regular png/jpg
-        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
-        return builder
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(imageData);
-    }
-
     /**
      * Returns the profile picture of the user with id `id`.
      * @param id The user id in the database
@@ -84,22 +54,7 @@ public class ProfilePictureController {
     )
     @ResponseBody
     public ResponseEntity<byte[]> getUserProfilePicture(@PathVariable long id) {
-        /*
-        TODO: We need to allow SVGs here!!!!
-            Currently only pngs, jpgs, and jpegs are supported.
-         */
-        byte[] bytes = userImageService.readFileOrDefault(id);
-        // We prolly want to store the image type inside of the entities themselves?
-        // Maybe make a new column for it, mapping to enum.
-        // It could also make more sense to store the file type inside of the FileDataSaver...?
-        // Do some thinking about all this.
-        boolean isSvg = false;
-
-        if (isSvg) {
-            return getSVGResponse(bytes);
-        } else {
-            return getImageResponse(bytes);
-        }
+        return userImageService.getImageResponse(id);
     }
 
     /**
@@ -126,13 +81,7 @@ public class ProfilePictureController {
             produces = MediaType.IMAGE_JPEG_VALUE
     )
     public @ResponseBody ResponseEntity<byte[]> getClubLogo(@PathVariable long id) {
-        // It's a regular png/jpg
-        byte[] imageData = clubImageService.readFileOrDefault(id);
-
-        ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
-        return builder
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(imageData);
+        return clubImageService.getImageResponse(id);
     }
 }
 
