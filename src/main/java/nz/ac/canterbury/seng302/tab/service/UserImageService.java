@@ -1,6 +1,9 @@
 package nz.ac.canterbury.seng302.tab.service;
 
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
+import nz.ac.canterbury.seng302.tab.helper.ImageService;
+import nz.ac.canterbury.seng302.tab.helper.ImageType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
@@ -16,7 +19,7 @@ import java.io.InputStream;
 @Service
 @Configuration
 @ComponentScan("nz.ac.canterbury.seng302.tab.service")
-public class UserImageService extends FileDataSaver {
+public class UserImageService extends ImageService<User> {
 
     private final UserService userService;
 
@@ -29,7 +32,7 @@ public class UserImageService extends FileDataSaver {
      */
     @Autowired
     public UserImageService(@Value("${spring.profiles.active:unknown}") String profile, UserService userService) throws IOException {
-        super(getDeploymentType(profile), FileDataSaver.DEFAULT_IMAGE_RESTRICTIONS);
+        super(getDeploymentType(profile));
         this.userService = userService;
 
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
@@ -55,6 +58,10 @@ public class UserImageService extends FileDataSaver {
         return defaultProfilePicture;
     }
 
+    @Override
+    public ImageType getDefaultImageType() {
+        return ImageType.PNG_OR_JPEG;
+    }
 
     /**
      * Updates a user's profile picture.

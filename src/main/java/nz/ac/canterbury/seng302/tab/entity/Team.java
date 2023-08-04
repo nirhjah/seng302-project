@@ -3,14 +3,14 @@ package nz.ac.canterbury.seng302.tab.entity;
 import jakarta.persistence.*;
 
 import nz.ac.canterbury.seng302.tab.enums.Role;
+import nz.ac.canterbury.seng302.tab.helper.ImageType;
+import nz.ac.canterbury.seng302.tab.helper.interfaces.HasImage;
+import nz.ac.canterbury.seng302.tab.helper.interfaces.Identifiable;
 import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.hibernate.Hibernate;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +20,7 @@ import java.util.*;
  * Class for Team object which is annotated as a JPA entity.
  */
 @Entity
-public class Team {
+public class Team implements Identifiable, HasImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,6 +59,9 @@ public class Team {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
     private Grade grade;
+
+    @Enumerated(value = EnumType.STRING)
+    private ImageType imageType;
 
     protected Team() {
     }
@@ -109,6 +112,13 @@ public class Team {
         this.creationDate = LocalDateTime.now();
     }
 
+    public ImageType getImageType() {
+        return imageType;
+    }
+    public void setImageType(ImageType imageType) {
+        this.imageType = imageType;
+    }
+
     public Grade getGrade() {
         return grade;
     }
@@ -119,6 +129,10 @@ public class Team {
 
     public Long getTeamId() {
         return this.teamId;
+    }
+
+    public long getId() {
+        return teamId;
     }
 
     public String getName() {

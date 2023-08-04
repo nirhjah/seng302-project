@@ -94,7 +94,7 @@ public abstract class FileDataSaver {
      * @param filename The filename to check
      * @return The extension, excluding dot. (i.e. jpg)
      */
-    private Optional<String> getExtension(String filename) {
+    protected Optional<String> getExtension(String filename) {
         int i = filename.lastIndexOf(".");
         if (i >= 0) {
             String extension = filename.substring(i + 1);
@@ -289,8 +289,8 @@ public abstract class FileDataSaver {
 
     /**
      * Saves a file directly.
-     * @param id
-     * @param file
+     * @param id The id of the file. Normally a JPA pk.
+     * @param file The file to save
      * @return
      */
     public boolean saveFile(Long id, MultipartFile file) {

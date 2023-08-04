@@ -5,24 +5,22 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
 import nz.ac.canterbury.seng302.tab.enums.Role;
+import nz.ac.canterbury.seng302.tab.helper.ImageType;
+import nz.ac.canterbury.seng302.tab.helper.interfaces.HasImage;
+import nz.ac.canterbury.seng302.tab.helper.interfaces.Identifiable;
 import nz.ac.canterbury.seng302.tab.service.UserService;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import java.sql.Timestamp;
-import java.util.Base64;
 
 
 import java.util.*;
 
 @Entity(name = "UserEntity")
-public class User {
+public class User implements Identifiable, HasImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,6 +62,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<TeamRole> teamRoles;
+
+    @Enumerated
+    private ImageType profilePictureType;
 
     public User() {
 
@@ -129,7 +130,22 @@ public class User {
     @ManyToMany(mappedBy = "teamMembers")
     private Set<Team> joinedTeams = new HashSet<Team>();
 
+    @Override
+    public ImageType getImageType() {
+        return profilePictureType;
+    }
+
+    @Override
+    public void setImageType(ImageType imageType) {
+        this.profilePictureType = imageType;
+    }
+
+
     public long getUserId() {
+        return userId;
+    }
+
+    public long getId() {
         return userId;
     }
 

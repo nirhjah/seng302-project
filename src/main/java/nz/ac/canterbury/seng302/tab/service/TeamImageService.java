@@ -2,7 +2,8 @@ package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
+import nz.ac.canterbury.seng302.tab.helper.ImageService;
+import nz.ac.canterbury.seng302.tab.helper.ImageType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -17,7 +18,7 @@ import java.io.InputStream;
 import java.util.Optional;
 
 @Service
-public class TeamImageService extends FileDataSaver {
+public class TeamImageService extends ImageService<Team> {
 
     @Autowired
     private TeamService teamService;
@@ -33,7 +34,7 @@ public class TeamImageService extends FileDataSaver {
      * @param profile The deployment environment, which determines the
      */
     public TeamImageService(@Value("${spring.profiles.active:unknown}") String profile) throws IOException {
-        super(getDeploymentType(profile), FileDataSaver.DEFAULT_IMAGE_RESTRICTIONS);
+        super(getDeploymentType(profile));
 
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         InputStream is = resource.getInputStream();
@@ -56,6 +57,11 @@ public class TeamImageService extends FileDataSaver {
     @Override
     public byte[] getDefaultBytes() {
         return defaultProfilePicture;
+    }
+
+    @Override
+    public ImageType getDefaultImageType() {
+        return ImageType.PNG_OR_JPEG;
     }
 
     /**

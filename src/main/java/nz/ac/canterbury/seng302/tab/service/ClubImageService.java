@@ -1,6 +1,8 @@
 package nz.ac.canterbury.seng302.tab.service;
 
-import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
+import nz.ac.canterbury.seng302.tab.entity.Club;
+import nz.ac.canterbury.seng302.tab.helper.ImageService;
+import nz.ac.canterbury.seng302.tab.helper.ImageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @Service
-public class ClubImageService extends FileDataSaver {
+public class ClubImageService extends ImageService<Club> {
 
     private final Logger logger = LoggerFactory.getLogger(ClubImageService.class);
 
@@ -31,13 +33,18 @@ public class ClubImageService extends FileDataSaver {
      * @param profile The deployment environment, which determines the
      */
     public ClubImageService(@Value("${spring.profiles.active:unknown}") String profile) throws IOException {
-        super(getDeploymentType(profile), FileDataSaver.DEFAULT_IMAGE_RESTRICTIONS);
+        super(getDeploymentType(profile));
 
         // TODO: We probably need to have a different default club logo here.
         //  maybe a shield or banner or something?
         Resource resource = new ClassPathResource("/static/image/club-logo.svg");
         InputStream is = resource.getInputStream();
         defaultClubLogo = is.readAllBytes();
+    }
+
+    @Override
+    public ImageType getDefaultImageType() {
+        return ImageType.SVG;
     }
 
     @Override
@@ -74,4 +81,5 @@ public class ClubImageService extends FileDataSaver {
             }
         }
     }
+
 }
