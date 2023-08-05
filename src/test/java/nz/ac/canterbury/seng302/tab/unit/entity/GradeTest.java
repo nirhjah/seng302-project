@@ -12,8 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest // We really shouldnt be using SpringBootTest here.  Oh well :)
 class GradeTest {
@@ -126,6 +125,46 @@ class GradeTest {
 
         var g2 = new Grade(Grade.Age.UNDER_10S, Grade.Sex.MIXED, Grade.Competitiveness.SOCIAL);
         assertEquals("Mixed Under 10s Social", g2.getDisplayString());
+    }
+
+
+    private void testParticipateIn(Grade.Age age, Grade.Age participationAge) {
+        var caller = new Grade(age, Grade.Sex.MENS);
+        var participation = new Grade(participationAge, Grade.Sex.MENS);
+        assertTrue(caller.canParticipateIn(participation));
+    }
+
+    private void testCannotParticipateIn(Grade.Age age, Grade.Age participationAge) {
+        var caller = new Grade(age, Grade.Sex.MENS);
+        var participation = new Grade(participationAge, Grade.Sex.MENS);
+        assertFalse(caller.canParticipateIn(participation));
+    }
+
+    @Test
+    void testAgeGradesMatch() {
+        // u19 can participate in adult
+        testParticipateIn(Grade.Age.UNDER_19S, Grade.Age.ADULT);
+        // but adults cannot participate in u19
+        testCannotParticipateIn(Grade.Age.ADULT, Grade.Age.UNDER_19S);
+
+        /*
+        Check that all ages can participate in their own age group.
+         */
+        testParticipateIn(Grade.Age.ADULT, Grade.Age.ADULT);
+        for (var age: Grade.Age.values()) {
+            testParticipateIn(age, age);
+        }
+
+        // Older ages can participate in adult:
+        testParticipateIn(Grade.Age.OVER_60S, Grade.Age.ADULT);
+        testParticipateIn(Grade.Age.OVER_50S, Grade.Age.ADULT);
+        testParticipateIn(Grade.Age.OVER_70S, Grade.Age.ADULT);
+
+        // Adults can't participate in over 50s
+        testCannotParticipateIn(Grade.Age.ADULT, Grade.Age.OVER_50S);
+
+        testCannotParticipateIn(Grade.Age.UNDER_14S, Grade.Age.OVER_50S);
+        testCannotParticipateIn(Grade.Age.OVER_50S, Grade.Age.UNDER_19S);
     }
 }
 
