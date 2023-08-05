@@ -568,6 +568,7 @@ ul.autocomplete-result{
 .create-header img {
     height: 30px;
     margin: 0 5px;
+    width: 35px;
 }
 
 .create-header::before {
