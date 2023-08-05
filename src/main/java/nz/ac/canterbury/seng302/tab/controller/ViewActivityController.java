@@ -114,6 +114,7 @@ public class ViewActivityController {
         }
 
         List<Fact> activityFacts = factService.getAllFactsForActivity(activity);
+        factService.getFactsSortedByLocalTimeAscending(activityFacts);
         if (!activityFacts.isEmpty()){
             List<Substitution> activitySubstitutions = new ArrayList<>();
             List<Goal> activityGoals = new ArrayList<>();

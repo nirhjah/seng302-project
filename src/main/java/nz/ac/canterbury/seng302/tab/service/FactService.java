@@ -9,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
+import java.util.*;
 import java.time.Duration;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class FactService {
@@ -107,5 +105,14 @@ public class FactService {
             scoreInformation.add(Map.of(u, i));
         }
         return scoreInformation;
+    }
+
+    public void getFactsSortedByLocalTimeAscending(List<Fact> facts) {
+        Collections.sort(facts, new Comparator<Fact>() {
+            @Override
+            public int compare(Fact fact1, Fact fact2) {
+                return fact1.getTimeOfEvent().compareTo(fact2.getTimeOfEvent());
+            }
+        });
     }
 }
