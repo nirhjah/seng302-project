@@ -31,7 +31,7 @@ public abstract class Competition {
     @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
 
-    public Competition() {}
+    protected Competition() {}
     
     /**
      * main constructor
@@ -40,7 +40,7 @@ public abstract class Competition {
      * @param sport competition sport
      * @param location competition location 
     */
-    public Competition(String name, Grade grade, String sport, Location location) {
+    protected Competition(String name, Grade grade, String sport, Location location) {
         this.name = name;
         this.grade = grade;
         this.sport = sport;
@@ -53,7 +53,7 @@ public abstract class Competition {
      * @param grade competition grade
      * @param sport competition sport
     */
-    public Competition(String name, Grade grade, String sport) {
+    protected Competition(String name, Grade grade, String sport) {
         this.name = name;
         this.grade = grade;
         this.sport = sport;

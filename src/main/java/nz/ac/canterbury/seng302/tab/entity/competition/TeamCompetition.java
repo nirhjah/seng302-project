@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedGradeException;
 
 import java.util.HashSet;
@@ -19,12 +18,12 @@ public class TeamCompetition extends Competition {
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Team> teams = new HashSet<>();
 
-    public TeamCompetition(String name, Set<User> federationAdmins, Grade grade, String sport, Location location, Set<Team> teams) {
+    public TeamCompetition(String name, Grade grade, String sport, Location location, Set<Team> teams) {
       super(name, grade, sport, location);
       this.teams = teams;
     }
   
-    public TeamCompetition(String name, Set<User> federationAdmins, Grade grade, String sport, Location location, Team team) {
+    public TeamCompetition(String name, Grade grade, String sport, Location location, Team team) {
       super(name, grade, sport, location);
       this.teams.add(team);
     }

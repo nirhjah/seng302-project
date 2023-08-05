@@ -61,7 +61,7 @@ public class CompetitionService {
      */
     public List<Competition> getAllUserCompetitions() {
         return competitionRepository.findAll().stream().filter(
-                (x) -> x.getClass() == UserCompetition.class
+                x -> x.getClass() == UserCompetition.class
         ).toList();
     }
 

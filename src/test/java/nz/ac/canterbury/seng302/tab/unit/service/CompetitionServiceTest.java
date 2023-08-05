@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 @SpringBootTest
 @Import(CompetitionService.class)
-public class CompetitionServiceTest {
+class CompetitionServiceTest {
     Logger logger = LoggerFactory.getLogger(CompetitionService.class);
 
     @Autowired
@@ -38,7 +38,7 @@ public class CompetitionServiceTest {
     }
 
     @Test
-    public void testGettingAllCompetitions() throws Exception {
+    void testGettingAllCompetitions() throws Exception {
         Competition competition1 = new TeamCompetition("Test1", new Grade(Sex.OTHER), "football");
         Competition competition2 = new UserCompetition("Test2", new Grade(Sex.OTHER), "football");
         competitionService.updateOrAddCompetition(competition1);
@@ -52,7 +52,7 @@ public class CompetitionServiceTest {
     }
 
     @Test
-    public void testFindingCompetitionById() throws Exception {
+    void testFindingCompetitionById() throws Exception {
         Competition competition = new TeamCompetition("Test", new Grade(Sex.OTHER), "football");
         competition = competitionService.updateOrAddCompetition(competition);
 
