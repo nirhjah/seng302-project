@@ -22,16 +22,9 @@ public class AddActivityStatisticFeature {
 
     @Then("I must specify the player who was taken off, the one who was put on and the time that this occured.")
     public void i_must_specify_the_player_who_was_taken_off_the_one_who_was_put_on_and_the_time_that_this_occured() {
-        PlaywrightBrowser.page.locator("[name='factType']").selectOption("SUBSTITUTION");
-    }
-
-    @When("I specify a time for the substitution")
-    public void i_specify_a_time_for_the_substitution(){
-
-    }
-
-    @Then("it is the amount of hours, minutes, seconds into the activity")
-    public void it_is_the_amount_of_hours_minutes_seconds_into_the_activity(){
-
+        PlaywrightBrowser.page.locator("[name='playerOn']").selectOption("1");
+        PlaywrightBrowser.page.locator("[name='playerOff']").selectOption("1");
+        PlaywrightBrowser.page.locator("input#time").fill("05:10");
+        PlaywrightBrowser.page.locator("div.submit-button button#createEvent").click();
     }
 }

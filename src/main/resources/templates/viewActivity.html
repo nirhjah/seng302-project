@@ -253,6 +253,7 @@
             // new select element for the player subbed off 
             var selectScorer = document.createElement("select");
             selectScorer.name = "playerOff";
+            selectScorer.id= "playerOff";
 
             // add off to show the purpose
             var defaultOption = document.createElement("option");
@@ -276,8 +277,9 @@
             // new select element for the player subbed on 
             var selectScorer = document.createElement("select");
             selectScorer.name = "playerOn";
+            selectScorer.id ="playerOn";
 
-            // add off to show the purpose TODO: probibly remove
+            // add off to show the purpose
             var defaultOption = document.createElement("option");
             defaultOption.value = "";
             defaultOption.text = "Player On";

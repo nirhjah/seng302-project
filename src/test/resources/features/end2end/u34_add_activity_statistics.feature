@@ -53,10 +53,10 @@ Feature: U34 – Add activity statistics
 #    Then it must be within the timing of the game.
 #
 #
-  Scenario: AC3: The time is in the correct format when adding a substitution
-    Given I am adding a substitution,
-    When I specify a time for the substitution
-    Then it is the amount of hours, minutes, seconds into the activity
+#  Scenario: AC3: The time is in the correct format when adding a substitution
+#    Given I am adding a substitution,
+#    When I specify a time for the substitution
+#    Then it is the amount of hours, minutes, seconds into the activity
 #
 #  Scenario: AC4: A description should be specified when adding a fact
 #    Given There is an activity type that is not training
