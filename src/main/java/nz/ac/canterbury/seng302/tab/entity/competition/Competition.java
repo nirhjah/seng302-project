@@ -67,6 +67,13 @@ public abstract class Competition {
         return Objects.equals(competitionId, competition.getCompetitionId());
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = prime + Objects.hash(competitionId, grade, sport);
+        return result;
+    }
+
     public long getCompetitionId() {
         return this.competitionId;
     }
