@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.entity.competition;
 
 import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
+import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedGradeException;
@@ -10,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Class for Competition object which is annotated as a JPA entity.
+ * Class for Team Competition - competition composed of teams only
  */
 @Entity(name ="TeamCompetition") 
 @DiscriminatorValue("TEAM")
@@ -18,13 +19,13 @@ public class TeamCompetition extends Competition {
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Team> teams = new HashSet<>();
 
-    public TeamCompetition(String name, Set<User> federationAdmins, Grade grade, String sport, Set<Team> teams) {
-      super(name, grade, sport);
+    public TeamCompetition(String name, Set<User> federationAdmins, Grade grade, String sport, Location location, Set<Team> teams) {
+      super(name, grade, sport, location);
       this.teams = teams;
     }
   
-    public TeamCompetition(String name, Set<User> federationAdmins, Grade grade, String sport, Team team) {
-      super(name, grade, sport);
+    public TeamCompetition(String name, Set<User> federationAdmins, Grade grade, String sport, Location location, Team team) {
+      super(name, grade, sport, location);
       this.teams.add(team);
     }
 
@@ -50,7 +51,7 @@ public class TeamCompetition extends Competition {
      * @param team the team to be added to the competition
      */
     public void addTeam(Team team) {
-        if (!team.getGrade().equals(getGrade())) {
+        if (!canAddTeam(team)) {
             throw new UnmatchedGradeException(team.getGrade(), getGrade());
         }
         this.teams.add(team);
