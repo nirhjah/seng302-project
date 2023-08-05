@@ -14,7 +14,7 @@
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 <div class="team-profile-form">
 
-    <div class="wrapper-profile">
+    <div class="wrapper-profile" id="wrapper-profile">
         <div class="tab-box">
             <div class="tab active">
                 <img class="tab-icon" th:src="@{/image/icons/team.svg}"/>
@@ -177,9 +177,10 @@
                                <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
                            endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')}" th:text="${startDate} + ' - ' + ${endDate}" ></h4>
 
-                               <h4 th:with=" startTime=${#temporals.format(act.activityStart, 'hh:mma')},
-                           endTime=${#temporals.format(act.activityEnd, 'hh:mma')}" th:text="${startTime} + ' - ' + ${endTime}" ></h4>
+                              <!-- <h4 th:with=" startTime=${#temporals.format(act.activityStart, 'hh:mma')},
+                           endTime=${#temporals.format(act.activityEnd, 'hh:mma')}" th:text="${startTime} + ' - ' + ${endTime}" ></h4>-->
 
+                               <h4 th:text="'Score: ' + ${act.activityTeamScore} + ' : ' + ${act.otherTeamScore}" > </h4>
 
 
 
@@ -277,6 +278,7 @@
         const tabLine = document.querySelector('.tab-line');
         const displayBox = document.querySelectorAll('.content-box');
         const displayContent = document.querySelectorAll('.content');
+        const wrapperProfile = document.getElementById("wrapper-profile")
 
         tabs.forEach((tab, index) => {
             tab.addEventListener('click', (e) => {
@@ -286,10 +288,16 @@
                 tab.classList.add('active');
                 if (index === 0) {
                     tabLine.style.left = "64px";
+                    wrapperProfile.style.height = '480px';
+                    wrapperProfile.style.marginTop = 'unset';
                 } else if (index === 1) {
                     tabLine.style.left = "368px";
+                    wrapperProfile.style.height = '480px';
+                    wrapperProfile.style.marginTop = 'unset';
                 } else {
                     tabLine.style.left = "670px";
+                    wrapperProfile.style.height = '680px';
+                    wrapperProfile.style.marginTop = '12%';
                 }
                 displayBox.forEach(box => {
                     box.classList.remove('active')
