@@ -7,14 +7,15 @@ import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.OppositionGoal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
+import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
+import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.form.CreateEventForm;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FactService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Spring Boot Controller class for the View Activity Page
@@ -51,7 +53,6 @@ public class ViewCompetitionController {
 
     @Autowired
     private UserService userService;
-
 
     String createEventFormBindingResult = "createEventFormBindingResult";
 
@@ -75,12 +76,23 @@ public class ViewCompetitionController {
             @RequestParam(value = "competitionId") Long competitionId,
             HttpServletRequest request) {
 
-        Competition competition = competitionService.findCompetitionById(competitionId);
-        if (competition == null) {
+        Optional<Competition> competitionOptional = competitionService.findCompetitionById(competitionId);
+        if (competitionOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
 
-        model.addAttribute("competition", activity);
+        Competition competition = competitionOptional.get();
+
+        if (competition instanceof TeamCompetition) {
+            Set<Team> teams = ((TeamCompetition) competition).getTeams();
+            model.addAttribute("teams", teams);
+        } else {
+            Set<User> players = ((UserCompetition) competition).getPlayers();
+            model.addAttribute("players", players);
+        }
+
+
+        model.addAttribute("competition", competition);
 
         // Rambling that's required for navBar.html
         model.addAttribute("httpServletRequest", request);

@@ -55,4 +55,8 @@ public class TeamCompetition extends Competition {
         }
         this.teams.add(team);
     }
+
+    public Set<Team> getTeams() {
+        return teams;
+    }
 }
