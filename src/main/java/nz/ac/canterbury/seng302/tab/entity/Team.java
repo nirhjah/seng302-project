@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
@@ -60,6 +59,10 @@ public class Team {
     @JoinColumn(name="clubId")
     private Club teamClub;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn
+    private Grade grade;
+
     protected Team() {
     }
 
@@ -72,6 +75,7 @@ public class Team {
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.token = generateToken();
         this.creationDate = LocalDateTime.now();
+        this.grade = new Grade(Grade.Age.ADULT, Grade.Sex.OTHER);
     }
 
     /**
@@ -96,6 +100,7 @@ public class Team {
         // set the manager
         this.setManager(manager);
         this.creationDate = LocalDateTime.now();
+        this.grade = new Grade(Grade.Age.ADULT, Grade.Sex.OTHER);
     }
 
     /**
@@ -114,6 +119,14 @@ public class Team {
         InputStream is = resource.getInputStream();
         this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.creationDate = LocalDateTime.now();
+    }
+
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
     }
 
     public Long getTeamId() {
@@ -187,6 +200,10 @@ public class Team {
         setToken(token);
     }
 
+    /**
+     * Gets all managers of a team
+     * @return set of managers of team
+     */
     public Set<User> getTeamManagers() {
         Set<User> managers = new HashSet<>();
         Hibernate.initialize(teamRoles);
@@ -198,6 +215,10 @@ public class Team {
         return managers;
     }
 
+    /**
+     * Gets all coaches of a team
+     * @return set of coaches of team
+     */
     public Set<User> getTeamCoaches() {
         Set<User> coaches = new HashSet<>();
         for (var tRole: teamRoles) {
@@ -218,6 +239,11 @@ public class Team {
         return getTeamManagers().stream().anyMatch((u) -> u.getUserId() == userId);
     }
 
+    /**
+     * Returns true if user is a coach, false otherwise
+     * @param user The user in question
+     * @return true if user coaches team, false otherwise
+     */
     public boolean isCoach(User user) {
         var userId = user.getUserId();
         return getTeamCoaches().stream().anyMatch((u) -> u.getUserId() == userId);
@@ -235,7 +261,7 @@ public class Team {
         teamRoles.removeIf(tRole -> tRole.getUser().getUserId() == id);
     }
 
-    /**
+    /** Sets team role for a user
      * @param user, the User we are changing
      * @param role the role we are changing to user to
      */
@@ -288,6 +314,9 @@ public class Team {
         this.teamClub = teamClub;
     }
 
+    /**
+     * Removes the club from a team
+     */
     public void clearTeamClub() {
         this.teamClub = null;
     }

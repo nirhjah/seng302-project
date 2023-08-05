@@ -1,7 +1,5 @@
 package nz.ac.canterbury.seng302.tab.service;
 
-import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Club;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -117,7 +115,6 @@ public class TeamService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         // Saved the updated picture string in the database.
         teamRepository.save(team);
     }
@@ -279,5 +276,17 @@ public class TeamService {
     public List<Team> findTeamsByClub(Club club) {
         long id = club.getClubId();
         return teamRepository.findTeamsByTeamClubClubId(id);
+    }
+
+    /**
+     * Checks if a team has a club and return the club id if it does.
+     * @param team the team which the method checks if it contains club
+     * @return the club id if the team has a club
+     */
+    public Long getTeamClubId(Team team) {
+        if (team.getTeamClub() == null) {
+            return null;
+        }
+        return team.getTeamClub().getClubId();
     }
 }
