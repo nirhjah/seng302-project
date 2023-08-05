@@ -81,4 +81,18 @@ public class LoginFeature {
 
         Assertions.assertEquals("http://" + PlaywrightBrowser.baseUrl + "/home", PlaywrightBrowser.page.url());
     }
+
+    @When("I enter a email and password known to the system")
+    public void iEnterAEmailAndPasswordKnownToTheSystem() {
+        PlaywrightBrowser.page.locator("input#username").type("admin@gmail.com");
+        PlaywrightBrowser.page.locator("input#password").type("1");
+        PlaywrightBrowser.page.locator("#loginButton").click();
+    }
+
+    @Then("I am logged in and I am taken to the home page")
+    public void iAmLoggedInAndIAmTakenToTheHomePage() {
+        PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
+
+        Assertions.assertEquals("http://" + PlaywrightBrowser.baseUrl + "/user-info?name=1", PlaywrightBrowser.page.url());
+    }
 }

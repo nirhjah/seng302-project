@@ -38,8 +38,8 @@ public class DefaultFunctions {
         PlaywrightBrowser.page.locator("[name='activityType']").selectOption("Game");
         PlaywrightBrowser.page.locator("[name='team']").selectOption("1");
         PlaywrightBrowser.page.locator("textarea#description").type("This is the description");
-        PlaywrightBrowser.page.locator("input#startDateTime").type("2024-08-03T14:30");
-        PlaywrightBrowser.page.locator("input#endDateTime").type("2024-09-03T14:30");
+        PlaywrightBrowser.page.locator("input#startDateTime").fill("2024-08-03T14:30");
+        PlaywrightBrowser.page.locator("input#endDateTime").fill("2024-09-03T14:30");
         PlaywrightBrowser.page.locator("input#address-line-1").type("20 Ilam Road");
         PlaywrightBrowser.page.locator("input#postcode").type("8042");
         PlaywrightBrowser.page.locator("input#city").type("Christchurch");

@@ -72,7 +72,7 @@
                 </div>
             </div>
 
-            <div class="submit-button">
+            <div class="submit-button" id ="add-activity-button">
                 <button th:unless="${noFacts}" onclick="modal.style.display = 'block'" type="button">Add Activity Statistics</button>
             </div>
         </div>
@@ -254,7 +254,7 @@
             var selectScorer = document.createElement("select");
             selectScorer.name = "playerOff";
 
-            // add off to show the purpose TODO: probibly remove
+            // add off to show the purpose
             var defaultOption = document.createElement("option");
             defaultOption.value = "";
             defaultOption.text = "Player Off";

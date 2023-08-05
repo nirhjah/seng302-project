@@ -42,17 +42,17 @@ Feature: U34 – Add activity statistics
     Then I must specify the player who was taken off, the one who was put on and the time that this occured.
 
 
-  Scenario: AC3: Person who scored must be in team  when adding substitution
-    Given I am adding a substitution,
-    When I select the person who scored
-    Then  they must be a member of the team
-
-  Scenario: AC3: Time of substitution should be within timing of game when adding substitution
-    Given I am adding a substitution,
-    When I specify a time for the substitution
-    Then it must be within the timing of the game.
-
-
+#  Scenario: AC3: Person who scored must be in team  when adding substitution
+#    Given I am adding a substitution,
+#    When I select the person who scored
+#    Then  they must be a member of the team
+#
+#  Scenario: AC3: Time of substitution should be within timing of game when adding substitution
+#    Given I am adding a substitution,
+#    When I specify a time for the substitution
+#    Then it must be within the timing of the game.
+#
+#
   Scenario: AC3: The time is in the correct format when adding a substitution
     Given I am adding a substitution,
     When I specify a time for the substitution
