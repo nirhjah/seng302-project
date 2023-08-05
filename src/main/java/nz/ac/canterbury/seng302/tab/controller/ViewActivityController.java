@@ -263,13 +263,13 @@ public class ViewActivityController {
             return viewActivityRedirectUrl;
         }
 
-        List<Fact> factList = new ArrayList<>(); //move this to before switch statement
+        List<Fact> factList = new ArrayList<>();
 
 
         switch (factType) {
             case FACT:
                 fact = new Fact(description, time, activity);
-                factList.add(fact); //move this into each case except none
+                factList.add(fact);
 
                 break;
 
@@ -282,7 +282,7 @@ public class ViewActivityController {
 
                 User scorer = potentialScorer.get();
                 fact = new Goal(description, time, activity, scorer, goalValue);
-                factList.add(fact); //move this into each case except none
+                factList.add(fact);
 
 
                 activityService.updateTeamsScore(activity, goalValue);
@@ -306,7 +306,7 @@ public class ViewActivityController {
                 User playerOn = potentialSubOn.get();
 
                 fact = new Substitution(description, time, activity, playerOff, playerOn);
-                factList.add(fact); //move this into each case except none
+                factList.add(fact);
 
                 break;
 
@@ -314,7 +314,7 @@ public class ViewActivityController {
                 activityService.updateAwayTeamsScore(activity, goalValue);
 
                 fact = new OppositionGoal(description, time, activity, goalValue);
-                factList.add(fact); //move this into each case except none
+                factList.add(fact);
 
                 break;
 
