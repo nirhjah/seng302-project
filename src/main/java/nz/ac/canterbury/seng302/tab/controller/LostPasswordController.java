@@ -1,12 +1,12 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.LostPasswordForm;
 import nz.ac.canterbury.seng302.tab.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,11 +23,10 @@ import java.util.Optional;
 @Controller
 public class LostPasswordController {
 
-    private Optional<User> user;
-    private User currentUser;
     private final UserService userService;
 
-    @Autowired
+    private static final String TEMPLATE_NAME = "lostPassword";
+
     public LostPasswordController(UserService userService) {
         this.userService = userService;
     }
@@ -37,7 +36,7 @@ public class LostPasswordController {
     public String lostPasswordForm(Model model,HttpServletRequest request) {
         model.addAttribute("lostPasswordForm", new LostPasswordForm());
         model.addAttribute("httpServletRequest",request);
-        return "lostPassword";
+        return TEMPLATE_NAME;
     }
 
     /**
@@ -57,7 +56,7 @@ public class LostPasswordController {
             BindingResult bindingResult,
             Model model,
             HttpServletResponse httpServletResponse, HttpServletRequest request
-    ) {
+    ) throws MessagingException {
 
         model.addAttribute("email", email);
         model.addAttribute("httpServletRequest",request);
@@ -65,17 +64,16 @@ public class LostPasswordController {
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("submitted_form", null);
-            return "lostPassword";
+            return TEMPLATE_NAME;
         }
 
         model.addAttribute("submitted_form_message", "If your email is registered with our system, you will receive a link to reset your password shortly.");
 
-        user = userService.findUserByEmail(email);
+        Optional<User> user = userService.findUserByEmail(email);
         if (user.isPresent()) {
-            currentUser = user.get();
-            userService.resetPasswordEmail(currentUser, request);
+            userService.resetPasswordEmail(user.get(), request);
         }
-        return "lostPassword";
+        return TEMPLATE_NAME;
     }
 
 

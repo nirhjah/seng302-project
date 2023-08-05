@@ -37,7 +37,6 @@ public class ActivityService {
 
     /**
      * Returns all activities
-     *
      * @return list of all stored activities
      */
     public List<Activity> findAll() {
@@ -121,11 +120,23 @@ public class ActivityService {
         }
     }
 
+    /**
+     * Gets page of all team activities
+     * @param team team to get activities from
+     * @param pageNo page number
+     * @param pageSize page size
+     * @return  page of all team activities
+     */
     public Page<Activity> getAllTeamActivitiesPage(Team team, int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         return activityRepository.findActivityByTeam(team, pageable);
     }
 
+    /**
+     * Get list of all team activities
+     * @param team team to get activities from
+     * @return list of all team activities
+     */
     public List<Activity> getAllTeamActivities(Team team) {
         return activityRepository.findActivityByTeam(team);
     }
@@ -254,16 +265,15 @@ public class ActivityService {
     }
 
     /**
-     * Increments home team score by 1
-     * @param activity The activity used to update the team's score
-     */
-    public void updateTeamsScore(Activity activity) {
+     * increments the home teams score by one
+     **/
+    public void updateTeamsScore(Activity activity, int goalValue) {
         String score = activity.getActivityTeamScore();
         if (score == null) {
             score = "0";
         }
         int parsedScore = Integer.parseInt(score);
-        parsedScore++;
+        parsedScore += goalValue;
 
         activity.setActivityTeamScore(String.valueOf(parsedScore));
     }
@@ -272,13 +282,13 @@ public class ActivityService {
      * increments the away teams score by one
      * @param activity The activity to update the other team's score
      **/
-    public void updateAwayTeamsScore(Activity activity) {
+    public void updateAwayTeamsScore(Activity activity, int goalValue) {
         String score = activity.getOtherTeamScore();
         if (score == null) {
             score = "0";
         }
         int parsedScore = Integer.parseInt(score);
-        parsedScore++;
+        parsedScore += goalValue;
 
         activity.setOtherTeamScore(String.valueOf(parsedScore));
     }

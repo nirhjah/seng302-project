@@ -15,6 +15,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -155,7 +156,7 @@ public class UpdatePasswordController {
             BindingResult bindingResult,
             Model model,
             HttpServletRequest request,
-            HttpServletResponse response){
+            HttpServletResponse response) throws MessagingException {
 
 
         // Get the currently logged in user
