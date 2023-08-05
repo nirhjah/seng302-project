@@ -70,6 +70,7 @@
                 <div class="score">
                     <span th:text="${activity.activityTeamScore != null && activity.otherTeamScore != null ? activity.activityTeamScore + ' : ' + activity.otherTeamScore : 'NA'}"></span>
                 </div>
+                <span id="winnerText" style="margin-right: 5%" th:text="${outcomeString}" ></span>
             </div>
 
             <div class="submit-button">
@@ -81,7 +82,7 @@
 
             <div class="modal-content event">
                 <span class="close" onclick="modal.style.display = 'none'">&times;</span>
-                <form th:action="@{view-activity}" id="createEventForm" method="post" th:object="${createEventForm}">
+                <form th:action="@{view-activity}" id="createEventForm" method="post" th:object="${createEventForm}" class="view-activity-form">
                     <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
                     <h3>Add Overall Score</h3>
 
@@ -231,6 +232,8 @@
     // Get a reference to the div that will contain the additional fields
     var additionalFieldsDiv = document.getElementById("additionalFields");
 
+
+
     // Function to handle the change event of the dropdown
     function handleDropdownChange() {
         // Clear the additional fields div
@@ -357,7 +360,6 @@
     }
 
     handleDropdownChange()
-
     // Attach the event listener to the dropdown select element
     factTypeSelect.addEventListener("change", handleDropdownChange);
 </script>

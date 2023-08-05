@@ -155,9 +155,29 @@ public class ViewActivityController {
         model.addAttribute("possibleFactTypes", FactType.values());
         model.addAttribute("defaultFactType", FactType.FACT);
 
+        model.addAttribute("outcomeString", outcomeString(activity));
         populateOther(model, activity);
 
         return "viewActivity";
+    }
+
+    /**
+     * Determines string to display depending on who won/loss/if it was draw
+     * @param activity activity to get outcome of
+     * @return string with display of outcome
+     */
+    private String outcomeString(Activity activity) {
+        String outcomeString = "";
+        if (activity.getOutcome() == ActivityOutcome.Win) {
+            outcomeString = "Winner: Team A";
+        }
+        if (activity.getOutcome() == ActivityOutcome.Loss) {
+            outcomeString = "Winner: Team B";
+        }
+        if (activity.getOutcome() == ActivityOutcome.Draw) {
+            outcomeString = "Draw";
+        }
+        return outcomeString;
     }
 
     /**
@@ -243,9 +263,14 @@ public class ViewActivityController {
             return viewActivityRedirectUrl;
         }
 
+        List<Fact> factList = new ArrayList<>(); //move this to before switch statement
+
+
         switch (factType) {
             case FACT:
                 fact = new Fact(description, time, activity);
+                factList.add(fact); //move this into each case except none
+
                 break;
 
             case GOAL:
@@ -257,6 +282,8 @@ public class ViewActivityController {
 
                 User scorer = potentialScorer.get();
                 fact = new Goal(description, time, activity, scorer, goalValue);
+                factList.add(fact); //move this into each case except none
+
 
                 activityService.updateTeamsScore(activity, goalValue);
 
@@ -279,12 +306,19 @@ public class ViewActivityController {
                 User playerOn = potentialSubOn.get();
 
                 fact = new Substitution(description, time, activity, playerOff, playerOn);
+                factList.add(fact); //move this into each case except none
+
                 break;
 
             case OPPOSITION_GOAL:
                 activityService.updateAwayTeamsScore(activity, goalValue);
 
                 fact = new OppositionGoal(description, time, activity, goalValue);
+                factList.add(fact); //move this into each case except none
+
+                break;
+
+            case NONE:
                 break;
 
             default:
@@ -296,11 +330,8 @@ public class ViewActivityController {
             activity.setActivityOutcome(activityOutcome);
         }
 
-        List<Fact> factList = new ArrayList<>();
-        factList.add(fact);
         activity.addFactList(factList);
-        activity = activityService.updateOrAddActivity(activity);
-
+        activityService.updateOrAddActivity(activity);
 
         return viewActivityRedirectUrl;
     }
