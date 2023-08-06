@@ -90,13 +90,13 @@
 
                         <div style="float: left">
                         <label style="display:block;" for="overall-score-team">Team:</label>
-                            <input class="overall-score-input" name="overallScoreTeam" id="overall-score-team" type="text-area" th:field="*{overallScoreTeam}" th:value="${overallScoreTeam}" data-cy="overallScoreTeam">
+                            <input class="overall-score-input" name="overallScoreTeam" id="overall-score-team" type="text-area" th:field="*{overallScoreTeam}" th:value="${overallScoreTeamSaved}" data-cy="overallScoreTeam">
 
                         </div>
 
                         <div class="opponentScoreDiv">
                             <label style="display:block; margin-left: 46%;" for="overall-score-opponent">Opponent:</label>
-                            <input style="float: right; margin-right: 10px;" class="overall-score-input" name="overallScoreOpponent" id="overall-score-opponent" type="text-area">
+                            <input style="float: right; margin-right: 10px;" class="overall-score-input" name="overallScoreOpponent" id="overall-score-opponent" type="text-area" th:field="*{overallScoreOpponent}" th:value="${overallScoreOpponentSaved}" data-cy="overallScoreOpponent">
 
                         </div>
                     </div>

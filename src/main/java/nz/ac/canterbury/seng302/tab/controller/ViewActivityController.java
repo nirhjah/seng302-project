@@ -96,6 +96,8 @@ public class ViewActivityController {
         model.addAttribute("noOutcome", ActivityOutcome.None);
         model.addAttribute("selectedOutcome", activity.getOutcome() != null ? activity.getOutcome() : ActivityOutcome.None);
 
+        model.addAttribute("overallScoreTeamSaved", activity.getActivityTeamScore());
+        model.addAttribute("overallScoreOpponentSaved", activity.getOtherTeamScore());
         model.addAttribute("noFacts", possibleFactTypesForActivity.size() == 0);
     }
 
@@ -285,8 +287,6 @@ public class ViewActivityController {
                 factList.add(fact);
 
 
-                activityService.updateTeamsScore(activity, goalValue);
-
                 break;
 
             case SUBSTITUTION:
@@ -311,7 +311,6 @@ public class ViewActivityController {
                 break;
 
             case OPPOSITION_GOAL:
-                activityService.updateAwayTeamsScore(activity, goalValue);
 
                 fact = new OppositionGoal(description, time, activity, goalValue);
                 factList.add(fact);
@@ -328,6 +327,13 @@ public class ViewActivityController {
 
         if (activityOutcome != ActivityOutcome.None) {
             activity.setActivityOutcome(activityOutcome);
+        }
+
+
+
+        if (overallScoreTeam != null && overallScoreOpponent != null) {
+            activity.setOtherTeamScore(overallScoreOpponent);
+            activity.setActivityTeamScore(overallScoreTeam);
         }
 
         activity.addFactList(factList);

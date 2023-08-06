@@ -74,15 +74,10 @@ public class Activity {
     @Enumerated(EnumType.ORDINAL)
     private ActivityOutcome outcome;
 
-
-    private static final String START_SCORE = "0";
-
     /**
      * Empty Constructor for JPA
      */
     public Activity() {
-        setActivityTeamScore(START_SCORE);
-        setOtherTeamScore(START_SCORE);
     }
 
     /**
@@ -102,8 +97,8 @@ public class Activity {
         this.activityEnd = activityEnd;
         this.activityOwner = creator;
         this.location = location;
-        this.setOtherTeamScore("0");
-        this.setActivityTeamScore("0");
+        this.setOtherTeamScore("");
+        this.setActivityTeamScore("");
     }
 
     /**
