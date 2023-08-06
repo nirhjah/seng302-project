@@ -220,7 +220,7 @@ input + .slider + .slider-text::after {
     height: 300px;
 }
 
-.members-header{
+.competitors-header{
     width: 100%;
     color: white;
     background-color: #0b2239;
@@ -246,14 +246,14 @@ input + .slider + .slider-text::after {
     width: 60%;
 }
 
-.members-ul {
+.competitors-ul {
     border-left: 3px #0b2239 solid;
     border-bottom: 3px #0b2239 solid;
     border-bottom-left-radius: 5px;
     height: inherit;
 }
 
-.members-box {
+.competitors-box {
     width: 40%;
     border-bottom: 3px #0b2239 solid;
     border-bottom-left-radius: 5px;
@@ -288,5 +288,10 @@ input + .slider + .slider-text::after {
     background-color: #bcbaba;
     padding: 20px;
     text-align: center;
+    transition: opacity 1s;
+}
+
+.inactive-cover.active {
+    opacity: 0;
 }
 

@@ -126,15 +126,13 @@
                 </label>
             </div>
 
-
-
             <div class="member-selection-box">
                 <div class="inactive-cover">
                     <h3>You must type in a sport before you may add competitors</h3>
                 </div>
-                <div class="members-box">
-                    <div class="members-header">Competitors</div>
-                    <ul class="members-ul"></ul>
+                <div class="competitors-box">
+                    <div class="competitors-header">Competitors</div>
+                    <ul class="competitors-ul"></ul>
                 </div>
                 <div class="users-teams-box">
                     <div class="search-box">
@@ -172,7 +170,62 @@
 </body>
 <script>
 
-    function generate
+    const sportsInput = document.getElementById("sport")
+    const inactiveCover = document.querySelector(".inactive-cover")
+
+    sportsInput.addEventListener("change", () => {
+        clearCompetitors();
+        if (sportsInput.value.trim() !== "") {
+            inactiveCover.classList.add("active")
+        } else {
+            inactiveCover.classList.remove("active")
+        }
+    })
+
+    const competitorsUl = document.querySelector(".competitors-ul")
+    const playersTeamsUl = document.querySelector(".users-teams-ull")
+
+    function clearCompetitors() {
+        while (competitorsUl.firstChild) {
+            competitorsUl.removeChild(competitorsUl.lastChild);
+        }
+        while (playersTeamsUl.firstChild) {
+            playersTeamsUl.removeChild(playersTeamsUl.lastChild);
+        }
+    }
+
+    const typeCheckbox = document.getElementById("typeCheckbox");
+
+    typeCheckbox.addEventListener("change", function () {
+        clearCompetitors();
+        getCompetitors();
+    })
+
+    function getCompetitors() {
+        if (!inactiveCover.classList.contains("active")) {
+            const type = typeCheckbox.checked ? "users" : "teams"
+            axios.get("createCompetitions/get_" + type, {params: {sport: sportsInput.value}})
+                .then(response => {
+                    if (type === "users") {
+                        generateUsers(response)
+                    } else {
+                        generateTeams(response)
+                    }
+                })
+                .catch(error => {
+                    alert("ERROR see console");
+                    console.error(error);
+                });
+        }
+    }
+
+    function generateUsers(users) {
+
+    }
+
+    function generateTeams(teams) {
+
+    }
 
 </script>
 </html>
