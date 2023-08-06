@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
@@ -49,9 +50,7 @@ public class ProfilePictureController {
      * @param id The user id in the database
      * @return A ResponseEntity containing the image data
      */
-    @GetMapping(
-            value = "/user-profile-picture/{id}"
-    )
+    @GetMapping("/user-profile-picture/{id}")
     @ResponseBody
     public ResponseEntity<byte[]> getUserProfilePicture(@PathVariable long id) {
         return userImageService.getImageResponse(id);
@@ -62,10 +61,7 @@ public class ProfilePictureController {
      * @param id The team id in the database
      * @return A ResponseEntity containing the image data
      */
-    @GetMapping(
-            value = "/team-profile-picture/{id}",
-            produces = MediaType.IMAGE_JPEG_VALUE
-    )
+    @GetMapping("/team-profile-picture/{id}")
     public @ResponseBody ResponseEntity<byte[]> getTeamProfilePicture(@PathVariable long id) {
         return teamImageService.getImageResponse(id);
     }
@@ -75,10 +71,7 @@ public class ProfilePictureController {
      * @param id The team id in the database
      * @return A ResponseEntity containing the image data
      */
-    @GetMapping(
-            value = "/club-logo/{id}",
-            produces = MediaType.IMAGE_JPEG_VALUE
-    )
+    @GetMapping("/club-logo/{id}")
     public @ResponseBody ResponseEntity<byte[]> getClubLogo(@PathVariable long id) {
         return clubImageService.getImageResponse(id);
     }
