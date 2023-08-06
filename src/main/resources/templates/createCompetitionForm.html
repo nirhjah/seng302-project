@@ -129,8 +129,11 @@
 
 
             <div class="member-selection-box">
+                <div class="inactive-cover">
+                    <h3>You must type in a sport before you may add competitors</h3>
+                </div>
                 <div class="members-box">
-                    <div class="members-header">Members</div>
+                    <div class="members-header">Competitors</div>
                     <ul class="members-ul"></ul>
                 </div>
                 <div class="users-teams-box">
@@ -138,7 +141,14 @@
                         <input type="text" placeholder="Search...">
                         <img th:src="@{/image/icons/search-white.svg}"/>
                     </div>
-                    <ul class="users-teams-ul"></ul>
+                    <ul class="users-teams-ul">
+                        <li th:each="player : ${players}" class="reserves-li">
+                            <img class="li-player-image" th:src="${'data:image/jpeg;base64,' + player.getPictureString}" alt="My Profile"/>
+                            <span class="li-player-name" th:text="${player.getFirstName}"></span>
+                            <button class="switch" type="button"></button>
+                            <input type="hidden" class="playerId" th:value="${player.getUserId}">
+                        </li>
+                    </ul>
                 </div>
             </div>
 
@@ -160,4 +170,9 @@
     </footer>
 </div>
 </body>
+<script>
+
+    function generate
+
+</script>
 </html>

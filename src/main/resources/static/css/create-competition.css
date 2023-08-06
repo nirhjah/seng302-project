@@ -122,7 +122,7 @@
 .switch {
     position: relative;
     display: inline-block;
-    width: 125px;
+    width: 128px;
     height: 35px;
     cursor: pointer;
     margin-top: 8px;
@@ -149,12 +149,13 @@
 .slider:before {
     position: absolute;
     content: "";
-    height: 100%;
+    height: 104%;
     width: 52%;
     background-color: #0b2239;
     -webkit-transition: .4s;
     transition: .4s;
     border-radius: 2px;
+    margin-top: -0.5px;
 }
 
 
@@ -206,6 +207,7 @@ input + .slider + .slider-text::after {
     border: none;
     border-top-right-radius: inherit;
     max-height: 30px;
+    min-width: 10px;
 }
 
 .users-teams-box input[type=text]:focus {
@@ -241,6 +243,7 @@ input + .slider + .slider-text::after {
     flex-direction: column;
     border: 3px #0b2239 solid;
     border-radius: 0 5px 5px 0;
+    width: 60%;
 }
 
 .members-ul {
@@ -251,7 +254,7 @@ input + .slider + .slider-text::after {
 }
 
 .members-box {
-    width: 38%;
+    width: 40%;
     border-bottom: 3px #0b2239 solid;
     border-bottom-left-radius: 5px;
     overflow: hidden;
@@ -266,8 +269,24 @@ input + .slider + .slider-text::after {
 .search-box img {
     height: 30px;
     background-color: #0b2239;
-    width: 30px;
+    width: 38px;
     padding: 4px;
     border-bottom: 1px #0b2239 solid;
     cursor: pointer;
 }
+
+.inactive-cover {
+    position: absolute;
+    height: inherit;
+    color: #0b2239;
+    width: 65%;
+    border-radius: 5px;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    opacity: 90%;
+    background-color: #bcbaba;
+    padding: 20px;
+    text-align: center;
+}
+
