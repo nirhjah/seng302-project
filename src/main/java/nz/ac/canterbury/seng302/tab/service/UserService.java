@@ -353,4 +353,25 @@ public class UserService {
         return userRepository.findUsersThatArentFedMans(pageable);
     }
 
+    /**
+     * searches all users who arent a fedman by name 
+     * 
+     * @param pageable
+     * @param name a string to search the name by
+     * @return
+    */
+    public Page<User> getAllUsersNotFedMansByName(Pageable pageable, String name) {
+        return userRepository.findUsersThatArentFedMansByName(pageable, name);
+    }
+    
+    /**
+     * searches all users who arent a fedman by email 
+     * 
+     * @param pageable
+     * @param email a string to search the name by
+     * @return
+    */
+    public Page<User> getAllUsersNotFedMansByEmail(Pageable pageable, String email) {
+        return userRepository.findUsersThatArentFedMansByEmail(pageable, email);
+    }
 }

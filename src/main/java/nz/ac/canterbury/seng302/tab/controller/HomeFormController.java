@@ -63,20 +63,6 @@ public class HomeFormController {
         model.addAttribute("navTeams", teamService.getTeamList());
 
 
-        // test
-
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<User> test = userService.getAllUsersNotFedMans(pageable);
-        for (User user : test) {
-            System.out.println("User ID: " + user.getUserId());
-            System.out.println("First Name: " + user.getFirstName());
-            System.out.println("Last Name: " + user.getLastName());
-            System.out.println("Date of Birth: " + user.getDateOfBirth());
-            // Add other relevant user details you want to print...
-            System.out.println("------------------------------------");
-
-        }
-
         return "homeForm";
     }
 }
