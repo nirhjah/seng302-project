@@ -336,13 +336,24 @@ hr.rounded {
     float: right;
 }
 
+.view-activity-form {
+    height: 58vh;
+    overflow-y: auto
+}
+
 @media (max-width: 700px) {
     .modal-content.event {
-        transform: translate(-69%, 75%) !important;
+        transform: translate(-69%, 100%) !important;
+        overflow-y: unset;
     }
 
     .overall-scores-box {
         padding-bottom: 15% !important;
+    }
+
+    .view-activity-form {
+        height: unset;
+        overflow-y: unset;
     }
 
     .opponentScoreDiv {
@@ -356,4 +367,8 @@ hr.rounded {
     font-size: 80%;
     color:#888888;
     display: block;
+}
+
+.submit-button {
+    margin: unset;
 }
