@@ -1,4 +1,5 @@
-Feature: U39 – Create / view / update competition
+# @create_view_update_competition
+# Feature: U39 – Create / view / update competition
 #Scenario: AC1: Federation administrators are a special type of users and are the only one allowed to create or update competitions
 #  Given I am a user of account type federation administrator and I am anywhere on the system,
 #  When I click on a ui element for creating a competition,

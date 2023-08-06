@@ -299,7 +299,8 @@ Join team modal styling
 .modal-content.event {
     width: 40%;
     position: relative;
-    bottom: 30%;
+    bottom: 40%;
+    overflow-y: initial;
 }
 
 .close {

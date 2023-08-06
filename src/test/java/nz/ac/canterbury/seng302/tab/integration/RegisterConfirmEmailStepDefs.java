@@ -5,6 +5,7 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import jakarta.mail.MessagingException;
 import nz.ac.canterbury.seng302.tab.controller.RegisterController;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.RegisterForm;
@@ -28,8 +29,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.util.AssertionErrors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -85,13 +88,13 @@ public class RegisterConfirmEmailStepDefs {
 
     private EmailService emailServiceMock() throws Exception {
         // We don't want to spam emails, as we have a limited number that we can
-        // send with our API key.  So in tests, we should mock.
+        // send with our API key. So in tests, we should mock.
         var javaMailSender = applicationContext.getBean(JavaMailSender.class);
         var emailServ = Mockito.spy(new EmailService(javaMailSender, springTemplateEngine));
 
         emailDetailsCaptor = ArgumentCaptor.forClass(EmailDetails.class);
 
-        Mockito.doNothing().when(emailServ).sendHtmlMessage(emailDetailsCaptor.capture());
+        Mockito.doNothing().when(emailServ).sendHtmlMessage(any());
 
         return emailServ;
     }
@@ -156,13 +159,15 @@ public class RegisterConfirmEmailStepDefs {
     }
 
     @Then("I receive an email containing a valid registration link")
-    public void iReceiveAnEmailContainingAValidRegistrationLink() {
+    public void iReceiveAnEmailContainingAValidRegistrationLink() throws MessagingException {
+        Mockito.verify(emailService).sendHtmlMessage(emailDetailsCaptor.capture());
         EmailDetails sentMailContent = emailDetailsCaptor.getValue();
         assertNotNull("expected sent email", sentMailContent);
-        var body = sentMailContent.getMsgBody();
-        assertNotNull("Email body was null", body);
+        Map<String, Object> prop = sentMailContent.getProperties();
+        assertNotNull("Email properties was null", prop);
+        assertTrue("Email properties didn't contain a 'linkUrl'", prop.containsKey("linkUrl"));
         if (!Objects.isNull(registrationToken)) {
-            assertTrue("not correct reg token", body.contains(registrationToken));
+            assertEquals("not correct reg token", registrationToken, prop.get("linkUrl"));
         }
     }
 

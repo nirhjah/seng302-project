@@ -78,7 +78,7 @@ public class ViewUserController {
         // canEdit = whether or not this profile can be edited (i.e. belongs to the User)
         model.addAttribute("canEdit", canEdit);
 
-        return "viewUserTemplate";
+        return "viewUserForm";
     }
 
     /**

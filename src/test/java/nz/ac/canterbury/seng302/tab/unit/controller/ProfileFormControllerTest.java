@@ -2,8 +2,10 @@ package nz.ac.canterbury.seng302.tab.unit.controller;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -46,6 +48,9 @@ public class ProfileFormControllerTest {
 
     @MockBean
     private UserService mockUserService;
+
+    @MockBean
+    private FormationService mockFormationService;
 
     @MockBean
     private TeamService mockTeamService;
@@ -91,7 +96,7 @@ public class ProfileFormControllerTest {
         mockMvc.perform(get("/profile")
                 .param("teamID", TEAM_ID.toString()))
             .andExpect(status().isOk())
-            .andExpect(view().name("profileForm"))
+            .andExpect(view().name("viewTeamForm"))
             .andExpect(MockMvcResultMatchers.model().attribute("teamID", TEAM_ID))
             .andExpect(MockMvcResultMatchers.model().attribute("displayName", TEAM_NAME))
             .andExpect(MockMvcResultMatchers.model().attribute("displaySport", TEAM_SPORT));
@@ -153,6 +158,18 @@ public class ProfileFormControllerTest {
 
         var savedBytes = teamImageService.readFileOrDefault(team.getTeamId());
         assertFalse(Arrays.equals(savedBytes, fileBytes));
+    }
+
+    @Test
+    public void testCreatingAValidFormation() throws Exception {
+        mockMvc.perform(post("/profile/create-formation", 42L)
+                        .param("formation", "1-4-4-2")
+                        .param("customPlayerPositions", "")
+                        .param("custom", String.valueOf(false))
+                        .param("teamID", String.valueOf(TEAM_ID)))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/profile?teamID=" + TEAM_ID));
+        verify(mockFormationService, times(1)).addOrUpdateFormation(any());
     }
 
 }
