@@ -593,4 +593,20 @@ ul.autocomplete-result{
     content: "\00D7";
 }
 
+.checkbox {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+}
+
+.checkbox-box label {
+    font-family: "Noto Sans", sans-serif;
+    left: 1px;
+    font-size: 1em;
+    font-weight: 500;
+    transition: 0.5s;
+    color: #888888;
+    border-bottom: none;
+}
+
 

@@ -56,7 +56,154 @@
     margin: 0 0 20px !important;
 }
 
-
 #members-img {
     width: 40px
 }
+
+.select-box {
+    margin-top: 35px;
+}
+
+.select-box select {
+    text-align: center;
+    width: 100%;
+    height: 35px;
+    border-radius: 8px;
+    background: #ffffff;
+    font-size: 17px;
+    cursor: pointer;
+    border-color: #0b2239;
+    color: #0b2239;
+}
+
+.select-box label {
+    font-family: "Noto Sans", sans-serif;
+    left: 1px;
+    font-size: 1em;
+    font-weight: 500;
+    pointer-events: none;
+    transition: 0.5s;
+    color: #888888;
+    border-bottom: none;
+    padding-left: 2px;
+}
+
+
+
+.grade-level-details {
+    display: flex;
+    margin-top: 8px;
+}
+
+.grade-level-details div {
+    width: 100%;
+}
+
+.grade-level-details div:first-child {
+    margin-right: 2px;
+}
+
+.grade-level-details div:last-child {
+    margin-left: 2px;
+}
+
+.grade-level-details div:not(:first-child):not(:last-child) {
+    margin: 0 2px;
+}
+
+.team-user-buttons {
+    display: flex;
+}
+
+.team-user-buttons button {
+
+}
+
+.slider {
+    border-radius: 5px;
+}
+
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 126px;
+    height: 35px;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border: 2px solid #0b2239;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 31px;
+    width: 62px;
+    background-color: #0b2239;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 2px;
+}
+
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(60px);
+    -ms-transform: translateX(60px);
+    transform: translateX(60px);
+}
+
+.slider-text {
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    transform: translateY(-50%);
+    display: flex;
+}
+
+.slider-text::before {
+    content: "Teams";
+    flex: 1;
+    margin-right: 16px;
+}
+
+.slider-text::after {
+    content: "Users";
+    flex: 1;
+    text-align: right;
+}
+
+.slider-text::before {
+    content: "Team";
+    flex: 1;
+    margin-right: 12px;
+}
+
+input + .slider + .slider-text::before,
+input:checked + .slider + .slider-text::after {
+    color: white;
+    -webkit-transition: color .2s;
+    transition: color .2s;
+}
+
+input:checked + .slider + .slider-text::before,
+input + .slider + .slider-text::after {
+    color: #0b2239;
+}
+

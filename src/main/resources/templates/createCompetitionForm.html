@@ -39,10 +39,25 @@
 <!--                <div th:each="err : ${#fields.errors('sport')}" th:text="${err}" class="error-message"></div>-->
             </div>
 
-            <div class="input-box">
-                <input type="text" class="form-control" id="grade-level" th:name="gradeLevel" th:value="${gradeLevel}"
-                       data-cy="gradeLevel" autofocus placeholder="">
-                <label for="grade-level">Grade Level <span class="required">*</span></label>
+            <div class="select-box">
+                <label>Grade Level <span class="required">*</span></label>
+                <div class="grade-level-details">
+                    <div>
+                        <select id="level">
+                            <option value="" disabled selected>Level</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="gender">
+                            <option value="" disabled selected>Gender</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="age">
+                            <option value="" disabled selected>Age</option>
+                        </select>
+                    </div>
+                </div>
 <!--                <div th:each="err : ${#fields.errors('gradeLevel')}" th:text="${err}" class="error-message"></div>-->
             </div>
 
@@ -98,16 +113,26 @@
             </div>
 
             <div class="create-header">
-                <h2>Members</h2>
+                <h2>Competitors</h2>
                 <img id="members-img" th:src="@{/image/icons/members.svg}"/>
+            </div>
+
+            <div class="checkbox-box">
+                <label>Type</label>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                    <span class="slider-text"></span>
+                </label>
             </div>
 
             <div class="submit-button">
                 <a th:href="@{home}">
                     <button type="submit" th:text="${clubId != null ? 'Save' : 'Create'}"></button>
-
                 </a>
             </div>
+
+
         </form>
     </div>
     <footer>
