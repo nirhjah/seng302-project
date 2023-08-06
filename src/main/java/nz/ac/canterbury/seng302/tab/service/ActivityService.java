@@ -186,7 +186,7 @@ public class ActivityService {
      * @return a list of the last 5 activities that are being looked for.
      */
     public List<Activity> getLast5GamesOrFriendliesForTeamWithOutcome(Team team) {
-        return activityRepository.getLast5ActivityGameOrFriendly(team);
+        return activityRepository.getLast5GameOrFriendly(team);
     }
 
     /**
