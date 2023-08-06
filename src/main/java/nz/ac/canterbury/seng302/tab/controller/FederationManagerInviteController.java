@@ -1,6 +1,8 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.authentication.AutoLogin;
 import nz.ac.canterbury.seng302.tab.entity.FederationManagerInvite;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
@@ -30,6 +32,10 @@ public class FederationManagerInviteController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    private AutoLogin autoLogin;
+
     FederationManagerInvite fedInvite;
 
     @GetMapping("/invite")
@@ -53,12 +59,18 @@ public class FederationManagerInviteController {
     }
 
     @PostMapping("/federationManager")
-    public String federationManager(@RequestParam(name = "decision") String decision) {
+    public String federationManager(@RequestParam(name = "decision") String decision, HttpServletRequest request) {
         boolean choice = Boolean.parseBoolean(decision);
         if (choice) {
-            User u = userService.getCurrentUser().get();
-            u.grantAuthority(AuthorityType.FEDERATION_MANAGER);
-            userRepository.save(u);
+            User user = userService.getCurrentUser().get();
+            user.grantAuthority(AuthorityType.FEDERATION_MANAGER);
+            userRepository.save(user);
+            try {
+                request.logout();
+            } catch (ServletException e) {
+                throw new RuntimeException(e);
+            }
+            autoLogin.forceLogin(user.getEmail(), user.getAuthorities(), request);
             logger.info("FED MANAGER NOW");
         } else {
             logger.info("NOT FED MANAGER");
