@@ -19,6 +19,11 @@
         <form th:action="@{createClub}" th:object="${createAndEditClubForm}" id="createAndEditClubForm" method="post">
             <input type="hidden" th:if="${clubId != null}" th:name="clubId" th:value="${clubId}"/>
 
+            <div class="create-header">
+                <h2>Details</h2>
+                <img th:src="@{/image/icons/details.svg}"/>
+            </div>
+
             <div class="input-box">
                 <input type="text" class="form-control" id="name" th:name="name" th:value="${name}"
                        data-cy="name" autofocus placeholder="">
@@ -34,19 +39,124 @@
 <!--                <div th:each="err : ${#fields.errors('sport')}" th:text="${err}" class="error-message"></div>-->
             </div>
 
-            <div class="input-box">
-                <input type="text" class="form-control" id="grade-level" th:name="gradeLevel" th:value="${gradeLevel}"
-                       data-cy="gradeLevel" autofocus placeholder="">
-                <label for="grade-level">Grade Level <span class="required">*</span></label>
+            <div class="select-box">
+                <label>Grade Level <span class="required">*</span></label>
+                <div class="grade-level-details">
+                    <div>
+                        <select id="level">
+                            <option value="" disabled selected>Level</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="gender">
+                            <option value="" disabled selected>Gender</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="age">
+                            <option value="" disabled selected>Age</option>
+                        </select>
+                    </div>
+                </div>
 <!--                <div th:each="err : ${#fields.errors('gradeLevel')}" th:text="${err}" class="error-message"></div>-->
+            </div>
+
+            <div class="create-header">
+                <h2>Location (Optional)</h2>
+                <img th:src="@{/image/icons/dark-blue-location.svg}"/>
+            </div>
+
+            <div class="input-boxes">
+                <div class="input-box">
+                    <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
+                           data-cy="location" autofocus placeholder="" autocomplete="off" th:value="${addressLine1}"
+                           title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
+                    <label for="address-line-1">Address Line 1</label>
+                    <div class="autocomplete-container" id="autocomplete-container"></div>
+<!--                    <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="error-message"></div>-->
+                </div>
+
+
+                <div class="input-box">
+                    <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
+                           data-cy="location" autofocus placeholder="" th:value="${addressLine2}"
+                           title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
+                    <label for="address-line-2">Address Line 2</label>
+                    <!--                <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message"></div>-->
+                </div>
+            </div>
+            <div class="input-box">
+                <input type="text" class="form-control" id="suburb" th:name="suburb"
+                       data-cy="location" autofocus placeholder="" th:value="${suburb}">
+                <label for="suburb">Suburb</label>
+                <!--            <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>-->
+            </div>
+            <div class="input-box">
+                <input type="text" class="form-control" id="postcode" th:name="postcode"
+                       data-cy="location" autofocus placeholder="" th:value="${postcode}">
+                <label for="postcode">Postcode</span></label>
+                <!--            <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>-->
+            </div>
+
+            <div class="input-box">
+                <input type="text" class="form-control" id="city" th:name="city"
+                       data-cy="location" autofocus placeholder="" th:value="${city}">
+                <label for="city">City</label>
+                <!--            <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>-->
+            </div>
+
+            <div class="input-box">
+                <input type="text" class="form-control" id="country" th:name="country"
+                       data-cy="location" autofocus placeholder="" th:value="${country}">
+                <label for="country">Country</label>
+                <!--            <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>-->
+            </div>
+
+            <div class="create-header">
+                <h2>Competitors</h2>
+                <img id="members-img" th:src="@{/image/icons/members.svg}"/>
+            </div>
+
+            <div class="checkbox-box">
+                <label>Type</label>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                    <span class="slider-text"></span>
+                </label>
+            </div>
+
+            <div class="member-selection-box">
+                <div class="inactive-cover">
+                    <h3>You must type in a sport before you may add competitors</h3>
+                </div>
+                <div class="competitors-box">
+                    <div class="competitors-header">Competitors</div>
+                    <ul class="competitors-ul"></ul>
+                </div>
+                <div class="users-teams-box">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search...">
+                        <img th:src="@{/image/icons/search-white.svg}"/>
+                    </div>
+                    <ul class="users-teams-ul">
+                        <li th:each="player : ${players}" class="reserves-li">
+                            <img class="li-player-image" th:src="${'data:image/jpeg;base64,' + player.getPictureString}" alt="My Profile"/>
+                            <span class="li-player-name" th:text="${player.getFirstName}"></span>
+                            <button class="switch" type="button"></button>
+                            <input type="hidden" class="playerId" th:value="${player.getUserId}">
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <div class="submit-button">
                 <a th:href="@{home}">
                     <button type="submit" th:text="${clubId != null ? 'Save' : 'Create'}"></button>
-
                 </a>
             </div>
+
+
         </form>
     </div>
     <footer>
@@ -58,4 +168,64 @@
     </footer>
 </div>
 </body>
+<script>
+
+    const sportsInput = document.getElementById("sport")
+    const inactiveCover = document.querySelector(".inactive-cover")
+
+    sportsInput.addEventListener("change", () => {
+        clearCompetitors();
+        if (sportsInput.value.trim() !== "") {
+            inactiveCover.classList.add("active")
+        } else {
+            inactiveCover.classList.remove("active")
+        }
+    })
+
+    const competitorsUl = document.querySelector(".competitors-ul")
+    const playersTeamsUl = document.querySelector(".users-teams-ull")
+
+    function clearCompetitors() {
+        while (competitorsUl.firstChild) {
+            competitorsUl.removeChild(competitorsUl.lastChild);
+        }
+        while (playersTeamsUl.firstChild) {
+            playersTeamsUl.removeChild(playersTeamsUl.lastChild);
+        }
+    }
+
+    const typeCheckbox = document.getElementById("typeCheckbox");
+
+    typeCheckbox.addEventListener("change", function () {
+        clearCompetitors();
+        getCompetitors();
+    })
+
+    function getCompetitors() {
+        if (!inactiveCover.classList.contains("active")) {
+            const type = typeCheckbox.checked ? "users" : "teams"
+            axios.get("createCompetitions/get_" + type, {params: {sport: sportsInput.value}})
+                .then(response => {
+                    if (type === "users") {
+                        generateUsers(response)
+                    } else {
+                        generateTeams(response)
+                    }
+                })
+                .catch(error => {
+                    alert("ERROR see console");
+                    console.error(error);
+                });
+        }
+    }
+
+    function generateUsers(users) {
+
+    }
+
+    function generateTeams(teams) {
+
+    }
+
+</script>
 </html>

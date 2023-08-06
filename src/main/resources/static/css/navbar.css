@@ -62,11 +62,6 @@ header .header-right {
     margin-right: 20px;
 }
 
-.create-header {
-    display: flex;
-    align-items: center;
-}
-
 header .header-left .hamburger {
     cursor: pointer;
     display: none;
@@ -165,7 +160,7 @@ header .header-left .hamburger div {
     background-color: #0b2239;
 }
 
-.view-profile, .create-header {
+.view-profile, .create-buttons {
     display: flex;
     justify-content: center;
     align-items: center;

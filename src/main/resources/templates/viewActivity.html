@@ -102,15 +102,14 @@
                     <div th:each="err : ${#fields.errors('overallScoreTeam')}" th:text="${err}" class="error-message"></div>
 
 
-                    <label style="font-family: 'Noto Sans', sans-serif; font-size: 80%; color:#888888;"> Scores for both teams should be of same type i.e either 12-4 and 9-3 or 23 and 18 </label>
-
+                    <label class="helpText"> Scores for both teams should be of same type i.e either 12-4 and 9-3 or 23 and 18 </label>
 
                     <hr class="rounded">
-
+                    <h3 style="margin-bottom: 3%;">Add a new event</h3>
 
                     <div th:if="${!noFacts}" class="select-container">
+                        <label for="factType" style="display: block">Event Type: <span class="required">*</span> </label>
                         <div class="select-box">
-                            <h3 for="factType">Add a new event</h3>
                             <select id="factType" name="factType">
                                 <option th:each="fact : ${possibleFactTypes}"
                                         th:value="${fact}"
@@ -125,12 +124,16 @@
                         <textarea class="description-text" id="description" th:name="description" autofocus placeholder=""
                           th:text="${description}"></textarea>
                         </div>
-                        <label id="time" for="time"></label>
+                        <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
+
+                        <label for="time"></label>
                         <input type="text-area" name="time" value="time">
                         <div id="additionalFields"></div>
+                        <div th:each="err : ${#fields.errors('subOn')}" th:text="${err}" class="error-message"></div>
+
                     </div>
                     <div class="submit-button">
-                        <button id="createEvent" type="submit" class="registerLoginButton">Create Event</button>
+                        <button id="createEvent" type="submit" class="registerLoginButton">Add activity statistics</button>
                     </div>
                     
                 </form>
@@ -206,7 +209,6 @@
     }
 </script>
 <script th:inline="javascript">
-    // TODO: clean up plz 
     // Get a reference to the dropdown select element
     var factTypeSelect = document.getElementById("factType");
 
@@ -221,19 +223,36 @@
         // Get the selected option value
         var selectedOption = factTypeSelect.value;
 
+        //setup required span
+        var requiredSpan = document.createElement("span");
+        requiredSpan.innerText = "*";
+        requiredSpan.classList.add("required");
+
+        var oppositionGoalValueLabelHelpText = document.createElement("label");
+        oppositionGoalValueLabelHelpText.classList.add("helpText");
+        oppositionGoalValueLabelHelpText.innerHTML = "Default is 1 if not entered"
+
+        var goalValueInput = document.createElement("input");
+        var goalValueLabel = document.createElement("label");
+        goalValueLabel.innerHTML = "Goal value:";
+        goalValueLabel.style.display = "block";
+        goalValueLabel.appendChild(requiredSpan);
+        goalValueInput.name = "goalValue"
+        goalValueInput.classList.add("overall-score-input")
+        goalValueInput.type = "number"
+        goalValueInput.defaultValue = "1"
+        goalValueInput.min = "1"
+
         // Check if the selected option has additional fields
         if (selectedOption === "GOAL") {
             // Create a new select element for the scorer
             var selectScorer = document.createElement("select");
             selectScorer.name = "scorer";
 
-            // add scorer to show what its for TODO: probably remove 
-            var defaultOption = document.createElement("option");
-            defaultOption.value = "";
-            defaultOption.text = "Scorer";
-            defaultOption.disabled = true;
-            defaultOption.selected = true;
-            selectScorer.appendChild(defaultOption);
+            var scorerLabel = document.createElement("label");
+            scorerLabel.innerHTML = "Scorer:";
+            scorerLabel.style.display = "block";
+            scorerLabel.appendChild(requiredSpan);
 
             /*[# th:each="player : ${activity.getInvolvedMembers()}"]*/
             // Create an option element for each team member
@@ -244,55 +263,69 @@
             /*[/]*/
 
             // Append the select element to the additional fields div
+            additionalFieldsDiv.appendChild(scorerLabel);
             additionalFieldsDiv.appendChild(selectScorer);
+            additionalFieldsDiv.appendChild(goalValueLabel);
+            additionalFieldsDiv.appendChild(goalValueInput);
+            additionalFieldsDiv.appendChild(oppositionGoalValueLabelHelpText);
+
         }
 
         if (selectedOption === 'SUBSTITUTION') {
             // new select element for the player subbed off 
-            var selectScorer = document.createElement("select");
-            selectScorer.name = "playerOff";
+            var selectPlayerOff = document.createElement("select");
+            selectPlayerOff.name = "playerOff";
 
-            // add off to show the purpose TODO: probibly remove
-            var defaultOption = document.createElement("option");
-            defaultOption.value = "";
-            defaultOption.text = "Player Off";
-            defaultOption.disabled = true;
-            defaultOption.selected = true;
-            selectScorer.appendChild(defaultOption);
+            var playerOffLabel = document.createElement("label");
+            playerOffLabel.innerHTML = "Player Off:";
+            playerOffLabel.style.display = "block";
+            playerOffLabel.appendChild(requiredSpan);
+
             
-            /*[# th:each="player : ${activity.getInvolvedMembers()}"]*/
+            /*[# th:each="player : ${activity.getInvoledMembersNoManager()}"]*/
             // Create an option element for each team member
             var option = document.createElement("option");
             option.value = /*[[${player.getUserId()}]]*/ '';
             option.text = /*[[${player.firstName}]]*/ '';
-            selectScorer.appendChild(option);
+            selectPlayerOff.appendChild(option);
             /*[/]*/
 
             // Append the select element to the additional fields div
-            additionalFieldsDiv.appendChild(selectScorer);
+            additionalFieldsDiv.appendChild(playerOffLabel);
+            additionalFieldsDiv.appendChild(selectPlayerOff);
             
             // new select element for the player subbed on 
-            var selectScorer = document.createElement("select");
-            selectScorer.name = "playerOn";
+            var selectPlayerOn = document.createElement("select");
+            selectPlayerOn.name = "playerOn";
 
-            // add off to show the purpose TODO: probibly remove
-            var defaultOption = document.createElement("option");
-            defaultOption.value = "";
-            defaultOption.text = "Player On";
-            defaultOption.disabled = true;
-            defaultOption.selected = true;
-            selectScorer.appendChild(defaultOption);
-            
-            /*[# th:each="player : ${activity.getInvolvedMembers()}"]*/
+            var playerOnLabel = document.createElement("label");
+            playerOnLabel.innerHTML = "Player On:";
+            playerOnLabel.style.display = "block";
+            playerOnLabel.appendChild(requiredSpan);
+
+            /*[# th:each="player : ${activity.getInvoledMembersNoManager()}"]*/
             // Create an option element for each team member
             var option = document.createElement("option");
             option.value = /*[[${player.getUserId()}]]*/ '';
             option.text = /*[[${player.firstName}]]*/ '';
-            selectScorer.appendChild(option);
+            selectPlayerOn.appendChild(option);
             /*[/]*/
 
             // Append the select element to the additional fields div
-            additionalFieldsDiv.appendChild(selectScorer);
+            additionalFieldsDiv.appendChild(playerOnLabel);
+            additionalFieldsDiv.appendChild(selectPlayerOn);
+        }
+
+        if (selectedOption === "OPPOSITION_GOAL") {
+            var oppositionGoalValueLabel = document.createElement("label");
+            oppositionGoalValueLabel.innerHTML = "Goal value:";
+            oppositionGoalValueLabel.style.display = "block";
+            oppositionGoalValueLabel.appendChild(requiredSpan);
+
+            additionalFieldsDiv.appendChild(oppositionGoalValueLabel);
+            additionalFieldsDiv.appendChild(goalValueInput);
+            additionalFieldsDiv.appendChild(oppositionGoalValueLabelHelpText);
+
         }
     }
 

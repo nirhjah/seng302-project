@@ -56,7 +56,7 @@ public class HomeFormController {
         logger.info("GET /homeForm");
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("navTeams", teamService.getTeamList());
-        return "homeForm";
+        return "createCompetitionForm";
     }
 }
 

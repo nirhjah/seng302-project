@@ -23,49 +23,6 @@
     width: 65%;
 }
 
-.edit-user-header {
-    display: flex;
-    align-content: center;
-    width: 120%;
-    align-items: center;
-    margin-top: 35px;
-    margin-left: -10%;
-}
-
-.edit-user-header h2 {
-    font-family: "Noto Sans", sans-serif;
-    font-size: 25px;
-    color: #0b2239;
-}
-
-.edit-user-header img {
-    height: 30px;
-    margin: 0 5px;
-}
-
-.edit-user-header::before {
-    content: "";
-    border-top: 3px solid #0b2239;
-    width: 6%;
-    align-content: center;
-    display: flex;
-    text-align: center;
-    margin-right: 5px;
-}
-
-.edit-user-header::after {
-    content: "";
-    border-top: 3px solid #0b2239;
-    width: 67%;
-    align-content: center;
-    display: flex;
-    text-align: center;
-}
-
-.multiply:before {
-    content: "\00D7";
-}
-
 .submit-button {
     margin: 30px 0 20px !important;
 }
