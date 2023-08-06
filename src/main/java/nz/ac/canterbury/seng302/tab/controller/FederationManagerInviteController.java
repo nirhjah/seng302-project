@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Optional;
+
 @Controller
 public class FederationManagerInviteController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -44,9 +46,12 @@ public class FederationManagerInviteController {
      */
     @GetMapping("/invite")
     public String fedToUser(HttpServletRequest request) {
-        User u = userService.getCurrentUser().get();
-        userService.inviteToFederationManger(u, request);
-        logger.info("sent");
+        Optional<User> opt = userService.getCurrentUser();
+        if (opt.isPresent()) {
+            User u = opt.get();
+            userService.inviteToFederationManger(u, request);
+            logger.info("sent");
+        }
         return "redirect:user-info/self";
     }
 
@@ -63,8 +68,8 @@ public class FederationManagerInviteController {
                                        RedirectAttributes redirectAttributes) {
         model.addAttribute("httpServletRequest", request);
         fedInvite = federationService.getByToken(token);
-        User u =  userService.getCurrentUser().get();
-        if (fedInvite != null && fedInvite.getUser().equals(u)) {
+        Optional<User> optU =  userService.getCurrentUser();
+        if (fedInvite != null && optU.isPresent() && fedInvite.getUser().equals(optU.get())) {
             return "federationManagerInvite";
         } else {
             redirectAttributes.addFlashAttribute("fedmanTokenMessage", "Error: Invalid Federation Manager Token");
@@ -77,7 +82,12 @@ public class FederationManagerInviteController {
                                     RedirectAttributes redirectAttributes) {
         boolean choice = Boolean.parseBoolean(decision);
         if (choice) {
-            User user = userService.getCurrentUser().get();
+            Optional<User> optUser = userService.getCurrentUser();
+            if (optUser.isEmpty()) {
+                redirectAttributes.addFlashAttribute("fedmanTokenMessage", "Error: Unable to process invite response, please try again.");
+                return "redirect:user-info/self";
+            }
+            User user = optUser.get();
             user.grantAuthority(AuthorityType.FEDERATION_MANAGER);
             userRepository.save(user);
             try {
