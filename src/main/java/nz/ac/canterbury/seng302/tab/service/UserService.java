@@ -333,8 +333,6 @@ public class UserService {
         emailService.resetPasswordEmail(user, request);
     }
 
-
-
     /**
      * Adds user to team and updates user
      * @param user user to join team
@@ -343,6 +341,10 @@ public class UserService {
     public void userJoinTeam(User user, Team team) {
         user.joinTeam(team);
         updateOrAddUser(user);
+    }
+
+    public List<User> findUsersBySports(List<Sport> sports) {
+        return userRepository.findUsersByFavoriteSportsIn(sports);
     }
 
 }

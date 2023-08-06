@@ -278,6 +278,10 @@ public class TeamService {
         return teamRepository.findTeamsByTeamClubClubId(id);
     }
 
+    public List<Team> findTeamsBySport(String sport) {
+        return teamRepository.findTeamsBySport(sport);
+    }
+
     /**
      * Checks if a team has a club and return the club id if it does.
      * @param team the team which the method checks if it contains club

@@ -8,6 +8,7 @@ import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
 import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditCompetitionForm;
 import nz.ac.canterbury.seng302.tab.service.CompetitionService;
+import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
@@ -42,11 +43,14 @@ public class CreateCompetitionController {
 
     private final TeamService teamService;
 
+    private final SportService sportsService;
+
     @Autowired
-    public CreateCompetitionController(CompetitionService competitionService,UserService userService, TeamService teamService) {
+    public CreateCompetitionController(CompetitionService competitionService,UserService userService, TeamService teamService, SportService sportsService) {
         this.competitionService = competitionService;
         this.userService = userService;
         this.teamService = teamService;
+        this.sportsService = sportsService;
     }
 
     /**
@@ -181,35 +185,31 @@ public class CreateCompetitionController {
         model.addAttribute("listOfTeams", teamsUserManagerOf);
     }
 
+
     /**
-     * A JSON API endpoint, which gets all teams of given sport. Used by the createActivity page to update
-     * @return A json object of type <code>{formationId: "formationString", ...}</code>
+     * Creates JSON object of type List<Team>
+     * @param sport sport for teams
+     * @return JSON object of type List<Team>
      */
-    @GetMapping(path = "/createActivity/get_team_formation", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<Long, String>> getTeamFormation(@RequestParam("teamId") long teamId) {
-        logger.info("GET /createActivity/get_team_formation");
-        // CHECK: Are we logged in?
-        Optional<User> oCurrentUser = userService.getCurrentUser();
-        if (oCurrentUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        User currentUser = oCurrentUser.get();
-        // CHECK: Does our requested team exist?
-        Team team = teamService.getTeam(teamId);
-        if (team == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        // CHECK: Do you have permission to edit this team's formations?
-        // (This doubles as an "Are you in this team" check)
-        if (!team.isCoach(currentUser) && !team.isManager(currentUser)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
-        // Return a JSON object of (id -> string)
-        Map<Long, String> formations = formationService.getTeamsFormations(teamId).stream()
-                .collect(Collectors.toMap(Formation::getFormationId, Formation::getFormation));
-
-        return ResponseEntity.ok().body(formations);
+    @GetMapping(path = "/createCompetition/get_teams", produces = MediaType.APPLICATION_JSON_VALUE)
+    private List<Team> getTeamsJSON(String sport) {
+        return teamService.findTeamsBySport(sport);
     }
+
+    /**
+     * Creates JSON object of type List<User>. Users can have multiple sports so approach is different
+     * @param sport sport for users
+     * @return JSON object of type List<User>
+     */
+    @GetMapping(path = "/createCompetition/get_users", produces = MediaType.APPLICATION_JSON_VALUE)
+    private List<User> getUsersJSON(String sport) {
+        Optional<Sport> sportOptional = sportsService.findSportByName(sport);
+        List<User> users = new ArrayList<>();
+        if (sportOptional.isPresent()) {
+            users = userService.findUsersBySports(List.of(sportOptional.get()));
+        }
+        return users;
+    }
+
 
 }

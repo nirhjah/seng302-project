@@ -34,6 +34,7 @@
             <div class="input-box">
                 <input type="text" class="form-control" id="sport" th:name="sport" th:value="${sport}"
                        data-cy="sport" autofocus placeholder=""
+                       onchange=""
                        title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
                 <label for="sport">Sport <span class="required">*</span></label>
 <!--                <div th:each="err : ${#fields.errors('sport')}" th:text="${err}" class="error-message"></div>-->
@@ -183,7 +184,7 @@
     })
 
     const competitorsUl = document.querySelector(".competitors-ul")
-    const playersTeamsUl = document.querySelector(".users-teams-ull")
+    const playersTeamsUl = document.querySelector(".users-teams-ul")
 
     function clearCompetitors() {
         while (competitorsUl.firstChild) {
@@ -194,7 +195,7 @@
         }
     }
 
-    const typeCheckbox = document.getElementById("typeCheckbox");
+    const typeCheckbox = document.querySelector(".switch input");
 
     typeCheckbox.addEventListener("change", function () {
         clearCompetitors();
@@ -219,7 +220,16 @@
         }
     }
 
+    const usersTeamsUl = document.querySelector(".users-teams-ul")
+
     function generateUsers(users) {
+        users.forEach((user) => {
+            const playerLi = document.createElement("li");
+            const liPlayerName = document.createElement("span");
+            liPlayerName.textContent = user.firstName;
+            playerLi.append(liPlayerName);
+            usersTeamsUl.append(playerLi);
+        })
 
     }
 

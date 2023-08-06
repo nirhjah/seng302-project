@@ -291,9 +291,9 @@ public class CreateActivityController {
      * A JSON API endpoint, which gives the formations of an associated team. Used by the createActivity page to update
      * @return A json object of type <code>{formationId: "formationString", ...}</code>
      */
-    @GetMapping(path = "/createCompetition/get_teams", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<Long, String>> getTeams(@RequestParam("sport") String sport) {
-        logger.info("GET /createCompetition/get_teams");
+    @GetMapping(path = "/createActivity/get_team_formation", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<Long, String>> getTeamFormation(@RequestParam("teamId") long teamId) {
+        logger.info("GET /createActivity/get_team_formation");
         // CHECK: Are we logged in?
         Optional<User> oCurrentUser = userService.getCurrentUser();
         if (oCurrentUser.isEmpty()) {
@@ -313,9 +313,10 @@ public class CreateActivityController {
 
         // Return a JSON object of (id -> string)
         Map<Long, String> formations = formationService.getTeamsFormations(teamId).stream()
-                    .collect(Collectors.toMap(Formation::getFormationId, Formation::getFormation));
+                .collect(Collectors.toMap(Formation::getFormationId, Formation::getFormation));
 
         return ResponseEntity.ok().body(formations);
     }
+
 
 }

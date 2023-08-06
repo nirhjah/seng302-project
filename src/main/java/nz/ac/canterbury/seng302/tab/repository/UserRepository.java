@@ -83,4 +83,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
         @Query("SELECT distinct u.favoriteSports FROM UserEntity u")
         public List<Sport> findAllUserSports();
+
+        public List<User> findUsersByFavoriteSportsIn(List<Sport> favoriteSports);
 }
