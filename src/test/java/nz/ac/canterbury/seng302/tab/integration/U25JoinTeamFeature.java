@@ -11,6 +11,7 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import nz.ac.canterbury.seng302.tab.service.FederationService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -53,6 +54,9 @@ public class U25JoinTeamFeature {
     private UserService userService;
 
     @Autowired
+    private FederationService federationService;
+
+    @Autowired
     private ApplicationContext applicationContext;
 
 
@@ -77,7 +81,7 @@ public class U25JoinTeamFeature {
         EmailService emailService = applicationContext.getBean(EmailService.class);
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
 
-        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
+        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder,federationService));
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(new MyTeamsController(userService, teamService, teamRepository)).build();
 

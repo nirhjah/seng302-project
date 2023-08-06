@@ -66,6 +66,9 @@ public class CreateTeamInvitationTokens {
     private FactService factService;
 
     @Autowired
+    private FederationService federationService;
+
+    @Autowired
     private FormationService formationService;
 
 
@@ -86,7 +89,7 @@ public class CreateTeamInvitationTokens {
         EmailService emailService = applicationContext.getBean(EmailService.class);
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
 
-        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
+        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder,federationService));
         teamService = Mockito.spy(new TeamService(teamRepository));
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(new ProfileFormController(userService, teamService, activityService, factService, formationService)).build();

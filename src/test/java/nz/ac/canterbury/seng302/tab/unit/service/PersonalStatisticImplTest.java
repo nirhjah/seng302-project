@@ -1,25 +1,18 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.web.servlet.MockMvc;
-import java.text.ParseException;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
@@ -34,11 +27,9 @@ import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import nz.ac.canterbury.seng302.tab.service.FactService;
 import nz.ac.canterbury.seng302.tab.service.PersonalStatisticImpl;
-import nz.ac.canterbury.seng302.tab.service.PersonalStatistics;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 @DataJpaTest
 @Import({PersonalStatisticImpl.class, UserService.class})
@@ -110,7 +101,7 @@ public class PersonalStatisticImplTest {
 
 
     @Test
-    public void GivenIHaveScoredOneGoal_WhenICheckMyGoalsScored_ThenISee1GoalScored() throws Exception {
+    public void GivenIHaveScoredOneGoal_WhenICheckMyGoalsScored_ThenISee1GoalScored(){
 
         userRepository.save(testUser);
 

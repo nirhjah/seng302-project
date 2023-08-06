@@ -17,10 +17,7 @@ import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.FactRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FactService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +56,9 @@ public class ViewActivityStatisticIntegrationTests {
     private ActivityService activityService;
 
     @SpyBean
+    private FederationService federationService;
+
+    @SpyBean
     private FactService factService;
     @Autowired
     private ApplicationContext applicationContext;
@@ -94,7 +94,7 @@ public class ViewActivityStatisticIntegrationTests {
         EmailService emailService = applicationContext.getBean(EmailService.class);
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
 
-        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
+        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder,federationService));
         teamService = Mockito.spy(new TeamService(teamRepository));
         activityService = Mockito.spy(new ActivityService(activityRepository));
         factService= Mockito.spy(new FactService(factRespository));
