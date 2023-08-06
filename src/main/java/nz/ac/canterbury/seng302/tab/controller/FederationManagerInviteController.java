@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-
 @Controller
 public class FederationManagerInviteController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -39,21 +37,34 @@ public class FederationManagerInviteController {
 
     FederationManagerInvite fedInvite;
 
+    /**
+     * TEMPORARY ENDPOINT
+     * @param request
+     * @return
+     */
     @GetMapping("/invite")
     public String fedToUser(HttpServletRequest request) {
         User u = userService.getCurrentUser().get();
         userService.inviteToFederationManger(u, request);
         logger.info("sent");
-
         return "redirect:user-info/self";
     }
 
+    /**
+     * Controller handles processing the token and takes user to the page where they can accept or decline the invitation.
+     * @param token the users unique token for becoming a federation manager
+     * @param request the HTTPRrequest
+     * @param model storage structure
+     * @param redirectAttributes used to display messages on redirection
+     * @return
+     */
     @GetMapping("/federationManager")
     public String fedManagerInvitation(@RequestParam("token") String token, HttpServletRequest request, Model model,
                                        RedirectAttributes redirectAttributes) {
         model.addAttribute("httpServletRequest", request);
         fedInvite = federationService.getByToken(token);
-        if (fedInvite != null) {
+        User u =  userService.getCurrentUser().get();
+        if (fedInvite != null && fedInvite.getUser().equals(u)) {
             return "federationManagerInvite";
         } else {
             redirectAttributes.addFlashAttribute("fedmanTokenMessage", "Error: Invalid Federation Manager Token");
