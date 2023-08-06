@@ -62,7 +62,8 @@ public class FederationManagerInviteController {
     }
 
     @PostMapping("/federationManager")
-    public String federationManager(@RequestParam(name = "decision") String decision, HttpServletRequest request) {
+    public String federationManager(@RequestParam(name = "decision") String decision, HttpServletRequest request,
+                                    RedirectAttributes redirectAttributes) {
         boolean choice = Boolean.parseBoolean(decision);
         if (choice) {
             User user = userService.getCurrentUser().get();
@@ -74,11 +75,12 @@ public class FederationManagerInviteController {
                 throw new RuntimeException(e);
             }
             autoLogin.forceLogin(user.getEmail(), user.getAuthorities(), request);
+            redirectAttributes.addFlashAttribute("fedmanTokenMessage", "Sucess! You are now a federation manager");
             logger.info("FED MANAGER NOW");
-            federationService.delete(fedInvite);
         } else {
             logger.info("NOT FED MANAGER");
         }
+        federationService.delete(fedInvite);
         return "redirect:user-info/self";
     }
 }
