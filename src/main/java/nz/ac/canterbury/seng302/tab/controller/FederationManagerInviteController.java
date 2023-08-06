@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -48,12 +49,14 @@ public class FederationManagerInviteController {
     }
 
     @GetMapping("/federationManager")
-    public String fedManagerInvitation(@RequestParam("token") String token, HttpServletRequest request, Model model) {
+    public String fedManagerInvitation(@RequestParam("token") String token, HttpServletRequest request, Model model,
+                                       RedirectAttributes redirectAttributes) {
         model.addAttribute("httpServletRequest", request);
         fedInvite = federationService.getByToken(token);
         if (fedInvite != null) {
             return "federationManagerInvite";
         } else {
+            redirectAttributes.addFlashAttribute("fedmanTokenMessage", "Error: Invalid Federation Manager Token");
             return "redirect:user-info/self";
         }
     }
@@ -72,6 +75,7 @@ public class FederationManagerInviteController {
             }
             autoLogin.forceLogin(user.getEmail(), user.getAuthorities(), request);
             logger.info("FED MANAGER NOW");
+            federationService.delete(fedInvite);
         } else {
             logger.info("NOT FED MANAGER");
         }

@@ -29,4 +29,8 @@ public class FederationService {
     public void updateOrSave(FederationManagerInvite invite) {
         federationRepository.save(invite);
     }
+
+    public void delete(FederationManagerInvite invite) {
+        federationRepository.delete(invite);
+    }
 }

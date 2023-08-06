@@ -12,6 +12,9 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <link th:href="@{/css/profile.css}" rel="stylesheet">
     <link th:href="@{/css/user-profile.css}" rel="stylesheet">
+    <link th:href="@{/css/login.css}" rel="stylesheet" />
+    <link th:href="@{/css/password.css}" rel="stylesheet" />
+    <link th:href="@{/css/view-all.css}" rel="stylesheet" />
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
@@ -19,6 +22,7 @@
 </head>
 <body class="profile-background">
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+    <h6 class="reset-password-info" th:if="${fedmanTokenMessage != null}" th:text="${fedmanTokenMessage}"></h6>
     <div class="profile-form">
         <div class="wrapper-profile">
             <p th:if="${thisUser.isEmpty()}">
