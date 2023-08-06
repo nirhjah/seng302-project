@@ -39,15 +39,6 @@ public class FederationManagerInviteController {
 
     FederationManagerInvite fedInvite;
 
-    @GetMapping("/invite")
-    public String fedToUser(HttpServletRequest request) {
-        User u = userService.getCurrentUser().get();
-        userService.inviteToFederationManger(u, request);
-        logger.info("sent");
-
-        return "redirect:user-info/self";
-    }
-
     @GetMapping("/federationManager")
     public String fedManagerInvitation(@RequestParam("token") String token, HttpServletRequest request, Model model,
                                        RedirectAttributes redirectAttributes) {
