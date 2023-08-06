@@ -126,6 +126,19 @@
                 </label>
             </div>
 
+
+
+            <div class="member-selection-box">
+                <div class="members-box">
+                    <div class="members-header">Members</div>
+                    <ul class="members-ul"></ul>
+                </div>
+                <div class="users-teams-box">
+                    <input type="text" placeholder="Search...">
+                    <ul class="users-teams-ul"></ul>
+                </div>
+            </div>
+
             <div class="submit-button">
                 <a th:href="@{home}">
                     <button type="submit" th:text="${clubId != null ? 'Save' : 'Create'}"></button>

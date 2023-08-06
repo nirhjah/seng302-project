@@ -593,7 +593,7 @@ ul.autocomplete-result{
     content: "\00D7";
 }
 
-.checkbox {
+.checkbox-box {
     display: flex;
     flex-direction: column;
     margin-top: 15px;
@@ -608,5 +608,6 @@ ul.autocomplete-result{
     color: #888888;
     border-bottom: none;
 }
+
 
 
