@@ -160,42 +160,14 @@
                 <div class="col-wrapper">
                     <div class="third-col" style="padding-bottom: 20px">
 
-                        <h3>Last 5 Games: </h3>
-                       <!-- <h4 th:each="act : ${last5GOrF}"
-                           th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
-                           endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')},
-                           startTime=${#temporals.format(act.activityStart, 'hh:mma')},
-                           endTime=${#temporals.format(act.activityEnd, 'hh:mma')}"
-                           th:text="|Date: ${startDate} ${startTime} ${act.outcome.name()} - ${act.activityType.name()}|" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|"></h4>
--->
-
+                        <h3>Last 5 Matches: </h3>
                    <div class="last5">
                        <ul>
-                           <li>
-                               <div>
-                                   <h3> Friendly</h3>
-
-                                   <h4>01 Jan 2029 - 01 Jan 2030</h4>
-
-                                   <!-- <h4 th:with=" startTime=${#temporals.format(act.activityStart, 'hh:mma')},
-                                endTime=${#temporals.format(act.activityEnd, 'hh:mma')}" th:text="${startTime} + ' - ' + ${endTime}" ></h4>-->
-
-                                   <h4>Score 0 : 0</h4>
-                               </div>
-                               <div class="r">
-                                   <img th:src="@{/image/icons/loss.svg}"/>
-                               </div>
-                           </li>
                            <li th:each="act : ${last5GOrF}" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|">
                                <div>
                                    <h3 th:text="${act.activityType.name()}"> </h3>
-
                                    <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
                                endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')}" th:text="${startDate} + ' - ' + ${endDate}" ></h4>
-
-                                  <!-- <h4 th:with=" startTime=${#temporals.format(act.activityStart, 'hh:mma')},
-                               endTime=${#temporals.format(act.activityEnd, 'hh:mma')}" th:text="${startTime} + ' - ' + ${endTime}" ></h4>-->
-
                                    <h4 th:text="'Score: ' + ${act.activityTeamScore} + ' : ' + ${act.otherTeamScore}" > </h4>
                                </div>
                                <div>
