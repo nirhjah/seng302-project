@@ -1,7 +1,11 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.entity.FederationManagerInvite;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
+import nz.ac.canterbury.seng302.tab.service.FederationService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,15 +14,23 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class InviteToFederationManagerController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private FederationService federationService;
 
     int PAGE_SIZE = 10;
 
@@ -60,4 +72,32 @@ public class InviteToFederationManagerController {
             return userService.findUsersByNameOrSportOrCity(pageable, null, null, nameQuery);
         }
     }
+
+    /**
+     * Post the user id which is used to find the user to invite for federation manager and send email invite to user.
+     * @param userId userid of the user to invite for federation manager
+     * @param model map representation of information to be passed to thymeleaf page
+     * @param request request
+     * @return redirect back to the invite federation manager url
+     * @throws MessagingException
+     */
+    @PostMapping("/inviteToFederationManager")
+    public String inviteToFederationManager(
+            @RequestParam(name = "userId", defaultValue = "-1") Long userId,
+            Model model, HttpServletRequest request) throws MessagingException {
+        model.addAttribute("httpServletRequest", request);
+
+        Optional<User> fedUser = userService.findUserById(userId);
+        if (fedUser.isPresent()) {
+            Optional<FederationManagerInvite> fedInvite = federationService.findFederationManagerByUser(fedUser.get());
+            if (fedInvite.isEmpty()) {
+                FederationManagerInvite federationManagerInvite = new FederationManagerInvite(fedUser.get());
+                federationService.updateOrSave(federationManagerInvite);
+                emailService.federationManagerInvite(fedUser.get(), request, federationManagerInvite.getToken());
+            }
+            return "redirect:/inviteToFederationManager";
+        }
+        return "redirect:/inviteToFederationManager";
+    }
+
 }

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+  <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+  <link th:href="@{/css/profile.css}" rel="stylesheet">
+  <link th:href="@{/css/user-profile.css}" rel="stylesheet">
+  <link th:href="@{/css/view-competition.css}" rel="stylesheet">
+
+  <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
+  <title>View Competition</title>
+</head>
+<body class="profile-background">
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+<div class="profile-form">
+  <div class="wrapper-profile">
+
+    <div class="team-info">
+      <div class="team-display">
+        <h2>Competition Details</h2>
+        <div class="comp-headings">
+          <img th:src="@{/image/icons/name.svg}"/>
+
+          <div>
+            <h4>Name</h4>
+
+            <h3>Admin Admin</h3>
+          </div>
+
+        </div>
+        <div class="comp-headings">
+          <img th:src="@{/image/icons/sports.svg}"/>
+
+          <div>
+            <h4>Sport</h4>
+            <h3>Soccer</h3>
+          </div>
+
+        </div>
+        <div class="comp-headings">
+          <img th:src="@{/image/icons/gradeLevel.svg}"/>
+
+          <div>
+          <h4>Grade</h4>
+          <h3>Under 18s</h3>
+          </div>
+
+        </div>
+        <div class="comp-headings">
+          <img th:src="@{/image/icons/location.svg}"/>
+          <div>
+            <h4>Location</h4>
+            <h3>1 Ilam Road, Ilam 8042 Christchurch New Zealand</h3>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="teamOrUserListDisplay">
+      <h3>Teams</h3>
+      <ul>
+
+        <li>
+          <img th:src="@{image/default-profile.png}">
+          <span>player 1 </span>
+        </li>
+
+        <li>
+          <img th:src="@{image/default-profile.png}">
+          <span>player 2 </span>
+        </li>
+
+        <li>
+          <img th:src="@{image/default-profile.png}">
+          <span>player 3 </span>
+        </li>
+
+        <li>
+          <img th:src="@{image/default-profile.png}">
+          <span>player 4 </span>
+        </li>
+
+
+        <li>
+          <img th:src="@{image/default-profile.png}">
+          <span>player 5 </span>
+        </li>
+
+        <li>
+          <img th:src="@{image/default-profile.png}">
+          <span>player 6 </span>
+        </li>
+
+
+        <li>
+          <img class="li-player-image" th:src="@{image/default-profile.png}">
+          <span>player 7 </span>
+        </li>
+
+      </ul>
+
+    </div>
+
+    <div class="profile-buttons">
+      <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+      <div  class="edit-button" style="float: right; padding: 10px">
+        <a>
+          <button type="button">Edit Competition</button>
+        </a>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+</div>
+</div>
+
+<footer>
+  <p>
+    Image by <a
+          href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+    on Freepik
+  </p>
+</footer>
+
+
+</body>
+
+</html>

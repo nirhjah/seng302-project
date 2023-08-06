@@ -6,6 +6,9 @@ import java.util.GregorianCalendar;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
+import nz.ac.canterbury.seng302.tab.entity.*;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,7 +43,7 @@ public class AdminAccount implements CommandLineRunner {
      * <p>
      *  Give the current user a role if they don't already have it.
      * </p>
-     * 
+     *
      * This exists so we can add roles easily to the production admin (Currently federation manager).
      * @param admin The user we're giving the role to
      * @param role The role we're assigning
@@ -70,7 +73,7 @@ public class AdminAccount implements CommandLineRunner {
         Location location = new Location("adminAddr1", "adminAddr2", "adminSuburb", "adminCity", "4dm1n", "adminLand");
         User admin = new User("Admin", "Admin", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 adminEmail, passwordEncoder.encode(adminPassword), location);
-        
+
         // You need to confirm your email before you can log in.
         admin.confirmEmail();
         

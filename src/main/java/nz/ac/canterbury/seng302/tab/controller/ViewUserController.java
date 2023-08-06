@@ -65,6 +65,8 @@ public class ViewUserController {
         model.addAttribute("displayPicture", userPicture);
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("httpServletRequest",request);
+        model.addAttribute("fedmanTokenMessage", (String)model.asMap().get("fedmanTokenMessage"));
+
 
         var curUser = userService.getCurrentUser();
         boolean canEdit = curUser.filter(value -> value.getUserId() == userId).isPresent();
@@ -81,7 +83,7 @@ public class ViewUserController {
      * @return thymeleaf template
      */
     @GetMapping("/user-info/self")
-    public String getCurrentUser(Model model, HttpServletResponse httpServletResponse)
+    public String getCurrentUser(Model model, HttpServletResponse httpServletResponse, RedirectAttributes redirectAttributes)
     {
         Optional<User> user = userService.getCurrentUser();
         if (user.isEmpty())
@@ -90,6 +92,8 @@ public class ViewUserController {
         }
         else {
             User authUser = user.get();
+            //This redirect is 2 layers deep so have to add it again
+            redirectAttributes.addFlashAttribute("fedmanTokenMessage", (String)model.asMap().get("fedmanTokenMessage"));
             return "redirect:/user-info?name=" + authUser.getUserId();
         }
 
