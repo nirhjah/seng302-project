@@ -2,11 +2,11 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.entity.FederationManagerInvite;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
+import nz.ac.canterbury.seng302.tab.service.FederationService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,7 +29,8 @@ public class InviteToFederationManagerController {
     @Autowired
     private EmailService emailService;
 
-    Logger logger = LoggerFactory.getLogger(getClass());
+    @Autowired
+    private FederationService federationService;
 
     int PAGE_SIZE = 10;
 
@@ -72,6 +73,14 @@ public class InviteToFederationManagerController {
         }
     }
 
+    /**
+     * Post the user id which is used to find the user to invite for federation manager and send email invite to user.
+     * @param userId userid of the user to invite for federation manager
+     * @param model map representation of information to be passed to thymeleaf page
+     * @param request request
+     * @return redirect back to the invite federation manager url
+     * @throws MessagingException
+     */
     @PostMapping("/inviteToFederationManager")
     public String inviteToFederationManager(
             @RequestParam(name = "userId", defaultValue = "-1") Long userId,
@@ -80,7 +89,12 @@ public class InviteToFederationManagerController {
 
         Optional<User> fedUser = userService.findUserById(userId);
         if (fedUser.isPresent()) {
-            emailService.federationManagerInvite(fedUser.get(), request);
+            Optional<FederationManagerInvite> fedInvite = federationService.findFederationManagerByUser(fedUser.get());
+            if (fedInvite.isEmpty()) {
+                FederationManagerInvite federationManagerInvite = new FederationManagerInvite(fedUser.get());
+                federationService.updateOrSave(federationManagerInvite);
+                emailService.federationManagerInvite(fedUser.get(), request, federationManagerInvite.getToken());
+            }
             return "redirect:/inviteToFederationManager";
         }
         return "redirect:/inviteToFederationManager";
