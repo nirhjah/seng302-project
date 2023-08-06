@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -24,30 +25,12 @@ import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.FactRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FactService;
-import nz.ac.canterbury.seng302.tab.service.PersonalStatisticImpl;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 @Import({PersonalStatisticImpl.class, UserService.class})
 public class PersonalStatisticImplTest {
-
-    private static final String USER_FNAME = "Test";
-    private static final String USER_LNAME = "User";
-    private static final String USER_EMAIL = "test@email.org";
-    private static final String USER_DOB = "2000-01-01";
-    private static final String USER_PWORD = "super_insecure";
-    private static final String USER_ADDRESS_LINE_1 = "1 Street Road";
-    private static final String USER_ADDRESS_LINE_2 = "A";
-    private static final String USER_SUBURB = "Riccarton";
-    private static final String USER_POSTCODE = "8000";
-    private static final String USER_CITY = "Christchurch";
-    private static final String USER_COUNTRY = "New Zealand";
-    
-
 
     @Autowired
     ActivityService activityService;
@@ -69,6 +52,9 @@ public class PersonalStatisticImplTest {
     
     @Autowired
     FactService factService;
+
+    @Autowired
+    FederationService federationService;
 
     @Autowired
     PersonalStatisticImpl personalStatisticImpl;
@@ -101,7 +87,7 @@ public class PersonalStatisticImplTest {
 
 
     @Test
-    public void GivenIHaveScoredOneGoal_WhenICheckMyGoalsScored_ThenISee1GoalScored(){
+    public void GivenIHaveScoredOneGoal_WhenICheckMyGoalsScored_ThenISee1GoalScored() {
 
         userRepository.save(testUser);
 

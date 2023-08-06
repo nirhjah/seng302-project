@@ -64,9 +64,6 @@ public class ViewMyActivitiesIntegrationTests {
     @SpyBean
     private FactService factService;
 
-    @SpyBean
-    private FederationService federationService;
-
     @Autowired
     private FormationService formationService;
 
@@ -113,7 +110,9 @@ public class ViewMyActivitiesIntegrationTests {
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
         EmailService emailService = applicationContext.getBean(EmailService.class);
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
-        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder,federationService));
+        FederationService federationService = applicationContext.getBean(FederationService.class);
+
+        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder, federationService));
         teamService = Mockito.spy(new TeamService(teamRepository));
         activityService = Mockito.spy(new ActivityService(activityRepository));
         factService = Mockito.spy(new FactService(factRepository));
