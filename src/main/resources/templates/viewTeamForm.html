@@ -171,30 +171,40 @@
 
                    <div class="last5">
                        <ul>
-                           <li th:each="act : ${last5GOrF}" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|">
-                               <h3 th:text="${act.activityType.name()}"> </h3>
+                           <li>
+                               <div>
+                                   <h3> Friendly</h3>
 
-                               <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
-                           endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')}" th:text="${startDate} + ' - ' + ${endDate}" ></h4>
+                                   <h4>01 Jan 2029 - 01 Jan 2030</h4>
 
-                              <!-- <h4 th:with=" startTime=${#temporals.format(act.activityStart, 'hh:mma')},
-                           endTime=${#temporals.format(act.activityEnd, 'hh:mma')}" th:text="${startTime} + ' - ' + ${endTime}" ></h4>-->
+                                   <!-- <h4 th:with=" startTime=${#temporals.format(act.activityStart, 'hh:mma')},
+                                endTime=${#temporals.format(act.activityEnd, 'hh:mma')}" th:text="${startTime} + ' - ' + ${endTime}" ></h4>-->
 
-                               <h4 th:text="'Score: ' + ${act.activityTeamScore} + ' : ' + ${act.otherTeamScore}" > </h4>
-
-
-
-                               <img th:if="${act.outcome.toString() == 'Win'}" th:src="@{/image/icons/win.svg}"/>
-                               <img th:if="${act.outcome.toString() == 'Loss'}" th:src="@{/image/icons/loss.svg}"/>
-                               <img th:if="${act.outcome.toString() == 'Draw'}" th:src="@{/image/icons/draw.svg}"/>
-
-
-
+                                   <h4>Score 0 : 0</h4>
+                               </div>
+                               <div class="r">
+                                   <img th:src="@{/image/icons/loss.svg}"/>
+                               </div>
                            </li>
+                           <li th:each="act : ${last5GOrF}" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|">
+                               <div>
+                                   <h3 th:text="${act.activityType.name()}"> </h3>
 
+                                   <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
+                               endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')}" th:text="${startDate} + ' - ' + ${endDate}" ></h4>
+
+                                  <!-- <h4 th:with=" startTime=${#temporals.format(act.activityStart, 'hh:mma')},
+                               endTime=${#temporals.format(act.activityEnd, 'hh:mma')}" th:text="${startTime} + ' - ' + ${endTime}" ></h4>-->
+
+                                   <h4 th:text="'Score: ' + ${act.activityTeamScore} + ' : ' + ${act.otherTeamScore}" > </h4>
+                               </div>
+                               <div>
+                                   <img th:if="${act.outcome.toString() == 'Win'}" th:src="@{/image/icons/win.svg}"/>
+                                   <img th:if="${act.outcome.toString() == 'Loss'}" th:src="@{/image/icons/loss.svg}"/>
+                                   <img th:if="${act.outcome.toString() == 'Draw'}" th:src="@{/image/icons/draw.svg}"/>
+                               </div>
+                           </li>
                        </ul>
-
-
 
                    </div>
 

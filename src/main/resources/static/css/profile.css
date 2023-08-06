@@ -213,10 +213,8 @@
     margin-top: 5%;
     margin-left: 5%;
     margin-right: 5%;
-    /*
     display: flex;
-    */
-    display: block;
+    justify-content: space-between;
     width: 100%;
 }
 
@@ -232,11 +230,6 @@
     /*
     margin-left: 30%;
     */
-    position: relative;
-    left: 40%;
-
-    margin-top: -20px;
-
 
     /*
     border-radius: 50%;
@@ -251,14 +244,19 @@
     font-size: 25px;
     font-weight: 600;
     text-decoration-thickness: 2px;
-    float: left;
+    text-align: left;
+    margin-bottom: 10px;
 }
 
 
 .last5 h4 {
-    position: relative;
     top: 40px;
     right: 28%;
     text-align: left;
     font-size: 14px;
+}
+
+.last5 li .r {
+    display: flex;
+    align-items: center;
 }
