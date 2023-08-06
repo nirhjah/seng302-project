@@ -149,8 +149,8 @@
 .slider:before {
     position: absolute;
     content: "";
-    height: 31.5px
-    width: 62px;
+    height: 100%;
+    width: 52%;
     background-color: #0b2239;
     -webkit-transition: .4s;
     transition: .4s;
@@ -172,11 +172,6 @@ input:checked + .slider:before {
     display: flex;
 }
 
-.slider-text::before {
-    content: "Teams";
-    flex: 1;
-    margin-right: 16px;
-}
 
 .slider-text::after {
     content: "Users";
@@ -187,7 +182,7 @@ input:checked + .slider:before {
 .slider-text::before {
     content: "Teams";
     flex: 1;
-    margin-right: 16px;
+    margin-right: 20%;
 }
 
 input + .slider + .slider-text::before,
@@ -206,10 +201,11 @@ input + .slider + .slider-text::after {
     float: right;
     padding: 6px;
     border-bottom: 1px #0b2239 solid !important;
-    font-size: 17px;
+    font-size: 16px;
     color: #0b2239;
     border: none;
     border-top-right-radius: inherit;
+    max-height: 30px;
 }
 
 .users-teams-box input[type=text]:focus {
@@ -247,3 +243,31 @@ input + .slider + .slider-text::after {
     border-radius: 0 5px 5px 0;
 }
 
+.members-ul {
+    border-left: 3px #0b2239 solid;
+    border-bottom: 3px #0b2239 solid;
+    border-bottom-left-radius: 5px;
+    height: inherit;
+}
+
+.members-box {
+    width: 38%;
+    border-bottom: 3px #0b2239 solid;
+    border-bottom-left-radius: 5px;
+    overflow: hidden;
+    height: inherit;
+}
+
+.search-box {
+    display: flex;
+    border-bottom: 1px #0b2239 solid !important;
+}
+
+.search-box img {
+    height: 30px;
+    background-color: #0b2239;
+    width: 30px;
+    padding: 4px;
+    border-bottom: 1px #0b2239 solid;
+    cursor: pointer;
+}
