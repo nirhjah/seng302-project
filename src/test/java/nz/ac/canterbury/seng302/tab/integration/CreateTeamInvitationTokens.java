@@ -120,7 +120,7 @@ public class CreateTeamInvitationTokens {
         mockMvc.perform(get("/profile")
                         .param("teamID", "1"))
 
-                .andExpect(view().name("profileForm"));
+                .andExpect(view().name("viewTeamForm"));
     }
 
     @Then("I can see a unique secret token for my team that is exactly 12 char long with a combination of letters and numbers, but no special characters")
@@ -134,7 +134,7 @@ public class CreateTeamInvitationTokens {
     public void i_am_on_the_team_profile_page() throws Exception {
         mockMvc.perform(get("/profile")
                         .param("teamID", "1"))
-                .andExpect(view().name("profileForm"));
+                .andExpect(view().name("viewTeamForm"));
     }
 
     @When("I generate a new secret token for my team")
