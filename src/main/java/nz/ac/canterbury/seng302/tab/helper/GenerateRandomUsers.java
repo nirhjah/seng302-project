@@ -74,7 +74,7 @@ public class GenerateRandomUsers {
      * <p><strong>NOTE</strong>: This user isn't saved to the repository, you need to do that.</p>
      * @return A randomly generated user.
      */
-    public User createRandomUserWithSports() throws IOException {
+    public User createRandomUserWithSports() {
         Team teamToJoin = teamRepository.findAll().get(0);
         User user = createRandomUser();
         // Generate random sports
