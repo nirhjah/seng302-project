@@ -70,6 +70,8 @@ public class ViewUserController {
         model.addAttribute("location", user.getLocation());
         model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("httpServletRequest",request);
+        model.addAttribute("fedmanTokenMessage", (String)model.asMap().get("fedmanTokenMessage"));
+
 
         model.addAttribute("displayPicture", userImageService.readFileOrDefaultB64((long) userId));
 
@@ -88,7 +90,7 @@ public class ViewUserController {
      * @return thymeleaf template
      */
     @GetMapping("/user-info/self")
-    public String getCurrentUser(Model model, HttpServletResponse httpServletResponse)
+    public String getCurrentUser(Model model, HttpServletResponse httpServletResponse, RedirectAttributes redirectAttributes)
     {
         Optional<User> user = userService.getCurrentUser();
         if (user.isEmpty())
@@ -97,6 +99,8 @@ public class ViewUserController {
         }
         else {
             User authUser = user.get();
+            //This redirect is 2 layers deep so have to add it again
+            redirectAttributes.addFlashAttribute("fedmanTokenMessage", (String)model.asMap().get("fedmanTokenMessage"));
             return "redirect:/user-info?name=" + authUser.getUserId();
         }
 
