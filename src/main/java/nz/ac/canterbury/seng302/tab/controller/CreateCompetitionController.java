@@ -166,6 +166,10 @@ public class CreateCompetitionController {
         } else {
             model.addAttribute("users", ((UserCompetition) competition).getPlayers());
         }
+        model.addAttribute("presetAges", Grade.Age.values());
+        model.addAttribute("presetSexes", Grade.Sex.values());
+        model.addAttribute("presetGenders", Grade.Competitiveness.values());
+
 
     }
 

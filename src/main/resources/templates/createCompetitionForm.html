@@ -41,21 +41,27 @@
             </div>
 
             <div class="select-box">
-                <label>Grade Level <span class="required">*</span></label>
+                <label>Grade <span class="required">*</span></label>
                 <div class="grade-level-details">
                     <div>
                         <select id="level">
                             <option value="" disabled selected>Level</option>
+                            <option th:each="competitiveness : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Competitiveness).values()}"
+                                    th:value="${competitiveness}" th:text="${competitiveness.description}"></option>
                         </select>
                     </div>
                     <div>
-                        <select id="gender">
+                        <select id="gender" >
                             <option value="" disabled selected>Gender</option>
+                            <option th:each="sex : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Sex).values()}"
+                                    th:value="${sex}" th:text="${sex.description}"></option>
                         </select>
                     </div>
                     <div>
                         <select id="age">
                             <option value="" disabled selected>Age</option>
+                            <option th:each="age : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Age).values()}"
+                                    th:value="${age}" th:text="${age.description}"></option>
                         </select>
                     </div>
                 </div>
