@@ -149,10 +149,8 @@ public class CreateClubController {
             editClub.setName(name);
             editClub.setLocation(location);
 
-            if (Objects.equals(clubLogo.getOriginalFilename(), "")) {
-                // If there's a logo, set it.
-                clubImageService.updateClubLogo(editClub, clubLogo);
-            }
+            // If there is no clubLogo passed in, nothing will be changed, so it's fine.
+            clubImageService.updateClubLogo(editClub, clubLogo);
 
             clubService.updateOrAddClub(editClub);
             return "redirect:/view-club?clubID=" + editClub.getClubId();
