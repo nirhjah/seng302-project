@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class FederationManagerInviteController {
@@ -39,12 +39,22 @@ public class FederationManagerInviteController {
 
     FederationManagerInvite fedInvite;
 
+    /**
+     * Controller handles processing the token and takes user to the page where they can accept or decline the invitation.
+     * @param token the users unique token for becoming a federation manager
+     * @param request the HTTPRrequest
+     * @param model storage structure
+     * @param redirectAttributes used to display messages on redirection
+     * @return a form to accept or decline the invitation to become a federation manager
+     * iff the user accessing this page matches the invite's user otherwise it returns the view self page
+     */
     @GetMapping("/federationManager")
     public String fedManagerInvitation(@RequestParam("token") String token, HttpServletRequest request, Model model,
                                        RedirectAttributes redirectAttributes) {
         model.addAttribute("httpServletRequest", request);
         fedInvite = federationService.getByToken(token);
-        if (fedInvite != null) {
+        Optional<User> optU =  userService.getCurrentUser();
+        if (fedInvite != null && optU.isPresent() && fedInvite.getUser().equals(optU.get())) {
             return "federationManagerInvite";
         } else {
             redirectAttributes.addFlashAttribute("fedmanTokenMessage", "Error: Invalid Federation Manager Token");
@@ -52,11 +62,24 @@ public class FederationManagerInviteController {
         }
     }
 
+    /**
+     * Handles the decision that a user makes about the invitation for the invitation to become a federation manager
+     * @param decision string that's either "true" or "false"
+     * @param request the HTTP request
+     * @param redirectAttributes redirect attributes to display success and error messages depending on outcome
+     * @return a redirect to view user page for themselves
+     */
     @PostMapping("/federationManager")
-    public String federationManager(@RequestParam(name = "decision") String decision, HttpServletRequest request) {
+    public String federationManager(@RequestParam(name = "decision") String decision, HttpServletRequest request,
+                                    RedirectAttributes redirectAttributes) {
         boolean choice = Boolean.parseBoolean(decision);
         if (choice) {
-            User user = userService.getCurrentUser().get();
+            Optional<User> optUser = userService.getCurrentUser();
+            if (optUser.isEmpty()) {
+                redirectAttributes.addFlashAttribute("fedmanTokenMessage", "Error: Unable to process invite response, please try again.");
+                return "redirect:user-info/self";
+            }
+            User user = optUser.get();
             user.grantAuthority(AuthorityType.FEDERATION_MANAGER);
             userRepository.save(user);
             try {
@@ -65,11 +88,12 @@ public class FederationManagerInviteController {
                 throw new RuntimeException(e);
             }
             autoLogin.forceLogin(user.getEmail(), user.getAuthorities(), request);
+            redirectAttributes.addFlashAttribute("fedmanTokenMessage", "Success! You are now a federation manager");
             logger.info("FED MANAGER NOW");
-            federationService.delete(fedInvite);
         } else {
             logger.info("NOT FED MANAGER");
         }
+        federationService.delete(fedInvite);
         return "redirect:user-info/self";
     }
 }

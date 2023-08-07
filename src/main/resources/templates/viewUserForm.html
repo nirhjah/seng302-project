@@ -6,7 +6,7 @@
       for a non-existent
   */-->
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
@@ -22,7 +22,8 @@
 </head>
 <body class="profile-background">
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
-    <h6 class="reset-password-info" th:if="${fedmanTokenMessage != null}" th:text="${fedmanTokenMessage}"></h6>
+<div th:if="${fedmanTokenMessage != null}" th:insert="~{fragments/messageDropDown.html :: messageDropDown(message=${fedmanTokenMessage})}"></div>
+
     <div class="profile-form">
         <div class="wrapper-profile">
             <p th:if="${thisUser.isEmpty()}">
@@ -31,7 +32,7 @@
             <div class="profile-pic">
                 <form id="upload-picture" method="post" th:action="@{/user-info/upload-pfp(userId=${userId})}" enctype="multipart/form-data">
                     <div class="image-styling">
-                        <img th:src="*{'data:image/jpeg;base64,'+{displayPicture}}" width="200" height="200"/>
+                        <img th:src="@{/user-profile-picture/{id}(id = ${thisUser.get().userId})}"  width="200" height="200" alt="User image">
                         </br>
                     </div>
                     </br>

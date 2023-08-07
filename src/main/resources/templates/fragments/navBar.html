@@ -68,8 +68,8 @@
                 <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
             </div>
             <a>
-                <img class="navbar-profile-picture"
-                     th:src="'data:image/png;base64,' + ${user.pictureString}" alt="My Profile"/>
+                <img th:src="@{/user-profile-picture/{id}(id = ${user.userId})}" class="navbar-profile-picture"
+                     alt="My Profile">
                 <span th:if="${#strings.length(user.firstName + ' ' + user.lastName)} &lt;= 24" th:text="${user.firstName + ' ' + user.lastName}"></span>
                 <span th:unless="${#strings.length(user.firstName + ' ' + user.lastName)} &lt;= 24" th:text="${#strings.substring(user.firstName + ' ' + user.lastName, 0, 21) + '...'}"></span>
                 <i class="triangle" aria-hidden="true"></i>
