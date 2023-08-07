@@ -8,34 +8,32 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 @Import({UserImageService.class})
-/*
- TODO: This is terrible!!!
-  A SpringBootTest should not be used here, as it
-  loads the entire sprint context, which is completely
-  overkill. I haven't been able to find a better way.
-  (PLS change the annotations if you know of a way to get it working)
- */
 @SpringBootTest
 class UserImageServiceTest {
 
     @Autowired
     private UserImageService userImageService;
 
-    @Autowired
+    @SpyBean
     private UserService userService;
 
     @Autowired
@@ -52,7 +50,7 @@ class UserImageServiceTest {
     private static final int NUM_USERS = 30;
 
     @BeforeEach
-    void beforeEach() throws IOException {
+    void beforeEach() {
         // Check that we are on test.
         // If we aren't on test, we shouldn't run the test!!!
         // (This will mess up our filesystem on prod if it fails!!!)
@@ -65,13 +63,15 @@ class UserImageServiceTest {
         users.clear();
 
         // Clear files for test
-         UserImageService.clearTestFolder();
+        UserImageService.clearTestFolder();
 
         // Generate our mock users
         for (int i=0; i<NUM_USERS; i++) {
             User user = generateRandomUsers.createRandomUser();
-            userService.updateOrAddUser(user);
+            user = userService.updateOrAddUser(user);
+            System.out.println(user);
             users.add(user);
+            System.out.println("USER ID: " + user.getUserId());
         }
     }
 
@@ -80,11 +80,21 @@ class UserImageServiceTest {
     }
 
     @Test
+    void testCurrentUserIsAutomaticallyUsed() throws IOException {
+        User user = User.defaultDummyUser();
+        Mockito.when(userService.getCurrentUser()).thenReturn(Optional.of(user));
+        userImageService.updateProfilePicture(fakeImageFile);
+
+        byte[] result = userImageService.readFileOrDefault(user.getUserId());
+        assertArrayEquals(fakeImageFile.getBytes(), result);
+    }
+
+    @Test
     void testSingularImageIsSaved() throws IOException {
         // Take a user, check that the file is saved.
         User usr = users.get(0);
         long id = usr.getUserId();
-        userImageService.updateProfilePicture(id, fakeImageFile);
+        userImageService.saveImage(usr, fakeImageFile);
 
         byte[] result = userImageService.readFileOrDefault(id);
 
@@ -97,15 +107,14 @@ class UserImageServiceTest {
         // Multiple users, check that they all end up with unique data.
         var files = List.of(
                 getMockedFile(new byte[] {1,2,3,4,5,6}),
-                getMockedFile(new byte[] {5,6,7,67,43,45}),
-                getMockedFile(new byte[] {9,8,6,5,8,6,5})
+                getMockedFile(new byte[] {5,6,7,67,43,45,99}),
+                getMockedFile(new byte[] {9,8,6,5,8,6,5,1,1,1})
         );
 
         for (int i=0; i<files.size(); i++) {
             User usr = users.get(i);
-            long id = usr.getUserId();
             var file = files.get(i);
-            userImageService.updateProfilePicture(id, file);
+            userImageService.saveImage(usr, file);
         }
 
         for (int i=0; i<files.size(); i++) {
@@ -133,21 +142,6 @@ class UserImageServiceTest {
 
         assertArrayEquals(dataA, defaultBytes);
         assertArrayEquals(dataB, defaultBytes);
-    }
-
-    @Test
-    void givenNoUser_testFileIsNotSaved() {
-        long invalidId = 3290;
-        while (userService.findUserById(invalidId).isPresent()) {
-            // Just in case!
-            invalidId++;
-        }
-
-        // This file should not be saved, because the user ID doesn't exist.
-        userImageService.updateProfilePicture(invalidId, fakeImageFile);
-
-        byte[] savedData = userImageService.readFileOrDefault(invalidId);
-        assertArrayEquals(savedData, defaultBytes);
     }
 
     @AfterAll

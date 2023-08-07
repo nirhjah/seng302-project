@@ -2,6 +2,8 @@ package nz.ac.canterbury.seng302.tab.helper;
 
 import nz.ac.canterbury.seng302.tab.helper.interfaces.HasImage;
 import nz.ac.canterbury.seng302.tab.helper.interfaces.Identifiable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +12,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class ImageService<T extends Identifiable & HasImage> extends FileDataSaver {
+/**
+ * Provides an abstract class for saving images.
+ * @param <Entity> The JPA Entity type. For example, Club, User, Team.
+ */
+public abstract class ImageService<Entity extends Identifiable & HasImage> extends FileDataSaver {
+    Logger logger = LoggerFactory.getLogger(ImageService.class);
+
     /**
      * Default Ctor for an ImageService.
      * deploymentType is PROD when on production,
@@ -76,7 +84,7 @@ public abstract class ImageService<T extends Identifiable & HasImage> extends Fi
      * @param entity The entity to get the image for
      * @return The ResponseEntity to be used with @ResponseBody
      */
-    public ResponseEntity<byte[]> getImageResponse(T entity) {
+    public ResponseEntity<byte[]> getImageResponse(Entity entity) {
         long id = entity.getId();
         ImageType type = entity.getImageType();
 
@@ -87,6 +95,7 @@ public abstract class ImageService<T extends Identifiable & HasImage> extends Fi
             return getResponseFromData(optImageData.get(), type);
         } else {
             // No file found, or IO failed. Return default image.
+            System.out.println("WE ARE HERE.");
             return getResponseFromData(getDefaultBytes(), getDefaultImageType());
         }
     }
@@ -98,17 +107,24 @@ public abstract class ImageService<T extends Identifiable & HasImage> extends Fi
     Set<String> SVGS = Set.of("svg");
 
     /**
-     * @param entity
-     * @param multipartFile
+     * @param entity The JPA entity to save the image for
+     * @param multipartFile The MultiPartFile containing the image data
      */
-    public void setImageTypeOf(T entity, MultipartFile multipartFile) {
+    public void saveImage(Entity entity, MultipartFile multipartFile) {
         Optional<String> optExtension = getExtension(multipartFile.getName());
         if (optExtension.isPresent()) {
             String extension = optExtension.get().toLowerCase();
+            boolean ok = false;
             if (PNGS.contains(extension)) {
                 entity.setImageType(ImageType.PNG_OR_JPEG);
+                ok = saveFile(entity.getId(), multipartFile);
             } else if (SVGS.contains(extension)){
                 entity.setImageType(ImageType.SVG);
+                ok = saveFile(entity.getId(), multipartFile);
+            }
+
+            if (!ok) {
+                logger.error("Couldn't save file: {}", entity.getId());
             }
         }
     }

@@ -67,7 +67,6 @@ public class ViewClubController {
         Club club = optClub.get();
 
         model.addAttribute("club",club);
-        model.addAttribute("clubLogo", club.getClubLogo());
         model.addAttribute("location", club.getLocation().toString());
         return "viewClub";
     }

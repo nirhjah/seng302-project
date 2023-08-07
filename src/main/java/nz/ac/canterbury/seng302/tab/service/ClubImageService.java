@@ -60,15 +60,13 @@ public class ClubImageService extends ImageService<Club> {
     /**
      * Updates a club logo
      *
-     * @param id The userId
+     * @param club The club's id
      * @param file The file that represents the image
      */
-    public void updateClubLogo(long id, MultipartFile file) {
+    public void updateClubLogo(Club club, MultipartFile file) {
+        long id = club.getClubId();
         if (clubService.findClubById(id).isPresent()) {
-            boolean ok = saveFile(id, file);
-            if (!ok) {
-                logger.error("Couldn't save file: {}", id);
-            }
+            saveImage(club, file);
         }
     }
 

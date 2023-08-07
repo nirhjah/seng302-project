@@ -2,7 +2,6 @@ package nz.ac.canterbury.seng302.tab.helper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -255,17 +254,6 @@ public abstract class FileDataSaver {
      */
     public byte[] getDefaultBytes() {
         return new byte[] {};
-    }
-
-    /**
-     * Allows for specification of default response entities.
-     * Example usage:
-     * If the default profile picture is an SVG,
-     * this should return a response entity to accommodate SVGs.
-     * @return An array of bytes as the default.
-     */
-    public ResponseEntity<byte[]> getDefaultResponseEntity() {
-        return null;
     }
 
     /**

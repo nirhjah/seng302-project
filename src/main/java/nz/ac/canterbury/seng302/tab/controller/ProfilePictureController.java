@@ -4,13 +4,11 @@ import nz.ac.canterbury.seng302.tab.service.ClubImageService;
 import nz.ac.canterbury.seng302.tab.service.TeamImageService;
 import nz.ac.canterbury.seng302.tab.service.UserImageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 
 /**
@@ -51,8 +49,7 @@ public class ProfilePictureController {
      * @return A ResponseEntity containing the image data
      */
     @GetMapping("/user-profile-picture/{id}")
-    @ResponseBody
-    public ResponseEntity<byte[]> getUserProfilePicture(@PathVariable long id) {
+    public @ResponseBody ResponseEntity<byte[]> getUserProfilePicture(@PathVariable long id) {
         return userImageService.getImageResponse(id);
     }
 

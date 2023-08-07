@@ -29,16 +29,11 @@ public class Club implements Identifiable, HasImage {
     @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
 
-    @Column(columnDefinition = "MEDIUMBLOB")
-    private String clubLogo;
-
     @Enumerated(value = EnumType.STRING)
     private ImageType logoType;
 
     @ManyToOne
     private User manager;
-
-    private boolean hasCustomLogo;
 
     protected Club() {
     }
@@ -51,15 +46,6 @@ public class Club implements Identifiable, HasImage {
 
         Resource resource = new ClassPathResource("/static/image/icons/club-logo.svg");
         InputStream is = resource.getInputStream();
-        this.clubLogo = Base64.getEncoder().encodeToString(is.readAllBytes());
-    }
-
-    public Club(String name, Location location, String sport, User manager, String clubLogo) {
-        this.name = name;
-        this.location = location;
-        this.sport = sport;
-        this.manager = manager;
-        this.clubLogo=clubLogo;
     }
 
     public ImageType getImageType() {
@@ -101,27 +87,11 @@ public class Club implements Identifiable, HasImage {
         return user.getUserId() == getManager().getUserId();
     }
 
-    public void setClubLogo(String clubLogo) {
-        this.clubLogo = clubLogo;
-    }
-
-    public String getClubLogo(){
-        return this.clubLogo;
-    }
-
     public String getSport() {
         return sport;
     }
 
     public void setSport(String sport) {
         this.sport = sport;
-    }
-
-    public boolean getHasCustomLogo(){
-        return this.hasCustomLogo;
-    }
-
-    public void setHasCustomLogo(boolean flag){
-        this.hasCustomLogo= flag;
     }
 }

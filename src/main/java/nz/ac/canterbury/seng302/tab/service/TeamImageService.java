@@ -88,7 +88,7 @@ public class TeamImageService extends ImageService<Team> {
         if (team.isManager(user) || team.isCoach(user)) {
             // Now, only save the file if the user is a manager or coach.
             // else, fail
-            saveFile(id, file);
+            saveImage(team, file);
         }
     }
 

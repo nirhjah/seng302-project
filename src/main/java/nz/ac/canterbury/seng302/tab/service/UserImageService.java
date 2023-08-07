@@ -67,14 +67,17 @@ public class UserImageService extends ImageService<User> {
 
     /**
      * Updates a user's profile picture.
-     * If the user doesn't exist, this method is a NOOP.
      *
-     * @param userId The userId
      * @param file The file that represents the image
      */
-    public void updateProfilePicture(long userId, MultipartFile file) {
-        if (userService.findUserById(userId).isPresent()) {
-            saveFile(userId, file);
+    public void updateProfilePicture(MultipartFile file) {
+        /*
+        We will only ever update the profile picture of the user that
+        we are "controlling".
+         */
+        Optional<User> optionalUser = userService.getCurrentUser();
+        if (optionalUser.isPresent()) {
+            saveImage(optionalUser.get(), file);
         }
     }
 

@@ -125,7 +125,7 @@ public class ViewUserController {
         model.addAttribute("userId", userId);
 
         // Saving the file in the file system
-        userImageService.updateProfilePicture(userId, file);
+        userImageService.updateProfilePicture(file);
 
         return "redirect:/user-info?name=" + authUser.getUserId();
     }

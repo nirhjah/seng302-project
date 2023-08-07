@@ -38,17 +38,4 @@ public class ClubServiceTest {
         clubService.updateOrAddClub(club);
         Assertions.assertEquals(clubService.findAll().size(), 1);
     }
-
-    @Test
-    void testSetDefaultLogo() throws IOException {
-        Club club = new Club("Rugby Club", location, "Rugby",null);
-        clubService.setDefaultLogo();
-        Assertions.assertNotNull(club.getClubLogo());
-
-        Resource resource = new ClassPathResource("/static/image/icons/club-logo.svg");
-        InputStream is = resource.getInputStream();
-        String expectByteLogo= Base64.getEncoder().encodeToString(is.readAllBytes());
-
-        Assertions.assertEquals(expectByteLogo,club.getClubLogo());
-    }
 }
