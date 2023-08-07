@@ -28,6 +28,10 @@ public class TeamCompetition extends Competition {
       this.teams.add(team);
     }
 
+    public TeamCompetition(String name, Grade grade, String sport, Location location) {
+        super(name, grade, sport, location);
+    }
+
     public TeamCompetition(String name, Grade grade, String sport) {
       super(name, grade, sport);
     }

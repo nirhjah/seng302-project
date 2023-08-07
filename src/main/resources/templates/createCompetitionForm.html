@@ -46,22 +46,27 @@
                     <div>
                         <select id="competitiveness" name="competitiveness">
                             <option value="" disabled selected>Level</option>
-                            <option th:each="competitiveness : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Competitiveness).values()}"
-                                    th:value="${competitiveness}" th:text="${competitiveness.description}"></option>
+                            <option th:each="competitivenessOption : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Competitiveness).values()}"
+                                    th:value="${competitivenessOption}" th:text="${competitivenessOption.description}"
+                                    th:selected="${competitivenessOption == level}">></option>
                         </select>
                     </div>
                     <div>
                         <select id="sex" name="sex">
                             <option value="" disabled selected>Gender</option>
-                            <option th:each="sex : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Sex).values()}"
-                                    th:value="${sex}" th:text="${sex.description}"></option>
+                            <option th:each="sexOption : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Sex).values()}"
+                                    th:value="${sexOption}"
+                                    th:text="${sexOption.description}"
+                                    th:selected="${sexOption == gender}"></option>
                         </select>
                     </div>
                     <div>
                         <select id="age" name="age">
                             <option value="" disabled selected>Age</option>
-                            <option th:each="age : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Age).values()}"
-                                    th:value="${age}" th:text="${age.description}"></option>
+                            <option th:each="ageOption : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Age).values()}"
+                                    th:value="${ageOption}"
+                                    th:text="${ageOption.description}"
+                                    th:selected="${ageOption == age}"></option>
                         </select>
                     </div>
                 </div>

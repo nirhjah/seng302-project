@@ -12,7 +12,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 public class CompetitionFormValidators {
 
-    public static final String NO_GRADE_MSG = "A Grade consisting of all values is required";
+    public static final String NO_GRADE_MSG = "A Grade consisting of all attributes is required";
 
     public static final String NO_COMPETITORS_MSG = "You must select at least one competitor";
 
