@@ -66,9 +66,6 @@ public class CreateTeamInvitationTokens {
     private FactService factService;
 
     @Autowired
-    private FederationService federationService;
-
-    @Autowired
     private FormationService formationService;
 
 

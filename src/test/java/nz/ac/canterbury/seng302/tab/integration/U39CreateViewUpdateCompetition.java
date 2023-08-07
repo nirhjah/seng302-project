@@ -4,27 +4,39 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import nz.ac.canterbury.seng302.tab.controller.CreateActivityController;
+import io.cucumber.java.en.When;
+import nz.ac.canterbury.seng302.tab.controller.InviteToFederationManagerController;
 import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.service.*;
+import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
+@Import(InviteToFederationManagerController.class)
 public class U39CreateViewUpdateCompetition {
 
 
@@ -35,12 +47,14 @@ public class U39CreateViewUpdateCompetition {
 
     private UserService userService;
 
+    private EmailService emailService;
+
     private User user;
 
     private void setupMocking() {
         // get all the necessary beans
         userService = Mockito.spy(applicationContext.getBean(UserService.class));
-
+        emailService = Mockito.spy(applicationContext.getBean(EmailService.class));
         // create mockMvc manually with spied services
 //        var controller = new CreateCompetitionController(
 //                userService, competitionService
@@ -53,6 +67,7 @@ public class U39CreateViewUpdateCompetition {
         setupMocking();
         Location location = new Location("abcd", null, null, "chch", null, "nz");
         user = new User("Test", "User", "test@example.com", "insecure", location);
+        user.grantAuthority(AuthorityType.FEDERATION_MANAGER);
         user = userService.updateOrAddUser(user);
         user = userService.findUserById(user.getUserId()).orElseThrow();
         Mockito.doReturn(Optional.of(user)).when(userService).getCurrentUser();
@@ -78,5 +93,45 @@ public class U39CreateViewUpdateCompetition {
                 .andExpect(model().attributeExists("name")) // Assuming "name" is the name of the attribute for the name field
                 .andExpect(model().attributeExists("sport")) // Assuming "sport" is the name of the attribute for the sport field
                 .andExpect(model().attributeExists("gradeLevel")); // Assuming "gradeLevel" is the name of the attribute for the grade level field
+    }
+
+    @Given("I am a federation manager")
+    public void givenIAmAFederationManager() {
+        Assertions.assertTrue(user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_FEDERATION_MANAGER")));
+    }
+
+    @When("I click on the ‘Invite to Federation Managers’ UI element,")
+    @WithMockUser
+    public void clickOnInviteToFederationsManagerUIElement() throws Exception {
+        mockMvc.perform(get("/inviteToFederationManager")).andExpect(status().isOk()).andExpect(view().name("inviteToFederationManager"));
+//        mockMvc.perform(get("/inviteToFederationManager"))
+//                .andExpect(status().isOk())
+//                .andExpect(view().name("inviteToFederationManager"))
+//                .andExpect(model().attributeExists("userList"));
+    }
+
+    @Then("I’m taken to a page where I can see all users who aren’t federation managers.")
+    public void takenToPageToViewAllNonFedManUsers() throws Exception {
+        mockMvc.perform(get("/inviteToFederationManager"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("inviteToFederationManager"))
+                .andExpect(model().attributeExists("userList"));
+    }
+
+    //Would be better as a end2end
+    @And("with each user's information there is a button to invite.")
+    public void inviteButtonExists() throws Exception {
+        mockMvc.perform(get("/inviteToFederationManager"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("inviteToFederationManager"))
+                .andExpect(model().attributeExists("userList"));
+    }
+
+    @And("I’m on the “Invite to Federation Managers” page,")
+    public void iMOnTheInviteToFederationManagersPage() throws Exception {
+        mockMvc.perform(get("/inviteToFederationManager"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("inviteToFederationManager"))
+                .andExpect(model().attributeExists("userList"));
     }
 }

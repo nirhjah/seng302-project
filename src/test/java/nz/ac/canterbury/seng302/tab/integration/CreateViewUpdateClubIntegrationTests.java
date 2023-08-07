@@ -82,6 +82,8 @@ public class CreateViewUpdateClubIntegrationTests {
 
     private ClubRepository clubRepository;
 
+    private ClubImageService clubImageService;
+
     private User user;
 
     private Team team;
@@ -105,6 +107,7 @@ public class CreateViewUpdateClubIntegrationTests {
         clubRepository = applicationContext.getBean(ClubRepository.class);
         teamRepository = applicationContext.getBean(TeamRepository.class);
         userRepository = applicationContext.getBean(UserRepository.class);
+        clubImageService = applicationContext.getBean(ClubImageService.class);
 
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
         EmailService emailService = applicationContext.getBean(EmailService.class);
@@ -114,8 +117,7 @@ public class CreateViewUpdateClubIntegrationTests {
         clubService = Mockito.spy(new ClubService(clubRepository));
         teamService = Mockito.spy(new TeamService(teamRepository));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService), new ProfileFormController(userService, teamService, activityService, factService, formationService), new ViewClubController(userService, teamService, clubService)).build();
-
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService, clubImageService), new ProfileFormController(userService, teamService, activityService, factService, formationService), new ViewClubController(userService, teamService, clubService)).build();
 
         Authentication authentication = Mockito.mock(Authentication.class);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
