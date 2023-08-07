@@ -40,7 +40,7 @@ public class CreateAndEditTeamForm {
         this.postcode = location.getPostcode();
         this.country = location.getCountry();
         this.city = location.getCity();
-        this.suburb = this.getSuburb();
+        this.suburb = location.getSuburb();
     }
 
     public String getAddressLine1() {

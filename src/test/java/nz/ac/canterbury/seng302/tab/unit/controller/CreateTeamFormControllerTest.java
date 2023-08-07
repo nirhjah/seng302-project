@@ -70,10 +70,10 @@ public class CreateTeamFormControllerTest {
 
     @BeforeEach
     void beforeEach() throws IOException {
-        Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY, USER_POSTCODE, USER_COUNTRY);
-
-        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
-        team = spy(new Team("testName", "testSport", new Location("3 Test Lane", "5 Mock Road", "Ilam", "Christchurch", "8041", "New Zealand"), user));
+        Location userLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY, USER_POSTCODE, USER_COUNTRY);
+        Location teamLocation = new Location("3 Test Lane", "5 Mock Road", "Ilam", "Christchurch", "8041", "New Zealand");
+        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", userLocation);
+        team = spy(new Team("testName", "testSport", teamLocation, user));
         doReturn(TEAM_ID).when(team).getTeamId();
 
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
