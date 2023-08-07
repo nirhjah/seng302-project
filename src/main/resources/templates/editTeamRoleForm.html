@@ -21,7 +21,7 @@
     <div th:each="teamRole : ${roleList}" class="card" >
         <div class="card-wrapper">
             <div class="card-image">
-                <img th:src="${'data:image/jpeg;base64,' + teamRole.user.pictureString}" class="card-img-top"
+                <img th:src="@{/user-profile-picture/{id}(id = ${teamRole.user.userId})}"  class="card-img-top"
                      alt="User image">
             </div>
             <div class="card-body">

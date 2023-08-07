@@ -1,8 +1,11 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -11,13 +14,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Base64;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Optional;
+import java.util.*;
 
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FactService;
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -35,8 +34,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -44,10 +41,16 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 public class ProfileFormControllerTest {
 
     @Autowired
+    private TeamImageService teamImageService;
+
+    @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private UserService mockUserService;
+
+    @MockBean
+    private FormationService mockFormationService;
 
     @MockBean
     private TeamService mockTeamService;
@@ -93,11 +96,10 @@ public class ProfileFormControllerTest {
         mockMvc.perform(get("/profile")
                 .param("teamID", TEAM_ID.toString()))
             .andExpect(status().isOk())
-            .andExpect(view().name("profileForm"))
+            .andExpect(view().name("viewTeamForm"))
             .andExpect(MockMvcResultMatchers.model().attribute("teamID", TEAM_ID))
             .andExpect(MockMvcResultMatchers.model().attribute("displayName", TEAM_NAME))
-            .andExpect(MockMvcResultMatchers.model().attribute("displaySport", TEAM_SPORT))
-            .andExpect(MockMvcResultMatchers.model().attribute("displayTeamPicture", team.getPictureString()));
+            .andExpect(MockMvcResultMatchers.model().attribute("displaySport", TEAM_SPORT));
     }
 
     @Test
@@ -107,8 +109,7 @@ public class ProfileFormControllerTest {
 
         mockMvc.perform(get("/profile")
                         .param("teamID", "2"))
-                .andExpect(status().isNotFound())
-                .andExpect(view().name("error"));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -138,8 +139,9 @@ public class ProfileFormControllerTest {
             mockMvc.perform(multipart("/profile?teamID={id}", TEAM_ID).file(multipartFile))
                     .andExpect(status().is3xxRedirection());
         }
-        assertNotEquals(team.getPictureString(), Base64.getEncoder().encodeToString(fileBytes));
 
+        byte[] savedBytes = teamImageService.readFileOrDefault(team.getTeamId());
+        assertFalse(Arrays.equals(savedBytes, fileBytes));
     }
 
     @Test
@@ -153,7 +155,21 @@ public class ProfileFormControllerTest {
             mockMvc.perform(multipart("/profile?teamID={id}", TEAM_ID).file(multipartFile))
                     .andExpect(status().is3xxRedirection());
         }
-        assertNotEquals(team.getPictureString(), Base64.getEncoder().encodeToString(fileBytes));
+
+        var savedBytes = teamImageService.readFileOrDefault(team.getTeamId());
+        assertFalse(Arrays.equals(savedBytes, fileBytes));
+    }
+
+    @Test
+    public void testCreatingAValidFormation() throws Exception {
+        mockMvc.perform(post("/profile/create-formation", 42L)
+                        .param("formation", "1-4-4-2")
+                        .param("customPlayerPositions", "")
+                        .param("custom", String.valueOf(false))
+                        .param("teamID", String.valueOf(TEAM_ID)))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/profile?teamID=" + TEAM_ID));
+        verify(mockFormationService, times(1)).addOrUpdateFormation(any());
     }
 
 }

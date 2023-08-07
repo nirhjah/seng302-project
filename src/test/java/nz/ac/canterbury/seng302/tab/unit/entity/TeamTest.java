@@ -59,18 +59,6 @@ public class TeamTest {
     }
 
     @Test
-    public void testGettingPictureString() throws IOException {
-        List<Team> teamList = teamService.getTeamList();
-        assertTrue(teamList.isEmpty());
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        File file = resource.getFile();
-        String pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
-        Team team = new Team("test", "Hockey", location);
-        teamService.addTeam(team);
-        assertEquals(pictureString, team.getPictureString());
-    }
-
-    @Test
     public void testGettingTeamName() throws IOException {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());

@@ -4,5 +4,7 @@ public enum FactType {
     FACT,
     GOAL,
     SUBSTITUTION,
-    OPPOSITION_GOAL
+    OPPOSITION_GOAL,
+
+    NONE
 }

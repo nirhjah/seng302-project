@@ -1,7 +1,5 @@
 package nz.ac.canterbury.seng302.tab.service;
 
-import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Club;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -92,34 +90,6 @@ public class TeamService {
     public Page<Team> findPaginated(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         return teamRepository.findAll(pageable);
-    }
-
-    /**
-     * Method which updates the picture by taking the MultipartFile type and
-     * updating the picture
-     * stored in the team with id primary key.
-     *
-     * @param file MultipartFile file upload
-     * @param id   Team's unique id
-     */
-    public void updatePicture(MultipartFile file, long id) {
-        Team team = teamRepository.findById(id).get();
-
-        // Gets the original file name as a string for validation
-        String pictureString = StringUtils.cleanPath(file.getOriginalFilename());
-        if (pictureString.contains("..")) {
-            System.out.println("not a valid file");
-        }
-        try {
-            // Encodes the file to a byte array and then convert it to string, then set it
-            // as the pictureString variable.
-            team.setPictureString(Base64.getEncoder().encodeToString(file.getBytes()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Saved the updated picture string in the database.
-        teamRepository.save(team);
     }
 
     /**
@@ -279,5 +249,21 @@ public class TeamService {
     public List<Team> findTeamsByClub(Club club) {
         long id = club.getClubId();
         return teamRepository.findTeamsByTeamClubClubId(id);
+    }
+
+    /**
+     * Checks if a team has a club and return the club id if it does.
+     * @param team the team which the method checks if it contains club
+     * @return the club id if the team has a club
+     */
+    public Long getTeamClubId(Team team) {
+        if (team.getTeamClub() == null) {
+            return null;
+        }
+        return team.getTeamClub().getClubId();
+    }
+
+    public Optional<Team> findTeamById(long id) {
+        return teamRepository.findById(id);
     }
 }

@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditClubForm;
 import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
+import nz.ac.canterbury.seng302.tab.service.ClubImageService;
 import nz.ac.canterbury.seng302.tab.service.ClubService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
@@ -19,11 +20,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Spring Boot Controller class for the Create Club Form
@@ -33,17 +33,23 @@ public class CreateClubController {
 
     Logger logger = LoggerFactory.getLogger(CreateClubController.class);
 
-    private ClubService clubService;
+    private final ClubService clubService;
 
     private final UserService userService;
 
     private final TeamService teamService;
 
+    private final ClubImageService clubImageService;
+
+    private final static String createAndEditClubFormString="CreateAndEditClubForm";
+    private final static String selectedTeamString="selectedTeams";
+
     @Autowired
-    public CreateClubController(ClubService clubService,UserService userService, TeamService teamService) {
+    public CreateClubController(ClubService clubService,UserService userService, TeamService teamService, ClubImageService clubImageService) {
         this.clubService = clubService;
         this.userService = userService;
         this.teamService = teamService;
+        this.clubImageService = clubImageService;
     }
 
     /**
@@ -51,38 +57,65 @@ public class CreateClubController {
      * @param clubId  if editing, get club through clubId
      * @param model   model
      * @param request http request
-     * @param createAndEditClubForm form data
      * @return create club form
      */
     @GetMapping("/createClub")
     public String clubForm(@RequestParam(name = "edit", required = false) Long clubId,
-                           Model model,
-                           HttpServletRequest request, CreateAndEditClubForm createAndEditClubForm) {
+                           Model model,CreateAndEditClubForm createAndEditClubForm,
+                           HttpServletRequest request) {
 
         logger.info("GET /createClub");
         prefillModel(model, request);
-
-        Club club;
-
         if (clubId != null) {
-            if ((club = clubService.findClubById(clubId).get()) != null) {
-                prefillModelWithClub(model, club);
+            Optional<Club> optClub = clubService.findClubById(clubId);
+            if (optClub.isPresent()) {
+                prefillModelWithClub(model, optClub.get());
             }
         }
         return "createClubForm";
     }
 
+    /**
+     * Performs error checking on the addressline1 and postcode fields of a creating or editing club.
+     * If the required fields are empty, errors are added to the BindingResult.
+     *
+     * @param bindingResult       The BindingResult object that holds the validation errors.
+     * @param createAndEditClubForm The CreateAndEditClubForm object containing the form data to be checked.
+     */
+    private void postCreateClubErrorChecking(BindingResult bindingResult, CreateAndEditClubForm createAndEditClubForm){
+        String addressLine1= createAndEditClubForm.getAddressLine1().trim();
+        if (addressLine1.isEmpty()) {
+            bindingResult.addError(new FieldError(createAndEditClubFormString, "addressLine1", "Field cannot be empty"));
+        }
+        String postcode = createAndEditClubForm.getPostcode().trim();
+        if (postcode.isEmpty()) {
+            bindingResult.addError(new FieldError(createAndEditClubFormString, "postcode", "Field cannot be empty"));
+        }
+    }
 
+
+    /**
+     * Handles the creation or editing of a club based on the provided form data.
+     * This method is invoked when a POST request is made to "/createClub" endpoint.
+     *
+     * @param clubId                The ID of the club being edited.
+     * @param name                  The name of the club.
+     * @param clubLogo              The logo image file of the club as a multipart file.
+     * @param sport                 The sport associated with the club.
+     * @param selectedTeams         (Optional) A list of selected teams associated with the club.
+     * @param createAndEditClubForm The form object containing additional club-related data for validation.
+     * @param bindingResult         The result of data binding and validation for form object.
+     * @param httpServletResponse   The response object used for setting HTTP status codes.
+     * @param model                 The model object to hold attributes for the view.
+     * @param httpServletRequest    The request object to get additional information about the HTTP request.
+     * @return The view name to be displayed after the club creation/edit process.
+     * @throws IOException If an I/O error occurs during file handling.
+     */
     @PostMapping("/createClub")
     public String createClub(
             @RequestParam(name = "clubId", defaultValue = "-1") long clubId,
             @RequestParam(name="name") String name,
-            @RequestParam(name = "addressLine1") String addressLine1,
-            @RequestParam(name = "addressLine2") String addressLine2,
-            @RequestParam(name = "city") String city,
-            @RequestParam(name = "country") String country,
-            @RequestParam(name = "postcode") String postcode,
-            @RequestParam(name = "suburb") String suburb,
+            @RequestParam(name="file") MultipartFile clubLogo,
             @RequestParam(name = "sport") String sport,
             @RequestParam(name = "selectedTeams", required = false) List<String> selectedTeams,
             @Validated CreateAndEditClubForm createAndEditClubForm,
@@ -92,19 +125,18 @@ public class CreateClubController {
             HttpServletRequest httpServletRequest) throws IOException {
         prefillModel(model, httpServletRequest);
 
-        addressLine1.trim();
-        if (addressLine1.isEmpty()) {
-            bindingResult.addError(new FieldError("CreateAndEditClubForm", "addressLine1", "Field cannot be empty"));
+        Optional<User> optUser = userService.getCurrentUser();
+        if (optUser.isEmpty()) {
+            return "redirect:/home";
         }
-        postcode.trim();
-        if (postcode.isEmpty()) {
-            bindingResult.addError(new FieldError("CreateAndEditClubForm", "postcode", "Field cannot be empty"));
-        }
+        postCreateClubErrorChecking(bindingResult, createAndEditClubForm);
 
-        Location location = new Location(addressLine1, addressLine2, suburb, city, postcode, country);
 
-        if (clubId !=-1) {
-            Club editClub = clubService.findClubById(clubId).get();
+        Location location = new Location(createAndEditClubForm.getAddressLine1(), createAndEditClubForm.getAddressLine2(), createAndEditClubForm.getSuburb(), createAndEditClubForm.getCity(), createAndEditClubForm.getPostcode(), createAndEditClubForm.getCountry());
+
+        Optional<Club> optClub = clubService.findClubById(clubId);
+        if (optClub.isPresent()) {
+            Club editClub = optClub.get();
             editClub.setSport(sport);
             setTeamsClub(selectedTeams, editClub, bindingResult);
 
@@ -117,25 +149,31 @@ public class CreateClubController {
             editClub.setName(name);
             editClub.setLocation(location);
 
+            // If there is no clubLogo passed in, nothing will be changed, so it's fine.
+            clubImageService.updateClubLogo(editClub, clubLogo);
+
             clubService.updateOrAddClub(editClub);
+            return "redirect:/view-club?clubID=" + editClub.getClubId();
 
         } else {
-
-            Club club = new Club(name, location, sport);
+            User manager = optUser.get(); // manager is the current user
+            Club club = new Club(name, location, sport, manager);
 
             setTeamsClub(selectedTeams, club, bindingResult);
 
             if (bindingResult.hasErrors()) {
-                System.out.println(bindingResult.getAllErrors());
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return "createClubForm";
             }
 
             clubService.updateOrAddClub(club);
 
+            if (Objects.equals(clubLogo.getOriginalFilename(), "")) {
+                // If there's a logo, set it.
+                clubImageService.updateClubLogo(club, clubLogo);
+            }
+            return "redirect:/view-club?clubID=" + club.getClubId();
         }
-
-        return "redirect:/home"; //TODO Redirect to view club page when it's done
     }
 
     /**
@@ -152,15 +190,16 @@ public class CreateClubController {
             if (selectedTeams != null) {
                 for (String team : selectedTeams) {
                     if ( teamService.getTeam(Long.parseLong(team)).getTeamClub() != null ) {
-                        bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Team already belongs to another club"));
+                        bindingResult.addError(new FieldError(createAndEditClubFormString, selectedTeamString, "Team already belongs to another club"));
                     }
                     else {
                         teamService.getTeam(Long.parseLong(team)).setTeamClub(club);
                     }
-                }}
+                }
+            }
         }
         catch (UnmatchedSportException e) {
-            bindingResult.addError(new FieldError("CreateAndEditClubForm", "selectedTeams", "Teams must have the same sport"));
+            bindingResult.addError(new FieldError(createAndEditClubFormString, selectedTeamString, "Teams must have the same sport"));
         }
     }
 
@@ -179,7 +218,7 @@ public class CreateClubController {
         model.addAttribute("postcode", club.getLocation().getPostcode());
         model.addAttribute("city", club.getLocation().getCity());
         model.addAttribute("country", club.getLocation().getCountry());
-        model.addAttribute("selectedTeams", teamService.findTeamsByClub(club));
+        model.addAttribute(selectedTeamString, teamService.findTeamsByClub(club));
     }
 
     /**
