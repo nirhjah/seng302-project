@@ -1,0 +1,101 @@
+.wrapper-profile .team-info {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 5%;
+    left: 10%;
+    transition: 0.5s;
+}
+
+.team-info h4 {
+    font-weight: lighter;
+    color: grey;
+    padding-bottom: 5px;
+
+}
+
+.team-display h2 {
+    padding-bottom: 5%;
+}
+
+.comp-headings {
+    display: flex;
+    align-items: center;
+    margin: 15px 0px;
+}
+
+.comp-headings img{
+    height: 30px;
+    width: 30px;
+    margin-right: 10px;
+}
+
+.teamOrUserListDisplay {
+    position: absolute;
+    width: 25%;
+    right: 10%;
+    padding-top: 10%;
+}
+
+.teamOrUserListDisplay ul {
+    overflow:hidden;
+    overflow-y:scroll;
+    height: 270px;
+    border: 1px solid lightgrey;
+ }
+
+.teamOrUserListDisplay li {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 5%;
+    margin-left: 5%;
+    margin-right: 5%;
+    display: flex;
+}
+
+.teamOrUserListDisplay span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.teamOrUserListDisplay img {
+    width: 40px;
+    height: 40px;
+    margin-right: 5%;
+    border-radius: 50%;
+    background-color: white;
+}
+
+.teamOrUserListDisplay h3 {
+    font-size: 22px;
+}
+
+.profile-buttons {
+    left: 10%;
+    right: 8%;
+}
+
+@media (max-width: 555px) {
+    .teamOrUserListDisplay {
+        position: relative;
+        width: 75%;
+        padding-top: 0;
+        margin-left: 5%;
+    }
+
+
+    .profile-form {
+        min-height: unset;
+        margin-top: 110%;
+    }
+
+    .team-display h2 {
+        padding-top: 5%;
+    }
+
+
+}
