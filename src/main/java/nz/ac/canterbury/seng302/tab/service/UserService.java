@@ -49,16 +49,13 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final FederationService federationService;
-
     @Autowired
     public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService,
-                       PasswordEncoder passwordEncoder, FederationService federationService) {
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.taskScheduler = taskScheduler;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
-        this.federationService = federationService;
     }
 
     public static final Sort SORT_BY_LAST_AND_FIRST_NAME = Sort.by(
@@ -311,21 +308,5 @@ public class UserService {
     public void userJoinTeam(User user, Team team) {
         user.joinTeam(team);
         updateOrAddUser(user);
-    }
-
-
-    /**
-     * Creates the invitation to be a federation manager
-     * Including storing the invite and sending the email
-     * @param user the user whose invited to become a federation manager
-     */
-    public void inviteToFederationManger(User user, HttpServletRequest request) {
-        FederationManagerInvite fedManInvite = new FederationManagerInvite(user);
-        federationService.updateOrSave(fedManInvite);
-        try {
-            emailService.federationManagerInvite(user, request, fedManInvite.getToken());
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

@@ -77,9 +77,8 @@ public class U25JoinTeamFeature {
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
         EmailService emailService = applicationContext.getBean(EmailService.class);
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
-        FederationService federationService = applicationContext.getBean(FederationService.class);
 
-        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder, federationService));
+        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(new MyTeamsController(userService, teamService, teamRepository)).build();
 

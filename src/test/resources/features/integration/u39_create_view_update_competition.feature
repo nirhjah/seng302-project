@@ -1,5 +1,5 @@
 @create_view_update_competition
-# Feature: U39 – Create / view / update competition
+Feature: U39 – Create / view / update competition
 #Scenario: AC1: Federation administrators are a special type of users and are the only one allowed to create or update competitions
 #  Given I am a user of account type federation administrator and I am anywhere on the system,
 #  When I click on a ui element for creating a competition,
@@ -110,15 +110,15 @@ Scenario: AC19
   Then I am present with a screen on the website offering me to become a federation manager
 
 Scenario: AC20
-  Given I am a general user of TAB, And I’ve been invited to become a federation manager (received the email)
+  Given I am a general user of TAB, And I've been invited to become a federation manager (received the email)
   When I click through the link in the email invitation to become a federation manager
   And select ‘Accept’ on the screen inviting me to become a federation manager
   Then I become a federation manager, I’m directed to my profile page and I am able to see the UI element to create a competition
 
 Scenario: AC21
-  Given I am a general user of TAB, And I’ve been invited to become a federation manager (received the email)
+  Given I am a general user of TAB, And I've been invited to become a federation manager (received the email)
   When I click through the link in the email invitation to become a federation manager
-  And select ‘Decline’ on the screen inviting me to become a federation manager
+  And select Decline on the screen inviting me to become a federation manager
   Then I am directed to my profile page and I am not a federation manager.
 
 Scenario: AC22
