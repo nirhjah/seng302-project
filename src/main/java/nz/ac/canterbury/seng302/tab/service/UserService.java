@@ -1,17 +1,14 @@
 package nz.ac.canterbury.seng302.tab.service;
 
-import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.*;
-
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
 import nz.ac.canterbury.seng302.tab.authentication.TokenVerification;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +25,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Service class for User database entries, defined by the @link{Service}
@@ -59,7 +58,6 @@ public class UserService {
         this.taskScheduler = taskScheduler;
         this.passwordEncoder = passwordEncoder;
     }
-
 
     public static final Sort SORT_BY_LAST_AND_FIRST_NAME = Sort.by(
         Order.asc("lastName").ignoreCase(),
@@ -272,33 +270,6 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    /**
-     * Method which updates the picture by taking the MultipartFile type and
-     * updating the picture
-     * stored in the team with id primary key.
-     *
-     * @param file MultipartFile file upload
-     * @param id   Team's unique id
-     */
-    public void updatePicture(MultipartFile file, long id) {
-        User user = userRepository.findById(id).get();
-
-        // Gets the original file name as a string for validation
-        String pictureString = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        if (pictureString.contains("..")) {
-            logger.info("not a a valid file");
-        }
-        try {
-            // Encodes the file to a byte array and then convert it to string, then set it
-            // as the pictureString variable.
-            user.setPictureString(Base64.getEncoder().encodeToString(file.getBytes()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Saved the updated picture string in the database.
-        userRepository.save(user);
-    }
 
     /**
      * Updates the user's password then creates and sends email informing the user that their password has been updated.

@@ -40,7 +40,7 @@
         <a th:href="@{user-info(name=${user.userId})}">
             <div class="card-wrapper">
                 <div class="card-image">
-                    <img th:src="${'data:image/jpeg;base64,' + user.pictureString}" class="card-img-top" alt="User image">
+                    <img th:src="@{/user-profile-picture/{id}(id = ${user.userId})}"  class="card-img-top"  alt="User image">
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">[[|${user.firstName} ${user.lastName}|]]</h5>
