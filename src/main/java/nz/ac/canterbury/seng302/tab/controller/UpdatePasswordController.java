@@ -3,8 +3,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 import java.util.Optional;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,17 +40,21 @@ public class UpdatePasswordController {
     private final TeamService teamService;
     private final PasswordEncoder passwordEncoder;
 
+    private final EmailService emailService;
+
 
 
     @Autowired
     public UpdatePasswordController(
         UserService userService,
         TeamService teamService,
-        PasswordEncoder passwordEncoder
+        PasswordEncoder passwordEncoder,
+        EmailService emailService
     ) {
        this.userService = userService;
        this.teamService = teamService;
-       this.passwordEncoder = passwordEncoder; 
+       this.passwordEncoder = passwordEncoder;
+       this.emailService = emailService;
     }
 
     /**
@@ -174,6 +177,7 @@ public class UpdatePasswordController {
             return "updatePassword";
         } else {
             userService.updatePassword(user, updatePasswordForm.getNewPassword());
+            emailService.updatePassword(user);
             return "redirect:user-info/self";
         }
     }

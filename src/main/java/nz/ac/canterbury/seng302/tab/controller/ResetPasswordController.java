@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,15 +34,18 @@ public class ResetPasswordController {
 
     private final UserService userService;
 
+    private final EmailService emailService;
+
     private Optional<User> user;
 
     private String currentToken;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    public ResetPasswordController(UserService userService, PasswordEncoder passwordEncoder) {
+    public ResetPasswordController(UserService userService, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
 
@@ -142,6 +146,7 @@ public class ResetPasswordController {
         redirectAttributes.addFlashAttribute("passwordUpdatedMessage", "Password updated successfully.");
 
         userService.updatePassword(user.get(), password);
+        emailService.updatePassword(user.get());
         return "redirect:/login";
     }
 
