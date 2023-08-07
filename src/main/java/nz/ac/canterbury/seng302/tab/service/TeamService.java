@@ -278,8 +278,8 @@ public class TeamService {
         return teamRepository.findTeamsByTeamClubClubId(id);
     }
 
-    public List<Team> findTeamsBySport(String sport) {
-        return teamRepository.findTeamsBySport(sport);
+    public List<Team> findTeamsBySportAndSearch(String sport, String search) {
+        return teamRepository.findTeamsByNameAndSport(search, sport);
     }
 
     /**

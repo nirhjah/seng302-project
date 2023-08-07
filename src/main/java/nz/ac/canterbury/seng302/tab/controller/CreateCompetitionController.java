@@ -192,8 +192,10 @@ public class CreateCompetitionController {
      * @return JSON object of type List<Team>
      */
     @GetMapping(path = "/createCompetition/get_teams", produces = MediaType.APPLICATION_JSON_VALUE)
-    private List<Team> getTeamsJSON(String sport) {
-        return teamService.findTeamsBySport(sport);
+    public ResponseEntity<List<Team>> getTeamsJSON(@RequestParam String sport,
+                                                   @RequestParam(required = false, defaultValue = "") String search) {
+        System.out.println(ResponseEntity.ok().body(teamService.findTeamsBySportAndSearch(sport, search)));
+        return ResponseEntity.ok().body(teamService.findTeamsBySportAndSearch(sport, search));
     }
 
     /**
@@ -202,14 +204,12 @@ public class CreateCompetitionController {
      * @return JSON object of type List<User>
      */
     @GetMapping(path = "/createCompetition/get_users", produces = MediaType.APPLICATION_JSON_VALUE)
-    private List<User> getUsersJSON(String sport) {
+    public ResponseEntity<List<User>> getUsersJSON(@RequestParam String sport, @RequestParam String search) {
         Optional<Sport> sportOptional = sportsService.findSportByName(sport);
         List<User> users = new ArrayList<>();
         if (sportOptional.isPresent()) {
             users = userService.findUsersBySports(List.of(sportOptional.get()));
         }
-        return users;
+        return ResponseEntity.ok().body(users);
     }
-
-
 }

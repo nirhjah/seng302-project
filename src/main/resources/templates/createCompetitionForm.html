@@ -114,7 +114,7 @@
             </div>
 
             <div class="create-header">
-                <h2>Competitors</h2>
+                <h2>Competitors </h2>
                 <img id="members-img" th:src="@{/image/icons/members.svg}"/>
             </div>
 
@@ -128,7 +128,7 @@
             </div>
 
             <div class="member-selection-box">
-                <div class="inactive-cover">
+                <div class="inactive-cover active">
                     <h3>You must type in a sport before you may add competitors</h3>
                 </div>
                 <div class="competitors-box">
@@ -177,9 +177,14 @@
     sportsInput.addEventListener("change", () => {
         clearCompetitors();
         if (sportsInput.value.trim() !== "") {
-            inactiveCover.classList.add("active")
-        } else {
             inactiveCover.classList.remove("active")
+            setTimeout(() => {
+                inactiveCover.style.display = "none";
+                getCompetitors();
+            }, 1000);
+        } else {
+            inactiveCover.classList.add("active")
+            inactiveCover.style.display = "flex";
         }
     })
 
@@ -193,6 +198,7 @@
         while (playersTeamsUl.firstChild) {
             playersTeamsUl.removeChild(playersTeamsUl.lastChild);
         }
+        searchBox.value = "";
     }
 
     const typeCheckbox = document.querySelector(".switch input");
@@ -202,10 +208,12 @@
         getCompetitors();
     })
 
+    const searchBox = document.querySelector(".search-box")
+
     function getCompetitors() {
         if (!inactiveCover.classList.contains("active")) {
             const type = typeCheckbox.checked ? "users" : "teams"
-            axios.get("createCompetitions/get_" + type, {params: {sport: sportsInput.value}})
+            axios.get("createCompetition/get_" + type, {params: {sport: sportsInput.value, search: searchBox.value}})
                 .then(response => {
                     if (type === "users") {
                         generateUsers(response)
@@ -223,6 +231,7 @@
     const usersTeamsUl = document.querySelector(".users-teams-ul")
 
     function generateUsers(users) {
+        console.log(users)
         users.forEach((user) => {
             const playerLi = document.createElement("li");
             const liPlayerName = document.createElement("span");
@@ -234,7 +243,7 @@
     }
 
     function generateTeams(teams) {
-
+        console.log(teams)
     }
 
 </script>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
@@ -17,7 +18,7 @@
     <div class="wrapper-profile">
         <div class="tab-box">
             <div class="tab active">
-                <img class="tab-icon" th:src="@{/image/icons/team.svg}"/>
+                <img class ="tab-icon" th:src="@{/image/icons/team.svg}"/>
                 <button class="tab-button"> Team Profile &nbsp;</button>
             </div>
             <div class="tab" id="formations-tab">
@@ -25,8 +26,8 @@
                 <button class="tab-button" >Formations &nbsp;</button>
             </div>
             <div class="tab">
-<!--                this is a temporary icon for statistic, which is probably going to be replaced when working-->
-<!--                on the team aggregated statistic task-->
+                <!--                this is a temporary icon for statistic, which is probably going to be replaced when working-->
+                <!--                on the team aggregated statistic task-->
                 <img class ="tab-icon" th:src="@{/image/icons/statistics.svg}"/>
                 <button class="tab-button" >Statistics &nbsp;</button>
                 <div class="tab-line"></div>
@@ -34,101 +35,114 @@
         </div>
         <div class="content-box active" id="team-profile-tab">
             <div class="content">
-                <div class="profile-pic">
-                    <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
-                        <div class="image-styling">
-                            <img th:src="'data:image/png;base64,' + ${displayTeamPicture}" width="200" height="200"/>
-                            </br>
-                        </div>
-                        </br>
-                        <div class="file-upload" th:if="${isUserManagerOrCoach}">
-                            <div class="file-label-border">
-                                <label for="file" class="file-label">
-                                    Edit Profile Picture </label>
+                <div class="profile-top-content">
+                    <div class="profile-pic">
+                        <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
+                            <div class="image-styling">
+                                <img th:src="'data:image/png;base64,' + ${displayTeamPicture}" width="200" height="200"/>
+                                </br>
                             </div>
-                            <input type="file" name="file" class="form-control-file" id="file">
-                            <input type="hidden" name="teamID" th:value="${teamID}">
+                            </br>
+                            <div class="file-upload" th:if="${isUserManagerOrCoach}">
+                                <div class="file-label-border">
+                                    <label for="file" class="file-label">
+                                        Edit Profile Picture </label>
+                                </div>
+                                <input type="file" name="file" class="form-control-file" id="file">
+                                <input type="hidden" name="teamID" th:value="${teamID}">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="team-info">
+                        <div class="team-display">
+                            <div class="profile-top-content">
+                                <h2>Team Profile</h2>
+                                <div class="join-token" th:if="${isUserManagerOrCoach}">
+                                    <label> Join Token</label>
+                                    <div class="join-token-box-outer">
+                                        <a href="#" class="copy-token">
+                                            <img th:src="@{image/icons/copy.svg}">
+                                        </a>
+                                        <div class="join-token-box">
+                                            <span class="token-value" th:text="${displayToken}"></span>
+                                            <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}" th:method="post">
+                                                <button type="submit">
+                                                    <img th:src="@{image/icons/reload.svg}">
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="user-label">
+                                <img th:src="@{/image/icons/name.svg}"/>
+                                <div>
+                                    <h3 class="attribute-type">Name</h3>
+                                    <h3 th:text="*{displayName}"></h3>
+                                </div>
+                            </div>
+                            <div class="user-label">
+                                <img th:src="@{/image/icons/sports-alt.svg}"/>
+                                <div>
+                                    <h3 class="attribute-type">Sport</h3>
+                                    <h3 th:text="*{displaySport}"></h3>
+                                </div>
+                            </div>
+                            <div class="user-label">
+                                <img th:src="@{/image/icons/location.svg}"/>
+                                <div>
+                                    <h3 class="attribute-type">Location</h3>
+                                    <h3 th:text="*{displayLocation}"></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-bottom-content">
+                    <form th:action="@{profile}" class="profile-buttons" method="post">
+                        <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+                        <div class="grouped-buttons">
+                            <div class="edit-button">
+                                <a th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
+                                    <button id="edit-profile" type="button">Edit Profile</button>
+                                </a>
+                            </div>
+                            <div class="edit-button">
+                                <a th:href="@{editTeamRole(edit=${teamID})}" th:if="${isUserManager}">
+                                    <button id="edit-roles" type="button">Edit Roles</button>
+                                </a>
+                            </div>
+                            <div class="edit-button">
+                                <a th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
+                                    <button id="activities" type="button">Activities</button>
+                                </a>
+                            </div>
                         </div>
                     </form>
                 </div>
-                <div class="join-token" th:if="${isUserManager}">
-                    <label> Join Token</label>
-                    <div class="join-token-box-outer">
-                        <a href="#" class="copy-token">
-                            <img th:src="@{image/icons/copy.svg}">
-                        </a>
-                        <div class="join-token-box">
-                            <span class="token-value" th:text="${displayToken}"></span>
-                            <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}" th:method="post">
-                                <button type="submit">
-                                    <img th:src="@{image/icons/reload.svg}">
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="team-info">
-                    <div class="team-display">
-                        <h2>Team Profile</h2>
-                        <div class="user-label">
-                            <img th:src="@{/image/icons/name.svg}"/>
-                            <h3 th:text="|Name: *{displayName}|"></h3>
-                        </div>
-                        <div class="user-label">
-                            <img th:src="@{/image/icons/sports.svg}"/>
-                            <h3 th:text="|Sport: *{displaySport}|"></h3>
-                        </div>
-                        <div class="user-label">
-                            <img th:src="@{/image/icons/location.svg}"/>
-                            <h3 th:text="|Location: *{displayLocation}|"></h3>
-                        </div>
-                        <div class="user-label" th:if="${clubId!=null}">
-                            <img th:src="@{image/icons/club-logo.svg}">
-                            <h3>
-                                <a class="club-link" th:href="@{view-club(clubID=${clubId})}" onmouseover="viewClubText(this, true)" onmouseout="viewClubText(this, false)">
-                                    <span id="original-text">View Club</span>
-                                    <span id="hover-text" th:text="|Club: *{clubName}|" style="display: none;"></span>
-                                </a>
-                            </h3>
-
-                        </div>
-
-                    </div>
-
-                </div>
-                <form th:action="@{profile}" class="profile-buttons" method="post">
-                    <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
-                    <a class="edit-button" th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
-                        <button type="button">Edit Profile</button>
-                    </a>
-                    <a class="edit-button" th:href="@{editTeamRole(edit=${teamID})}" th:if="${isUserManager}">
-                        <button type="button">Edit Team Roles</button>
-                    </a>
-                    <a class="edit-button" th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
-                        <button type="button">View Team Activities</button>
-                    </a>
-                </form>
             </div>
         </div>
         <div class="content-box">
             <div class="content formations">
-                <ul class="formation-list">
-                    <li id="create-formation-li" onclick="render('1-4-4-2', null)">
-                        <h3>Create a Formation</h3>
-                        <img th:src="@{/image/icons/add-symbol.svg}" alt=""/>
-                        <input type="hidden" class="formation-id" value="-1"/>
-                    </li>
-                    <li th:each="formation : ${formations}"
-                        th:attr="onclick='renderSavedFormation(\'' + ${formation.formation} + '\',' + ${formation.custom} + ',\'' + ${formation.customPlayerPositions} + '\');'"
-                        class="formation-li">
-                        <span class="title">
-                            <h3 th:text="${formation.formation} + (${formation.custom} ? ' Custom' : '')"></h3>
-                        </span>
-                        <input type="hidden" class="formation-id" th:value="${formation.formationId}" />
-                    </li>
+                <div class="formation-list-outer">
+                    <ul class="formation-list active">
+                        <li id="create-formation-li" onclick="render('1-4-4-2', null)">
+                            <h3>Create a Formation</h3>
+                            <img th:src="@{/image/icons/add-symbol.svg}" alt=""/>
+                            <input type="hidden" class="formation-id" value="-1"/>
+                        </li>
+                        <li th:each="formation : ${formations}"
+                            th:attr="onclick='renderSavedFormation(\'' + ${formation.formation} + '\',' + ${formation.custom} + ',\'' + ${formation.customPlayerPositions} + '\');'"
+                            class="formation-li">
+                            <span class="title">
+                                <h3 th:text="${formation.formation} + (${formation.custom} ? ' Custom' : '')"></h3>
+                            </span>
+                            <input type="hidden" class="formation-id" th:value="${formation.formationId}" />
+                        </li>
 
-                </ul>
+                    </ul>
+                    <button class="toggle-formation-button"><</button>
+                </div>
                 <form class="formation-display" method="post" th:action="@{/profile/create-formation}" onsubmit="return submissionCheck(document.getElementById('formation-string').value)">
                     <div class="formation-LHS">
                         <div class="create-formation-display">
@@ -141,15 +155,14 @@
                         <div class="error-message">Formation must match specified form e.g. 1-4-4-2</div>
                     </div>
                     <div class="formation-RHS">
-                        <div th:insert="~{fragments/formationDisplay.html::formationDisplay(true)}"></div>
+                        <div class="formation-outer" th:insert="~{fragments/formationDisplay.html::formationDisplay(true)}"></div>
                         <input type="hidden" name="teamID" th:value="${teamID}" />
                         <input type="hidden" name="formationID" class="current-formation-id"/>
-                        <button type="submit" class="submit-button" id="create-formation-button">Create Formation</button>
+                        <button type="submit" class="create-formation" id="create-formation-button">Create Formation</button>
                     </div>
                 </form>
             </div>
         </div>
-
         <div class="content-box" id="statistics-tab" style="margin-bottom: 300px">
             <div class="content">
                 <form th:action="@{profile}" class="profile-buttons" method="post">
@@ -168,11 +181,11 @@
                         </br>
                         <h3>Last 5 Games: </h3>
                         <h4 th:each="act : ${last5GOrF}"
-                           th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
+                            th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
                            endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')},
                            startTime=${#temporals.format(act.activityStart, 'hh:mma')},
                            endTime=${#temporals.format(act.activityEnd, 'hh:mma')}"
-                           th:text="|Date: ${startDate} ${startTime} ${act.outcome.name()} - ${act.activityType.name()}|" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|"></h4>
+                            th:text="|Date: ${startDate} ${startTime} ${act.outcome.name()} - ${act.activityType.name()}|" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|"></h4>
                     </div>
                     <div class="third-col">
                         <h3>Top Scorers:</h3>
@@ -186,21 +199,15 @@
             </div>
         </div>
     </div>
+    <footer>
+        <p>
+            Image by <a
+                href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+            on Freepik
+        </p>
+    </footer>
 
     <script>
-
-        function viewClubText(link, isHover) {
-            var originalText = link.querySelector("#original-text");
-            var hoverText = link.querySelector("#hover-text");
-            if (isHover) {
-                originalText.style.display = "none";
-                hoverText.style.display = "inline";
-            } else {
-                originalText.style.display = "inline";
-                hoverText.style.display = "none";
-            }
-        }
-
         const input = document.getElementById('file');
 
         input.addEventListener('change', () => {
@@ -251,9 +258,9 @@
                 tab.classList.add('active');
                 if (index === 0) {
                     tabLine.style.left = "64px";
-                } else if (index === 1) {
+                } else if (index ===1){
                     tabLine.style.left = "368px";
-                } else {
+                } else{
                     tabLine.style.left = "670px";
                 }
                 displayBox.forEach(box => {
@@ -268,7 +275,7 @@
         });
 
         const formationListItems = document.querySelectorAll('.formation-list li')
-        const submitButton = document.querySelector('.submit-button')
+        const createFormation = document.querySelector('.create-formation')
         const currentFormationId = document.querySelector('.current-formation-id')
 
         formationListItems.forEach((formation, index) => {
@@ -279,9 +286,9 @@
                 formation.classList.add('active');
                 currentFormationId.value = document.querySelector('li.active .formation-id').value;
                 if (index > 0) {
-                    submitButton.innerHTML = "Update Formation"
+                    createFormation.innerHTML = "Update Formation"
                 } else {
-                    submitButton.innerHTML = "Create Formation"
+                    createFormation.innerHTML = "Create Formation"
                 }
             });
         });
@@ -343,15 +350,19 @@
             return true;
         }
 
+        const toggleFormationButton = document.querySelector(".toggle-formation-button");
+        const formationList = document.querySelector(".formation-list");
+        toggleFormationButton.addEventListener("click", () => {
+            if (toggleFormationButton.textContent === "<") {
+                toggleFormationButton.textContent = ">";
+            } else {
+                toggleFormationButton.textContent = "<";
+            }
+            formationList.classList.toggle("active");
+        });
+
 
     </script>
 </div>
 </body>
-<footer>
-    <p>
-        Image by <a
-            href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
-        on Freepik
-    </p>
-</footer>
 </html>

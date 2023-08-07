@@ -282,16 +282,18 @@ input + .slider + .slider-text::after {
     border-radius: 5px;
     cursor: default;
     align-items: center;
-    opacity: 90%;
+    opacity: 0;
     background-color: #bcbaba;
     padding: 20px;
     text-align: center;
     transition: opacity 1s;
-    display: none;
+    display: flex;
 }
 
 .inactive-cover.active {
-    opacity: 0;
+    opacity: 90%;
     display: flex;
 }
+
+
 
