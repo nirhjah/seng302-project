@@ -194,7 +194,7 @@ public class CreateCompetitionController {
     @GetMapping(path = "/createCompetition/get_teams", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Team>> getTeamsJSON(@RequestParam String sport,
                                                    @RequestParam(required = false, defaultValue = "") String search) {
-        System.out.println(ResponseEntity.ok().body(teamService.findTeamsBySportAndSearch(sport, search)));
+        ResponseEntity.ok().body(teamService.findTeamsBySportAndSearch(sport, search));
         return ResponseEntity.ok().body(teamService.findTeamsBySportAndSearch(sport, search));
     }
 
