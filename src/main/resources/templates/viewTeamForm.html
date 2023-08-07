@@ -27,12 +27,12 @@
             <div class="tab">
 <!--                this is a temporary icon for statistic, which is probably going to be replaced when working-->
 <!--                on the team aggregated statistic task-->
-                <img class ="tab-icon" th:src="@{/image/icons/statistics.svg}"/>
+                <img class ="tab-icon" th:src="@{/image/icons/statistics.png}"/>
                 <button class="tab-button" >Statistics &nbsp;</button>
                 <div class="tab-line"></div>
             </div>
             <div class="tab" id="competitions-tab">
-                <img class ="tab-icon"  th:src="@{/image/icons/gradeLevel.svg}"/>
+                <img class ="tab-icon"  th:src="@{/image/icons/gradeLevel.png}"/>
                 <button class="tab-button" >Competitions &nbsp;</button>
             </div>
         </div>
@@ -216,7 +216,28 @@
 
         <div class="content-box" id="comp-tab">
             <div class="content">
-                <h2> Team Competitions </h2>
+                <h2 style="text-align: center; margin-top: 15px; margin-bottom: 10px"> Team Competitions </h2>
+
+
+                <div class="competitions">
+                <ul>
+                    <li th:each="comp : ${teamCompetitions}">
+<!--                        //onclick go to comp page-->
+                        <div>
+                            <h3 th:text="${comp.name}"> </h3>
+                            <h4 th:text="${comp.grade.age.description}"> </h4>
+                            <h4 th:text="${comp.grade.sex}"> </h4>
+                            <h4 th:text="${comp.grade.competitiveness}"> </h4>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+
+
+
+
+
             </div>
         </div>
 

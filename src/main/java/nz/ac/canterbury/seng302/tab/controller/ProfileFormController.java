@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,6 @@ import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Formation;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FactService;
-import nz.ac.canterbury.seng302.tab.service.FormationService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 
 /**
  * Spring Boot Controller class for the ProfileForm
@@ -46,6 +42,9 @@ public class ProfileFormController {
 
     @Autowired
     private ActivityService activityService;
+
+    @Autowired
+    private CompetitionService competitionService;
 
     @Autowired
     private FactService factService;
@@ -87,6 +86,7 @@ public class ProfileFormController {
         model.addAttribute("displayTeamPicture", team.getPictureString());
         model.addAttribute("displayToken", team.getToken());
         model.addAttribute("clubId",teamService.getTeamClubId(team));
+        model.addAttribute("teamCompetitions", competitionService.findAll()); //change this
 
         if( team.getTeamClub()!=null){
             model.addAttribute("clubName",team.getTeamClub().getName());
