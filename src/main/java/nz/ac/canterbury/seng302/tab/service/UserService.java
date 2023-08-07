@@ -51,15 +51,12 @@ public class UserService {
 
     private final TaskScheduler taskScheduler;
 
-    private final EmailService emailService;
-
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.taskScheduler = taskScheduler;
-        this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
     }
 
