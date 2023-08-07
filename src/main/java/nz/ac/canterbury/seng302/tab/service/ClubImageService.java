@@ -35,8 +35,6 @@ public class ClubImageService extends ImageService<Club> {
     public ClubImageService(@Value("${spring.profiles.active:unknown}") String profile) throws IOException {
         super(getDeploymentType(profile));
 
-        // TODO: We probably need to have a different default club logo here.
-        //  maybe a shield or banner or something?
         Resource resource = new ClassPathResource("/static/image/icons/club-logo.svg");
         InputStream is = resource.getInputStream();
         defaultClubLogo = is.readAllBytes();

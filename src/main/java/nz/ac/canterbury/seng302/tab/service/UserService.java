@@ -1,20 +1,10 @@
 package nz.ac.canterbury.seng302.tab.service;
 
-import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.*;
-
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
 import nz.ac.canterbury.seng302.tab.authentication.TokenVerification;
 import nz.ac.canterbury.seng302.tab.entity.*;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Sport;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.slf4j.Logger;
@@ -34,8 +24,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
