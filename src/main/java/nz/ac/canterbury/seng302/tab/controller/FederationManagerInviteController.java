@@ -40,22 +40,6 @@ public class FederationManagerInviteController {
     FederationManagerInvite fedInvite;
 
     /**
-     * TEMPORARY ENDPOINT
-     * @param request http request
-     * @return redirect to view user page
-     */
-    @GetMapping("/invite")
-    public String fedToUser(HttpServletRequest request) {
-        Optional<User> opt = userService.getCurrentUser();
-        if (opt.isPresent()) {
-            User u = opt.get();
-            userService.inviteToFederationManger(u, request);
-            logger.info("sent");
-        }
-        return "redirect:user-info/self";
-    }
-
-    /**
      * Controller handles processing the token and takes user to the page where they can accept or decline the invitation.
      * @param token the users unique token for becoming a federation manager
      * @param request the HTTPRrequest
