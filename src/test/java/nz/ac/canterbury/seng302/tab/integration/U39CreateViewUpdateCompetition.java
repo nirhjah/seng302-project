@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,6 +28,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -67,6 +70,8 @@ public class U39CreateViewUpdateCompetition {
         user = userService.updateOrAddUser(user);
         user = userService.findUserById(user.getUserId()).orElseThrow();
         Mockito.doReturn(Optional.of(user)).when(userService).getCurrentUser();
+        Page<User> page = Page.empty();
+        Mockito.doReturn(page).when(userService).getPaginatedUsers(any());
     }
 
     @Given("I am a user of account type federation administrator")

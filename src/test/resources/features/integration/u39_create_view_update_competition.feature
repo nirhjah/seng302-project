@@ -91,7 +91,7 @@ Feature: U39 – Create / view / update competition
 #  When I click on the ‘Invite to Federation Managers’ UI element,
 #  Then I’m taken to a page where I can see all users who aren’t federation managers.
 #  And with each user's information there is a button to invite.
-#
+
 #Scenario: AC17
 #  Given I am a federation manager
 #  And I’m on the “Invite to Federation Managers” page,
