@@ -48,4 +48,5 @@ public class CompetitionRepositoryTest {
             competitionRepository.save(c1);
         }
     }
+
 }
