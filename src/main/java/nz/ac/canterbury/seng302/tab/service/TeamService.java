@@ -289,4 +289,8 @@ public class TeamService {
         }
         return team.getTeamClub().getClubId();
     }
+
+    public List<String> getAllTeamSports() {
+        return teamRepository.getAllDistinctSports();
+    }
 }
