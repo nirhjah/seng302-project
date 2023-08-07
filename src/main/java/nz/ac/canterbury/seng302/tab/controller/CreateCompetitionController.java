@@ -7,6 +7,8 @@ import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
 import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
 import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditCompetitionForm;
+import nz.ac.canterbury.seng302.tab.response.CompetitionTeamInfo;
+import nz.ac.canterbury.seng302.tab.response.CompetitionUserInfo;
 import nz.ac.canterbury.seng302.tab.service.CompetitionService;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -192,10 +194,15 @@ public class CreateCompetitionController {
      * @return JSON object of type List<Team>
      */
     @GetMapping(path = "/createCompetition/get_teams", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Team>> getTeamsJSON(@RequestParam String sport,
-                                                   @RequestParam(required = false, defaultValue = "") String search) {
-        ResponseEntity.ok().body(teamService.findTeamsBySportAndSearch(sport, search));
-        return ResponseEntity.ok().body(teamService.findTeamsBySportAndSearch(sport, search));
+    public ResponseEntity<List<CompetitionTeamInfo>> getTeamsJSON(@RequestParam String sport,
+                                                            @RequestParam(required = false, defaultValue = "") String search) {
+        return ResponseEntity.ok().body(
+                teamService.findTeamsBySportAndSearch(sport, search).stream().map(team -> new CompetitionTeamInfo(
+                        team.getTeamId(),
+                        team.getName(),
+                        team.getPictureString()
+                )).toList()
+        );
     }
 
     /**
@@ -204,12 +211,19 @@ public class CreateCompetitionController {
      * @return JSON object of type List<User>
      */
     @GetMapping(path = "/createCompetition/get_users", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<User>> getUsersJSON(@RequestParam String sport, @RequestParam String search) {
+    public ResponseEntity<List<CompetitionUserInfo>> getUsersJSON(@RequestParam String sport, @RequestParam String search) {
         Optional<Sport> sportOptional = sportsService.findSportByName(sport);
         List<User> users = new ArrayList<>();
         if (sportOptional.isPresent()) {
             users = userService.findUsersBySports(List.of(sportOptional.get()));
         }
-        return ResponseEntity.ok().body(users);
+        return ResponseEntity.ok().body(
+                users.stream().map(user -> new CompetitionUserInfo(
+                        user.getUserId(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getPictureString()
+                )).toList()
+        );
     }
 }

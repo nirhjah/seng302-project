@@ -137,17 +137,11 @@
                 </div>
                 <div class="users-teams-box">
                     <div class="search-box">
-                        <input type="text" placeholder="Search...">
+                        <input type="text" placeholder="Search..." class="search-box-input">
                         <img th:src="@{/image/icons/search-white.svg}"/>
+                        <input type="hidden" class="search-query">
                     </div>
-                    <ul class="users-teams-ul">
-                        <li th:each="player : ${players}" class="reserves-li">
-                            <img class="li-player-image" th:src="${'data:image/jpeg;base64,' + player.getPictureString}" alt="My Profile"/>
-                            <span class="li-player-name" th:text="${player.getFirstName}"></span>
-                            <button class="switch" type="button"></button>
-                            <input type="hidden" class="playerId" th:value="${player.getUserId}">
-                        </li>
-                    </ul>
+                    <ul class="users-teams-ul"></ul>
                 </div>
             </div>
 
@@ -190,6 +184,8 @@
 
     const competitorsUl = document.querySelector(".competitors-ul")
     const playersTeamsUl = document.querySelector(".users-teams-ul")
+    const searchInput = document.querySelector(".search-box-input")
+    const searchQuery = document.querySelector(".search-query")
 
     function clearCompetitors() {
         while (competitorsUl.firstChild) {
@@ -198,7 +194,8 @@
         while (playersTeamsUl.firstChild) {
             playersTeamsUl.removeChild(playersTeamsUl.lastChild);
         }
-        searchBox.value = "";
+        searchInput.value = "";
+        searchQuery.value = "";
     }
 
     const typeCheckbox = document.querySelector(".switch input");
@@ -206,19 +203,32 @@
     typeCheckbox.addEventListener("change", function () {
         clearCompetitors();
         getCompetitors();
+    });
+
+    const searchBoxImage = document.querySelector(".search-box img");
+
+    searchBoxImage.addEventListener("click", () => {
+        searchQuery.value = searchInput.value
+        getCompetitors();
     })
 
-    const searchBox = document.querySelector(".search-box")
+    searchInput.addEventListener("keypress", function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            searchQuery.value = searchInput.value
+            getCompetitors();
+        }
+    });
 
     function getCompetitors() {
         if (!inactiveCover.classList.contains("active")) {
             const type = typeCheckbox.checked ? "users" : "teams"
-            axios.get("createCompetition/get_" + type, {params: {sport: sportsInput.value, search: searchBox.value}})
+            axios.get("createCompetition/get_" + type, {params: {sport: sportsInput.value, search: searchQuery.value}})
                 .then(response => {
                     if (type === "users") {
-                        generateUsers(response)
+                        generateUsers(response.data)
                     } else {
-                        generateTeams(response)
+                        generateTeams(response.data)
                     }
                 })
                 .catch(error => {
@@ -232,18 +242,87 @@
 
     function generateUsers(users) {
         console.log(users)
-        users.forEach((user) => {
-            const playerLi = document.createElement("li");
-            const liPlayerName = document.createElement("span");
-            liPlayerName.textContent = user.firstName;
-            playerLi.append(liPlayerName);
-            usersTeamsUl.append(playerLi);
-        })
+        for (let i = 0; i < users.length; i++) {
+            const user = users[i];
+            if (!checkUserTeamPresent(user.userId)) {
+                const userLi = document.createElement("li");
+                userLi.className = "users-teams-li";
+                usersTeamsUl.append(userLi);
 
+                const liUserImage = document.createElement("img");
+                liUserImage.className = "li-user-team-image";
+                liUserImage.src = "data:image/jpeg;base64," + user.pictureString;
+                liUserImage.alt = "My Profile";
+                userLi.append(liUserImage);
+
+                const liUserName = document.createElement("span");
+                liUserName.className = "li-user-team-name";
+                liUserName.textContent = user.firstName + " " + user.lastName;
+                userLi.append(liUserName);
+
+                const userId = document.createElement("input");
+                userId.className = "user-team-ID"
+                userId.type = "hidden";
+                userId.value = user.userId;
+                userLi.append(userId);
+                userTeamChange(userLi);
+            }
+        }
     }
 
     function generateTeams(teams) {
-        console.log(teams)
+        for (let i = 0; i < teams.length; i++) {
+            const team = teams[i];
+            if (!checkUserTeamPresent(team.teamId)) {
+                const teamLi = document.createElement("li");
+                teamLi.className = "users-teams-li";
+                usersTeamsUl.append(teamLi);
+
+                const liTeamImage = document.createElement("img");
+                liTeamImage.className = "li-user-team-image";
+                liTeamImage.src = "data:image/jpeg;base64," + team.pictureString;
+                liTeamImage.alt = "My Profile";
+                teamLi.append(liTeamImage);
+
+                const liTeamName = document.createElement("span");
+                liTeamName.className = "li-user-team-name";
+                liTeamName.textContent = team.name;
+                teamLi.append(liTeamName);
+
+                const teamId = document.createElement("input");
+                teamId.className = "user-team-ID"
+                teamId.type = "hidden";
+                teamId.value = team.teamId;
+                teamLi.append(teamId);
+                userTeamChange(teamLi);
+            }
+        }
+    }
+
+    const userTeamIDs = document.querySelectorAll(".competitors-li input")
+
+    function checkUserTeamPresent(ID) {
+        console.log(userTeamIDs, ID)
+        userTeamIDs.forEach((userTeamID) => {
+            if (ID === userTeamID) {
+                return true
+            }
+        });
+        return false;
+    }
+
+    function userTeamChange(userTeam) {
+        userTeam.addEventListener('click', () => {
+            if (userTeam.classList.contains("user-teams-li")) {
+                userTeam.classList.remove("user-teams-li");
+                userTeam.classList.add("competitors-li");
+                usersTeamsUl.removeChild(userTeam);
+                competitorsUl.append(userTeam);
+            } else {
+                competitorsUl.removeChild(userTeam);
+                getCompetitors();
+            }
+        });
     }
 
 </script>

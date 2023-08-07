@@ -13,17 +13,14 @@ public class CompetitionTeamInfo {
 
     private String pictureString;
 
-    private Location location;
-
     // Default constructor (required by Jackson)
     public CompetitionTeamInfo() {
     }
 
-    public CompetitionTeamInfo(Long teamID, String name, String pictureString, Location location) {
+    public CompetitionTeamInfo(Long teamID, String name, String pictureString) {
         this.teamID = teamID;
         this.name = name;
         this.pictureString = pictureString;
-        this.location = location;
     }
 
 
@@ -51,12 +48,5 @@ public class CompetitionTeamInfo {
         this.pictureString = pictureString;
     }
 
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
 }
 

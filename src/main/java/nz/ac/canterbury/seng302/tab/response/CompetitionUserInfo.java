@@ -12,18 +12,16 @@ public class CompetitionUserInfo {
 
     private String pictureString;
 
-    private Location location;
 
     // Default constructor (required by Jackson)
     public CompetitionUserInfo() {
     }
 
-    public CompetitionUserInfo(Long userID, String firstName, String lastName, String pictureString, Location location) {
+    public CompetitionUserInfo(Long userID, String firstName, String lastName, String pictureString) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.pictureString = pictureString;
-        this.location = location;
     }
 
 
@@ -42,14 +40,6 @@ public class CompetitionUserInfo {
 
     public void setPictureString(String pictureString) {
         this.pictureString = pictureString;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
     }
 
     public String getFirstName() {
