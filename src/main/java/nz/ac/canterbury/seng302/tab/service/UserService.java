@@ -51,15 +51,12 @@ public class UserService {
 
     private final TaskScheduler taskScheduler;
 
-    private final EmailService emailService;
-
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.taskScheduler = taskScheduler;
-        this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -312,8 +309,6 @@ public class UserService {
     public void updatePassword(User user, String password) throws MessagingException {
         user.setPassword(passwordEncoder.encode(password));
         updateOrAddUser(user);
-
-        emailService.updatePassword(user);
     }
 
 
@@ -328,8 +323,6 @@ public class UserService {
         updateOrAddUser(user);
 
         taskScheduler.schedule(new TokenVerification(user, this), Instant.now().plus(Duration.ofHours(1)));
-
-        emailService.resetPasswordEmail(user, request);
     }
 
 

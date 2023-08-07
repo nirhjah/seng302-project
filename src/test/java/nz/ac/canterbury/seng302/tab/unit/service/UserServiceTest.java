@@ -1,39 +1,27 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
+import nz.ac.canterbury.seng302.tab.authentication.UserPasswordEncoder;
 import nz.ac.canterbury.seng302.tab.config.ThreadPoolTaskSchedulerConfig;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
-import nz.ac.canterbury.seng302.tab.mail.EmailService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.thymeleaf.spring6.SpringTemplateEngine;
 
-import jakarta.mail.internet.MimeMessage;
+import java.util.List;
 
-import java.util.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @DataJpaTest
-@Import({UserService.class, ThreadPoolTaskSchedulerConfig.class, EmailService.class, JavaMailSender.class})
+@Import({UserService.class, ThreadPoolTaskSchedulerConfig.class, UserPasswordEncoder.class})
 public class UserServiceTest {
 
     Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
@@ -44,16 +32,6 @@ public class UserServiceTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private SpringTemplateEngine springTemplateEngine;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-
-  
-     @Autowired
-     private EmailService emailService;
 
 
     Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
