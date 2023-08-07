@@ -38,8 +38,6 @@ public class UserServiceTest {
 
 
     Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
-    Location location2 = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
-    Location location3 = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
 
 
     @BeforeEach
@@ -97,6 +95,27 @@ public class UserServiceTest {
         List<User> actualUsers = userService.getAllUsersNotFedMansByEmail(pageable, "tab@gmail.com").getContent();
         
         assertTrue(actualUsers.stream().anyMatch(u -> u == user));
+    }
+
+    
+    @Test
+    void testSearchingUsersWhoArentFedManByNameAndEmail() throws Exception {
+        User user = new User("Hee", "Account", "tab@gmail.com", "password", location);
+        userRepository.save(user);
+        User user2 = new User("tab@gmail.com", "test", "test@gmail.com", "password", location);
+        userRepository.save(user2);
+        User user3 = new User("Heeman", "test", "test2@gmail.com", "password", location);
+        userRepository.save(user3);
+        
+        user3.grantAuthority(AuthorityType.FEDERATION_MANAGER);
+        userService.updateOrAddUser(user3);
+        
+        Pageable pageable = PageRequest.of(0, 10);
+        List<User> actualUsers = userService.getAllUsersNotFedMansByNameAndEmail(pageable, "tab@gmail.com").getContent();
+        
+        assertTrue(actualUsers.stream().anyMatch(u -> u == user));
+        assertTrue(actualUsers.stream().anyMatch(u -> u == user2));
+        
     }
 
 }

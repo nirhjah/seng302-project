@@ -116,4 +116,19 @@ public interface UserRepository extends CrudRepository<User, Long> {
             ")")
         Page<User> findUsersThatArentFedMansByEmail(Pageable pageable, @Param("email") String email);
         
+
+        @Query(nativeQuery = true, value =
+            "SELECT u.* FROM USER_ENTITY u " +
+            "WHERE u.ID NOT IN (" +
+            "    SELECT DISTINCT a.user_Id FROM Authority a WHERE a.role = 'ROLE_FEDERATION_MANAGER'" +
+            ") " +
+            "AND ( " +
+            "    lower(:search) like lower(concat('%', u.FIRST_NAME, '%')) " +
+            "    OR lower(:search) like lower(concat('%', u.LAST_NAME, '%')) " +
+            "    OR lower(u.FIRST_NAME) like lower(concat('%', :search, '%')) " +
+            "    OR lower(u.LAST_NAME) like lower(concat('%', :search, '%')) " +
+            "    OR lower(:search) = lower(u.EMAIL) " +
+            ")")
+        Page<User> findUsersThatArentFedMansByNameOrEmail(Pageable pageable, @Param("search") String search);
+        
 }

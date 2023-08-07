@@ -334,4 +334,9 @@ public class UserService {
     public Page<User> getAllUsersNotFedMansByEmail(Pageable pageable, String email) {
         return userRepository.findUsersThatArentFedMansByEmail(pageable, email);
     }
+
+    public Page<User> getAllUsersNotFedMansByNameAndEmail(Pageable pageable, String search) {
+        return userRepository.findUsersThatArentFedMansByNameOrEmail(pageable, search);
+    }
+    
 }
