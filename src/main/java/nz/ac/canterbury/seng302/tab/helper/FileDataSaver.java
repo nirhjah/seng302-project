@@ -143,14 +143,7 @@ public abstract class FileDataSaver {
      * @return true if all OK, false otherwise.
      */
     public boolean isFileValid(MultipartFile file) {
-        String originalName = getFilename(file);
-        if (Objects.isNull(originalName)) {
-            // If there's no filename, return false.
-            logger.error("No filename!");
-            return false;
-        }
-
-        originalName = StringUtils.cleanPath(getFilename(file));
+        String originalName = StringUtils.cleanPath(getFilename(file));
         Optional<String> optExtension = getExtension(originalName);
         if (optExtension.isEmpty()) {
             // If we can't find an extension, return false.

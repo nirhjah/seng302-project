@@ -92,6 +92,13 @@ public class TeamImageService extends ImageService<Team> {
         }
     }
 
+    /**
+     * Gets the response entity (image) for a team.
+     * If the team with `id` exists in the DB, then an image is returned.
+     * Else, no content.
+     * @param id The team id
+     * @return The ResponseEntity
+     */
     public ResponseEntity<byte[]> getImageResponse(long id) {
         Optional<Team> optTeam = teamService.findTeamById(id);
         if (optTeam.isPresent()) {

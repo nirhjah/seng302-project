@@ -132,7 +132,7 @@ public abstract class ImageService<Entity extends Identifiable & HasImage> exten
                 logger.error("Couldn't save file: {}", entity.getId());
             }
         } else {
-            logger.error("Image file had no extension, couldn't save: {}", multipartFile.getName());
+            logger.error("Image file had no extension, couldn't save");
         }
     }
 }
