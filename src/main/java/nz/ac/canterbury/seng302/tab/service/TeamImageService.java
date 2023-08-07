@@ -90,6 +90,7 @@ public class TeamImageService extends ImageService<Team> {
             // else, fail
             saveImage(team, file);
         }
+        teamService.updateTeam(team);
     }
 
     /**
