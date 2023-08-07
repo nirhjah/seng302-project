@@ -1,8 +1,6 @@
 package nz.ac.canterbury.seng302.tab.service;
 
-import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
-import nz.ac.canterbury.seng302.tab.repository.ClubRepository;
 import nz.ac.canterbury.seng302.tab.repository.LineUpPositionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
