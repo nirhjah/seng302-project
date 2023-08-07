@@ -42,7 +42,7 @@ public class FederationManagerInviteController {
     /**
      * Controller handles processing the token and takes user to the page where they can accept or decline the invitation.
      * @param token the users unique token for becoming a federation manager
-     * @param request the HTTPRrequest
+     * @param request the HTTPrequest
      * @param model storage structure
      * @param redirectAttributes used to display messages on redirection
      * @return a form to accept or decline the invitation to become a federation manager

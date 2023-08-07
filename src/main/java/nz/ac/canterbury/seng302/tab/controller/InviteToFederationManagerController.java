@@ -79,7 +79,7 @@ public class InviteToFederationManagerController {
      * @param model map representation of information to be passed to thymeleaf page
      * @param request request
      * @return redirect back to the invite federation manager url
-     * @throws MessagingException
+     * @throws MessagingException error when sending email
      */
     @PostMapping("/inviteToFederationManager")
     public String inviteToFederationManager(
