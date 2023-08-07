@@ -62,9 +62,8 @@ public class ResetPasswordIntegrationStepDefs {
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
         EmailService emailService = Mockito.spy(applicationContext.getBean(EmailService.class));
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
-        FederationService federationService = applicationContext.getBean(FederationService.class);
 
-        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder, federationService));
+        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
         doNothing().when(emailService).sendHtmlMessage(any());
         this.mockMvc = MockMvcBuilders.standaloneSetup(new LostPasswordController(userService), new ResetPasswordController(userService, passwordEncoder)).build();
 
