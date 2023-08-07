@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -30,6 +32,14 @@ public abstract class Competition {
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
+
+    // Time is represented in milliseconds, since the unix epoch of 1970
+    @Column(nullable = false)
+    private long startDate;
+
+    // Time is represented in milliseconds, since the unix epoch of 1970
+    @Column(nullable = false)
+    private long endDate;
 
     protected Competition() {}
     
@@ -78,6 +88,17 @@ public abstract class Competition {
 
     public String getName() {
         return this.name;
+    }
+
+    /**
+     * Sets the date in UTC format. (Milliseconds since unix epoch.)
+     * You can get the milliseconds by doing Date.getTime()
+     * @param startDate The start time of the competition
+     * @param endDate The end time for the competition
+     */
+    public void setDate(long startDate, long endDate) {
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public void setName(String name) {
