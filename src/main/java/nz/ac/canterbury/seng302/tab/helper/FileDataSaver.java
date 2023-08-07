@@ -91,9 +91,9 @@ public abstract class FileDataSaver {
      * Gets a filename's extension by subbing the last characters.
      * This is kinda bad, we should be using a library for this probably.
      * @param filename The filename to check
-     * @return The extension, excluding dot. (i.e. jpg)
+     * @return The optional extension, excluding dot. (i.e. jpg)
      */
-    protected Optional<String> getExtension(String filename) {
+    private Optional<String> getExtension(String filename) {
         int i = filename.lastIndexOf(".");
         if (i >= 0) {
             String extension = filename.substring(i + 1);
@@ -102,6 +102,24 @@ public abstract class FileDataSaver {
             } else {
                 return Optional.empty();
             }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Gets a file's extension by subbing the last characters.
+     * @param file The file to check
+     * @return The optional extension, excluding dot. (i.e. jpg)
+     */
+    protected Optional<String> getExtension(MultipartFile file) {
+        Optional<String> extension = getExtension(file.getName());
+        if (extension.isPresent()) {
+            return extension;
+        }
+
+        String name = file.getOriginalFilename();
+        if (name != null) {
+            return getExtension(name);
         }
         return Optional.empty();
     }

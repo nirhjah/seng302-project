@@ -4,6 +4,8 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
 import nz.ac.canterbury.seng302.tab.helper.ImageService;
 import nz.ac.canterbury.seng302.tab.helper.ImageType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
@@ -22,6 +24,8 @@ import java.util.Optional;
 @Configuration
 @ComponentScan("nz.ac.canterbury.seng302.tab.service")
 public class UserImageService extends ImageService<User> {
+
+    private final Logger logger = LoggerFactory.getLogger(UserImageService.class);
 
     private final UserService userService;
 
@@ -78,6 +82,8 @@ public class UserImageService extends ImageService<User> {
         Optional<User> optionalUser = userService.getCurrentUser();
         if (optionalUser.isPresent()) {
             saveImage(optionalUser.get(), file);
+        } else {
+            logger.error("Current user is non-existant!");
         }
     }
 

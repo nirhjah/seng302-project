@@ -119,6 +119,7 @@ public class ViewUserController {
     ) {
         Optional<User> user = userService.getCurrentUser();
         if (user.isEmpty()) {
+            logger.error("Current user non-existant!");
             return "redirect:/login";
         }
         User authUser = user.get();

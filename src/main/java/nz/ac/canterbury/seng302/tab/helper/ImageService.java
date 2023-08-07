@@ -59,8 +59,11 @@ public abstract class ImageService<Entity extends Identifiable & HasImage> exten
     private ResponseEntity<byte[]> getImageResponse(byte[] imageData) {
         // It's a regular png/jpg
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "image/png");
         return builder
                 .contentType(MediaType.IMAGE_JPEG)
+                .headers(headers)
                 .body(imageData);
     }
 
@@ -72,8 +75,8 @@ public abstract class ImageService<Entity extends Identifiable & HasImage> exten
      */
     private ResponseEntity<byte[]> getResponseFromData(byte[] imageData, ImageType type) {
         return switch (type) {
-            case SVG -> getImageResponse(imageData);
-            case PNG_OR_JPEG -> getSVGResponse(imageData);
+            case SVG -> getSVGResponse(imageData);
+            case PNG_OR_JPEG -> getImageResponse(imageData);
         };
     }
 
@@ -92,10 +95,12 @@ public abstract class ImageService<Entity extends Identifiable & HasImage> exten
 
         if (optImageData.isPresent()) {
             // The entity has an image! Return the data
+            if (type == null) {
+                type = getDefaultImageType();
+            }
             return getResponseFromData(optImageData.get(), type);
         } else {
             // No file found, or IO failed. Return default image.
-            System.out.println("WE ARE HERE.");
             return getResponseFromData(getDefaultBytes(), getDefaultImageType());
         }
     }
@@ -111,7 +116,7 @@ public abstract class ImageService<Entity extends Identifiable & HasImage> exten
      * @param multipartFile The MultiPartFile containing the image data
      */
     public void saveImage(Entity entity, MultipartFile multipartFile) {
-        Optional<String> optExtension = getExtension(multipartFile.getName());
+        Optional<String> optExtension = getExtension(multipartFile);
         if (optExtension.isPresent()) {
             String extension = optExtension.get().toLowerCase();
             boolean ok = false;
@@ -126,6 +131,8 @@ public abstract class ImageService<Entity extends Identifiable & HasImage> exten
             if (!ok) {
                 logger.error("Couldn't save file: {}", entity.getId());
             }
+        } else {
+            logger.error("Image file had no extension, couldn't save: {}", multipartFile.getName());
         }
     }
 }
