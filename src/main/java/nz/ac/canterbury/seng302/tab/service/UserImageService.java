@@ -82,6 +82,7 @@ public class UserImageService extends ImageService<User> {
         Optional<User> optionalUser = userService.getCurrentUser();
         if (optionalUser.isPresent()) {
             saveImage(optionalUser.get(), file);
+            userService.updateOrAddUser(optionalUser.get());
         } else {
             logger.error("Current user is non-existant!");
         }
