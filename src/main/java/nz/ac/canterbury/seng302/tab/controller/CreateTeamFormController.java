@@ -236,7 +236,7 @@ public class CreateTeamFormController {
 
 
         //test code remove before merge
-        Competition competition1 = new TeamCompetition("football competition", new Grade(Grade.Age.UNDER_19S, Grade.Sex.MIXED, Grade.Competitiveness.SOCIAL), "football");
+     /*   Competition competition1 = new TeamCompetition("football competition", new Grade(Grade.Age.UNDER_19S, Grade.Sex.MIXED, Grade.Competitiveness.SOCIAL), "football");
         Competition competition2 = new TeamCompetition("hockey competition", new Grade(Grade.Age.ADULT, Grade.Sex.WOMENS, Grade.Competitiveness.SOCIAL), "hockey");
         Competition competition3 = new TeamCompetition("rugby competition", new Grade(Grade.Age.ADULT, Grade.Sex.MENS, Grade.Competitiveness.SOCIAL), "rugby");
         Competition competition4 = new TeamCompetition("cricket competition", new Grade(Grade.Age.UNDER_6S, Grade.Sex.MIXED, Grade.Competitiveness.SOCIAL), "cricket");
@@ -249,7 +249,7 @@ public class CreateTeamFormController {
         competitionService.updateOrAddCompetition(competition4);
         competitionService.updateOrAddCompetition(competition5);
         competitionService.updateOrAddCompetition(competition6);
-        competitionService.updateOrAddCompetition(competition7);
+        competitionService.updateOrAddCompetition(competition7);*/
 
         return String.format("redirect:./profile?teamID=%s", teamID);
     }
