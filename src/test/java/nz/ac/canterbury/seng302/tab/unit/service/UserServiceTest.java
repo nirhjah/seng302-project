@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import jakarta.mail.internet.MimeMessage;
@@ -32,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @DataJpaTest
-@Import({UserService.class, ThreadPoolTaskSchedulerConfig.class, EmailService.class})
+@Import({UserService.class, ThreadPoolTaskSchedulerConfig.class, EmailService.class, JavaMailSender.class})
 public class UserServiceTest {
 
     Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
@@ -43,11 +44,16 @@ public class UserServiceTest {
     @Autowired
     private UserRepository userRepository;
 
-    @MockBean
-    private JavaMailSender mockJavaMailSender;
+    @Autowired
+    private SpringTemplateEngine springTemplateEngine;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
   
-    // @Autowired
-    // private EmailService emailService;
+     @Autowired
+     private EmailService emailService;
 
 
     Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
