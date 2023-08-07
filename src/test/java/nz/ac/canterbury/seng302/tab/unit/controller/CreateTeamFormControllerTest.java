@@ -1,12 +1,24 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import nz.ac.canterbury.seng302.tab.service.SportService;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,17 +30,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.service.SportService;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(SpringExtension.class)
@@ -421,9 +428,39 @@ public class CreateTeamFormControllerTest {
 
         verify(mockTeamService, times(1)).updateTeam(any());
         Assertions.assertNotNull(team.getToken());
-
-
     }
 
-
+    /** 
+     * Tests whether the rendered form contains the appropriate values when an error occurs
+    */
+    @Test
+    public void whenFormIsInvalid_formRemainsPopulated() throws Exception {
+        String badName = "INV@L!D_N@ME";
+        String badSport = "BEING SUPER EV!L";
+        String badAddr1 = "PalaceOfDoingBadThings";
+        String badAddr2 = "RentalFlatOfDoingSlightlyDeviousThings";
+        String badCity = "Eviltropolis";
+        String badCountry = "Evil States of America";
+        String badPostcode = "I love posting code";
+        String badSuburb = "Where all the villains live";
+        mockMvc.perform(post("/createTeam", 42L)
+                        .param("teamID", String.valueOf(TEAM_ID))
+                        .param("name", badName)
+                        .param("sport", badSport)
+                        .param("addressLine1", badAddr1)
+                        .param("addressLine2", badAddr2)
+                        .param("city", badCity)
+                        .param("country", badCountry)
+                        .param("postcode", badPostcode)
+                        .param("suburb", badSuburb))
+                .andExpect(status().isBadRequest())     // This only works if we submit a bad request
+                .andExpect(content().string(containsString(badName)))
+                .andExpect(content().string(containsString(badSport)))
+                .andExpect(content().string(containsString(badAddr1)))
+                .andExpect(content().string(containsString(badAddr2)))
+                .andExpect(content().string(containsString(badCity)))
+                .andExpect(content().string(containsString(badCountry)))
+                .andExpect(content().string(containsString(badPostcode)))
+                .andExpect(content().string(containsString(badSuburb)));
+    }
 }
