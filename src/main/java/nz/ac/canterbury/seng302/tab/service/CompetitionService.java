@@ -80,6 +80,12 @@ public class CompetitionService {
         return competitionRepository.save(competition);
     }
 
+    /**
+     * Finds past competitions by sport.
+     * @param pageable The pageable detailing information about the query
+     * @param filteredSports The list of sports to filter by
+     * @return The Page of competitions
+     */
     public Page<Competition> findPastCompetitionsBySports(Pageable pageable, List<String> filteredSports) {
         long now = Instant.EPOCH.getEpochSecond();
         if (filteredSports == null) {
@@ -88,6 +94,12 @@ public class CompetitionService {
         return competitionRepository.findPastCompetitionsBySports(pageable, filteredSports, now);
     }
 
+    /**
+     * Finds upcoming competitions by sport.
+     * @param pageable The pageable detailing information about the query
+     * @param filteredSports The list of sports to filter by
+     * @return The Page of competitions
+     */
     public Page<Competition> findUpcomingCompetitionsBySports(Pageable pageable, List<String> filteredSports) {
         long now = Instant.EPOCH.getEpochSecond();
         if (filteredSports == null) {
@@ -96,6 +108,12 @@ public class CompetitionService {
         return competitionRepository.findUpcomingCompetitionsBySports(pageable, filteredSports, now);
     }
 
+    /**
+     * Finds current competitions by sport.
+     * @param pageable The pageable detailing information about the query
+     * @param filteredSports The list of sports to filter by
+     * @return The Page of competitions
+     */
     public Page<Competition> findCurrentCompetitionsBySports(Pageable pageable, List<String> filteredSports) {
         long now = Instant.EPOCH.getEpochSecond();
         if (filteredSports == null) {
