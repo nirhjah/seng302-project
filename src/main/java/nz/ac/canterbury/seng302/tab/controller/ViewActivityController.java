@@ -151,7 +151,6 @@ public class ViewActivityController {
 
         model.addAttribute("activityFacts", activityFacts);
 
-
         // Rambling that's required for navBar.html
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("possibleFactTypes", FactType.values());
