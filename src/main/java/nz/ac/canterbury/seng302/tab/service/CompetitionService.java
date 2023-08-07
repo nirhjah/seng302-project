@@ -76,7 +76,7 @@ public class CompetitionService {
         return competitionRepository.save(competition);
     }
 
-    public Page<Competition> searchCompetitions(List<String> sports, List<String> cities, String search) {
-
-    }
+//    public Page<Competition> searchCompetitions(List<String> sports, List<String> cities, String search) {
+//
+//    }
 }
