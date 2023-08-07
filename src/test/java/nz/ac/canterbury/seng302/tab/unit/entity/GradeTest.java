@@ -93,7 +93,7 @@ class GradeTest {
         Checks that younglings are mapped to "Boys" and "Girls" as opposed
         to "Men" and "Women".
          */
-        var g = new Grade(Grade.Age.UNDER_7S, Grade.Sex.MENS, Grade.Competitiveness.UNSPECIFIED);
+        var g = new Grade(Grade.Age.UNDER_7S, Grade.Sex.MENS, Grade.Competitiveness.SOCIAL);
         assertEquals("Boy's Under 7s", g.getDisplayString());
 
         var g2 = new Grade(Grade.Age.UNDER_6S, Grade.Sex.WOMENS);
