@@ -31,6 +31,10 @@
                 <button class="tab-button" >Statistics &nbsp;</button>
                 <div class="tab-line"></div>
             </div>
+            <div class="tab" id="competitions-tab">
+                <img class ="tab-icon"  th:src="@{/image/icons/gradeLevel.svg}"/>
+                <button class="tab-button" >Competitions &nbsp;</button>
+            </div>
         </div>
         <div class="content-box active" id="team-profile-tab">
             <div class="content">
@@ -185,6 +189,25 @@
                 </div>
             </div>
         </div>
+
+
+
+
+
+
+
+        <div class="content-box" id="comp-tab">
+            <div class="content">
+                <h2> Team Competitions </h2>
+            </div>
+        </div>
+
+
+
+
+
+
+
     </div>
 
     <script>
@@ -250,11 +273,14 @@
                 });
                 tab.classList.add('active');
                 if (index === 0) {
-                    tabLine.style.left = "64px";
+                    tabLine.style.left = "18px"; //64
                 } else if (index === 1) {
-                    tabLine.style.left = "368px";
-                } else {
-                    tabLine.style.left = "670px";
+                    tabLine.style.left = "247px"; //368
+                } else if (index === 2) {
+                    tabLine.style.left = "460px"; //670
+                }
+                else {
+                    tabLine.style.left = "685px"; 
                 }
                 displayBox.forEach(box => {
                     box.classList.remove('active')
