@@ -50,8 +50,8 @@ public class CreateTeamFormController {
 
 
     /**
-     * Gets createTeamForm to be displayed and contains name, sport,
-     * location and teamID model attributes to be added to html.
+     * Gives all the necessary regex to the HTML front-end, so validation can occur
+     * before submission.
      */
     private void prefillModel(Model model, HttpServletRequest httpServletRequest) {
         model.addAttribute("countryCitySuburbNameRegex", TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
@@ -82,7 +82,7 @@ public class CreateTeamFormController {
 
     private static final String CREATE_TEAM_TEMPLATE = "createTeamForm";
 
-    private static final String REDIRECT_HOME = "redirect:./profile?teamID=%s";
+    private static final String REDIRECT_HOME = "redirect:/home";
 
     /**
      * Triggers the generation of a new token for a team
@@ -104,7 +104,7 @@ public class CreateTeamFormController {
     }
 
     /**
-     * Endpoint for creating a new team. This form will not be pre-populated
+     * Endpoint for creating a new team. Gives a blank form.
      */
     @GetMapping("/createTeam")
     public String createTeamForm(
@@ -129,7 +129,7 @@ public class CreateTeamFormController {
 
 
     /**
-     * Endpoint for *updating* a team.
+     * Endpoint for *updating* a team. Gives a pre-populated form.
      */
     @GetMapping(value = "/createTeam", params = {"edit"})
     public String editTeamForm(
