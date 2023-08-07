@@ -11,8 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -23,6 +25,8 @@ public class CompetitionService {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     private final CompetitionRepository competitionRepository;
+
+    private static final List<String> EMPTY_LIST = List.of();
 
     @Autowired
     public CompetitionService(CompetitionRepository competitionRepository) {
@@ -76,7 +80,27 @@ public class CompetitionService {
         return competitionRepository.save(competition);
     }
 
-    public Page<Competition> searchCompetitions(List<String> sports, List<String> cities, String search) {
+    public Page<Competition> findPastCompetitionsBySports(Pageable pageable, List<String> filteredSports) {
+        long now = Instant.EPOCH.getEpochSecond();
+        if (filteredSports == null) {
+            filteredSports = EMPTY_LIST;
+        }
+        return competitionRepository.findPastCompetitionsBySports(pageable, filteredSports, now);
+    }
 
+    public Page<Competition> findUpcomingCompetitionsBySports(Pageable pageable, List<String> filteredSports) {
+        long now = Instant.EPOCH.getEpochSecond();
+        if (filteredSports == null) {
+            filteredSports = EMPTY_LIST;
+        }
+        return competitionRepository.findUpcomingCompetitionsBySports(pageable, filteredSports, now);
+    }
+
+    public Page<Competition> findCurrentCompetitionsBySports(Pageable pageable, List<String> filteredSports) {
+        long now = Instant.EPOCH.getEpochSecond();
+        if (filteredSports == null) {
+            filteredSports = EMPTY_LIST;
+        }
+        return competitionRepository.findCurrentCompetitionsBySports(pageable, filteredSports, now);
     }
 }

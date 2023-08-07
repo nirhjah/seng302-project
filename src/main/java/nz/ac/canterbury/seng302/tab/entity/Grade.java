@@ -153,13 +153,13 @@ public class Grade {
 
     public static Grade randomGrade() {
         List<Sex> array = Arrays.stream(Sex.values()).toList();
-        Sex sex = array.get(random.nextInt());
+        Sex sex = array.get(random.nextInt(array.size()));
 
         List<Age> array2 = Arrays.stream(Age.values()).toList();
-        Age age = array2.get(random.nextInt());
+        Age age = array2.get(random.nextInt(array2.size()));
 
         List<Competitiveness> array3 = Arrays.stream(Competitiveness.values()).toList();
-        Competitiveness comp = array3.get(random.nextInt());
+        Competitiveness comp = array3.get(random.nextInt(array3.size()));
 
         return new Grade(age, sex, comp);
     }
