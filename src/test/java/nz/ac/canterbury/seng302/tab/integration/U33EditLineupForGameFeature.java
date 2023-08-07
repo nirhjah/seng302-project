@@ -61,7 +61,7 @@ public class U33EditLineupForGameFeature {
     private FormationService formationService;
     private LineUpService lineUpService;
 
-    private LineUpPositionRepository lineUpPositionRepository;
+    private LineUpPositionService lineUpPositionService;
 
     private User user;
     private Team team;
@@ -79,11 +79,11 @@ public class U33EditLineupForGameFeature {
         activityService = Mockito.spy(applicationContext.getBean(ActivityService.class));
         formationService = Mockito.spy(applicationContext.getBean(FormationService.class));
         lineUpService = Mockito.mock(LineUpService.class);
-        lineUpPositionRepository = Mockito.mock(LineUpPositionRepository.class);
+        lineUpPositionService = Mockito.mock(LineUpPositionService.class);
 
         // create mockMvc manually with spied services
         var controller = new CreateActivityController(
-                teamService, userService, activityService, formationService, lineUpService, lineUpPositionRepository
+                teamService, userService, activityService, formationService, lineUpService, lineUpPositionService
         );
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }

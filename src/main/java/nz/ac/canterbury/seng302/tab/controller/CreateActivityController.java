@@ -51,7 +51,7 @@ public class CreateActivityController {
 
     private LineUpService lineUpService;
 
-    private LineUpPositionRepository lineUpPositionRepository;
+    private LineUpPositionService lineUpPositionService;
 
     LineUp activityLineUp;
     private Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
@@ -59,13 +59,13 @@ public class CreateActivityController {
     private static final String TEMPLATE_NAME = "createActivityForm";
 
     public CreateActivityController(TeamService teamService, UserService userService,
-            ActivityService activityService, FormationService formationService, LineUpService lineUpService, LineUpPositionRepository lineUpPositionRepository) {
+            ActivityService activityService, FormationService formationService, LineUpService lineUpService, LineUpPositionService lineUpPositionService) {
         this.teamService = teamService;
         this.userService = userService;
         this.activityService = activityService;
         this.formationService = formationService;
         this.lineUpService = lineUpService;
-        this.lineUpPositionRepository = lineUpPositionRepository;
+        this.lineUpPositionService = lineUpPositionService;
     }
 
     /**
@@ -371,7 +371,7 @@ public class CreateActivityController {
                     User player = userService.findUserById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).get();
                     int position = Integer.parseInt(Arrays.stream(positionPlayer.split(" ")).toList().get(0));
                     LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, player, position);
-                    lineUpPositionRepository.save(lineUpPosition);
+                    lineUpPositionService.addLineUpPosition(lineUpPosition);
                 }
             }
         }
