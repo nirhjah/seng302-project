@@ -23,7 +23,7 @@
   </div>
 
   <div class="filter-bar">
-    <div th:if="${not #lists.isEmpty(listOfUsers)}" style="display: flex">
+    <div th:if="${not #lists.isEmpty(listOfCompetitions)}" style="display: flex">
       <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>
       <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfCities}, 'Filter by city', 'cities')}" th:if="${not #lists.isEmpty(listOfCities)}"></div>
       <button class="apply-filters-button" type="submit">Apply Filters</button>
