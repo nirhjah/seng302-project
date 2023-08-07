@@ -67,9 +67,9 @@ public class InviteToFederationManagerController {
         var pageable = PageRequest.of(page - 1, PAGE_SIZE, UserService.SORT_BY_LAST_AND_FIRST_NAME);
 
         if (nameQuery.isEmpty()) {
-            return userService.getPaginatedUsers(pageable);
+            return userService.getAllUsersNotFedMans(pageable);
         } else {
-            return userService.findUsersByNameOrSportOrCity(pageable, null, null, nameQuery);
+            return userService.getAllUsersNotFedMansByNameAndEmail(pageable, nameQuery);
         }
     }
 
