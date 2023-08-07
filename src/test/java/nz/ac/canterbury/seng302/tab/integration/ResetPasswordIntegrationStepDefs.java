@@ -12,6 +12,7 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import nz.ac.canterbury.seng302.tab.service.FederationService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
@@ -61,8 +62,9 @@ public class ResetPasswordIntegrationStepDefs {
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
         EmailService emailService = Mockito.spy(applicationContext.getBean(EmailService.class));
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
+        FederationService federationService = applicationContext.getBean(FederationService.class);
 
-        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
+        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder, federationService));
         doNothing().when(emailService).sendHtmlMessage(any());
         this.mockMvc = MockMvcBuilders.standaloneSetup(new LostPasswordController(userService), new ResetPasswordController(userService, passwordEncoder)).build();
 

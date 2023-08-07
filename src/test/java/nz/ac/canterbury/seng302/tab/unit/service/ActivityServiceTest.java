@@ -287,5 +287,6 @@ public class ActivityServiceTest {
         activityRepository.save(game);
         Assertions.assertEquals(120, activityService.getTotalTimeAUserHasPlayedForATeam(u, team));
     }
+    
 
 }

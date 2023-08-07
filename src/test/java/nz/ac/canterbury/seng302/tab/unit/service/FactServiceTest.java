@@ -18,10 +18,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.List;
 
 @DataJpaTest
 @Import(FactService.class)
@@ -162,7 +162,7 @@ public class FactServiceTest {
 
         List<Fact> factList = new ArrayList<>();
         factList.add(new Fact("Someone fell over",activity,LocalTime.of(1, 30)));
-        Goal goal = new Goal("Goal was scored", activity, player,LocalTime.of(1, 40));
+        Goal goal = new Goal("Goal was scored", activity, player,LocalTime.of(1, 40),1);
         factRepository.save(goal);
         factList.add(goal);
         factList.add(new Substitution("Player was taken off", activity, creator, player,LocalTime.of(1, 40)));
@@ -190,9 +190,9 @@ public class FactServiceTest {
 
         List<Fact> factList = new ArrayList<>();
         factList.add(new Fact("Someone fell over", activity,LocalTime.of(1, 30)));
-        Goal goal = new Goal("Goal was scored",activity, player,LocalTime.of(1, 40));
-        Goal goal1 = new Goal("A Goal was scored again",activity, creator,LocalTime.of(1, 40));
-        Goal goal2 = new Goal("A Goal",activity, creator,LocalTime.of(1, 40));
+        Goal goal = new Goal("Goal was scored",activity, player,LocalTime.of(1, 40),1);
+        Goal goal1 = new Goal("A Goal was scored again",activity, creator,LocalTime.of(1, 40),1);
+        Goal goal2 = new Goal("A Goal",activity, creator,LocalTime.of(1, 40),1);
         factRepository.save(goal1);
         factRepository.save(goal2);
         factRepository.save(goal);
@@ -231,32 +231,32 @@ public class FactServiceTest {
 
         List<Fact> factList = new ArrayList<>();
 
-        Goal goal = new Goal("Goal was scored", activity, player,LocalTime.of(1, 40));
+        Goal goal = new Goal("Goal was scored", activity, player,LocalTime.of(1, 40),1);
 
-        Goal goal1 = new Goal("A Goal was scored again", activity, creator,LocalTime.of(1, 40));
-        Goal goal2 = new Goal("A Goal", activity, creator,LocalTime.of(1, 40));
+        Goal goal1 = new Goal("A Goal was scored again", activity, creator,LocalTime.of(1, 40),1);
+        Goal goal2 = new Goal("A Goal", activity, creator,LocalTime.of(1, 40),1);
 
-        Goal goal3 = new Goal("A Goal", activity, player1,LocalTime.of(1, 40));
-        Goal goal4 = new Goal("A Goal", activity, player1,LocalTime.of(1, 40));
-        Goal goal5 = new Goal("A Goal", activity, player1,LocalTime.of(1, 40));
+        Goal goal3 = new Goal("A Goal", activity, player1,LocalTime.of(1, 40),1);
+        Goal goal4 = new Goal("A Goal", activity, player1,LocalTime.of(1, 40),1);
+        Goal goal5 = new Goal("A Goal", activity, player1,LocalTime.of(1, 40),1);
 
-        Goal goal6 = new Goal("A Goal", activity, player2,LocalTime.of(1, 40));
-        Goal goal7 = new Goal("A Goal", activity, player2,LocalTime.of(1, 40));
-        Goal goal8 = new Goal("A Goal", activity, player2,LocalTime.of(1, 40));
-        Goal goal9 = new Goal("A Goal", activity, player2,LocalTime.of(1, 40));
+        Goal goal6 = new Goal("A Goal", activity, player2,LocalTime.of(1, 40),1);
+        Goal goal7 = new Goal("A Goal", activity, player2,LocalTime.of(1, 40),1);
+        Goal goal8 = new Goal("A Goal", activity, player2,LocalTime.of(1, 40),1);
+        Goal goal9 = new Goal("A Goal", activity, player2,LocalTime.of(1, 40),1);
 
-        Goal goal10 = new Goal("A Goal",activity, player3,LocalTime.of(1, 40));
-        Goal goal11 = new Goal("A Goal",activity, player3,LocalTime.of(1, 40));
-        Goal goal12 = new Goal("A Goal",activity, player3,LocalTime.of(1, 40));
-        Goal goal13 = new Goal("A Goal",activity, player3,LocalTime.of(1, 40));
-        Goal goal14 = new Goal("A Goal",activity, player3,LocalTime.of(1, 40));
+        Goal goal10 = new Goal("A Goal",activity, player3,LocalTime.of(1, 40),1);
+        Goal goal11 = new Goal("A Goal",activity, player3,LocalTime.of(1, 40),1);
+        Goal goal12 = new Goal("A Goal",activity, player3,LocalTime.of(1, 40),1);
+        Goal goal13 = new Goal("A Goal",activity, player3,LocalTime.of(1, 40),1);
+        Goal goal14 = new Goal("A Goal",activity, player3,LocalTime.of(1, 40),1);
 
-        Goal goal15 = new Goal("A Goal",activity, player4,LocalTime.of(1, 40));
-        Goal goal16 = new Goal("A Goal",activity, player4,LocalTime.of(1, 40));
-        Goal goal17 = new Goal("A Goal",activity, player4,LocalTime.of(1, 40));
-        Goal goal18 = new Goal("A Goal",activity, player4,LocalTime.of(1, 40));
-        Goal goal19 = new Goal("A Goal",activity, player4,LocalTime.of(1, 40));
-        Goal goal20 = new Goal("A Goal",activity, player4,LocalTime.of(1, 40));
+        Goal goal15 = new Goal("A Goal",activity, player4,LocalTime.of(1, 40),1);
+        Goal goal16 = new Goal("A Goal",activity, player4,LocalTime.of(1, 40),1);
+        Goal goal17 = new Goal("A Goal",activity, player4,LocalTime.of(1, 40),1);
+        Goal goal18 = new Goal("A Goal",activity, player4,LocalTime.of(1, 40),1);
+        Goal goal19 = new Goal("A Goal",activity, player4,LocalTime.of(1, 40),1);
+        Goal goal20 = new Goal("A Goal",activity, player4,LocalTime.of(1, 40),1);
 
         factList.add(goal);
         factList.add(goal1);

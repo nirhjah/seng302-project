@@ -21,13 +21,17 @@ public class Goal extends Fact{
     @JoinColumn(name = "fk_userID", referencedColumnName = "Id")
     private User scorer;
 
+    private int goalValue;
+
     /**
      * Empty Constructor for JPA
      **/
     public Goal() {}
-    public Goal(String description, Activity activity, User scorer, LocalTime timeOfEvent) {
-        super(description,activity,timeOfEvent);
+
+    public Goal(String description, Activity activity, User scorer,LocalTime timeOfEvent, int goalValue) {
+        super(description, activity,timeOfEvent);
         this.scorer = scorer;
+        this.goalValue = goalValue;
     }
 
     public User getScorer() {

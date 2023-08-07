@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -35,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DataJpaTest
 @Import({PersonalStatisticImpl.class, UserService.class})
 public class PersonalStatisticImplTest {
+
     @Autowired
     ActivityService activityService;
     
@@ -55,6 +57,9 @@ public class PersonalStatisticImplTest {
     
     @Autowired
     FactService factService;
+
+    @Autowired
+    FederationService federationService;
 
     @Autowired
     PersonalStatisticImpl personalStatisticImpl;
@@ -87,7 +92,7 @@ public class PersonalStatisticImplTest {
 
 
     @Test
-    public void GivenIHaveScoredOneGoal_WhenICheckMyGoalsScored_ThenISee1GoalScored() throws Exception {
+    void GivenIHaveScoredOneGoal_WhenICheckMyGoalsScored_ThenISee1GoalScored() {
 
         userRepository.save(testUser);
 
@@ -97,7 +102,7 @@ public class PersonalStatisticImplTest {
                 new Location("Test", "Test", "Test", "test", "Tst", "test"));
         activityRepository.save(game);
 
-        Goal goal = new Goal("test",game, testUser, LocalTime.of(0, 59));
+        Goal goal = new Goal("test", game, testUser, LocalTime.of(0, 59),1);
         factRepository.save(goal);
 
         int goals = personalStatisticImpl.getGoalsScored(testUser, team);

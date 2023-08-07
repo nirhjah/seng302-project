@@ -41,9 +41,6 @@ public class EditUserFormControllerTest {
     @MockBean
     private UserService mockUserService;
 
-    @MockBean
-    private UserRepository mockUserRepository;
-
     private static final String URL = "/editUser";
 
     // Parameter names

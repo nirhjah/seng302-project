@@ -14,7 +14,7 @@
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 <div class="team-profile-form">
 
-    <div class="wrapper-profile">
+    <div class="wrapper-profile" id="wrapper-profile">
         <div class="tab-box">
             <div class="tab active">
                 <img class="tab-icon" th:src="@{/image/icons/team.svg}"/>
@@ -37,7 +37,7 @@
                 <div class="profile-pic">
                     <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
                         <div class="image-styling">
-                            <img th:src="'data:image/png;base64,' + ${displayTeamPicture}" width="200" height="200"/>
+                            <img th:src="@{/team-profile-picture/{id}(id = ${teamID})}" width="200" height="200">
                             </br>
                         </div>
                         </br>
@@ -51,7 +51,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="join-token" th:if="${isUserManagerOrCoach}">
+                <div class="join-token" th:if="${isUserManager}">
                     <label> Join Token</label>
                     <div class="join-token-box-outer">
                         <a href="#" class="copy-token">
@@ -159,6 +159,32 @@
                 </form>
                 <div class="col-wrapper">
                     <div class="third-col" style="padding-bottom: 20px">
+
+                        <h3>Last 5 Matches: </h3>
+                   <div class="last5">
+                       <ul>
+                           <li th:each="act : ${last5GOrF}" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|">
+                               <div>
+                                   <h3 th:text="${act.activityType.name()}"> </h3>
+                                   <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
+                               endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')}" th:text="${startDate} + ' - ' + ${endDate}" ></h4>
+                                   <h4 th:text="'Score: ' + ${act.activityTeamScore} + ' : ' + ${act.otherTeamScore}" > </h4>
+                               </div>
+                               <div>
+                                   <img th:if="${act.outcome.toString() == 'Win'}" th:src="@{/image/icons/win.svg}"/>
+                                   <img th:if="${act.outcome.toString() == 'Loss'}" th:src="@{/image/icons/loss.svg}"/>
+                                   <img th:if="${act.outcome.toString() == 'Draw'}" th:src="@{/image/icons/draw.svg}"/>
+                               </div>
+                           </li>
+                       </ul>
+
+                   </div>
+
+
+                    </div>
+                    <div class="third-col">
+                    </div>
+                    <div class="third-col">
                         <h3>Outcome of Games and Friendlies:</h3>
                         <h4 th:text="|Wins: ${totalWins}|"></h4>
                         <h4 th:text="|Losses: ${totalLosses}|"></h4>
@@ -166,19 +192,11 @@
                         <h4 th:text="|Total (incl future): ${totalGOrF}|"></h4>
                         </br>
                         </br>
-                        <h3>Last 5 Games: </h3>
-                        <h4 th:each="act : ${last5GOrF}"
-                           th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
-                           endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')},
-                           startTime=${#temporals.format(act.activityStart, 'hh:mma')},
-                           endTime=${#temporals.format(act.activityEnd, 'hh:mma')}"
-                           th:text="|Date: ${startDate} ${startTime} ${act.outcome.name()} - ${act.activityType.name()}|" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|"></h4>
-                    </div>
-                    <div class="third-col">
                         <h3>Top Scorers:</h3>
                         <h4 th:each="score : ${top5Scorers}" th:text="|${score.keySet().toArray()[0].firstName} ${score.keySet().toArray()[0].lastName} ${score.values().toArray()[0]}|"></h4>
-                    </div>
-                    <div class="third-col">
+
+                        </br>
+
                         <h3>Substitutions:</h3>
                         <h4>n/a</h4>
                     </div>
@@ -242,6 +260,7 @@
         const tabLine = document.querySelector('.tab-line');
         const displayBox = document.querySelectorAll('.content-box');
         const displayContent = document.querySelectorAll('.content');
+        const wrapperProfile = document.getElementById("wrapper-profile")
 
         tabs.forEach((tab, index) => {
             tab.addEventListener('click', (e) => {
@@ -251,10 +270,16 @@
                 tab.classList.add('active');
                 if (index === 0) {
                     tabLine.style.left = "64px";
+                    wrapperProfile.style.height = '480px';
+                    wrapperProfile.style.marginTop = 'unset';
                 } else if (index === 1) {
                     tabLine.style.left = "368px";
+                    wrapperProfile.style.height = '480px';
+                    wrapperProfile.style.marginTop = 'unset';
                 } else {
                     tabLine.style.left = "670px";
+                    wrapperProfile.style.height = '680px';
+                    wrapperProfile.style.marginTop = '12%';
                 }
                 displayBox.forEach(box => {
                     box.classList.remove('active')
