@@ -8,6 +8,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
@@ -72,7 +73,7 @@ public class CreateTeamFormControllerTest {
         Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY, USER_POSTCODE, USER_COUNTRY);
 
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
-        team = spy(new Team("test", "Rugby", new Location("3 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"), user));
+        team = spy(new Team("testName", "testSport", new Location("3 Test Lane", "5 Mock Road", "Ilam", "Christchurch", "8041", "New Zealand"), user));
         doReturn(TEAM_ID).when(team).getTeamId();
 
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
@@ -80,6 +81,41 @@ public class CreateTeamFormControllerTest {
         when(mockTeamService.addTeam(team)).thenReturn(team);
         when(mockTeamService.getTeam(team.getTeamId())).thenReturn(team);
         when(mockTeamService.updateTeam(any())).thenReturn(team);
+    }
+
+
+    /** Try to get the Create Team form */
+    @Test
+    void getCreateTeamForm() throws Exception {
+        mockMvc.perform(get("/createTeam"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("createTeamForm"));
+    }
+
+    /** Try to get the Edit Team form */
+    @Test
+    void getEditTeamForm() throws Exception {
+        mockMvc.perform(get("/createTeam")
+                    .param("edit", TEAM_ID.toString()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("createTeamForm"));
+    }
+
+    /** Check if the Edit Team form is pre-populated */
+    @Test
+    void getEditTeamForm_formIsPrepopulated() throws Exception {
+        mockMvc.perform(get("/createTeam")
+                    .param("edit", TEAM_ID.toString()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("createTeamForm"))
+                .andExpect(content().string(containsString(team.getName())))
+                .andExpect(content().string(containsString(team.getSport())))
+                .andExpect(content().string(containsString(team.getLocation().getAddressLine1())))
+                .andExpect(content().string(containsString(team.getLocation().getAddressLine2())))
+                .andExpect(content().string(containsString(team.getLocation().getCity())))
+                .andExpect(content().string(containsString(team.getLocation().getCountry())))
+                .andExpect(content().string(containsString(team.getLocation().getSuburb())))
+                .andExpect(content().string(containsString(team.getLocation().getPostcode())));
     }
 
     /**
