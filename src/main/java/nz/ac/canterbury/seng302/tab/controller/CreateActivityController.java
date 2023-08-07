@@ -341,7 +341,7 @@ public class CreateActivityController {
         return formationService.getTeamsFormations(team.getTeamId()).stream()
                 .map(formation -> {
                     List<PlayerFormationInfo> players = team.getTeamMembers().stream()
-                            .map(player -> new PlayerFormationInfo(player.getUserId(), player.getFirstName(), player.getPictureString()))
+                            .map(player -> new PlayerFormationInfo(player.getUserId(), player.getFirstName()))
                             .toList();
 
                     return new FormationInfo(

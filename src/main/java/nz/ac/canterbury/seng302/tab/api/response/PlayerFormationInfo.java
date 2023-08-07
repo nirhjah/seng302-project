@@ -9,25 +9,20 @@ public class PlayerFormationInfo {
 
     private String firstName;
 
-    private String pictureString;
 
     // Default constructor (required by Jackson)
     public PlayerFormationInfo() {
     }
 
-    public PlayerFormationInfo(Long playerID, String firstName, String pictureString) {
+    public PlayerFormationInfo(Long playerID, String firstName) {
         this.playerID = playerID;
         this.firstName = firstName;
-        this.pictureString = pictureString;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public String getPictureString() {
-        return pictureString;
-    }
 
     public Long getPlayerID() {
         return playerID;
