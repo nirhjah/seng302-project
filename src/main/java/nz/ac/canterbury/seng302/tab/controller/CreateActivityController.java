@@ -10,7 +10,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
-import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,12 +40,12 @@ import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
 @Controller
 public class CreateActivityController {
 
-    private TeamService teamService;
-    private UserService userService;
-    private ActivityService activityService;
-    private FormationService formationService;
+    private final TeamService teamService;
+    private final UserService userService;
+    private final ActivityService activityService;
+    private final FormationService formationService;
 
-    private LineUpService lineUpService;
+    private final LineUpService lineUpService;
 
     private Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
@@ -276,6 +275,7 @@ public class CreateActivityController {
             // The error checking function checks if this exists, so this should always pass
             activity.setFormation(formation.get());
         }
+
 
         activity = activityService.updateOrAddActivity(activity);
 

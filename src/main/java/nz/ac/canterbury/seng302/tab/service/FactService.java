@@ -107,12 +107,12 @@ public class FactService {
         return scoreInformation;
     }
 
+    /**
+     * Sorts the list of facts by time of event in ascending order
+     * @param facts Takes a list of facts
+     */
     public void getFactsSortedByLocalTimeAscending(List<Fact> facts) {
-        Collections.sort(facts, new Comparator<Fact>() {
-            @Override
-            public int compare(Fact fact1, Fact fact2) {
-                return fact1.getTimeOfEvent().compareTo(fact2.getTimeOfEvent());
-            }
-        });
+        Collections.sort(facts, (fact1, fact2) -> fact1.getTimeOfEvent().compareTo(fact2.getTimeOfEvent()));
+
     }
 }

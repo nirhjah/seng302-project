@@ -284,4 +284,34 @@ public class FactServiceTest {
 
         Assertions.assertEquals(List.of(Map.of(player4, 6L), Map.of(player3, 5L), Map.of(player2, 4L), Map.of(player1, 3L), Map.of(creator, 2L)), (factService.getTop5Scorers(team)));
     }
+
+    @Test
+    public void testFactsSortedByTimeOfEventInAscendingOrder() throws Exception {
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+
+        List<Fact> factList = new ArrayList<>();
+        factList.add(new Fact("Someone fell over", activity,LocalTime.of(1, 25)));
+        factList.add(new Fact("Someone fell over again",  activity,LocalTime.of(4, 25)));
+        factList.add(new Fact("Someone fell over yet again",  activity,LocalTime.of(2, 25)));
+        factList.add(new Substitution("Player was taken off", activity, creator, creator, LocalTime.of(1, 25)));
+        factList.add(new Fact("Testing scrollable feature",  activity,LocalTime.of(4, 25)));
+
+        factService.getFactsSortedByLocalTimeAscending(factList);
+        Assertions.assertEquals(LocalTime.of(1, 25), factList.get(0).getTimeOfEvent());
+        Assertions.assertEquals(LocalTime.of(1, 25), factList.get(1).getTimeOfEvent());
+        Assertions.assertEquals(LocalTime.of(2, 25), factList.get(2).getTimeOfEvent());
+        Assertions.assertEquals(LocalTime.of(4, 25), factList.get(3).getTimeOfEvent());
+        Assertions.assertEquals(LocalTime.of(4, 25), factList.get(4).getTimeOfEvent());
+    }
+
 }
