@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.service.FactService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -153,6 +154,39 @@ public class ViewActivityControllerTests {
                         .param("playerOff", "1")
                         .param("playerOn", "1"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testAddingActivityStatisticWithEmptyTime() throws Exception {
+        mockMvc.perform(post("/view-activity")
+                        .param("actId", String.valueOf(activity.getId()))
+                        .param("factType", String.valueOf(FactType.SUBSTITUTION))
+                        .param("description", "Testing")
+                        .param("overallScoreTeam", "1")
+                        .param("overallScoreOpponent", "2")
+                        .param("time", "")
+                        .param("scorer", "1")
+                        .param("playerOff", "1")
+                        .param("playerOn", "2"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(String.format("./view-activity?activityID=%s", activity.getId())));
+    }
+
+
+    @Test
+    public void testAddingActivityStatisticWithValidFields() throws Exception {
+        mockMvc.perform(post("/view-activity")
+                        .param("actId", String.valueOf(activity.getId()))
+                        .param("factType", String.valueOf(FactType.SUBSTITUTION))
+                        .param("description", "Testing")
+                        .param("overallScoreTeam", "1")
+                        .param("overallScoreOpponent", "2")
+                        .param("time", "11:11")
+                        .param("scorer", "1")
+                        .param("playerOff", "1")
+                        .param("playerOn", "2"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(String.format("./view-activity?activityID=%s", activity.getId())));
     }
 
 
