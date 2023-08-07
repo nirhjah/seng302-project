@@ -41,8 +41,8 @@ public class FederationManagerInviteController {
 
     /**
      * TEMPORARY ENDPOINT
-     * @param request
-     * @return
+     * @param request http request
+     * @return redirect to view user page
      */
     @GetMapping("/invite")
     public String fedToUser(HttpServletRequest request) {
@@ -61,7 +61,8 @@ public class FederationManagerInviteController {
      * @param request the HTTPRrequest
      * @param model storage structure
      * @param redirectAttributes used to display messages on redirection
-     * @return
+     * @return a form to accept or decline the invitation to become a federation manager
+     * iff the user accessing this page matches the invite's user otherwise it returns the view self page
      */
     @GetMapping("/federationManager")
     public String fedManagerInvitation(@RequestParam("token") String token, HttpServletRequest request, Model model,
@@ -77,6 +78,13 @@ public class FederationManagerInviteController {
         }
     }
 
+    /**
+     * Handles the decision that a user makes about the invitation for the invitation to become a federation manager
+     * @param decision string that's either "true" or "false"
+     * @param request the HTTP request
+     * @param redirectAttributes redirect attributes to display success and error messages depending on outcome
+     * @return a redirect to view user page for themselves
+     */
     @PostMapping("/federationManager")
     public String federationManager(@RequestParam(name = "decision") String decision, HttpServletRequest request,
                                     RedirectAttributes redirectAttributes) {
@@ -96,7 +104,7 @@ public class FederationManagerInviteController {
                 throw new RuntimeException(e);
             }
             autoLogin.forceLogin(user.getEmail(), user.getAuthorities(), request);
-            redirectAttributes.addFlashAttribute("fedmanTokenMessage", "Sucess! You are now a federation manager");
+            redirectAttributes.addFlashAttribute("fedmanTokenMessage", "Success! You are now a federation manager");
             logger.info("FED MANAGER NOW");
         } else {
             logger.info("NOT FED MANAGER");
