@@ -6,9 +6,7 @@ import java.util.GregorianCalendar;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
-import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Component;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
-import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 
 /**
   Creates an admin user in the database. This class is automatically run on every startup.

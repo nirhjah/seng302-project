@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Import;
 
 @DataJpaTest
 @Import(FederationService.class)
-public class FederationServiceTest {
+class FederationServiceTest {
 
     @Autowired
     FederationRepository federationRepository;
@@ -26,7 +26,7 @@ public class FederationServiceTest {
     UserRepository userRepository;
 
     @Test
-    public void saveAndGetInviteTestTest() throws Exception {
+    void saveAndGetInviteTestTest() throws Exception {
         User u = new User("Test", "First", "email@gmail.com", "password",
                     new Location(null, null, null, "chch", null, "nz"));
         userRepository.save(u);
@@ -37,7 +37,7 @@ public class FederationServiceTest {
     }
 
     @Test
-    public void deletionTest() throws Exception {
+    void deletionTest() throws Exception {
         User u = new User("Test", "First", "email@gmail.com", "password",
                 new Location(null, null, null, "chch", null, "nz"));
         userRepository.save(u);

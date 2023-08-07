@@ -87,7 +87,7 @@ public class PersonalStatisticImplTest {
 
 
     @Test
-    public void GivenIHaveScoredOneGoal_WhenICheckMyGoalsScored_ThenISee1GoalScored() {
+    void GivenIHaveScoredOneGoal_WhenICheckMyGoalsScored_ThenISee1GoalScored() {
 
         userRepository.save(testUser);
 
