@@ -13,7 +13,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 public class CompetitionValidators {
 
-    public static final String NO_GRADE_LEVEL_MSG = "Grade level is required";
+    public static final String NO_GRADE_MSG = "Grade is required";
 
 
 
@@ -24,8 +24,8 @@ public class CompetitionValidators {
     /**/@Retention(RUNTIME)
     /**/@Constraint(validatedBy = {})
     /**/@Documented
-    @NotNull(message = NO_GRADE_LEVEL_MSG)
-    public @interface competitionGradeLevelValidator {
+    @NotNull(message = NO_GRADE_MSG)
+    public @interface competitionGradeValidator {
         String message() default "";
 
         Class<?>[] groups() default {};

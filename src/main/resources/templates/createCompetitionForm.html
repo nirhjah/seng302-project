@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <link th:href="@{/css/create-competition.css}" rel="stylesheet">
@@ -59,7 +59,7 @@
                         </select>
                     </div>
                 </div>
-<!--                <div th:each="err : ${#fields.errors('gradeLevel')}" th:text="${err}" class="error-message"></div>-->
+<!--                <div th:each="err : ${#fields.errors('grade')}" th:text="${err}" class="error-message"></div>-->
             </div>
 
             <div class="create-header">
@@ -83,34 +83,34 @@
                            data-cy="location" autofocus placeholder="" th:value="${addressLine2}"
                            title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
                     <label for="address-line-2">Address Line 2</label>
-                    <!--                <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message"></div>-->
+<!--                    <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message"></div>-->
                 </div>
             </div>
             <div class="input-box">
                 <input type="text" class="form-control" id="suburb" th:name="suburb"
                        data-cy="location" autofocus placeholder="" th:value="${suburb}">
                 <label for="suburb">Suburb</label>
-                <!--            <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>-->
+<!--                <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>-->
             </div>
             <div class="input-box">
                 <input type="text" class="form-control" id="postcode" th:name="postcode"
                        data-cy="location" autofocus placeholder="" th:value="${postcode}">
                 <label for="postcode">Postcode</span></label>
-                <!--            <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>-->
+<!--                <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>-->
             </div>
 
             <div class="input-box">
                 <input type="text" class="form-control" id="city" th:name="city"
                        data-cy="location" autofocus placeholder="" th:value="${city}">
                 <label for="city">City</label>
-                <!--            <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>-->
+<!--                <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>-->
             </div>
 
             <div class="input-box">
                 <input type="text" class="form-control" id="country" th:name="country"
                        data-cy="location" autofocus placeholder="" th:value="${country}">
                 <label for="country">Country</label>
-                <!--            <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>-->
+<!--                <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>-->
             </div>
 
             <div class="create-header">
@@ -128,7 +128,8 @@
             </div>
 
             <div class="member-selection-box">
-                <div class="inactive-cover active">
+                <div class="inactive-cover">
+                <!--                <div class="inactive-cover active">-->
                     <h3>You must type in a sport before you may add competitors</h3>
                 </div>
                 <div class="competitors-box">
@@ -141,7 +142,13 @@
                         <img th:src="@{/image/icons/search-white.svg}"/>
                         <input type="hidden" class="search-query">
                     </div>
-                    <ul class="users-teams-ul"></ul>
+                    <ul class="users-teams-ul">
+                        <li class="users-teams-li">
+<!--                            <img th:src="'data:image/png;base64,' + ${user.pictureString}" alt="My Profile" class="li-user-team-image"/>-->
+                            <span class="li-user-team-name">Sebastian Conaghan-Carr</span>
+                            <input type="hidden" class="user-team-ID">
+                        </li>
+                    </ul>
                 </div>
             </div>
 
@@ -311,16 +318,76 @@
         return false;
     }
 
+    const cunt = document.querySelector(".users-teams-li")
+
+    cunt.addEventListener('click', () => {
+        if (cunt.classList.contains("users-teams-li")) {
+            cunt.classList.remove("users-teams-li");
+            cunt.classList.add("competitors-li");
+            competitorsUl.append(cunt);
+        } else {
+            cunt.classList.add("users-teams-li");
+            cunt.classList.remove("competitors-li");
+
+            // Inserts the user/team back in the correct spot alphabetically
+            const currentName = cunt.querySelector("span").textContent;
+            const currentID = cunt.querySelector(".user-team-ID").value;
+            if (usersTeamsUl.childElementCount === 0) {
+                usersTeamsUl.append(cunt);
+            } else {
+                for (let i = 0; i < usersTeamsUl.childElementCount; i++) {
+                    const uT = usersTeamsUl[i];
+                    const name = uT.querySelector("span").textContent;
+                    const ID = uT.querySelector(".user-team-ID").value;
+                    const alphabetical = name.localeCompare(currentName);
+                    if (alphabetical >= 0) {
+                        if (alphabetical === 1 || alphabetical === 0 && currentID < ID) {
+                            usersTeamsUl.insertBefore(cunt, uT);
+                            break;
+                        }
+                    }
+                    if (i === (usersTeamsUl.length - 1)) {
+                        usersTeamsUl.append(cunt);
+                    }
+                }
+            }
+        }
+    });
+
     function userTeamChange(userTeam) {
         userTeam.addEventListener('click', () => {
-            if (userTeam.classList.contains("user-teams-li")) {
-                userTeam.classList.remove("user-teams-li");
+            if (userTeam.classList.contains("users-teams-li")) {
+                userTeam.classList.remove("users-teams-li");
                 userTeam.classList.add("competitors-li");
-                usersTeamsUl.removeChild(userTeam);
                 competitorsUl.append(userTeam);
             } else {
-                competitorsUl.removeChild(userTeam);
-                getCompetitors();
+                userTeam.classList.add("users-teams-li");
+                userTeam.classList.remove("competitors-li");
+                console.log(1);
+
+                // Inserts the user/team back in the correct spot alphabetically
+                const currentName = userTeam.querySelector("span").textContent;
+                const currentID = userTeam.querySelector(".user-team-ID").value;
+                if (usersTeamsUl.length===0) {
+                    usersTeamsUl.append(userTeam);
+                } else {
+                    for (let i = 0; i < usersTeamsUl.length; i++) {
+                        console.log(2);
+                        const uT = usersTeamsUl[i];
+                        const name = uT.querySelector("span").textContent;
+                        const ID = uT.querySelector(".user-team-ID").value;
+                        const alphabetical = name.localeCompare(currentName);
+                        if (alphabetical >= 0) {
+                            if (alphabetical === 1 || alphabetical === 0 && currentID < ID) {
+                                usersTeamsUl.insertBefore(userTeam, uT);
+                                break;
+                            }
+                        } if (i === (usersTeamsUl.length - 1)) {
+                            console.log(3);
+                            usersTeamsUl.append(userTeam);
+                        }
+                    }
+                }
             }
         });
     }

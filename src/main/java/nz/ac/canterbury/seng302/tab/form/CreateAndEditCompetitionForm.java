@@ -22,7 +22,7 @@ public class CreateAndEditCompetitionForm {
     @TeamFormValidators.teamSportValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG)
     private String sport;
 
-    @CompetitionValidators.competitionGradeLevelValidator
+    @CompetitionValidators.competitionGradeValidator
     private Grade grade;
 
     @LocationValidators.addressValidator

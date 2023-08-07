@@ -71,9 +71,7 @@ public class CreateCompetitionController {
         prefillModel(model, request);
         if (competitionID != null) {
             Optional<Competition> optionalCompetition = competitionService.findCompetitionById(competitionID);
-            if (optionalCompetition.isPresent()) {
-                prefillModelWithCompetition(model, optionalCompetition.get());
-            }
+            optionalCompetition.ifPresent(competition -> prefillModelWithCompetition(model, competition));
         }
         return "createCompetitionForm";
     }
