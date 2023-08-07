@@ -22,7 +22,8 @@
 </head>
 <body class="profile-background">
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
-    <h6 class="reset-password-info" th:if="${fedmanTokenMessage != null}" th:text="${fedmanTokenMessage}"></h6>
+<div th:if="${fedmanTokenMessage != null}" th:insert="~{fragments/messageDropDown.html :: messageDropDown(message=${fedmanTokenMessage})}"></div>
+
     <div class="profile-form">
         <div class="wrapper-profile">
             <p th:if="${thisUser.isEmpty()}">

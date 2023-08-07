@@ -316,7 +316,7 @@ public class ViewMyActivitiesIntegrationTests {
         Team teamMock = mock(Team.class);
         when(teamMock.isManager(user)).thenReturn(false);
         MvcResult result = mockMvc.perform(get("/profile").param("teamID", selectedTeam.getTeamId().toString()))
-                .andExpect(status().isOk()).andExpect(view().name("profileForm"))
+                .andExpect(status().isOk()).andExpect(view().name("viewTeamForm"))
                 .andReturn();
         Assertions.assertEquals(selectedTeam.getTeamId(), result.getModelAndView().getModel().get("teamID"));
     }

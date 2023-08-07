@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
@@ -149,6 +150,7 @@ public class ViewActivityControllerTests {
                         .param("factType", String.valueOf(FactType.FACT))
                         .param("overallScoreTeam", "1")
                         .param("overallScoreOpponent", "1")
+                        .param("activityOutcomes", String.valueOf(ActivityOutcome.None))
                         .param("time", "1")
                         .param("goalValue", "1")
                         .param("scorer", "-1")
@@ -172,6 +174,7 @@ public class ViewActivityControllerTests {
                         .param("goalValue", "1")
                         .param("overallScoreTeam", "1")
                         .param("overallScoreOpponent", "1")
+                        .param("activityOutcomes", String.valueOf(ActivityOutcome.None))
                         .param("scorer", "-1")
                         .param("playerOn", "1")
                         .param("playerOff", "1" )
@@ -189,6 +192,7 @@ public class ViewActivityControllerTests {
                         .param("factType", String.valueOf(FactType.GOAL))
                         .param("overallScoreTeam", "1")
                         .param("overallScoreOpponent", "1")
+                        .param("activityOutcomes", String.valueOf(ActivityOutcome.None))
                         .param("time", "1")
                         .param("goalValue", "")
                         .param("scorer", "-1")
@@ -209,6 +213,7 @@ public class ViewActivityControllerTests {
                         .param("factType", String.valueOf(FactType.SUBSTITUTION))
                         .param("overallScoreTeam", "1")
                         .param("overallScoreOpponent", "1")
+                        .param("activityOutcomes", String.valueOf(ActivityOutcome.None))
                         .param("time", "1")
                         .param("goalValue", "")
                         .param("scorer", "-1")
