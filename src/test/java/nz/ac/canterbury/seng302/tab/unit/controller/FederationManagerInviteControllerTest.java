@@ -94,7 +94,7 @@ public class FederationManagerInviteControllerTest {
     void acceptingToken() throws Exception {
         mockMvc.perform(post("/federationManager").param("decision", "true"))
                 .andExpect(status().isFound()).andExpect(view().name("redirect:user-info/self"))
-                .andExpect(flash().attribute("fedmanTokenMessage", "Sucess! You are now a federation manager"));
+                .andExpect(flash().attribute("fedmanTokenMessage", "Success! You are now a federation manager"));
     }
 
     @Test
