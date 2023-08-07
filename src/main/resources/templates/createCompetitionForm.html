@@ -44,21 +44,21 @@
                 <label>Grade <span class="required">*</span></label>
                 <div class="grade-level-details">
                     <div>
-                        <select id="level">
+                        <select id="competitiveness" name="competitiveness">
                             <option value="" disabled selected>Level</option>
                             <option th:each="competitiveness : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Competitiveness).values()}"
                                     th:value="${competitiveness}" th:text="${competitiveness.description}"></option>
                         </select>
                     </div>
                     <div>
-                        <select id="gender" >
+                        <select id="sex" name="sex">
                             <option value="" disabled selected>Gender</option>
                             <option th:each="sex : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Sex).values()}"
                                     th:value="${sex}" th:text="${sex.description}"></option>
                         </select>
                     </div>
                     <div>
-                        <select id="age">
+                        <select id="age" name="age">
                             <option value="" disabled selected>Age</option>
                             <option th:each="age : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Age).values()}"
                                     th:value="${age}" th:text="${age.description}"></option>
@@ -140,7 +140,18 @@
                 </div>
                 <div class="competitors-box">
                     <div class="competitors-header">Competitors</div>
-                    <ul class="competitors-ul"></ul>
+                    <ul class="competitors-ul">
+                        <li th:each="competitor : ${users}">
+                            <img th:src="'data:image/png;base64,' + ${competitor.pictureString}" alt="My Profile" class="li-user-team-image"/>
+                            <span class="li-user-team-name" th:value="${competitor.firstName + ' ' + competitor.lastName}"></span>
+                            <input type="hidden" class="user-team-ID" th:value="${competitor.userId}">
+                        </li>
+                        <li th:each="competitor : ${teams}">
+                            <img th:src="'data:image/png;base64,' + ${competitor.pictureString}" alt="My Profile" class="li-user-team-image"/>
+                            <span class="li-user-team-name" th:value="${competitor.name}"></span>
+                            <input type="hidden" class="user-team-ID" th:value="${competitor.teamId}">
+                        </li>
+                    </ul>
                 </div>
                 <div class="users-teams-box">
                     <div class="search-box">
@@ -148,14 +159,9 @@
                         <img th:src="@{/image/icons/search-white.svg}"/>
                         <input type="hidden" class="search-query">
                     </div>
-                    <ul class="users-teams-ul">
-                        <li class="users-teams-li">
-<!--                            <img th:src="'data:image/png;base64,' + ${user.pictureString}" alt="My Profile" class="li-user-team-image"/>-->
-                            <span class="li-user-team-name">Sebastian Conaghan-Carr</span>
-                            <input type="hidden" class="user-team-ID">
-                        </li>
-                    </ul>
+                    <ul class="users-teams-ul"></ul>
                 </div>
+<!--                <div th:each="err : ${#fields.errors('competitors')}" th:text="${err}" class="error-message"></div>-->
             </div>
 
             <div class="submit-button">
@@ -323,42 +329,6 @@
         });
         return false;
     }
-
-    const cunt = document.querySelector(".users-teams-li")
-
-    cunt.addEventListener('click', () => {
-        if (cunt.classList.contains("users-teams-li")) {
-            cunt.classList.remove("users-teams-li");
-            cunt.classList.add("competitors-li");
-            competitorsUl.append(cunt);
-        } else {
-            cunt.classList.add("users-teams-li");
-            cunt.classList.remove("competitors-li");
-
-            // Inserts the user/team back in the correct spot alphabetically
-            const currentName = cunt.querySelector("span").textContent;
-            const currentID = cunt.querySelector(".user-team-ID").value;
-            if (usersTeamsUl.childElementCount === 0) {
-                usersTeamsUl.append(cunt);
-            } else {
-                for (let i = 0; i < usersTeamsUl.childElementCount; i++) {
-                    const uT = usersTeamsUl[i];
-                    const name = uT.querySelector("span").textContent;
-                    const ID = uT.querySelector(".user-team-ID").value;
-                    const alphabetical = name.localeCompare(currentName);
-                    if (alphabetical >= 0) {
-                        if (alphabetical === 1 || alphabetical === 0 && currentID < ID) {
-                            usersTeamsUl.insertBefore(cunt, uT);
-                            break;
-                        }
-                    }
-                    if (i === (usersTeamsUl.length - 1)) {
-                        usersTeamsUl.append(cunt);
-                    }
-                }
-            }
-        }
-    });
 
     function userTeamChange(userTeam) {
         userTeam.addEventListener('click', () => {

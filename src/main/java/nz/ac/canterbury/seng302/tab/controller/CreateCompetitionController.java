@@ -6,6 +6,7 @@ import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
 import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
 import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
+import nz.ac.canterbury.seng302.tab.form.CreateActivityForm;
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditCompetitionForm;
 import nz.ac.canterbury.seng302.tab.response.CompetitionTeamInfo;
 import nz.ac.canterbury.seng302.tab.response.CompetitionUserInfo;
@@ -13,6 +14,8 @@ import nz.ac.canterbury.seng302.tab.service.CompetitionService;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
+import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
+import nz.ac.canterbury.seng302.tab.validator.CompetitionFormValidators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +25,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,7 +44,7 @@ public class CreateCompetitionController {
 
     Logger logger = LoggerFactory.getLogger(CreateCompetitionController.class);
 
-    private CompetitionService competitionService;
+    private final CompetitionService competitionService;
 
     private final UserService userService;
 
@@ -63,7 +68,7 @@ public class CreateCompetitionController {
      * @return create club form
      */
     @GetMapping("/createCompetition")
-    public String clubForm(@RequestParam(name = "edit", required = false) Long competitionID,
+    public String clubForm(@RequestParam(name = "edit", required = false) Long competitionID, CreateAndEditCompetitionForm form,
                            Model model,
                            HttpServletRequest request) {
 
@@ -89,7 +94,7 @@ public class CreateCompetitionController {
      * @return The view name to be displayed after the competition creation/edit process.
      * @throws IOException If an I/O error occurs during file handling.
      */
-    @PostMapping("/create")
+    @PostMapping("/createCompetition")
     public String createCompetition(
             @RequestParam(name = "competitionID", defaultValue = "-1") long competitionID,
             @Validated CreateAndEditCompetitionForm form,
@@ -103,6 +108,9 @@ public class CreateCompetitionController {
         if (optUser.isEmpty()) {
             return "redirect:/home";
         }
+
+        postCreateActivityErrorChecking(bindingResult, form);
+
 
         if (bindingResult.hasErrors()) {
             System.out.println(bindingResult.getAllErrors());
@@ -144,7 +152,30 @@ public class CreateCompetitionController {
     }
 
     /**
+     * Performs various error checks for this form, on top of the Jakarta annotations in the form.
+     * @param bindingResult Any found errors are added to this
+     * @param form The form containing the data we're validating
+     */
+    private void postCreateActivityErrorChecking(
+            BindingResult bindingResult,
+            CreateAndEditCompetitionForm form) {
+
+        // The competition requires a team or a user to be selected
+        if (form.getTeams() == null || form.getTeams().isEmpty() && form.getPlayers() == null || form.getPlayers().isEmpty()) {
+            bindingResult.addError(new FieldError("CreateAndEditCompetitionForm", "competitors",
+                    CompetitionFormValidators.NO_COMPETITORS_MSG));
+        }
+
+       // All the grade attributes must be selected
+        if (form.getAge() == null || form.getSex() == null || form.getCompetitiveness() == null) {
+            bindingResult.addError(new FieldError("CreateAndEditCompetitionForm", "grade",
+                    CompetitionFormValidators.NO_GRADE_MSG));
+        }
+    }
+
+    /**
      * Prefills model with club fields
+     *
      * @param model model to be filled
      * @param competition  club to get info from
      */
@@ -228,4 +259,6 @@ public class CreateCompetitionController {
                 )).toList()
         );
     }
+
+
 }

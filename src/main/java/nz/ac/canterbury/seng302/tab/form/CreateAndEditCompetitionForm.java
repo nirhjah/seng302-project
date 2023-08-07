@@ -4,11 +4,9 @@ import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.validator.CompetitionValidators;
 import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -22,9 +20,6 @@ public class CreateAndEditCompetitionForm {
     @TeamFormValidators.teamSportValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG)
     private String sport;
 
-    @CompetitionValidators.competitionGradeValidator
-    private Grade grade;
-
     @LocationValidators.addressValidator
     private String addressLine1;
 
@@ -37,10 +32,10 @@ public class CreateAndEditCompetitionForm {
     @LocationValidators.suburbValidator
     private String suburb;
 
-    @LocationValidators.countryCitySuburbValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG)
+    @LocationValidators.suburbValidator
     private String country;
 
-    @LocationValidators.countryCitySuburbValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG)
+    @LocationValidators.suburbValidator
     private String city;
 
     private Grade.Age age;
@@ -52,7 +47,6 @@ public class CreateAndEditCompetitionForm {
     private Set<Team> teams;
 
     private Set<User> players;
-
 
     public String getName() {
         return name;
@@ -78,7 +72,6 @@ public class CreateAndEditCompetitionForm {
         this.age = age;
     }
 
-    // Getter and Setter for sex
     public Grade.Sex getSex() {
         return sex;
     }
@@ -87,7 +80,6 @@ public class CreateAndEditCompetitionForm {
         this.sex = sex;
     }
 
-    // Getter and Setter for competitiveness
     public Grade.Competitiveness getCompetitiveness() {
         return competitiveness;
     }
@@ -95,7 +87,6 @@ public class CreateAndEditCompetitionForm {
     public void setCompetitiveness(Grade.Competitiveness competitiveness) {
         this.competitiveness = competitiveness;
     }
-
 
     public String getAddressLine1() { return addressLine1; }
 

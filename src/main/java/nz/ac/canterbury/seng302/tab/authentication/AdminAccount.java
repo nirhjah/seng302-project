@@ -3,8 +3,12 @@ package nz.ac.canterbury.seng302.tab.authentication;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.entity.Sport;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.core.GrantedAuthority;
@@ -70,10 +74,11 @@ public class AdminAccount implements CommandLineRunner {
         Location location = new Location("adminAddr1", "adminAddr2", "adminSuburb", "adminCity", "4dm1n", "adminLand");
         User admin = new User("Admin", "Admin", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 adminEmail, passwordEncoder.encode(adminPassword), location);
-        
+        Sport sport = new Sport("soccer");
+        admin.setFavoriteSports(List.of(sport));
         // You need to confirm your email before you can log in.
         admin.confirmEmail();
-        
+
         return admin;
     }
 

@@ -1,5 +1,5 @@
 .competition-form .wrapper {
-    width: 500px;
+    width: 590px;
     bottom: 20px;
 }
 
@@ -44,7 +44,7 @@
 }
 
 .submit-button {
-    margin: 30px 0 20px !important;
+    margin: 30px 0 30px !important;
 }
 
 .submit-button button {
@@ -224,13 +224,13 @@ input + .slider + .slider-text::after {
     color: white;
     background-color: #0b2239;
     font-size: 16px;
-    padding: 5px 10px;
+    padding: 7px 10px;
     border-radius: 5px 0 0 0;
     cursor: default;
+    border-bottom: 1px #0b2239 solid;
 }
 
-.users-teams-ul {
-    padding: 5px 7px 5px 7px;
+.users-teams-ul, .competitors-ul {
     flex: 1;
     overflow: auto;
     list-style: none;
@@ -242,7 +242,7 @@ input + .slider + .slider-text::after {
     flex-direction: column;
     border: 3px #0b2239 solid;
     border-radius: 0 5px 5px 0;
-    width: 60%;
+    width: 51%;
 }
 
 .competitors-ul {
@@ -253,7 +253,7 @@ input + .slider + .slider-text::after {
 }
 
 .competitors-box {
-    width: 40%;
+    width: 50%;
     border-bottom: 3px #0b2239 solid;
     border-bottom-left-radius: 5px;
     overflow: hidden;
@@ -297,7 +297,6 @@ input + .slider + .slider-text::after {
 
 .users-teams-li, .competitors-li {
     transition: 0.25s;
-    border-radius: 10px;
     box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.2);
     padding: 5px;
     display: flex;
@@ -308,7 +307,7 @@ input + .slider + .slider-text::after {
 .li-user-team-image {
     width: 25px;
     height: 25px;
-    margin-right: 2px;
+    margin-right: 4px;
     border-radius: 50%;
     background-color: white;
 }
