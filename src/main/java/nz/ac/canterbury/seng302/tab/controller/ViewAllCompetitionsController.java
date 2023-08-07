@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class ViewAllCompetitionsController {
     );
 
     @GetMapping("/view-all-competitions")
-    public String viewAllCompetitions(Model model, HttpServletRequest request, int page) {
+    public String viewAllCompetitions( @RequestParam(name = "page", defaultValue = "1") int page,Model model, HttpServletRequest request) {
         model.addAttribute("httpServletRequest",request);
         PageRequest pageable = PageRequest.of(page - 1, PAGE_SIZE, SORT);
 
@@ -43,7 +44,7 @@ public class ViewAllCompetitionsController {
         List<Competition> competitions = competitionService.findAll();
         model.addAttribute("listOfCompetitions", competitions);
 
-        return "viewAllCompetition";
+        return "viewAllCompetitions";
     }
 
 }

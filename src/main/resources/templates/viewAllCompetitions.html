@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
-    <link th:href="@{/css/view-all.css}" rel="stylesheet">
+<!--    <link th:href="@{/css/view-all.css}" rel="stylesheet">-->
+
+    <link th:href="@{/css/view-all-competitions.css}" rel="stylesheet">
     <title>View All Users</title>
 </head>
 
@@ -16,29 +18,43 @@
 
 <form th:action="@{view-competition}" method="get">
 
-    <div class="search-bar">
-        <input class="search-input" type="text" placeholder="Search name" th:name="currentSearch"
-               th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">
-        <button class="search-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
-    </div>
+<!--    <div class="search-bar">-->
+<!--        <input class="search-input" type="text" placeholder="Search name" th:name="currentSearch"-->
+<!--               th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">-->
+<!--        <button class="search-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>-->
+<!--    </div>-->
 
-    <div class="filter-bar">
-        <div th:if="${not #lists.isEmpty(listOfCompetitions)}" style="display: flex">
-            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>
-            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfCities}, 'Filter by city', 'cities')}" th:if="${not #lists.isEmpty(listOfCities)}"></div>
-            <button class="apply-filters-button" type="submit">Apply Filters</button>
-        </div>
-    </div>
+<!--    <div class="filter-bar">-->
+<!--        <div th:if="${not #lists.isEmpty(listOfCompetitions)}" style="display: flex">-->
+<!--            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>-->
+<!--            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfCities}, 'Filter by city', 'cities')}" th:if="${not #lists.isEmpty(listOfCities)}"></div>-->
+<!--            <button class="apply-filters-button" type="submit">Apply Filters</button>-->
+<!--        </div>-->
+<!--    </div>-->
 
 </form>
 
 
-<div th:if="${listOfCompetitions.empty}" class="emptySearchResults">
-    No upcoming competitions!
+<!--<div th:if="${listOfCompetitions.empty}" class="emptySearchResults">-->
+<!--</div>-->
+
+<div class="page-wrapper">
+    <form th:action="@{view-competition}" method="get">
+        <div class="page-filter"></div>
+    </form>
+    <div class="card-wrapper">
+        <div class="card-item"  th:each="competition : ${listOfCompetitions}">
+            <div class="card-content">
+                <div class="competition-name"> Name</div>
+                <div class="competition-grade">fsdf</div>
+                <div class="competition-grade">sdf</div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
-<div th:insert="~{fragments/pagination.html :: pagination(pageName='view-competitions')}"></div>
+<!--<div th:insert="~{fragments/pagination.html :: pagination(pageName='view-competitions')}"></div>-->
 <footer>
     <p>
         Image by <a
