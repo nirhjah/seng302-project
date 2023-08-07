@@ -49,7 +49,7 @@ public class GenerateRandomUsers {
      * <p><strong>NOTE:</strong> This user isn't saved to the repository, you need to do that.</p>
      * @return A randomly generated user.
      */
-    public User createRandomUser() throws IOException {
+    public User createRandomUser() {
 
         String firstName = RANDOM_NAMES[random.nextInt(0, RANDOM_NAMES.length)];
         

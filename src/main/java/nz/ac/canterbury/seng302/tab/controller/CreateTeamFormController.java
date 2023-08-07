@@ -49,7 +49,7 @@ public class CreateTeamFormController {
     /**
      * Triggers the generation of a new token for a team
      * @param teamID the id of the team.
-     * @return
+     * @return redirect back to team profile page
      */
     @PostMapping("/generateTeamToken")
     public String generateTeamToken(@RequestParam(name = "teamID") Long teamID) {
@@ -73,7 +73,7 @@ public class CreateTeamFormController {
      *      *              with values being set to relevant parameters provided
      * @param request the HTTP request
      * @param createAndEditTeamForm the form that's being displayed
-     * @return
+     * @return create team form page
      * @throws MalformedURLException
      */
     @GetMapping("/createTeam")
@@ -113,7 +113,6 @@ public class CreateTeamFormController {
         if (user.isPresent()) {
             model.addAttribute("firstName", user.get().getFirstName());
             model.addAttribute("lastName", user.get().getLastName());
-            model.addAttribute("displayPicture", user.get().getPictureString());
             model.addAttribute("navTeams", teamService.getTeamList());
             return CREATE_TEAM_TEMPLATE;
         } else {
@@ -163,9 +162,7 @@ public class CreateTeamFormController {
         }
         model.addAttribute("firstName", user.get().getFirstName());
         model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
-
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -175,7 +172,6 @@ public class CreateTeamFormController {
             logger.info("bad request");
             return CREATE_TEAM_TEMPLATE;
         }
-
 
         // trim all extra whitespace and trailing/leading whitespace
         String trimmedName = teamService.clipExtraWhitespace(name);

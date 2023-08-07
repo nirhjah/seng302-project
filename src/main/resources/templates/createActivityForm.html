@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <link th:href="@{/css/create-activity.css}" rel="stylesheet"/>
@@ -75,7 +75,7 @@
                     <div class="reserves-header active">Reserves</div>
                     <ul class="reserves-ul active">
                         <li th:each="player : ${players}" class="reserves-li">
-                            <img class="li-player-image" th:src="${'data:image/jpeg;base64,' + player.getPictureString}" alt="My Profile"/>
+                            <img th:src="@{/user-profile-picture/{id}(id = ${player.userId})}"  class="li-player-image"  alt="Player Image">
                             <span class="li-player-name" th:text="${player.getFirstName}"></span>
                             <button class="switch" type="button"></button>
                             <input type="hidden" class="playerId" th:value="${player.getUserId}">

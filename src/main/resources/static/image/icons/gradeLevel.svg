@@ -1,0 +1,27 @@
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="100" height="100" fill="white"/>
+<path d="M52 30C52 24.4772 56.4772 20 62 20H80C85.5228 20 90 24.4772 90 30V52H52V30Z" fill="black"/>
+<rect x="61" y="46" width="20" height="44" fill="black"/>
+<path d="M52.5 31C52.5 25.201 57.201 20.5 63 20.5H79C84.799 20.5 89.5 25.201 89.5 31V51.5H52.5V31Z" stroke="black"/>
+<rect x="61" y="46" width="20" height="44" fill="black"/>
+<rect x="59" y="33" width="2" height="21" rx="1" fill="white"/>
+<rect x="81" y="33" width="2" height="21" rx="1" fill="white"/>
+<rect x="70" y="58" width="2" height="37" rx="1" fill="white"/>
+<path d="M83 52H90V54.5C90 56.433 88.433 58 86.5 58C84.567 58 83 56.433 83 54.5V52Z" fill="black"/>
+<path d="M52 52H59V54.5C59 56.433 57.433 58 55.5 58C53.567 58 52 56.433 52 54.5V52Z" fill="black"/>
+<path d="M72 90H81V91.5C81 93.9853 78.9853 96 76.5 96C74.0147 96 72 93.9853 72 91.5V90Z" fill="black"/>
+<path d="M61 90H70V91.5C70 93.9853 67.9853 96 65.5 96C63.0147 96 61 93.9853 61 91.5V90Z" fill="black"/>
+<path d="M14 51C14 46.5817 17.5817 43 22 43H40C44.4183 43 48 46.5817 48 51V65H14V51Z" fill="black"/>
+<rect x="22" y="61" width="18" height="31" fill="black"/>
+<path d="M14.5 54C14.5 48.201 19.201 43.5 25 43.5H37C42.799 43.5 47.5 48.201 47.5 54V64.5H14.5V54Z" stroke="black"/>
+<rect x="22" y="61" width="18" height="31" fill="black"/>
+<rect x="20" y="52" width="2" height="15" rx="1" fill="white"/>
+<rect x="40" y="52" width="2" height="15" rx="1" fill="white"/>
+<rect x="30" y="69" width="2" height="26" rx="1" fill="white"/>
+<path d="M42 65H48V66C48 67.6569 46.6569 69 45 69C43.3431 69 42 67.6569 42 66V65Z" fill="black"/>
+<path d="M14 65H20V66C20 67.6569 18.6569 69 17 69C15.3431 69 14 67.6569 14 66V65Z" fill="black"/>
+<path d="M32 92H40C40 94.2091 38.2091 96 36 96C33.7909 96 32 94.2091 32 92Z" fill="black"/>
+<path d="M22 92H30C30 94.2091 28.2091 96 26 96C23.7909 96 22 94.2091 22 92Z" fill="black"/>
+<circle cx="71" cy="12" r="7" fill="black"/>
+<circle cx="31" cy="36" r="6" fill="black"/>
+</svg>
