@@ -95,7 +95,7 @@ public class ProfileFormControllerTest {
         mockMvc.perform(get("/profile")
                 .param("teamID", TEAM_ID.toString()))
             .andExpect(status().isOk())
-            .andExpect(view().name("profileForm"))
+            .andExpect(view().name("teamProfile"))
             .andExpect(MockMvcResultMatchers.model().attribute("teamID", TEAM_ID))
             .andExpect(MockMvcResultMatchers.model().attribute("displayName", TEAM_NAME))
             .andExpect(MockMvcResultMatchers.model().attribute("displaySport", TEAM_SPORT))
