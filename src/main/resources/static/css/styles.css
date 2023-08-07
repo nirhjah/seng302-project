@@ -599,7 +599,7 @@ ul.autocomplete-result{
     margin-top: 15px;
 }
 
-.checkbox-box label {
+.checkbox-box label, .competition-message {
     font-family: "Noto Sans", sans-serif;
     left: 1px;
     font-size: 1em;

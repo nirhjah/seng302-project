@@ -164,6 +164,8 @@
 <!--                <div th:each="err : ${#fields.errors('competitors')}" th:text="${err}" class="error-message"></div>-->
             </div>
 
+            <label class="competitor-message">* Must select at least one competitor</label>
+
             <div class="submit-button">
                 <a th:href="@{home}">
                     <button type="submit" th:text="${competitionID != null ? 'Save' : 'Create'}"></button>
