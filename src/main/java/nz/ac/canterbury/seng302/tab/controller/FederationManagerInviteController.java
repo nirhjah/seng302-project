@@ -1,0 +1,115 @@
+package nz.ac.canterbury.seng302.tab.controller;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.authentication.AutoLogin;
+import nz.ac.canterbury.seng302.tab.entity.FederationManagerInvite;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import nz.ac.canterbury.seng302.tab.service.FederationService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Optional;
+
+@Controller
+public class FederationManagerInviteController {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    FederationService federationService;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    private AutoLogin autoLogin;
+
+    FederationManagerInvite fedInvite;
+
+    /**
+     * TEMPORARY ENDPOINT
+     * @param request http request
+     * @return redirect to view user page
+     */
+    @GetMapping("/invite")
+    public String fedToUser(HttpServletRequest request) {
+        Optional<User> opt = userService.getCurrentUser();
+        if (opt.isPresent()) {
+            User u = opt.get();
+            userService.inviteToFederationManger(u, request);
+            logger.info("sent");
+        }
+        return "redirect:user-info/self";
+    }
+
+    /**
+     * Controller handles processing the token and takes user to the page where they can accept or decline the invitation.
+     * @param token the users unique token for becoming a federation manager
+     * @param request the HTTPRrequest
+     * @param model storage structure
+     * @param redirectAttributes used to display messages on redirection
+     * @return a form to accept or decline the invitation to become a federation manager
+     * iff the user accessing this page matches the invite's user otherwise it returns the view self page
+     */
+    @GetMapping("/federationManager")
+    public String fedManagerInvitation(@RequestParam("token") String token, HttpServletRequest request, Model model,
+                                       RedirectAttributes redirectAttributes) {
+        model.addAttribute("httpServletRequest", request);
+        fedInvite = federationService.getByToken(token);
+        Optional<User> optU =  userService.getCurrentUser();
+        if (fedInvite != null && optU.isPresent() && fedInvite.getUser().equals(optU.get())) {
+            return "federationManagerInvite";
+        } else {
+            redirectAttributes.addFlashAttribute("fedmanTokenMessage", "Error: Invalid Federation Manager Token");
+            return "redirect:user-info/self";
+        }
+    }
+
+    /**
+     * Handles the decision that a user makes about the invitation for the invitation to become a federation manager
+     * @param decision string that's either "true" or "false"
+     * @param request the HTTP request
+     * @param redirectAttributes redirect attributes to display success and error messages depending on outcome
+     * @return a redirect to view user page for themselves
+     */
+    @PostMapping("/federationManager")
+    public String federationManager(@RequestParam(name = "decision") String decision, HttpServletRequest request,
+                                    RedirectAttributes redirectAttributes) {
+        boolean choice = Boolean.parseBoolean(decision);
+        if (choice) {
+            Optional<User> optUser = userService.getCurrentUser();
+            if (optUser.isEmpty()) {
+                redirectAttributes.addFlashAttribute("fedmanTokenMessage", "Error: Unable to process invite response, please try again.");
+                return "redirect:user-info/self";
+            }
+            User user = optUser.get();
+            user.grantAuthority(AuthorityType.FEDERATION_MANAGER);
+            userRepository.save(user);
+            try {
+                request.logout();
+            } catch (ServletException e) {
+                throw new RuntimeException(e);
+            }
+            autoLogin.forceLogin(user.getEmail(), user.getAuthorities(), request);
+            redirectAttributes.addFlashAttribute("fedmanTokenMessage", "Success! You are now a federation manager");
+            logger.info("FED MANAGER NOW");
+        } else {
+            logger.info("NOT FED MANAGER");
+        }
+        federationService.delete(fedInvite);
+        return "redirect:user-info/self";
+    }
+}

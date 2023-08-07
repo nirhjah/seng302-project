@@ -10,6 +10,7 @@ import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.OppositionGoal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
+import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.form.CreateEventForm;
@@ -90,6 +91,13 @@ public class ViewActivityController {
         };
 
         model.addAttribute("possibleFactTypes", possibleFactTypesForActivity);
+        model.addAttribute("noFact", FactType.NONE);
+        model.addAttribute("activityOutcomes", List.of(ActivityOutcome.Win, ActivityOutcome.Loss, ActivityOutcome.Draw));
+        model.addAttribute("noOutcome", ActivityOutcome.None);
+        model.addAttribute("selectedOutcome", activity.getOutcome() != null ? activity.getOutcome() : ActivityOutcome.None);
+
+        model.addAttribute("overallScoreTeamSaved", activity.getActivityTeamScore());
+        model.addAttribute("overallScoreOpponentSaved", activity.getOtherTeamScore());
         model.addAttribute("noFacts", possibleFactTypesForActivity.size() == 0);
     }
 
@@ -143,15 +151,34 @@ public class ViewActivityController {
 
         model.addAttribute("activityFacts", activityFacts);
 
-
         // Rambling that's required for navBar.html
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("possibleFactTypes", FactType.values());
         model.addAttribute("defaultFactType", FactType.FACT);
 
+        model.addAttribute("outcomeString", outcomeString(activity));
         populateOther(model, activity);
 
         return "viewActivity";
+    }
+
+    /**
+     * Determines string to display depending on who won/loss/if it was draw
+     * @param activity activity to get outcome of
+     * @return string with display of outcome
+     */
+    private String outcomeString(Activity activity) {
+        String outcomeString = "";
+        if (activity.getOutcome() == ActivityOutcome.Win) {
+            outcomeString = "Winner: Team A";
+        }
+        if (activity.getOutcome() == ActivityOutcome.Loss) {
+            outcomeString = "Winner: Team B";
+        }
+        if (activity.getOutcome() == ActivityOutcome.Draw) {
+            outcomeString = "Draw";
+        }
+        return outcomeString;
     }
 
     /**
@@ -161,6 +188,7 @@ public class ViewActivityController {
      * @param description description of event
      * @param overallScoreTeam  overall score for team
      * @param overallScoreOpponent overall score for opponent
+     * @param activityOutcome outcome of activity (win loss or draw) for team
      * @param time                 time of event
      * @param scorerId             user ID of scorer
      * @param subOffId             user ID of sub off
@@ -180,6 +208,7 @@ public class ViewActivityController {
             @RequestParam(name = "description", defaultValue = "") String description,
             @RequestParam(name = "overallScoreTeam", defaultValue = "") String overallScoreTeam,
             @RequestParam(name = "overallScoreOpponent", defaultValue = "") String overallScoreOpponent,
+            @RequestParam(name = "activityOutcomes", defaultValue = "NONE") ActivityOutcome activityOutcome,
             @RequestParam(name = "time") String time,
             @RequestParam(name = "goalValue", defaultValue = "1") int goalValue,
             @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
@@ -226,6 +255,8 @@ public class ViewActivityController {
                 bindingResult.addError(new FieldError(createEventFormString, "description", "Fact type events require a description"));
         }
 
+
+
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             redirectAttributes.addFlashAttribute("scoreInvalid", "Leave Modal Open");
@@ -233,9 +264,14 @@ public class ViewActivityController {
             return viewActivityRedirectUrl;
         }
 
+        List<Fact> factList = new ArrayList<>();
+
+
         switch (factType) {
             case FACT:
                 fact = new Fact(description, time, activity);
+                factList.add(fact);
+
                 break;
 
             case GOAL:
@@ -247,8 +283,8 @@ public class ViewActivityController {
 
                 User scorer = potentialScorer.get();
                 fact = new Goal(description, time, activity, scorer, goalValue);
+                factList.add(fact);
 
-                activityService.updateTeamsScore(activity, goalValue);
 
                 break;
 
@@ -269,12 +305,18 @@ public class ViewActivityController {
                 User playerOn = potentialSubOn.get();
 
                 fact = new Substitution(description, time, activity, playerOff, playerOn);
+                factList.add(fact);
+
                 break;
 
             case OPPOSITION_GOAL:
-                activityService.updateAwayTeamsScore(activity, goalValue);
 
                 fact = new OppositionGoal(description, time, activity, goalValue);
+                factList.add(fact);
+
+                break;
+
+            case NONE:
                 break;
 
             default:
@@ -282,10 +324,19 @@ public class ViewActivityController {
                 return viewActivityRedirectUrl;
         }
 
-        List<Fact> factList = new ArrayList<>();
-        factList.add(fact);
+        if (activityOutcome != ActivityOutcome.None) {
+            activity.setActivityOutcome(activityOutcome);
+        }
+
+
+
+        if (overallScoreTeam != null && overallScoreOpponent != null) {
+            activity.setOtherTeamScore(overallScoreOpponent);
+            activity.setActivityTeamScore(overallScoreTeam);
+        }
+
         activity.addFactList(factList);
-        activity = activityService.updateOrAddActivity(activity);
+        activityService.updateOrAddActivity(activity);
 
         return viewActivityRedirectUrl;
     }

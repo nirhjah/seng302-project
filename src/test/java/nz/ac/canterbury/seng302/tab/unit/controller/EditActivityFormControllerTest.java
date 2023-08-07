@@ -101,12 +101,12 @@ public class EditActivityFormControllerTest {
         testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD, testLocation);
         team = spy(new Team("test", "Hockey", testLocation, testUser));
         Mockito.doReturn(TEAM_ID).when(team).getTeamId();
-        LocalDateTime start =   LocalDateTime.of(2023, 6,1,6,30);
-        LocalDateTime end = LocalDateTime.of(2023, 7,1,8,30);
+        LocalDateTime start = LocalDateTime.of(2023, 6, 1, 6, 30);
+        LocalDateTime end = LocalDateTime.of(2023, 7, 1, 8, 30);
         Location activityLocation = new Location(ACTVITY_ADDRESS_LINE_1, ACTVITY_ADDRESS_LINE_2, ACTVITY_SUBURB,
                 ACTVITY_CITY, ACTVITY_POSTCODE, ACTVITY_COUNTRY);
 
-        activity= new Activity(ActivityType.Game,team, "testing the description",start,end,testUser, activityLocation);
+        activity = new Activity(ActivityType.Game, team, "testing the description", start, end, testUser, activityLocation);
         when(mockActivityService.getAllTeamActivities(team)).thenReturn(List.of(activity));
         // mockActivityService.updateOrAddActivity(activity);
 
@@ -118,7 +118,7 @@ public class EditActivityFormControllerTest {
     @Test
     public void testDisplayingEditActivityReturns200() throws Exception {
         when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
-        mockMvc.perform(get("/createActivity?edit={id}",activity.getId()))
+        mockMvc.perform(get("/createActivity?edit={id}", activity.getId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("createActivityForm"));
     }
@@ -730,7 +730,7 @@ public class EditActivityFormControllerTest {
                         .param("suburb", "A Place"))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("./view-activity?activityID=" + ACT_ID));
-        
+
         Mockito.verify(localActivity).setFormation(formation);
 
     }
@@ -786,20 +786,20 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(activity);
 
         mockMvc.perform(post("/createActivity")
-                        .param("actId", String.valueOf(ACT_ID))
-                        .param("activityType", String.valueOf(ActivityType.Game))
-                        .param("formation", String.valueOf(FORMATION_ID))
-                        .param("team", "-1")
-                        .param("description", "testing edit description")
-                        .param("startDateTime", "2023-07-01T10:00:00")
-                        .param("endDateTime", "2023-08-01T12:00:00")
-                        .param("addressLine1", "1 Change address")
-                        .param("addressLine2", "B")
-                        .param("city", "Greymouth")
-                        .param("country", "New Zealand")
-                        .param("postcode", "8888")
-                        .param("suburb", "A Place"));
-        
+                .param("actId", String.valueOf(ACT_ID))
+                .param("activityType", String.valueOf(ActivityType.Game))
+                .param("formation", String.valueOf(FORMATION_ID))
+                .param("team", "-1")
+                .param("description", "testing edit description")
+                .param("startDateTime", "2023-07-01T10:00:00")
+                .param("endDateTime", "2023-08-01T12:00:00")
+                .param("addressLine1", "1 Change address")
+                .param("addressLine2", "B")
+                .param("city", "Greymouth")
+                .param("country", "New Zealand")
+                .param("postcode", "8888")
+                .param("suburb", "A Place"));
+
         Mockito.verify(activity).setFormation(null);
     }
 
@@ -818,20 +818,20 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(thisActivity);
 
         mockMvc.perform(post("/createActivity")
-                        .param("actId", String.valueOf(ACT_ID))
-                        .param("activityType", activityType)
-                        .param("formation", String.valueOf(FORMATION_ID))
-                        .param("team", String.valueOf(TEAM_ID))
-                        .param("description", "testing edit description")
-                        .param("startDateTime", "2023-07-01T10:00:00")
-                        .param("endDateTime", "2023-08-01T12:00:00")
-                        .param("addressLine1", "1 Change address")
-                        .param("addressLine2", "B")
-                        .param("city", "Greymouth")
-                        .param("country", "New Zealand")
-                        .param("postcode", "8888")
-                        .param("suburb", "A Place"));
-        
+                .param("actId", String.valueOf(ACT_ID))
+                .param("activityType", activityType)
+                .param("formation", String.valueOf(FORMATION_ID))
+                .param("team", String.valueOf(TEAM_ID))
+                .param("description", "testing edit description")
+                .param("startDateTime", "2023-07-01T10:00:00")
+                .param("endDateTime", "2023-08-01T12:00:00")
+                .param("addressLine1", "1 Change address")
+                .param("addressLine2", "B")
+                .param("city", "Greymouth")
+                .param("country", "New Zealand")
+                .param("postcode", "8888")
+                .param("suburb", "A Place"));
+
         Mockito.verify(thisActivity).setFormation(null);
     }
 
@@ -873,12 +873,12 @@ public class EditActivityFormControllerTest {
         Mockito.doReturn(1L).when(formation1).getFormationId();
         Mockito.doReturn(2L).when(formation2).getFormationId();
         when(mockFormationService.getTeamsFormations(TEAM_ID)).thenReturn(
-            List.of(formation1, formation2)
+                List.of(formation1, formation2)
         );
 
         String EXPECTED_JSON = """
-            {"1":"1-2-3","2":"2-3-4"}
-        """;
+                    {"1":"1-2-3","2":"2-3-4"}
+                """;
 
         mockMvc.perform(get("/createActivity/get_team_formation")
                         .param("teamId", String.valueOf(TEAM_ID)))
@@ -893,14 +893,14 @@ public class EditActivityFormControllerTest {
         Mockito.doReturn(1L).when(formation1).getFormationId();
         Mockito.doReturn(2L).when(formation2).getFormationId();
         when(mockFormationService.getTeamsFormations(TEAM_ID)).thenReturn(
-            List.of(formation1, formation2)
+                List.of(formation1, formation2)
         );
 
         team.setCoach(testUser);
 
         String EXPECTED_JSON = """
-            {"1":"1-2-3","2":"2-3-4"}
-        """;
+                    {"1":"1-2-3","2":"2-3-4"}
+                """;
 
         mockMvc.perform(get("/createActivity/get_team_formation")
                         .param("teamId", String.valueOf(TEAM_ID)))
