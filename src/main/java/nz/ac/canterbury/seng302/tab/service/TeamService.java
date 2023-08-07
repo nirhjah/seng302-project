@@ -293,4 +293,8 @@ public class TeamService {
     public List<String> getAllTeamSports() {
         return teamRepository.getAllDistinctSports();
     }
+
+    public List<String> getAllTeamCities() {
+        return teamRepository.getAllDistinctCities();
+    }
 }

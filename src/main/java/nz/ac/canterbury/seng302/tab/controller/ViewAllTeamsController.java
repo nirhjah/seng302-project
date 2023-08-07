@@ -71,11 +71,7 @@ public class ViewAllTeamsController {
 
     private void populateFilterDropdowns(Model model) {
         List<String> sports = teamService.getAllTeamSports();
-        List<String> cities = locationService.getLocationList()
-                .stream()
-                .map(Location::getCity)
-                .distinct()
-                .toList();
+        List<String> cities = teamService.getAllTeamCities();
 
         model.addAttribute("sports", sports);
         model.addAttribute("cities", cities);
