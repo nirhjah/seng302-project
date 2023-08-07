@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -30,6 +32,14 @@ public abstract class Competition {
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
+
+    // Time is represented in milliseconds, since the unix epoch of 1970
+    @Column(nullable = false)
+    private long startDate;
+
+    // Time is represented in milliseconds, since the unix epoch of 1970
+    @Column(nullable = false)
+    private long endDate;
 
     protected Competition() {}
     
