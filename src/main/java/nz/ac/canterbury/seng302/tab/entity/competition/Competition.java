@@ -90,6 +90,17 @@ public abstract class Competition {
         return this.name;
     }
 
+    /**
+     * Sets the date in UTC format. (Milliseconds since unix epoch.)
+     * You can get the milliseconds by doing Date.getTime()
+     * @param startTime The start time of the competition
+     * @param endTime The end time for the competition
+     */
+    public void setDate(long startDate, long endDate) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

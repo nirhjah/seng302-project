@@ -23,18 +23,28 @@ public interface CompetitionRepository extends CrudRepository<Competition, Long>
     List<Competition> findAll();
 
 
+
     @Query("""
             SELECT DISTINCT c
             FROM Competition c
-              WHERE (:#{#filteredSports.size}=0 OR c.sport in (:filteredSports))
-              AND (:name is null OR
-                lower(:name) like lower(concat('%', c.name, '%'))
-              OR (lower(c.name) like lower(concat('%', :name, '%'))))""")
-    Page<Competition> findPastCompetitionsBySports(Pageable pageable,
-                                                    @Param("filteredSports") List<String> filteredSports,
-                                                    @Param("date") long time,
-                                                    @Param("name") String name);
+              WHERE ((:#{#filteredSports.size}=0 OR c.sport in (:filteredSports))
+              AND (:now < c.startDate))
+              """)
+    Page<Competition> findUpcomingCompetitionsBySports(Pageable pageable,
+                                                   @Param("filteredSports") List<String> filteredSports,
+                                                   @Param("date") long time,
+                                                   @Param("name") String name);
 
+    @Query("""
+            SELECT DISTINCT c
+            FROM Competition c
+              WHERE ((:#{#filteredSports.size}=0 OR c.sport in (:filteredSports))
+              AND (:now > c.endDate))
+              """)
+    Page<Competition> findPastCompetitionsBySports(Pageable pageable,
+                                                   @Param("filteredSports") List<String> filteredSports,
+                                                   @Param("date") long time,
+                                                   @Param("name") String name);
 
     @Query("""
             SELECT DISTINCT c
@@ -43,10 +53,7 @@ public interface CompetitionRepository extends CrudRepository<Competition, Long>
               AND (:now <= c.endDate) AND (:now >= c.startDate))
               """)
     Page<Competition> findCurrentCompetitionsBySports(Pageable pageable,
-                                                          @Param("filteredSports") List<String> filteredSports,
-                                                          @Param("now") long now);
+                                                      @Param("filteredSports") List<String> filteredSports,
+                                                      @Param("now") long now);
 
-
-    @Override
-    Optional<Competition> findById(Long aLong);
 }
