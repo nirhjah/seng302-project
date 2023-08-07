@@ -45,7 +45,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -319,7 +318,7 @@ public class ViewMyActivitiesIntegrationTests {
         Team teamMock = mock(Team.class);
         when(teamMock.isManager(user)).thenReturn(false);
         MvcResult result = mockMvc.perform(get("/profile").param("teamID", selectedTeam.getTeamId().toString()))
-                .andExpect(status().isOk()).andExpect(view().name("profileForm"))
+                .andExpect(status().isOk()).andExpect(view().name("viewTeamForm"))
                 .andReturn();
         Assertions.assertEquals(selectedTeam.getTeamId(), result.getModelAndView().getModel().get("teamID"));
     }

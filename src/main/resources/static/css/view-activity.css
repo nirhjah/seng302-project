@@ -316,6 +316,7 @@
     border-color:#415a77;
     margin-bottom:15px;
     font-size:17px;
+    margin-top: 1%;
 }
 
 .overall-score-input {
@@ -327,7 +328,7 @@
 hr.rounded {
     border: 6px solid #bbb;
     border-radius: 5px;
-    margin-bottom: 5%;
+    margin-bottom: 2%;
     margin-top: 2%;
 }
 
@@ -335,17 +336,39 @@ hr.rounded {
     float: right;
 }
 
+.view-activity-form {
+    height: 58vh;
+    overflow-y: auto
+}
+
 @media (max-width: 700px) {
     .modal-content.event {
-        transform: translate(-69%, 75%) !important;
+        transform: translate(-69%, 100%) !important;
+        overflow-y: unset;
     }
 
     .overall-scores-box {
         padding-bottom: 15% !important;
     }
 
+    .view-activity-form {
+        height: unset;
+        overflow-y: unset;
+    }
+
     .opponentScoreDiv {
         float: none !important;
         margin-left: 50% !important;
     }
+}
+
+.helpText {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 80%;
+    color:#888888;
+    display: block;
+}
+
+.submit-button {
+    margin: unset;
 }

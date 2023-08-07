@@ -51,12 +51,15 @@ public class UserService {
 
     private final TaskScheduler taskScheduler;
 
+    private final EmailService emailService;
+
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.taskScheduler = taskScheduler;
+        this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -175,7 +178,7 @@ public class UserService {
     /**
      * Find a user by their email. Most likely used for signing in.
      * 
-     * @param email
+     * @param email the email that's being checked to see if it already has an associated account
      * @return An optional object, containing either the user if they exist,
      *         otherwise it's empty.
      */
@@ -304,7 +307,6 @@ public class UserService {
      * Updates the user's password then creates and sends email informing the user that their password has been updated.
      * @param user the user whose password was updated
      * @param password the password to update the user with
-     * @return the outcome of the email sending
      */
     public void updatePassword(User user, String password) throws MessagingException {
         user.setPassword(passwordEncoder.encode(password));
@@ -339,7 +341,7 @@ public class UserService {
 
     /**
      * gets all users who arent federation managers
-     * @param pageable 
+     * @param pageable
      * @return all the users who arent federation managers
     */
     public Page<User> getAllUsersNotFedMans(Pageable pageable) {
@@ -347,8 +349,8 @@ public class UserService {
     }
 
     /**
-     * searches all users who arent a fedman by name 
-     * 
+     * searches all users who arent a fedman by name
+     *
      * @param pageable
      * @param name a string to search the name by
      * @return
@@ -356,10 +358,10 @@ public class UserService {
     public Page<User> getAllUsersNotFedMansByName(Pageable pageable, String name) {
         return userRepository.findUsersThatArentFedMansByName(pageable, name);
     }
-    
+
     /**
-     * searches all users who arent a fedman by email 
-     * 
+     * searches all users who arent a fedman by email
+     *
      * @param pageable
      * @param email a string to search the name by
      * @return
