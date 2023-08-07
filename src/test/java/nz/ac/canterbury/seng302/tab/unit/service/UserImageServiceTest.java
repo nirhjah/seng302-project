@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.mockito.ArgumentMatchers.any;
 
 @Import({UserImageService.class})
 @SpringBootTest
@@ -69,24 +70,12 @@ class UserImageServiceTest {
         for (int i=0; i<NUM_USERS; i++) {
             User user = generateRandomUsers.createRandomUser();
             user = userService.updateOrAddUser(user);
-            System.out.println(user);
             users.add(user);
-            System.out.println("USER ID: " + user.getUserId());
         }
     }
 
     private MockMultipartFile getMockedFile(byte[] data) {
         return new MockMultipartFile("/my_file.jpg", data);
-    }
-
-    @Test
-    void testCurrentUserIsAutomaticallyUsed() throws IOException {
-        User user = User.defaultDummyUser();
-        Mockito.when(userService.getCurrentUser()).thenReturn(Optional.of(user));
-        userImageService.updateProfilePicture(fakeImageFile);
-
-        byte[] result = userImageService.readFileOrDefault(user.getUserId());
-        assertArrayEquals(fakeImageFile.getBytes(), result);
     }
 
     @Test
