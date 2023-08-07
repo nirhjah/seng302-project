@@ -7,6 +7,8 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.UserService;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @Import({UserService.class, ThreadPoolTaskSchedulerConfig.class, UserPasswordEncoder.class})
@@ -39,15 +42,13 @@ public class UserServiceTest {
     Location location3 = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
 
 
-    // @BeforeEach
-    // public void beforeAll() throws IOException {
-    //     userRepository.deleteAll();
-    // }
-    //
-  //
+    @BeforeEach
+    public void beforeAll() {
+        userRepository.deleteAll();
+    }
+    
     @Test
     void testGettingAllUsersWhoArentAFedMan() throws Exception {
-        userRepository.deleteAll();
         User user = new User("Hee", "Account", "tab@gmail.com", "password", location);
         userRepository.save(user);
         User user2 = new User("test", "test", "test@gmail.com", "1", location);
@@ -62,5 +63,40 @@ public class UserServiceTest {
         assertFalse(actualUsers.stream().anyMatch(u -> u == user));
     }
 
+    @Test 
+    void testSearchingUsersWhoArentFedManByName() throws Exception {
+        User user = new User("Hee", "Account", "tab@gmail.com", "password", location);
+        userRepository.save(user);
+        User user2 = new User("test", "test", "test@gmail.com", "password", location);
+        userRepository.save(user2);
+        User user3 = new User("Heeman", "test", "test2@gmail.com", "password", location);
+        userRepository.save(user3);
+        
+        user3.grantAuthority(AuthorityType.FEDERATION_MANAGER);
+        userService.updateOrAddUser(user3);
+        
+        Pageable pageable = PageRequest.of(0, 10);
+        List<User> actualUsers = userService.getAllUsersNotFedMansByName(pageable, "Hee").getContent();
+        
+        assertTrue(actualUsers.stream().anyMatch(u -> u == user));
+    }
+
+    @Test
+    void testSearchingUsersWhoArentFedManByEmail() throws Exception {
+        User user = new User("Hee", "Account", "tab@gmail.com", "password", location);
+        userRepository.save(user);
+        User user2 = new User("test", "test", "test@gmail.com", "password", location);
+        userRepository.save(user2);
+        User user3 = new User("Heeman", "test", "test2@gmail.com", "password", location);
+        userRepository.save(user3);
+        
+        user3.grantAuthority(AuthorityType.FEDERATION_MANAGER);
+        userService.updateOrAddUser(user3);
+        
+        Pageable pageable = PageRequest.of(0, 10);
+        List<User> actualUsers = userService.getAllUsersNotFedMansByEmail(pageable, "tab@gmail.com").getContent();
+        
+        assertTrue(actualUsers.stream().anyMatch(u -> u == user));
+    }
 
 }
