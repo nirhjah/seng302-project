@@ -25,17 +25,18 @@ import java.util.Optional;
 public class FederationManagerInviteController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    FederationService federationService;
+    private final FederationService federationService;
 
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
     private AutoLogin autoLogin;
+
+    @Autowired
+    public FederationManagerInviteController(UserService userService, FederationService federationService) {
+        this.userService = userService;
+        this.federationService = federationService;
+    }
 
     FederationManagerInvite fedInvite;
 
@@ -81,7 +82,7 @@ public class FederationManagerInviteController {
             }
             User user = optUser.get();
             user.grantAuthority(AuthorityType.FEDERATION_MANAGER);
-            userRepository.save(user);
+            userService.updateOrAddUser(user);
             try {
                 request.logout();
             } catch (ServletException e) {

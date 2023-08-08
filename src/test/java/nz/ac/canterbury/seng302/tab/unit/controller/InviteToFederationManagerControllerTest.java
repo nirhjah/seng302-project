@@ -49,7 +49,7 @@ public class InviteToFederationManagerControllerTest {
     @WithMockUser()
     void testGettingPage() throws Exception {
         when(userService.getPaginatedUsers(any())).thenReturn(Page.empty());
-        mockMvc.perform(get("/inviteToFederationManager")).andExpect(status().isOk()).andExpect(view().name("inviteToFederationManager"));
+        mockMvc.perform(get("/inviteToFederationManager")).andExpect(status().isOk()).andExpect(view().name("inviteFederationManager"));
     }
 
     @Test

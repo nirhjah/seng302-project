@@ -13,9 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,16 +21,21 @@ import java.util.Optional;
 @Controller
 public class InviteToFederationManagerController {
 
-    @Autowired
-    private UserService userService;
+    private final  UserService userService;
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
 
-    @Autowired
-    private FederationService federationService;
+    private final FederationService federationService;
 
     int PAGE_SIZE = 10;
+
+    @Autowired
+    public InviteToFederationManagerController(UserService userService, EmailService emailService, FederationService
+                                                federationService) {
+        this.emailService = emailService;
+        this.userService = userService;
+        this.federationService = federationService;
+    }
 
     @GetMapping("/inviteToFederationManager")
     public String inviteToFederationManager(
@@ -46,7 +49,7 @@ public class InviteToFederationManagerController {
         model.addAttribute("page", page);
         model.addAttribute("totalPages", userPage.getTotalPages());
         model.addAttribute("httpServletRequest", request);
-        return "inviteToFederationManager";
+        return "inviteFederationManager";
     }
 
     /**
@@ -64,13 +67,8 @@ public class InviteToFederationManagerController {
         if (nameQuery == null) {
             nameQuery = "";
         }
-        var pageable = PageRequest.of(page - 1, PAGE_SIZE, UserService.SORT_BY_LAST_AND_FIRST_NAME);
-
-        if (nameQuery.isEmpty()) {
-            return userService.getAllUsersNotFedMans(pageable);
-        } else {
-            return userService.getAllUsersNotFedMansByNameAndEmail(pageable, nameQuery);
-        }
+        var pageable = PageRequest.of(page - 1, PAGE_SIZE);
+        return userService.getAllUsersNotFedMansByNameAndEmail(pageable, nameQuery);
     }
 
     /**
