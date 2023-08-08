@@ -71,7 +71,7 @@ public class ViewAllCompetitionsController {
         return switch (timing) {
             case PAST -> competitionService.findPastCompetitionsBySports(pageable, sports);
             case CURRENT -> competitionService.findCurrentCompetitionsBySports(pageable, sports);
-            default -> competitionService.findAllCompetitionsBySports(pageable);
+            default -> competitionService.findAllCompetitionsBySports(pageable, sports);
         };
     }
 

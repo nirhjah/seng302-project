@@ -131,9 +131,15 @@ public class CompetitionService {
     /**
      * Finds all competitions given a list of sports.
      * @param pageable The pageable detailing information about the query
+     * @param filteredSports The list of sports to filter by
      * @return The Page of competitions
      */
-    public Page<Competition> findAllCompetitionsBySports(Pageable pageable) {
-        return competitionRepository.findAllCompetitionsBySports(pageable);
+    public Page<Competition> findAllCompetitionsBySports(Pageable pageable, List<String> filteredSports) {
+        if (filteredSports == null) {
+            filteredSports = EMPTY_LIST;
+        } else {
+            filteredSports = filteredSports.stream().map(String::toLowerCase).toList();
+        }
+        return competitionRepository.findAllCompetitionsBySports(pageable, filteredSports);
     }
 }
