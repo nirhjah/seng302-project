@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ public class EmailService {
      * NOTE: This ctor SHOULD NOT be called outside of tests!!!!
      * @param javaMailSender this sends the emails
      */
+    @Autowired
     public EmailService(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
         this.javaMailSender = javaMailSender;

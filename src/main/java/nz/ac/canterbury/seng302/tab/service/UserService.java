@@ -4,8 +4,8 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
 import nz.ac.canterbury.seng302.tab.authentication.TokenVerification;
-import nz.ac.canterbury.seng302.tab.entity.*;
-import nz.ac.canterbury.seng302.tab.mail.EmailService;
+import nz.ac.canterbury.seng302.tab.entity.Sport;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +24,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -45,20 +47,13 @@ public class UserService {
 
     private final TaskScheduler taskScheduler;
 
-    private final EmailService emailService;
-
     private final PasswordEncoder passwordEncoder;
 
-    private final FederationService federationService;
-
     @Autowired
-    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService,
-                       PasswordEncoder passwordEncoder, FederationService federationService) {
+    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.taskScheduler = taskScheduler;
-        this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
-        this.federationService = federationService;
     }
 
     public static final Sort SORT_BY_LAST_AND_FIRST_NAME = Sort.by(
@@ -281,8 +276,6 @@ public class UserService {
     public void updatePassword(User user, String password) throws MessagingException {
         user.setPassword(passwordEncoder.encode(password));
         updateOrAddUser(user);
-
-        emailService.updatePassword(user);
     }
 
 
@@ -297,8 +290,6 @@ public class UserService {
         updateOrAddUser(user);
 
         taskScheduler.schedule(new TokenVerification(user, this), Instant.now().plus(Duration.ofHours(1)));
-
-        emailService.resetPasswordEmail(user, request);
     }
 
 
@@ -313,19 +304,39 @@ public class UserService {
         updateOrAddUser(user);
     }
 
+    /**
+     * gets all users who arent federation managers
+     * @param pageable
+     * @return all the users who arent federation managers
+    */
+    public Page<User> getAllUsersNotFedMans(Pageable pageable) {
+        return userRepository.findUsersThatArentFedMans(pageable);
+    }
 
     /**
-     * Creates the invitation to be a federation manager
-     * Including storing the invite and sending the email
-     * @param user the user whose invited to become a federation manager
-     */
-    public void inviteToFederationManger(User user, HttpServletRequest request) {
-        FederationManagerInvite fedManInvite = new FederationManagerInvite(user);
-        federationService.updateOrSave(fedManInvite);
-        try {
-            emailService.federationManagerInvite(user, request, fedManInvite.getToken());
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
+     * searches all users who arent a fedman by name
+     *
+     * @param pageable
+     * @param name a string to search the name by
+     * @return
+    */
+    public Page<User> getAllUsersNotFedMansByName(Pageable pageable, String name) {
+        return userRepository.findUsersThatArentFedMansByName(pageable, name);
     }
+
+    /**
+     * searches all users who arent a fedman by email
+     *
+     * @param pageable
+     * @param email a string to search the name by
+     * @return
+    */
+    public Page<User> getAllUsersNotFedMansByEmail(Pageable pageable, String email) {
+        return userRepository.findUsersThatArentFedMansByEmail(pageable, email);
+    }
+
+    public Page<User> getAllUsersNotFedMansByNameAndEmail(Pageable pageable, String search) {
+        return userRepository.findUsersThatArentFedMansByNameOrEmail(pageable, search);
+    }
+    
 }

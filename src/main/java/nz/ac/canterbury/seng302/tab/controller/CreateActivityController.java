@@ -4,11 +4,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import nz.ac.canterbury.seng302.tab.api.response.FormationInfo;
+import nz.ac.canterbury.seng302.tab.api.response.PlayerFormationInfo;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.service.*;
@@ -48,17 +49,21 @@ public class CreateActivityController {
 
     private LineUpService lineUpService;
 
+    private LineUpPositionService lineUpPositionService;
+
+    LineUp activityLineUp;
     private Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
     private static final String TEMPLATE_NAME = "createActivityForm";
 
     public CreateActivityController(TeamService teamService, UserService userService,
-            ActivityService activityService, FormationService formationService, LineUpService lineUpService) {
+            ActivityService activityService, FormationService formationService, LineUpService lineUpService, LineUpPositionService lineUpPositionService) {
         this.teamService = teamService;
         this.userService = userService;
         this.activityService = activityService;
         this.formationService = formationService;
         this.lineUpService = lineUpService;
+        this.lineUpPositionService = lineUpPositionService;
     }
 
     /**
@@ -92,7 +97,6 @@ public class CreateActivityController {
             model.addAttribute("teamFormations", formationService.getTeamsFormations(activity.getTeam().getTeamId()));
             model.addAttribute("selectedFormation", activity.getFormation().orElse(null));
             model.addAttribute("players", activity.getTeam().getTeamMembers());
-            logger.info(activity.getTeam().getTeamMembers().toString());
         }
         model.addAttribute("actId", activity.getId());
         model.addAttribute("startDateTime",formattedStartDateTime);
@@ -206,6 +210,7 @@ public class CreateActivityController {
     /**
      * Handles creating or adding activities
      * @param actId the id of activity if editing, otherwise null
+     * @param playerAndPositions list of player (user ids) and positions (on the lineup)
      * @param createActivityForm form used to create activity
      * @param bindingResult holds the results of validating the form
      * @param model model mapping of information
@@ -217,6 +222,7 @@ public class CreateActivityController {
     @PostMapping("/createActivity")
     public String createActivity(
             @RequestParam(name = "actId", defaultValue = "-1") Long actId,
+            @RequestParam(name = "playerAndPositions", required = false) String playerAndPositions,
             @Validated CreateActivityForm createActivityForm,
             BindingResult bindingResult,
             HttpServletRequest httpServletRequest,
@@ -277,12 +283,28 @@ public class CreateActivityController {
             activity.setFormation(formation.get());
         }
 
+
         activity = activityService.updateOrAddActivity(activity);
 
         if (activity.getFormation().isPresent()) {
-            LineUp activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
+            activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
             lineUpService.updateOrAddLineUp(activityLineUp);
         }
+
+        if (playerAndPositions != null && !playerAndPositions.isEmpty()) {
+            List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
+            saveLineUp(positionsAndPlayers, bindingResult);
+            if (bindingResult.hasErrors() && actId != -1) { //only throw error if we are on edit act page
+                httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                if (activity != null) {
+                    model.addAttribute("actId", actId);
+                    fillModelWithActivity(model, activity);
+                }
+                return TEMPLATE_NAME;
+            }
+
+        }
+
 
         return String.format("redirect:./view-activity?activityID=%s", activity.getId());
     }
@@ -292,7 +314,7 @@ public class CreateActivityController {
      * @return A json object of type <code>{formationId: "formationString", ...}</code>
      */
     @GetMapping(path = "/createActivity/get_team_formation", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<Long, String>> getTeamFormation(@RequestParam("teamId") long teamId) {
+    public ResponseEntity<List<FormationInfo>> getTeamFormation(@RequestParam("teamId") long teamId) {
         logger.info("GET /createActivity/get_team_formation");
         // CHECK: Are we logged in?
         Optional<User> oCurrentUser = userService.getCurrentUser();
@@ -311,11 +333,64 @@ public class CreateActivityController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        // Return a JSON object of (id -> string)
-        Map<Long, String> formations = formationService.getTeamsFormations(teamId).stream()
-                    .collect(Collectors.toMap(Formation::getFormationId, Formation::getFormation));
+        List<FormationInfo> formations = createFormationsJSON(team);
 
         return ResponseEntity.ok().body(formations);
+    }
+
+
+    /**
+     * Creates JSON object of type FormationInfo with formation details
+     * @param team team for formation
+     * @return JSON object of type FormationInfo
+     */
+    private List<FormationInfo> createFormationsJSON(Team team) {
+        return formationService.getTeamsFormations(team.getTeamId()).stream()
+                .map(formation -> {
+                    List<PlayerFormationInfo> players = team.getTeamMembers().stream()
+                            .map(player -> new PlayerFormationInfo(player.getUserId(), player.getFirstName()))
+                            .toList();
+
+                    return new FormationInfo(
+                            formation.getFormationId(),
+                            formation.getFormation(),
+                            formation.getCustomPlayerPositions(),
+                            formation.isCustom(),
+                            players
+                    );
+                })
+                .toList();
+
+    }
+
+    /**
+     * Takes list of positions and players fron the selected line up then creates LineUpPositions for each and saves them with the lineup
+     * @param positionsAndPlayers list of positions and players
+     */
+    private void saveLineUp(List<String> positionsAndPlayers, BindingResult bindingResult){
+        boolean error = false;
+        for (String positionPlayer : positionsAndPlayers) {
+            if (Objects.equals(Arrays.stream(positionPlayer.split(" ")).toList().get(1), "X")) {
+                logger.info("No player was set at the position " + Arrays.stream(positionPlayer.split(" ")).toList().get(0));
+                error = true;
+
+            } else {
+                logger.info("Valid player so creating line up position object now..");
+                if (userService.findUserById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).isPresent()) {
+                    User player = userService.findUserById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).get();
+                    int position = Integer.parseInt(Arrays.stream(positionPlayer.split(" ")).toList().get(0));
+                    LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, player, position);
+                    lineUpPositionService.addLineUpPosition(lineUpPosition);
+                }
+            }
+        }
+
+        if (error) {
+            bindingResult.addError(new FieldError("createActivityForm", "lineup", "The line-up is not complete"));
+
+        }
+
+
     }
 
 }
