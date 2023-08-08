@@ -5,17 +5,18 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import nz.ac.canterbury.seng302.tab.controller.CreateActivityController;
+import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.controller.CreateCompetitionController;
+import nz.ac.canterbury.seng302.tab.controller.FederationManagerInviteController;
+import nz.ac.canterbury.seng302.tab.controller.InviteToFederationManagerController;
 import nz.ac.canterbury.seng302.tab.entity.*;
-import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
-import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
 import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
 import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
-import nz.ac.canterbury.seng302.tab.repository.*;
+import nz.ac.canterbury.seng302.tab.repository.CompetitionRepository;
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.*;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,22 +24,23 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.domain.Page;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.io.IOException;
 import java.util.*;
 
-import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc(addFilters = false)
@@ -57,6 +59,12 @@ public class U39CreateViewUpdateCompetition {
     @SpyBean
     private TeamService teamService;
 
+    @SpyBean
+    private EmailService emailService;
+
+    @SpyBean
+    private FederationService federationService;
+
     private UserRepository userRepository;
 
     private TeamRepository teamRepository;
@@ -66,6 +74,8 @@ public class U39CreateViewUpdateCompetition {
     private MockMvc mockMvc;
 
     private User user;
+
+    private User generalUser;
 
     private Team team;
 
@@ -93,12 +103,18 @@ public class U39CreateViewUpdateCompetition {
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
         EmailService emailService = applicationContext.getBean(EmailService.class);
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
+        federationService = Mockito.spy(applicationContext.getBean(FederationService.class));
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
         competitionService = Mockito.spy(new CompetitionService(competitionRepository));
+        InviteToFederationManagerController inviteController = new InviteToFederationManagerController(
+                userService, emailService, federationService
+        );
 
-        // create mockMvc manually with spied services
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateCompetitionController(competitionService, userService, teamService)).build();
+        CreateCompetitionController createCompetitionController = new CreateCompetitionController(competitionService, userService, teamService);
+
+        FederationManagerInviteController fedManInvite = new FederationManagerInviteController(userService, federationService);
+        this.mockMvc = MockMvcBuilders.standaloneSetup(inviteController, fedManInvite, createCompetitionController).build();
     }
 
     @Before("@create_view_update_competition")
@@ -118,6 +134,12 @@ public class U39CreateViewUpdateCompetition {
         teamRepository.save(team);
         competitionRepository.save(competition);
 
+        Location loc = new Location("abcd", null, null, "chch", null, "nz");
+        generalUser = new User("Test", "User", "test1@example.com", "insecure", loc);
+        generalUser = userService.updateOrAddUser(generalUser);
+        generalUser = userService.findUserById(generalUser.getUserId()).orElseThrow();
+        Page<User> page = Page.empty();
+        Mockito.doReturn(page).when(userService).getPaginatedUsers(any());
 
         Authentication authentication = mock(Authentication.class);
         SecurityContext securityContext = mock(SecurityContext.class);
@@ -365,4 +387,91 @@ public class U39CreateViewUpdateCompetition {
         verify(competitionService, times(0)).updateOrAddCompetition(any());
     }
 
+    @Given("I am a federation manager")
+    public void givenIAmAFederationManager() {
+        user.grantAuthority(AuthorityType.FEDERATION_MANAGER);
+        userRepository.save(user);
+        Assertions.assertTrue(user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_FEDERATION_MANAGER")));
+    }
+
+    @When("I click on the ‘Invite to Federation Managers’ UI element,")
+    public void clickOnInviteToFederationsManagerUIElement() throws Exception {
+        mockMvc.perform(get("/inviteToFederationManager"))
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(view().name("inviteFederationManager"));
+    }
+
+    @Then("I’m taken to a page where I can see all users who aren’t federation managers.")
+    public void takenToPageToViewAllNonFedManUsers() throws Exception {
+        mockMvc.perform(get("/inviteToFederationManager"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("inviteFederationManager"))
+                .andExpect(model().attributeExists("listOfUsers"));
+    }
+
+    //Would be better as a end2end
+    @And("with each user's information there is a button to invite.")
+    public void inviteButtonExists() throws Exception {
+        mockMvc.perform(get("/inviteToFederationManager"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("inviteFederationManager"))
+                .andExpect(model().attributeExists("listOfUsers"));
+    }
+
+    @And("I’m on the “Invite to Federation Managers” page,")
+    public void iMOnTheInviteToFederationManagersPage() throws Exception {
+        mockMvc.perform(get("/inviteToFederationManager"))
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(view().name("inviteFederationManager"));
+    }
+
+
+    @When("I enter a string into the search bar,")
+    public void iEnterAStringIntoTheSearchBar() throws Exception {
+        mockMvc.perform(get("/inviteToFederationManager").param("currentSearch", "test"))
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(view().name("inviteFederationManager"));
+    }
+
+    @Then("only user profiles whose first name, last name or email matches that string are shown")
+    public void onlyUserProfilesWhoseFirstNameLastNameOrEmailMatchesThatStringAreShown() throws Exception {
+        mockMvc.perform(get("/inviteToFederationManager").param("currentSearch", "test"))
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(view().name("inviteFederationManager"))
+                .andExpect(model().attributeExists("listOfUsers"));
+    }
+
+
+    @Given("I am a general user of TAB, And I’ve been invited to become a federation manager \\(received the email)")
+    public void iAmAGeneralUserOfTABAndIVeBeenInvitedToBecomeAFederationManagerReceivedTheEmail() throws Exception {
+        Mockito.doNothing().when(emailService).federationManagerInvite(eq(generalUser), any(HttpServletRequest.class), any());
+        //Mockito.doReturn(Optional.of(user)).when(userService).getCurrentUser();
+        mockMvc.perform(post("/inviteToFederationManager")
+                        .param("userId", String.valueOf(generalUser.getUserId()))).andExpect(status().isFound())
+                .andExpect(view().name("redirect:/inviteToFederationManager"));
+        verify(emailService).federationManagerInvite(any(), any(), any());
+    }
+
+    @When("I click through the link in the email invitation to become a federation manager")
+    public void iClickThroughTheLinkInTheEmailInvitationToBecomeAFederationManager() throws Exception {
+        Optional<FederationManagerInvite> invite = federationService.findFederationManagerByUser(generalUser);
+        Mockito.doReturn(Optional.of(generalUser)).when(userService).getCurrentUser();
+        if (invite.isPresent()) {
+            String url = "/federationManager?token=" + invite.get().getToken();
+            mockMvc.perform(get(url)).andExpect(status().isFound()).andExpect(view().name("federationManagerInvite"));
+
+        }
+    }
+
+    @Then("I am present with a screen on the website offering me to become a federation manager")
+    public void iAmPresentWithAScreenOnTheWebsiteOfferingMeToBecomeAFederationManager() throws Exception {
+        Optional<FederationManagerInvite> invite = federationService.findFederationManagerByUser(generalUser);
+        Mockito.doReturn(Optional.of(generalUser)).when(userService).getCurrentUser();
+
+        if (invite.isPresent()) {
+            String url = "/federationManager?token=" + invite.get().getToken();
+            mockMvc.perform(get(url)).andExpect(status().isFound()).andExpect(view().name("federationManagerInvite"));
+
+        }
+    }
 }

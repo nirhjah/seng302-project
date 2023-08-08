@@ -25,24 +25,25 @@ import java.util.Optional;
 public class FederationManagerInviteController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    FederationService federationService;
+    private final FederationService federationService;
 
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
     private AutoLogin autoLogin;
+
+    @Autowired
+    public FederationManagerInviteController(UserService userService, FederationService federationService) {
+        this.userService = userService;
+        this.federationService = federationService;
+    }
 
     FederationManagerInvite fedInvite;
 
     /**
      * Controller handles processing the token and takes user to the page where they can accept or decline the invitation.
      * @param token the users unique token for becoming a federation manager
-     * @param request the HTTPRrequest
+     * @param request the HTTPrequest
      * @param model storage structure
      * @param redirectAttributes used to display messages on redirection
      * @return a form to accept or decline the invitation to become a federation manager
@@ -81,7 +82,7 @@ public class FederationManagerInviteController {
             }
             User user = optUser.get();
             user.grantAuthority(AuthorityType.FEDERATION_MANAGER);
-            userRepository.save(user);
+            userService.updateOrAddUser(user);
             try {
                 request.logout();
             } catch (ServletException e) {
