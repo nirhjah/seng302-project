@@ -386,7 +386,7 @@ public class CreateActivityController {
         }
 
         if (error) {
-            bindingResult.addError(new FieldError("createActivityForm", "lineup", "Please fill all positions with players"));
+            bindingResult.addError(new FieldError("createActivityForm", "lineup", "The line-up is not complete"));
 
         }
 
