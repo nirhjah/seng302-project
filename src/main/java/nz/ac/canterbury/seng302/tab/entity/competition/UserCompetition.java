@@ -18,14 +18,19 @@ public class UserCompetition extends Competition {
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<User> players = new HashSet<>();
 
-    public UserCompetition(String name, Grade grade, String sport, Location location) {
-        super(name, grade, sport, location);
-    }
-    
     public UserCompetition() {}
 
     public UserCompetition(String name, Grade grade, String sport) {
-      super(name, grade, sport);
+        super(name, grade, sport);
+    }
+
+    public UserCompetition(String name, Grade grade, String sport, Location location) {
+        super(name, grade, sport, location);
+    }
+
+    public UserCompetition(String name, Grade grade, String sport, Location location, User player) {
+        super(name, grade, sport, location);
+        addPlayer(player);
     }
 
     public UserCompetition(String name, Grade grade, String sport, Location location, Set<User> players) {

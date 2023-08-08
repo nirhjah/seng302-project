@@ -19,21 +19,25 @@ public class TeamCompetition extends Competition {
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Team> teams = new HashSet<>();
 
+    public TeamCompetition() {}
+
+    public TeamCompetition(String name, Grade grade, String sport) {
+        super(name, grade, sport);
+    }
+
+    public TeamCompetition(String name, Grade grade, String sport, Location location) {
+        super(name, grade, sport, location);
+    }
+
+    public TeamCompetition(String name, Grade grade, String sport, Location location, Team team) {
+        super(name, grade, sport, location);
+        this.teams.add(team);
+    }
+
     public TeamCompetition(String name, Grade grade, String sport, Location location, Set<Team> teams) {
       super(name, grade, sport, location);
       this.teams = teams;
     }
-  
-    public TeamCompetition(String name, Grade grade, String sport, Location location, Team team) {
-      super(name, grade, sport, location);
-      this.teams.add(team);
-    }
-
-    public TeamCompetition(String name, Grade grade, String sport) {
-      super(name, grade, sport);
-    }
-    
-    public TeamCompetition() {}
 
     /**
      * Checks whether or not we can add a team to a competition.
