@@ -37,6 +37,14 @@ public class InviteToFederationManagerController {
         this.federationService = federationService;
     }
 
+    /**
+     * Returns the page that allows federation managers to invite general users to become federation managers
+     * @param page pagination number
+     * @param currentSearch string to match first and last name as well as email
+     * @param model structure for passing data to HTML
+     * @param request httprequest
+     * @return inviteToFederationManager page
+     */
     @GetMapping("/inviteToFederationManager")
     public String inviteToFederationManager(
             @RequestParam(name = "page", defaultValue = "1") int page,
