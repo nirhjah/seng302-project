@@ -135,7 +135,7 @@ Upd        <h1>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</h
                     <input type="checkbox" id="checkbox" th:checked="${not #lists.isEmpty(users)}">
                     <span class="slider"></span>
                     <span class="slider-text"></span>
-                    <input type="hidden" name="teamsOrUsers" id="teamsOrUsers" th:value="${not #lists.isEmpty(users) ? 'users' : 'teams'}">
+                    <input type="hidden" name="usersOrTeams" id="usersOrTeams" th:value="${not #lists.isEmpty(users) ? 'users' : 'teams'}">
                 </label>
             </div>
 
@@ -226,7 +226,8 @@ Upd        <h1>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</h
     }
 
     const typeCheckbox = document.querySelector(".switch input");
-    const hiddenInput = document.getElementById("")
+    const hiddenInput = document.getElementById('usersOrTeams');
+
 
     typeCheckbox.addEventListener("change", function () {
         if (typeCheckbox.checked) {
@@ -271,8 +272,7 @@ Upd        <h1>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</h
 
     function generateUsersTeams(usersTeams) {
         console.log(usersTeams)
-        for (let i = 0; i < usersTeams.length; i++) {
-            const userTeam = usersTeams[i];
+        for (const userTeam of usersTeams) {
             if (!checkUserTeamPresent(usersTeams.userTeamID)) {
                 const userTeamLi = document.createElement("li");
                 userTeamLi.className = "users-teams-li";
@@ -340,7 +340,7 @@ Upd        <h1>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</h
                                 usersTeamsUl.insertBefore(userTeam, uT);
                                 break;
                             }
-                        } if (i === (usersTeamsUl.childElementCount - 1)) {
+                        } else if (i === (usersTeamsUl.childElementCount - 1)) {
                             usersTeamsUl.append(userTeam);
                         }
                     }

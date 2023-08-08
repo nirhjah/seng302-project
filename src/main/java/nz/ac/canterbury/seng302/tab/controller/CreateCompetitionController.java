@@ -145,7 +145,7 @@ public class CreateCompetitionController {
         } else {
             Competition competition;
 
-            if (!form.getTeams().isEmpty()) {
+            if (usersOrTeams.equals("teams")) {
                 Set<Team> teams = IDs.stream()
                         .map(teamService::getTeam)
                         .filter(Objects::nonNull)
