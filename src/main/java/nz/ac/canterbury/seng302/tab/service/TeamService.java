@@ -93,33 +93,6 @@ public class TeamService {
     }
 
     /**
-     * Method which updates the picture by taking the MultipartFile type and
-     * updating the picture
-     * stored in the team with id primary key.
-     *
-     * @param file MultipartFile file upload
-     * @param id   Team's unique id
-     */
-    public void updatePicture(MultipartFile file, long id) {
-        Team team = teamRepository.findById(id).get();
-
-        // Gets the original file name as a string for validation
-        String pictureString = StringUtils.cleanPath(file.getOriginalFilename());
-        if (pictureString.contains("..")) {
-            System.out.println("not a valid file");
-        }
-        try {
-            // Encodes the file to a byte array and then convert it to string, then set it
-            // as the pictureString variable.
-            team.setPictureString(Base64.getEncoder().encodeToString(file.getBytes()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // Saved the updated picture string in the database.
-        teamRepository.save(team);
-    }
-
-    /**
      * Method that finds paginated teams by city <strong>AND</strong> sports, using
      * a list of both to filter by selected by the user
      *
@@ -292,5 +265,9 @@ public class TeamService {
             return null;
         }
         return team.getTeamClub().getClubId();
+    }
+
+    public Optional<Team> findTeamById(long id) {
+        return teamRepository.findById(id);
     }
 }

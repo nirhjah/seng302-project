@@ -205,5 +205,47 @@
 
 
 
+.last5 li {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 5%;
+    margin-left: 5%;
+    margin-right: 5%;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.last5 li:hover {
+    cursor: pointer;
+    transform: scaleX(1.03) scaleY(1.03);
+    box-shadow: 0 2px 3px 4px rgba(0, 0, 0, 0.2);
+}
+
+.last5 img {
+    width: 50px;
+    height: 50px;
+}
+
+.last5 h3 {
+    color: #1B263B;
+    font-size: 25px;
+    font-weight: 600;
+    text-decoration-thickness: 2px;
+    text-align: left;
+    margin-bottom: 10px;
+}
 
 
+.last5 h4 {
+    top: 40px;
+    right: 28%;
+    text-align: left;
+    font-size: 14px;
+}
+
+.last5 li .r {
+    display: flex;
+    align-items: center;
+}

@@ -14,9 +14,7 @@
 <div class="view-club-form">
     <div class="wrapper">
         <div class ="logo">
-            <img th:if="${club.hasCustomLogo}" th:src="'data:image/png;base64,' + ${clubLogo}" />
-            <img th:unless="${club.hasCustomLogo}" th:src="'data:image/svg+xml;base64,' + ${clubLogo}" />
-
+            <img th:src="@{/club-logo/{id}(id = ${club.getClubId()})}">
         </div>
         <div class="club-info">
             <h1 class="club-header">Club Profile</h1>

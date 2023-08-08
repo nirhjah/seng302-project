@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ public class EmailService {
      * NOTE: This ctor SHOULD NOT be called outside of tests!!!!
      * @param javaMailSender this sends the emails
      */
+    @Autowired
     public EmailService(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
         this.javaMailSender = javaMailSender;
@@ -64,7 +66,7 @@ public class EmailService {
     public void updatePassword(User user) throws MessagingException {
         EmailDetails email = new EmailDetails(user.getEmail(), null,
             EmailDetails.UPDATE_PASSWORD_HEADER, "mail/updatePasswordConfirmationEmail.html");
-        
+
         Map<String, Object> model = Map.of(
             "name", user.getFirstName()
         );
@@ -82,7 +84,7 @@ public class EmailService {
         String tokenVerificationLink = getBaseUrl(request) + "/reset-password?token=" + user.getToken();
         EmailDetails email = new EmailDetails(user.getEmail(), null,
             EmailDetails.RESET_PASSWORD_HEADER, "mail/resetPasswordEmail.html");
-        
+
         Map<String, Object> model = Map.of(
             "name", user.getFirstName(),
             "linkUrl", tokenVerificationLink
@@ -107,7 +109,7 @@ public class EmailService {
                 "linkUrl", tokenVerificationLink
         );
         email.setProperties(model);
-        
+
         sendHtmlMessage(email);
     }
 
@@ -116,8 +118,8 @@ public class EmailService {
      * @param user the receiver of the email
      * @param request the HTTPRequest, so the correct link will be sent
      */
-    public void federationManagerInvite(User user, HttpServletRequest request) throws MessagingException {
-        String tokenVerificationLink = getBaseUrl(request) + "/federationManager?token=" + user.getToken();
+    public void federationManagerInvite(User user, HttpServletRequest request, String token) throws MessagingException {
+        String tokenVerificationLink = getBaseUrl(request) + "/federationManager?token=" + token;
         EmailDetails email = new EmailDetails(user.getEmail(), null,
                 EmailDetails.FEDERATION_MANAGER_INVITE, "mail/federationManagerInvite.html");
 
@@ -126,7 +128,7 @@ public class EmailService {
                 "linkUrl", tokenVerificationLink
         );
         email.setProperties(model);
-        
+
         sendHtmlMessage(email);
     }
 

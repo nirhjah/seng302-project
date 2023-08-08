@@ -62,9 +62,9 @@ public class ResetPasswordIntegrationStepDefs {
         EmailService emailService = Mockito.spy(applicationContext.getBean(EmailService.class));
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
 
-        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
+        userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         doNothing().when(emailService).sendHtmlMessage(any());
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new LostPasswordController(userService), new ResetPasswordController(userService, passwordEncoder)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new LostPasswordController(userService, emailService), new ResetPasswordController(userService, passwordEncoder, emailService)).build();
 
         userRepository.deleteAll();
         Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");

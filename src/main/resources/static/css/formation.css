@@ -9,14 +9,13 @@
 }
 
 .player {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 35px;
     background-image: url('../image/icons/player.svg');
     background-repeat: no-repeat;
     background-size: cover;
     position: absolute;
     cursor: move;
-    transition: 0.2s ease-out;
 }
 
 .player.filled {
@@ -25,6 +24,7 @@
 
 .player.uneditable {
     cursor: unset;
+    transition: 0.2s ease-out;
 }
 
 .player.uneditable.unfilled:hover {
@@ -64,6 +64,7 @@
 
 .clear-position-button:hover {
     cursor: pointer;
+    transform: scale(1.1);
 }
 
 .player h3, .player img {

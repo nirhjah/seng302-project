@@ -1,6 +1,9 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
+import nz.ac.canterbury.seng302.tab.helper.interfaces.HasImage;
+import nz.ac.canterbury.seng302.tab.helper.interfaces.Identifiable;
+import nz.ac.canterbury.seng302.tab.helper.ImageType;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -12,7 +15,7 @@ import java.util.Base64;
  * Class for Club object which is annotated as a JPA entity.
  */
 @Entity(name = "Club")
-public class Club {
+public class Club implements Identifiable, HasImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "clubId")
@@ -26,13 +29,11 @@ public class Club {
     @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
 
-    @Column(columnDefinition = "MEDIUMBLOB")
-    private String clubLogo;
+    @Enumerated(value = EnumType.STRING)
+    private ImageType logoType;
 
     @ManyToOne
     private User manager;
-
-    private boolean hasCustomLogo;
 
     protected Club() {
     }
@@ -45,18 +46,20 @@ public class Club {
 
         Resource resource = new ClassPathResource("/static/image/icons/club-logo.svg");
         InputStream is = resource.getInputStream();
-        this.clubLogo = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
 
-    public Club(String name, Location location, String sport, User manager, String clubLogo) {
-        this.name = name;
-        this.location = location;
-        this.sport = sport;
-        this.manager = manager;
-        this.clubLogo=clubLogo;
+    public ImageType getImageType() {
+        return logoType;
+    }
+    public void setImageType(ImageType imageType) {
+        logoType = imageType;
     }
 
     public long getClubId() {
+        return clubId;
+    }
+
+    public long getId() {
         return clubId;
     }
 
@@ -84,14 +87,6 @@ public class Club {
         return user.getUserId() == getManager().getUserId();
     }
 
-    public void setClubLogo(String clubLogo) {
-        this.clubLogo = clubLogo;
-    }
-
-    public String getClubLogo(){
-        return this.clubLogo;
-    }
-
     public String getSport() {
         return sport;
     }
@@ -99,14 +94,4 @@ public class Club {
     public void setSport(String sport) {
         this.sport = sport;
     }
-
-    public boolean getHasCustomLogo(){
-        return this.hasCustomLogo;
-    }
-
-    public void setHasCustomLogo(boolean flag){
-        this.hasCustomLogo= flag;
-    }
-
-
 }
