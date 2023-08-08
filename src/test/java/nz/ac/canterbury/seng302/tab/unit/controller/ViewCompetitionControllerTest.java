@@ -118,7 +118,6 @@ public class ViewCompetitionControllerTest {
     @Test
     void testGettingViewCompetitionPageOfInvalidCompetition() throws Exception {
         mockMvc.perform(get("/view-competition?competitionID={id}",-1))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/home"));
+                .andExpect(status().isNotFound());
     }
 }
