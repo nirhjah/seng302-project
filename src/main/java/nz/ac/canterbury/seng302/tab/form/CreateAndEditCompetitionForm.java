@@ -7,6 +7,8 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -146,7 +148,7 @@ public class CreateAndEditCompetitionForm {
         return teams;
     }
 
-    public  Set<User> getPlayers() {
+    public Set<User> getPlayers() {
         return players;
     }
 
@@ -156,6 +158,16 @@ public class CreateAndEditCompetitionForm {
 
     public void setPlayers(Set<User> players) {
         this.players = players;
+    }
+
+    public Set<?> getCompetitors() {
+        if (teams != null) {
+            return teams;
+        } else if (players != null){
+            return players;
+        } else {
+            return new HashSet<>();
+        }
     }
 
 }

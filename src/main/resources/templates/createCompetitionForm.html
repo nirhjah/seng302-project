@@ -12,7 +12,7 @@
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 <div class="competition-form">
     <div class="header">
-Upd        <h1>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</h1>
+        <h1>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</h1>
     </div>
 
     <div class="wrapper">
@@ -25,52 +25,49 @@ Upd        <h1>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</h
             </div>
 
             <div class="input-box">
-                <input type="text" class="form-control" id="name" th:name="name" th:value="${name}"
+                <input type="text" class="form-control" id="name" th:name="name" th:value="*{name}"
                        data-cy="name" autofocus placeholder="">
                 <label for="name">Name <span class="required">*</span></label>
-<!--                <div th:each="err : ${#fields.errors('name')}" th:text="${err}" class="error-message"></div>-->
+                <div th:each="err : ${#fields.errors('name')}" th:text="${err}" class="error-message"></div>
             </div>
 
             <div class="input-box">
-                <input type="text" class="form-control" id="sport" th:name="sport" th:value="${sport}"
+                <input type="text" class="form-control" id="sport" th:name="sport" th:value="*{sport}"
                        data-cy="sport" autofocus placeholder=""
                        onchange=""
                        title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
                 <label for="sport">Sport <span class="required">*</span></label>
-<!--                <div th:each="err : ${#fields.errors('sport')}" th:text="${err}" class="error-message"></div>-->
+                <div th:each="err : ${#fields.errors('sport')}" th:text="${err}" class="error-message"></div>
             </div>
 
             <div class="select-box">
                 <label>Grade <span class="required">*</span></label>
                 <div class="grade-level-details">
                     <div>
-                        <select id="competitiveness" name="competitiveness">
+                        <select id="competitiveness" name="competitiveness" th:field="*{competitiveness}">
                             <option value="" disabled selected>Level</option>
                             <option th:each="competitivenessOption : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Competitiveness).values()}"
-                                    th:value="${competitivenessOption}" th:text="${competitivenessOption.description}"
-                                    th:selected="${competitivenessOption == level}">></option>
+                                    th:value="${competitivenessOption}" th:text="${competitivenessOption.description}"></option>
                         </select>
                     </div>
                     <div>
-                        <select id="sex" name="sex">
+                        <select id="sex" name="sex" th:field="*{sex}">
                             <option value="" disabled selected>Gender</option>
                             <option th:each="sexOption : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Sex).values()}"
                                     th:value="${sexOption}"
-                                    th:text="${sexOption.description}"
-                                    th:selected="${sexOption == gender}"></option>
+                                    th:text="${sexOption.description}"></option>
                         </select>
                     </div>
                     <div>
-                        <select id="age" name="age">
+                        <select id="age" name="age" th:field="*{age}">
                             <option value="" disabled selected>Age</option>
                             <option th:each="ageOption : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Age).values()}"
                                     th:value="${ageOption}"
-                                    th:text="${ageOption.description}"
-                                    th:selected="${ageOption == age}"></option>
+                                    th:text="${ageOption.description}"></option>
                         </select>
                     </div>
                 </div>
-<!--                <div th:each="err : ${#fields.errors('grade')}" th:text="${err}" class="error-message"></div>-->
+                <div th:each="err : ${#fields.errors('grade')}" th:text="${err}" class="error-message"></div>
             </div>
 
             <div class="create-header">
@@ -81,47 +78,47 @@ Upd        <h1>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</h
             <div class="input-boxes">
                 <div class="input-box">
                     <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
-                           data-cy="location" autofocus placeholder="" autocomplete="off" th:value="${addressLine1}"
+                           data-cy="location" autofocus placeholder="" autocomplete="off" th:value="*{addressLine1}"
                            title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
                     <label for="address-line-1">Address Line 1</label>
                     <div class="autocomplete-container" id="autocomplete-container"></div>
-<!--                    <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="error-message"></div>-->
+                    <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="error-message"></div>
                 </div>
 
 
                 <div class="input-box">
                     <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
-                           data-cy="location" autofocus placeholder="" th:value="${addressLine2}"
+                           data-cy="location" autofocus placeholder="" th:value="*{addressLine2}"
                            title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
                     <label for="address-line-2">Address Line 2</label>
-<!--                    <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message"></div>-->
+                    <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message"></div>
                 </div>
             </div>
             <div class="input-box">
                 <input type="text" class="form-control" id="suburb" th:name="suburb"
-                       data-cy="location" autofocus placeholder="" th:value="${suburb}">
+                       data-cy="location" autofocus placeholder="" th:value="*{suburb}">
                 <label for="suburb">Suburb</label>
-<!--                <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>-->
+                <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
             </div>
             <div class="input-box">
                 <input type="text" class="form-control" id="postcode" th:name="postcode"
-                       data-cy="location" autofocus placeholder="" th:value="${postcode}">
+                       data-cy="location" autofocus placeholder="" th:value="*{postcode}">
                 <label for="postcode">Postcode</span></label>
-<!--                <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>-->
+                <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
             </div>
 
             <div class="input-box">
                 <input type="text" class="form-control" id="city" th:name="city"
-                       data-cy="location" autofocus placeholder="" th:value="${city}">
+                       data-cy="location" autofocus placeholder="" th:value="*{city}">
                 <label for="city">City</label>
-<!--                <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>-->
+                <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
             </div>
 
             <div class="input-box">
                 <input type="text" class="form-control" id="country" th:name="country"
-                       data-cy="location" autofocus placeholder="" th:value="${country}">
+                       data-cy="location" autofocus placeholder="" th:value="*{country}">
                 <label for="country">Country</label>
-<!--                <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>-->
+                <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
             </div>
 
             <div class="create-header">
@@ -140,20 +137,21 @@ Upd        <h1>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</h
             </div>
 
             <div class="member-selection-box">
-                <div class="inactive-cover" th:classappend="${competitionID != null} ? 'active' : ''">
+                <div class="inactive-cover" th:classappend="${users != null || teams != null} ? '' : 'active'"
+                     th:styleappend="${users != null || teams != null} ? 'display: none;' : ''">
                     <h3>You must type in a sport before you may add competitors</h3>
                 </div>
                 <div class="competitors-box">
                     <div class="competitors-header">Competitors</div>
                     <ul class="competitors-ul">
-                        <li th:each="competitor : ${users}">
+                        <li th:each="competitor : ${users}" class="competitors-li" th:onclick="'userTeamChange(this)'">
                             <img th:src="'data:image/png;base64,' + ${competitor.pictureString}" alt="My Profile" class="li-user-team-image"/>
-                            <span class="li-user-team-name" th:value="${competitor.firstName + ' ' + competitor.lastName}"></span>
+                            <span class="li-user-team-name" th:text="${competitor.firstName + ' ' + competitor.lastName}"></span>
                             <input type="hidden" class="user-team-ID" name="userTeamID" th:value="${competitor.userId}">
                         </li>
-                        <li th:each="competitor : ${teams}">
+                        <li th:each="competitor : ${teams}" class="competitors-li" th:onclick="'userTeamChange(this)'">
                             <img th:src="'data:image/png;base64,' + ${competitor.pictureString}" alt="My Profile" class="li-user-team-image"/>
-                            <span class="li-user-team-name" th:value="${competitor.name}"></span>
+                            <span class="li-user-team-name" th:text="${competitor.name}"></span>
                             <input type="hidden" class="user-team-ID" name="userTeamID" th:value="${competitor.teamId}">
                         </li>
                     </ul>
@@ -166,10 +164,10 @@ Upd        <h1>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</h
                     </div>
                     <ul class="users-teams-ul"></ul>
                 </div>
-<!--                <div th:each="err : ${#fields.errors('competitors')}" th:text="${err}" class="error-message"></div>-->
             </div>
-
             <label class="competitor-message">* Must select at least one competitor</label>
+            <div th:each="err : ${#fields.errors('competitors')}" th:text="${err}" class="error-message"></div>
+
 
             <div class="submit-button">
                 <a th:href="@{home}">
@@ -191,9 +189,14 @@ Upd        <h1>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</h
 </body>
 <script>
 
-
     const sportsInput = document.getElementById("sport")
     const inactiveCover = document.querySelector(".inactive-cover")
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (sportsInput.value.trim() !== "") {
+            getCompetitors();
+        }
+    });
 
     sportsInput.addEventListener("change", () => {
         clearCompetitors();
@@ -273,7 +276,8 @@ Upd        <h1>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</h
     function generateUsersTeams(usersTeams) {
         console.log(usersTeams)
         for (const userTeam of usersTeams) {
-            if (!checkUserTeamPresent(usersTeams.userTeamID)) {
+            if (!checkUserTeamPresent(userTeam.userTeamID)) {
+                console.log("and here")
                 const userTeamLi = document.createElement("li");
                 userTeamLi.className = "users-teams-li";
                 usersTeamsUl.append(userTeamLi);
@@ -300,17 +304,16 @@ Upd        <h1>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</h
         }
     }
 
-
     const userTeamIDs = document.querySelectorAll(".competitors-li input")
 
     function checkUserTeamPresent(ID) {
-        console.log(userTeamIDs, ID)
+        let isPresent = false;
         userTeamIDs.forEach((userTeamID) => {
-            if (ID === userTeamID) {
-                return true
+            if (ID.toString() === userTeamID.value) {
+                isPresent = true;
             }
         });
-        return false;
+        return isPresent;
     }
 
     function userTeamChange(userTeam) {

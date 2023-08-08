@@ -72,7 +72,7 @@ public class CreateCompetitionController {
         prefillModel(model, request);
         if (competitionID != null) {
             Optional<Competition> optionalCompetition = competitionService.findCompetitionById(competitionID);
-            optionalCompetition.ifPresent(competition -> prefillModelWithCompetition(model, competition));
+            optionalCompetition.ifPresent(competition -> prefillFormWithCompetition(model, form, competition));
         }
         return "createCompetitionForm";
     }
@@ -94,7 +94,7 @@ public class CreateCompetitionController {
     public String createCompetition(
             @RequestParam(name = "competitionID", defaultValue = "-1") long competitionID,
             @RequestParam("usersOrTeams") String usersOrTeams,
-            @RequestParam("userTeamID") List<Long> IDs,
+            @RequestParam(name = "userTeamID", required = false) List<Long> IDs,
             @Validated CreateAndEditCompetitionForm form,
             BindingResult bindingResult,
             HttpServletResponse httpServletResponse,
@@ -113,6 +113,21 @@ public class CreateCompetitionController {
         if (bindingResult.hasErrors()) {
             System.out.println(bindingResult.getAllErrors());
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            if (IDs != null) {
+                if (usersOrTeams.equals("teams")) {
+                    Set<Team> teams = IDs.stream()
+                            .map(teamService::getTeam)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toSet());
+                    model.addAttribute("teams", teams);
+                } else {
+                    Set<User> users = IDs.stream()
+                            .map(userService::getUser)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toSet());
+                    model.addAttribute("users", users);
+                }
+            }
             return "createCompetitionForm";
         }
 
@@ -176,7 +191,7 @@ public class CreateCompetitionController {
             List<Long> IDs) {
 
         // The competition requires a team or a user to be selected
-        if (IDs.size()==0) {
+        if (IDs == null || IDs.size()==0) {
             bindingResult.addError(new FieldError("CreateAndEditCompetitionForm", "competitors",
                     CompetitionFormValidators.NO_COMPETITORS_MSG));
         }
@@ -189,34 +204,35 @@ public class CreateCompetitionController {
     }
 
     /**
-     * Prefills model with competition fields
+     * Prefills form with competition fields
      *
-     * @param model model to be filled
+     * @param model to be populated
+     * @param form form to be populated
      * @param competition  competition to get info from
      */
-    public void prefillModelWithCompetition(Model model, Competition competition) {
+    public void prefillFormWithCompetition(Model model, CreateAndEditCompetitionForm form, Competition competition) {
         model.addAttribute("competitionID", competition.getCompetitionId());
-        model.addAttribute("name", competition.getName());
-        model.addAttribute("sport", competition.getSport());
-        model.addAttribute("age", competition.getGrade().getAge());
-        model.addAttribute("gender", competition.getGrade().getSex());
-        model.addAttribute("level", competition.getGrade().getCompetitiveness());
-        model.addAttribute("addressLine1", competition.getLocation().getAddressLine1());
-        model.addAttribute("addressLine2", competition.getLocation().getAddressLine2());
-        model.addAttribute("suburb", competition.getLocation().getSuburb());
-        model.addAttribute("postcode", competition.getLocation().getPostcode());
-        model.addAttribute("city", competition.getLocation().getCity());
-        model.addAttribute("country", competition.getLocation().getCountry());
+
+        form.setName(competition.getName());
+        form.setSport(competition.getSport());
+
+        Grade grade = competition.getGrade();
+        form.setAge(grade.getAge());
+        form.setSex(grade.getSex());
+        form.setCompetitiveness(grade.getCompetitiveness());
+
+        Location location = competition.getLocation();
+        form.setAddressLine1(location.getAddressLine1());
+        form.setAddressLine2(location.getAddressLine2());
+        form.setSuburb(location.getSuburb());
+        form.setPostcode(location.getPostcode());
+        form.setCity(location.getCity());
+        form.setCountry(location.getCountry());
         if (competition instanceof TeamCompetition) {
             model.addAttribute("teams", ((TeamCompetition) competition).getTeams());
         } else {
             model.addAttribute("users", ((UserCompetition) competition).getPlayers());
         }
-        model.addAttribute("presetAges", Grade.Age.values());
-        model.addAttribute("presetSexes", Grade.Sex.values());
-        model.addAttribute("presetGenders", Grade.Competitiveness.values());
-
-
     }
 
     /**
