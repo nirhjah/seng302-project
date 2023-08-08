@@ -11,6 +11,8 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,9 @@ public class GenerateRandomUsers {
 
     @Autowired
     SportRepository sportRepository;
+
+    @Autowired
+    TeamRepository teamRepository;
 
     private final Random random = ThreadLocalRandom.current();
 
@@ -70,7 +75,7 @@ public class GenerateRandomUsers {
      * @return A randomly generated user.
      */
     public User createRandomUserWithSports() {
-
+        Team teamToJoin = teamRepository.findAll().get(0);
         User user = createRandomUser();
         // Generate random sports
         if (sportRepository.count() == 0) {
@@ -86,6 +91,7 @@ public class GenerateRandomUsers {
         List<Sport> ourSports = allSports.subList(0, random.nextInt(allSports.size()));
 
         user.setFavoriteSports(ourSports);
+        user.joinTeam(teamToJoin);
 
         return user;
 

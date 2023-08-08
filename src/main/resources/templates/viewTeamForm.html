@@ -99,14 +99,14 @@
                 </div>
                 <form th:action="@{profile}" class="profile-buttons" method="post">
                     <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
-                    <a class="edit-button" th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
+                    <a class="edit-button" id="editTeamProfileBtn" th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
                         <button type="button">Edit Profile</button>
                     </a>
                     <a class="edit-button" th:href="@{editTeamRole(edit=${teamID})}" th:if="${isUserManager}">
                         <button type="button">Edit Team Roles</button>
                     </a>
                     <a class="edit-button" th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
-                        <button type="button">View Team Activities</button>
+                        <button type="button" id="viewTeamActivitiesBtn">View Team Activities</button>
                     </a>
                 </form>
             </div>

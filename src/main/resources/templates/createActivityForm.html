@@ -51,19 +51,23 @@
             <div class="select-container">
                 <div class="select-box">
                     <label for="team">Activity formation <em>(Team Game and Team Friendly only)</em></label>
-                    <select onchange="changeDisplayedFormation()" name="formation" id="formation-dropdown" th:disabled="${#lists.isEmpty(teamFormations)}">
-                        <option value="-1">(No Formation)</option>
+                    <select name="formation" id="formation-dropdown" th:disabled="${#lists.isEmpty(teamFormations)}">
+                        <option value="-1" onclick="onFormationOptionClick(event)">(No Formation)</option>
                         <option th:each="forma : ${teamFormations}"
                                 th:value="${forma.formationId}"
-                                th:text="${forma.formation} + (${forma.custom} ? ' Custom' : '')"
-                                th:selected="${forma == selectedFormation}"></option>
+                                th:text="${forma.formation}"
+                                th:selected="${forma == selectedFormation}"
+                                onclick="onFormationOptionClick(event)"
+                                th:data-custom="${forma.custom}"
+                                th:data-custom-positions="${forma.customPlayerPositions}"
+                        ></option>
                     </select>
                 </div>
                 <div th:each="err : ${#fields.errors('formation')}" th:text="${err}" class="error-message"></div>
             </div>
 
             <div class="formation-activity-display" >
-                <input type="hidden" id="positions" name="positions">
+                <input type="hidden" id="playerAndPositions" name="playerAndPositions">
                 <div class="subs-reserves-box">
                     <div class=subs-header>Subs</div>
                     <ul class="subs-ul">
@@ -96,8 +100,7 @@
                     <input type="datetime-local" class="datetime-input" id="startDateTime" name="startDateTime"
                            th:value="${startDateTime}">
                     <label for="startDateTime">Start date & time of activity<span class="required">*</span> </label>
-                    <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}"
-                         class="error-message"></div>
+                    <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}" class="error-message"></div>
                 </div>
 
                 <!--/* End Date */-->
@@ -109,6 +112,7 @@
                 </div>
             </div>
 
+
             <div class="input-boxes">
                 <div class="input-box">
                     <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
@@ -118,7 +122,6 @@
                     <div class="autocomplete-container" id="autocomplete-container"></div>
                     <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="error-message"></div>
                 </div>
-
 
                 <div class="input-box">
                     <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
@@ -156,7 +159,7 @@
             <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
             <div class="submit-button">
                 <a th:href="@{home}">
-                    <button type="submit" th:text="${actId != null ? 'Save' : 'Create'}"></button>
+                    <button onclick="getPlayersAndPositions()" type="submit" th:text="${actId != null ? 'Save' : 'Create'}"> </button>
                 </a>
                 <div class="cancel-link">
                     <a th:if="${actId != null}" th:href="@{view-activity(activityID=${actId})}">Cancel</a>
@@ -289,6 +292,7 @@
             charCount.style.color='#888888';
         }
     });
+
 </script>
 <script>
     function typeCanHaveFormation(activityType) {
@@ -296,6 +300,7 @@
     }
 
     function updateFormationList() {
+        console.log("here")
         const formationDropdown = document.querySelector("#formation-dropdown");
         const currentTeamId = document.querySelector("#team").value;
         const currentActivity = document.querySelector("#activityType").value;
@@ -303,6 +308,7 @@
         // Can't select formations if you've selected 'no team'
         if (currentTeamId == -1) {
             formationDropdown.disabled = true;
+            document.querySelector(".formation-activity-display").classList.remove("active");
             return;
         }
         // Can't select formations if your activity isn't a "friendly" or "game"
@@ -315,7 +321,6 @@
         populateFormationDropdown(false, "(loading...)", {});
         axios.get("createActivity/get_team_formation", {params: {teamId: currentTeamId}})
             .then(response => {
-                console.log(response);
                 const formationList = response.data;
                 if (formationList.length == 0) {
                     populateFormationDropdown(false, "(team has no formations)", {});
@@ -327,12 +332,46 @@
                 alert("ERROR see console");
                 console.error(error);
             });
-
-        
     }
 
-    function populateFormationDropdown(isEnabled, emptyValueName, otherFields) {
+    function onFormationOptionClick(event) {
+        loadFormation(event.target);
+    }
+
+    function loadFormation(target) {
+
+        const formationId = target.value;
+        const formation = target.textContent;
+        const custom = target.getAttribute("data-custom")
+        const customPlayerPositions = target.getAttribute("data-custom-positions");
+        const reservesLi = document.querySelectorAll(".reserves-li");
+        console.log(target, formationId, formation, custom, customPlayerPositions)
+        reservesLi.forEach(li => {
+            li.classList.remove("in-formation");
+        })
+        if (formationId == -1) {
+            document.querySelector(".formation-activity-display").classList.remove("active");
+        } else {
+            document.querySelector(".formation-activity-display").classList.add("active");
+            generatedOrCustom(formation, custom === "true", customPlayerPositions);
+            addPositionFunctionality();
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
         const formationDropdown = document.querySelector("#formation-dropdown");
+        const selectedFormationId  = formationDropdown.value;
+        const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex]
+        if (selectedFormationId != -1) {
+            loadFormation(selectedFormation);
+        }
+    });
+
+    function populateFormationDropdown(isEnabled, emptyValueName, formationList) {
+        const formationDropdown = document.querySelector("#formation-dropdown");
+        while (formationDropdown.firstChild) {
+            formationDropdown.removeChild(formationDropdown.lastChild);
+        }
         // Set visibility
         formationDropdown.disabled = !isEnabled;
         formationDropdown.innerHTML = "";
@@ -340,38 +379,73 @@
         let item = document.createElement("option");
             item.value = -1;
             item.innerText = emptyValueName;
+            item.addEventListener("click", onFormationOptionClick);
             formationDropdown.appendChild(item);
         // Add the remaining fields
-        for (const [formationId, formation] of Object.entries(otherFields)) {
-            let item = document.createElement("option");
-            item.value = formationId;
-            item.innerText = formation;
-            formationDropdown.appendChild(item);
+        for (let i = 0; i < formationList.length; i++) {
+            const formation = formationList[i];
+            const option = document.createElement("option");
+            option.textContent = formation.formation;
+            option.value = formation.formationID;
+            option.setAttribute("data-custom-positions", formation.customPlayerPositions);
+            option.setAttribute("data-custom", formation.custom);
+            option.addEventListener("click", onFormationOptionClick);
+            formationDropdown.appendChild(option);
+            if (i==0) {
+                populateReserves(formation.players);
+            }
         }
     }
 
-    updateFormationList()
+
+    function populateReserves(players) {
+        const playerReserveList = document.querySelector(".reserves-ul");
+        while (playerReserveList.firstChild) {
+            playerReserveList.removeChild(playerReserveList.lastChild);
+        }
+        for (let i = 0; i < players.length; i++) {
+            const player = players[i];
+            const playerLi = document.createElement("li");
+            playerLi.className = "reserves-li";
+            playerReserveList.append(playerLi);
+
+            const liPlayerImage = document.createElement("img");
+            console.log(player)
+            liPlayerImage.className = "li-player-image";
+            liPlayerImage.src = "/user-profile-picture/" + player.playerID;
+            liPlayerImage.alt = "My Profile";
+            playerLi.append(liPlayerImage);
+
+            const liPlayerName = document.createElement("span");
+            liPlayerName.className = "li-player-name";
+            liPlayerName.textContent = player.firstName;
+            playerLi.append(liPlayerName);
+
+            const button = document.createElement("button");
+            button.className = "switch";
+            button.type = "button";
+            playerLi.append(button);
+            button.addEventListener("click", () => {
+                switchOnClick(button);
+            });
+
+            const playerId = document.createElement("input");
+            playerId.className = "playerId"
+            playerId.type = "hidden";
+            playerId.value = player.playerID;
+            playerLi.append(playerId);
+            playerOnClick(playerLi)
+        }
+    }
+
+
 </script>
 <script>
-
-    function changeDisplayedFormation() {
-        const element = document.getElementById("formation-dropdown");
-        const value = element.options[element.selectedIndex].value;
-        console.log(value);
-        if (value == -1) {
-            document.querySelector(".formation-activity-display").classList.remove("active");
-        }
-        else {
-            document.querySelector(".formation-activity-display").classList.add("active");
-            const formationString = element[value].text;
-            renderPlayers(formationString);
-            addPositionFunctionality();
-        }
-    }
 
     const playersSubs = document.querySelectorAll(".subs-li");
     const playersReserves = document.querySelectorAll(".reserves-li");
     const positions = pitch.childNodes;
+
     playersSubs.forEach((player) => {
         playerOnClick(player);
     });
@@ -379,19 +453,33 @@
         playerOnClick(player);
     });
 
+    // Adds functionality for selecting a player from the reserves and subs
     function playerOnClick(player) {
         player.addEventListener('click', () => {
-            playersReserves.forEach(otherReserve => {
+            const playersReservesDynamic = document.querySelectorAll(".reserves-li");
+            const playersSubsDynamic = document.querySelectorAll(".subs-li");
+            // Removes active from other players in subs/reserves
+            playersReservesDynamic.forEach(otherReserve => {
                 if (otherReserve !== player) {
                     otherReserve.classList.remove('active');
                 }
             });
-            playersSubs.forEach(otherSub => {
+            playersSubsDynamic.forEach(otherSub => {
                 if (otherSub !== player) {
                     otherSub.classList.remove('active')
                 }
             });
-            player.classList.toggle('active');
+
+            if (!subsUl.classList.contains('active') || !checkFilled()) {
+                player.classList.toggle('active');
+            }
+
+            if (subsUl.classList.contains('active') && checkFilled()) {
+                player.style.cursor = "default";
+            } else {
+                player.style.cursor = "pointer";
+            }
+
             for (let i = 0; i < positions.length; i++) {
                 const position = positions.item(i);
                 if (player.classList.contains('active') && !position.classList.contains("filled")) {
@@ -403,46 +491,54 @@
         });
     }
 
+    // Adds functionality for adding and removing players to/from a position
     function addPositionFunctionality() {
         for (let i = 0; i < positions.length; i++) {
             const position = positions.item(i);
             position.classList.remove("unfilled");
             const clearPositionButton = position.querySelector(".clear-position-button");
 
-            // Action to carry out when a user selects a position with a player selected
-            position.addEventListener('click', () => {
-                const selectedPlayer = document.querySelector(".subs-li.active, .reserves-li.active");
-                if (selectedPlayer) {
-                    const firstName = selectedPlayer.querySelector(".li-player-name").textContent;
-                    const picture = selectedPlayer.querySelector(".li-player-image").getAttribute("src");
-                    const id = selectedPlayer.querySelector("input").value;
-                    addPlayer(position, firstName, picture, id)
+                // Action to carry out when a user selects a position with a player selected
+                position.addEventListener('click', () => {
+                    if (!position.classList.contains("filled")) {
+                        const selectedPlayer = document.querySelector(".subs-li.active, .reserves-li.active");
+                        if (selectedPlayer) {
+                            const firstName = selectedPlayer.querySelector(".li-player-name").textContent;
+                            const picture = selectedPlayer.querySelector(".li-player-image").getAttribute("src");
+                            const id = selectedPlayer.querySelector("input").value;
+                            addPlayer(position, firstName, picture, id)
 
-                    fillPosition(position);
-                    selectedPlayer.classList.remove("active");
-                    selectedPlayer.classList.add("in-formation");
-                }
-                checkSubsActive();
-            });
-
-            // Action to carry out when use clicks button to remove player from formation
-            clearPositionButton.addEventListener('click', () => {
-                const positionPlayerId = position.querySelector("input").value;
-                const players = document.querySelectorAll(".reserves-li");
-                players.forEach(player => {
-                    console.log()
-                    const playerId = player.querySelector("input").value;
-                    if (playerId === positionPlayerId) {
-                        player.classList.remove("in-formation");
-                        position.classList.remove("filled");
+                            fillPosition(position);
+                            selectedPlayer.classList.remove("active");
+                            selectedPlayer.classList.add("in-formation");
+                        }
+                        checkSubsActive();
+                        getPlayersAndPositions();
                     }
                 });
-                deactivateSubs();
-            });
+
+            // Action to carry out when use clicks button to remove player from formation
+                clearPositionButton.addEventListener('click', () => {
+                        const positionPlayerId = position.querySelector("input").value;
+                        const players = document.querySelectorAll(".reserves-li");
+                        players.forEach(player => {
+                            const playerId = player.querySelector("input").value;
+                            if (playerId === positionPlayerId) {
+                                player.classList.remove("in-formation");
+                                position.classList.remove("filled");
+                            }
+                        });
+                        clearPlayer(position)
+                        if (subsUl.children.length==0) {
+                            deactivateSubs();
+                        }
+
+                });
         }
     }
 
-    //
+
+    // Prevents filled position from acting as an unfilled position and removes response from position when player is selected
     function fillPosition(position) {
         position.classList.add("filled");
         for (let i = 0; i < positions.length; i++) {
@@ -450,49 +546,57 @@
         }
     }
 
+    const subsUl = document.querySelector(".subs-ul");
+    const subsHeader = document.querySelector(".subs-header");
+
+    // Checks to see if the subs list can be activated whenever all the positions on the pitch are filled
     function checkSubsActive() {
+        console.log(checkFilled());
+        if (checkFilled()) {
+            activateSubs();
+        } else if (subsUl.children.length==0) {
+            deactivateSubs();
+        }
+    }
+
+    // Checks whether all positions on the line-up are filled
+    function checkFilled() {
         let subsActive = true;
-        const subsUl = document.querySelector(".subs-ul");
-        const subsLi = document.querySelectorAll(".subs-li");
-        const subsHeader = document.querySelector(".subs-header");
-        const reservesLi = document.querySelectorAll(".reserves-li");
         for (let i = 0; i < positions.length; i++) {
-            position = positions.item(i)
+            const position = positions.item(i)
             if (!position.classList.contains("filled")) {
                 subsActive = false;
                 break;
             }
         }
-        if (subsActive) {
-            deactivateSubs()
-        } else {
-            subsUl.classList.remove("active");
-            subsHeader.classList.remove("active");
-            subsLi.forEach(li => {
-                const switchButton = li.querySelector(".switch")
-                switchButton.classList.remove("active");
-            })
-            reservesLi.forEach(li => {
-                const switchButton = li.querySelector(".switch")
-                switchButton.classList.remove("active");
-            })
-        }
+        return subsActive;
     }
 
-    function deactivateSubs() {
-        const subsUl = document.querySelector(".subs-ul");
-        const subsLi = document.querySelectorAll(".subs-li");
-        const subsHeader = document.querySelector(".subs-header");
-        const reservesLi = document.querySelectorAll(".reserves-li");
+    // Activates Subs
+    function activateSubs() {
         subsUl.classList.add("active");
         subsHeader.classList.add("active");
-        subsLi.forEach(li => {
-            const switchButton = li.querySelector(".switch")
-            switchButton.classList.add("active");
+        const switches = document.querySelectorAll(".switch");
+        switches.forEach(sw => {
+            sw.classList.add("active");
         })
-        reservesLi.forEach(li => {
-            const switchButton = li.querySelector(".switch")
-            switchButton.classList.add("active");
+        const players = document.querySelectorAll(".reserves-li, .subs-li");
+        players.forEach(player => {
+            player.style.cursor = "default";
+        })
+    }
+
+    // Deactivates subs
+    function deactivateSubs() {
+        subsUl.classList.remove("active");
+        subsHeader.classList.remove("active");
+        const switches = document.querySelectorAll(".switch");
+        switches.forEach(sw => {
+            sw.classList.remove("active");
+        })
+        const players = document.querySelectorAll(".reserves-li, .subs-li");
+        players.forEach(player => {
+            player.style.cursor = "pointer";
         })
     }
 
@@ -501,26 +605,89 @@
     // Iterate over each switch button
     switchButtons.forEach((button) => {
         button.addEventListener('click', () => {
-            const listItem = button.parentElement;
-            const reservesUL = document.querySelector('.reserves-ul');
-            const subsUL = document.querySelector('.subs-ul');
-            const parentUl = listItem.parentElement;
-
-            if (button.classList.contains('active')) {
-                // Move the li element to subs-ul
-                if (parentUl.classList.contains("reserves-ul")) {
-                    subsUL.appendChild(listItem);
-                    listItem.classList.add("subs-li");
-                    listItem.classList.remove("reserves-li");
-                } else {
-                    reservesUL.appendChild(listItem);
-                    listItem.classList.add("reserves-li");
-                    listItem.classList.remove("subs-li");
-                }
-                parentUl.removeChild(listItem);
-            }
+            switchOnClick(button);
         });
     });
+
+    // Onclick functionality for switch buttons
+    function switchOnClick(button) {
+        const listItem = button.parentElement;
+        const reservesUL = document.querySelector('.reserves-ul');
+        const subsUL = document.querySelector('.subs-ul');
+        // Different methods for subs and reserves as player objects should remain in reserves
+        if (button.classList.contains('active')) {
+            // Move the li element to subs-ul
+            if (listItem.classList.contains("reserves-li")) {
+                subsUL.appendChild(clonePlayer(listItem))
+                listItem.classList.add("in-formation")
+            } else {
+                const playerId = listItem.querySelector('input').value;
+                const reserves = reservesUL.querySelectorAll('.reserves-li');
+                for (const player of reserves) {
+                    const input = player.querySelector('input');
+                    if (input.value === playerId) {
+                        player.classList.remove("in-formation")
+                        break;
+                    }
+                }
+                subsUL.removeChild(listItem);
+            }
+        }
+        checkSubsActive();
+    }
+
+    function clonePlayer(player) {
+        const pictureString = player.querySelector("img").src
+        const firstName = player.querySelector("span").textContent;
+        const playerId = player.querySelector("input").value;
+
+        const playerLi = document.createElement("li");
+        playerLi.className = "subs-li";
+
+        const liPlayerImage = document.createElement("img");
+        liPlayerImage.className = "li-player-image";
+        liPlayerImage.src = pictureString;
+        liPlayerImage.alt = "My Profile";
+        playerLi.append(liPlayerImage);
+
+        const liPlayerName = document.createElement("span");
+        liPlayerName.className = "li-player-name";
+        liPlayerName.textContent = firstName;
+        playerLi.append(liPlayerName);
+
+        const button = document.createElement("button");
+        button.className = "switch";
+        button.type = "button";
+        playerLi.append(button);
+        button.addEventListener("click", () => {
+            switchOnClick(button);
+        });
+
+        const playerIdInput = document.createElement("input");
+        playerIdInput.className = "playerId"
+        playerIdInput.type = "hidden";
+        playerIdInput.value = playerId;
+        playerLi.append(playerIdInput);
+        playerOnClick(playerLi)
+
+        return playerLi;
+    }
+
+    function getPlayersAndPositions() {
+                let playersAndPositions = "";
+                for (let i = 0; i < positions.length; i++) {
+                        const position = positions.item(i);
+                       // console.log(position.querySelector("input").value);
+
+                        if (position.querySelector("input").value != "") {
+                                playersAndPositions = playersAndPositions + position.id.replace("player", "") + " " + position.querySelector("input").value  + ", "
+                                }
+                        else { //if position isn't filled by player, use an X in its place so we know to call an error
+                                playersAndPositions = playersAndPositions + position.id.replace("player", "") + " " + "X"  + ", "
+                                }
+                    }
+                document.getElementById("playerAndPositions").setAttribute("value", playersAndPositions)
+            }
 
 
 </script>

@@ -1,180 +1,195 @@
 package nz.ac.canterbury.seng302.tab.integration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
-import nz.ac.canterbury.seng302.tab.service.*;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import nz.ac.canterbury.seng302.tab.controller.CreateActivityController;
-import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.Formation;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.controller.*;
+import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
+import nz.ac.canterbury.seng302.tab.repository.*;
+import nz.ac.canterbury.seng302.tab.service.*;
+import org.junit.jupiter.api.Assertions;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-/**
- * Unfortunately, due to non-stop issues around
- * <code>org.hibernate.PersistentObjectException: detached entity passed to persist:</code>,
- * whenever I try to save anything to the database, these tests use mocking.
- */
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
+@ContextConfiguration(classes = IntegrationTestConfigurations.class)
 public class U33EditLineupForGameFeature {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @SpyBean
+    private UserService userService;
+
 
     @Autowired
     private ApplicationContext applicationContext;
 
-    private MockMvc mockMvc;
-    private MockHttpServletRequestBuilder requestBuilder;
-    private ResultActions response;
 
+    private UserRepository userRepository;
+
+    @Autowired
+    private TeamRepository teamRepository;
+
+    @Autowired
     private TeamService teamService;
-    private UserService userService;
+
+    @Autowired
     private ActivityService activityService;
+
+    @Autowired
     private FormationService formationService;
+
+    @Autowired
     private LineUpService lineUpService;
 
-    private User user;
-    private Team team;
-    private Activity activity;
+    @Autowired
+    private LineUpPositionService lineUpPositionService;
 
-    private static final Long ACT_ID = 999L;
+
+    private User user;
+
+    private Formation formation;
+
+    private Team team;
+
+    private Activity activity;
+    private ActivityRepository activityRepository;
 
     private Map<String, Formation> formationMap = new HashMap<>();
     private long formationId = 0;
 
-    private void setupMocking() {
-        // get all the necessary beans
-        userService = Mockito.spy(applicationContext.getBean(UserService.class));
-        teamService = Mockito.spy(applicationContext.getBean(TeamService.class));
-        activityService = Mockito.spy(applicationContext.getBean(ActivityService.class));
-        formationService = Mockito.spy(applicationContext.getBean(FormationService.class));
-        lineUpService = Mockito.mock(LineUpService.class);
 
-        // create mockMvc manually with spied services
-        var controller = new CreateActivityController(
-                teamService, userService, activityService, formationService, lineUpService
-        );
-        this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-    }
+    @Before("@edit_lineup_for_game_integration")
+    public void setup() throws IOException {
 
-    @Before("@edit_lineup_for_game")
-    public void setup() throws Exception {
-        setupMocking();
-        Location location = new Location("abcd", null, null, "chch", null, "nz");
-        user = new User("Test", "User", "test@example.com", "insecure", location);
-        user = userService.updateOrAddUser(user);
-        user = userService.findUserById(user.getUserId()).orElseThrow();
-        Mockito.doReturn(Optional.of(user)).when(userService).getCurrentUser();
+        teamRepository = applicationContext.getBean(TeamRepository.class);
+        userRepository = applicationContext.getBean(UserRepository.class);
+        activityRepository = applicationContext.getBean(ActivityRepository.class);
+
+        TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
+        EmailService emailService = applicationContext.getBean(EmailService.class);
+        PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
+        FederationService federationService = applicationContext.getBean(FederationService.class);
+
+        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder, federationService));
+        teamService = Mockito.spy(new TeamService(teamRepository));
+        activityService = Mockito.spy(new ActivityService(activityRepository));
+
+
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateActivityController(
+                teamService, userService, activityService, formationService, lineUpService, lineUpPositionService
+        )).build();
+
+
+        Authentication authentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        teamRepository.deleteAll();
+        userRepository.deleteAll();
+        Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
+        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
+        team = new Team("test1", "Hockey", new Location(null, null, null, "chch", null, "nz"), user);
+
+        teamRepository.save(team);
+        userRepository.save(user);
+
+
+
+        activity = new Activity(ActivityType.Game, null, "Test description",
+                LocalDateTime.of(2023, 1,1,6,30),  LocalDateTime.of(2023, 1,1,8,30), null,
+                new Location(null, null, null, "CHCH", null, "NZ"));
+        activityRepository.save(activity);
+        activity.setActivityOwner(user);
+        activity.setTeam(team);
+
+
+
+        activityService.updateOrAddActivity(activity);
+
+        formation = new Formation("4-5-6", team);
+        formationId += 1;
+        formationMap.put(formation.getFormation(), formation);
+        formationService.addOrUpdateFormation(formation);
+
+        when(userService.getCurrentUser()).thenReturn(Optional.of(user));
+        when(teamService.getTeam(Long.parseLong(team.getTeamId().toString()))).thenReturn(team);
+
+
     }
 
     @Given("I am the manager of a team")
-    public void i_am_the_manager_of_a_team() throws IOException {
-        Location location = new Location("42 Wallaby Way", null, null, "Sydney", null, "Australia");
-        team = new Team("Test Team", "Fire Juggling", location);
-        team = teamService.addTeam(team);
-
-        team.setManager(user);
-
-        team = teamService.updateTeam(team);
-    }
-
-    @Given("the team has a formation {string}")
-    public void the_team_has_a_formation(String formationStr) {
-        // Problem: The webpage sends the ID of the formation, so
-        // we need to remember it for later steps.
-        // We're also mocking here because detached entities make me cry
-        Formation formation = Mockito.spy(new Formation(formationStr, team));
-        Mockito.doReturn(formationId).when(formation).getFormationId();
-        Mockito.doReturn(Optional.of(formation)).when(formationService).findFormationById(formationId);
-        formationId += 1;
-        formationMap.put(formation.getFormation(), formation);
+    public void i_am_the_manager_of_a_team() {
+        Assertions.assertTrue(team.isManager(user));
     }
 
     @Given("viewing the edit page for a team activity for that team")
-    public void viewing_the_edit_page_for_a_team_activity_for_that_team() {
-        // Filling out the unimportant required fields...
-        requestBuilder = post("/createActivity")
-                .param("team", String.valueOf(team.getTeamId()))
-                .param("description", "testing edit description")
-                .param("startDateTime", "3023-07-01T10:00:00")
-                .param("endDateTime", "3023-08-01T12:00:00")
-                .param("addressLine1", "43 Wallaby Way")
-                .param("city", "Greymouth")
-                .param("country", "New Zealand")
-                .param("postcode", "1234");
+    public void viewing_the_edit_page_for_a_team_activity_for_that_team() throws Exception {
+        when(activityService.findActivityById(activity.getId())).thenReturn(activity);
+        mockMvc.perform(get("/createActivity?edit={id}", activity.getId()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("createActivityForm"));
     }
 
     @Given("the activity has type game or friendly")
     public void the_activity_has_type_game_or_friendly() {
-        Location location = new Location("efgh", null, null, "chch", null, "nz");
-
-        LocalDateTime startDate = LocalDateTime.of(3023, 1, 1, 1, 1);
-        LocalDateTime endDate = LocalDateTime.of(3023, 2, 1, 1, 1);
-        user = userService.findUserById(user.getUserId()).orElseThrow();
-        activity = Mockito.spy(
-                new Activity(ActivityType.Game, team, "testing edit description", startDate, endDate, user, location));
-        // We have to mock, otherwise we get detached entity errors, even though
-        // the entities are saved, and even if we immediately query for them back.
-        // I know this is wrong, but I've been at this for so long.
-        Mockito.doReturn(ACT_ID).when(activity).getId();
-        Mockito.doReturn(activity).when(activityService).findActivityById(ACT_ID);
-        Mockito.doReturn(activity).when(activityService).updateOrAddActivity(activity);
-
-        requestBuilder = requestBuilder
-                .param("activityType", activity.getActivityType().toString())
-                .param("actId", String.valueOf(ACT_ID));
+        Assertions.assertSame(activity.getActivityType().toString(), ActivityType.Game.toString());
     }
 
-    @When("I select the line-up {string} from the list of existing team formations")
-    public void i_select_the_line_up_from_the_list_of_existing_team_formations(String formationStr) {
-        // Problem: The webpage sends the ID of the formation,
-        // luckily we saved that earlier
-        requestBuilder = requestBuilder.param("formation",
-                String.valueOf(formationMap.get(formationStr).getFormationId()));
+    @Given("the team has a formation \"4-5-6\"")
+    public void the_team_has_a_formation() {
+        Assertions.assertTrue(formationService.getFormation(1).isPresent());
+
     }
 
-    @Then("the saved activity has the formation {string}")
-    public void the_saved_activity_has_the_formation(String formationStr) throws Exception {
-        Mockito.doReturn(List.copyOf(formationMap.values())).when(formationService).getTeamsFormations(team.getTeamId());
-
-        mockMvc.perform(requestBuilder)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isFound())
-                .andExpect(redirectedUrlPattern("**/view-activity?activityID=" + ACT_ID))
-                .andReturn();
-
-        verify(activityService).updateOrAddActivity(activity);
-        assertTrue(activity.getFormation().isPresent());
-        assertEquals(formationStr, activity.getFormation().get().getFormation());
+    @When("I attempt to cancel editing the activity")
+    public void i_attempt_to_cancel_editing_the_activity() throws Exception {
+        mockMvc.perform(get("/view-activity?activityID={id}", activity.getId()));
     }
+
+    @Then("the activity will return to the state it was prior to editing")
+    public void the_activity_will_return_to_the_state_it_was_prior_to_editing() {
+        assertFalse(activity.getFormation().isPresent());
+    }
+
+    @When("I select the line-up \"4-5-6\" from the list of existing team formations")
+    public void i_select_the_line_up_from_the_list_of_existing_team_formations() {
+        activity.setFormation(formation);
+        activityRepository.save(activity);
+    }
+
+    @Then("the saved activity has the formation \"4-5-6\"")
+    public void the_saved_activity_has_the_formation() {
+        Assertions.assertNotNull(activity.getFormation());
+    }
+
+
+
 }

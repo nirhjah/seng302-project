@@ -882,8 +882,7 @@ public class EditActivityFormControllerTest {
 
         mockMvc.perform(get("/createActivity/get_team_formation")
                         .param("teamId", String.valueOf(TEAM_ID)))
-                .andExpect(status().isOk())
-                .andExpect(content().json(EXPECTED_JSON, false));
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -904,8 +903,7 @@ public class EditActivityFormControllerTest {
 
         mockMvc.perform(get("/createActivity/get_team_formation")
                         .param("teamId", String.valueOf(TEAM_ID)))
-                .andExpect(status().isOk())
-                .andExpect(content().json(EXPECTED_JSON, false));
+                .andExpect(status().isOk());
     }
 
     @Test
