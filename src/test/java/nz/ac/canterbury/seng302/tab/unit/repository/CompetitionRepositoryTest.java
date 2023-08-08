@@ -150,4 +150,12 @@ public class CompetitionRepositoryTest {
         var size = NUM_FUTURE * 3;
         Assertions.assertEquals(comps.size(), size);
     }
+
+    @Test
+    public void testEmptyListWorks() {
+        List<String> sports = List.of();
+        var comps = competitionRepository.findUpcomingCompetitionsBySports(allRequest, sports, now).toList();
+        var size = NUM_FUTURE * 3;
+        Assertions.assertEquals(comps.size(), size);
+    }
 }
