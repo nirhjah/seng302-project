@@ -315,7 +315,7 @@ public class ViewActivityController {
 
             case OPPOSITION_GOAL:
 
-                fact = new OppositionGoal(description, activity, localTime, goalValue);
+                fact = new OppositionGoal(description, localTime,activity, goalValue);
                 factList.add(fact);
                 break;
             case NONE:
@@ -367,7 +367,7 @@ public class ViewActivityController {
      */
     private void validateSubbingSamePlayers(BindingResult bindingResult,long subOnOff, long subOnId){
         if (subOnOff==subOnId) {
-            bindingResult.addError(new FieldError("createEventForm", "playerOn", "Cannot substitute the same player"));
+            bindingResult.addError(new FieldError("createEventForm", "subOn", "Cannot substitute the same player"));
         }
     }
 

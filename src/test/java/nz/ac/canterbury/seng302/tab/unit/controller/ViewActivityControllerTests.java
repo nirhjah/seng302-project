@@ -2,7 +2,6 @@ package nz.ac.canterbury.seng302.tab.unit.controller;
 
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -103,6 +102,7 @@ public class ViewActivityControllerTests {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+        activityRepository.deleteAll();
         Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY,
                 USER_POSTCODE, USER_COUNTRY);
         User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD, testLocation);
@@ -112,7 +112,6 @@ public class ViewActivityControllerTests {
         Location activityLocation = new Location(ACTVITY_ADDRESS_LINE_1, ACTVITY_ADDRESS_LINE_2, ACTVITY_SUBURB,
                 ACTVITY_CITY, ACTVITY_POSTCODE, ACTVITY_COUNTRY);
         activity = new Activity(ActivityType.Game, team, "description", start, end, testUser, activityLocation);
-        activity= new Activity(ActivityType.Game, team, "description",start, end, testUser, activityLocation);
         activityRepository.save(activity);
 
         List<Fact> factList = new ArrayList<>();
