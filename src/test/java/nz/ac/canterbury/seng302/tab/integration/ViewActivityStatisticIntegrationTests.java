@@ -7,6 +7,7 @@ import io.cucumber.java.en.When;
 import nz.ac.canterbury.seng302.tab.controller.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
@@ -76,6 +77,10 @@ public class ViewActivityStatisticIntegrationTests {
 
     private Date date;
 
+    private List<Fact> factList;
+    private List<Fact> facts;
+    private List<Goal> goalList;
+    private List<Substitution> substitutionList;
 
 
     @Before("@ViewActivityStatistics")
@@ -95,8 +100,8 @@ public class ViewActivityStatisticIntegrationTests {
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
         activityService = Mockito.spy(new ActivityService(activityRepository));
-        factService= Mockito.spy(new FactService(factRespository));
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ViewActivityController(userService,activityService,teamService,factService)).build();
+        factService = Mockito.spy(new FactService(factRespository));
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ViewActivityController(userService, activityService, teamService, factService)).build();
 
         Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "testing@gmail.com", "Password123!", testLocation);
@@ -115,14 +120,15 @@ public class ViewActivityStatisticIntegrationTests {
         game = new Activity(ActivityType.Game, team, "Test description",
                 date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), user,
                 new Location(null, null, null, "CHCH", null, "NZ"));
-        List<Fact> factList = new ArrayList<>();
+        factList = new ArrayList<>();
         factList.add(new Fact("Someone fell over", game, LocalTime.of(1, 25)));
         factList.add(new Fact("Someone fell over again", game, LocalTime.of(1, 30)));
-        factList.add(new Fact("Someone fell over yet again",  game,LocalTime.of(1, 42)));
-        factList.add(new Substitution("Player was taken off", game, user, user,LocalTime.of(1, 40)));
-        factList.add(new Fact("Testing scrollable feature", game,LocalTime.of(1, 25)));
+        factList.add(new Fact("Someone fell over yet again", game, LocalTime.of(1, 42)));
+        factList.add(new Substitution("Player was taken off", game, user, user, LocalTime.of(1, 40)));
+        factList.add(new Fact("Testing scrollable feature", game, LocalTime.of(1, 25)));
 
         game.addFactList(factList);
+        separateFactTypes();
         activityRepository.save(game);
 
 
@@ -132,9 +138,9 @@ public class ViewActivityStatisticIntegrationTests {
 
     @When("I click on an activity")
     public void i_click_on_an_activity() throws Exception {
-         result=mockMvc.perform(get("/view-activity").param("activityID", String.valueOf(game.getId())))
-                 .andExpect(MockMvcResultMatchers.status().isOk())
-                 .andReturn();
+        result = mockMvc.perform(get("/view-activity").param("activityID", String.valueOf(game.getId())))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
     }
 
     @SuppressWarnings("unchecked")
@@ -144,7 +150,7 @@ public class ViewActivityStatisticIntegrationTests {
         Assertions.assertEquals(game.getId(), actualActivity.getId());
         Assertions.assertEquals(game.getDescription(), actualActivity.getDescription());
 
-        List<Fact> actualFacts= (List<Fact>) result.getModelAndView().getModel().get("activityFacts");
+        List<Fact> actualFacts = (List<Fact>) result.getModelAndView().getModel().get("activityFacts");
         Assertions.assertEquals(game.getFactList().size(), actualFacts.size());
     }
 
@@ -153,16 +159,17 @@ public class ViewActivityStatisticIntegrationTests {
         game = new Activity(ActivityType.Game, team, "Test description",
                 date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), user,
                 new Location(null, null, null, "CHCH", null, "NZ"));
-        List<Fact> factList = new ArrayList<>();
+        factList = new ArrayList<>();
         factList.add(new Fact("Someone fell over", game, LocalTime.of(1, 25)));
         factList.add(new Fact("Someone fell over again", game, LocalTime.of(1, 30)));
-        factList.add(new Fact("Someone fell over yet again",  game,LocalTime.of(1, 42)));
-        factList.add(new Substitution("Player was taken off", game, user, user,LocalTime.of(1, 40)));
-        factList.add(new Fact("Testing scrollable feature", game,LocalTime.of(1, 25)));
+        factList.add(new Fact("Someone fell over yet again", game, LocalTime.of(1, 42)));
+        factList.add(new Substitution("Player was taken off", game, user, user, LocalTime.of(1, 40)));
+        factList.add(new Fact("Testing scrollable feature", game, LocalTime.of(1, 25)));
 
         game.addFactList(factList);
+        separateFactTypes();
         activityRepository.save(game);
-        result=mockMvc.perform(get("/view-activity").param("activityID", String.valueOf(game.getId())))
+        result = mockMvc.perform(get("/view-activity").param("activityID", String.valueOf(game.getId())))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
@@ -172,22 +179,22 @@ public class ViewActivityStatisticIntegrationTests {
 
     @When("there are statistics about substitute players")
     public void there_are_statistics_about_substitute_players() {
-        List<Substitution> actualSubstitution= (List<Substitution>) result.getModelAndView().getModel().get("activitySubstitutions");
+        List<Substitution> actualSubstitution = (List<Substitution>) result.getModelAndView().getModel().get("activitySubstitutions");
         Assertions.assertNotNull(actualSubstitution);
-        Assertions.assertEquals(1, actualSubstitution.size());
+        Assertions.assertEquals(substitutionList.size(), actualSubstitution.size());
 
 
     }
 
     @Then("I can see the icon, name and time of substitution of the player")
     public void i_can_see_the_icon_name_and_time_of_substitution_of_the_player() {
-        List<Substitution> actualSubstitution= (List<Substitution>) result.getModelAndView().getModel().get("activitySubstitutions");
-        String description= actualSubstitution.get(0).getDescription();
-        User userOff= actualSubstitution.get(0).getPlayerOff();
+        List<Substitution> actualSubstitution = (List<Substitution>) result.getModelAndView().getModel().get("activitySubstitutions");
+        String description = actualSubstitution.get(0).getDescription();
+        User userOff = actualSubstitution.get(0).getPlayerOff();
         LocalTime time = actualSubstitution.get(0).getTimeOfEvent();
 
         Assertions.assertNotNull(userOff);
-        Assertions.assertEquals("Player was taken off",description);
+        Assertions.assertEquals("Player was taken off", description);
         Assertions.assertEquals(user.getFirstName(), userOff.getFirstName());
         Assertions.assertEquals(user.getLastName(), userOff.getLastName());
         Assertions.assertEquals(LocalTime.of(1, 40), time);
@@ -200,15 +207,19 @@ public class ViewActivityStatisticIntegrationTests {
         game = new Activity(ActivityType.Game, team, "Test description",
                 date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), user,
                 new Location(null, null, null, "CHCH", null, "NZ"));
-        List<Fact> factList = new ArrayList<>();
+        factList = new ArrayList<>();
         factList.add(new Fact("Someone fell over", game, LocalTime.of(1, 25)));
         factList.add(new Fact("Someone fell over again", game, LocalTime.of(1, 30)));
-        factList.add(new Fact("Someone fell over yet again",  game,LocalTime.of(1, 42)));
-        factList.add(new Substitution("Player was taken off", game, user, user,LocalTime.of(1, 40)));
-        factList.add(new Fact("Testing scrollable feature", game,LocalTime.of(1, 25)));
+        factList.add(new Fact("Someone fell over yet again", game, LocalTime.of(1, 42)));
+        factList.add(new Substitution("Player was taken off", game, user, user, LocalTime.of(1, 40)));
+        factList.add(new Fact("Testing scrollable feature", game, LocalTime.of(1, 25)));
+        factList.add(new Goal("A Goal", game, user, LocalTime.of(1, 40), 1));
+        factList.add(new Goal("A Goal", game, user, LocalTime.of(1, 40), 1));
+        factList.add(new Goal("A Goal", game, user, LocalTime.of(1, 40), 1));
         game.addFactList(factList);
+        separateFactTypes();
         activityRepository.save(game);
-        result=mockMvc.perform(get("/view-activity").param("activityID", String.valueOf(game.getId())))
+        result = mockMvc.perform(get("/view-activity").param("activityID", String.valueOf(game.getId())))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
         Activity activity = (Activity) result.getModelAndView().getModel().get("activity");
@@ -217,15 +228,54 @@ public class ViewActivityStatisticIntegrationTests {
 
     @When("that activity has statistics and facts with times")
     public void that_activity_has_statistics_and_facts_with_times() {
-        List<Fact> actualFacts= (List<Fact>) result.getModelAndView().getModel().get("activityFacts");
-        List<Substitution> actualSubstitution= (List<Substitution>) result.getModelAndView().getModel().get("activitySubstitutions");
+        List<Fact> actualFacts = (List<Fact>) result.getModelAndView().getModel().get("activityFacts");
+        List<Substitution> actualSubstitution = (List<Substitution>) result.getModelAndView().getModel().get("activitySubstitutions");
         Assertions.assertNotNull(actualSubstitution);
         Assertions.assertNotNull(actualFacts);
+        Assertions.assertEquals(substitutionList.size(), actualSubstitution.size());
 
     }
 
     @Then("they are listed and sorted by their time in ascending order")
     public void they_are_listed_and_sorted_by_their_time_in_ascending_order() {
+        List<Fact> actualFacts = (List<Fact>) result.getModelAndView().getModel().get("activityFacts");
+        LocalTime previousTime = null;
+        for (Fact fact : actualFacts) {
+            if (previousTime != null) {
+                Assertions.assertTrue(fact.getTimeOfEvent().isAfter(previousTime) || fact.getTimeOfEvent().equals(previousTime));
+            }
+            previousTime = fact.getTimeOfEvent();
+        }
+
+    }
+
+    @When("there are statistics about scoring players")
+    public void there_are_statistics_about_scoring_players() {
+        List<Fact> actualGoals = (List<Fact>) result.getModelAndView().getModel().get("activityGoals");
+        Assertions.assertNotNull(actualGoals);
+        Assertions.assertEquals(goalList.size(), actualGoals.size());
+
+    }
+
+    @Then("I can see the time that player scored next to their icon on the line-up")
+    public void i_can_see_the_time_that_player_scored_next_to_their_icon_on_the_line_up() {
+
+    }
+
+    private void separateFactTypes() {
+        facts = new ArrayList<>();
+        goalList = new ArrayList<>();
+        substitutionList = new ArrayList<>();
+
+        for (Fact fact : factList) {
+            if (fact instanceof Goal) {
+                goalList.add((Goal) fact);
+            } else if (fact instanceof Substitution) {
+                substitutionList.add((Substitution) fact);
+            } else {
+                facts.add(fact);
+            }
+        }
 
     }
 }
