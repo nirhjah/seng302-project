@@ -7,7 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import nz.ac.canterbury.seng302.tab.api.response.FormationInfo;
 import nz.ac.canterbury.seng302.tab.api.response.PlayerFormationInfo;
@@ -294,7 +293,16 @@ public class CreateActivityController {
 
         if (playerAndPositions != null && !playerAndPositions.isEmpty()) {
             List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
-            saveLineUp(positionsAndPlayers);
+            saveLineUp(positionsAndPlayers, bindingResult);
+            if (bindingResult.hasErrors() && actId != -1) { //only throw error if we are on edit act page
+                httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                if (activity != null) {
+                    model.addAttribute("actId", actId);
+                    fillModelWithActivity(model, activity);
+                }
+                return TEMPLATE_NAME;
+            }
+
         }
 
 
@@ -359,11 +367,13 @@ public class CreateActivityController {
      * Takes list of positions and players fron the selected line up then creates LineUpPositions for each and saves them with the lineup
      * @param positionsAndPlayers list of positions and players
      */
-    private void saveLineUp(List<String> positionsAndPlayers){
+    private void saveLineUp(List<String> positionsAndPlayers, BindingResult bindingResult){
+        boolean error = false;
         for (String positionPlayer : positionsAndPlayers) {
             if (Objects.equals(Arrays.stream(positionPlayer.split(" ")).toList().get(1), "X")) {
                 logger.info("No player was set at the position " + Arrays.stream(positionPlayer.split(" ")).toList().get(0));
-                //TODO Throw bindingResult error here as not all positions were filled with a player
+                error = true;
+
             } else {
                 logger.info("Valid player so creating line up position object now..");
                 if (userService.findUserById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).isPresent()) {
@@ -374,6 +384,13 @@ public class CreateActivityController {
                 }
             }
         }
+
+        if (error) {
+            bindingResult.addError(new FieldError("createActivityForm", "lineup", "The line-up is not complete"));
+
+        }
+
+
     }
 
 }
