@@ -47,8 +47,8 @@ public interface CompetitionRepository extends CrudRepository<Competition, Long>
     @Query("""
             SELECT DISTINCT c
             FROM Competition c
-              WHERE ((:#{#filteredSports.size}=0 OR c.sport in (:filteredSports))
-              AND (:now <= c.endDate) AND (:now >= c.startDate))
+              WHERE ((:#{#filteredSports.size}=0 OR (c.sport in :filteredSports))
+              AND ((:now <= c.endDate) AND (:now >= c.startDate)))
               """)
     Page<Competition> findCurrentCompetitionsBySports(Pageable pageable,
                                                       @Param("filteredSports") List<String> filteredSports,

@@ -30,8 +30,7 @@ public class ViewAllCompetitionsController {
     private static int PAGE_SIZE = 8;
 
     public static final Sort SORT = Sort.by(
-            Sort.Order.asc("startDate").ignoreCase(),
-            Sort.Order.asc("firstName").ignoreCase()
+            Sort.Order.asc("name").ignoreCase()
     );
 
     private void testModel(Model model) {
@@ -54,9 +53,7 @@ public class ViewAllCompetitionsController {
     @GetMapping("/view-all-competitions")
     public String viewAllCompetitions(@RequestParam(name = "page", defaultValue = "1") int page,
                                       @RequestParam(name = "sports", required=false) List<String> sports,
-                                      @RequestParam(name = "cities", required = false) List<String> cities,
                                       Model model, HttpServletRequest request) {
-
 
         model.addAttribute("httpServletRequest",request);
 
@@ -67,8 +64,6 @@ public class ViewAllCompetitionsController {
         List<Competition> competitions = pageResult.stream().toList();
 
         model.addAttribute("listOfCompetitions", competitions);
-
-        model.addAttribute("listOfCities", cities);
 
         model.addAttribute("page", page);
         model.addAttribute("totalPages", pageResult.getTotalPages());

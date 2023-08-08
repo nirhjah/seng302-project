@@ -87,9 +87,11 @@ public class CompetitionService {
      * @return The Page of competitions
      */
     public Page<Competition> findPastCompetitionsBySports(Pageable pageable, List<String> filteredSports) {
-        long now = Instant.EPOCH.getEpochSecond();
+        long now = Instant.now().getEpochSecond();
         if (filteredSports == null) {
             filteredSports = EMPTY_LIST;
+        } else {
+            filteredSports = filteredSports.stream().map(String::toLowerCase).toList();
         }
         return competitionRepository.findPastCompetitionsBySports(pageable, filteredSports, now);
     }
@@ -101,9 +103,11 @@ public class CompetitionService {
      * @return The Page of competitions
      */
     public Page<Competition> findUpcomingCompetitionsBySports(Pageable pageable, List<String> filteredSports) {
-        long now = Instant.EPOCH.getEpochSecond();
+        long now = Instant.now().getEpochSecond();
         if (filteredSports == null) {
             filteredSports = EMPTY_LIST;
+        } else {
+            filteredSports = filteredSports.stream().map(String::toLowerCase).toList();
         }
         return competitionRepository.findUpcomingCompetitionsBySports(pageable, filteredSports, now);
     }
@@ -115,9 +119,11 @@ public class CompetitionService {
      * @return The Page of competitions
      */
     public Page<Competition> findCurrentCompetitionsBySports(Pageable pageable, List<String> filteredSports) {
-        long now = Instant.EPOCH.getEpochSecond();
+        long now = Instant.now().getEpochSecond();
         if (filteredSports == null) {
             filteredSports = EMPTY_LIST;
+        } else {
+            filteredSports = filteredSports.stream().map(String::toLowerCase).toList();
         }
         return competitionRepository.findCurrentCompetitionsBySports(pageable, filteredSports, now);
     }
