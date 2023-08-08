@@ -263,8 +263,7 @@ public class CreateCompetitionController {
         return ResponseEntity.ok().body(
                 teamService.findTeamsBySportAndSearch(sport, search).stream().map(team -> new CompetitionTeamInfo(
                         team.getTeamId(),
-                        team.getName(),
-                        team.getPictureString()
+                        team.getName()
                 )).toList()
         );
     }
@@ -281,8 +280,7 @@ public class CreateCompetitionController {
                 userService.findUsersBySportAndName(sport, search).stream().map(user -> new CompetitionUserInfo(
                         user.getUserId(),
                         user.getFirstName(),
-                        user.getLastName(),
-                        user.getPictureString()
+                        user.getLastName()
                 )).toList()
         );
     }

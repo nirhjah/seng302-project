@@ -134,13 +134,12 @@ header .header-left .hamburger div {
     display: none;
     position: absolute;
     top: 104%;
-    right: 4px;
     background-color: #415A77;
     box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
     border-radius: 4px;
     z-index: 1000;
     transition: 0.2s;
-    width: 96%
+    white-space: nowrap;
 }
 
 .navbar-user-dropdown.show, .navbar-create-dropdown.show {
@@ -150,7 +149,6 @@ header .header-left .hamburger div {
 .navbar-user-dropdown a, .navbar-create-dropdown a {
     display: block !important;
     text-decoration: none;
-    color: #444;
     text-align: left;
     padding: 5px 80px 5px 8px !important;
     border-radius: 4px !important;

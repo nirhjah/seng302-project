@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.response.competition;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.helper.ImageType;
 
 public class CompetitionUserInfo {
 
@@ -8,17 +9,13 @@ public class CompetitionUserInfo {
 
     private String name;
 
-    private String pictureString;
-
-
     // Default constructor (required by Jackson)
     public CompetitionUserInfo() {
     }
 
-    public CompetitionUserInfo(Long userID, String firstName, String lastName, String pictureString) {
+    public CompetitionUserInfo(Long userID, String firstName, String lastName) {
         this.userTeamID = userID;
         this.name = firstName + " " + lastName;
-        this.pictureString = pictureString;
     }
 
 
@@ -28,14 +25,6 @@ public class CompetitionUserInfo {
 
     public void setUserTeamID(Long userID) {
         this.userTeamID = userID;
-    }
-
-    public String getPictureString() {
-        return pictureString;
-    }
-
-    public void setPictureString(String pictureString) {
-        this.pictureString = pictureString;
     }
 
     public String getName() {

@@ -148,12 +148,12 @@
                     </div>
                     <ul class="competitors-ul">
                         <li th:each="competitor : ${users}" class="competitors-li">
-                            <img th:src="'data:image/png;base64,' + ${competitor.pictureString}" alt="My Profile" class="li-user-team-image"/>
+                            <img th:src="@{/user-profile-picture/{id}(id = ${competitor.userId})}" alt="My Profile" class="li-user-team-image"/>
                             <span class="li-user-team-name" th:text="${competitor.firstName + ' ' + competitor.lastName}"></span>
                             <input type="hidden" class="user-team-ID" name="userTeamID" th:value="${competitor.userId}">
                         </li>
                         <li th:each="competitor : ${teams}" class="competitors-li">
-                            <img th:src="'data:image/png;base64,' + ${competitor.pictureString}" alt="My Profile" class="li-user-team-image"/>
+                            <img th:src="@{/team-profile-picture/{id}(id = ${competitor.teamId})}" alt="My Profile" class="li-user-team-image"/>
                             <span class="li-user-team-name" th:text="${competitor.name}"></span>
                             <input type="hidden" class="user-team-ID" name="userTeamID" th:value="${competitor.teamId}">
                         </li>
@@ -295,7 +295,7 @@
 
                 const liUserTeamImage = document.createElement("img");
                 liUserTeamImage.className = "li-user-team-image";
-                liUserTeamImage.src = "data:image/jpeg;base64," + userTeam.pictureString;
+                liUserTeamImage.src = (typeCheckbox.checked ? "/user" : "/team") + "-profile-picture/" + userTeam.userTeamID;
                 liUserTeamImage.alt = "My Profile";
                 userTeamLi.append(liUserTeamImage);
 
