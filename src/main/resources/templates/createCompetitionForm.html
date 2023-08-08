@@ -12,12 +12,12 @@
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 <div class="competition-form">
     <div class="header">
-        <h1>[[${competitionId != null ? 'Update' : 'Create'}]] Competition</h1>
+Upd        <h1>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</h1>
     </div>
 
     <div class="wrapper">
         <form th:action="@{createCompetition}" th:object="${createAndEditCompetitionForm}" id="createAndEditCompetitionForm" method="post">
-            <input type="hidden" th:if="${CompetitionID != null}" th:name="competitionID" th:value="${competitionID}"/>
+            <input type="hidden" th:if="${competitionID != null}" th:name="competitionID" th:value="${competitionID}"/>
 
             <div class="create-header">
                 <h2>Details</h2>
@@ -140,7 +140,7 @@
             </div>
 
             <div class="member-selection-box">
-                <div class="inactive-cover active">
+                <div class="inactive-cover" th:classappend="${competitionID != null} ? 'active' : ''">
                     <h3>You must type in a sport before you may add competitors</h3>
                 </div>
                 <div class="competitors-box">
@@ -195,7 +195,6 @@
     const sportsInput = document.getElementById("sport")
     const inactiveCover = document.querySelector(".inactive-cover")
 
-
     sportsInput.addEventListener("change", () => {
         clearCompetitors();
         if (sportsInput.value.trim() !== "") {
@@ -227,6 +226,7 @@
     }
 
     const typeCheckbox = document.querySelector(".switch input");
+    const hiddenInput = document.getElementById("")
 
     typeCheckbox.addEventListener("change", function () {
         if (typeCheckbox.checked) {
@@ -237,8 +237,6 @@
         clearCompetitors();
         getCompetitors();
     });
-
-    const hiddenInput = document.getElementById('hiddenInput');
 
     const searchBoxImage = document.querySelector(".search-box img");
 

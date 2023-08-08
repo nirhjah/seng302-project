@@ -261,7 +261,6 @@ public class CreateCompetitionController {
     @GetMapping(path = "/createCompetition/get_users", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CompetitionUserInfo>> getUsersJSON(@RequestParam String sport,
                                                                   @RequestParam(required = false, defaultValue = "") String search) {
-
         return ResponseEntity.ok().body(
                 userService.findUsersBySportAndName(sport, search).stream().map(user -> new CompetitionUserInfo(
                         user.getUserId(),
