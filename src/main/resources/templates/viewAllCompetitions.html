@@ -43,7 +43,7 @@
         </form>
         <div class="card-wrap">
             <div class="card-item" th:each="competition : ${listOfCompetitions}">
-                <div class="card-content">
+                <div class="card-content"  th:onclick="|window.location.href='/view-competition?competitionID=${competition.competitionId}'|">
                     <div class="competition-name" th:text="${competition.name}"></div>
                     <div class="competition-content" th:text="${competition.grade.getDisplayString()}"></div>
                     <div class="competition-content" th:text="${competition.sport}"></div>
