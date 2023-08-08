@@ -294,7 +294,16 @@ public class CreateActivityController {
 
         if (playerAndPositions != null && !playerAndPositions.isEmpty()) {
             List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
-            saveLineUp(positionsAndPlayers);
+            saveLineUp(positionsAndPlayers, bindingResult);
+            if (bindingResult.hasErrors()) {
+                httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                if (activity != null) {
+                    model.addAttribute("actId", actId);
+                    fillModelWithActivity(model, activity);
+                }
+                return TEMPLATE_NAME;
+            }
+
         }
 
 
@@ -359,11 +368,13 @@ public class CreateActivityController {
      * Takes list of positions and players fron the selected line up then creates LineUpPositions for each and saves them with the lineup
      * @param positionsAndPlayers list of positions and players
      */
-    private void saveLineUp(List<String> positionsAndPlayers){
+    private void saveLineUp(List<String> positionsAndPlayers, BindingResult bindingResult){
         for (String positionPlayer : positionsAndPlayers) {
             if (Objects.equals(Arrays.stream(positionPlayer.split(" ")).toList().get(1), "X")) {
                 logger.info("No player was set at the position " + Arrays.stream(positionPlayer.split(" ")).toList().get(0));
                 //TODO Throw bindingResult error here as not all positions were filled with a player
+                bindingResult.addError(new FieldError("createActivityForm", "lineup", "Please fill all positions with players"));
+
             } else {
                 logger.info("Valid player so creating line up position object now..");
                 if (userService.findUserById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).isPresent()) {

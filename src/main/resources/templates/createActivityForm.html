@@ -68,6 +68,8 @@
 
             <div class="formation-activity-display" >
                 <input type="hidden" id="playerAndPositions" name="playerAndPositions">
+                <div th:each="err : ${#fields.errors('lineup')}" th:text="${err}" class="error-message"></div>
+
                 <div class="subs-reserves-box">
                     <div class=subs-header>Subs</div>
                     <ul class="subs-ul">
