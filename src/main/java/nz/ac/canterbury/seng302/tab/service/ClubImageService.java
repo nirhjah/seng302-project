@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Club;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.ImageService;
 import nz.ac.canterbury.seng302.tab.helper.ImageType;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
@@ -24,6 +26,9 @@ public class ClubImageService extends ImageService<Club> {
 
     @Autowired
     private ClubService clubService;
+
+    @Autowired
+    private UserService userService;
 
     private final byte[] defaultClubLogo;
 
@@ -62,6 +67,12 @@ public class ClubImageService extends ImageService<Club> {
      * @param file The file that represents the image
      */
     public void updateClubLogo(Club club, MultipartFile file) {
+        Optional<User> optionalUser = userService.getCurrentUser();
+        if (optionalUser.isEmpty()) {
+            logger.error("No user.");
+            return;
+        }
+
         long id = club.getClubId();
         if (clubService.findClubById(id).isPresent()) {
             saveImage(club, file);

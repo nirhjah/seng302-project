@@ -137,6 +137,13 @@ public class CreateClubController {
         Optional<Club> optClub = clubService.findClubById(clubId);
         if (optClub.isPresent()) {
             Club editClub = optClub.get();
+            User user = optUser.get();
+
+            if (!editClub.isManagedBy(user)) {
+                // If we aren't managing the club, then redirect to createClub.
+                return "createClubForm";
+            }
+
             editClub.setSport(sport);
             setTeamsClub(selectedTeams, editClub, bindingResult);
 
