@@ -97,7 +97,7 @@ public class U33EditLineupForGameFeature {
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
         FederationService federationService = applicationContext.getBean(FederationService.class);
 
-        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder, federationService));
+        userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
         activityService = Mockito.spy(new ActivityService(activityRepository));
 
