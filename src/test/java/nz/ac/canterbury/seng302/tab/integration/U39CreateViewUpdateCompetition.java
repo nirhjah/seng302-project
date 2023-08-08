@@ -5,30 +5,18 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import nz.ac.canterbury.seng302.tab.controller.CreateActivityController;
+import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.controller.CreateCompetitionController;
+import nz.ac.canterbury.seng302.tab.controller.FederationManagerInviteController;
+import nz.ac.canterbury.seng302.tab.controller.InviteToFederationManagerController;
 import nz.ac.canterbury.seng302.tab.entity.*;
-import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
-import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
 import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
 import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
-import nz.ac.canterbury.seng302.tab.repository.*;
-import io.cucumber.java.en.When;
-import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
-import nz.ac.canterbury.seng302.tab.controller.FederationManagerInviteController;
-import nz.ac.canterbury.seng302.tab.controller.InviteToFederationManagerController;
-import nz.ac.canterbury.seng302.tab.entity.FederationManagerInvite;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
-import nz.ac.canterbury.seng302.tab.mail.EmailService;
-import nz.ac.canterbury.seng302.tab.mail.EmailService;
+import nz.ac.canterbury.seng302.tab.repository.CompetitionRepository;
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.*;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,37 +24,22 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.domain.Page;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.data.domain.Page;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
-
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.io.IOException;
 import java.util.*;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -130,18 +103,18 @@ public class U39CreateViewUpdateCompetition {
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
         EmailService emailService = applicationContext.getBean(EmailService.class);
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
-        emailService = Mockito.spy(applicationContext.getBean(EmailService.class));
         federationService = Mockito.spy(applicationContext.getBean(FederationService.class));
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
         competitionService = Mockito.spy(new CompetitionService(competitionRepository));
-
         InviteToFederationManagerController inviteController = new InviteToFederationManagerController(
                 userService, emailService, federationService
         );
 
+        CreateCompetitionController createCompetitionController = new CreateCompetitionController(competitionService, userService, teamService);
+
         FederationManagerInviteController fedManInvite = new FederationManagerInviteController(userService, federationService);
-        this.mockMvc = MockMvcBuilders.standaloneSetup(inviteController, fedManInvite).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(inviteController, fedManInvite, createCompetitionController).build();
     }
 
     @Before("@create_view_update_competition")
@@ -416,6 +389,8 @@ public class U39CreateViewUpdateCompetition {
 
     @Given("I am a federation manager")
     public void givenIAmAFederationManager() {
+        user.grantAuthority(AuthorityType.FEDERATION_MANAGER);
+        userRepository.save(user);
         Assertions.assertTrue(user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_FEDERATION_MANAGER")));
     }
 
