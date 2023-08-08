@@ -50,17 +50,42 @@ public class ViewAllCompetitionsController {
 
     }
 
+    public enum Timing {
+        ALL, PAST, CURRENT
+    }
+    List<Timing> timingValues = List.of(Timing.values());
+
+    private Page<Competition> getPageResult(int page, String time, List<String> sports) {
+        // pages are 0 indexed.
+        PageRequest pageable = PageRequest.of(page - 1, PAGE_SIZE, SORT);
+        Page<Competition> pageResult;
+
+
+        Timing timing = Timing.ALL;
+        for (Timing tim: timingValues) {
+            if (time.equals(tim.toString())) {
+                timing = tim;
+            }
+        }
+
+        return switch (timing) {
+            case PAST -> competitionService.findPastCompetitionsBySports(pageable, sports);
+            case CURRENT -> competitionService.findCurrentCompetitionsBySports(pageable, sports);
+            default -> competitionService.findAllCompetitionsBySports(pageable);
+        };
+    }
+
     @GetMapping("/view-all-competitions")
     public String viewAllCompetitions(@RequestParam(name = "page", defaultValue = "1") int page,
                                       @RequestParam(name = "sports", required=false) List<String> sports,
+                                      @RequestParam(name = "time", required = false, defaultValue = "ALL") String time,
                                       Model model, HttpServletRequest request) {
+
 
         model.addAttribute("httpServletRequest",request);
 
-        // pages are 0 indexed.
-        PageRequest pageable = PageRequest.of(page - 1, PAGE_SIZE, SORT);
+        Page<Competition> pageResult = getPageResult(page, time, sports);
 
-        Page<Competition> pageResult = competitionService.findCurrentCompetitionsBySports(pageable, sports);
         List<Competition> competitions = pageResult.stream().toList();
 
         model.addAttribute("listOfCompetitions", competitions);

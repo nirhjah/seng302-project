@@ -127,4 +127,13 @@ public class CompetitionService {
         }
         return competitionRepository.findCurrentCompetitionsBySports(pageable, filteredSports, now);
     }
+
+    /**
+     * Finds all competitions given a list of sports.
+     * @param pageable The pageable detailing information about the query
+     * @return The Page of competitions
+     */
+    public Page<Competition> findAllCompetitionsBySports(Pageable pageable) {
+        return competitionRepository.findAllCompetitionsBySports(pageable);
+    }
 }

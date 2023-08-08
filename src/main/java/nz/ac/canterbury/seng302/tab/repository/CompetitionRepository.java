@@ -54,4 +54,12 @@ public interface CompetitionRepository extends CrudRepository<Competition, Long>
                                                       @Param("filteredSports") List<String> filteredSports,
                                                       @Param("now") long now);
 
+
+    @Query("""
+            SELECT DISTINCT c
+            FROM Competition c
+              WHERE ((:#{#filteredSports.size}=0 OR (c.sport in :filteredSports)))
+              """)
+    Page<Competition> findAllCompetitionsBySports(Pageable pageable);
+
 }
