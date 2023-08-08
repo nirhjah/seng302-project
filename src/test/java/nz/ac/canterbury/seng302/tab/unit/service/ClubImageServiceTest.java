@@ -12,11 +12,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 public class ClubImageServiceTest {
@@ -34,12 +38,16 @@ public class ClubImageServiceTest {
     MultipartFile mockedFileJpg = new MockMultipartFile("my_image.jpg", bytes);
     MultipartFile mockedFileJpeg = new MockMultipartFile("my_image.jpeg", bytes);
     MultipartFile mockedFilePng = new MockMultipartFile("my_image.png", bytes);
+    MultipartFile mockedFilePngCapital = new MockMultipartFile("my_image.PNG", bytes);
+
     MultipartFile mockedFileSvg = new MockMultipartFile("my_image.svg", bytes);
+    MultipartFile mockedFileSvgCapital = new MockMultipartFile("my_image.SVG", bytes);
 
     @BeforeEach
     public void beforeEach() throws IOException {
         location = new Location(null, null, null, "Christchurch", null, "New Zealand");
         club = new Club("Rugby Club", location, "soccer",null);
+        clubService.updateOrAddClub(club);
 
         FileDataSaver.clearTestFolder();
     }
@@ -53,19 +61,51 @@ public class ClubImageServiceTest {
     }
 
 
-    private void testSaveThenRead(MockMultipartFile mockMultipartFile, ImageType imageType) throws IOException {
+    private void testSaveThenReadImage(MultipartFile mockMultipartFile) throws IOException {
         clubImageService.saveImage(club, mockMultipartFile);
 
-        ResponseEntity<>
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "image/png");
 
-        byte[] read = clubImageService.r
-        Assertions.assertEquals(Respo);
+        ResponseEntity<byte[]> expected = ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .headers(headers)
+                .body(mockMultipartFile.getBytes());
+
+        var got = clubImageService.getImageResponse(club);
+
+        assertEquals(expected, got);
+        assertEquals(club.getImageType(), ImageType.PNG_OR_JPEG);
+    }
+
+
+    private void testSaveThenReadSvg(MultipartFile mockMultipartFile) throws IOException {
+        clubImageService.saveImage(club, mockMultipartFile);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "image/svg+xml");
+
+        ResponseEntity<byte[]> expected = ResponseEntity.ok()
+                .headers(headers)
+                .body(mockMultipartFile.getBytes());
+
+        var got = clubImageService.getImageResponse(club);
+
+        assertEquals(expected, got);
+        assertEquals(club.getImageType(), ImageType.SVG);
     }
 
     @Test
-    public void testSaveThenRead() {
-
+    public void testSaveThenReadForPngsAndJpegs() throws IOException {
+        testSaveThenReadImage(mockedFilePng);
+        testSaveThenReadImage(mockedFilePngCapital);
+        testSaveThenReadImage(mockedFileJpeg);
+        testSaveThenReadImage(mockedFileJpg);
     }
 
-
+    @Test
+    public void testSaveThenReadForSvgs() throws IOException {
+        testSaveThenReadSvg(mockedFileSvg);
+        testSaveThenReadSvg(mockedFileSvgCapital);
+    }
 }
