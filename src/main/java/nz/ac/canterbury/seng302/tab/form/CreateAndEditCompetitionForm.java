@@ -10,6 +10,7 @@ import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * Form object provided to the controller which contains the fields for the user to enter and validation for the fields.
@@ -137,7 +138,12 @@ public class CreateAndEditCompetitionForm {
     }
 
     public Location getLocation() {
-        return new Location(this.addressLine1, this.addressLine2, this.suburb, this.city, this.postcode, this.country);
+        Location location = new Location(this.addressLine1, this.addressLine2, this.suburb, this.city, this.postcode, this.country);
+        if (locationIsNull(location)) {
+            return null;
+        } else {
+            return location;
+        }
     }
 
     public Grade getGrade() {
@@ -168,6 +174,24 @@ public class CreateAndEditCompetitionForm {
         } else {
             return new HashSet<>();
         }
+    }
+
+    /**
+     * This method is used so that locations with only null/"" aren't saved
+     *
+     * @param location location to be checked against
+     * @return boolean to confirm
+     */
+    private boolean locationIsNull(Location location) {
+        return Stream.of(
+                        location.getAddressLine1(),
+                        location.getAddressLine2(),
+                        location.getSuburb(),
+                        location.getCity(),
+                        location.getPostcode(),
+                        location.getCountry()
+                )
+                .allMatch(value -> value == null || value.isEmpty());
     }
 
 }

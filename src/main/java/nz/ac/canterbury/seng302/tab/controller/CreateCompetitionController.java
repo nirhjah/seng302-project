@@ -58,10 +58,10 @@ public class CreateCompetitionController {
      * @param competitionID  if editing, get competition through competitionID
      * @param model   model
      * @param request http request
-     * @return create club form
+     * @return create competition form
      */
     @GetMapping("/createCompetition")
-    public String clubForm(@RequestParam(name = "edit", required = false) Long competitionID, CreateAndEditCompetitionForm form,
+    public String createCompetitionForm(@RequestParam(name = "edit", required = false) Long competitionID, CreateAndEditCompetitionForm form,
                            Model model,
                            HttpServletRequest request) {
 
@@ -136,7 +136,6 @@ public class CreateCompetitionController {
             editCompetition.setSport(form.getSport());
             editCompetition.setGrade(form.getGrade());
             editCompetition.setLocation(form.getLocation());
-
             if (usersOrTeams.equals("teams")) {
                 Set<Team> teams = IDs.stream()
                         .map(teamService::getTeam)
@@ -219,12 +218,14 @@ public class CreateCompetitionController {
         form.setCompetitiveness(grade.getCompetitiveness());
 
         Location location = competition.getLocation();
-        form.setAddressLine1(location.getAddressLine1());
-        form.setAddressLine2(location.getAddressLine2());
-        form.setSuburb(location.getSuburb());
-        form.setPostcode(location.getPostcode());
-        form.setCity(location.getCity());
-        form.setCountry(location.getCountry());
+        if (location != null) {
+            form.setAddressLine1(location.getAddressLine1());
+            form.setAddressLine2(location.getAddressLine2());
+            form.setSuburb(location.getSuburb());
+            form.setPostcode(location.getPostcode());
+            form.setCity(location.getCity());
+            form.setCountry(location.getCountry());
+        }
         if (competition instanceof TeamCompetition) {
             model.addAttribute("teams", ((TeamCompetition) competition).getTeams());
         } else {
