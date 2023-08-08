@@ -94,8 +94,7 @@ public class CreateClubControllerTest {
                 "johndoe@example.com", "Password123!", testLocation);
         userRepository.save(user);
 
-
-        club = new Club("Rugby Club", new Location("5 Test Lane", "", "", "Christchurch", "8042", "New Zealand"), "Rugby",null);
+        club = new Club("Rugby Club", new Location("5 Test Lane", "", "", "Christchurch", "8042", "New Zealand"), "Rugby", user);
         team3.setTeamClub(club);
 
         clubRepository.save(club);

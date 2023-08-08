@@ -43,9 +43,6 @@ public class Club implements Identifiable, HasImage {
         this.location = location;
         this.sport = sport;
         this.manager = manager;
-
-        Resource resource = new ClassPathResource("/static/image/icons/club-logo.svg");
-        InputStream is = resource.getInputStream();
     }
 
     public ImageType getImageType() {
@@ -84,11 +81,6 @@ public class Club implements Identifiable, HasImage {
     }
 
     public boolean isManagedBy(User user) {
-        if (getManager() == null) {
-            // If the Club has no manager, then I guess it's "fine"?
-            return true;
-        }
-        // else, we check whether the userId is equal to manager Id.
         return user.getUserId() == getManager().getUserId();
     }
 

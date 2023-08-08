@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -123,6 +124,6 @@ public class ClubImageServiceTest {
         InputStream is = resource.getInputStream();
         var bytes = is.readAllBytes();
 
-        assertEquals(bytes, clubImageService.getDefaultBytes());
+        assertArrayEquals(bytes, clubImageService.getDefaultBytes());
     }
 }
