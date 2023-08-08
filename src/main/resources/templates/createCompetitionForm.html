@@ -139,8 +139,7 @@
             </div>
 
             <div class="member-selection-box">
-                <div class="inactive-cover">
-                <!--                <div class="inactive-cover active">-->
+                <div class="inactive-cover active">
                     <h3>You must type in a sport before you may add competitors</h3>
                 </div>
                 <div class="competitors-box">
@@ -251,11 +250,7 @@
             const type = typeCheckbox.checked ? "users" : "teams"
             axios.get("createCompetition/get_" + type, {params: {sport: sportsInput.value, search: searchQuery.value}})
                 .then(response => {
-                    if (type === "users") {
-                        generateUsers(response.data)
-                    } else {
-                        generateTeams(response.data)
-                    }
+                    generateUsersTeams(response.data);
                 })
                 .catch(error => {
                     alert("ERROR see console");
@@ -266,64 +261,36 @@
 
     const usersTeamsUl = document.querySelector(".users-teams-ul")
 
-    function generateUsers(users) {
-        console.log(users)
-        for (let i = 0; i < users.length; i++) {
-            const user = users[i];
-            if (!checkUserTeamPresent(user.userId)) {
-                const userLi = document.createElement("li");
-                userLi.className = "users-teams-li";
-                usersTeamsUl.append(userLi);
+    function generateUsersTeams(usersTeams) {
+        console.log(usersTeams)
+        for (let i = 0; i < usersTeams.length; i++) {
+            const userTeam = usersTeams[i];
+            if (!checkUserTeamPresent(usersTeams.userTeamID)) {
+                const userTeamLi = document.createElement("li");
+                userTeamLi.className = "users-teams-li";
+                usersTeamsUl.append(userTeamLi);
 
-                const liUserImage = document.createElement("img");
-                liUserImage.className = "li-user-team-image";
-                liUserImage.src = "data:image/jpeg;base64," + user.pictureString;
-                liUserImage.alt = "My Profile";
-                userLi.append(liUserImage);
+                const liUserTeamImage = document.createElement("img");
+                liUserTeamImage.className = "li-user-team-image";
+                liUserTeamImage.src = "data:image/jpeg;base64," + userTeam.pictureString;
+                liUserTeamImage.alt = "My Profile";
+                userTeamLi.append(liUserTeamImage);
 
-                const liUserName = document.createElement("span");
-                liUserName.className = "li-user-team-name";
-                liUserName.textContent = user.firstName + " " + user.lastName;
-                userLi.append(liUserName);
+                const liUserTeamName = document.createElement("span");
+                liUserTeamName.className = "li-user-team-name";
+                liUserTeamName.textContent = userTeam.name;
+                userTeamLi.append(liUserTeamName);
 
-                const userId = document.createElement("input");
-                userId.className = "user-team-ID"
-                userId.type = "hidden";
-                userId.value = user.userId;
-                userLi.append(userId);
-                userTeamChange(userLi);
+                const userTeamId = document.createElement("input");
+                userTeamId.className = "user-team-ID"
+                userTeamId.type = "hidden";
+                userTeamId.value = userTeam.userTeamID;
+                userTeamLi.append(userTeamId);
+                userTeamChange(userTeamLi);
             }
         }
     }
 
-    function generateTeams(teams) {
-        for (let i = 0; i < teams.length; i++) {
-            const team = teams[i];
-            if (!checkUserTeamPresent(team.teamId)) {
-                const teamLi = document.createElement("li");
-                teamLi.className = "users-teams-li";
-                usersTeamsUl.append(teamLi);
-
-                const liTeamImage = document.createElement("img");
-                liTeamImage.className = "li-user-team-image";
-                liTeamImage.src = "data:image/jpeg;base64," + team.pictureString;
-                liTeamImage.alt = "My Profile";
-                teamLi.append(liTeamImage);
-
-                const liTeamName = document.createElement("span");
-                liTeamName.className = "li-user-team-name";
-                liTeamName.textContent = team.name;
-                teamLi.append(liTeamName);
-
-                const teamId = document.createElement("input");
-                teamId.className = "user-team-ID"
-                teamId.type = "hidden";
-                teamId.value = team.teamId;
-                teamLi.append(teamId);
-                userTeamChange(teamLi);
-            }
-        }
-    }
 
     const userTeamIDs = document.querySelectorAll(".competitors-li input")
 
@@ -346,15 +313,14 @@
             } else {
                 userTeam.classList.add("users-teams-li");
                 userTeam.classList.remove("competitors-li");
-                console.log(1);
 
                 // Inserts the user/team back in the correct spot alphabetically
                 const currentName = userTeam.querySelector("span").textContent;
                 const currentID = userTeam.querySelector(".user-team-ID").value;
-                if (usersTeamsUl.length===0) {
+                if (usersTeamsUl.childElementCount===0) {
                     usersTeamsUl.append(userTeam);
                 } else {
-                    for (let i = 0; i < usersTeamsUl.length; i++) {
+                    for (let i = 0; i < usersTeamsUl.childElementCount; i++) {
                         console.log(2);
                         const uT = usersTeamsUl[i];
                         const name = uT.querySelector("span").textContent;
@@ -365,8 +331,7 @@
                                 usersTeamsUl.insertBefore(userTeam, uT);
                                 break;
                             }
-                        } if (i === (usersTeamsUl.length - 1)) {
-                            console.log(3);
+                        } if (i === (usersTeamsUl.childElementCount - 1)) {
                             usersTeamsUl.append(userTeam);
                         }
                     }

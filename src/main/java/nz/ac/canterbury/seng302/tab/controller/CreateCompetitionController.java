@@ -6,20 +6,17 @@ import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
 import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
 import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
-import nz.ac.canterbury.seng302.tab.form.CreateActivityForm;
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditCompetitionForm;
-import nz.ac.canterbury.seng302.tab.response.CompetitionTeamInfo;
-import nz.ac.canterbury.seng302.tab.response.CompetitionUserInfo;
+import nz.ac.canterbury.seng302.tab.response.competition.CompetitionTeamInfo;
+import nz.ac.canterbury.seng302.tab.response.competition.CompetitionUserInfo;
 import nz.ac.canterbury.seng302.tab.service.CompetitionService;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
-import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
 import nz.ac.canterbury.seng302.tab.validator.CompetitionFormValidators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -32,9 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Spring Boot Controller class for the Create Competition Form
@@ -174,10 +169,10 @@ public class CreateCompetitionController {
     }
 
     /**
-     * Prefills model with club fields
+     * Prefills model with competition fields
      *
      * @param model model to be filled
-     * @param competition  club to get info from
+     * @param competition  competition to get info from
      */
     public void prefillModelWithCompetition(Model model, Competition competition) {
         model.addAttribute("competitionID", competition.getCompetitionId());
@@ -244,14 +239,11 @@ public class CreateCompetitionController {
      * @return JSON object of type List<User>
      */
     @GetMapping(path = "/createCompetition/get_users", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<CompetitionUserInfo>> getUsersJSON(@RequestParam String sport, @RequestParam String search) {
-        Optional<Sport> sportOptional = sportsService.findSportByName(sport);
-        List<User> users = new ArrayList<>();
-        if (sportOptional.isPresent()) {
-            users = userService.findUsersBySports(List.of(sportOptional.get()));
-        }
+    public ResponseEntity<List<CompetitionUserInfo>> getUsersJSON(@RequestParam String sport,
+                                                                  @RequestParam(required = false, defaultValue = "") String search) {
+
         return ResponseEntity.ok().body(
-                users.stream().map(user -> new CompetitionUserInfo(
+                userService.findUsersBySportAndName(sport, search).stream().map(user -> new CompetitionUserInfo(
                         user.getUserId(),
                         user.getFirstName(),
                         user.getLastName(),

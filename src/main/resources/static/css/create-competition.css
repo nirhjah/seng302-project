@@ -287,7 +287,7 @@ input + .slider + .slider-text::after {
     padding: 20px;
     text-align: center;
     transition: opacity 1s;
-    display: none;
+    display: flex;
 }
 
 .inactive-cover.active {

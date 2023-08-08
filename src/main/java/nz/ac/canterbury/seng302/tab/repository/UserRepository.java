@@ -84,5 +84,14 @@ public interface UserRepository extends CrudRepository<User, Long> {
         @Query("SELECT distinct u.favoriteSports FROM UserEntity u")
         public List<Sport> findAllUserSports();
 
-        public List<User> findUsersByFavoriteSportsIn(List<Sport> favoriteSports);
+        @Query("""
+            SELECT DISTINCT u
+            FROM UserEntity u LEFT JOIN u.favoriteSports s
+              WHERE s.name = :sport
+              AND (:name is null OR
+                lower(:name) like lower(concat('%', u.firstName, '%'))
+              OR (lower(:name) like lower(concat('%', u.lastName, '%')))
+              OR (lower(u.firstName) like lower(concat('%', :name, '%')))
+              OR (lower(u.lastName) like lower(concat('%', :name, '%'))))""")
+        List<User> findUserBySportAndName(@Param("sport") String sport, @Param("name") String name);
 }

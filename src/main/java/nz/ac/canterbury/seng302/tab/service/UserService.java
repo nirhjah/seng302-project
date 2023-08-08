@@ -343,8 +343,8 @@ public class UserService {
         updateOrAddUser(user);
     }
 
-    public List<User> findUsersBySports(List<Sport> sports) {
-        return userRepository.findUsersByFavoriteSportsIn(sports);
+    public List<User> findUsersBySportAndName(String sport, String name) {
+        return userRepository.findUserBySportAndName(sport, name);
     }
 
 }

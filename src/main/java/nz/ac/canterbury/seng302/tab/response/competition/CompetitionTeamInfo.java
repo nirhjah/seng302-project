@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.tab.response;
+package nz.ac.canterbury.seng302.tab.response.competition;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 
@@ -7,7 +7,7 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
  */
 public class CompetitionTeamInfo {
 
-    private Long teamID;
+    private Long userTeamID;
 
     private String name;
 
@@ -18,18 +18,18 @@ public class CompetitionTeamInfo {
     }
 
     public CompetitionTeamInfo(Long teamID, String name, String pictureString) {
-        this.teamID = teamID;
+        this.userTeamID = teamID;
         this.name = name;
         this.pictureString = pictureString;
     }
 
 
-    public Long getTeamID() {
-        return teamID;
+    public Long getUserTeamID() {
+        return userTeamID;
     }
 
-    public void setTeamID(Long teamID) {
-        this.teamID = teamID;
+    public void setUserTeamID(Long teamID) {
+        this.userTeamID = teamID;
     }
 
     public String getName() {
