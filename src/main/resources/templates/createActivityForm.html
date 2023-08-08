@@ -410,8 +410,9 @@
             playerReserveList.append(playerLi);
 
             const liPlayerImage = document.createElement("img");
+            console.log(player)
             liPlayerImage.className = "li-player-image";
-            liPlayerImage.src = "data:image/jpeg;base64," + player.pictureString;
+            liPlayerImage.src = "/user-profile-picture/" + player.playerID;
             liPlayerImage.alt = "My Profile";
             playerLi.append(liPlayerImage);
 
