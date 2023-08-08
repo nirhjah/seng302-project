@@ -239,7 +239,7 @@ public class User implements Identifiable, HasImage {
 
     @Column()
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "Id")
+    @JoinColumn(name = "userId")
     private List<Authority> userRoles;
 
     /**
