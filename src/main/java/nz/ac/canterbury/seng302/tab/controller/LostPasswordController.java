@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.LostPasswordForm;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,10 +26,13 @@ public class LostPasswordController {
 
     private final UserService userService;
 
+    private final EmailService emailService;
+
     private static final String TEMPLATE_NAME = "lostPassword";
 
-    public LostPasswordController(UserService userService) {
+    public LostPasswordController(UserService userService, EmailService emailService) {
         this.userService = userService;
+        this.emailService = emailService;
     }
 
 
@@ -72,6 +76,7 @@ public class LostPasswordController {
         Optional<User> user = userService.findUserByEmail(email);
         if (user.isPresent()) {
             userService.resetPasswordEmail(user.get(), request);
+            emailService.resetPasswordEmail(user.get(), request);
         }
         return TEMPLATE_NAME;
     }

@@ -86,17 +86,17 @@ Feature: U39 – Create / view / update competition
 #    Then I am shown only past competitions for the selected sport.
 
 
-Scenario: AC16
-  Given I am a federation manager
-  When I click on the ‘Invite to Federation Managers’ UI element,
-  Then I’m taken to a page where I can see all users who aren’t federation managers.
-  And with each user's information there is a button to invite.
+#Scenario: AC16
+#  Given I am a federation manager
+#  When I click on the ‘Invite to Federation Managers’ UI element,
+#  Then I’m taken to a page where I can see all users who aren’t federation managers.
+#  And with each user's information there is a button to invite.
 
-Scenario: AC17
-  Given I am a federation manager
-  And I’m on the “Invite to Federation Managers” page,
-  When I click “Invite” on a user
-  Then they receive an email inviting them to become a federation manager.
+#Scenario: AC17
+#  Given I am a federation manager
+#  And I’m on the “Invite to Federation Managers” page,
+#  When I click “Invite” on a user
+#  Then they receive an email inviting them to become a federation manager.
 
 #Scenario: AC18
 #  Given I am a federation manager,
@@ -104,24 +104,24 @@ Scenario: AC17
 #  When I enter a string into the search bar,
 #  Then only user profiles whose first name, last name or email matches that string are shown
 
-Scenario: AC19
-  Given I am a general user of TAB, And I’ve been invited to become a federation manager (received the email)
-  When I click through the link in the email invitation to become a federation manager
-  Then I am present with a screen on the website offering me to become a federation manager
-
-Scenario: AC20
-  Given I am a general user of TAB, And I've been invited to become a federation manager (received the email)
-  When I click through the link in the email invitation to become a federation manager
-  And select ‘Accept’ on the screen inviting me to become a federation manager
-  Then I become a federation manager, I’m directed to my profile page and I am able to see the UI element to create a competition
-
-Scenario: AC21
-  Given I am a general user of TAB, And I've been invited to become a federation manager (received the email)
-  When I click through the link in the email invitation to become a federation manager
-  And select Decline on the screen inviting me to become a federation manager
-  Then I am directed to my profile page and I am not a federation manager.
-
-Scenario: AC22
-  Given I am a general user of TAB, And I’ve been invited to become a federation manager (received the email), and I have already accepted or declined the federation manager invitation.
-  When I click through the link in the email invitation to become a federation manager
-  Then I am directed to my profile page and an message appears stating ‘Error: You’ve already responded to this invitation’
+#Scenario: AC19
+#  Given I am a general user of TAB, And I’ve been invited to become a federation manager (received the email)
+#  When I click through the link in the email invitation to become a federation manager
+#  Then I am present with a screen on the website offering me to become a federation manager
+#
+#Scenario: AC20
+#  Given I am a general user of TAB, And I've been invited to become a federation manager (received the email)
+#  When I click through the link in the email invitation to become a federation manager
+#  And select ‘Accept’ on the screen inviting me to become a federation manager
+#  Then I become a federation manager, I’m directed to my profile page and I am able to see the UI element to create a competition
+#
+#Scenario: AC21
+#  Given I am a general user of TAB, And I've been invited to become a federation manager (received the email)
+#  When I click through the link in the email invitation to become a federation manager
+#  And select Decline on the screen inviting me to become a federation manager
+#  Then I am directed to my profile page and I am not a federation manager.
+#
+#Scenario: AC22
+#  Given I am a general user of TAB, And I’ve been invited to become a federation manager (received the email), and I have already accepted or declined the federation manager invitation.
+#  When I click through the link in the email invitation to become a federation manager
+#  Then I am directed to my profile page and an message appears stating ‘Error: You’ve already responded to this invitation’

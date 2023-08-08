@@ -67,9 +67,9 @@ public class InviteToFederationManagerController {
         var pageable = PageRequest.of(page - 1, PAGE_SIZE, UserService.SORT_BY_LAST_AND_FIRST_NAME);
 
         if (nameQuery.isEmpty()) {
-            return userService.getPaginatedUsers(pageable);
+            return userService.getAllUsersNotFedMans(pageable);
         } else {
-            return userService.findUsersByNameOrSportOrCity(pageable, null, null, nameQuery);
+            return userService.getAllUsersNotFedMansByNameAndEmail(pageable, nameQuery);
         }
     }
 
@@ -79,7 +79,7 @@ public class InviteToFederationManagerController {
      * @param model map representation of information to be passed to thymeleaf page
      * @param request request
      * @return redirect back to the invite federation manager url
-     * @throws MessagingException
+     * @throws MessagingException error when sending email
      */
     @PostMapping("/inviteToFederationManager")
     public String inviteToFederationManager(
