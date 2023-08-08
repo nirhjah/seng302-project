@@ -62,6 +62,7 @@ public class CompetitionRepositoryTest {
 
     @BeforeEach
     public void beforeEach() {
+        competitionRepository.deleteAll();
         now = Instant.EPOCH.getEpochSecond();
 
         createWithSport(SOCCER);
