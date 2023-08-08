@@ -116,11 +116,11 @@ public class ViewActivityStatisticIntegrationTests {
                 date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), user,
                 new Location(null, null, null, "CHCH", null, "NZ"));
         List<Fact> factList = new ArrayList<>();
-        factList.add(new Fact("Someone fell over", game, LocalTime.of(1, 25)));
-        factList.add(new Fact("Someone fell over again", game, LocalTime.of(1, 30)));
-        factList.add(new Fact("Someone fell over yet again",  game,LocalTime.of(1, 42)));
-        factList.add(new Substitution("Player was taken off", game, user, user,LocalTime.of(1, 40)));
-        factList.add(new Fact("Testing scrollable feature", game,LocalTime.of(1, 25)));
+        factList.add(new Fact("Someone fell over", game, 1));
+        factList.add(new Fact("Someone fell over again", game, 2));
+        factList.add(new Fact("Someone fell over yet again",  game, 3));
+        factList.add(new Substitution("Player was taken off", game, user, user, 4));
+        factList.add(new Fact("Testing scrollable feature", game, 5));
 
         game.addFactList(factList);
         activityRepository.save(game);
@@ -154,11 +154,11 @@ public class ViewActivityStatisticIntegrationTests {
                 date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), user,
                 new Location(null, null, null, "CHCH", null, "NZ"));
         List<Fact> factList = new ArrayList<>();
-        factList.add(new Fact("Someone fell over", game, LocalTime.of(1, 25)));
-        factList.add(new Fact("Someone fell over again", game, LocalTime.of(1, 30)));
-        factList.add(new Fact("Someone fell over yet again",  game,LocalTime.of(1, 42)));
-        factList.add(new Substitution("Player was taken off", game, user, user,LocalTime.of(1, 40)));
-        factList.add(new Fact("Testing scrollable feature", game,LocalTime.of(1, 25)));
+        factList.add(new Fact("Someone fell over", game, 1));
+        factList.add(new Fact("Someone fell over again", game, 2));
+        factList.add(new Fact("Someone fell over yet again", game, 3));
+        factList.add(new Substitution("Player was taken off", game, user, user, 4));
+        factList.add(new Fact("Testing scrollable feature", game, 5));
 
         game.addFactList(factList);
         activityRepository.save(game);
@@ -184,13 +184,13 @@ public class ViewActivityStatisticIntegrationTests {
         List<Substitution> actualSubstitution= (List<Substitution>) result.getModelAndView().getModel().get("activitySubstitutions");
         String description= actualSubstitution.get(0).getDescription();
         User userOff= actualSubstitution.get(0).getPlayerOff();
-        LocalTime time = actualSubstitution.get(0).getTimeOfEvent();
+        int time = actualSubstitution.get(0).getTimeOfEvent();
 
         Assertions.assertNotNull(userOff);
         Assertions.assertEquals("Player was taken off",description);
         Assertions.assertEquals(user.getFirstName(), userOff.getFirstName());
         Assertions.assertEquals(user.getLastName(), userOff.getLastName());
-        Assertions.assertEquals(LocalTime.of(1, 40), time);
+        Assertions.assertEquals(4, time);
 
 
     }
@@ -201,11 +201,11 @@ public class ViewActivityStatisticIntegrationTests {
                 date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), user,
                 new Location(null, null, null, "CHCH", null, "NZ"));
         List<Fact> factList = new ArrayList<>();
-        factList.add(new Fact("Someone fell over", game, LocalTime.of(1, 25)));
-        factList.add(new Fact("Someone fell over again", game, LocalTime.of(1, 30)));
-        factList.add(new Fact("Someone fell over yet again",  game,LocalTime.of(1, 42)));
-        factList.add(new Substitution("Player was taken off", game, user, user,LocalTime.of(1, 40)));
-        factList.add(new Fact("Testing scrollable feature", game,LocalTime.of(1, 25)));
+        factList.add(new Fact("Someone fell over", game, 1));
+        factList.add(new Fact("Someone fell over again", game, 2));
+        factList.add(new Fact("Someone fell over yet again",  game, 3));
+        factList.add(new Substitution("Player was taken off", game, user, user, 4));
+        factList.add(new Fact("Testing scrollable feature", game, 5));
         game.addFactList(factList);
         activityRepository.save(game);
         result=mockMvc.perform(get("/view-activity").param("activityID", String.valueOf(game.getId())))

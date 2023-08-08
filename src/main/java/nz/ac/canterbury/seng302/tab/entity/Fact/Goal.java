@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
-import java.time.LocalTime;
 
 /**
  * This is a subclass on the Fact entity
@@ -28,7 +27,7 @@ public class Goal extends Fact{
      **/
     public Goal() {}
 
-    public Goal(String description, Activity activity, User scorer,LocalTime timeOfEvent, int goalValue) {
+    public Goal(String description, Activity activity, User scorer, int timeOfEvent, int goalValue) {
         super(description, activity,timeOfEvent);
         this.scorer = scorer;
         this.goalValue = goalValue;

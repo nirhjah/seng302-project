@@ -116,10 +116,10 @@ public class ViewActivityControllerTests {
 
         List<Fact> factList = new ArrayList<>();
 
-        factList.add(new Fact("Someone fell over", activity, LocalTime.of(1, 25)));
-        factList.add(new Fact("Someone fell over again", activity, LocalTime.of(1, 30)));
-        factList.add(new Fact("Someone fell over yet again", activity, LocalTime.of(1, 42)));
-        factList.add(new Fact("Testing scrollable feature", activity, LocalTime.of(1, 25)));
+        factList.add(new Fact("Someone fell over", activity, 1));
+        factList.add(new Fact("Someone fell over again", activity, 2));
+        factList.add(new Fact("Someone fell over yet again", activity,3 ));
+        factList.add(new Fact("Testing scrollable feature", activity, 4));
 
 
         teamRepository.save(team);

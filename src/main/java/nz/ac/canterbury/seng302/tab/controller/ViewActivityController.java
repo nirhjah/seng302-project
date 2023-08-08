@@ -283,9 +283,7 @@ public class ViewActivityController {
         }
 
 
-
         validateEmptyTimeField(bindingResult,time);
-        validateSubbingSamePlayers(bindingResult,subOffId,subOnId);
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -294,15 +292,17 @@ public class ViewActivityController {
             return viewActivityRedirectUrl;
         }
 
-        LocalTime localTime = LocalTime.parse(time);
+        // TODO error parseing here
+        // use activity time start + the mins added on for the corrent time 
 
         List<Fact> factList = new ArrayList<>();
 
+        int timeAsInt = Integer.parseInt(time);
 
         switch (factType) {
             case FACT:
 
-                fact = new Fact(description, activity,localTime);
+                fact = new Fact(description, activity, timeAsInt);
                 factList.add(fact);
                 break;
 
@@ -314,7 +314,7 @@ public class ViewActivityController {
                 }
 
                 User scorer = potentialScorer.get();
-                fact = new Goal(description, activity, scorer,localTime,goalValue);
+                fact = new Goal(description, activity, scorer, timeAsInt,goalValue);
                 factList.add(fact);
                 break;
 
@@ -333,14 +333,14 @@ public class ViewActivityController {
                 }
 
                 User playerOn = potentialSubOn.get();
-                fact = new Substitution(description, activity, playerOff, playerOn,localTime);
+                fact = new Substitution(description, activity, playerOff, playerOn, timeAsInt);
                 factList.add(fact);
 
                 break;
 
             case OPPOSITION_GOAL:
 
-                fact = new OppositionGoal(description, localTime,activity, goalValue);
+                fact = new OppositionGoal(description, timeAsInt, activity, goalValue);
                 factList.add(fact);
                 break;
             case NONE:
@@ -382,18 +382,5 @@ public class ViewActivityController {
         }
     }
 
-    /**
-     * Validates whether the players involved in a substitution are the same and adds an error message
-     * to the BindingResult if they are identical.
-     *
-     * @param bindingResult The BindingResult object that holds validation errors.
-     * @param subOnOff The ID of the player who is being substituted off.
-     * @param subOnId The ID of the player who is being substituted on.
-     */
-    private void validateSubbingSamePlayers(BindingResult bindingResult,long subOnOff, long subOnId){
-        if (subOnOff==subOnId) {
-            bindingResult.addError(new FieldError("createEventForm", "subOn", "Cannot substitute the same player"));
-        }
-    }
 
 }

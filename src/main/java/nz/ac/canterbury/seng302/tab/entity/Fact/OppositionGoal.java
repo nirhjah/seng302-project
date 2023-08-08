@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
-import java.time.LocalTime;
 
 /**
  * This is a subclass on the Fact entity
@@ -28,8 +27,8 @@ public class OppositionGoal extends Fact{
      **/
     public OppositionGoal() {}
 
-    public OppositionGoal(String description, LocalTime timeOfEvent, Activity activity,int goalValue) {
-        super(description,  activity,timeOfEvent);
+    public OppositionGoal(String description, int timeOfEvent, Activity activity, int goalValue) {
+        super(description,  activity, timeOfEvent);
         this.goalValue = goalValue;
     }
 }

@@ -164,7 +164,7 @@
                 <ul>
                     <li th:each="fact : ${activityFacts}">
                         <span class="description" th:text="${fact.description}"></span>
-                        <span class="time" th:text="${#strings.toLowerCase(#temporals.format(fact.timeOfEvent, 'hh:mm a'))}"></span>
+                        <span class="time" th:text="${fact.timeOfEvent}"></span>
 
                     </li>
                 </ul>

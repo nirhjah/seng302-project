@@ -3,7 +3,6 @@ package nz.ac.canterbury.seng302.tab.entity.Fact;
 import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 
-import java.time.LocalTime;
 
 /**
  * A fact is information about an activity
@@ -38,13 +37,13 @@ public class Fact {
 
     private String description;
 
-    private LocalTime timeOfEvent;
+    private int timeOfEvent;
 
     /**
      * Empty Constructor for JPA
      **/
     public Fact() {}
-    public Fact(String description, Activity activity, LocalTime timeOfEvent) {
+    public Fact(String description, Activity activity, int timeOfEvent) {
         this.activity = activity;
         this.description = description;
         this.timeOfEvent= timeOfEvent;
@@ -53,5 +52,5 @@ public class Fact {
     public String getDescription() {
         return description;
     }
-    public LocalTime getTimeOfEvent(){ return this.timeOfEvent;}
+    public int getTimeOfEvent(){ return this.timeOfEvent;}
 }

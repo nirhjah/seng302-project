@@ -57,7 +57,7 @@ public class FactServiceTest {
                 LocalDateTime.of(2026, 1,1,6,30),
                 LocalDateTime.of(2026, 1,1,8,30), player,
                 new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
-        game.addFactList(List.of(new Substitution(null, game, player, sub, LocalTime.of(1, 20))));
+        game.addFactList(List.of(new Substitution(null, game, player, sub, 1)));
         activityRepository.save(game);
 
         Assertions.assertEquals(List.of(LocalTime.of(1, 20)), factService.getUserSubOffForActivity(player, game));
@@ -74,7 +74,7 @@ public class FactServiceTest {
                 LocalDateTime.of(2026, 1,1,6,30),
                 LocalDateTime.of(2026, 1,1,8,30), player,
                 new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
-        game.addFactList(List.of(new Substitution(null,game, player, sub,LocalTime.of(1, 20))));
+        game.addFactList(List.of(new Substitution(null, game, player, sub, 1)));
         activityRepository.save(game);
 
         Assertions.assertEquals(List.of(), factService.getUserSubOffForActivity(sub, game));
@@ -91,9 +91,9 @@ public class FactServiceTest {
                 LocalDateTime.of(2026, 1,1,6,30),
                 LocalDateTime.of(2026, 1,1,8,30), player,
                 new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
-        game.addFactList(List.of(new Substitution(null, game, player, sub,LocalTime.of(0, 20)), new Substitution(null,game, player, sub,LocalTime.of(1, 20))));
+        game.addFactList(List.of(new Substitution(null, game, player, sub, 1), new Substitution(null,game, player, sub, 2)));
         activityRepository.save(game);
-        Assertions.assertEquals(List.of(LocalTime.of(0, 20),LocalTime.of(1, 20)), factService.getUserSubOffForActivity(player, game));
+        Assertions.assertEquals(List.of(1 , 2), factService.getUserSubOffForActivity(player, game));
     }
 
     @Test
@@ -106,10 +106,10 @@ public class FactServiceTest {
                 LocalDateTime.of(2026, 1,1,6,30),
                 LocalDateTime.of(2026, 1,1,8,30), player,
                 new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
-        game.addFactList(List.of(new Substitution(null, game, player, sub,LocalTime.of(1, 20))));
+        game.addFactList(List.of(new Substitution(null, game, player, sub, 1)));
         activityRepository.save(game);
 
-        Assertions.assertEquals(List.of(LocalTime.of(1, 20)), factService.getUserSubOnsForActivity(sub, game));
+        Assertions.assertEquals(List.of(1), factService.getUserSubOnsForActivity(sub, game));
 
     }
 
@@ -123,7 +123,7 @@ public class FactServiceTest {
                 LocalDateTime.of(2026, 1,1,6,30),
                 LocalDateTime.of(2026, 1,1,8,30), player,
                 new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
-        game.addFactList(List.of(new Substitution(null, game, player, sub,LocalTime.of(1, 20))));
+        game.addFactList(List.of(new Substitution(null, game, player, sub, 1)));
         activityRepository.save(game);
 
         Assertions.assertEquals(List.of(), factService.getUserSubOnsForActivity(player, game));
@@ -140,9 +140,9 @@ public class FactServiceTest {
                 LocalDateTime.of(2026, 1,1,6,30),
                 LocalDateTime.of(2026, 1,1,8,30), player,
                 new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
-        game.addFactList(List.of(new Substitution(null, game, player, sub,LocalTime.of(0, 20)), new Substitution(null,game, player, sub,LocalTime.of(1, 20))));
+        game.addFactList(List.of(new Substitution(null, game, player, sub, 1), new Substitution(null,game, player, sub, 2)));
         activityRepository.save(game);
-        Assertions.assertEquals(List.of(LocalTime.of(0, 20),LocalTime.of(1, 20)), factService.getUserSubOnsForActivity(sub, game));
+        Assertions.assertEquals(List.of(1 ,2), factService.getUserSubOnsForActivity(sub, game));
     }
 
     @Test
@@ -161,11 +161,11 @@ public class FactServiceTest {
         activityRepository.save(activity);
 
         List<Fact> factList = new ArrayList<>();
-        factList.add(new Fact("Someone fell over",activity,LocalTime.of(1, 30)));
-        Goal goal = new Goal("Goal was scored", activity, player,LocalTime.of(1, 40),1);
+        factList.add(new Fact("Someone fell over",activity, 1));
+        Goal goal = new Goal("Goal was scored", activity, player, 1, 1);
         factRepository.save(goal);
         factList.add(goal);
-        factList.add(new Substitution("Player was taken off", activity, creator, player,LocalTime.of(1, 40)));
+        factList.add(new Substitution("Player was taken off", activity, creator, player, 2));
         activity.addFactList(factList);
         activityRepository.save(activity);
 
@@ -189,17 +189,17 @@ public class FactServiceTest {
         activityRepository.save(activity);
 
         List<Fact> factList = new ArrayList<>();
-        factList.add(new Fact("Someone fell over", activity,LocalTime.of(1, 30)));
-        Goal goal = new Goal("Goal was scored",activity, player,LocalTime.of(1, 40),1);
-        Goal goal1 = new Goal("A Goal was scored again",activity, creator,LocalTime.of(1, 40),1);
-        Goal goal2 = new Goal("A Goal",activity, creator,LocalTime.of(1, 40),1);
+        factList.add(new Fact("Someone fell over", activity, 1));
+        Goal goal = new Goal("Goal was scored",activity, player, 1, 1);
+        Goal goal1 = new Goal("A Goal was scored again",activity, creator, 1, 1);
+        Goal goal2 = new Goal("A Goal",activity, creator, 1, 1);
         factRepository.save(goal1);
         factRepository.save(goal2);
         factRepository.save(goal);
         factList.add(goal);
         factList.add(goal1);
         factList.add(goal2);
-        factList.add(new Substitution("Player was taken off", activity, creator, player,LocalTime.of(1, 40)));
+        factList.add(new Substitution("Player was taken off", activity, creator, player, 1));
         activity.addFactList(factList);
         activityRepository.save(activity);
 
@@ -231,32 +231,32 @@ public class FactServiceTest {
 
         List<Fact> factList = new ArrayList<>();
 
-        Goal goal = new Goal("Goal was scored", activity, player,LocalTime.of(1, 40),1);
+        Goal goal = new Goal("Goal was scored", activity, player, 1, 1);
 
-        Goal goal1 = new Goal("A Goal was scored again", activity, creator,LocalTime.of(1, 40),1);
-        Goal goal2 = new Goal("A Goal", activity, creator,LocalTime.of(1, 40),1);
+        Goal goal1 = new Goal("A Goal was scored again", activity, creator, 1, 1);
+        Goal goal2 = new Goal("A Goal", activity, creator, 1, 1);
 
-        Goal goal3 = new Goal("A Goal", activity, player1,LocalTime.of(1, 40),1);
-        Goal goal4 = new Goal("A Goal", activity, player1,LocalTime.of(1, 40),1);
-        Goal goal5 = new Goal("A Goal", activity, player1,LocalTime.of(1, 40),1);
+        Goal goal3 = new Goal("A Goal", activity, player1, 1, 1);
+        Goal goal4 = new Goal("A Goal", activity, player1, 1, 1);
+        Goal goal5 = new Goal("A Goal", activity, player1, 1, 1);
 
-        Goal goal6 = new Goal("A Goal", activity, player2,LocalTime.of(1, 40),1);
-        Goal goal7 = new Goal("A Goal", activity, player2,LocalTime.of(1, 40),1);
-        Goal goal8 = new Goal("A Goal", activity, player2,LocalTime.of(1, 40),1);
-        Goal goal9 = new Goal("A Goal", activity, player2,LocalTime.of(1, 40),1);
+        Goal goal6 = new Goal("A Goal", activity, player2, 1, 1);
+        Goal goal7 = new Goal("A Goal", activity, player2, 1, 1);
+        Goal goal8 = new Goal("A Goal", activity, player2, 1, 1);
+        Goal goal9 = new Goal("A Goal", activity, player2, 1, 1);
 
-        Goal goal10 = new Goal("A Goal",activity, player3,LocalTime.of(1, 40),1);
-        Goal goal11 = new Goal("A Goal",activity, player3,LocalTime.of(1, 40),1);
-        Goal goal12 = new Goal("A Goal",activity, player3,LocalTime.of(1, 40),1);
-        Goal goal13 = new Goal("A Goal",activity, player3,LocalTime.of(1, 40),1);
-        Goal goal14 = new Goal("A Goal",activity, player3,LocalTime.of(1, 40),1);
+        Goal goal10 = new Goal("A Goal",activity, player3, 1, 1);
+        Goal goal11 = new Goal("A Goal",activity, player3, 1, 1);
+        Goal goal12 = new Goal("A Goal",activity, player3, 1, 1);
+        Goal goal13 = new Goal("A Goal",activity, player3, 1, 1);
+        Goal goal14 = new Goal("A Goal",activity, player3, 1, 1);
 
-        Goal goal15 = new Goal("A Goal",activity, player4,LocalTime.of(1, 40),1);
-        Goal goal16 = new Goal("A Goal",activity, player4,LocalTime.of(1, 40),1);
-        Goal goal17 = new Goal("A Goal",activity, player4,LocalTime.of(1, 40),1);
-        Goal goal18 = new Goal("A Goal",activity, player4,LocalTime.of(1, 40),1);
-        Goal goal19 = new Goal("A Goal",activity, player4,LocalTime.of(1, 40),1);
-        Goal goal20 = new Goal("A Goal",activity, player4,LocalTime.of(1, 40),1);
+        Goal goal15 = new Goal("A Goal",activity, player4, 1, 1);
+        Goal goal16 = new Goal("A Goal",activity, player4, 1, 1);
+        Goal goal17 = new Goal("A Goal",activity, player4, 1, 1);
+        Goal goal18 = new Goal("A Goal",activity, player4, 1, 1);
+        Goal goal19 = new Goal("A Goal",activity, player4, 1, 1);
+        Goal goal20 = new Goal("A Goal",activity, player4, 1, 1);
 
         factList.add(goal);
         factList.add(goal1);
@@ -300,18 +300,18 @@ public class FactServiceTest {
                 "Christchurch", null, "New Zealand"));
 
         List<Fact> factList = new ArrayList<>();
-        factList.add(new Fact("Someone fell over", activity,LocalTime.of(1, 25)));
-        factList.add(new Fact("Someone fell over again",  activity,LocalTime.of(4, 25)));
-        factList.add(new Fact("Someone fell over yet again",  activity,LocalTime.of(2, 25)));
-        factList.add(new Substitution("Player was taken off", activity, creator, creator, LocalTime.of(1, 25)));
-        factList.add(new Fact("Testing scrollable feature",  activity,LocalTime.of(4, 25)));
+        factList.add(new Fact("Someone fell over", activity, 1));
+        factList.add(new Fact("Someone fell over again",  activity, 2));
+        factList.add(new Fact("Someone fell over yet again",  activity, 3));
+        factList.add(new Substitution("Player was taken off", activity, creator, creator, 4));
+        factList.add(new Fact("Testing scrollable feature",  activity, 5));
 
         factService.getFactsSortedByLocalTimeAscending(factList);
-        Assertions.assertEquals(LocalTime.of(1, 25), factList.get(0).getTimeOfEvent());
-        Assertions.assertEquals(LocalTime.of(1, 25), factList.get(1).getTimeOfEvent());
-        Assertions.assertEquals(LocalTime.of(2, 25), factList.get(2).getTimeOfEvent());
-        Assertions.assertEquals(LocalTime.of(4, 25), factList.get(3).getTimeOfEvent());
-        Assertions.assertEquals(LocalTime.of(4, 25), factList.get(4).getTimeOfEvent());
+        Assertions.assertEquals(1 , factList.get(0).getTimeOfEvent());
+        Assertions.assertEquals(2, factList.get(1).getTimeOfEvent());
+        Assertions.assertEquals(3, factList.get(2).getTimeOfEvent());
+        Assertions.assertEquals(4, factList.get(3).getTimeOfEvent());
+        Assertions.assertEquals(5, factList.get(4).getTimeOfEvent());
     }
 
 }

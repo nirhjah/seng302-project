@@ -118,8 +118,8 @@ public class ActivityRepositoryTest {
                 LocalDateTime.of(2023, 1,1,8,30), user,
                 new Location(null, null, null, "Christchurch", null, "New Zealand"));
         List<Fact> factList = new ArrayList<>();
-        factList.add(new Substitution("Player was taken off", activity1, user, player, LocalTime.of(1,0)));
-        factList.add(new Fact("We got 4 PCs", activity1,LocalTime.of(2, 00)));
+        factList.add(new Substitution("Player was taken off", activity1, user, player, 1));
+        factList.add(new Fact("We got 4 PCs", activity1, 2));
         activity1.addFactList(factList);
         activityRepository.save(activity1);
 

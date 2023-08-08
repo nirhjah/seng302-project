@@ -112,7 +112,7 @@ public class FactService {
      * @param facts Takes a list of facts
      */
     public void getFactsSortedByLocalTimeAscending(List<Fact> facts) {
-        Collections.sort(facts, (fact1, fact2) -> fact1.getTimeOfEvent().compareTo(fact2.getTimeOfEvent()));
+        Collections.sort(facts, Comparator.comparingInt(Fact::getTimeOfEvent));
 
     }
 }

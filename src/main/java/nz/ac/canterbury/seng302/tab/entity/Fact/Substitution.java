@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
-import java.time.LocalTime;
 
 /**
  * This is a subclass on the Fact entity
@@ -29,7 +28,7 @@ public class Substitution extends Fact{
      **/
     public Substitution() {}
 
-    public Substitution(String description, Activity activity, User playerOff, User playerOn, LocalTime timeOfEvent) {
+    public Substitution(String description, Activity activity, User playerOff, User playerOn, int timeOfEvent) {
         super(description, activity,timeOfEvent);
         this.playerOff = playerOff;
         this.playerOn = playerOn;

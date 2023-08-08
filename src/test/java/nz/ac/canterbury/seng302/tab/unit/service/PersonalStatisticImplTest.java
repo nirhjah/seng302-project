@@ -102,7 +102,7 @@ public class PersonalStatisticImplTest {
                 new Location("Test", "Test", "Test", "test", "Tst", "test"));
         activityRepository.save(game);
 
-        Goal goal = new Goal("test", game, testUser, LocalTime.of(0, 59),1);
+        Goal goal = new Goal("test", game, testUser, 1, 1);
         factRepository.save(goal);
 
         int goals = personalStatisticImpl.getGoalsScored(testUser, team);
