@@ -99,4 +99,13 @@ public abstract class Competition {
     public void setSport(String sport) {
         this.sport = sport;
     }
+
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }
