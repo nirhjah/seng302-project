@@ -9,7 +9,6 @@ import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
 import nz.ac.canterbury.seng302.tab.service.CompetitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 @Controller
@@ -33,7 +31,7 @@ public class ViewAllCompetitionsController {
             Sort.Order.asc("name").ignoreCase()
     );
 
-    private void testModel(Model model) {
+    private void testModel() {
         Location location = new Location("94 mays road", "St Albans", "St Ablans", "Chch", "8054", "nznz");
 
         Set<User> users = Set.of();
@@ -81,7 +79,7 @@ public class ViewAllCompetitionsController {
                                       @RequestParam(name = "time", required = false, defaultValue = "ALL") String time,
                                       Model model, HttpServletRequest request) {
 
-
+        testModel();
         model.addAttribute("httpServletRequest",request);
 
         Page<Competition> pageResult = getPageResult(page, time, sports);

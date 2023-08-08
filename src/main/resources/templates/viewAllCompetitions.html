@@ -16,57 +16,73 @@
 <body class="view-competition-background">
 <div th:insert="~{fragments/navBar.html::navbar}"></div>
 
-<form th:action="@{view-competition}" method="get">
-
-<!--    <div class="search-bar">-->
-<!--        <input class="search-input" type="text" placeholder="Search name" th:name="currentSearch"-->
-<!--               th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">-->
-<!--        <button class="search-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>-->
-<!--    </div>-->
-
-<!--    <div class="filter-bar">-->
-<!--        <div th:if="${not #lists.isEmpty(listOfCompetitions)}" style="display: flex">-->
-<!--            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>-->
-<!--            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfCities}, 'Filter by city', 'cities')}" th:if="${not #lists.isEmpty(listOfCities)}"></div>-->
-<!--            <button class="apply-filters-button" type="submit">Apply Filters</button>-->
-<!--        </div>-->
-<!--    </div>-->
-
-</form>
-
-
-<!--<div th:if="${listOfCompetitions.empty}" class="emptySearchResults">-->
-<!--</div>-->
-
 
 <div>
+    <div class="page-filter">
+        <div class="dropdown">
+            <div class="select">
+                <span class="selected"> All Competitions</span>
+                <div class="caret"></div>
+            </div>
+            <ul class="menu">
+                <li class="active">All Competitions</li>
+                <li>Current Competitions</li>
+                <li>Past Competitions</li>
+            </ul>
+        </div>
+        <div class ="filter-section">
+            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfCities}, 'Filter by city', 'cities')}"
+                 th:if="${not #lists.isEmpty(listOfCities)}"></div>
+            <button class="apply-filters-button" type="submit">Apply Filters</button>
+        </div>
+    </div>
 
-<div class="page-filter">
-    <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfCities}, 'Filter by city', 'cities')}" th:if="${not #lists.isEmpty(listOfCities)}"></div>
-    <button class="apply-filters-button" type="submit">Apply Filters</button>
-</div>
 
-<div class="page-wrapper">
-    <form th:action="@{view-competition}" method="get">
-    </form>
-    <div class="card-wrap">
-        <div class="card-item"  th:each="competition : ${listOfCompetitions}">
-            <div class="card-content">
-                <div class="competition-name" th:text="${competition.name}"></div>
-                <div class="competition-content" th:text="${competition.grade.getDisplayString()}"></div>
-                <div class="competition-content" th:text="${competition.sport}"></div>
-                <div class="competition-content" th:text="${competition.location.toString()}"></div>
+    <div class="page-wrapper">
+        <form th:action="@{view-competition}" method="get">
+        </form>
+        <div class="card-wrap">
+            <div class="card-item" th:each="competition : ${listOfCompetitions}">
+                <div class="card-content">
+                    <div class="competition-name" th:text="${competition.name}"></div>
+                    <div class="competition-content" th:text="${competition.grade.getDisplayString()}"></div>
+                    <div class="competition-content" th:text="${competition.sport}"></div>
+                    <div class="competition-content" th:text="${competition.location.toString()}"></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 </div>
-
 
 <div th:insert="~{fragments/pagination.html :: pagination(pageName='view-all-competitions')}"></div>
+<script>
+    const dropdowns = document.querySelectorAll('.dropdown');
+    dropdowns.forEach(dropdown => {
+        const select = dropdown.querySelector('.select');
+        const caret = dropdown.querySelector('.caret');
+        const menu = dropdown.querySelector('.menu');
+        const options = dropdown.querySelectorAll('.menu li');
+        const selected = dropdown.querySelector('.selected');
 
-<!--<div th:insert="~{fragments/pagination.html :: pagination(pageName='view-competitions')}"></div>-->
+        select.addEventListener('click', () => {
+            caret.classList.toggle('caret-rotate');
+            menu.classList.toggle('menu-open');
+        });
+
+        options.forEach(option => {
+            option.addEventListener('click', () => {
+                selected.innerText = option.innerText;
+                select.classList.remove('caret-rotate');
+                menu.classList.remove('menu-open');
+                options.forEach(option => {
+                    option.classList.remove('active');
+                });
+                option.classList.add('active');
+            });
+        });
+    });
+</script>
 <footer>
     <p>
         Image by <a
