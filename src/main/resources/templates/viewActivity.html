@@ -144,7 +144,7 @@
                         <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
 
                         <label for="time" required style="display: block;">Time of Event*</label>
-                        <input class="overall-score-input" type="number" name="time" step="1" min="0" value="0" >
+                        <input class="overall-score-input" type="number" name="time" step="1" min="0" th:max="${totalActivityMinutes}" value="0" >
                         <div id="additionalFields"></div>
                         <div th:each="err : ${#fields.errors('subOn')}" th:text="${err}" class="error-message"></div>
 
