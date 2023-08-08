@@ -121,7 +121,7 @@ public class ProfileFormController {
         model.addAttribute("isUserManagerOrCoach", team.isManager(user) || team.isCoach(user));
         model.addAttribute("formations", formationsList);
 
-        return "teamProfile";
+        return "viewTeamForm";
     }
 
     /**
