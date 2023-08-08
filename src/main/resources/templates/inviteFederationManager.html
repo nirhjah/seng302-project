@@ -29,7 +29,7 @@
             <img th:src="@{/user-profile-picture/{id}(id = ${user.userId})}"  class="card-img-top"  alt="User image">        </div>
         <div class="card-body">
           <h5 class="card-title">[[|${user.firstName} ${user.lastName}|]]</h5>
-            <h6 style="text-align: center" class="card-body" th:text="${user.email}"></h6>
+            <h6 style="text-align: center; font-size: 15px" class="card-body" th:text="${user.email}"></h6>
             <input type ="hidden" th:name ="userId" th:value ="${user.userId}">
             <div class="submit-button">
                 <button type="submit" style="background-color: #415A77; border: 2px solid white">Invite</button>
