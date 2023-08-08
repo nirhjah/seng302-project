@@ -26,17 +26,16 @@
         <div class="wrapper">
             <form th:action="@{editUser}" method="post" th:object="${editUserForm}" id="editUserForm">
                 <div class="edit-inputs">
-                    <div class="edit-user-header">
+                    <div class="create-header">
                         <h2>Password</h2>
                         <img th:src="@{/image/icons/lock.svg}"/>
-
                     </div>
                     <div class="submit-button">
                         <a th:href="@{update-password}">
                             <button type="button">Update Password</button>
                         </a>
                     </div>
-                    <div class="edit-user-header">
+                    <div class="create-header">
                         <h2>Details</h2>
                         <img th:src="@{/image/icons/dark-blue-user.svg}"/>
                     </div>
@@ -81,7 +80,7 @@
                         <div class="sport-box" id="sport-box"></div>
                         <label for="sport-list" id="error-message"></label>
                     </div>
-                    <div class="edit-user-header">
+                    <div class="create-header">
                         <h2>Location</h2>
                         <img th:src="@{/image/icons/dark-blue-location.svg}"/>
                     </div>

@@ -14,6 +14,7 @@ import nz.ac.canterbury.seng302.tab.repository.ClubRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.*;
+import nz.ac.canterbury.seng302.tab.service.image.ClubImageService;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditClubForm;
 import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
-import nz.ac.canterbury.seng302.tab.service.ClubImageService;
+import nz.ac.canterbury.seng302.tab.service.image.ClubImageService;
 import nz.ac.canterbury.seng302.tab.service.ClubService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;

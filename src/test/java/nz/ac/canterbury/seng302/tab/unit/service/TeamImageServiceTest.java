@@ -4,7 +4,7 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
-import nz.ac.canterbury.seng302.tab.service.TeamImageService;
+import nz.ac.canterbury.seng302.tab.service.image.TeamImageService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

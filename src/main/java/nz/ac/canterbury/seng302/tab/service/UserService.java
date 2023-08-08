@@ -78,6 +78,9 @@ public class UserService {
         return userRepository.findByToken(token);
     }
 
+    public User getUser(long userID) {
+        return userRepository.findById(userID).orElse(null);
+    }
 
     /**
      * Gets a page of users, filtered down by their name and sports interest
@@ -292,8 +295,6 @@ public class UserService {
         taskScheduler.schedule(new TokenVerification(user, this), Instant.now().plus(Duration.ofHours(1)));
     }
 
-
-
     /**
      * Adds user to team and updates user
      * @param user user to join team
@@ -302,6 +303,10 @@ public class UserService {
     public void userJoinTeam(User user, Team team) {
         user.joinTeam(team);
         updateOrAddUser(user);
+    }
+
+    public List<User> findUsersBySportAndName(String sport, String name) {
+        return userRepository.findUserBySportAndName(sport, name);
     }
 
     /**
@@ -338,5 +343,5 @@ public class UserService {
     public Page<User> getAllUsersNotFedMansByNameAndEmail(Pageable pageable, String search) {
         return userRepository.findUsersThatArentFedMansByNameOrEmail(pageable, search);
     }
-    
+
 }
