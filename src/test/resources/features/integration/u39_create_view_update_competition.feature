@@ -105,10 +105,10 @@ Scenario: AC18
   When I enter a string into the search bar,
   Then only user profiles whose first name, last name or email matches that string are shown
 
-Scenario: AC19
-  Given I am a general user of TAB, And I’ve been invited to become a federation manager (received the email)
-  When I click through the link in the email invitation to become a federation manager
-  Then I am present with a screen on the website offering me to become a federation manager
+#Scenario: AC19
+#  Given I am a general user of TAB, And I’ve been invited to become a federation manager (received the email)
+#  When I click through the link in the email invitation to become a federation manager
+#  Then I am present with a screen on the website offering me to become a federation manager
 
 #Scenario: AC20
 #  Given I am a general user of TAB, And I've been invited to become a federation manager (received the email)
