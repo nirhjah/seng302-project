@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,7 +34,7 @@ public class UserCompetition extends Competition {
     }
 
     public Set<User> getPlayers() {
-        return players;
+        return Collections.unmodifiableSet(players);
     }
 
     public void addPlayer(User player) {

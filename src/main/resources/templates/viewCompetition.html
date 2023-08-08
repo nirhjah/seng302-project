@@ -18,96 +18,78 @@
   <div class="wrapper-profile">
 
     <div class="team-info">
-      <div class="team-display">
+      <div class="team-display" th:object="${competition}">
         <h2>Competition Details</h2>
+
         <div class="comp-headings">
-          <img th:src="@{/image/icons/name.svg}"/>
+          <img alt="" th:src="@{/image/icons/name.svg}"/>
 
           <div>
             <h4>Name</h4>
-
-            <h3>Admin Admin</h3>
+            <h3 th:text="*{name}">NAME_HERE</h3>
           </div>
-
         </div>
+
         <div class="comp-headings">
-          <img th:src="@{/image/icons/sports.svg}"/>
+          <img alt="" th:src="@{/image/icons/sports.svg}"/>
 
           <div>
             <h4>Sport</h4>
-            <h3>Soccer</h3>
+            <h3 th:text="*{sport}">SPORT_HERE</h3>
           </div>
-
         </div>
+
         <div class="comp-headings">
-          <img th:src="@{/image/icons/gradeLevel.svg}"/>
+          <img alt="" th:src="@{/image/icons/gradeLevel.svg}"/>
 
           <div>
-          <h4>Grade</h4>
-          <h3>Under 18s</h3>
+            <h4>Grade</h4>
+            <h3 th:text="*{grade.displayString}">GRADE_HERE</h3>
           </div>
-
         </div>
+        
         <div class="comp-headings">
-          <img th:src="@{/image/icons/location.svg}"/>
+          <img alt="" th:src="@{/image/icons/location.svg}"/>
           <div>
             <h4>Location</h4>
-            <h3>1 Ilam Road, Ilam 8042 Christchurch New Zealand</h3>
+            <h3 th:text="*{location}">LOCATION_HERE</h3>
           </div>
         </div>
-      </div>
 
+      </div>
     </div>
 
-
-    <div class="teamOrUserListDisplay">
+    <!--/* Only shown during Team Competitions
+          Unfortunately I have to do class string compares,
+          because `instanceof` isn't working */-->
+    <div class="teamOrUserListDisplay"
+      th:if="${competition.class.name == 'nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition'}">
+      
       <h3>Teams</h3>
       <ul>
-
-        <li>
-          <img th:src="@{image/default-profile.png}">
-          <span>player 1 </span>
+        <li class="li-player-image" th:each="team : ${competition.teams}">
+          <img th:src="@{/team-profile-picture/{id}(id = ${team.id})}" class="card-img-top" alt="Team image">
+          <span th:text="${team.name}">TEAM_NAME</span>
         </li>
-
-        <li>
-          <img th:src="@{image/default-profile.png}">
-          <span>player 2 </span>
-        </li>
-
-        <li>
-          <img th:src="@{image/default-profile.png}">
-          <span>player 3 </span>
-        </li>
-
-        <li>
-          <img th:src="@{image/default-profile.png}">
-          <span>player 4 </span>
-        </li>
-
-
-        <li>
-          <img th:src="@{image/default-profile.png}">
-          <span>player 5 </span>
-        </li>
-
-        <li>
-          <img th:src="@{image/default-profile.png}">
-          <span>player 6 </span>
-        </li>
-
-
-        <li>
-          <img class="li-player-image" th:src="@{image/default-profile.png}">
-          <span>player 7 </span>
-        </li>
-
       </ul>
+    </div>
 
+    <!--/* Only shown during Team Competitions */-->
+    <div class="teamOrUserListDisplay"
+      th:if="${competition.class.name == 'nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition'}">
+    
+      <h3>Players</h3>
+      <ul>
+        <li class="li-player-image" th:each="player : ${competition.players}">
+          <img th:src="@{/user-profile-picture/{id}(id = ${player.id})}" class="card-img-top" alt="Player image">
+          <span th:text="|${player.firstName} ${player.lastName}|">PLAYER_NAME</span>
+        </li>
+      </ul>
     </div>
 
     <div class="profile-buttons">
       <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
-      <div  class="edit-button" style="float: right; padding: 10px">
+      <div class="edit-button" style="float: right; padding: 10px">
         <a>
           <button type="button">Edit Competition</button>
         </a>
