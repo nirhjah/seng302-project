@@ -142,14 +142,17 @@
                     <h3>You must type in a sport before you may add competitors</h3>
                 </div>
                 <div class="competitors-box">
-                    <div class="competitors-header">Competitors</div>
+                    <div class="competitors-header">
+                        <h4>Competitors</h4>
+                        <h4 id="totalHeading">Total: 0</h4>
+                    </div>
                     <ul class="competitors-ul">
-                        <li th:each="competitor : ${users}" class="competitors-li" th:onclick="'userTeamChange(this)'">
+                        <li th:each="competitor : ${users}" class="competitors-li">
                             <img th:src="'data:image/png;base64,' + ${competitor.pictureString}" alt="My Profile" class="li-user-team-image"/>
                             <span class="li-user-team-name" th:text="${competitor.firstName + ' ' + competitor.lastName}"></span>
                             <input type="hidden" class="user-team-ID" name="userTeamID" th:value="${competitor.userId}">
                         </li>
-                        <li th:each="competitor : ${teams}" class="competitors-li" th:onclick="'userTeamChange(this)'">
+                        <li th:each="competitor : ${teams}" class="competitors-li">
                             <img th:src="'data:image/png;base64,' + ${competitor.pictureString}" alt="My Profile" class="li-user-team-image"/>
                             <span class="li-user-team-name" th:text="${competitor.name}"></span>
                             <input type="hidden" class="user-team-ID" name="userTeamID" th:value="${competitor.teamId}">
@@ -196,7 +199,15 @@
         if (sportsInput.value.trim() !== "") {
             getCompetitors();
         }
+        updateTotalCount();
     });
+
+    const totalHeading = document.getElementById('totalHeading');
+
+    function updateTotalCount() {
+        let itemCount = competitorsUl.children.length;
+        totalHeading.textContent = 'Total: ' + itemCount;
+    }
 
     sportsInput.addEventListener("change", () => {
         clearCompetitors();
@@ -297,7 +308,6 @@
                 userTeamId.className = "user-team-ID"
                 userTeamId.type = "hidden";
                 userTeamId.value = userTeam.userTeamID;
-                userTeamId.name = "userTeamID"
                 userTeamLi.append(userTeamId);
                 userTeamChange(userTeamLi);
             }
@@ -316,39 +326,46 @@
         return isPresent;
     }
 
+    const competitorsLi = document.querySelectorAll(".competitors-li")
+
+    competitorsLi.forEach((competitorLi) => userTeamChange(competitorLi))
+
     function userTeamChange(userTeam) {
         userTeam.addEventListener('click', () => {
+            const currentName = userTeam.querySelector("span").textContent;
+            const currentID = userTeam.querySelector(".user-team-ID");
             if (userTeam.classList.contains("users-teams-li")) {
                 userTeam.classList.remove("users-teams-li");
                 userTeam.classList.add("competitors-li");
+                currentID.name = "userTeamID";
                 competitorsUl.append(userTeam);
             } else {
+                console.log("here")
                 userTeam.classList.add("users-teams-li");
                 userTeam.classList.remove("competitors-li");
-
+                currentID.name = "";
                 // Inserts the user/team back in the correct spot alphabetically
-                const currentName = userTeam.querySelector("span").textContent;
-                const currentID = userTeam.querySelector(".user-team-ID").value;
                 if (usersTeamsUl.childElementCount===0) {
                     usersTeamsUl.append(userTeam);
                 } else {
                     for (let i = 0; i < usersTeamsUl.childElementCount; i++) {
-                        console.log(2);
-                        const uT = usersTeamsUl[i];
+                        const uT = usersTeamsUl.children[i];
                         const name = uT.querySelector("span").textContent;
                         const ID = uT.querySelector(".user-team-ID").value;
                         const alphabetical = name.localeCompare(currentName);
                         if (alphabetical >= 0) {
-                            if (alphabetical === 1 || alphabetical === 0 && currentID < ID) {
+                            if (alphabetical === 1 || alphabetical === 0 && currentID.value < ID) {
                                 usersTeamsUl.insertBefore(userTeam, uT);
                                 break;
                             }
-                        } else if (i === (usersTeamsUl.childElementCount - 1)) {
+                        } if (i === (usersTeamsUl.childElementCount - 1)) {
                             usersTeamsUl.append(userTeam);
                         }
                     }
                 }
             }
+            const itemCount = competitorsUl.children.length;
+            totalHeading.textContent = 'Total: ' + itemCount;
         });
     }
 

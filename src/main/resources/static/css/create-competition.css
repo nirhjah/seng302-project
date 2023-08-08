@@ -182,7 +182,7 @@ input:checked + .slider:before {
 .slider-text::before {
     content: "Teams";
     flex: 1;
-    margin-right: 18%;
+    margin-right: 20%;
 }
 
 input + .slider + .slider-text::before,
@@ -297,11 +297,14 @@ input + .slider + .slider-text::after {
 
 .users-teams-li, .competitors-li {
     transition: 0.25s;
-    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.2);
     padding: 5px;
     display: flex;
     cursor: pointer;
-    margin: 0 0 5px;
+    border-bottom: 1px solid #e7e7e7;
+}
+
+.users-teams-li:hover, .competitors-li:hover {
+    background-color: #e7e7e7;
 }
 
 .li-user-team-image {
@@ -318,6 +321,11 @@ input + .slider + .slider-text::after {
     justify-content: center;
     align-items: center;
     -webkit-font-smoothing: subpixel-antialiased;
+}
+
+.competitors-header {
+    display: flex;
+    justify-content: space-between;
 }
 
 
