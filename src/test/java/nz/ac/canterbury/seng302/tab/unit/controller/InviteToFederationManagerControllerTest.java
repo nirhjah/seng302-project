@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -48,7 +49,7 @@ public class InviteToFederationManagerControllerTest {
     @Test
     @WithMockUser()
     void testGettingPage() throws Exception {
-        when(userService.getPaginatedUsers(any())).thenReturn(Page.empty());
+        when(userService.getAllUsersNotFedMansByNameAndEmail(any(Pageable.class), any(String.class))).thenReturn(Page.empty());
         mockMvc.perform(get("/inviteToFederationManager")).andExpect(status().isOk()).andExpect(view().name("inviteFederationManager"));
     }
 
