@@ -278,7 +278,7 @@
             scorerLabel.style.display = "block";
             scorerLabel.appendChild(requiredSpan);
 
-            /*[# th:each="player : ${activity.getInvolvedMembers()}"]*/
+            /*[# th:each="player : ${activity.getInvoledMembersNoManager()}"]*/
             // Create an option element for each team member
             var option = document.createElement("option");
             option.value = /*[[${player.getUserId()}]]*/ '';
