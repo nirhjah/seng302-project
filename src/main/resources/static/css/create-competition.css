@@ -328,6 +328,37 @@ input + .slider + .slider-text::after {
     justify-content: space-between;
 }
 
+/*.switch.disabled input:checked + .slider:before {*/
+/*    -webkit-transform: unset !important;*/
+/*    -ms-transform: none !important;*/
+/*    transform: unset !important;*/
+/*}*/
+
+.switch.disabled {
+    cursor: default;
+}
+
+.switch.disabled .slider {
+    border: 2px solid #888;
+    cursor: default;
+}
+
+.switch.disabled .slider::before {
+    background-color: #888;
+}
+
+.switch.disabled input:checked + .slider + .slider-text::before,
+.switch.disabled input + .slider + .slider-text::after {
+    color: #888;
+}
+
+.switch.disabled input + .slider + .slider-text::before,
+.switch.disabled input:checked + .slider + .slider-text::after {
+    color: white;
+    -webkit-transition: color .2s;
+    transition: color .2s;
+}
+
 
 
 

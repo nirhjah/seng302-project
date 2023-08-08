@@ -46,14 +46,11 @@ public class CreateCompetitionController {
 
     private final TeamService teamService;
 
-    private final SportService sportsService;
-
     @Autowired
-    public CreateCompetitionController(CompetitionService competitionService,UserService userService, TeamService teamService, SportService sportsService) {
+    public CreateCompetitionController(CompetitionService competitionService,UserService userService, TeamService teamService) {
         this.competitionService = competitionService;
         this.userService = userService;
         this.teamService = teamService;
-        this.sportsService = sportsService;
     }
 
     /**

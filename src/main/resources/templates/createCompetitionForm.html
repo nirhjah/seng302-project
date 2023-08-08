@@ -128,7 +128,7 @@
 
             <div class="checkbox-box">
                 <label>Type</label>
-                <label class="switch">
+                <label class="switch" th:classappend="${competitionID != null} ? 'disabled' : ''">
                     <input type="checkbox" id="checkbox" th:checked="${not #lists.isEmpty(users)}">
                     <span class="slider"></span>
                     <span class="slider-text"></span>
@@ -200,6 +200,9 @@
             getCompetitors();
         }
         updateTotalCount();
+        if (checkBox.classList.contains("disabled")) {
+            typeCheckbox.disabled = "disabled"
+        }
     });
 
     const totalHeading = document.getElementById('totalHeading');
@@ -237,26 +240,32 @@
         }
         searchInput.value = "";
         searchQuery.value = "";
+        updateTotalCount();
     }
 
+    const checkBox = document.querySelector(".switch");
     const typeCheckbox = document.querySelector(".switch input");
     const hiddenInput = document.getElementById('usersOrTeams');
 
-
     typeCheckbox.addEventListener("change", function () {
-        if (typeCheckbox.checked) {
-            hiddenInput.value = 'users';
-        } else {
-            hiddenInput.value = 'teams';
+        if (!checkBox.classList.contains("disabled")) {
+            if (typeCheckbox.checked) {
+                hiddenInput.value = 'users';
+            } else {
+                hiddenInput.value = 'teams';
+            }
+            clearCompetitors();
+            getCompetitors();
         }
-        clearCompetitors();
-        getCompetitors();
     });
 
     const searchBoxImage = document.querySelector(".search-box img");
 
     searchBoxImage.addEventListener("click", () => {
         searchQuery.value = searchInput.value
+        while (playersTeamsUl.firstChild) {
+            playersTeamsUl.removeChild(playersTeamsUl.lastChild);
+        }
         getCompetitors();
     })
 
@@ -264,6 +273,9 @@
         if (event.key === 'Enter') {
             event.preventDefault();
             searchQuery.value = searchInput.value
+            while (playersTeamsUl.firstChild) {
+                playersTeamsUl.removeChild(playersTeamsUl.lastChild);
+            }
             getCompetitors();
         }
     });
@@ -285,10 +297,8 @@
     const usersTeamsUl = document.querySelector(".users-teams-ul")
 
     function generateUsersTeams(usersTeams) {
-        console.log(usersTeams)
         for (const userTeam of usersTeams) {
             if (!checkUserTeamPresent(userTeam.userTeamID)) {
-                console.log("and here")
                 const userTeamLi = document.createElement("li");
                 userTeamLi.className = "users-teams-li";
                 usersTeamsUl.append(userTeamLi);
@@ -314,13 +324,15 @@
         }
     }
 
-    const userTeamIDs = document.querySelectorAll(".competitors-li input")
+
 
     function checkUserTeamPresent(ID) {
+        const userTeamIDs = document.querySelectorAll(".competitors-li .user-team-ID")
         let isPresent = false;
         userTeamIDs.forEach((userTeamID) => {
             if (ID.toString() === userTeamID.value) {
                 isPresent = true;
+
             }
         });
         return isPresent;
@@ -340,7 +352,6 @@
                 currentID.name = "userTeamID";
                 competitorsUl.append(userTeam);
             } else {
-                console.log("here")
                 userTeam.classList.add("users-teams-li");
                 userTeam.classList.remove("competitors-li");
                 currentID.name = "";
