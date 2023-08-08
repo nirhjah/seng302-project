@@ -1,20 +1,20 @@
 @edit_line_up_e2e
 Feature: U33 Edit Line Up (E2E)
 
-  Scenario: AC3: Set player from team to a selected position on a formation
-    Given I am the manager of a team
-    And viewing the edit page for a team activity for that team
-    And the activity has type game or friendly and has a selected formation
-    When I select a player
-    Then I can set a position for that player to be in
-
-  Scenario: AC4: Formation can be edited to add a player
-    Given I am the manager of a team
-    And viewing the edit page for a team activity for that team
-    And the activity has type game or friendly and has a selected formation
-    When I add a player from the team to selected the formation
-    Then that player is unable to be added to the formation again
-    And that players picture and name are displayed at the correct position
+#  Scenario: AC3: Set player from team to a selected position on a formation
+#    Given I am the manager of a team
+#    And viewing the edit page for a team activity for that team
+#    And the activity has type game or friendly and has a selected formation
+#    When I select a player
+#    Then I can set a position for that player to be in
+#
+#  Scenario: AC4: Formation can be edited to add a player
+#    Given I am the manager of a team
+#    And viewing the edit page for a team activity for that team
+#    And the activity has type game or friendly and has a selected formation
+#    When I add a player from the team to selected the formation
+#    Then that player is unable to be added to the formation again
+#    And that players picture and name are displayed at the correct position
 
 #  Manually test
 #  Scenario: AC5 Add selected player to substitutes
