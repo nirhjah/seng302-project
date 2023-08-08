@@ -39,6 +39,9 @@
                 <li sec:authorize="isAuthenticated()">
                     <a th:href="@{view-users(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
                 </li>
+                <li sec:authorize="isAuthenticated()">
+                    <a th:href="@{view-all-competitions(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-all-competitions' ? 'active' : ''}">View All Competitions</a>
+                </li>
 
                 <div sec:authorize="isAuthenticated()" class="view-profile">
                     View Profile:
