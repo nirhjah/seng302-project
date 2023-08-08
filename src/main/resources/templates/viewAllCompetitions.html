@@ -38,9 +38,17 @@
 <!--<div th:if="${listOfCompetitions.empty}" class="emptySearchResults">-->
 <!--</div>-->
 
+
+<div>
+
+<div class="page-filter">
+    <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>
+    <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfCities}, 'Filter by city', 'cities')}" th:if="${not #lists.isEmpty(listOfCities)}"></div>
+    <button class="apply-filters-button" type="submit">Apply Filters</button>
+</div>
+
 <div class="page-wrapper">
     <form th:action="@{view-competition}" method="get">
-        <div class="page-filter"></div>
     </form>
     <div class="card-wrapper">
         <div class="card-item"  th:each="competition : ${listOfCompetitions}">
@@ -54,6 +62,7 @@
     </div>
 </div>
 
+</div>
 
 <!--<div th:insert="~{fragments/pagination.html :: pagination(pageName='view-competitions')}"></div>-->
 <footer>

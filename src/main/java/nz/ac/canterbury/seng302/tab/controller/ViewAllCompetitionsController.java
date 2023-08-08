@@ -42,7 +42,11 @@ public class ViewAllCompetitionsController {
         competitionService.updateOrAddCompetition(comp3);
 
         List<Competition> competitions = competitionService.findAll();
+
         model.addAttribute("listOfCompetitions", competitions);
+
+        model.addAttribute("listOfSports", List.of());
+        model.addAttribute("listOfCities", List.of());
 
         return "viewAllCompetitions";
     }
