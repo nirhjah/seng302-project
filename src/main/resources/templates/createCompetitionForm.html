@@ -132,9 +132,10 @@
             <div class="checkbox-box">
                 <label>Type</label>
                 <label class="switch">
-                    <input type="checkbox">
+                    <input type="checkbox" id="checkbox" th:checked="${not #lists.isEmpty(users)}">
                     <span class="slider"></span>
                     <span class="slider-text"></span>
+                    <input type="hidden" name="teamsOrUsers" id="teamsOrUsers" th:value="${not #lists.isEmpty(users) ? 'users' : 'teams'}">
                 </label>
             </div>
 
@@ -148,12 +149,12 @@
                         <li th:each="competitor : ${users}">
                             <img th:src="'data:image/png;base64,' + ${competitor.pictureString}" alt="My Profile" class="li-user-team-image"/>
                             <span class="li-user-team-name" th:value="${competitor.firstName + ' ' + competitor.lastName}"></span>
-                            <input type="hidden" class="user-team-ID" th:value="${competitor.userId}">
+                            <input type="hidden" class="user-team-ID" name="userTeamID" th:value="${competitor.userId}">
                         </li>
                         <li th:each="competitor : ${teams}">
                             <img th:src="'data:image/png;base64,' + ${competitor.pictureString}" alt="My Profile" class="li-user-team-image"/>
                             <span class="li-user-team-name" th:value="${competitor.name}"></span>
-                            <input type="hidden" class="user-team-ID" th:value="${competitor.teamId}">
+                            <input type="hidden" class="user-team-ID" name="userTeamID" th:value="${competitor.teamId}">
                         </li>
                     </ul>
                 </div>
@@ -190,8 +191,10 @@
 </body>
 <script>
 
+
     const sportsInput = document.getElementById("sport")
     const inactiveCover = document.querySelector(".inactive-cover")
+
 
     sportsInput.addEventListener("change", () => {
         clearCompetitors();
@@ -226,9 +229,16 @@
     const typeCheckbox = document.querySelector(".switch input");
 
     typeCheckbox.addEventListener("change", function () {
+        if (typeCheckbox.checked) {
+            hiddenInput.value = 'users';
+        } else {
+            hiddenInput.value = 'teams';
+        }
         clearCompetitors();
         getCompetitors();
     });
+
+    const hiddenInput = document.getElementById('hiddenInput');
 
     const searchBoxImage = document.querySelector(".search-box img");
 
@@ -285,6 +295,7 @@
                 userTeamId.className = "user-team-ID"
                 userTeamId.type = "hidden";
                 userTeamId.value = userTeam.userTeamID;
+                userTeamId.name = "userTeamID"
                 userTeamLi.append(userTeamId);
                 userTeamChange(userTeamLi);
             }

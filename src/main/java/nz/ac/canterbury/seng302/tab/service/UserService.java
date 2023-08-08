@@ -87,6 +87,9 @@ public class UserService {
         return userRepository.findByToken(token);
     }
 
+    public User getUser(long userID) {
+        return userRepository.findById(userID).orElse(null);
+    }
 
     /**
      * Gets a page of users, filtered down by their name and sports interest

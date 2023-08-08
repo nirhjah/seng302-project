@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Spring Boot Controller class for the Create Competition Form
@@ -92,6 +93,8 @@ public class CreateCompetitionController {
     @PostMapping("/createCompetition")
     public String createCompetition(
             @RequestParam(name = "competitionID", defaultValue = "-1") long competitionID,
+            @RequestParam("usersOrTeams") String usersOrTeams,
+            @RequestParam("userTeamID") List<Long> IDs,
             @Validated CreateAndEditCompetitionForm form,
             BindingResult bindingResult,
             HttpServletResponse httpServletResponse,
@@ -104,7 +107,7 @@ public class CreateCompetitionController {
             return "redirect:/home";
         }
 
-        postCreateActivityErrorChecking(bindingResult, form);
+        postCreateActivityErrorChecking(bindingResult, form, IDs);
 
 
         if (bindingResult.hasErrors()) {
@@ -122,10 +125,18 @@ public class CreateCompetitionController {
             editCompetition.setGrade(form.getGrade());
             editCompetition.setLocation(form.getLocation());
 
-            if (editCompetition instanceof TeamCompetition) {
-                ((TeamCompetition) editCompetition).setTeams(form.getTeams());
+            if (usersOrTeams.equals("teams")) {
+                Set<Team> teams = IDs.stream()
+                        .map(teamService::getTeam)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet());
+                ((TeamCompetition) editCompetition).setTeams(teams);
             } else {
-                ((UserCompetition) editCompetition).setPlayers(form.getPlayers());
+                Set<User> users = IDs.stream()
+                        .map(userService::getUser)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet());
+                ((UserCompetition) editCompetition).setPlayers(users);
             }
 
             competitionService.updateOrAddCompetition(editCompetition);
@@ -135,9 +146,17 @@ public class CreateCompetitionController {
             Competition competition;
 
             if (!form.getTeams().isEmpty()) {
-                competition = new TeamCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), form.getTeams());
+                Set<Team> teams = IDs.stream()
+                        .map(teamService::getTeam)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet());
+                competition = new TeamCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), teams);
             } else {
-                competition = new UserCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), form.getPlayers());
+                Set<User> users = IDs.stream()
+                        .map(userService::getUser)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet());
+                competition = new UserCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), users);
             }
 
             competitionService.updateOrAddCompetition(competition);
@@ -153,10 +172,11 @@ public class CreateCompetitionController {
      */
     private void postCreateActivityErrorChecking(
             BindingResult bindingResult,
-            CreateAndEditCompetitionForm form) {
+            CreateAndEditCompetitionForm form,
+            List<Long> IDs) {
 
         // The competition requires a team or a user to be selected
-        if (form.getTeams() == null || form.getTeams().isEmpty() && form.getPlayers() == null || form.getPlayers().isEmpty()) {
+        if (IDs.size()==0) {
             bindingResult.addError(new FieldError("CreateAndEditCompetitionForm", "competitors",
                     CompetitionFormValidators.NO_COMPETITORS_MSG));
         }
