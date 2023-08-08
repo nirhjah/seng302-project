@@ -84,6 +84,11 @@ public class Club implements Identifiable, HasImage {
     }
 
     public boolean isManagedBy(User user) {
+        if (getManager() == null) {
+            // If the Club has no manager, then I guess it's "fine"?
+            return true;
+        }
+        // else, we check whether the userId is equal to manager Id.
         return user.getUserId() == getManager().getUserId();
     }
 
