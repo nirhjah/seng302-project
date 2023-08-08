@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -74,9 +75,13 @@ public class U39CreateViewUpdateCompetition {
     public void thereAreFieldsForNameSportAndGradeLevel() throws Exception {
         mockMvc.perform(get("/createCompetition"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("competitionForm")) // Assuming "competitionForm" is the name of the view
-                .andExpect(model().attributeExists("name")) // Assuming "name" is the name of the attribute for the name field
-                .andExpect(model().attributeExists("sport")) // Assuming "sport" is the name of the attribute for the sport field
-                .andExpect(model().attributeExists("gradeLevel")); // Assuming "gradeLevel" is the name of the attribute for the grade level field
+                .andExpect(view().name("competitionForm"))
+                .andExpect(content().string(containsString("<input type=\"text\" name=\"name\"")))
+                .andExpect(content().string(containsString("<input type=\"text\" name=\"sport\"")))
+                .andExpect(content().string(containsString("<input type=\"text\" name=\"grade\"")));
+    }
+
+    @And("I input valid information for name, sport and grade level,")
+    public void iInputValidInformationForNameSportAndGradeLevel() {
     }
 }
