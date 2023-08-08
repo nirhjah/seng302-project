@@ -60,23 +60,23 @@
     </div>
 
     <!--/* Only shown during Team Competitions
-          Unfortunately I have to do class string compares,
-          because `instanceof` isn't working */-->
+          The controller will set either a "teams" or "players"
+          value depending on the type. */-->
     <div class="teamOrUserListDisplay"
-      th:if="${competition.class.name == 'nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition'}">
+      th:if="${teams != null}">
       
       <h3>Teams</h3>
       <ul>
-        <li class="li-player-image" th:each="team : ${competition.teams}">
+        <li class="li-player-image" th:each="team : ${teams}">
           <img th:src="@{/team-profile-picture/{id}(id = ${team.id})}" class="card-img-top" alt="Team image">
           <span th:text="${team.name}">TEAM_NAME</span>
         </li>
       </ul>
     </div>
 
-    <!--/* Only shown during Team Competitions */-->
+    <!--/* Only shown during Player Competitions */-->
     <div class="teamOrUserListDisplay"
-      th:if="${competition.class.name == 'nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition'}">
+      th:if="${players != null}">
     
       <h3>Players</h3>
       <ul>

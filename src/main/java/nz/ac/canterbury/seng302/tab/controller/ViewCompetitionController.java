@@ -68,6 +68,8 @@ public class ViewCompetitionController {
         } else if (competition instanceof UserCompetition uc) {
             Set<User> players = uc.getPlayers();
             model.addAttribute("players", players);
+        } else {
+            throw new IllegalArgumentException("Competition of unknown type: " + competition);
         }
 
         // Rambling that's required for navBar.html
