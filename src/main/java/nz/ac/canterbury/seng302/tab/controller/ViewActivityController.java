@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -150,6 +151,10 @@ public class ViewActivityController {
         model.addAttribute("activity", activity);
 
         model.addAttribute("activityFacts", activityFacts);
+        // total time for front end validation 
+        int totalActivityMinutes = (int) Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
+        model.addAttribute("totalActivityMinutes", totalActivityMinutes);
+        
 
         // Rambling that's required for navBar.html
         model.addAttribute("httpServletRequest", request);
@@ -179,6 +184,20 @@ public class ViewActivityController {
             outcomeString = "Draw";
         }
         return outcomeString;
+    }
+
+    /**
+     * returns true if the given event time is within the total activity time - required by acs
+     * *note:* the event time is passed as a string to the controller 
+     * @param activity
+     * @param eventTime the time of the event as a string (in minutes)
+     * @return true if the event time is less than the total activity time 
+    */
+    private boolean eventTimeIsWithinActivityTime(Activity activity, String eventTime) {
+        int timeAsInt = Integer.parseInt(eventTime);
+        long totalActivityMinutes = Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
+        
+        return timeAsInt <= totalActivityMinutes;
     }
 
     /**
@@ -233,8 +252,14 @@ public class ViewActivityController {
         Activity activity = activityService.findActivityById(actId);
         Fact fact;
         String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
-
-
+        
+        // check that the time is within the total time of the activity
+        // time can be null as it is not required 
+        if (time != null && !time.isEmpty() && !eventTimeIsWithinActivityTime(activity, time)) {
+            logger.info("The event time is outside the activity time");
+            bindingResult.addError(new FieldError(createEventFormString, "time", "Time must be within the total activity length (minutes)"));
+        }
+        
         if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 1) {
             logger.info("scores not same type");
             bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "Both teams require scores of the same type"));
