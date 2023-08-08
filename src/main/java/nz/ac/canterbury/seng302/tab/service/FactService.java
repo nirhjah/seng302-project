@@ -56,7 +56,7 @@ public class FactService {
      * @param activity the activity which the user participated in
      * @return list of the times of substitution
      */
-    public List<LocalTime> getUserSubOffForActivity(User user, Activity activity) {
+    public List<int> getUserSubOffForActivity(User user, Activity activity) {
         return factRepository.getUserSubOffForActivity(user, activity);
     }
 

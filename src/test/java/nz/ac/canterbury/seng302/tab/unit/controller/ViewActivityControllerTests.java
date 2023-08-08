@@ -204,7 +204,7 @@ public class ViewActivityControllerTests {
                         .param("description", "Testing")
                         .param("overallScoreTeam", "1")
                         .param("overallScoreOpponent", "2")
-                        .param("time", "11:11")
+                        .param("time", "1")
                         .param("scorer", "1")
                         .param("playerOff", "1")
                         .param("playerOn", "2"))

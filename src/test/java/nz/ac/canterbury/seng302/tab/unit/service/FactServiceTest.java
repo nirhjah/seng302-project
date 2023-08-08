@@ -60,7 +60,7 @@ public class FactServiceTest {
         game.addFactList(List.of(new Substitution(null, game, player, sub, 1)));
         activityRepository.save(game);
 
-        Assertions.assertEquals(List.of(LocalTime.of(1, 20)), factService.getUserSubOffForActivity(player, game));
+        Assertions.assertEquals(List.of(1), factService.getUserSubOffForActivity(player, game));
 
     }
 
