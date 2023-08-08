@@ -53,10 +53,10 @@
     <div class="card-wrapper">
         <div class="card-item"  th:each="competition : ${listOfCompetitions}">
             <div class="card-content">
-                <div class="competition-name"> Name</div>
-                <div class="competition-content">Grade</div>
-                <div class="competition-content">Sport</div>
-                <div class="competition-content">Location</div>
+                <div class="competition-name" th:text="${competition.name}"></div>
+                <div class="competition-content" th:text="${competition.grade.getDisplayString()}"></div>
+                <div class="competition-content" th:text="${competition.sport}"></div>
+                <div class="competition-content" th:text="${competition.location.toString()}"></div>
             </div>
         </div>
     </div>
