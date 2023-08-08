@@ -41,7 +41,7 @@
                 <div class="profile-pic">
                     <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
                         <div class="image-styling">
-                            <img th:src="'data:image/png;base64,' + ${displayTeamPicture}" width="200" height="200"/>
+                            <img th:src="@{/team-profile-picture/{id}(id = ${teamID})}" width="200" height="200">
                             </br>
                         </div>
                         </br>

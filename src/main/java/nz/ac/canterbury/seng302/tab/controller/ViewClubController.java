@@ -67,7 +67,6 @@ public class ViewClubController {
         Club club = optClub.get();
 
         model.addAttribute("club",club);
-        model.addAttribute("clubLogo", club.getClubLogo());
         model.addAttribute("location", club.getLocation().toString());
         return "viewClub";
     }
@@ -82,7 +81,6 @@ public class ViewClubController {
     public void currentUserNavDisplay(User user, Model model){
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("displayPicture", user.getPictureString());
         model.addAttribute("navTeams", teamService.getTeamList());
     }
 }

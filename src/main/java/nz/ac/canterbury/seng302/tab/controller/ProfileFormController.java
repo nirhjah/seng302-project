@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,6 +31,9 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 public class ProfileFormController {
 
     Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private TeamImageService teamImageService;
 
     @Autowired
     private TeamService teamService;
@@ -79,11 +83,11 @@ public class ProfileFormController {
         if (team == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
+
         model.addAttribute("teamID", teamID);
         model.addAttribute("displayName", team.getName());
         model.addAttribute("displaySport", team.getSport());
         model.addAttribute("displayLocation", team.getLocation());
-        model.addAttribute("displayTeamPicture", team.getPictureString());
         model.addAttribute("displayToken", team.getToken());
         model.addAttribute("clubId",teamService.getTeamClubId(team));
         model.addAttribute("teamCompetitions", competitionService.findAll()); //change this
@@ -138,7 +142,7 @@ public class ProfileFormController {
             @RequestParam("file") MultipartFile file,
             @RequestParam("teamID") long teamID) {
         logger.info("POST /profile");
-        teamService.updatePicture(file, teamID);
+        teamImageService.updateProfilePicture(teamID, file);
         return "redirect:/profile?teamID=" + teamID;
     }
 
