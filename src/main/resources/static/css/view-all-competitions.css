@@ -15,7 +15,7 @@
     align-items:center;
 }
 
-.card-wrapper{
+.card-wrap{
     padding:20px;
     width:100%;
     display:flex;
@@ -23,11 +23,11 @@
     flex-wrap:wrap;
 }
 
-.card-wrapper .card-item{
+.card-wrap .card-item{
     padding:15px 25px;
     width:25%;
 }
-.card-wrapper .card-content{
+.card-wrap .card-content{
     border: 4px solid #000000;
     background:#ffffffdf;
     border-radius:10px;
@@ -54,21 +54,21 @@
 
 
 @media screen and (max-width: 1024px){
-    .card-wrapper .card-item{
+    .card-wrap .card-item{
         width: 33%;
     }
 }
 
 
 @media screen and (max-width: 768px){
-    .card-wrapper .card-item{
+    .card-wrap .card-item{
         width: 50%;
     }
 }
 
 
 @media screen and (max-width: 568px){
-    .card-wrapper .card-item{
+    .card-wrap .card-item{
         width: 100%;
     }
 

@@ -124,4 +124,12 @@ public abstract class Competition {
     public Location getLocation() {
         return location;
     }
+
+    public long getEndDate() {
+        return endDate;
+    }
+
+    public long getStartDate() {
+        return startDate;
+    }
 }

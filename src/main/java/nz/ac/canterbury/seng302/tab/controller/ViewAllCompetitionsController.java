@@ -6,6 +6,7 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
 import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
@@ -26,22 +27,18 @@ public class ViewAllCompetitionsController {
     @Autowired
     private CompetitionService competitionService;
 
-    private static int PAGE_SIZE = 6;
+    private static int PAGE_SIZE = 8;
 
     public static final Sort SORT = Sort.by(
             Sort.Order.asc("startDate").ignoreCase(),
             Sort.Order.asc("firstName").ignoreCase()
     );
 
-    @GetMapping("/view-all-competitions")
-    public String viewAllCompetitions( @RequestParam(name = "page", defaultValue = "1") int page,Model model, HttpServletRequest request) {
-        model.addAttribute("httpServletRequest",request);
-        PageRequest pageable = PageRequest.of(page - 1, PAGE_SIZE, SORT);
-
+    private void testModel(Model model) {
         Location location = new Location("94 mays road", "St Albans", "St Ablans", "Chch", "8054", "nznz");
 
         Set<User> users = Set.of();
-        Competition comp1 = new UserCompetition("Test1", new Grade(Grade.Sex.OTHER), "football", location, users);
+        Competition comp1 = new UserCompetition("Test1", new Grade(Grade.Age.UNDER_14S, Grade.Sex.MENS), "football", location, users);
         Competition comp2= new UserCompetition("Test1", new Grade(Grade.Sex.OTHER), "football", location, users);
         Competition comp3 = new UserCompetition("Test1", new Grade(Grade.Sex.OTHER), "football", location, users);
 
@@ -49,12 +46,32 @@ public class ViewAllCompetitionsController {
         competitionService.updateOrAddCompetition(comp2);
         competitionService.updateOrAddCompetition(comp3);
 
-        List<Competition> competitions = competitionService.findAll();
+        List<Competition> competitions = competitionService.findAll()
+                .stream().skip(PAGE_SIZE).toList();
+
+    }
+
+    @GetMapping("/view-all-competitions")
+    public String viewAllCompetitions(@RequestParam(name = "page", defaultValue = "1") int page,
+                                      @RequestParam(name = "sports", required=false) List<String> sports,
+                                      @RequestParam(name = "cities", required = false) List<String> cities,
+                                      Model model, HttpServletRequest request) {
+
+
+        model.addAttribute("httpServletRequest",request);
+
+        // pages are 0 indexed.
+        PageRequest pageable = PageRequest.of(page - 1, PAGE_SIZE, SORT);
+
+        Page<Competition> pageResult = competitionService.findCurrentCompetitionsBySports(pageable, sports);
+        List<Competition> competitions = pageResult.stream().toList();
 
         model.addAttribute("listOfCompetitions", competitions);
 
-        model.addAttribute("listOfSports", List.of());
-        model.addAttribute("listOfCities", List.of());
+        model.addAttribute("listOfCities", cities);
+
+        model.addAttribute("page", page);
+        model.addAttribute("totalPages", pageResult.getTotalPages());
 
         return "viewAllCompetitions";
     }

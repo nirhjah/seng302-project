@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
-<!--    <link th:href="@{/css/view-all.css}" rel="stylesheet">-->
+    <link th:href="@{/css/view-all.css}" rel="stylesheet">
 
     <link th:href="@{/css/view-all-competitions.css}" rel="stylesheet">
     <title>View All Users</title>
@@ -42,7 +42,6 @@
 <div>
 
 <div class="page-filter">
-    <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>
     <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfCities}, 'Filter by city', 'cities')}" th:if="${not #lists.isEmpty(listOfCities)}"></div>
     <button class="apply-filters-button" type="submit">Apply Filters</button>
 </div>
@@ -50,7 +49,7 @@
 <div class="page-wrapper">
     <form th:action="@{view-competition}" method="get">
     </form>
-    <div class="card-wrapper">
+    <div class="card-wrap">
         <div class="card-item"  th:each="competition : ${listOfCompetitions}">
             <div class="card-content">
                 <div class="competition-name" th:text="${competition.name}"></div>
@@ -63,6 +62,9 @@
 </div>
 
 </div>
+
+
+<div th:insert="~{fragments/pagination.html :: pagination(pageName='view-all-competitions')}"></div>
 
 <!--<div th:insert="~{fragments/pagination.html :: pagination(pageName='view-competitions')}"></div>-->
 <footer>
