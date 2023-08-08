@@ -12,6 +12,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -107,5 +110,19 @@ public class ClubImageServiceTest {
     public void testSaveThenReadForSvgs() throws IOException {
         testSaveThenReadSvg(mockedFileSvg);
         testSaveThenReadSvg(mockedFileSvgCapital);
+    }
+
+    @Test
+    public void testDefaultImageTypeOk() {
+        assertEquals(ImageType.SVG, clubImageService.getDefaultImageType());
+    }
+
+    @Test
+    public void testDefaultImageDataOk() throws IOException {
+        Resource resource = new ClassPathResource("/static/image/icons/club-logo.svg");
+        InputStream is = resource.getInputStream();
+        var bytes = is.readAllBytes();
+
+        assertEquals(bytes, clubImageService.getDefaultBytes());
     }
 }
