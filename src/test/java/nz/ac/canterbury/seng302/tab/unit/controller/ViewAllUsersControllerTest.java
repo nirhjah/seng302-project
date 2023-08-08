@@ -7,10 +7,8 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.security.test.context.support.WithMockUser;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -21,14 +19,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.GenerateRandomUsers;
 import nz.ac.canterbury.seng302.tab.repository.SportRepository;
-import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -78,5 +72,19 @@ public class ViewAllUsersControllerTest {
         mockMvc.perform(get("/view-users"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("viewAllUsers"));
+    }
+
+
+    @WithMockUser(username = "johndoe@example.com", password = "Password123!", roles = "USER")
+    @Test
+    public void testViewPageOfUsersWithParams() throws Exception {
+        mockMvc.perform(get("/view-users")
+                        .param("page", "2")
+                        .param("currentSearch", "John")
+                        .param("sports", "Football,Basketball")
+                        .param("cities", "Christchurch,Auckland"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("viewAllUsers"))
+                .andExpect(model().attributeExists("listOfUsers"));
     }
 }

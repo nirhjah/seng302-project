@@ -36,10 +36,22 @@ public class ViewAllCompetitionsControllerTest {
         competitionService.updateOrAddCompetition(comp1);
 
     }
+
     @Test
     public void testViewAllCompetitionsReturns200() throws Exception {
         mockMvc.perform(get("/view-all-competitions"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("viewAllCompetitions")).andExpect(model().attributeExists("listOfCompetitions"));
     }
+    @Test
+    public void testViewAllCompetitionsWithParamsReturns200() throws Exception {
+        mockMvc.perform(get("/view-all-competitions")
+                        .param("page", "2")
+                        .param("sports", "Football,Basketball")
+                        .param("time", "11"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("viewAllCompetitions"))
+                .andExpect(model().attributeExists("listOfCompetitions"));
+    }
 }
+
