@@ -22,9 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.BindingResultUtils;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -296,7 +294,7 @@ public class CreateActivityController {
 
         if (playerAndPositions != null && !playerAndPositions.isEmpty()) {
             List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
-            saveLineUp(positionsAndPlayers, bindingResult);
+            saveLineUp(positionsAndPlayers);
         }
 
 
@@ -361,11 +359,10 @@ public class CreateActivityController {
      * Takes list of positions and players fron the selected line up then creates LineUpPositions for each and saves them with the lineup
      * @param positionsAndPlayers list of positions and players
      */
-    private void saveLineUp(List<String> positionsAndPlayers, BindingResult bindingResult){
+    private void saveLineUp(List<String> positionsAndPlayers){
         for (String positionPlayer : positionsAndPlayers) {
             if (Objects.equals(Arrays.stream(positionPlayer.split(" ")).toList().get(1), "X")) {
                 logger.info("No player was set at the position " + Arrays.stream(positionPlayer.split(" ")).toList().get(0));
-                bindingResult.addError(new ObjectError("CreateActivityForm", ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION));
                 //TODO Throw bindingResult error here as not all positions were filled with a player
             } else {
                 logger.info("Valid player so creating line up position object now..");

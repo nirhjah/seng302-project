@@ -47,9 +47,6 @@ public class CreateActivityForm {
     @LocationValidators.suburbValidator
     private String suburb;
 
-
-    private String playerAndPositions;
-
     public ActivityType getActivityType() {
         return activityType;
     }

@@ -38,8 +38,6 @@ public class ActivityFormValidators {
 
     public static final String FORMATION_DOES_NOT_EXIST_MSG = "The specified team does not have this formation";
 
-    public static final String LINEUP_UNASSIGNED_MSG = "The lineup hasn't been assigned"
-
     /**
      * Regex taken from <a href="https://stackoverflow.com/a/56276700">...</a>
      */
@@ -127,22 +125,6 @@ public class ActivityFormValidators {
 
         Class<?>[] groups() default {};
 
-        Class<? extends Payload>[] payload() default {};
-    }
-
-
-    /**
-     * Ensures that players in the player lineup are assigned positions
-     */
-    /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
-    /**/@Retention(RUNTIME)
-    /**/@Constraint(validatedBy = {ActivityDescriptionCheck.class})
-    /**/@Documented
-    @NotBlank(message = NO_DESC_MSG)
-    @Size(max = 5000, message = LINEUP_UNASSIGNED_MSG)
-    public @interface playerPositionValidator {
-        String message() default LINEUP_UNASSIGNED_MSG;
-        Class<?>[] groups() default {};
         Class<? extends Payload>[] payload() default {};
     }
 
