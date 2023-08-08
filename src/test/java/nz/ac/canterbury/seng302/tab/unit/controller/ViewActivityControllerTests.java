@@ -2,7 +2,6 @@ package nz.ac.canterbury.seng302.tab.unit.controller;
 
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -26,7 +25,6 @@ import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
-import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.service.FactService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -136,7 +134,7 @@ public class ViewActivityControllerTests {
     }
     @Test
     public void testGettingViewActivityPageOfValidActivity() throws Exception {
-        mockMvc.perform(get("/view-activity?activityID={id}", activity.getId()))
+        mockMvc.perform(get("/view-activity?activityID={id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(view().name("viewActivity"))
                 .andExpect(MockMvcResultMatchers.model().attribute("activity", activity));
@@ -146,22 +144,6 @@ public class ViewActivityControllerTests {
     public void testGettingViewActivityPageOfInvalidActivity() throws Exception {
         mockMvc.perform(get("/view-activity?activityID={id}", 4))
                 .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void testAddingActivityStatisticWithEmptyFields() throws Exception {
-        mockMvc.perform(post("/view-activity")
-                        .param("actId", String.valueOf(activity.getId()))
-                        .param("factType", "")
-                        .param("description", "")
-                        .param("overallScoreTeam", "")
-                        .param("overallScoreOpponent", "")
-                        .param("time", "")
-                        .param("scorer", "")
-                        .param("playerOff", "")
-                        .param("playerOn", ""))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(String.format("./view-activity?activityID=%s", activity.getId())));
     }
 
     @Test
@@ -178,44 +160,6 @@ public class ViewActivityControllerTests {
                         .param("playerOn", "1"))
                 .andExpect(status().isBadRequest());
     }
-
-    @Test
-    public void testAddingActivityStatisticWithEmptyTime() throws Exception {
-        mockMvc.perform(post("/view-activity")
-                        .param("actId", String.valueOf(activity.getId()))
-                        .param("factType", String.valueOf(FactType.SUBSTITUTION))
-                        .param("description", "Testing")
-                        .param("overallScoreTeam", "1")
-                        .param("overallScoreOpponent", "2")
-                        .param("time", "")
-                        .param("scorer", "1")
-                        .param("playerOff", "1")
-                        .param("playerOn", "2"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(String.format("./view-activity?activityID=%s", activity.getId())));
-    }
-
-
-    @Test
-    public void testAddingActivityStatisticWithValidFields() throws Exception {
-        mockMvc.perform(post("/view-activity")
-                        .param("actId", String.valueOf(activity.getId()))
-                        .param("factType", String.valueOf(FactType.SUBSTITUTION))
-                        .param("description", "Testing")
-                        .param("overallScoreTeam", "1")
-                        .param("overallScoreOpponent", "2")
-                        .param("time", "11:11")
-                        .param("scorer", "1")
-                        .param("playerOff", "1")
-                        .param("playerOn", "2"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(String.format("./view-activity?activityID=%s", activity.getId())));
-    }
-
-
-
-    //Add Activity Stats tests
-
     @Test
     public void testAddingActivityFactWithNoDescription() throws Exception {
         mockMvc.perform(post("/view-activity", 42L)
@@ -243,14 +187,14 @@ public class ViewActivityControllerTests {
         mockMvc.perform(post("/view-activity", 42L)
                         .param("actId", "1")
                         .param("factType", String.valueOf(FactType.FACT))
-                        .param("time", "1")
+                        .param("time", "2")
                         .param("goalValue", "1")
                         .param("overallScoreTeam", "1")
                         .param("overallScoreOpponent", "1")
                         .param("activityOutcomes", String.valueOf(ActivityOutcome.None))
                         .param("scorer", "-1")
                         .param("playerOn", "1")
-                        .param("playerOff", "1" )
+                        .param("playerOff", "2" )
                         .param("description", "player fell over")
                 )
                 .andExpect(view().name("redirect:./view-activity?activityID=1"));

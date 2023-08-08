@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import java.time.LocalTime;
 import java.time.Duration;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -294,8 +295,9 @@ public class ViewActivityController {
             return viewActivityRedirectUrl;
         }
 
-        LocalTime localTime = LocalTime.parse(time);
-
+        int timeValue = Integer.parseInt(time);
+        String timeString = String.format("%06d", timeValue);
+        LocalTime localTime = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("HHmmss"));
         List<Fact> factList = new ArrayList<>();
 
 
