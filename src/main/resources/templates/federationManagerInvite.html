@@ -14,20 +14,18 @@
 <body class="team-form-background">
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 <div class="forgotPassword-form">
-    <div class="login-header">
-    </div>
-    <div class="wrapper">
+    <div class="wrapper" style="width: 520px; height: 420px">
         <div class="team-info">
-            <h2 class="reset-password-info" style="text-align: center"> Invitation To Become Federation Manager </h2>
+            <h2 class="reset-password-info" style="text-align: center; color: #0b2239"> Invitation To Become Federation Manager </h2>
         <br>
             <p style="text-align: center">By accepting this invitation you will gain the ability to create competitions.</p>
         <br>
             <form th:action="@{federationManager}" method="post" name="inviteForm" id="inviteForm" style="display: inline">
                 <div class="submit-button">
-                    <button type="submit" name="decision" value="true">Accept</button>
+                    <button style="width: 40%; background-color: #5DBB63; margin: 20px 0 20px" type="submit" name="decision" value="true">Accept</button>
                 </div>
                 <div class="submit-button">
-                    <button type="submit" name="decision" value="false">Decline</button>
+                    <button style="width: 40%; background-color: #EA3B52; margin: 20px 0 20px" type="submit" name="decision" value="false">Decline</button>
                 </div>
             </form>
         </div>
