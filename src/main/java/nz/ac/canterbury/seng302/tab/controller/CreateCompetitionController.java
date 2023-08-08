@@ -60,12 +60,12 @@ public class CreateCompetitionController {
      * @param request http request
      * @return create competition form
      */
-    @GetMapping("/createCompetition")
+    @GetMapping("/create-competition")
     public String createCompetitionForm(@RequestParam(name = "edit", required = false) Long competitionID, CreateAndEditCompetitionForm form,
                            Model model,
                            HttpServletRequest request) {
 
-        logger.info("GET /createCompetition");
+        logger.info("GET /create-competition");
         prefillModel(model, request);
         if (competitionID != null) {
             Optional<Competition> optionalCompetition = competitionService.findCompetitionById(competitionID);
@@ -76,7 +76,7 @@ public class CreateCompetitionController {
 
     /**
      * Handles the creation or editing of a competition based on the provided form data.
-     * This method is invoked when a POST request is made to "/createCompetition" endpoint.
+     * This method is invoked when a POST request is made to "/create-competition" endpoint.
      *
      * @param competitionID                The ID of the competition being edited.
      * @param form The form object containing additional competition-related data for validation.
@@ -87,7 +87,7 @@ public class CreateCompetitionController {
      * @return The view name to be displayed after the competition creation/edit process.
      * @throws IOException If an I/O error occurs during file handling.
      */
-    @PostMapping("/createCompetition")
+    @PostMapping("/create-competition")
     public String createCompetition(
             @RequestParam(name = "competitionID", defaultValue = "-1") long competitionID,
             @RequestParam("usersOrTeams") String usersOrTeams,
@@ -255,7 +255,7 @@ public class CreateCompetitionController {
      * @param sport sport for teams
      * @return JSON object of type List<Team>
      */
-    @GetMapping(path = "/createCompetition/get_teams", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/create-competition/get_teams", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CompetitionTeamInfo>> getTeamsJSON(@RequestParam String sport,
                                                             @RequestParam(required = false, defaultValue = "") String search) {
         return ResponseEntity.ok().body(
@@ -271,7 +271,7 @@ public class CreateCompetitionController {
      * @param sport sport for users
      * @return JSON object of type List<User>
      */
-    @GetMapping(path = "/createCompetition/get_users", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/create-competition/get_users", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CompetitionUserInfo>> getUsersJSON(@RequestParam String sport,
                                                                   @RequestParam(required = false, defaultValue = "") String search) {
         return ResponseEntity.ok().body(

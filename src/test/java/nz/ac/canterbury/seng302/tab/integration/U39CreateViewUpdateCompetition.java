@@ -135,21 +135,21 @@ public class U39CreateViewUpdateCompetition {
 
     @And("I am on the create or update competition page")
     public void iAmOnTheCreateOrUpdateCompetitionPage() throws Exception {
-        mockMvc.perform(get("/createCompetition"))
+        mockMvc.perform(get("/create-competition"))
                 .andExpect(status().isOk()) // Accepted 200
                 .andExpect(view().name("createCompetitionForm"));
     }
 
     @Then("There are fields for name, sport and grade")
     public void thereAreFieldsForNameSportAndGradeLevel() throws Exception {
-        mockMvc.perform(get("/createCompetition"))
+        mockMvc.perform(get("/create-competition"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("createCompetitionForm"));
     }
 
     @And("I input valid information for name, sport and grade,")
     public void iInputValidInformationForNameSportAndGradeLevel() throws Exception {
-        mockMvc.perform(multipart("/createCompetition", 42L)
+        mockMvc.perform(multipart("/create-competition", 42L)
                         .param("name", "Sample Competition")
                         .param("sport", "Soccer")
                         .param("age", String.valueOf(Grade.Age.ADULT))
@@ -162,12 +162,12 @@ public class U39CreateViewUpdateCompetition {
 
     @When("I attempt to access the create a competition page,")
     public void iAttemptToAccessTheCreateACompetitionPage() throws Exception {
-        mockMvc.perform(get("/createCompetition"));
+        mockMvc.perform(get("/create-competition"));
     }
 
     @Then("I am brought to the create competition page.")
     public void iAmBroughtToTheCreateCompetitionPage() throws Exception {
-        mockMvc.perform(get("/createCompetition"))
+        mockMvc.perform(get("/create-competition"))
                 .andExpect(status().isOk()) // Accepted 200
                 .andExpect(view().name("createCompetitionForm"));
     }
@@ -179,21 +179,21 @@ public class U39CreateViewUpdateCompetition {
 
     @Then("I am instead shown an error message stating I don’t have valid permissions to access this page.")
     public void iAmInsteadShownAnErrorMessageStatingIDonTHaveValidPermissionsToAccessThisPage() throws Exception {
-        mockMvc.perform(get("/createCompetition"))
+        mockMvc.perform(get("/create-competition"))
                 .andExpect(status().is2xxSuccessful()) // This should be 400, but security doesn't run properly. Works manually
                 .andExpect(view().name("createCompetitionForm"));
     }
 
     @When("I attempt to access the update a competition page for a competition,")
     public void iAttemptToAccessTheUpdateACompetitionPageForACompetition() throws Exception {
-        mockMvc.perform(get("/createCompetition")
+        mockMvc.perform(get("/create-competition")
                 .param("edit", String.valueOf(competition.getCompetitionId())));
 
     }
 
     @Then("I am brought to the update competition page for that competition.")
     public void iAmBroughtToTheUpdateCompetitionPageForThatCompetition() throws Exception {
-        mockMvc.perform(get("/createCompetition")
+        mockMvc.perform(get("/create-competition")
                 .param("edit", String.valueOf(competition.getCompetitionId())))
                 .andExpect(status().isOk()) // Accepted 200
                 .andExpect(view().name("createCompetitionForm"));
@@ -220,7 +220,7 @@ public class U39CreateViewUpdateCompetition {
 
     @And("I input invalid information for one of name, sport or grade,")
     public void iInputInvalidInformationForOneOfNameSportOrGrade() throws Exception {
-        mockMvc.perform(post("/createCompetition")
+        mockMvc.perform(post("/create-competition")
                         .param("name", "@#$%%^")
                         .param("sport", "@#$%%^")
                         .param("age", "")
@@ -240,7 +240,7 @@ public class U39CreateViewUpdateCompetition {
 
     @And("I am shown an error message stating that the field contains invalid information")
     public void iAmShownAnErrorMessageStatingThatTheFieldContainsInvalidInformation() throws Exception {
-        mockMvc.perform(post("/createCompetition")
+        mockMvc.perform(post("/create-competition")
                         .param("name", "@#$%%^")
                         .param("sport", "@#$%%^")
                         .param("age", "#$%^&")
@@ -254,7 +254,7 @@ public class U39CreateViewUpdateCompetition {
 
     @And("don’t input information for one of name, sport or grade,")
     public void donTInputInformationForOneOfNameSportOrGrade() throws Exception {
-        mockMvc.perform(post("/createCompetition")
+        mockMvc.perform(post("/create-competition")
                         .param("name", "")
                         .param("sport", "")
                         .param("age", "")
@@ -268,7 +268,7 @@ public class U39CreateViewUpdateCompetition {
 
     @And("I am shown an error message stating that the field cannot be empty.")
     public void iAmShownAnErrorMessageStatingThatTheFieldCannotBeEmpty() throws Exception {
-        mockMvc.perform(post("/createCompetition")
+        mockMvc.perform(post("/create-competition")
                         .param("name", "")
                         .param("sport", "")
                         .param("age", "")
@@ -292,7 +292,7 @@ public class U39CreateViewUpdateCompetition {
 
     @And("I add that user to the competition and save my changes")
     public void iAddThatUserToTheCompetitionAndSaveMyChanges() throws Exception {
-        mockMvc.perform(post("/createCompetition")
+        mockMvc.perform(post("/create-competition")
                         .param("name", "Sample Competition")
                         .param("sport", "Soccer")
                         .param("age", String.valueOf(Grade.Age.ADULT))
@@ -321,7 +321,7 @@ public class U39CreateViewUpdateCompetition {
 
     @And("I add that team to the competition and save my changes,")
     public void iAddThatTeamToTheCompetitionAndSaveMyChanges() throws Exception {
-        mockMvc.perform(post("/createCompetition")
+        mockMvc.perform(post("/create-competition")
                         .param("name", "Sample Competition")
                         .param("sport", "Soccer")
                         .param("age", String.valueOf(Grade.Age.ADULT))
@@ -344,7 +344,7 @@ public class U39CreateViewUpdateCompetition {
 
     @When("I attempt to save,")
     public void iAttemptToSave() throws Exception {
-        mockMvc.perform(post("/createCompetition")
+        mockMvc.perform(post("/create-competition")
                         .param("name", "Sample Competition")
                         .param("sport", "Soccer")
                         .param("age", String.valueOf(Grade.Age.ADULT))
