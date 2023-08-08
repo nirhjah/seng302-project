@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+    <link th:href="@{/css/create-competition.css}" rel="stylesheet">
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</title>
+</head>
+<body class="view-teams-background">
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+<div class="competition-form">
+    <div class="header">
+        <h1>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</h1>
+    </div>
+
+    <div class="wrapper">
+        <form th:action="@{createCompetition}" th:object="${createAndEditCompetitionForm}" id="createAndEditCompetitionForm" method="post">
+            <input type="hidden" th:if="${competitionID != null}" th:name="competitionID" th:value="${competitionID}"/>
+
+            <div class="create-header">
+                <h2>Details</h2>
+                <img th:src="@{/image/icons/details.svg}"/>
+            </div>
+
+            <div class="input-box">
+                <input type="text" class="form-control" id="name" th:name="name" th:value="*{name}"
+                       data-cy="name" autofocus placeholder="">
+                <label for="name">Name <span class="required">*</span></label>
+                <div th:each="err : ${#fields.errors('name')}" th:text="${err}" class="error-message"></div>
+            </div>
+
+            <div class="input-box">
+                <input type="text" class="form-control" id="sport" th:name="sport" th:value="*{sport}"
+                       data-cy="sport" autofocus placeholder=""
+                       onchange=""
+                       title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
+                <label for="sport">Sport <span class="required">*</span></label>
+                <div th:each="err : ${#fields.errors('sport')}" th:text="${err}" class="error-message"></div>
+            </div>
+
+            <div class="select-box">
+                <label>Grade <span class="required">*</span></label>
+                <div class="grade-level-details">
+                    <div>
+                        <select id="competitiveness" name="competitiveness" th:field="*{competitiveness}">
+                            <option value="" disabled selected>Level</option>
+                            <option th:each="competitivenessOption : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Competitiveness).values()}"
+                                    th:value="${competitivenessOption}" th:text="${competitivenessOption.description}"></option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="sex" name="sex" th:field="*{sex}">
+                            <option value="" disabled selected>Gender</option>
+                            <option th:each="sexOption : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Sex).values()}"
+                                    th:value="${sexOption}"
+                                    th:text="${sexOption.description}"></option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="age" name="age" th:field="*{age}">
+                            <option value="" disabled selected>Age</option>
+                            <option th:each="ageOption : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Age).values()}"
+                                    th:value="${ageOption}"
+                                    th:text="${ageOption.description}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div th:each="err : ${#fields.errors('grade')}" th:text="${err}" class="error-message"></div>
+            </div>
+
+            <div class="create-header">
+                <h2>Location (Optional)</h2>
+                <img th:src="@{/image/icons/dark-blue-location.svg}"/>
+            </div>
+
+            <div class="input-boxes">
+                <div class="input-box">
+                    <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
+                           data-cy="location" autofocus placeholder="" autocomplete="off" th:value="*{addressLine1}"
+                           title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
+                    <label for="address-line-1">Address Line 1</label>
+                    <div class="autocomplete-container" id="autocomplete-container"></div>
+                    <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="error-message"></div>
+                </div>
+
+
+                <div class="input-box">
+                    <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
+                           data-cy="location" autofocus placeholder="" th:value="*{addressLine2}"
+                           title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
+                    <label for="address-line-2">Address Line 2</label>
+                    <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message"></div>
+                </div>
+            </div>
+            <div class="input-box">
+                <input type="text" class="form-control" id="suburb" th:name="suburb"
+                       data-cy="location" autofocus placeholder="" th:value="*{suburb}">
+                <label for="suburb">Suburb</label>
+                <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
+            </div>
+            <div class="input-box">
+                <input type="text" class="form-control" id="postcode" th:name="postcode"
+                       data-cy="location" autofocus placeholder="" th:value="*{postcode}">
+                <label for="postcode">Postcode</span></label>
+                <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
+            </div>
+
+            <div class="input-box">
+                <input type="text" class="form-control" id="city" th:name="city"
+                       data-cy="location" autofocus placeholder="" th:value="*{city}">
+                <label for="city">City</label>
+                <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
+            </div>
+
+            <div class="input-box">
+                <input type="text" class="form-control" id="country" th:name="country"
+                       data-cy="location" autofocus placeholder="" th:value="*{country}">
+                <label for="country">Country</label>
+                <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
+            </div>
+
+            <div class="create-header">
+                <h2>Competitors </h2>
+                <img id="members-img" th:src="@{/image/icons/members.svg}"/>
+            </div>
+
+            <div class="checkbox-box">
+                <label>Type</label>
+                <label class="switch" th:classappend="${competitionID != null} ? 'disabled' : ''">
+                    <input type="checkbox" id="checkbox" th:checked="${not #lists.isEmpty(users)}">
+                    <span class="slider"></span>
+                    <span class="slider-text"></span>
+                    <input type="hidden" name="usersOrTeams" id="usersOrTeams" th:value="${not #lists.isEmpty(users) ? 'users' : 'teams'}">
+                </label>
+            </div>
+
+            <div class="member-selection-box">
+                <div class="inactive-cover" th:classappend="${users != null || teams != null} ? '' : 'active'"
+                     th:styleappend="${users != null || teams != null} ? 'display: none;' : ''">
+                    <h3>You must type in a sport before you may add competitors</h3>
+                </div>
+                <div class="competitors-box">
+                    <div class="competitors-header">
+                        <h4>Competitors</h4>
+                        <h4 id="totalHeading">Total: 0</h4>
+                    </div>
+                    <ul class="competitors-ul">
+                        <li th:each="competitor : ${users}" class="competitors-li">
+                            <img th:src="@{/user-profile-picture/{id}(id = ${competitor.userId})}" alt="My Profile" class="li-user-team-image"/>
+                            <span class="li-user-team-name" th:text="${competitor.firstName + ' ' + competitor.lastName}"></span>
+                            <input type="hidden" class="user-team-ID" name="userTeamID" th:value="${competitor.userId}">
+                        </li>
+                        <li th:each="competitor : ${teams}" class="competitors-li">
+                            <img th:src="@{/team-profile-picture/{id}(id = ${competitor.teamId})}" alt="My Profile" class="li-user-team-image"/>
+                            <span class="li-user-team-name" th:text="${competitor.name}"></span>
+                            <input type="hidden" class="user-team-ID" name="userTeamID" th:value="${competitor.teamId}">
+                        </li>
+                    </ul>
+                </div>
+                <div class="users-teams-box">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search..." class="search-box-input">
+                        <img th:src="@{/image/icons/search-white.svg}"/>
+                        <input type="hidden" class="search-query">
+                    </div>
+                    <ul class="users-teams-ul"></ul>
+                </div>
+            </div>
+            <label class="competitor-message">* Must select at least one competitor</label>
+            <div th:each="err : ${#fields.errors('competitors')}" th:text="${err}" class="error-message"></div>
+
+
+            <div class="submit-button">
+                <a th:href="@{home}">
+                    <button type="submit" th:text="${competitionID != null ? 'Save' : 'Create'}"></button>
+                </a>
+            </div>
+
+
+        </form>
+    </div>
+    <footer>
+        <p>
+            Image by <a
+                href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+            on Freepik
+        </p>
+    </footer>
+</div>
+</body>
+<script>
+
+    const sportsInput = document.getElementById("sport")
+    const inactiveCover = document.querySelector(".inactive-cover")
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (sportsInput.value.trim() !== "") {
+            getCompetitors();
+        }
+        updateTotalCount();
+        if (checkBox.classList.contains("disabled")) {
+            typeCheckbox.disabled = "disabled"
+        }
+    });
+
+    const totalHeading = document.getElementById('totalHeading');
+
+    function updateTotalCount() {
+        let itemCount = competitorsUl.children.length;
+        totalHeading.textContent = 'Total: ' + itemCount;
+    }
+
+    sportsInput.addEventListener("change", () => {
+        clearCompetitors();
+        if (sportsInput.value.trim() !== "") {
+            inactiveCover.classList.remove("active")
+            setTimeout(() => {
+                inactiveCover.style.display = "none";
+                getCompetitors();
+            }, 1000);
+        } else {
+            inactiveCover.classList.add("active")
+            inactiveCover.style.display = "flex";
+        }
+    })
+
+    const competitorsUl = document.querySelector(".competitors-ul")
+    const playersTeamsUl = document.querySelector(".users-teams-ul")
+    const searchInput = document.querySelector(".search-box-input")
+    const searchQuery = document.querySelector(".search-query")
+
+    function clearCompetitors() {
+        while (competitorsUl.firstChild) {
+            competitorsUl.removeChild(competitorsUl.lastChild);
+        }
+        while (playersTeamsUl.firstChild) {
+            playersTeamsUl.removeChild(playersTeamsUl.lastChild);
+        }
+        searchInput.value = "";
+        searchQuery.value = "";
+        updateTotalCount();
+    }
+
+    const checkBox = document.querySelector(".switch");
+    const typeCheckbox = document.querySelector(".switch input");
+    const hiddenInput = document.getElementById('usersOrTeams');
+
+    typeCheckbox.addEventListener("change", function () {
+        if (!checkBox.classList.contains("disabled")) {
+            if (typeCheckbox.checked) {
+                hiddenInput.value = 'users';
+            } else {
+                hiddenInput.value = 'teams';
+            }
+            clearCompetitors();
+            getCompetitors();
+        }
+    });
+
+    const searchBoxImage = document.querySelector(".search-box img");
+
+    searchBoxImage.addEventListener("click", () => {
+        searchQuery.value = searchInput.value
+        while (playersTeamsUl.firstChild) {
+            playersTeamsUl.removeChild(playersTeamsUl.lastChild);
+        }
+        getCompetitors();
+    })
+
+    searchInput.addEventListener("keypress", function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            searchQuery.value = searchInput.value
+            while (playersTeamsUl.firstChild) {
+                playersTeamsUl.removeChild(playersTeamsUl.lastChild);
+            }
+            getCompetitors();
+        }
+    });
+
+    function getCompetitors() {
+        if (!inactiveCover.classList.contains("active")) {
+            const type = typeCheckbox.checked ? "users" : "teams"
+            axios.get("createCompetition/get_" + type, {params: {sport: sportsInput.value, search: searchQuery.value}})
+                .then(response => {
+                    generateUsersTeams(response.data);
+                })
+                .catch(error => {
+                    alert("ERROR see console");
+                    console.error(error);
+                });
+        }
+    }
+
+    const usersTeamsUl = document.querySelector(".users-teams-ul")
+
+    function generateUsersTeams(usersTeams) {
+        for (const userTeam of usersTeams) {
+            if (!checkUserTeamPresent(userTeam.userTeamID)) {
+                const userTeamLi = document.createElement("li");
+                userTeamLi.className = "users-teams-li";
+                usersTeamsUl.append(userTeamLi);
+
+                const liUserTeamImage = document.createElement("img");
+                liUserTeamImage.className = "li-user-team-image";
+                liUserTeamImage.src = (typeCheckbox.checked ? "/user" : "/team") + "-profile-picture/" + userTeam.userTeamID;
+                liUserTeamImage.alt = "My Profile";
+                userTeamLi.append(liUserTeamImage);
+
+                const liUserTeamName = document.createElement("span");
+                liUserTeamName.className = "li-user-team-name";
+                liUserTeamName.textContent = userTeam.name;
+                userTeamLi.append(liUserTeamName);
+
+                const userTeamId = document.createElement("input");
+                userTeamId.className = "user-team-ID"
+                userTeamId.type = "hidden";
+                userTeamId.value = userTeam.userTeamID;
+                userTeamLi.append(userTeamId);
+                userTeamChange(userTeamLi);
+            }
+        }
+    }
+
+
+
+    function checkUserTeamPresent(ID) {
+        const userTeamIDs = document.querySelectorAll(".competitors-li .user-team-ID")
+        let isPresent = false;
+        userTeamIDs.forEach((userTeamID) => {
+            if (ID.toString() === userTeamID.value) {
+                isPresent = true;
+
+            }
+        });
+        return isPresent;
+    }
+
+    const competitorsLi = document.querySelectorAll(".competitors-li")
+
+    competitorsLi.forEach((competitorLi) => userTeamChange(competitorLi))
+
+    function userTeamChange(userTeam) {
+        userTeam.addEventListener('click', () => {
+            const currentName = userTeam.querySelector("span").textContent;
+            const currentID = userTeam.querySelector(".user-team-ID");
+            if (userTeam.classList.contains("users-teams-li")) {
+                userTeam.classList.remove("users-teams-li");
+                userTeam.classList.add("competitors-li");
+                currentID.name = "userTeamID";
+                competitorsUl.append(userTeam);
+            } else {
+                userTeam.classList.add("users-teams-li");
+                userTeam.classList.remove("competitors-li");
+                currentID.name = "";
+                // Inserts the user/team back in the correct spot alphabetically
+                if (usersTeamsUl.childElementCount===0) {
+                    usersTeamsUl.append(userTeam);
+                } else {
+                    for (let i = 0; i < usersTeamsUl.childElementCount; i++) {
+                        const uT = usersTeamsUl.children[i];
+                        const name = uT.querySelector("span").textContent;
+                        const ID = uT.querySelector(".user-team-ID").value;
+                        const alphabetical = name.localeCompare(currentName);
+                        if (alphabetical >= 0) {
+                            if (alphabetical === 1 || alphabetical === 0 && currentID.value < ID) {
+                                usersTeamsUl.insertBefore(userTeam, uT);
+                                break;
+                            }
+                        } if (i === (usersTeamsUl.childElementCount - 1)) {
+                            usersTeamsUl.append(userTeam);
+                        }
+                    }
+                }
+            }
+            const itemCount = competitorsUl.children.length;
+            totalHeading.textContent = 'Total: ' + itemCount;
+        });
+    }
+
+</script>
+</html>

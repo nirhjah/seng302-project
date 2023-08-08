@@ -70,6 +70,7 @@
     opacity: 0;
     width: 123%;
     margin-left: -10%;
+    height: 420px;
 }
 
 .formation-activity-display.active {
@@ -82,6 +83,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+    margin-right: 4px;
 }
 
 .reserves-header, .subs-header {
@@ -110,6 +112,8 @@
     overflow: auto;
     list-style: none;
     border-radius: 0 0 10px 10px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 .subs-ul {
@@ -124,6 +128,7 @@
     display: flex;
     cursor: pointer;
     margin: 0 0 5px;
+    scrollbar-width: none;
 }
 
 .subs-li.active, .reserves-li.active {
@@ -159,10 +164,6 @@
     background-image: url('../image/icons/up-in-active-cropped.svg');
 }
 
-.subs-li .switch, .reserves-li .switch {
-    cursor: default;
-}
-
 .subs-li .switch.active {
     background-image: url('../image/icons/down-active-cropped.svg');
 }
@@ -183,8 +184,6 @@
     margin-left: auto;
 }
 
-.switch.active {
-    cursor: pointer;
-}
+
 
 

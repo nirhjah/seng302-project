@@ -19,11 +19,12 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public class TeamFormValidators {
 
     public static final String NOT_BLANK_MSG = "Field cannot be empty";
-    public static final String INVALID_CHARACTERS_MSG= "Field contains invalid values";
+    public static final String INVALID_CHARACTERS_MSG = "Field contains invalid values";
     public static final String INVALID_CHARACTERS_MSG_TEAM_NAME = "Must contain alphanumeric values. It may also contain dots, spaces, & curly brackets";
     public static final String VALID_TEAM_NAME_REGEX = "^(?=.*[a-zA-Z0-9])[a-zA-Z0-9.\\s{}]+$";
     public static final String VALID_COUNTRY_SUBURB_CITY_REGEX = "[\\- '\\p{L}]*$";
     public static final String VALID_TEAM_SPORT_REGEX = "[\\- '\\p{L}]*$";
+    public static final String INVALID_SPORT_MSG = "Can contain letters, spaces, dashes, or apostrophes";
 
     public static final String VALID_ADDRESS_REGEX = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
 

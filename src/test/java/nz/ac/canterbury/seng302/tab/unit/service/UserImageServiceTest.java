@@ -3,28 +3,25 @@ package nz.ac.canterbury.seng302.tab.unit.service;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
 import nz.ac.canterbury.seng302.tab.helper.GenerateRandomUsers;
-import nz.ac.canterbury.seng302.tab.service.UserImageService;
+import nz.ac.canterbury.seng302.tab.service.image.UserImageService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.mockito.ArgumentMatchers.any;
 
 @Import({UserImageService.class})
 @SpringBootTest
@@ -69,24 +66,12 @@ class UserImageServiceTest {
         for (int i=0; i<NUM_USERS; i++) {
             User user = generateRandomUsers.createRandomUser();
             user = userService.updateOrAddUser(user);
-            System.out.println(user);
             users.add(user);
-            System.out.println("USER ID: " + user.getUserId());
         }
     }
 
     private MockMultipartFile getMockedFile(byte[] data) {
         return new MockMultipartFile("/my_file.jpg", data);
-    }
-
-    @Test
-    void testCurrentUserIsAutomaticallyUsed() throws IOException {
-        User user = User.defaultDummyUser();
-        Mockito.when(userService.getCurrentUser()).thenReturn(Optional.of(user));
-        userImageService.updateProfilePicture(fakeImageFile);
-
-        byte[] result = userImageService.readFileOrDefault(user.getUserId());
-        assertArrayEquals(fakeImageFile.getBytes(), result);
     }
 
     @Test

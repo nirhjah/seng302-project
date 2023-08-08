@@ -121,8 +121,13 @@ public abstract class Competition {
         this.sport = sport;
     }
 
+
     public Location getLocation() {
         return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public long getEndDate() {

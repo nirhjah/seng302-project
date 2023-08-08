@@ -23,68 +23,84 @@
 <body class="profile-background">
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 <div th:if="${fedmanTokenMessage != null}" th:insert="~{fragments/messageDropDown.html :: messageDropDown(message=${fedmanTokenMessage})}"></div>
-
     <div class="profile-form">
         <div class="wrapper-profile">
             <p th:if="${thisUser.isEmpty()}">
               <strong>Specified user does not exist</strong>
             </p>
-            <div class="profile-pic">
-                <form id="upload-picture" method="post" th:action="@{/user-info/upload-pfp(userId=${userId})}" enctype="multipart/form-data">
-                    <div class="image-styling">
-                        <img th:src="@{/user-profile-picture/{id}(id = ${thisUser.get().userId})}"  width="200" height="200" alt="User image">
-                        </br>
-                    </div>
-                    </br>
-                    <div th:if="${canEdit}">
-                        <div class="file-upload">
-                            <div class="file-label-border">
-                                <label for="file" class="file-label">
-                                    Edit Profile Picture </label>
-                            </div>
-                            <input type="file" name="file" class="form-control-file" id="file">
+            <div class="profile-top-content">
+                <div class="profile-pic">
+                    <form id="upload-picture" method="post" th:action="@{/user-info/upload-pfp(userId=${userId})}" enctype="multipart/form-data">
+                        <div class="image-styling">
+                            <img th:src="@{/user-profile-picture/{id}(id = ${thisUser.get().userId})}"  width="200" height="200" alt="User image">
+                            </br>
                         </div>
-                    </div>
-                </form>
-            </div>
+                        </br>
+                        <div th:if="${canEdit}">
+                            <div class="file-upload">
+                                <div class="file-label-border">
+                                    <label for="file" class="file-label">
+                                        Edit Profile Picture </label>
+                                </div>
+                                <input type="file" name="file" class="form-control-file" id="file">
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 <div class="team-info">
                     <div class="team-display">
                         <h2>User Profile</h2>
                         <div class="user-label">
                             <img th:src="@{/image/icons/name.svg}"/>
-                            <h3 th:text="|Name: *{firstName} *{lastName}|"></h3>
+                            <div>
+                                <h3 class="attribute-type">Name</h3>
+                                <h3 th:text="|*{firstName} *{lastName}|"></h3>
+                            </div>
                         </div>
                         <div class="user-label">
                             <img th:src="@{/image/icons/email.svg}"/>
-                            <h3 th:text="|Email: *{email}|"></h3>
+                            <div>
+                                <h3 class="attribute-type">Email</h3>
+                                <h3 th:text="*{email}"></h3>
+                            </div>
                         </div>
                         <div class="user-label">
                             <img  th:src="@{/image/icons/date-of-birth.svg}"/>
-                            <h3 th:text="|Date of Birth: *{#dates.format(dateOfBirth, 'dd-MM-yyyy')}|"></h3>
+                            <div>
+                                <h3 class="attribute-type">Date of Birth</h3>
+                                <h3 th:text="*{#dates.format(dateOfBirth, 'dd-MM-yyyy')}"></h3>
+                            </div>
                         </div>
                         <div class="user-label">
                             <img  th:src="@{/image/icons/location.svg}"/>
-                            <h3 th:text="|Location: *{location}|"></h3>
+                            <div>
+                                <h3 class="attribute-type">Location</h3>
+                                <h3 th:text="*{location}"></h3>
+                            </div>
                         </div>
                         <div class="user-label">
-                            <img th:src="@{/image/icons/sports.svg}" style="height: 45px;width: 45px;"/>
-                            <h3>Favourite Sports:</h3>
-                        </div>
-                        <div class="sport-box" id="sport-box">
-                            <li th:each="sport : ${favSportNames}" th:text="${sport}"></li>
+                            <img th:src="@{/image/icons/sports.svg}"/>
+                            <div>
+                                <h3 class="attribute-type">Favourite Sports</h3>
+                                <div class="sport-box" id="sport-box">
+                                <li th:each="sport : ${favSportNames}" th:text="${sport}"></li>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            </div>
+            <div class="profile-bottom-content">
                 <div class="profile-buttons">
                     <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
-                    <div th:if="${canEdit}" class="edit-button" style="float: right; padding: 10px">
+                    <div th:if="${canEdit}" class="edit-button">
                         <a th:href="@{editUser}">
                             <button type="button">Edit Profile</button>
                         </a>
                     </div>
-                    <div th:if="${canEdit}" class="edit-button" style="float: right; padding: 10px">
+                    <div th:if="${canEdit}" class="edit-button">
                         <a th:href="@{myStats}">
-                            <button type="button">View My Stats</button>
+                            <button type="button">Stats</button>
                         </a>
                     </div>
 
@@ -126,10 +142,9 @@
     const previousPage = document.referrer;
     if (previousPage.includes(legal_url)) {
         backButton.style.visibility = '';
-        buttons.style.display = 'flex';
     } else {
+        buttons.width = '50%';
         backButton.remove();
-        buttons.style.display = 'block'
     }
   </script>
 

@@ -85,7 +85,7 @@ public class SecurityConfiguration {
                 .permitAll()
                 // TODO Add other federation manager endpoints here
                 // Only Federation Managers (maybe admins) can access this
-                .requestMatchers("/fedman")
+                .requestMatchers("/fedman", "/create-competition", "/inviteToFederationManager")
                 .hasRole(AuthorityType.FEDERATION_MANAGER.name())
                 // Only allow admins to reach the "/admin" and "/populate_database" page
                 .requestMatchers("/admin", "/populate_database")
