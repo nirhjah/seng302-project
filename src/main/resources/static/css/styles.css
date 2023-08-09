@@ -156,6 +156,10 @@ footer {
     -webkit-background-clip: text;
 }
 
+.create-club-header {
+    margin-top: 16px;
+}
+
 .input-boxes {
     display: flex;
     justify-content: space-between;
