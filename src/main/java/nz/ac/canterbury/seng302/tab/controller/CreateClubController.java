@@ -180,7 +180,7 @@ public class CreateClubController {
             }
 
             // If there's a logo, set it.
-            clubImageService.updateClubLogo(club, clubLogo);
+            clubImageService.saveImage(club, clubLogo);
 
             clubService.updateOrAddClub(club);
 
