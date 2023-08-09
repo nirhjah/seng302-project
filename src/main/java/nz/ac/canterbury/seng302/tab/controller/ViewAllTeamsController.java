@@ -92,11 +92,6 @@ public class ViewAllTeamsController {
             Model model, HttpServletRequest request) {
         logger.info("GET /view-teams");
         model.addAttribute("httpServletRequest", request);
-        
-        // If no teams exist in the database
-        if (teamService.getNumberOfTeams() == 0) {
-            return "redirect:/home";
-        }
 
         int internalPageNo = pageNo - 1;
 
