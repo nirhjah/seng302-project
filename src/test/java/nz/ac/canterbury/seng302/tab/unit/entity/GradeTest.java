@@ -93,7 +93,7 @@ class GradeTest {
         Checks that younglings are mapped to "Boys" and "Girls" as opposed
         to "Men" and "Women".
          */
-        var g = new Grade(Grade.Age.UNDER_7S, Grade.Sex.MENS, Grade.Competitiveness.UNSPECIFIED);
+        var g = new Grade(Grade.Age.UNDER_7S, Grade.Sex.MENS, Grade.Competitiveness.SOCIAL);
         assertEquals("Boy's Under 7s", g.getDisplayString());
 
         var g2 = new Grade(Grade.Age.UNDER_6S, Grade.Sex.WOMENS);
@@ -121,10 +121,10 @@ class GradeTest {
         Checks that competitiveness is not shown when it's regular.
          */
         var g = new Grade(Grade.Age.ADULT, Grade.Sex.MENS, Grade.Competitiveness.SOCIAL);
-        assertEquals("Men's Social", g.getDisplayString());
+        assertEquals("Men's", g.getDisplayString());
 
         var g2 = new Grade(Grade.Age.UNDER_10S, Grade.Sex.MIXED, Grade.Competitiveness.SOCIAL);
-        assertEquals("Mixed Under 10s Social", g2.getDisplayString());
+        assertEquals("Mixed Under 10s", g2.getDisplayString());
     }
 
 

@@ -45,4 +45,8 @@ public class UserCompetition extends Competition {
     public void addPlayer(User player) {
         players.add(player);
     }
+
+    public void setPlayers(Set<User> players) {
+        this.players = players;
+    }
 }
