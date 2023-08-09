@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.tab.form;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
@@ -28,10 +30,13 @@ public class CreateAndEditTeamForm {
     @LocationValidators.suburbValidator
     private String suburb;
 
+    @NotNull
     private Grade.Age age;
-
+    
+    @NotNull
     private Grade.Sex sex;
-
+    
+    @NotNull
     private Grade.Competitiveness competitiveness;
 
     /**
