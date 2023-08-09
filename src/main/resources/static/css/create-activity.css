@@ -13,6 +13,7 @@
     width: 630px;
     height: fit-content;
     font-size: 15px;
+    padding-top: 30px;
 }
 
 .activity-form select {
@@ -65,19 +66,25 @@
     display: none;
     box-shadow: rgba(0, 0, 0, 0.2) 0 0 10px 1px inset;
     border-radius: 5px;
-    padding: 10px;
     transition: opacity 1s ease-out;
     opacity: 0;
     width: 123%;
     margin-left: -10%;
-    height: 420px;
+    height: 0;
+    overflow: hidden;
+    padding: 0;
 }
 
 .formation-activity-display.active {
     opacity: 1;
-    display: flex;
+    display: block;
+    padding: 10px;
+    height: fit-content;
 }
 
+.formation-activity-display.active div{
+    display: flex;
+}
 
 .subs-reserves-box {
     width: 100%;
@@ -114,6 +121,7 @@
     border-radius: 0 0 10px 10px;
     -ms-overflow-style: none;
     scrollbar-width: none;
+    max-height: 290px;
 }
 
 .subs-ul {
@@ -182,6 +190,25 @@
     cursor: pointer;
     outline: inherit;
     margin-left: auto;
+}
+
+.cancel-button {
+    background-color: #0b2239;
+    padding: 5px 15px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 1em;
+    color: #fff;
+    border-radius: 30px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.cancel-button:hover {
+    background-color: #415a77;
+    cursor: pointer;
 }
 
 
