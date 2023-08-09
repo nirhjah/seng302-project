@@ -79,6 +79,11 @@ public class ClubImageService extends ImageService<Club> {
         }
     }
 
+    /**
+     * Returns a ResponseEntity for use in an @ResponseBody.
+     * @param id The id of the Entity in question
+     * @return A responseEntity
+     */
     public ResponseEntity<byte[]> getImageResponse(long id) {
         Optional<Club> optClub = clubService.findClubById(id);
         if (optClub.isPresent()) {
