@@ -63,16 +63,11 @@ public class ViewAllCompetitionsController {
 
             // just for testing
             if (i < 20) {
-                if (i < 10) {
-                    // set to future
-                    comp1.setDate(now + 10000, now + 20000);
-                    comp2.setDate(now + 10000, now + 20000);
-                } else {
-                    // set to past
-                    comp1.setDate(now - 20000, now - 18000);
-                    comp2.setDate(now - 22000, now - 20000);
-                }
+                // set to past
+                comp1.setDate(now - 20000, now - 18000);
+                comp2.setDate(now - 22000, now - 20000);
             } else {
+                // set to current
                 comp1.setDate(now - 100, now + 4000);
                 comp2.setDate(now - 100, now + 4000);
             }
@@ -90,6 +85,10 @@ public class ViewAllCompetitionsController {
     private Page<Competition> getPageResult(int page, List<String> times, List<String> sports) {
         // pages are 0 indexed.
         PageRequest pageable = PageRequest.of(page - 1, PAGE_SIZE, SORT);
+
+        if (times == null) {
+            times = List.of();
+        }
 
         if (times.size() == 0 || times.size() == timingValues.size()) {
             return competitionService.findAllCompetitionsBySports(pageable, sports);
@@ -113,7 +112,7 @@ public class ViewAllCompetitionsController {
     @GetMapping("/view-all-competitions")
     public String viewAllCompetitions(@RequestParam(name = "page", defaultValue = "1") int page,
                                       @RequestParam(name = "sports", required=false) List<String> sports,
-                                      @RequestParam(name = "time", required = false, defaultValue = "ALL") List<String> times,
+                                      @RequestParam(name = "time", required = false) List<String> times,
                                       Model model, HttpServletRequest request) {
 
         testModel();
@@ -126,12 +125,10 @@ public class ViewAllCompetitionsController {
         model.addAttribute("listOfCompetitions", competitions);
 
         model.addAttribute("listOfSports", sportService.getAllSportNames());
-        model.addAttribute("listOfTimes", List.of("All", "Past", "Current"));
+        model.addAttribute("listOfTimes", List.of("Past", "Current"));
 
         model.addAttribute("page", page);
         model.addAttribute("totalPages", pageResult.getTotalPages());
-
-        System.out.println("SIZE: " + pageResult.getTotalPages());
 
         return "viewAllCompetitions";
     }
