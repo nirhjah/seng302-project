@@ -267,14 +267,14 @@ public class TeamService {
     }
 
     /**
-     * Gets a unique list of all the sports teams are in.
+     * Gets a unique list of all the sports teams are in, alphabetically ordered.
      */
     public List<String> getAllTeamSports() {
         return teamRepository.getAllDistinctSports();
     }
 
     /**
-     * Gets a unique list of all the cities teams are in.
+     * Gets a unique list of all the cities teams are in, alphabetcally
      */
     public List<String> getAllTeamCities() {
         return teamRepository.getAllDistinctCities();

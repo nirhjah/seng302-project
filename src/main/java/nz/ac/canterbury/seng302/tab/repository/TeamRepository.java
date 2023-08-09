@@ -98,10 +98,14 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
 
     List<Team> findTeamsByTeamClubClubId(long clubId);
 
-    @Query("SELECT distinct(t.sport) FROM Team t")
+    @Query("""
+        SELECT distinct(t.sport) FROM Team t
+          ORDER BY lower(t.sport)""")
     List<String> getAllDistinctSports();
 
-    @Query("SELECT distinct(t.location.city) FROM Team t")
+    @Query("""
+        SELECT distinct(t.location.city) FROM Team t
+          ORDER BY lower(t.location.city)""")
     List<String> getAllDistinctCities();
 
     @Query("SELECT t FROM Team t " +

@@ -506,9 +506,10 @@ public class TeamRepositoryTest {
         teamRepository.save(team1);
         teamRepository.save(team2);
 
-        var sports = Set.copyOf(teamRepository.getAllDistinctSports());
+        var sports = teamRepository.getAllDistinctSports();
 
-        assertEquals(Set.of("Rugby", "Hockey"), sports);
+        // Note the alphabetical order
+        assertEquals(List.of("Hockey", "Rugby"), sports);
     }
 
     @Test
