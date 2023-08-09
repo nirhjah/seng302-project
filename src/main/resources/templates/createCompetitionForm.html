@@ -283,7 +283,13 @@
     function getCompetitors() {
         if (!inactiveCover.classList.contains("active")) {
             const type = typeCheckbox.checked ? "users" : "teams"
-            axios.get("create-competition/get_" + type, {params: {sport: sportsInput.value, search: searchQuery.value}})
+            const params = {params: {sport: sportsInput.value, search: searchQuery.value}}
+            if (type === "teams") {
+                params.params.age = document.getElementById("age").value;
+                params.params.sex = document.getElementById("sex").value;
+                params.params.competitiveness = document.getElementById("competitiveness").value;
+            }
+            axios.get("create-competition/get_" + type, params)
                 .then(response => {
                     generateUsersTeams(response.data);
                 })
