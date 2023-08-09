@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import static nz.ac.canterbury.seng302.tab.controller.ViewAllCompetitionsController.Timing.CURRENT;
+import static nz.ac.canterbury.seng302.tab.controller.ViewAllCompetitionsController.Timing.PAST;
+
 @Controller
 public class ViewAllCompetitionsController {
 
@@ -80,17 +83,23 @@ public class ViewAllCompetitionsController {
     }
 
     public enum Timing {
-        ALL, PAST, CURRENT
+        PAST, CURRENT
     }
     List<Timing> timingValues = List.of(Timing.values());
 
-    private Page<Competition> getPageResult(int page, String time, List<String> sports) {
+    private Page<Competition> getPageResult(int page, List<String> times, List<String> sports) {
         // pages are 0 indexed.
         PageRequest pageable = PageRequest.of(page - 1, PAGE_SIZE, SORT);
 
-        Timing timing = Timing.ALL;
+        if (times.size() == 0 || times.size() == timingValues.size()) {
+            return competitionService.findAllCompetitionsBySports(pageable, sports);
+        }
+
+        String selectedTime = times.get(0);
+        Timing timing = CURRENT;
+
         for (Timing tim: timingValues) {
-            if (time.equalsIgnoreCase(tim.toString())) {
+            if (selectedTime.equalsIgnoreCase(tim.toString())) {
                 timing = tim;
             }
         }
@@ -98,20 +107,19 @@ public class ViewAllCompetitionsController {
         return switch (timing) {
             case PAST -> competitionService.findPastCompetitionsBySports(pageable, sports);
             case CURRENT -> competitionService.findCurrentCompetitionsBySports(pageable, sports);
-            default -> competitionService.findAllCompetitionsBySports(pageable, sports);
         };
     }
 
     @GetMapping("/view-all-competitions")
     public String viewAllCompetitions(@RequestParam(name = "page", defaultValue = "1") int page,
                                       @RequestParam(name = "sports", required=false) List<String> sports,
-                                      @RequestParam(name = "time", required = false, defaultValue = "ALL") String time,
+                                      @RequestParam(name = "time", required = false, defaultValue = "ALL") List<String> times,
                                       Model model, HttpServletRequest request) {
 
         testModel();
         model.addAttribute("httpServletRequest",request);
 
-        Page<Competition> pageResult = getPageResult(page, time, sports);
+        Page<Competition> pageResult = getPageResult(page, times, sports);
 
         List<Competition> competitions = pageResult.stream().toList();
 
