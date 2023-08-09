@@ -6,9 +6,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
-import nz.ac.canterbury.seng302.tab.entity.Grade;
-import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
-import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
 import nz.ac.canterbury.seng302.tab.service.CompetitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
