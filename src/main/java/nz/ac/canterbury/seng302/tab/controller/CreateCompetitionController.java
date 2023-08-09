@@ -1,22 +1,15 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import nz.ac.canterbury.seng302.tab.entity.*;
-import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
-import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
-import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
-import nz.ac.canterbury.seng302.tab.form.CreateAndEditCompetitionForm;
-import nz.ac.canterbury.seng302.tab.response.competition.CompetitionTeamInfo;
-import nz.ac.canterbury.seng302.tab.response.competition.CompetitionUserInfo;
-import nz.ac.canterbury.seng302.tab.service.CompetitionService;
-import nz.ac.canterbury.seng302.tab.service.SportService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
-import nz.ac.canterbury.seng302.tab.validator.CompetitionFormValidators;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,9 +21,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import nz.ac.canterbury.seng302.tab.entity.Grade;
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
+import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
+import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
+import nz.ac.canterbury.seng302.tab.form.CreateAndEditCompetitionForm;
+import nz.ac.canterbury.seng302.tab.response.competition.CompetitionTeamInfo;
+import nz.ac.canterbury.seng302.tab.response.competition.CompetitionUserInfo;
+import nz.ac.canterbury.seng302.tab.service.CompetitionService;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
+import nz.ac.canterbury.seng302.tab.validator.CompetitionFormValidators;
 
 /**
  * Spring Boot Controller class for the Create Competition Form
@@ -46,8 +52,7 @@ public class CreateCompetitionController {
 
     private final TeamService teamService;
 
-    @Autowired
-    public CreateCompetitionController(CompetitionService competitionService,UserService userService, TeamService teamService) {
+    public CreateCompetitionController(CompetitionService competitionService, UserService userService, TeamService teamService) {
         this.competitionService = competitionService;
         this.userService = userService;
         this.teamService = teamService;
@@ -187,7 +192,7 @@ public class CreateCompetitionController {
             List<Long> IDs) {
 
         // The competition requires a team or a user to be selected
-        if (IDs == null || IDs.size()==0) {
+        if (IDs == null || IDs.isEmpty()) {
             bindingResult.addError(new FieldError("CreateAndEditCompetitionForm", "competitors",
                     CompetitionFormValidators.NO_COMPETITORS_MSG));
         }
