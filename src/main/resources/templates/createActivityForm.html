@@ -66,24 +66,28 @@
                 <div th:each="err : ${#fields.errors('formation')}" th:text="${err}" class="error-message"></div>
             </div>
 
-            <div class="formation-activity-display" >
-                <input type="hidden" id="playerAndPositions" name="playerAndPositions">
-
-                <div class="subs-reserves-box">
-                    <div class=subs-header>Subs</div>
-                    <ul class="subs-ul">
-                    </ul>
-                    <div class="reserves-header active">Reserves</div>
-                    <ul class="reserves-ul active">
-                        <li th:each="player : ${players}" class="reserves-li">
-                            <img th:src="@{/user-profile-picture/{id}(id = ${player.userId})}"  class="li-player-image"  alt="Player Image">
-                            <span class="li-player-name" th:text="${player.getFirstName}"></span>
-                            <button class="switch" type="button"></button>
-                            <input type="hidden" class="playerId" th:value="${player.getUserId}">
-                        </li>
-                    </ul>
+            <div class="formation-activity-display">
+                <div>
+                    <input type="hidden" id="playerAndPositions" name="playerAndPositions">
+                    <div class="subs-reserves-box">
+                        <div class=subs-header>Subs</div>
+                        <ul class="subs-ul">
+                        </ul>
+                        <div class="reserves-header active">Reserves</div>
+                        <ul class="reserves-ul active">
+                            <li th:each="player : ${players}" class="reserves-li">
+                                <img th:src="@{/user-profile-picture/{id}(id = ${player.userId})}"  class="li-player-image"  alt="Player Image">
+                                <span class="li-player-name" th:text="${player.getFirstName}"></span>
+                                <button class="switch" type="button"></button>
+                                <input type="hidden" class="playerId" th:value="${player.getUserId}">
+                            </li>
+                        </ul>
+                    </div>
+                    <div th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"></div>
                 </div>
-                <div th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"></div>
+                <div>
+                    <button class="cancel-button" type="button">Cancel</button>
+                </div>
             </div>
             <div th:each="err : ${#fields.errors('lineup')}" th:text="${err}" class="error-message"></div>
 
@@ -301,9 +305,9 @@
         return (activityType === "Game" || activityType === "Friendly");
     }
 
+    const formationDropdown = document.querySelector("#formation-dropdown");
+
     function updateFormationList() {
-        console.log("here")
-        const formationDropdown = document.querySelector("#formation-dropdown");
         const currentTeamId = document.querySelector("#team").value;
         const currentActivity = document.querySelector("#activityType").value;
 
@@ -341,13 +345,11 @@
     }
 
     function loadFormation(target) {
-
+        const reservesLi = document.querySelectorAll(".reserves-li");
         const formationId = target.value;
         const formation = target.textContent;
         const custom = target.getAttribute("data-custom")
         const customPlayerPositions = target.getAttribute("data-custom-positions");
-        const reservesLi = document.querySelectorAll(".reserves-li");
-        console.log(target, formationId, formation, custom, customPlayerPositions)
         reservesLi.forEach(li => {
             li.classList.remove("in-formation");
         })
@@ -361,7 +363,6 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() {
-        const formationDropdown = document.querySelector("#formation-dropdown");
         const selectedFormationId  = formationDropdown.value;
         const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex]
         if (selectedFormationId != -1) {
@@ -369,8 +370,22 @@
         }
     });
 
+    const cancelButton = document.querySelector(".cancel-button");
+
+    cancelButton.addEventListener("click", () => {
+        const reservesLi = document.querySelectorAll(".reserves-li");
+        reservesLi.forEach(li => {
+            li.classList.remove("in-formation");
+        })
+        const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex]
+        const formation = selectedFormation.textContent;
+        const custom = selectedFormation.getAttribute("data-custom")
+        const customPlayerPositions = selectedFormation.getAttribute("data-custom-positions");
+        generatedOrCustom(formation, custom === "true", customPlayerPositions);
+        addPositionFunctionality();
+    })
+
     function populateFormationDropdown(isEnabled, emptyValueName, formationList) {
-        const formationDropdown = document.querySelector("#formation-dropdown");
         while (formationDropdown.firstChild) {
             formationDropdown.removeChild(formationDropdown.lastChild);
         }
@@ -412,7 +427,6 @@
             playerReserveList.append(playerLi);
 
             const liPlayerImage = document.createElement("img");
-            console.log(player)
             liPlayerImage.className = "li-player-image";
             liPlayerImage.src = "/user-profile-picture/" + player.playerID;
             liPlayerImage.alt = "My Profile";
@@ -553,7 +567,6 @@
 
     // Checks to see if the subs list can be activated whenever all the positions on the pitch are filled
     function checkSubsActive() {
-        console.log(checkFilled());
         if (checkFilled()) {
             activateSubs();
         } else if (subsUl.children.length==0) {
