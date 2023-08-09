@@ -131,7 +131,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
         @Query(nativeQuery = true, value =
             "SELECT * FROM user_entity u " +
             "WHERE u.ID NOT IN (" +
-            "    SELECT DISTINCT a.user_Id FROM Authority a WHERE a.role = 'ROLE_FEDERATION_MANAGER'" +
+            "    SELECT DISTINCT a.user_Id FROM authority a WHERE a.role = 'ROLE_FEDERATION_MANAGER'" +
             ") " +
             "AND ( " +
             "    lower(:search) like lower(concat('%', u.FIRST_NAME, '%')) " +
