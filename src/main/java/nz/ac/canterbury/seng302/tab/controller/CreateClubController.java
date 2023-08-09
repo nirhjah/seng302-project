@@ -175,10 +175,11 @@ public class CreateClubController {
 
             clubService.updateOrAddClub(club);
 
-            if (Objects.equals(clubLogo.getOriginalFilename(), "")) {
-                // If there's a logo, set it.
-                clubImageService.updateClubLogo(club, clubLogo);
-            }
+            // If there's a logo, set it.
+            clubImageService.updateClubLogo(club, clubLogo);
+
+            clubService.updateOrAddClub(club);
+
             return "redirect:/view-club?clubID=" + club.getClubId();
         }
     }
