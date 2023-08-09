@@ -91,6 +91,9 @@ public class ProfileFormController {
         model.addAttribute("displaySport", team.getSport());
         model.addAttribute("displayLocation", team.getLocation());
         model.addAttribute("displayToken", team.getToken());
+        if (team.getGrade() != null) {
+            model.addAttribute("displayGrade",team.getGrade().getDisplayString());
+        }
         model.addAttribute("clubId",teamService.getTeamClubId(team));
         model.addAttribute("teamCompetitions", competitionService.getAllCompetitionsWithTeam(team));
 

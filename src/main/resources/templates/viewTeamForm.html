@@ -98,6 +98,13 @@
                                     <h3 th:text="*{displayLocation}"></h3>
                                 </div>
                             </div>
+                            <div class="user-label" th:if="${displayGrade}">
+                                <img alt="" th:src="@{/image/icons/gradeLevel.svg}"/>
+                                <div>
+                                    <h3 class="attribute-type">Grade</h3>
+                                    <h3 th:text="${displayGrade}"></h3>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
