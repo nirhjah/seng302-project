@@ -267,8 +267,6 @@ public class CreateCompetitionController {
                                                             @RequestParam(required = false) String age,
                                                             @RequestParam(required = false) String sex,
                                                             @RequestParam(required = false) String competiveness) {
-        Age age = new Age();
-        Grade grade = new Grade();
         return ResponseEntity.ok().body(
                 teamService.findTeamsBySportAndSearchAndGrade(sport, search, grade).stream().map(team -> new CompetitionTeamInfo(
                         team.getTeamId(),
