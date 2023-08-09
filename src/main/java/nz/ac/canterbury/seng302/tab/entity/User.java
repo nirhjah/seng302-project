@@ -3,25 +3,24 @@ package nz.ac.canterbury.seng302.tab.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
+import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
 import nz.ac.canterbury.seng302.tab.enums.Role;
+import nz.ac.canterbury.seng302.tab.helper.ImageType;
+import nz.ac.canterbury.seng302.tab.helper.interfaces.HasImage;
+import nz.ac.canterbury.seng302.tab.helper.interfaces.Identifiable;
 import nz.ac.canterbury.seng302.tab.service.UserService;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import java.sql.Timestamp;
-import java.util.Base64;
 
 
 import java.util.*;
 
 @Entity(name = "UserEntity")
-public class User {
+public class User implements Identifiable, HasImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,9 +44,6 @@ public class User {
     @JoinColumn(name = "fk_locationId", referencedColumnName = "locationId")
     private Location location;
 
-    @Column(columnDefinition = "MEDIUMBLOB")
-    private String pictureString;
-
     @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags = Pattern.Flag.CASE_INSENSITIVE)
     @Column(nullable = false, unique = true)
     private String email;
@@ -66,6 +62,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<TeamRole> teamRoles;
+
+    @Enumerated
+    private ImageType profilePictureType;
 
     public User() {
 
@@ -97,9 +96,6 @@ public class User {
         this.hashedPassword = password;
         this.favoriteSports = favoriteSports;
         this.location = location;
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
 
     /**
@@ -107,16 +103,12 @@ public class User {
      * a hashed password
      * (By Autowiring a <code>PasswordEncoder</code>)
      */
-    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location)
-            throws IOException {
+    public User(String firstName, String lastName, Date dateOfBirth, String email, String password, Location location) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.hashedPassword = password;
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.favoriteSports = new ArrayList<>();
         this.location = location;
     }
@@ -133,15 +125,27 @@ public class User {
         this.dateOfBirth = new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime();
         this.hashedPassword = password;
         this.location = location;
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
     }
 
     @ManyToMany(mappedBy = "teamMembers")
     private Set<Team> joinedTeams = new HashSet<Team>();
 
+    @Override
+    public ImageType getImageType() {
+        return profilePictureType;
+    }
+
+    @Override
+    public void setImageType(ImageType imageType) {
+        this.profilePictureType = imageType;
+    }
+
+
     public long getUserId() {
+        return userId;
+    }
+
+    public long getId() {
         return userId;
     }
 
@@ -202,14 +206,6 @@ public class User {
         this.location = location;
     }
 
-    public String getPictureString() {
-        return this.pictureString;
-    }
-
-    public void setPictureString(String pictureString) {
-        this.pictureString = pictureString;
-    }
-
     public void setToken(String token) {
         this.token = token;
     }
@@ -243,18 +239,25 @@ public class User {
 
     @Column()
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "Id")
+    @JoinColumn(name = "userId")
     private List<Authority> userRoles;
 
-    public void grantAuthority(String authority) {
+    /**
+     * Assigns this user the provided role.
+     * <p><em>
+     *  Note: There are no duplicate role checks. If that's a problem, roll your own check.
+     * </em></p>
+     * @param authority The authority/role you're providing.
+     */
+    public void grantAuthority(AuthorityType authority) {
         if (userRoles == null) {
-            userRoles = new ArrayList<Authority>();
+            userRoles = new ArrayList<>();
         }
-        userRoles.add(new Authority(authority));
+        userRoles.add(new Authority(authority.role()));
     }
 
     public List<GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+        List<GrantedAuthority> authorities = new ArrayList<>();
         if (userRoles != null) {
             this.userRoles.forEach(authority -> authorities.add(new SimpleGrantedAuthority(authority.getRole())));
         }

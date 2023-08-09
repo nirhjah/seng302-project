@@ -52,6 +52,7 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
     Page<Team> findTeamByNameAndSportIn(Pageable pageable, @Param("searchedSports") List<String> searchedSports,
             @Param("name") String name);
 
+
     @Query("SELECT t.location FROM Team t " +
             "WHERE LOWER(t.name) LIKE LOWER(CONCAT('%', :name, '%')) " +
             "OR LOWER(t.location.country) LIKE LOWER(CONCAT('%', :name, '%')) " +
@@ -96,4 +97,22 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
     List<String> getAllTeamNames();
 
     List<Team> findTeamsByTeamClubClubId(long clubId);
+
+    @Query("""
+        SELECT distinct(t.sport) FROM Team t
+          ORDER BY lower(t.sport)""")
+    List<String> getAllDistinctSports();
+
+    @Query("""
+        SELECT distinct(t.location.city) FROM Team t
+          ORDER BY lower(t.location.city)""")
+    List<String> getAllDistinctCities();
+
+    @Query("SELECT t FROM Team t " +
+            "WHERE t.sport = :sport " +
+            "AND :name IS NOT NULL " +
+            "AND (LOWER(t.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
+            "ORDER BY LOWER(t.name) ASC")
+    List<Team> findTeamsByNameAndSport(@Param("name") String name, @Param("sport") String sport);
+
 }

@@ -296,6 +296,13 @@ Join team modal styling
     border-radius: 20px;
 }
 
+.modal-content.event {
+    width: 40%;
+    position: relative;
+    bottom: 40%;
+    overflow-y: initial;
+}
+
 .close {
     color: #aaaaaa;
     float: right;
@@ -358,4 +365,3 @@ Join team modal styling
 .team-role-box label{
     padding-right:10px;
 }
-

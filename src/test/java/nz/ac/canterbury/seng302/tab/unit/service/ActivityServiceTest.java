@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
-import io.cucumber.java.en_old.Ac;
 import nz.ac.canterbury.seng302.tab.enums.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
@@ -95,7 +94,7 @@ public class ActivityServiceTest {
     public void ifActivityScoreBothSameFormat_Hyphen_returnTrue() {
         String activityTeamScore = "141-9";
         String otherTeamScore = "94-3";
-        Assertions.assertTrue(activityService.validateActivityScore(activityTeamScore, otherTeamScore));
+        Assertions.assertEquals(0, activityService.validateActivityScore(activityTeamScore, otherTeamScore));
     }
 
 
@@ -106,7 +105,7 @@ public class ActivityServiceTest {
     public void ifActivityScoreBothDifferentFormat_FirstScoreHyphen_returnFalse() {
         String activityTeamScore = "141-9";
         String otherTeamScore = "94";
-        Assertions.assertFalse(activityService.validateActivityScore(activityTeamScore, otherTeamScore));
+        Assertions.assertEquals(1, activityService.validateActivityScore(activityTeamScore, otherTeamScore));
     }
 
     /**
@@ -116,7 +115,27 @@ public class ActivityServiceTest {
     public void ifActivityScoreBothSameFormat_NumberOnly_returnTrue() {
         String activityTeamScore = "141";
         String otherTeamScore = "94";
-        Assertions.assertTrue(activityService.validateActivityScore(activityTeamScore, otherTeamScore));
+        Assertions.assertEquals(0, activityService.validateActivityScore(activityTeamScore, otherTeamScore));
+    }
+
+    /**
+     * Tests if both teams scores for an activity are both empty, return false
+     */
+    @Test
+    public void ifActivityScoreBothEmpty_returnTrue() {
+        String activityTeamScore = "";
+        String otherTeamScore = "";
+        Assertions.assertEquals(0, activityService.validateActivityScore(activityTeamScore, otherTeamScore));
+    }
+
+    /**
+     * Tests if one team score is empty and the other is not, return false
+     */
+    @Test
+    public void ifOneActivityScoreEmptyAndOtherNot_returnFalse() {
+        String activityTeamScore = "3";
+        String otherTeamScore = "";
+        Assertions.assertEquals(2, activityService.validateActivityScore(activityTeamScore, otherTeamScore));
     }
 
     /**
@@ -126,7 +145,7 @@ public class ActivityServiceTest {
     public void ifActivityScoreBothDifferentFormat_OneScoreNumberOnly_returnFalse() {
         String activityTeamScore = "99";
         String otherTeamScore = "94-23";
-        Assertions.assertFalse(activityService.validateActivityScore(activityTeamScore, otherTeamScore));
+        Assertions.assertEquals(1, activityService.validateActivityScore(activityTeamScore, otherTeamScore));
     }
 
     /**
@@ -268,5 +287,6 @@ public class ActivityServiceTest {
         activityRepository.save(game);
         Assertions.assertEquals(120, activityService.getTotalTimeAUserHasPlayedForATeam(u, team));
     }
+    
 
 }

@@ -13,6 +13,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
+
 
 
 /**
@@ -70,18 +72,24 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // Allow h2 console through security. Note: Spring 6 broke the nicer way to do this (i.e. how the authorisation is handled below)
         // See https://github.com/spring-projects/spring-security/issues/12546
-        http.authorizeHttpRequests(auth -> auth.requestMatchers(AntPathRequestMatcher.antMatcher("/geocode/autocomplete"),AntPathRequestMatcher.antMatcher("/h2/**"), AntPathRequestMatcher.antMatcher("/resources/**"), AntPathRequestMatcher.antMatcher("/static/**"), AntPathRequestMatcher.antMatcher("/css/**"), AntPathRequestMatcher.antMatcher("/js/**"), AntPathRequestMatcher.antMatcher("/image/**")).permitAll())
+        http.authorizeHttpRequests(auth -> auth.requestMatchers(AntPathRequestMatcher.antMatcher("/geocode/autocomplete"),
+                        AntPathRequestMatcher.antMatcher("/h2/**"), AntPathRequestMatcher.antMatcher("/resources/**"),
+                        AntPathRequestMatcher.antMatcher("/static/**"), AntPathRequestMatcher.antMatcher("/css/**"),
+                        AntPathRequestMatcher.antMatcher("/js/**"), AntPathRequestMatcher.antMatcher("/image/**"), AntPathRequestMatcher.antMatcher("/mail/**")).permitAll())
                 .headers(headers -> headers.frameOptions().disable())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2/**"),AntPathRequestMatcher.antMatcher("/geocode/autocomplete")))
                 .authorizeHttpRequests()
                 // accessible to anyone
-                .requestMatchers("/", "/register", "/login", "/demo", "/populate_database", "/home",
-                        "/geocode/autocomplete", "/forgot-password", "/reset-password", "/confirm")
+                .requestMatchers("/", "/register", "/login", "/home",
+                "/geocode/autocomplete", "/lost-password", "/reset-password", "/confirm")
                 .permitAll()
-                // Only allow admins to reach the "/admin" page
-                .requestMatchers("/admin")
+                // Only Federation Managers (maybe admins) can access this
+                .requestMatchers("/create-competition", "/inviteToFederationManager")
+                .hasRole(AuthorityType.FEDERATION_MANAGER.name())
+                // Only allow admins to reach the "/admin" and "/populate_database" page
+                .requestMatchers("/admin", "/populate_database")
                 // note we do not need the "ROLE_" prefix as we are calling "hasRole()"
-                .hasRole("ADMIN")
+                .hasRole(AuthorityType.ADMIN.name())
                 // Any other request requires authentication
                 .anyRequest()
                 .authenticated()

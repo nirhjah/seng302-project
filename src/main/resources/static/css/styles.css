@@ -80,7 +80,6 @@ td {
     border: none;
     outline: 0;
     padding: 0.1em;
-    cursor: pointer;
 }
 
 .wrapper,.wrapper-profile,.wrapper-edit-profile{
@@ -356,6 +355,7 @@ ul {
     color: black;
 }
 .multipleSelection {
+    position: relative;
     background-color: #415A77;
     font-family: "Noto Sans", sans-serif;
     font-size: 1em;
@@ -548,4 +548,67 @@ ul.autocomplete-result{
     background-clip: text;
     -webkit-background-clip: text;
 }
+
+
+.create-header {
+    display: flex;
+    align-content: center;
+    width: 120%;
+    align-items: center;
+    margin-top: 35px;
+    margin-left: -10%;
+}
+
+.create-header h2 {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 25px;
+    color: #0b2239;
+    white-space: nowrap;
+}
+
+.create-header img {
+    height: 30px;
+    margin: 0 5px;
+    width: 35px;
+}
+
+.create-header::before {
+    min-width: 15px;
+    margin-right: 5px;
+}
+
+.create-header::after {
+    width: 67%;
+}
+
+.create-header::before, .create-header::after {
+    content: "";
+    border-top: 4px solid #0b2239;
+    align-content: center;
+    display: flex;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.multiply:before {
+    content: "\00D7";
+}
+
+.checkbox-box {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+}
+
+.checkbox-box label, .competitor-message {
+    font-family: "Noto Sans", sans-serif;
+    left: 1px;
+    font-size: 1em;
+    font-weight: 500;
+    transition: 0.5s;
+    color: #888888;
+    border-bottom: none;
+}
+
+
 

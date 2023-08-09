@@ -1,17 +1,12 @@
 package nz.ac.canterbury.seng302.tab.service;
 
-import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.*;
-
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
 import nz.ac.canterbury.seng302.tab.authentication.TokenVerification;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
-import nz.ac.canterbury.seng302.tab.mail.EmailService;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +23,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Service class for User database entries, defined by the @link{Service}
@@ -51,18 +47,15 @@ public class UserService {
 
     private final TaskScheduler taskScheduler;
 
-    private final EmailService emailService;
-
     private final PasswordEncoder passwordEncoder;
 
+
     @Autowired
-    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.taskScheduler = taskScheduler;
-        this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
     }
-
 
     public static final Sort SORT_BY_LAST_AND_FIRST_NAME = Sort.by(
         Order.asc("lastName").ignoreCase(),
@@ -86,6 +79,9 @@ public class UserService {
         return userRepository.findByToken(token);
     }
 
+    public User getUser(long userID) {
+        return userRepository.findById(userID).orElse(null);
+    }
 
     /**
      * Gets a page of users, filtered down by their name and sports interest
@@ -178,7 +174,7 @@ public class UserService {
     /**
      * Find a user by their email. Most likely used for signing in.
      * 
-     * @param email
+     * @param email the email that's being checked to see if it already has an associated account
      * @return An optional object, containing either the user if they exist,
      *         otherwise it's empty.
      */
@@ -268,53 +264,22 @@ public class UserService {
         // Issue: The security context chain gives you "Anonymous Authentication"
         // if you're not logged in, so `isAuthenticated()` can be true.
         // To get around this, check if you're anonymous.
-        if (!auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
             return Optional.empty();
         }
         String email = auth.getName();
         return userRepository.findByEmail(email);
     }
 
-    /**
-     * Method which updates the picture by taking the MultipartFile type and
-     * updating the picture
-     * stored in the team with id primary key.
-     *
-     * @param file MultipartFile file upload
-     * @param id   Team's unique id
-     */
-    public void updatePicture(MultipartFile file, long id) {
-        User user = userRepository.findById(id).get();
-
-        // Gets the original file name as a string for validation
-        String pictureString = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        if (pictureString.contains("..")) {
-            logger.info("not a a valid file");
-        }
-        try {
-            // Encodes the file to a byte array and then convert it to string, then set it
-            // as the pictureString variable.
-            user.setPictureString(Base64.getEncoder().encodeToString(file.getBytes()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Saved the updated picture string in the database.
-        userRepository.save(user);
-    }
 
     /**
      * Updates the user's password then creates and sends email informing the user that their password has been updated.
      * @param user the user whose password was updated
      * @param password the password to update the user with
-     * @return the outcome of the email sending
      */
-    public void updatePassword(User user, String password) {
+    public void updatePassword(User user, String password) throws MessagingException {
         user.setPassword(passwordEncoder.encode(password));
         updateOrAddUser(user);
-        EmailDetails details = new EmailDetails(user.getEmail(), EmailDetails.UPDATE_PASSWORD_BODY, EmailDetails.UPDATE_PASSWORD_HEADER);
-        String outcome = emailService.sendSimpleMail(details);
-        logger.info(outcome);
     }
 
 
@@ -323,28 +288,13 @@ public class UserService {
      * @param user      user to send reset password link to
      * @param request   to get current url to create the link
      */
-    public void resetPasswordEmail(User user, HttpServletRequest request) {
+    public void resetPasswordEmail(User user, HttpServletRequest request) throws MessagingException {
 
         user.generateToken(this, 1);
         updateOrAddUser(user);
 
         taskScheduler.schedule(new TokenVerification(user, this), Instant.now().plus(Duration.ofHours(1)));
-
-        String tokenVerificationLink = request.getRequestURL().toString().replace(request.getServletPath(), "")
-                + "/reset-password?token=" + user.getToken();
-
-        if (request.getRequestURL().toString().contains("test")) {
-            tokenVerificationLink =  "https://csse-s302g9.canterbury.ac.nz/test/reset-password?token=" + user.getToken();
-        }
-        if (request.getRequestURL().toString().contains("prod")) {
-            tokenVerificationLink =  "https://csse-s302g9.canterbury.ac.nz/prod/reset-password?token=" + user.getToken();
-        }
-        EmailDetails details = new EmailDetails(user.getEmail(), tokenVerificationLink, EmailDetails.RESET_PASSWORD_HEADER);
-        String outcome = emailService.sendSimpleMail(details);
-        logger.info(outcome);
     }
-
-
 
     /**
      * Adds user to team and updates user
@@ -354,6 +304,45 @@ public class UserService {
     public void userJoinTeam(User user, Team team) {
         user.joinTeam(team);
         updateOrAddUser(user);
+    }
+
+    public List<User> findUsersBySportAndName(String sport, String name) {
+        return userRepository.findUserBySportAndName(sport, name);
+    }
+
+    /**
+     * gets all users who arent federation managers
+     * @param pageable
+     * @return all the users who arent federation managers
+    */
+    public Page<User> getAllUsersNotFedMans(Pageable pageable) {
+        return userRepository.findUsersThatArentFedMans(pageable);
+    }
+
+    /**
+     * searches all users who arent a fedman by name
+     *
+     * @param pageable
+     * @param name a string to search the name by
+     * @return
+    */
+    public Page<User> getAllUsersNotFedMansByName(Pageable pageable, String name) {
+        return userRepository.findUsersThatArentFedMansByName(pageable, name);
+    }
+
+    /**
+     * searches all users who arent a fedman by email
+     *
+     * @param pageable
+     * @param email a string to search the name by
+     * @return
+    */
+    public Page<User> getAllUsersNotFedMansByEmail(Pageable pageable, String email) {
+        return userRepository.findUsersThatArentFedMansByEmail(pageable, email);
+    }
+
+    public Page<User> getAllUsersNotFedMansByNameAndEmail(Pageable pageable, String search) {
+        return userRepository.findUsersThatArentFedMansByNameOrEmail(pageable, search);
     }
 
 }

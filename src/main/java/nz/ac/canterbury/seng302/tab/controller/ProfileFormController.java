@@ -1,20 +1,11 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.time.LocalDateTime;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
-import nz.ac.canterbury.seng302.tab.enums.ActivityType;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FactService;
-import nz.ac.canterbury.seng302.tab.entity.Formation;
-import nz.ac.canterbury.seng302.tab.service.FormationService;
+import nz.ac.canterbury.seng302.tab.service.*;
+import nz.ac.canterbury.seng302.tab.service.image.TeamImageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Formation;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 
 /**
  * Spring Boot Controller class for the ProfileForm
@@ -40,6 +31,9 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 public class ProfileFormController {
 
     Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private TeamImageService teamImageService;
 
     @Autowired
     private TeamService teamService;
@@ -54,14 +48,19 @@ public class ProfileFormController {
     private ActivityService activityService;
 
     @Autowired
+    private CompetitionService competitionService;
+
+    @Autowired
     private FactService factService;
 
-    public ProfileFormController(UserService userService, TeamService teamService, ActivityService activityService, FactService factService, FormationService formationService) {
+    public ProfileFormController(UserService userService, TeamService teamService, ActivityService activityService, FactService factService, FormationService formationService, CompetitionService competitionService) {
         this.userService = userService;
         this.formationService = formationService;
         this.teamService = teamService;
         this.activityService = activityService;
         this.factService = factService;
+        this.competitionService = competitionService;
+
     }
 
     /**
@@ -86,12 +85,18 @@ public class ProfileFormController {
         if (team == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
+
         model.addAttribute("teamID", teamID);
         model.addAttribute("displayName", team.getName());
         model.addAttribute("displaySport", team.getSport());
         model.addAttribute("displayLocation", team.getLocation());
-        model.addAttribute("displayTeamPicture", team.getPictureString());
         model.addAttribute("displayToken", team.getToken());
+        model.addAttribute("clubId",teamService.getTeamClubId(team));
+        model.addAttribute("teamCompetitions", competitionService.getAllCompetitionsWithTeam(team));
+
+        if( team.getTeamClub()!=null){
+            model.addAttribute("clubName",team.getTeamClub().getName());
+        }
 
         // Is the currently logged in user this team's manager?
         Optional<User> oUser = userService.getCurrentUser();
@@ -116,18 +121,13 @@ public class ProfileFormController {
         model.addAttribute("totalGOrF", totalGamesAndFriendlies);
 
         // Rambling that's required for navBar.html
-        List<Team> teamList = teamService.getTeamList();
         List<Formation> formationsList = formationService.getTeamsFormations(teamID);
-        model.addAttribute("firstName", user.getFirstName());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("displayPicture", user.getPictureString());
-        model.addAttribute("navTeams", teamList);
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("isUserManager", team.isManager(user));
         model.addAttribute("isUserManagerOrCoach", team.isManager(user) || team.isCoach(user));
         model.addAttribute("formations", formationsList);
 
-        return "profileForm";
+        return "viewTeamForm";
     }
 
     /**
@@ -144,7 +144,7 @@ public class ProfileFormController {
             @RequestParam("file") MultipartFile file,
             @RequestParam("teamID") long teamID) {
         logger.info("POST /profile");
-        teamService.updatePicture(file, teamID);
+        teamImageService.updateProfilePicture(teamID, file);
         return "redirect:/profile?teamID=" + teamID;
     }
 

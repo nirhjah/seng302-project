@@ -3,8 +3,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 import java.util.Optional;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +14,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -40,17 +40,21 @@ public class UpdatePasswordController {
     private final TeamService teamService;
     private final PasswordEncoder passwordEncoder;
 
+    private final EmailService emailService;
+
 
 
     @Autowired
     public UpdatePasswordController(
         UserService userService,
         TeamService teamService,
-        PasswordEncoder passwordEncoder
+        PasswordEncoder passwordEncoder,
+        EmailService emailService
     ) {
        this.userService = userService;
        this.teamService = teamService;
-       this.passwordEncoder = passwordEncoder; 
+       this.passwordEncoder = passwordEncoder;
+       this.emailService = emailService;
     }
 
     /**
@@ -64,12 +68,8 @@ public class UpdatePasswordController {
     private void prefillModel(Model model, User user, HttpServletRequest request) {
         // The following attribute is required so the "Password Strength" JS can work
         model.addAttribute("user", user);
-        // Everything else here shouldn't be here.
+        // Needed by navBar
         model.addAttribute("httpServletRequest", request);
-        model.addAttribute("navTeams", teamService.getTeamList());
-        model.addAttribute("firstName", user.getFirstName());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("displayPicture", user.getPictureString());
     }
 
     /**
@@ -159,7 +159,7 @@ public class UpdatePasswordController {
             BindingResult bindingResult,
             Model model,
             HttpServletRequest request,
-            HttpServletResponse response){
+            HttpServletResponse response) throws MessagingException {
 
 
         // Get the currently logged in user
@@ -177,6 +177,7 @@ public class UpdatePasswordController {
             return "updatePassword";
         } else {
             userService.updatePassword(user, updatePasswordForm.getNewPassword());
+            emailService.updatePassword(user);
             return "redirect:user-info/self";
         }
     }

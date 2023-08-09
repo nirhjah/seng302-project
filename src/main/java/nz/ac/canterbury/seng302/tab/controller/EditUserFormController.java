@@ -46,7 +46,7 @@ public class EditUserFormController {
     @Autowired
     private AutoLogin autoLogin;
 
-    private void prefillModel(Model model) {
+    private void prefillModel(Model model, HttpServletRequest httpServletRequest) {
         model.addAttribute("validNameRegex", UserFormValidators.VALID_NAME_REGEX);
         model.addAttribute("validNameMessage", UserFormValidators.INVALID_NAME_MSG);
         model.addAttribute("postcodeRegex",UserFormValidators.VALID_POSTCODE_REGEX);
@@ -56,6 +56,7 @@ public class EditUserFormController {
         model.addAttribute("countryCitySuburbNameRegex",UserFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
         model.addAttribute("countryCitySuburbNameRegexMsg",UserFormValidators.INVALID_COUNTRY_SUBURB_CITY_MSG);
         model.addAttribute("navTeams", teamService.getTeamList());
+        model.addAttribute("httpServletRequest",httpServletRequest);
     }
 
     @GetMapping("/editUser")
@@ -63,25 +64,20 @@ public class EditUserFormController {
             EditUserForm editUserForm,
             Model model,
             HttpServletRequest request) throws MalformedURLException {
-        prefillModel(model);
-        model.addAttribute("httpServletRequest",request);
-        Optional<User> user = userService.getCurrentUser();
-        if (user.isEmpty()) {
+        prefillModel(model, request);
+
+        Optional<User> optionalUser = userService.getCurrentUser();
+        if (optionalUser.isEmpty()) {
             return "redirect:/login";
         }
-        User u = user.get();
-        editUserForm.prepopulate(u);
-        Set<String> sports = new HashSet<>(sportService.getAllSportNames());
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
-        model.addAttribute("knownSports", sportService.getAllSportNames());
-        model.addAttribute("favouriteSports", u.getFavouriteSportNames());
-        model.addAttribute("user", u);
+        User user = optionalUser.get();
+        editUserForm.prepopulate(user);
+        model.addAttribute("favouriteSports", user.getFavouriteSportNames());
+        model.addAttribute("user", user);
         URL url = new URL(request.getRequestURL().toString());
         String path = (url.getPath() + "/..");
         model.addAttribute("path", path);
-        return "editUserForm";
+        return "editUser";
     }
 
     @PostMapping("/editUser")
@@ -93,9 +89,8 @@ public class EditUserFormController {
             @RequestParam("tags") List<String> tags,
             Model model,
             RedirectAttributes redirectAttributes) throws ServletException, MalformedURLException {
-        prefillModel(model);
+        prefillModel(model, httpServletRequest);
 
-        model.addAttribute("httpServletRequest",httpServletRequest);
         // Check that all the sports have valid names
         String invalidSports = tags.stream()
                 .filter(tag -> !tag.matches("^[\\p{L}\\s\\'\\-]+$"))
@@ -120,19 +115,18 @@ public class EditUserFormController {
         List<String> knownSportNames = sportService.getAllSportNames();
         List<Sport> knownSports = sportService.getAllSports();
 
-            for (String tag : tags) {
-                if (knownSportNames.contains(tag)){
-                    int index = knownSportNames.indexOf(tag);
-                    newFavSports.add(knownSports.get(index));
-                } else {
-                    newFavSports.add(new Sport(tag));
-                }
+        for (String tag : tags) {
+            if (knownSportNames.contains(tag)){
+                int index = knownSportNames.indexOf(tag);
+                newFavSports.add(knownSports.get(index));
+            } else {
+                newFavSports.add(new Sport(tag));
             }
+        }
 
-            user.setFavoriteSports(newFavSports);
+        user.setFavoriteSports(newFavSports);
 
-        // Manual email uniqueness check
-        if (userService.emailIsUsedByAnother(user, editUserForm.getEmail())) {
+        if (editUserForm.getEmail().matches(UserFormValidators.VALID_EMAIL_REGEX) && userService.emailIsUsedByAnother(user, editUserForm.getEmail())) {
             bindingResult.addError(new FieldError("editUserForm", "email", "Email is already in use."));
         }
 
@@ -142,7 +136,7 @@ public class EditUserFormController {
             URL url = new URL(httpServletRequest.getRequestURL().toString());
             String path = (url.getPath() + "/..");
             model.addAttribute("path", path);
-            return "editUserForm";
+            return "editUser";
         }
 
         // Log-out if the user changes their email

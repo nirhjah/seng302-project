@@ -17,10 +17,7 @@ import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.FactRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FormationService;
-import nz.ac.canterbury.seng302.tab.service.FactService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.*;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
@@ -45,7 +42,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -55,7 +51,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class ViewMyActivitiesIntegrationTests {
 
     @SpyBean
@@ -99,6 +94,9 @@ public class ViewMyActivitiesIntegrationTests {
 
     private Date dateMiddle;
 
+    @Autowired
+    private CompetitionService competitionService;
+
     private Date dateLast;
 
     private  List<Date> testDates;
@@ -116,15 +114,11 @@ public class ViewMyActivitiesIntegrationTests {
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
         EmailService emailService = applicationContext.getBean(EmailService.class);
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
-        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
-
+        userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
-
         activityService = Mockito.spy(new ActivityService(activityRepository));
-
         factService = Mockito.spy(new FactService(factRepository));
-
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ProfileFormController(userService, teamService, activityService, factService, formationService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ProfileFormController(userService, teamService, activityService, factService, formationService, competitionService)).build();
 
         userRepository.deleteAll();
         teamRepository.deleteAll();
@@ -324,7 +318,7 @@ public class ViewMyActivitiesIntegrationTests {
         Team teamMock = mock(Team.class);
         when(teamMock.isManager(user)).thenReturn(false);
         MvcResult result = mockMvc.perform(get("/profile").param("teamID", selectedTeam.getTeamId().toString()))
-                .andExpect(status().isOk()).andExpect(view().name("profileForm"))
+                .andExpect(status().isOk()).andExpect(view().name("viewTeamForm"))
                 .andReturn();
         Assertions.assertEquals(selectedTeam.getTeamId(), result.getModelAndView().getModel().get("teamID"));
     }

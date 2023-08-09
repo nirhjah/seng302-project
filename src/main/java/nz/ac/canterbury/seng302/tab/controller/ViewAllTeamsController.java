@@ -62,28 +62,16 @@ public class ViewAllTeamsController {
         return teamService.findPaginatedTeamsByCityAndSports(pageable, cities, sports, currentSearch);
     }
 
-    private void populateModelBasics(Model model, User user, Page<Team> page) {
+    private void populateModelBasics(Model model, Page<Team> page) {
         List<Team> listOfTeams = page.getContent();
         model.addAttribute("listOfTeams", listOfTeams);
-        model.addAttribute("firstName", user.getFirstName());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("displayPicture", user.getPictureString());
-        model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
     }
 
     private void populateFilterDropdowns(Model model) {
-        var sports = sportService.getAllSports()
-                .stream()
-                .map(Sport::getName)
-                .distinct()
-                .toList();
-        var cities = locationService.getLocationList()
-                .stream()
-                .map(Location::getCity)
-                .distinct()
-                .toList();
+        List<String> sports = teamService.getAllTeamSports();
+        List<String> cities = teamService.getAllTeamCities();
 
         model.addAttribute("sports", sports);
         model.addAttribute("cities", cities);
@@ -104,11 +92,6 @@ public class ViewAllTeamsController {
             Model model, HttpServletRequest request) {
         logger.info("GET /view-teams");
         model.addAttribute("httpServletRequest", request);
-        
-        // If no teams exist in the database
-        if (teamService.getNumberOfTeams() == 0) {
-            return "redirect:/home";
-        }
 
         int internalPageNo = pageNo - 1;
 
@@ -121,14 +104,7 @@ public class ViewAllTeamsController {
         // Internally, pagination starts at 0 (page 0 is the first)
         // However, we want it to start at 1 for the user.
 
-        Optional<User> opt = userService.getCurrentUser();
-        if (opt.isEmpty()) {
-            logger.info("GET /view-teams: getCurrentUser() failed!");
-            return "redirect:login";
-        }
-        var user = opt.get();
-
-        populateModelBasics(model, user, page);
+        populateModelBasics(model, page);
         populateFilterDropdowns(model);
 
         model.addAttribute("page", pageNo);

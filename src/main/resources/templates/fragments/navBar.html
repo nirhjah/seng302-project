@@ -1,4 +1,4 @@
-<header th:fragment="navbar">
+<header th:fragment="navbar" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <link th:href="@{/css/navbar.css}" rel="stylesheet">
     <link th:href="@{/css/preloader.css}" rel="stylesheet">
     <div class="header-left">
@@ -13,12 +13,13 @@
                     <a th:href="@{home}" th:classappend="${httpServletRequest.requestURI == '/home' ? 'active' : ''}">Home</a>
                 </li>
 
-                <div class="create-header">
-                    <li class="navbar-create-button" sec:authorize="isAuthenticated()">
+                <div class="create-buttons">
+                    <li class="navbar-create-button" sec:authorize="hasAnyRole('ROLE_USER', 'ADMIN')">
                         <div class="navbar-create-dropdown">
                             <a th:href="@{createTeam}">Create Team</a>
                             <a th:href="@{createActivity}">Create Activity</a>
                             <a th:href="@{createClub}">Create Club</a>
+                            <a th:href="@{create-competition}" sec:authorize="hasAnyRole('ROLE_USER', 'ADMIN')">Create Competition</a>
                         </div>
                         <a>
                             <span th:text="Create"></span>
@@ -39,13 +40,16 @@
                 <li sec:authorize="isAuthenticated()">
                     <a th:href="@{view-users(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
                 </li>
+                <li sec:authorize="hasAnyRole('ROLE_FEDERATION_MANAGER')">
+                    <a th:href="@{inviteToFederationManager}" th:classappend="${httpServletRequest.requestURI == '/inviteToFederationManager' ? 'active' : ''}">Invite</a>
+                </li>
 
                 <div sec:authorize="isAuthenticated()" class="view-profile">
                     View Profile:
                     <select class="form-control" id="dropDownList" name="teamSelector"
                             onchange="if(this.value != '-1') window.location.href = 'profile?teamID=' + this.value;">
                         <option value="-1" selected>Select a Team</option>
-                        <option th:each="team : ${navTeams}"
+                        <option th:each="team : ${G_navTeams}"
                                 th:value="${team.teamId}"
                                 th:text="${team}"
                                 th:selected="${team.teamId.equals(teamID)}"></option>
@@ -57,7 +61,7 @@
     </div>
 
     <div class="header-right">
-        <li class="navbar-user-button" sec:authorize="isAuthenticated()">
+        <li class="navbar-user-button" sec:authorize="isAuthenticated()" th:if="${G_optUser.present}" th:with="user = ${G_optUser.get()}">
             <div class="navbar-user-dropdown">
                 <a th:href="@{user-info/self}">Profile</a>
                 <a th:href="@{my-teams}">My Teams</a>
@@ -65,10 +69,11 @@
                 <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
             </div>
             <a>
-                <img class="navbar-profile-picture"
-                     th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
-                <span th:text="${#strings.length(firstName + ' ' + lastName) &lt;= 24 ? firstName + ' ' + lastName : #strings.substring(firstName + ' ' + lastName, 0, 21) + '...'}"></span>
-                <i class="triangle"></i>
+                <img th:src="@{/user-profile-picture/{id}(id = ${user.userId})}" class="navbar-profile-picture"
+                     alt="My Profile">
+                <span th:if="${#strings.length(user.firstName + ' ' + user.lastName)} &lt;= 24" th:text="${user.firstName + ' ' + user.lastName}"></span>
+                <span th:unless="${#strings.length(user.firstName + ' ' + user.lastName)} &lt;= 24" th:text="${#strings.substring(user.firstName + ' ' + user.lastName, 0, 21) + '...'}"></span>
+                <i class="triangle" aria-hidden="true"></i>
             </a>
         </li>
         <form id="logoutForm" th:action="@{logout}" method="POST"></form>

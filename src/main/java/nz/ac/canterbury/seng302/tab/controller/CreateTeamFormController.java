@@ -1,20 +1,16 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Sport;
-import nz.ac.canterbury.seng302.tab.entity.Team;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.Optional;
 
-import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.service.SportService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
-import nz.ac.canterbury.seng302.tab.service.UserService;
+import nz.ac.canterbury.seng302.tab.service.CompetitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,14 +18,19 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Optional;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Sport;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
+import nz.ac.canterbury.seng302.tab.service.SportService;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
+import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
 /**
  * Spring Boot Controller class for the Create Team Form
@@ -48,22 +49,49 @@ public class CreateTeamFormController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CompetitionService competitionService;
 
     /**
-     * Gets createTeamForm to be displayed and contains name, sport,
-     * location and teamID model attributes to be added to html.
-     *
-     * @return thymeleaf createTeamForm
+     * Gives all the necessary regex to the HTML front-end, so validation can occur
+     * before submission.
      */
-    public void prefillModel(Model model) {
-        model.addAttribute("postcodeRegex", TeamFormValidators.VALID_POSTCODE_REGEX);
-        model.addAttribute("postcodeRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
-        model.addAttribute("addressRegex", TeamFormValidators.VALID_ADDRESS_REGEX);
-        model.addAttribute("addressRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
+    private void prefillModel(Model model, HttpServletRequest httpServletRequest) {
         model.addAttribute("countryCitySuburbNameRegex", TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
         model.addAttribute("countryCitySuburbNameRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
+        model.addAttribute("teamNameUnicodeRegex", teamService.teamNameUnicodeRegex);
+        model.addAttribute("teamNameMsg", TeamFormValidators.INVALID_CHARACTERS_MSG_TEAM_NAME);
+        model.addAttribute("sportUnicodeRegex", teamService.sportUnicodeRegex);
+        model.addAttribute("sportUnicodeMsg", TeamFormValidators.INVALID_SPORT_MSG);
+        model.addAttribute("httpServletRequest", httpServletRequest);
     }
 
+    /**
+     * Creates a location entity from details provided in the form
+     * @param createAndEditTeamForm The response from our users
+     * @return A location object, with whitespace before/after each field trimmed.
+     */
+    private Location createLocationFromTrimmedForm(CreateAndEditTeamForm createAndEditTeamForm) {
+        String trimmedCountry = teamService.clipExtraWhitespace(createAndEditTeamForm.getCountry());
+        String trimmedAddressLine1 = teamService.clipExtraWhitespace(createAndEditTeamForm.getAddressLine1());
+        String trimmedAddressLine2 = teamService.clipExtraWhitespace(createAndEditTeamForm.getAddressLine2());
+        String trimmedCity = teamService.clipExtraWhitespace(createAndEditTeamForm.getCity());
+        String trimmedPostcode = teamService.clipExtraWhitespace(createAndEditTeamForm.getPostcode());
+        String trimmedSuburb = teamService.clipExtraWhitespace(createAndEditTeamForm.getSuburb());
+
+        return new Location(trimmedAddressLine1, trimmedAddressLine2, trimmedSuburb, trimmedCity,
+                trimmedPostcode, trimmedCountry);
+    }
+
+    private static final String CREATE_TEAM_TEMPLATE = "createTeamForm";
+
+    private static final String REDIRECT_HOME = "redirect:/home";
+
+    /**
+     * Triggers the generation of a new token for a team
+     * @param teamID the id of the team.
+     * @return redirect back to team profile page
+     */
     @PostMapping("/generateTeamToken")
     public String generateTeamToken(@RequestParam(name = "teamID") Long teamID) {
         var team = teamService.getTeam(teamID);
@@ -72,59 +100,84 @@ public class CreateTeamFormController {
             if (user.isPresent() && team.isManager(user.get())) {
                 team.generateToken(teamService);
                 teamService.updateTeam(team);
-                logger.info("POST /generateTeamToken, new token: " + team.getToken());
+                logger.info("POST /generateTeamToken, new token: {}", team.getToken());
             }
         }
         return String.format("redirect:./profile?teamID=%s", teamID);
     }
 
+    /**
+     * Endpoint for creating a new team. Gives a blank form.
+     */
     @GetMapping("/createTeam")
-    public String teamForm(@RequestParam(name = "edit", required = false) Long teamID,
+    public String createTeamForm(
             Model model,
-            HttpServletRequest request, CreateAndEditTeamForm createAndEditTeamForm) throws MalformedURLException {
+            HttpServletRequest request,
+            CreateAndEditTeamForm createAndEditTeamForm) throws MalformedURLException {
 
-        logger.info("GET /createTeam");
-        prefillModel(model);
+        logger.info("GET /createTeam - new team");
+
+        prefillModel(model, request);
+
+        URL url = new URL(request.getRequestURL().toString());
+        String path = (url.getPath() + "/..");
+        model.addAttribute("path", path);
+
+
+        List<String> knownSports = sportService.getAllSportNames();
+
+        //Add Default ID BC OTHERWISE EDIT TEAM APPEARS
+        model.addAttribute("teamID", -1);
+        model.addAttribute("knownSports", knownSports);
+ 
+        return CREATE_TEAM_TEMPLATE;
+    }
+
+
+    /**
+     * Endpoint for *updating* a team. Gives a pre-populated form.
+     */
+    @GetMapping(value = "/createTeam", params = {"edit"})
+    public String editTeamForm(
+            @RequestParam(name = "edit", required = true) long teamID,
+            Model model,
+            HttpServletRequest request,
+            CreateAndEditTeamForm createAndEditTeamForm) throws MalformedURLException {
+
+        logger.info("GET /createTeam - updated team with ID={}", teamID);
+        prefillModel(model, request);
+        
+        // I'm starting to regret this pattern
+        Optional<User> user = userService.getCurrentUser();
+        if (user.isEmpty()) {
+            return "redirect:login";
+        }
+        // Does the team exist?
+        Team team = teamService.getTeam(teamID);
+        if (team == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team with given ID does not exist");
+        }
+        // Are you allow to edit this team?
+        if (!team.isManager(user.get())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is unable to modify this team");
+        }
+
+        createAndEditTeamForm.prepopulate(team);
+
+        List<String> knownSports = sportService.getAllSportNames();
+        model.addAttribute("knownSports", knownSports);
         model.addAttribute("httpServletRequest", request);
 
         URL url = new URL(request.getRequestURL().toString());
         String path = (url.getPath() + "/..");
-        String protocolAndAuthority = String.format("%s://%s", url.getProtocol(), url.getAuthority());
         model.addAttribute("path", path);
-
-        Team team;
-        if (teamID != null) {
-            if ((team = teamService.getTeam(teamID)) != null) {
-                model.addAttribute("name", team.getName());
-                model.addAttribute("sport", team.getSport());
-                model.addAttribute("addressLine1", team.getLocation().getAddressLine1());
-                model.addAttribute("addressLine2", team.getLocation().getAddressLine2());
-                model.addAttribute("city", team.getLocation().getCity());
-                model.addAttribute("suburb", team.getLocation().getSuburb());
-                model.addAttribute("country", team.getLocation().getCountry());
-                model.addAttribute("postcode", team.getLocation().getPostcode());
-                model.addAttribute("teamID", team.getTeamId());
-                model.addAttribute("path", path);
-            } else {
-                model.addAttribute("invalid_team", "Invalid team ID, creating a new team instead.");
-            }
-        }
-
-        List<String> knownSports = sportService.getAllSportNames();
-        model.addAttribute("knownSports", knownSports);
-        Optional<User> user = userService.getCurrentUser();
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
-        model.addAttribute("navTeams", teamService.getTeamList());
-        return "createTeamForm";
+ 
+        return CREATE_TEAM_TEMPLATE;
     }
 
     /**
      * Posts a form response with team name, sport and location
      *
-     * @param name  name if user
-     * @param sport users team sport
      * @param model (map-like) representation of name, language and isJava boolean
      *              for use in thymeleaf,
      *              with values being set to relevant parameters provided
@@ -133,94 +186,65 @@ public class CreateTeamFormController {
     @PostMapping("/createTeam")
     public String submitTeamForm(
             @RequestParam(name = "teamID", defaultValue = "-1") long teamID,
-            @RequestParam(name = "name") String name,
-            @RequestParam(name = "sport") String sport,
-            @RequestParam(name = "addressLine1") String addressLine1,
-            @RequestParam(name = "addressLine2") String addressLine2,
-            @RequestParam(name = "city") String city,
-            @RequestParam(name = "country") String country,
-            @RequestParam(name = "postcode") String postcode,
-            @RequestParam(name = "suburb") String suburb,
             @Validated CreateAndEditTeamForm createAndEditTeamForm,
             BindingResult bindingResult,
             HttpServletResponse httpServletResponse,
             Model model,
             HttpServletRequest httpServletRequest) throws IOException {
-        logger.info("POST /createTeam");
+        logger.info("POST /createTeam - update team");
 
 
-        prefillModel(model);
-        // client side validation
-        model.addAttribute("countryOrCityNameRegex", teamService.countryCitySuburbNameRegex);
-        model.addAttribute("postcodeRegex", teamService.postcodeRegex);
-        model.addAttribute("teamNameUnicodeRegex", teamService.teamNameUnicodeRegex);
-        model.addAttribute("sportUnicodeRegex", teamService.sportUnicodeRegex);
-        model.addAttribute("httpServletRequest", httpServletRequest);
+        // I'm starting to regret this pattern
         Optional<User> user = userService.getCurrentUser();
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
-        model.addAttribute("navTeams", teamService.getTeamList());
+        if (user.isEmpty()) {
+            return REDIRECT_HOME;
+        }
 
+        boolean editingTeam = (teamID != -1);
 
+        // Are there form errors?
         if (bindingResult.hasErrors()) {
+            logger.error("{}", bindingResult);
+            prefillModel(model, httpServletRequest);
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            logger.info("bad request");
-            return "createTeamForm";
-            //return "redirect:./createTeam?invalid_input=1" + (teamID != -1 ? "&edit=" + teamID : "");
-        }
-
-
-        // trim all extra whitespace and trailing/leading whitespace
-        String trimmedName = teamService.clipExtraWhitespace(name);
-        String trimmedSport = teamService.clipExtraWhitespace(sport);
-        String trimmedCountry = teamService.clipExtraWhitespace(createAndEditTeamForm.getCountry());
-        String trimmedAddressLine1 = teamService.clipExtraWhitespace(createAndEditTeamForm.getAddressLine1());
-        String trimmedAddressLine2 = teamService.clipExtraWhitespace(createAndEditTeamForm.getAddressLine2());
-        String trimmedCity = teamService.clipExtraWhitespace(createAndEditTeamForm.getCity());
-        String trimmedPostcode = teamService.clipExtraWhitespace(createAndEditTeamForm.getPostcode());
-        String trimmedSuburb = teamService.clipExtraWhitespace(createAndEditTeamForm.getSuburb());
-
-        // TeamService validation
-        if (bindingResult.hasErrors()) {
-            URL url = new URL(httpServletRequest.getRequestURL().toString());
-            String path = (url.getPath() + "/..");
-            model.addAttribute("path", path);
-            return "createTeam";
-        }
-
-        Location location = new Location(trimmedAddressLine1, trimmedAddressLine2, trimmedSuburb, trimmedCity,
-                trimmedPostcode, trimmedCountry);
-
-        Team team = teamService.getTeam(teamID);
-        boolean teamExists = team != null;
-        if (teamExists) {
-            // edit existing team
-            team.setName(trimmedName);
-            team.setSport(trimmedSport);
-            team.setLocation(location);
-            team = teamService.updateTeam(team);
-        } else {
-            // create a new team
-            logger.info("creating new user ");
-            Optional<User> currentUser = userService.getCurrentUser();
-            if (currentUser.isPresent()) {
-                logger.info("creating new user with manager");
-                team = new Team(trimmedName, trimmedSport, location, currentUser.get());
-            } else {
-                logger.info("creating new user without manager");
-                team = new Team(trimmedName, trimmedSport, location);
+            if (teamID != -1) {
+                model.addAttribute("teamID", teamID);
             }
-            team.generateToken(teamService);
-            team = teamService.addTeam(team);
+            logger.info("bad request");
+            return CREATE_TEAM_TEMPLATE;
         }
-        teamID = team.getTeamId();
+        
+        Team team;
+        if (editingTeam) {  // Updating an existing team
+            // Does the team exist?
+            team = teamService.getTeam(teamID);
+            if (team == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Team with given ID does not exist");
+            }
+            // Are you allowed to edit this team?
+            if (!team.isManager(user.get())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is unable to modify this team");
+            }
+        } else { // create a new team
+            team = new Team(null, null, null, user.get());
+        }
+        // Either way, we need to add these details
+        // trim all extra whitespace and trailing/leading whitespace
+        String trimmedName = teamService.clipExtraWhitespace(createAndEditTeamForm.getName());
+        String trimmedSport = teamService.clipExtraWhitespace(createAndEditTeamForm.getSport());
+        Location location = createLocationFromTrimmedForm(createAndEditTeamForm);
+
+        team.setName(trimmedName);
+        team.setSport(trimmedSport);
+        team.setLocation(location);
+        team.generateToken(teamService);
+        team = teamService.addTeam(team);
 
         List<String> knownSports = sportService.getAllSportNames();
         if (!knownSports.contains(trimmedSport)) {
             sportService.addSport(new Sport(trimmedSport));
         }
 
-        return String.format("redirect:./profile?teamID=%s", teamID);
+        return String.format("redirect:./profile?teamID=%s", team.getTeamId());
     }
 }

@@ -4,6 +4,7 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.image.UserImageService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Optional;
@@ -36,9 +36,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureMockMvc(addFilters = false)
 public class ViewUserControllerTest {
 
-    private final String name = "Cam";
-    private final String password = "Password42$";
-    private final String email = "abc123@uclive.ac.nz";
+    @Autowired
+    private UserImageService userImageService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -94,6 +93,7 @@ public class ViewUserControllerTest {
                 .andExpect(view().name("redirect:/user-info?name=" + user.getUserId()));
     }
 
+
     @Test
     @WithMockUser
     public void whenLoggedIn_whenUploadTooBigFile_expectTypeError() throws Exception {
@@ -106,7 +106,7 @@ public class ViewUserControllerTest {
         mockMvc.perform(multipart(URL).file(tooBigImage))
                 .andExpect(status().is3xxRedirection());
 
-        assertNotEquals(Base64.getEncoder().encodeToString(fileBytes), user.getPictureString());
+        assertNotEquals(fileBytes, userImageService.readFileOrDefault(user.getUserId()));
     }
 
     @Test

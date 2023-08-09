@@ -1,0 +1,366 @@
+.competition-form .wrapper {
+    width: 590px;
+    bottom: 20px;
+}
+
+@media (max-width: 555px) {
+    .competition-form .wrapper {
+        width: 90vw;
+        min-width: 250px;
+    }
+
+    .header {
+        width: unset !important;
+        font-size: 5vw !important;
+    }
+
+}
+
+.competition-form {
+    justify-content: center;
+    align-items: center;
+    display:flex;
+    flex-direction:column
+}
+
+.header {
+    padding-bottom: 30px;
+    font-family: "Noto Sans",sans-serif;
+    text-align: center;
+    width: 500px;
+    font-size: 40px;
+    font-weight: 600;
+    color: #0D1B2A;
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+.header h1 {
+    padding: 10px
+}
+
+.wrapper form {
+    width: 65%;
+}
+
+.submit-button {
+    margin: 30px 0 30px !important;
+}
+
+.submit-button button {
+    width: 75%;
+}
+
+.cancel-link {
+    margin: 0 0 20px !important;
+}
+
+#members-img {
+    width: 40px
+}
+
+.select-box {
+    margin-top: 30px;
+}
+
+.select-box select {
+    text-align: center;
+    width: 100%;
+    height: 35px;
+    border-radius: 8px;
+    background: #ffffff;
+    font-size: 17px;
+    cursor: pointer;
+    border-color: #0b2239;
+    color: #0b2239;
+}
+
+.select-box label {
+    font-family: "Noto Sans", sans-serif;
+    left: 1px;
+    font-size: 1em;
+    font-weight: 500;
+    pointer-events: none;
+    transition: 0.5s;
+    color: #888888;
+    border-bottom: none;
+    padding-left: 2px;
+}
+
+
+
+.grade-level-details {
+    display: flex;
+    margin-top: 8px;
+}
+
+.grade-level-details div {
+    width: 100%;
+}
+
+.grade-level-details div:first-child {
+    margin-right: 2px;
+}
+
+.grade-level-details div:last-child {
+    margin-left: 2px;
+}
+
+.grade-level-details div:not(:first-child):not(:last-child) {
+    margin: 0 2px;
+}
+
+.team-user-buttons {
+    display: flex;
+}
+
+.slider {
+    border-radius: 5px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 128px;
+    height: 35px;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border: 2px solid #0b2239;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 104%;
+    width: 52%;
+    background-color: #0b2239;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 2px;
+    margin-top: -0.5px;
+}
+
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(60px);
+    -ms-transform: translateX(60px);
+    transform: translateX(60px);
+}
+
+.slider-text {
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    transform: translateY(-50%);
+    display: flex;
+}
+
+
+.slider-text::after {
+    content: "Users";
+    flex: 1;
+    text-align: right;
+}
+
+.slider-text::before {
+    content: "Teams";
+    flex: 1;
+    margin-right: 20%;
+}
+
+input + .slider + .slider-text::before,
+input:checked + .slider + .slider-text::after {
+    color: white;
+    -webkit-transition: color .2s;
+    transition: color .2s;
+}
+
+input:checked + .slider + .slider-text::before,
+input + .slider + .slider-text::after {
+    color: #0b2239;
+}
+
+.users-teams-box input[type=text] {
+    float: right;
+    padding: 6px;
+    border-bottom: 1px #0b2239 solid !important;
+    font-size: 16px;
+    color: #0b2239;
+    border: none;
+    border-top-right-radius: inherit;
+    max-height: 30px;
+    min-width: 10px;
+}
+
+.users-teams-box input[type=text]:focus {
+    outline:none;
+}
+
+.member-selection-box {
+    display: flex;
+    margin-top: 20px;
+    height: 300px;
+}
+
+.competitors-header {
+    width: 100%;
+    color: white;
+    background-color: #0b2239;
+    font-size: 16px;
+    padding: 5px 10px;
+    border-radius: 5px 0 0 0;
+    cursor: default;
+    border-bottom: 1px #0b2239 solid;
+}
+
+.users-teams-ul, .competitors-ul {
+    flex: 1;
+    overflow: auto;
+    list-style: none;
+    border-bottom-right-radius: inherit;
+}
+
+.users-teams-box {
+    display: flex;
+    flex-direction: column;
+    border: 3px #0b2239 solid;
+    border-radius: 0 5px 5px 0;
+    width: 51%;
+}
+
+.competitors-ul {
+    border-left: 3px #0b2239 solid;
+    border-bottom: 3px #0b2239 solid;
+    border-bottom-left-radius: 5px;
+    height: inherit;
+}
+
+.competitors-box {
+    width: 50%;
+    border-bottom: 3px #0b2239 solid;
+    border-bottom-left-radius: 5px;
+    overflow: hidden;
+    height: inherit;
+}
+
+.search-box {
+    display: flex;
+    border-bottom: 1px #0b2239 solid !important;
+}
+
+.search-box img {
+    height: 30px;
+    background-color: #0b2239;
+    width: 38px;
+    padding: 4px;
+    border-bottom: 1px #0b2239 solid;
+    cursor: pointer;
+}
+
+.inactive-cover {
+    position: absolute;
+    height: inherit;
+    color: #0b2239;
+    width: 65%;
+    border-radius: 5px;
+    cursor: default;
+    align-items: center;
+    opacity: 0;
+    background-color: #bcbaba;
+    padding: 20px;
+    text-align: center;
+    transition: opacity 1s;
+    display: flex;
+}
+
+.inactive-cover.active {
+    opacity: 90%;
+    display: flex;
+}
+
+.users-teams-li, .competitors-li {
+    transition: 0.25s;
+    padding: 5px;
+    display: flex;
+    cursor: pointer;
+    border-bottom: 1px solid #e7e7e7;
+}
+
+.users-teams-li:hover, .competitors-li:hover {
+    background-color: #e7e7e7;
+}
+
+.li-user-team-image {
+    width: 25px;
+    height: 25px;
+    margin-right: 4px;
+    border-radius: 50%;
+    background-color: white;
+}
+
+
+.li-user-team-name {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+.competitors-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+/*.switch.disabled input:checked + .slider:before {*/
+/*    -webkit-transform: unset !important;*/
+/*    -ms-transform: none !important;*/
+/*    transform: unset !important;*/
+/*}*/
+
+.switch.disabled {
+    cursor: default;
+}
+
+.switch.disabled .slider {
+    border: 2px solid #888;
+    cursor: default;
+}
+
+.switch.disabled .slider::before {
+    background-color: #888;
+}
+
+.switch.disabled input:checked + .slider + .slider-text::before,
+.switch.disabled input + .slider + .slider-text::after {
+    color: #888;
+}
+
+.switch.disabled input + .slider + .slider-text::before,
+.switch.disabled input:checked + .slider + .slider-text::after {
+    color: white;
+    -webkit-transition: color .2s;
+    transition: color .2s;
+}
+
+
+
+
+
+

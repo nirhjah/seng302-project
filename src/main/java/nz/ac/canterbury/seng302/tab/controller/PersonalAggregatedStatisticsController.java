@@ -41,10 +41,6 @@ public class PersonalAggregatedStatisticsController {
      */
     public void prefillModel(Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
         User user = userService.getCurrentUser().orElseThrow();
-        model.addAttribute("firstName", user.getFirstName());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("displayPicture", user.getPictureString());
-        model.addAttribute("navTeams", teamService.getTeamList());
         List<Team> allUserTeams = teamService.findTeamsWithUser(user);
         List<Team> teamList = new ArrayList<>();
         for (Team team : allUserTeams) {
@@ -77,7 +73,8 @@ public class PersonalAggregatedStatisticsController {
     }
 
     @GetMapping("/myActivityStats")
-    public String activityPersonalStats(Model model, HttpServletRequest httpServletRequest, @RequestParam(value = "teamID") Long teamID) throws MalformedURLException {
+    public String activityPersonalStats(Model model, HttpServletRequest httpServletRequest,
+                                        @RequestParam(value = "teamID") Long teamID) throws MalformedURLException {
         prefillModel(model, httpServletRequest);
         model.addAttribute("httpServletRequest", httpServletRequest);
         Team team = teamService.getTeam(teamID);

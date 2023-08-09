@@ -1,8 +1,6 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,9 +20,6 @@ public class PersonalStatisticImpl implements PersonalStatistics {
 
     @Autowired
     FactService factService;
-
-    @Autowired
-    UserService userService;
 
     // TODO implement
     @Override

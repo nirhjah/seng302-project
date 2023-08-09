@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      lang="en">
+<head>
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <link th:href="@{/css/view-club.css}" rel="stylesheet">
+    <title>View Club</title>
+</head>
+<body class="profile-background">
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+<div class="view-club-form">
+    <div class="wrapper">
+        <div class ="logo">
+            <img th:src="@{/club-logo/{id}(id = ${club.getClubId()})}">
+        </div>
+        <div class="club-info">
+            <h1 class="club-header">Club Profile</h1>
+            <div class="club-label">
+                <h3 th:text="|Name: *{club.name}|"></h3>
+            </div>
+            <div class="club-label">
+                <h3 th:text="|Sport: *{club.sport}|"></h3>
+            </div>
+            <div class="club-label">
+                <h3 th:text="|Location: *{location}|"></h3>
+            </div>
+            <div class="edit-club-button">
+                <a th:href = "@{createClub(edit=${club.clubId})}">
+                    <button type="button"> Edit Club</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<footer>
+    <p>
+        Image by <a
+            href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+        on Freepik
+    </p>
+</footer>
+</div>
+</body>
+</html>

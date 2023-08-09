@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <link th:href="@{/css/create-club.css}" rel="stylesheet">
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>[[${clubId != null ? 'Edit' : 'Create'}]] Club</title>
 </head>
 <body class="view-teams-background">
@@ -16,11 +17,21 @@
     </div>
 
     <div class="wrapper">
-        <form th:action="@{createClub}" th:object="${createAndEditClubForm}" id="createAndEditClubForm" method="post">
+        <form th:action="@{createClub}" th:object="${createAndEditClubForm}" id="createAndEditClubForm" method="post" enctype="multipart/form-data">
             <input type="hidden" th:if="${clubId != null}" th:name="clubId" th:value="${clubId}"/>
 
-
-
+            <div class="preview-logo">
+                <div class="logo-container">
+                    <img id="club-logo" th:src="@{/image/icons/club-logo.svg}"/>
+                </div>
+                <div class="file-upload" >
+                    <div class="file-label-border">
+                        <label for="file" class="file-label">
+                            Upload Logo </label>
+                    </div>
+                    <input id ="file" type='file' th:name="file" onchange="readImageURL(this);"/>
+                </div>
+            </div>
 
             <div class="input-box">
                 <input type="text" class="form-control" id="name" th:name="name" th:value="${name}"
@@ -61,34 +72,34 @@
 
             <div class="input-boxes">
 
-            <div class="input-box">
-                <input type="text" class="form-control" id="suburb" th:name="suburb"
-                       data-cy="location" autofocus placeholder="" th:value="${suburb}">
-                <label for="suburb">Suburb</label>
-            </div>
-            <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
-            <div class="input-box">
-                <input type="text" class="form-control" id="postcode" th:name="postcode"
-                       data-cy="location" autofocus placeholder="" th:value="${postcode}">
-                <label for="postcode">Postcode<span class="required">*</span></label>
-                <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
-            </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="suburb" th:name="suburb"
+                           data-cy="location" autofocus placeholder="" th:value="${suburb}">
+                    <label for="suburb">Suburb</label>
+                </div>
+                <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="postcode" th:name="postcode"
+                           data-cy="location" autofocus placeholder="" th:value="${postcode}">
+                    <label for="postcode">Postcode<span class="required">*</span></label>
+                    <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
+                </div>
             </div>
 
             <div class="input-boxes">
-            <div class="input-box">
-                <input type="text" class="form-control" id="city" th:name="city"
-                       data-cy="location" autofocus placeholder="" th:value="${city}">
-                <label for="city">City <span class="required">*</span></label>
-                <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
-            </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="city" th:name="city"
+                           data-cy="location" autofocus placeholder="" th:value="${city}">
+                    <label for="city">City <span class="required">*</span></label>
+                    <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
+                </div>
 
-            <div class="input-box">
-                <input type="text" class="form-control" id="country" th:name="country"
-                       data-cy="location" autofocus placeholder="" th:value="${country}">
-                <label for="country">Country <span class="required">*</span></label>
-                <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
-            </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="country" th:name="country"
+                           data-cy="location" autofocus placeholder="" th:value="${country}">
+                    <label for="country">Country <span class="required">*</span></label>
+                    <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
+                </div>
             </div>
 
             <label class="selectTeamsLabel"> Select Teams </label>
@@ -99,7 +110,8 @@
                         th:selected="${selectedTeams != null && selectedTeams.contains(team)}"></option>
             </select>
 
-            <label style="font-family: 'Noto Sans', sans-serif"> Hold ctrl and click on teams to select/deselect multiple </label>
+            <label style="font-family: 'Noto Sans', sans-serif"> Hold ctrl and click on teams to select/deselect
+                multiple </label>
 
             <div th:each="err : ${#fields.errors('selectedTeams')}" th:text="${err}" class="error-message"></div>
 
@@ -124,6 +136,7 @@
     const ENDPOINT = path + "/geocode/autocomplete";
 </script>
 <script th:inline="javascript">
+
     /**
      * The delay time (in milliseconds) for debouncing the search input.
      * @type {number}
@@ -150,6 +163,38 @@
             clearTimeout(timeoutId);
             timeoutId = setTimeout(() => fn.apply(this, arguments), delay);
         }
+    }
+
+    function readImageURL(input) {
+        const allowedExtensions = ["jpg", "jpeg", "png", "svg"];
+        const fileName = input.value;
+        const fileExtension = fileName.split(".").pop().toLowerCase();
+
+        if (!allowedExtensions.includes(fileExtension)) {
+            alert('File type must be jpeg, png or svg');
+            input.value = "";
+            return;
+        }
+
+        if (!(input.files && input.files[0])) {
+            return; // No input, invalid
+        }
+
+        const file = input.files[0];
+
+        if (file.size > 10000000) {
+            alert("File size must be less than 10MB");
+            input.value = "";
+            return;
+        }
+        const reader = new FileReader();
+        const image = document.getElementById('club-logo');
+
+        reader.onload = function (e) {
+            image.src = e.target.result;
+        };
+
+        reader.readAsDataURL(input.files[0]);
     }
 
     /**
@@ -221,9 +266,6 @@
             resultsContainer.innerHTML = "";
         }
     });
-
-
-
 
 
 </script>
