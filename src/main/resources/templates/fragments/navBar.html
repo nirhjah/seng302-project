@@ -14,7 +14,7 @@
                 </li>
 
                 <div class="create-buttons">
-                    <li class="navbar-create-button" sec:authorize="hasAnyRole('ROLE_USER', 'ADMIN')">
+                    <li class="navbar-create-button" sec:authorize="isAuthenticated()">
                         <div class="navbar-create-dropdown">
                             <a th:href="@{createTeam}">Create Team</a>
                             <a th:href="@{createActivity}">Create Activity</a>
