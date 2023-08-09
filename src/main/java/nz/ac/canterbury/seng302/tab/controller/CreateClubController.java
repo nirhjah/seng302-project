@@ -69,7 +69,12 @@ public class CreateClubController {
         if (clubId != null) {
             Optional<Club> optClub = clubService.findClubById(clubId);
             if (optClub.isPresent()) {
+                // Then we are editing
+                model.addAttribute("isEditing", true);
                 prefillModelWithClub(model, optClub.get());
+            } else {
+                // We are creating a new club
+                model.addAttribute("isEditing", false);
             }
         }
         return "createClubForm";
@@ -160,6 +165,7 @@ public class CreateClubController {
             clubImageService.updateClubLogo(editClub, clubLogo);
 
             clubService.updateOrAddClub(editClub);
+
             return "redirect:/view-club?clubID=" + editClub.getClubId();
 
         } else {

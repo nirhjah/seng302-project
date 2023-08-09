@@ -22,7 +22,9 @@
 
             <div class="preview-logo">
                 <div class="logo-container">
-                    <img th:src="@{/club-logo/{id}(id = ${clubId})}">
+                    <!-- This duplicate id is fine, only one will ever exist -->
+                    <img id="club-logo" th:if="${isEditing}" th:src="@{/club-logo/{id}(id = ${clubId})}">
+                    <img id="club-logo" th:unless="${isEditing}" th:src="@{/image/icons/club-logo.svg}"/>
                 </div>
                 <div class="file-upload" >
                     <div class="file-label-border">
