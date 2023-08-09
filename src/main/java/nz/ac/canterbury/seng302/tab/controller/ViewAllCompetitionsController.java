@@ -112,7 +112,7 @@ public class ViewAllCompetitionsController {
     @GetMapping("/view-all-competitions")
     public String viewAllCompetitions(@RequestParam(name = "page", defaultValue = "1") int page,
                                       @RequestParam(name = "sports", required=false) List<String> sports,
-                                      @RequestParam(name = "time", required = false) List<String> times,
+                                      @RequestParam(name = "times", required = false) List<String> times,
                                       Model model, HttpServletRequest request) {
 
         testModel();
