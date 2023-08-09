@@ -3,14 +3,14 @@ package nz.ac.canterbury.seng302.tab.entity;
 import jakarta.persistence.*;
 
 import nz.ac.canterbury.seng302.tab.enums.Role;
+import nz.ac.canterbury.seng302.tab.helper.ImageType;
+import nz.ac.canterbury.seng302.tab.helper.interfaces.HasImage;
+import nz.ac.canterbury.seng302.tab.helper.interfaces.Identifiable;
 import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import org.hibernate.Hibernate;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +20,7 @@ import java.util.*;
  * Class for Team object which is annotated as a JPA entity.
  */
 @Entity
-public class Team {
+public class Team implements Identifiable, HasImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,9 +34,6 @@ public class Team {
 
     @Column(nullable = false)
     private String sport;
-
-    @Column(columnDefinition = "MEDIUMBLOB")
-    private String pictureString;
 
     @Column
     private String token;
@@ -63,6 +60,9 @@ public class Team {
     @JoinColumn
     private Grade grade;
 
+    @Enumerated(value = EnumType.STRING)
+    private ImageType imageType;
+
     protected Team() {
     }
 
@@ -70,9 +70,6 @@ public class Team {
         this.name = name;
         this.location = location;
         this.sport = sport;
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.token = generateToken();
         this.creationDate = LocalDateTime.now();
         this.grade = new Grade(Grade.Age.ADULT, Grade.Sex.OTHER);
@@ -94,9 +91,6 @@ public class Team {
         this.name = name;
         this.location = location;
         this.sport = sport;
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         // set the manager
         this.setManager(manager);
         this.creationDate = LocalDateTime.now();
@@ -115,10 +109,14 @@ public class Team {
         // create a dummy location
         this.location = new Location("address1", "address2", "suburb", "chch", "8052", "new zealand");
         this.sport = sport;
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        InputStream is = resource.getInputStream();
-        this.pictureString = Base64.getEncoder().encodeToString(is.readAllBytes());
         this.creationDate = LocalDateTime.now();
+    }
+
+    public ImageType getImageType() {
+        return imageType;
+    }
+    public void setImageType(ImageType imageType) {
+        this.imageType = imageType;
     }
 
     public Grade getGrade() {
@@ -131,6 +129,10 @@ public class Team {
 
     public Long getTeamId() {
         return this.teamId;
+    }
+
+    public long getId() {
+        return teamId;
     }
 
     public String getName() {
@@ -151,15 +153,6 @@ public class Team {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-
-    public String getPictureString() {
-        return this.pictureString;
-    }
-
-    public void setPictureString(String pictureString) {
-        this.pictureString = pictureString;
     }
 
     public void setTeamId(long teamId) {

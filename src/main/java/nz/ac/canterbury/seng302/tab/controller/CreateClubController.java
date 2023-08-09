@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditClubForm;
 import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
+import nz.ac.canterbury.seng302.tab.service.image.ClubImageService;
 import nz.ac.canterbury.seng302.tab.service.ClubService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
@@ -38,14 +39,17 @@ public class CreateClubController {
 
     private final TeamService teamService;
 
+    private final ClubImageService clubImageService;
+
     private final static String createAndEditClubFormString="CreateAndEditClubForm";
     private final static String selectedTeamString="selectedTeams";
 
     @Autowired
-    public CreateClubController(ClubService clubService,UserService userService, TeamService teamService) {
+    public CreateClubController(ClubService clubService,UserService userService, TeamService teamService, ClubImageService clubImageService) {
         this.clubService = clubService;
         this.userService = userService;
         this.teamService = teamService;
+        this.clubImageService = clubImageService;
     }
 
     /**
@@ -78,9 +82,7 @@ public class CreateClubController {
      * @param bindingResult       The BindingResult object that holds the validation errors.
      * @param createAndEditClubForm The CreateAndEditClubForm object containing the form data to be checked.
      */
-    private void postCreateClubErrorChecking(BindingResult bindingResult,
-                                                 CreateAndEditClubForm createAndEditClubForm
-                                                 ){
+    private void postCreateClubErrorChecking(BindingResult bindingResult, CreateAndEditClubForm createAndEditClubForm){
         String addressLine1= createAndEditClubForm.getAddressLine1().trim();
         if (addressLine1.isEmpty()) {
             bindingResult.addError(new FieldError(createAndEditClubFormString, "addressLine1", "Field cannot be empty"));
@@ -89,7 +91,6 @@ public class CreateClubController {
         if (postcode.isEmpty()) {
             bindingResult.addError(new FieldError(createAndEditClubFormString, "postcode", "Field cannot be empty"));
         }
-
     }
 
 
@@ -148,38 +149,29 @@ public class CreateClubController {
             editClub.setName(name);
             editClub.setLocation(location);
 
-            if (Objects.equals(clubLogo.getOriginalFilename(), "")){
-                editClub.setClubLogo(clubService.setDefaultLogo());
-            }
-            else{
-                editClub.setClubLogo(Base64.getEncoder().encodeToString(clubLogo.getBytes()));
-                editClub.setHasCustomLogo(true);
-            }
-
+            // If there is no clubLogo passed in, nothing will be changed, so it's fine.
+            clubImageService.updateClubLogo(editClub, clubLogo);
 
             clubService.updateOrAddClub(editClub);
             return "redirect:/view-club?clubID=" + editClub.getClubId();
 
         } else {
             User manager = optUser.get(); // manager is the current user
-            Club club;
-            if (Objects.equals(clubLogo.getOriginalFilename(), "")){
-                club= new Club(name, location, sport, manager,clubService.setDefaultLogo());
-            }
-            else {
-                club = new Club(name, location, sport, manager, Base64.getEncoder().encodeToString(clubLogo.getBytes()));
-                club.setHasCustomLogo(true);
-            }
+            Club club = new Club(name, location, sport, manager);
 
             setTeamsClub(selectedTeams, club, bindingResult);
 
             if (bindingResult.hasErrors()) {
-                System.out.println(bindingResult.getAllErrors());
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return "createClubForm";
             }
 
             clubService.updateOrAddClub(club);
+
+            if (Objects.equals(clubLogo.getOriginalFilename(), "")) {
+                // If there's a logo, set it.
+                clubImageService.updateClubLogo(club, clubLogo);
+            }
             return "redirect:/view-club?clubID=" + club.getClubId();
         }
     }
@@ -203,7 +195,8 @@ public class CreateClubController {
                     else {
                         teamService.getTeam(Long.parseLong(team)).setTeamClub(club);
                     }
-                }}
+                }
+            }
         }
         catch (UnmatchedSportException e) {
             bindingResult.addError(new FieldError(createAndEditClubFormString, selectedTeamString, "Teams must have the same sport"));

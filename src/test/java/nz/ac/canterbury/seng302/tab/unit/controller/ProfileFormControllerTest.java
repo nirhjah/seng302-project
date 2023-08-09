@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -13,12 +14,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Base64;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Optional;
+import java.util.*;
 
 import nz.ac.canterbury.seng302.tab.service.*;
+import nz.ac.canterbury.seng302.tab.service.image.TeamImageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -41,6 +40,9 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 @AutoConfigureMockMvc(addFilters = false)
 @WithMockUser
 public class ProfileFormControllerTest {
+
+    @Autowired
+    private TeamImageService teamImageService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -98,8 +100,7 @@ public class ProfileFormControllerTest {
             .andExpect(view().name("viewTeamForm"))
             .andExpect(MockMvcResultMatchers.model().attribute("teamID", TEAM_ID))
             .andExpect(MockMvcResultMatchers.model().attribute("displayName", TEAM_NAME))
-            .andExpect(MockMvcResultMatchers.model().attribute("displaySport", TEAM_SPORT))
-            .andExpect(MockMvcResultMatchers.model().attribute("displayTeamPicture", team.getPictureString()));
+            .andExpect(MockMvcResultMatchers.model().attribute("displaySport", TEAM_SPORT));
     }
 
     @Test
@@ -139,8 +140,9 @@ public class ProfileFormControllerTest {
             mockMvc.perform(multipart("/profile?teamID={id}", TEAM_ID).file(multipartFile))
                     .andExpect(status().is3xxRedirection());
         }
-        assertNotEquals(team.getPictureString(), Base64.getEncoder().encodeToString(fileBytes));
 
+        byte[] savedBytes = teamImageService.readFileOrDefault(team.getTeamId());
+        assertFalse(Arrays.equals(savedBytes, fileBytes));
     }
 
     @Test
@@ -154,7 +156,9 @@ public class ProfileFormControllerTest {
             mockMvc.perform(multipart("/profile?teamID={id}", TEAM_ID).file(multipartFile))
                     .andExpect(status().is3xxRedirection());
         }
-        assertNotEquals(team.getPictureString(), Base64.getEncoder().encodeToString(fileBytes));
+
+        var savedBytes = teamImageService.readFileOrDefault(team.getTeamId());
+        assertFalse(Arrays.equals(savedBytes, fileBytes));
     }
 
     @Test

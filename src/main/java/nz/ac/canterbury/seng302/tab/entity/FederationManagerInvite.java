@@ -21,7 +21,7 @@ public class FederationManagerInvite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long fedManId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 

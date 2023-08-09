@@ -1,19 +1,16 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.service.*;
+
+import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.image.UserImageService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import nz.ac.canterbury.seng302.tab.entity.Sport;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-
-import java.util.Optional;
 
 /**
  * Spring Boot Controller class for the Home Form class.
@@ -45,6 +42,9 @@ public class HomeFormController {
         return "redirect:./home";
     }
 
+    @Autowired
+    private UserImageService userImageService;
+
     /**
      * Gets the thymeleaf page representing the /home page (a basic welcome screen with nav bar)
      *
@@ -56,6 +56,8 @@ public class HomeFormController {
         logger.info("GET /homeForm");
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("navTeams", teamService.getTeamList());
+
+
         return "homeForm";
     }
 }

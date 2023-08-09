@@ -8,25 +8,19 @@ import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.ClubService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -73,22 +67,6 @@ public class TeamServiceTest {
         assertEquals(team.getLocation().getAddressLine1(),
                 teamRepository.findById(team.getTeamId()).get().getLocation().getAddressLine1());
         assertEquals(team.getSport(), teamRepository.findById(team.getTeamId()).get().getSport());
-    }
-
-    @Test
-    void testUpdatingPicture() throws IOException {
-        Team team = new Team("test", "Hockey", location);
-        teamRepository.save(team);
-
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        File file = resource.getFile();
-        String pictureString = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
-        try (FileInputStream input = new FileInputStream(file)) {
-            MultipartFile multipartFile = new MockMultipartFile("file",
-                    file.getName(), "image/png", input.readAllBytes());
-            teamService.updatePicture(multipartFile, team.getTeamId());
-            assertEquals(pictureString, Base64.getEncoder().encodeToString(multipartFile.getBytes()));
-        }
     }
 
     @Test
@@ -396,7 +374,5 @@ public class TeamServiceTest {
         team.setTeamClub(club);
 
         Assertions.assertEquals(club.getClubId(), teamService.getTeamClubId(team));
-
-
     }
 }

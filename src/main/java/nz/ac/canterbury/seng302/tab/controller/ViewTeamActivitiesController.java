@@ -59,7 +59,6 @@ public class ViewTeamActivitiesController {
             model.addAttribute("displayName", selectedTeam.getName());
             model.addAttribute("selectedTeam", selectedTeam);
             logger.info("TEAM IS: " + selectedTeam.getName());
-            model.addAttribute("displayTeamPicture", selectedTeam.getPictureString());
         } else {
             logger.error("No Team Found");
             return "redirect:./home";

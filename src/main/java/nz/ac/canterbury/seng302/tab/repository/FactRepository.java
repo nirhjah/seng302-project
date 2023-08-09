@@ -31,7 +31,7 @@ public interface FactRepository extends CrudRepository<Fact, Long> {
      * @param team the team for which top scorers are to be found
      * @return an Object List which contains the scorer and their total scores for the team
      */
-    @Query("SELECT f.scorer, count(f.factID) FROM Activity a JOIN Goal f WHERE f.factType=1 AND f MEMBER of a.activityFacts AND a.team=:team AND (a.activityType = 0 OR a.activityType = 1) GROUP BY f.scorer ORDER BY count(f.factID) desc limit 5")
+    @Query("SELECT f.scorer, sum(f.goalValue) FROM Activity a JOIN Goal f WHERE f.factType=1 AND f MEMBER of a.activityFacts AND a.team=:team AND (a.activityType = 0 OR a.activityType = 1) GROUP BY f.scorer ORDER BY sum(f.goalValue) desc limit 5")
     List<Object[]> getListOfTopScorersAndTheirScores(Team team);
 
 }

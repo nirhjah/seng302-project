@@ -47,6 +47,16 @@ public class CreateActivityForm {
     @LocationValidators.suburbValidator
     private String suburb;
 
+    public String getLineup() {
+        return lineup;
+    }
+
+    public void setLineup(String lineup) {
+        this.lineup = lineup;
+    }
+
+    private String lineup;
+
     public ActivityType getActivityType() {
         return activityType;
     }

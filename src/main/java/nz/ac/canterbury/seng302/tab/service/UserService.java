@@ -1,17 +1,12 @@
 package nz.ac.canterbury.seng302.tab.service;
 
-import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.*;
-
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.authentication.EmailVerification;
 import nz.ac.canterbury.seng302.tab.authentication.TokenVerification;
-import nz.ac.canterbury.seng302.tab.entity.*;
-import nz.ac.canterbury.seng302.tab.mail.EmailDetails;
-import nz.ac.canterbury.seng302.tab.mail.EmailService;
+import nz.ac.canterbury.seng302.tab.entity.Sport;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +23,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Service class for User database entries, defined by the @link{Service}
@@ -49,22 +47,15 @@ public class UserService {
 
     private final TaskScheduler taskScheduler;
 
-    private final EmailService emailService;
-
     private final PasswordEncoder passwordEncoder;
 
-    private final FederationService federationService;
 
     @Autowired
-    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, EmailService emailService,
-                       PasswordEncoder passwordEncoder, FederationService federationService) {
+    public UserService(UserRepository userRepository, TaskScheduler taskScheduler, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.taskScheduler = taskScheduler;
-        this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
-        this.federationService = federationService;
     }
-
 
     public static final Sort SORT_BY_LAST_AND_FIRST_NAME = Sort.by(
         Order.asc("lastName").ignoreCase(),
@@ -88,6 +79,9 @@ public class UserService {
         return userRepository.findByToken(token);
     }
 
+    public User getUser(long userID) {
+        return userRepository.findById(userID).orElse(null);
+    }
 
     /**
      * Gets a page of users, filtered down by their name and sports interest
@@ -277,33 +271,6 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    /**
-     * Method which updates the picture by taking the MultipartFile type and
-     * updating the picture
-     * stored in the team with id primary key.
-     *
-     * @param file MultipartFile file upload
-     * @param id   Team's unique id
-     */
-    public void updatePicture(MultipartFile file, long id) {
-        User user = userRepository.findById(id).get();
-
-        // Gets the original file name as a string for validation
-        String pictureString = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        if (pictureString.contains("..")) {
-            logger.info("not a a valid file");
-        }
-        try {
-            // Encodes the file to a byte array and then convert it to string, then set it
-            // as the pictureString variable.
-            user.setPictureString(Base64.getEncoder().encodeToString(file.getBytes()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Saved the updated picture string in the database.
-        userRepository.save(user);
-    }
 
     /**
      * Updates the user's password then creates and sends email informing the user that their password has been updated.
@@ -313,8 +280,6 @@ public class UserService {
     public void updatePassword(User user, String password) throws MessagingException {
         user.setPassword(passwordEncoder.encode(password));
         updateOrAddUser(user);
-
-        emailService.updatePassword(user);
     }
 
 
@@ -329,11 +294,7 @@ public class UserService {
         updateOrAddUser(user);
 
         taskScheduler.schedule(new TokenVerification(user, this), Instant.now().plus(Duration.ofHours(1)));
-
-        emailService.resetPasswordEmail(user, request);
     }
-
-
 
     /**
      * Adds user to team and updates user
@@ -345,19 +306,43 @@ public class UserService {
         updateOrAddUser(user);
     }
 
+    public List<User> findUsersBySportAndName(String sport, String name) {
+        return userRepository.findUserBySportAndName(sport, name);
+    }
 
     /**
-     * Creates the invitation to be a federation manager
-     * Including storing the invite and sending the email
-     * @param user the user whose invited to become a federation manager
-     */
-    public void inviteToFederationManger(User user, HttpServletRequest request) {
-        FederationManagerInvite fedManInvite = new FederationManagerInvite(user);
-        federationService.updateOrSave(fedManInvite);
-        try {
-            emailService.federationManagerInvite(user, request, fedManInvite.getToken());
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
+     * gets all users who arent federation managers
+     * @param pageable
+     * @return all the users who arent federation managers
+    */
+    public Page<User> getAllUsersNotFedMans(Pageable pageable) {
+        return userRepository.findUsersThatArentFedMans(pageable);
     }
+
+    /**
+     * searches all users who arent a fedman by name
+     *
+     * @param pageable
+     * @param name a string to search the name by
+     * @return
+    */
+    public Page<User> getAllUsersNotFedMansByName(Pageable pageable, String name) {
+        return userRepository.findUsersThatArentFedMansByName(pageable, name);
+    }
+
+    /**
+     * searches all users who arent a fedman by email
+     *
+     * @param pageable
+     * @param email a string to search the name by
+     * @return
+    */
+    public Page<User> getAllUsersNotFedMansByEmail(Pageable pageable, String email) {
+        return userRepository.findUsersThatArentFedMansByEmail(pageable, email);
+    }
+
+    public Page<User> getAllUsersNotFedMansByNameAndEmail(Pageable pageable, String search) {
+        return userRepository.findUsersThatArentFedMansByNameOrEmail(pageable, search);
+    }
+
 }

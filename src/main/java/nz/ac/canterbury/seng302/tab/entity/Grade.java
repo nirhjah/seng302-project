@@ -25,6 +25,7 @@ public class Grade {
     private Long gradeId;
 
     public enum Age {
+        ADULT("Open", 20, false, false),
         UNDER_5S("Under 5s", 5, true),
         UNDER_6S("Under 6s", 6, true),
         UNDER_7S("Under 7s", 7, true),
@@ -40,7 +41,6 @@ public class Grade {
         UNDER_17S("Under 17s", 17, true),
         UNDER_18S("Under 18s", 18, true),
         UNDER_19S("Under 19s", 19, true),
-        ADULT("", 20, false, false),
         OVER_50S("Over 50s", 50, false, true),
         OVER_60S("Over 60s", 60, false, true),
         OVER_70S("Over 70s", 70, false, true);
@@ -97,19 +97,42 @@ public class Grade {
     }
 
     public enum Sex {
-        MENS,
-        WOMENS,
-        MIXED,
-        OTHER
+        MENS("Men's"),
+        WOMENS("Women's"),
+        NONBINARY("Non-Binary"),
+        MIXED("Mixed"),
+        OTHER("Other");
+
+        private final String description;
+
+        Sex(String description) {
+            this.description = description;
+        }
+
+        public String getDescription() {
+            return description;
+        }
     }
 
     public enum Competitiveness {
 
         // Unspecified implies Competitive league.
         // This is because serious sportspeople will likely
-        // be the main users of our app.  (Also this is what most people assume too)
-        UNSPECIFIED,
-        SOCIAL,
+        // be the mai users of our app.  (Also this is what most people assume too)
+        PROFESSIONAL("Professional"),
+        SEMIPRO("Semi-Pro"),
+        SOCIAL("Social");
+
+        private final String description;
+
+        Competitiveness(String description) {
+            this.description = description;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
     }
 
     @Enumerated(EnumType.STRING)
@@ -151,7 +174,7 @@ public class Grade {
 
     public static final Age DEFAULT_AGE = Age.ADULT;
 
-    public static final Competitiveness DEFAULT_COMPETITIVENESS = Competitiveness.UNSPECIFIED;
+    public static final Competitiveness DEFAULT_COMPETITIVENESS = Competitiveness.SOCIAL;
 
     private String getSexString() {
         boolean isYoung = youngAges.contains(age);
@@ -159,6 +182,7 @@ public class Grade {
             return switch (sex) {
                 case MENS -> "Boy's";
                 case WOMENS -> "Girl's";
+                case NONBINARY -> "Non-Binary";
                 case MIXED -> "Mixed";
                 case OTHER -> "Other";
             };
@@ -166,6 +190,7 @@ public class Grade {
         return switch (sex) {
             case MENS -> "Men's";
             case WOMENS -> "Women's";
+            case NONBINARY -> "Non-Binary";
             case MIXED -> "Mixed";
             case OTHER -> "Other";
         };
