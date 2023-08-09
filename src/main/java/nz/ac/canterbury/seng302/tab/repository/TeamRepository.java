@@ -118,7 +118,7 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
     
     @Query("SELECT t FROM Team t " +
             "WHERE t.sport = :sport " +
-            "AND t.grade = :grade" +
+            "AND t.grade = :grade " +
             "AND :name IS NOT NULL " +
             "AND (LOWER(t.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
             "ORDER BY LOWER(t.name) ASC")

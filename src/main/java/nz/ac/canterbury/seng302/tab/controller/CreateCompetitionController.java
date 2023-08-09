@@ -266,9 +266,10 @@ public class CreateCompetitionController {
                                                             @RequestParam(required = false, defaultValue = "") String search,
                                                             @RequestParam(required = false) String age,
                                                             @RequestParam(required = false) String sex,
-                                                            @RequestParam(required = false) String competiveness) {
+                                                            @RequestParam(required = false) String competitiveness) {
+        System.out.println(age + " " + sex + " " +  competitiveness);
         return ResponseEntity.ok().body(
-                teamService.findTeamsBySportAndSearchAndGrade(sport, search, grade).stream().map(team -> new CompetitionTeamInfo(
+                teamService.findTeamsBySportAndSearch(sport, search).stream().map(team -> new CompetitionTeamInfo(
                         team.getTeamId(),
                         team.getName()
                 )).toList()
