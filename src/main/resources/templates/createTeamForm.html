@@ -95,6 +95,37 @@
                     <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
                 </div>
             </div>
+
+            <div class="select-box">
+                <label>Grade <span class="required">*</span></label>
+                <div class="grade-level-details">
+                    <div>
+                        <select id="competitiveness" name="competitiveness" th:field="*{competitiveness}">
+                            <option value="" disabled selected>Level</option>
+                            <option th:each="competitivenessOption : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Competitiveness).values()}"
+                                    th:value="${competitivenessOption}" th:text="${competitivenessOption.description}"></option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="sex" name="sex" th:field="*{sex}">
+                            <option value="" disabled selected>Gender</option>
+                            <option th:each="sexOption : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Sex).values()}"
+                                    th:value="${sexOption}"
+                                    th:text="${sexOption.description}"></option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="age" name="age" th:field="*{age}">
+                            <option value="" disabled selected>Age</option>
+                            <option th:each="ageOption : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Age).values()}"
+                                    th:value="${ageOption}"
+                                    th:text="${ageOption.description}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div th:each="err : ${#fields.errors('grade')}" th:text="${err}" class="error-message"></div>
+            </div>
+
             <div class="submit-button">
                 <a th:href="@{home}">
                     <button type="submit" th:text="${teamID != null ? 'Save' : 'Create'}"></button>
