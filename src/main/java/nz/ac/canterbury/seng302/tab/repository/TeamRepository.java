@@ -115,4 +115,13 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             "ORDER BY LOWER(t.name) ASC")
     List<Team> findTeamsByNameAndSport(@Param("name") String name, @Param("sport") String sport);
 
+    
+    @Query("SELECT t FROM Team t " +
+            "WHERE t.sport = :sport " +
+            "AND t.grade = :grade" +
+            "AND :name IS NOT NULL " +
+            "AND (LOWER(t.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
+            "ORDER BY LOWER(t.name) ASC")
+    List<Team> findTeamsByNameAndSportAndGrade(@Param("name") String name, @Param("sport") String sport, @Param("grade") Grade grade);
+
 }

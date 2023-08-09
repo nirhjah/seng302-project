@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import nz.ac.canterbury.seng302.tab.entity.Club;
+import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.Role;
@@ -252,6 +253,10 @@ public class TeamService {
 
     public List<Team> findTeamsBySportAndSearch(String sport, String search) {
         return teamRepository.findTeamsByNameAndSport(search, sport);
+    }
+    
+    public List<Team> findTeamsBySportAndSearchAndGrade(String sport, String search, Grade grade) {
+        return teamRepository.findTeamsByNameAndSportAndGrade(search, sport, grade);
     }
 
     /**
