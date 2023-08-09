@@ -44,14 +44,14 @@
                 <label>Grade <span class="required">*</span></label>
                 <div class="grade-level-details">
                     <div>
-                        <select id="competitiveness" name="competitiveness" th:field="*{competitiveness}">
+                        <select id="competitiveness" name="competitiveness" th:field="*{competitiveness}" onchange="handleSelectChange()">
                             <option value="" disabled selected>Level</option>
                             <option th:each="competitivenessOption : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Competitiveness).values()}"
                                     th:value="${competitivenessOption}" th:text="${competitivenessOption.description}"></option>
                         </select>
                     </div>
                     <div>
-                        <select id="sex" name="sex" th:field="*{sex}">
+                        <select id="sex" name="sex" th:field="*{sex}" onchange="handleSelectChange()">
                             <option value="" disabled selected>Gender</option>
                             <option th:each="sexOption : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Sex).values()}"
                                     th:value="${sexOption}"
@@ -59,7 +59,7 @@
                         </select>
                     </div>
                     <div>
-                        <select id="age" name="age" th:field="*{age}">
+                        <select id="age" name="age" th:field="*{age}" onchange="handleSelectChange()">
                             <option value="" disabled selected>Age</option>
                             <option th:each="ageOption : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Age).values()}"
                                     th:value="${ageOption}"
@@ -225,6 +225,11 @@
             inactiveCover.style.display = "flex";
         }
     })
+
+    function handleSelectChange() {
+        clearCompetitors();
+        getCompetitors();
+    }
 
     const competitorsUl = document.querySelector(".competitors-ul")
     const playersTeamsUl = document.querySelector(".users-teams-ul")
