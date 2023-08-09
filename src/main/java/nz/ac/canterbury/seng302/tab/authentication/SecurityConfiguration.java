@@ -83,9 +83,8 @@ public class SecurityConfiguration {
                 .requestMatchers("/", "/register", "/login", "/home",
                 "/geocode/autocomplete", "/lost-password", "/reset-password", "/confirm")
                 .permitAll()
-                // TODO Add other federation manager endpoints here
                 // Only Federation Managers (maybe admins) can access this
-                .requestMatchers("/fedman", "/create-competition", "/inviteToFederationManager")
+                .requestMatchers("/create-competition", "/inviteToFederationManager")
                 .hasRole(AuthorityType.FEDERATION_MANAGER.name())
                 // Only allow admins to reach the "/admin" and "/populate_database" page
                 .requestMatchers("/admin", "/populate_database")

@@ -73,7 +73,8 @@ public class PersonalAggregatedStatisticsController {
     }
 
     @GetMapping("/myActivityStats")
-    public String activityPersonalStats(Model model, HttpServletRequest httpServletRequest, @RequestParam(value = "teamID") Long teamID) throws MalformedURLException {
+    public String activityPersonalStats(Model model, HttpServletRequest httpServletRequest,
+                                        @RequestParam(value = "teamID") Long teamID) throws MalformedURLException {
         prefillModel(model, httpServletRequest);
         model.addAttribute("httpServletRequest", httpServletRequest);
         Team team = teamService.getTeam(teamID);
