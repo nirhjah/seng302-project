@@ -148,4 +148,11 @@ public class CreateAndEditTeamForm {
         this.competitiveness = competitiveness;
     }
 
+    /**
+     * Creates a Grade object from this form's age, sex, and competitiveness values.
+     */
+    public Grade makeGrade() {
+        return new Grade(age, sex, competitiveness);
+    }
+
 }
