@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.form;
 
+import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
@@ -26,7 +27,13 @@ public class CreateAndEditTeamForm {
 
     @LocationValidators.suburbValidator
     private String suburb;
-    
+
+    private Grade.Age age;
+
+    private Grade.Sex sex;
+
+    private Grade.Competitiveness competitiveness;
+
     /**
      * Fills out all of this form's fields <strong>in-place</strong>.
      * @param team The team we'll be populating this with
@@ -35,12 +42,18 @@ public class CreateAndEditTeamForm {
         Location location = team.getLocation();
         this.name = team.getName();
         this.sport = team.getSport();
+        if (team.getGrade() != null) {  // Legacy accounts might not have a grade
+            this.age = team.getGrade().getAge();
+            this.sex = team.getGrade().getSex();
+            this.competitiveness = team.getGrade().getCompetitiveness();
+        }
         this.addressLine1 = location.getAddressLine1();
         this.addressLine2 = location.getAddressLine2();
         this.postcode = location.getPostcode();
         this.country = location.getCountry();
         this.city = location.getCity();
         this.suburb = location.getSuburb();
+
     }
 
     public String getAddressLine1() {
@@ -109,6 +122,30 @@ public class CreateAndEditTeamForm {
 
     public void setSport(String sport) {
         this.sport = sport;
+    }
+
+    public Grade.Age getAge() {
+        return age;
+    }
+
+    public void setAge(Grade.Age age) {
+        this.age = age;
+    }
+
+    public Grade.Sex getSex() {
+        return sex;
+    }
+
+    public void setSex(Grade.Sex sex) {
+        this.sex = sex;
+    }
+
+    public Grade.Competitiveness getCompetitiveness() {
+        return competitiveness;
+    }
+
+    public void setCompetitiveness(Grade.Competitiveness competitiveness) {
+        this.competitiveness = competitiveness;
     }
 
 }
