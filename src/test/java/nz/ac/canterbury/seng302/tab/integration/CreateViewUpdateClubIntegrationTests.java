@@ -79,6 +79,8 @@ public class CreateViewUpdateClubIntegrationTests {
     private FactService factService;
 
     @Autowired
+    private CompetitionService competitionService;
+    @Autowired
     private FormationService formationService;
 
     private ClubRepository clubRepository;
@@ -118,7 +120,7 @@ public class CreateViewUpdateClubIntegrationTests {
         clubService = Mockito.spy(new ClubService(clubRepository));
         teamService = Mockito.spy(new TeamService(teamRepository));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService, clubImageService), new ProfileFormController(userService, teamService, activityService, factService, formationService), new ViewClubController(userService, teamService, clubService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService, clubImageService), new ProfileFormController(userService, teamService, activityService, factService, formationService, competitionService), new ViewClubController(userService, teamService, clubService)).build();
 
         Authentication authentication = Mockito.mock(Authentication.class);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);

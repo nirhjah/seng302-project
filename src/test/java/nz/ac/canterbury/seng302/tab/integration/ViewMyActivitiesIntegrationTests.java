@@ -17,10 +17,7 @@ import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.FactRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FormationService;
-import nz.ac.canterbury.seng302.tab.service.FactService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.*;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
@@ -97,6 +94,9 @@ public class ViewMyActivitiesIntegrationTests {
 
     private Date dateMiddle;
 
+    @Autowired
+    private CompetitionService competitionService;
+
     private Date dateLast;
 
     private  List<Date> testDates;
@@ -118,7 +118,7 @@ public class ViewMyActivitiesIntegrationTests {
         teamService = Mockito.spy(new TeamService(teamRepository));
         activityService = Mockito.spy(new ActivityService(activityRepository));
         factService = Mockito.spy(new FactService(factRepository));
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ProfileFormController(userService, teamService, activityService, factService, formationService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ProfileFormController(userService, teamService, activityService, factService, formationService, competitionService)).build();
 
         userRepository.deleteAll();
         teamRepository.deleteAll();
