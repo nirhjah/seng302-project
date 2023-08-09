@@ -237,6 +237,7 @@ public class CreateTeamFormController {
         team.setName(trimmedName);
         team.setSport(trimmedSport);
         team.setLocation(location);
+        team.setGrade(createAndEditTeamForm.makeGrade());
         team.generateToken(teamService);
         team = teamService.addTeam(team);
 
