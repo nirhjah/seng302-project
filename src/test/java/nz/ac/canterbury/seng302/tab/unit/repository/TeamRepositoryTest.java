@@ -5,7 +5,6 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.ClubRepository;
-import nz.ac.canterbury.seng302.tab.repository.LocationRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -31,9 +30,6 @@ public class TeamRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private LocationRepository locationRepository;
 
     @Autowired
     private TeamService teamService;
@@ -497,6 +493,39 @@ public class TeamRepositoryTest {
 
         assertEquals(3, output.size());
         assertEquals(Set.of(team1, team4, team5), output);
+    }
+
+    @Test
+    void getAllTeamSports_returnsCorrectResults() throws Exception {
+        Location auckLocation = new Location(null, null, null, "Auckland", null, "New Zealand");
+        Location chchLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
+
+        Team team1 = new Team("t1", "Rugby", auckLocation);
+        Team team2 = new Team("t2", "Hockey", chchLocation);
+
+        teamRepository.save(team1);
+        teamRepository.save(team2);
+
+        var sports = teamRepository.getAllDistinctSports();
+
+        // Note the alphabetical order
+        assertEquals(List.of("Hockey", "Rugby"), sports);
+    }
+
+    @Test
+    void getAllTeamSports_noDuplicates() throws Exception {
+        Location auckLocation = new Location(null, null, null, "Auckland", null, "New Zealand");
+        Location chchLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
+
+        Team team1 = new Team("t1", "Hockey", auckLocation);
+        Team team2 = new Team("t2", "Hockey", chchLocation);
+
+        teamRepository.save(team1);
+        teamRepository.save(team2);
+
+        var sports = teamRepository.getAllDistinctSports();
+
+        assertEquals(List.of("Hockey"), sports);
     }
 
 }
