@@ -6,13 +6,12 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import nz.ac.canterbury.seng302.tab.controller.CreateClubController;
 import nz.ac.canterbury.seng302.tab.controller.ProfileFormController;
+import nz.ac.canterbury.seng302.tab.controller.ViewAllTeamsController;
 import nz.ac.canterbury.seng302.tab.controller.ViewClubController;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
-import nz.ac.canterbury.seng302.tab.repository.ClubRepository;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
-import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import nz.ac.canterbury.seng302.tab.repository.*;
 import nz.ac.canterbury.seng302.tab.service.*;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
@@ -65,6 +64,10 @@ public class CreateViewUpdateClubIntegrationTests {
 
     private UserRepository userRepository;
 
+    private LocationRepository locationRepository;
+
+    private SportRepository sportRepository;
+
     @Autowired
     private TeamRepository teamRepository;
 
@@ -76,6 +79,11 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @Autowired
     private FactService factService;
+
+    @Autowired
+    private LocationService locationService;
+    @Autowired
+    private SportService sportService;
 
     @Autowired
     private FormationService formationService;
@@ -108,6 +116,9 @@ public class CreateViewUpdateClubIntegrationTests {
         teamRepository = applicationContext.getBean(TeamRepository.class);
         userRepository = applicationContext.getBean(UserRepository.class);
         clubImageService = applicationContext.getBean(ClubImageService.class);
+        locationRepository = applicationContext.getBean(LocationRepository.class);
+        sportRepository= applicationContext.getBean(SportRepository.class);
+
 
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
         EmailService emailService = applicationContext.getBean(EmailService.class);
@@ -117,8 +128,11 @@ public class CreateViewUpdateClubIntegrationTests {
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder, federationService));
         clubService = Mockito.spy(new ClubService(clubRepository));
         teamService = Mockito.spy(new TeamService(teamRepository));
+        locationService= Mockito.spy(new LocationService(locationRepository));
+        sportService= Mockito.spy(new SportService(sportRepository));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService, clubImageService), new ProfileFormController(userService, teamService, activityService, factService, formationService), new ViewClubController(userService, teamService, clubService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService, clubImageService), new ProfileFormController(userService, teamService, activityService, factService, formationService), new ViewClubController(userService, teamService, clubService)
+        , new ViewAllTeamsController(teamService, userService, locationService,sportService)).build();
 
         Authentication authentication = Mockito.mock(Authentication.class);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
@@ -423,4 +437,32 @@ public class CreateViewUpdateClubIntegrationTests {
                 .param("postcode", "")).andExpect(status().isBadRequest());
     }
 
+    @Then("I can see the name of the club.")
+    public void i_can_see_the_name_of_the_club(){
+//        System.out.println(team.getTeamClub());
+//        String clubName = (String) result.getModelAndView().getModel().get("clubName");
+//        Assertions.assertEquals(teamsClub.getName(), clubName);
+    }
+
+    @Given("I am on the teams search form,")
+    public void i_am_on_the_teams_search_form() throws Exception {
+        mockMvc.perform(get("/view-teams")).andExpect(status().isOk())
+                .andExpect(view().name("viewAllTeams"));
+    }
+
+    @When("the search string contains the name of the club,")
+    public void the_search_string_contains_the_name_of_the_club() {
+    }
+
+    @Then("the teams belonging to that club is shown in the list of results.")
+    public void the_teams_belonging_to_that_club_is_shown_in_the_list_of_results() {
+    }
+
+    @Given("I am anywhere on the system where I can see a team’s profile \\(e.g. in search results) and the team belongs to a club,")
+    public void iAmAnywhereOnTheSystemWhereICanSeeATeamSProfileEGInSearchResultsAndTheTeamBelongsToAClub() throws Exception {
+        result=mockMvc.perform(get("/profile").param("teamID", String.valueOf(team.getTeamId())))
+                .andExpect(status().isOk())
+                .andExpect(view().name("viewTeamForm"))
+                .andReturn();
+    }
 }

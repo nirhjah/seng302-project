@@ -63,10 +63,6 @@ public class FormationRepositoryTest {
         Formation formation = new Formation("4-4-3",uniqueTeam);
         formationRepository.save(formation);
         List<Formation> formationList = formationRepository.findByTeamTeamId(uniqueTeam.getTeamId());
-        System.out.println(formationList);
-        System.out.println("team.id = " + team.getTeamId());
-        System.out.println("uniqueTeam.id = " + uniqueTeam.getTeamId());
-        System.out.println(formationList);
         assertEquals(1, formationList.size());
         Formation retrievedFormation = formationList.get(0);
         Assertions.assertEquals(formation, retrievedFormation);
