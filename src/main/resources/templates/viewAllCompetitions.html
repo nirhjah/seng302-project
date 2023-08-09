@@ -9,7 +9,7 @@
     <link th:href="@{/css/view-all.css}" rel="stylesheet">
 
     <link th:href="@{/css/view-all-competitions.css}" rel="stylesheet">
-    <title>View All Users</title>
+    <title>View All Competitions</title>
 </head>
 
 
@@ -18,24 +18,19 @@
 
 
 <div>
-    <div class="page-filter">
-        <div class="dropdown">
-            <div class="select">
-                <span class="selected"> All Competitions</span>
-                <div class="caret"></div>
+    <form th:action="@{view-all-competitions}">
+        <div class="page-filter">
+            <div class="filter-left">
+                <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfTimes}, 'Filter by time', 'times')}"></div>
             </div>
-            <ul class="menu">
-                <li class="active">All Competitions</li>
-                <li>Current Competitions</li>
-                <li>Past Competitions</li>
-            </ul>
+
+            <div class ="filter-right">
+                <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sports', 'sports')}"
+                     th:if="${not #lists.isEmpty(listOfSports)}"></div>
+                <button class="apply-filters-button" type="submit">Apply Filters</button>
+            </div>
         </div>
-        <div class ="filter-section">
-            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfCities}, 'Filter by city', 'cities')}"
-                 th:if="${not #lists.isEmpty(listOfCities)}"></div>
-            <button class="apply-filters-button" type="submit">Apply Filters</button>
-        </div>
-    </div>
+    </form>
 
 
     <div class="page-wrapper">
@@ -57,33 +52,7 @@
 </div>
 
 <div th:insert="~{fragments/pagination.html :: pagination(pageName='view-all-competitions')}"></div>
-<script>
-    const dropdowns = document.querySelectorAll('.dropdown');
-    dropdowns.forEach(dropdown => {
-        const select = dropdown.querySelector('.select');
-        const caret = dropdown.querySelector('.caret');
-        const menu = dropdown.querySelector('.menu');
-        const options = dropdown.querySelectorAll('.menu li');
-        const selected = dropdown.querySelector('.selected');
 
-        select.addEventListener('click', () => {
-            caret.classList.toggle('caret-rotate');
-            menu.classList.toggle('menu-open');
-        });
-
-        options.forEach(option => {
-            option.addEventListener('click', () => {
-                selected.innerText = option.innerText;
-                select.classList.remove('caret-rotate');
-                menu.classList.remove('menu-open');
-                options.forEach(option => {
-                    option.classList.remove('active');
-                });
-                option.classList.add('active');
-            });
-        });
-    });
-</script>
 <footer>
     <p>
         Image by <a
