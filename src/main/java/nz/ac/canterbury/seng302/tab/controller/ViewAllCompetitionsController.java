@@ -5,7 +5,9 @@ import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
+import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
 import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
+import nz.ac.canterbury.seng302.tab.service.SportService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -16,7 +18,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 @Controller
@@ -25,27 +29,53 @@ public class ViewAllCompetitionsController {
     @Autowired
     private CompetitionService competitionService;
 
-    private static int PAGE_SIZE = 8;
+    @Autowired
+    private SportService sportService;
+
+    private static final int PAGE_SIZE = 8;
 
     public static final Sort SORT = Sort.by(
             Sort.Order.asc("name").ignoreCase()
     );
 
+
+    private boolean hasBeenTestPopulated = false;
+
     private void testModel() {
+        if (hasBeenTestPopulated) {
+            return;
+        }
+
+        hasBeenTestPopulated = true;
         Location location = new Location("94 mays road", "St Albans", "St Ablans", "Chch", "8054", "nznz");
-
         Set<User> users = Set.of();
-        Competition comp1 = new UserCompetition("Test1", new Grade(Grade.Age.UNDER_14S, Grade.Sex.MENS), "football", location, users);
-        Competition comp2= new UserCompetition("Test1", new Grade(Grade.Sex.OTHER), "football", location, users);
-        Competition comp3 = new UserCompetition("Test1", new Grade(Grade.Sex.OTHER), "football", location, users);
+        var sports = sportService.getAllSports();
+        var r = new Random();
+        var now = Instant.now().getEpochSecond();
 
-        competitionService.updateOrAddCompetition(comp1);
-        competitionService.updateOrAddCompetition(comp2);
-        competitionService.updateOrAddCompetition(comp3);
+        for (int i=0; i<50; i++) {
+            var sport = sports.get(r.nextInt(sports.size()-1));
+            Competition comp1 = new UserCompetition("Test1", new Grade(Grade.Age.UNDER_14S, Grade.Sex.MENS), sport.getName(), location, users);
+            Competition comp2= new TeamCompetition("Test1", new Grade(Grade.Sex.OTHER), sport.getName(), location);
 
-        List<Competition> competitions = competitionService.findAll()
-                .stream().skip(PAGE_SIZE).toList();
+            // just for testing
+            if (Math.random() > 0.2) {
+                // set to future
+                comp1.setDate(now + 10000, now + 20000);
+                comp2.setDate(now + 10000, now + 20000);
+            }
+            if (Math.random() < 0.2) {
+                // set to past
+                comp1.setDate(now - 20000, now - 18000);
+                comp2.setDate(now - 22000, now - 20000);
+            }
 
+            comp1.setDate(now - 100, now + 4000);
+            comp2.setDate(now - 100, now + 4000);
+
+            competitionService.updateOrAddCompetition(comp1);
+            competitionService.updateOrAddCompetition(comp2);
+        }
     }
 
     public enum Timing {
@@ -56,12 +86,10 @@ public class ViewAllCompetitionsController {
     private Page<Competition> getPageResult(int page, String time, List<String> sports) {
         // pages are 0 indexed.
         PageRequest pageable = PageRequest.of(page - 1, PAGE_SIZE, SORT);
-        Page<Competition> pageResult;
-
 
         Timing timing = Timing.ALL;
         for (Timing tim: timingValues) {
-            if (time.equals(tim.toString())) {
+            if (time.equalsIgnoreCase(tim.toString())) {
                 timing = tim;
             }
         }
@@ -88,8 +116,13 @@ public class ViewAllCompetitionsController {
 
         model.addAttribute("listOfCompetitions", competitions);
 
+        model.addAttribute("listOfSports", sportService.getAllSportNames());
+        model.addAttribute("listOfTimes", List.of("All", "Past", "Current"));
+
         model.addAttribute("page", page);
         model.addAttribute("totalPages", pageResult.getTotalPages());
+
+        System.out.println("SIZE: " + pageResult.getTotalPages());
 
         return "viewAllCompetitions";
     }

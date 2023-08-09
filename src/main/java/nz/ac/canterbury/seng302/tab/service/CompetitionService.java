@@ -5,17 +5,16 @@ import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
 import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
 import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
 import nz.ac.canterbury.seng302.tab.repository.CompetitionRepository;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Spring Boot Service class for Compettiion repository
@@ -73,7 +72,7 @@ public class CompetitionService {
 
     /**
      * update or add a competition
-     * @param competition
+     * @param competition The competition to add
      * @return the saved competition
      */
     public Competition updateOrAddCompetition(Competition competition) {
