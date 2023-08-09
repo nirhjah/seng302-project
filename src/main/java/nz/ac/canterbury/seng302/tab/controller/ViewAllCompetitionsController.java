@@ -59,19 +59,20 @@ public class ViewAllCompetitionsController {
             Competition comp2= new TeamCompetition("Test1", new Grade(Grade.Sex.OTHER), sport.getName(), location);
 
             // just for testing
-            if (Math.random() > 0.2) {
-                // set to future
-                comp1.setDate(now + 10000, now + 20000);
-                comp2.setDate(now + 10000, now + 20000);
+            if (i < 20) {
+                if (i < 10) {
+                    // set to future
+                    comp1.setDate(now + 10000, now + 20000);
+                    comp2.setDate(now + 10000, now + 20000);
+                } else {
+                    // set to past
+                    comp1.setDate(now - 20000, now - 18000);
+                    comp2.setDate(now - 22000, now - 20000);
+                }
+            } else {
+                comp1.setDate(now - 100, now + 4000);
+                comp2.setDate(now - 100, now + 4000);
             }
-            if (Math.random() < 0.2) {
-                // set to past
-                comp1.setDate(now - 20000, now - 18000);
-                comp2.setDate(now - 22000, now - 20000);
-            }
-
-            comp1.setDate(now - 100, now + 4000);
-            comp2.setDate(now - 100, now + 4000);
 
             competitionService.updateOrAddCompetition(comp1);
             competitionService.updateOrAddCompetition(comp2);
