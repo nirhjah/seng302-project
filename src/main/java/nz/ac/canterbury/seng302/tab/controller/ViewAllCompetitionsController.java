@@ -85,15 +85,12 @@ public class ViewAllCompetitionsController {
     private Page<Competition> getPageResult(int page, List<String> times, List<String> sports) {
         // pages are 0 indexed.
         PageRequest pageable = PageRequest.of(page - 1, PAGE_SIZE, SORT);
-
         if (times == null) {
             times = List.of();
         }
-
         if (times.size() == 0 || times.size() == timingValues.size()) {
             return competitionService.findAllCompetitionsBySports(pageable, sports);
         }
-
         String selectedTime = times.get(0);
         Timing timing = CURRENT;
 
@@ -102,7 +99,6 @@ public class ViewAllCompetitionsController {
                 timing = tim;
             }
         }
-
         return switch (timing) {
             case PAST -> competitionService.findPastCompetitionsBySports(pageable, sports);
             case CURRENT -> competitionService.findCurrentCompetitionsBySports(pageable, sports);
