@@ -48,7 +48,7 @@
           </div>
         </div>
         
-        <div class="comp-headings">
+        <div class="comp-headings" th:if="*{location != null}">
           <img alt="" th:src="@{/image/icons/location.svg}"/>
           <div>
             <h4>Location</h4>
