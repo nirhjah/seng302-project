@@ -245,23 +245,6 @@ public class CreateTeamFormController {
             sportService.addSport(new Sport(trimmedSport));
         }
 
-        //test code remove before merge
-        Competition competition1 = new TeamCompetition("football competition", new Grade(Grade.Age.UNDER_19S, Grade.Sex.MIXED, Grade.Competitiveness.SOCIAL), "football");
-        Competition competition2 = new TeamCompetition("hockey competition", new Grade(Grade.Age.ADULT, Grade.Sex.WOMENS, Grade.Competitiveness.SOCIAL), "hockey");
-        Competition competition3 = new TeamCompetition("rugby competition", new Grade(Grade.Age.ADULT, Grade.Sex.MENS, Grade.Competitiveness.SOCIAL), "rugby");
-        Competition competition4 = new TeamCompetition("cricket competition", new Grade(Grade.Age.UNDER_6S, Grade.Sex.MIXED, Grade.Competitiveness.SOCIAL), "cricket");
-        Competition competition5 = new TeamCompetition("blah competition", new Grade(Grade.Age.UNDER_6S, Grade.Sex.MENS, Grade.Competitiveness.SOCIAL), "soccer");
-        Competition competition6 = new TeamCompetition("bleh competition", new Grade(Grade.Age.UNDER_10S, Grade.Sex.MIXED, Grade.Competitiveness.SOCIAL), "swimming");
-        Competition competition7 = new TeamCompetition("sdfs competition", new Grade(Grade.Age.UNDER_10S, Grade.Sex.MIXED, Grade.Competitiveness.SOCIAL), "sdfdf");
-        competitionService.updateOrAddCompetition(competition1);
-        competitionService.updateOrAddCompetition(competition2);
-        competitionService.updateOrAddCompetition(competition3);
-        competitionService.updateOrAddCompetition(competition4);
-        competitionService.updateOrAddCompetition(competition5);
-        competitionService.updateOrAddCompetition(competition6);
-        competitionService.updateOrAddCompetition(competition7);
-
-
         return String.format("redirect:./profile?teamID=%s", team.getTeamId());
     }
 }
