@@ -41,42 +41,6 @@ public class ViewAllCompetitionsController {
             Sort.Order.asc("name").ignoreCase()
     );
 
-
-    private boolean hasBeenTestPopulated = false;
-
-    private void testModel() {
-        if (hasBeenTestPopulated) {
-            return;
-        }
-
-        hasBeenTestPopulated = true;
-        Location location = new Location("94 mays road", "St Albans", "St Ablans", "Chch", "8054", "nznz");
-        Set<User> users = Set.of();
-        var sports = sportService.getAllSports();
-        var r = new Random();
-        var now = Instant.now().getEpochSecond();
-
-        for (int i=0; i<50; i++) {
-            var sport = sports.get(r.nextInt(sports.size()-1));
-            Competition comp1 = new UserCompetition("Test1", new Grade(Grade.Age.UNDER_14S, Grade.Sex.MENS), sport.getName(), location, users);
-            Competition comp2= new TeamCompetition("Test1", new Grade(Grade.Sex.OTHER), sport.getName(), location);
-
-            // just for testing
-            if (i < 20) {
-                // set to past
-                comp1.setDate(now - 20000, now - 18000);
-                comp2.setDate(now - 22000, now - 20000);
-            } else {
-                // set to current
-                comp1.setDate(now - 100, now + 4000);
-                comp2.setDate(now - 100, now + 4000);
-            }
-
-            competitionService.updateOrAddCompetition(comp1);
-            competitionService.updateOrAddCompetition(comp2);
-        }
-    }
-
     public enum Timing {
         PAST, CURRENT
     }
@@ -110,8 +74,6 @@ public class ViewAllCompetitionsController {
                                       @RequestParam(name = "sports", required=false) List<String> sports,
                                       @RequestParam(name = "times", required = false) List<String> times,
                                       Model model, HttpServletRequest request) {
-
-        testModel();
         model.addAttribute("httpServletRequest",request);
 
         Page<Competition> pageResult = getPageResult(page, times, sports);
