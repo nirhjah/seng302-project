@@ -310,7 +310,7 @@ public class CreateActivityController {
     }
 
     /**
-     * A JSON API endpoint, which gives the formations of an associated team.. Used by the createActivity page to update
+     * A JSON API endpoint, which gives the formations of an associated team. Used by the createActivity page to update
      * @return A json object of type <code>{formationId: "formationString", ...}</code>
      */
     @GetMapping(path = "/createActivity/get_team_formation", produces = MediaType.APPLICATION_JSON_VALUE)

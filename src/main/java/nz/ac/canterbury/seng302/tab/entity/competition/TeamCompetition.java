@@ -28,6 +28,10 @@ public class TeamCompetition extends Competition {
       this.teams.add(team);
     }
 
+    public TeamCompetition(String name, Grade grade, String sport, Location location) {
+        super(name, grade, sport, location);
+    }
+
     public TeamCompetition(String name, Grade grade, String sport) {
       super(name, grade, sport);
     }
@@ -54,5 +58,13 @@ public class TeamCompetition extends Competition {
             throw new UnmatchedGradeException(team.getGrade(), getGrade());
         }
         this.teams.add(team);
+    }
+
+    public Set<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(Set<Team> teams) {
+        this.teams = teams;
     }
 }
