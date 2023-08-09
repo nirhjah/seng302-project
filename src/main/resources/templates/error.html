@@ -31,30 +31,30 @@
 <head>
     <title th:text="|${path} - ${error}|"></title>
     <style>
-        body {
+        .error-fragment {
             background-color: #f2f2f2;
             font-family: Arial, sans-serif;
             text-align: center;
         }
-        h1 {
+        .error-fragment h1 {
             font-size: 6em;
             color: #333;
             margin-top: 50px;
         }
-        p {
+        .error-fragment p {
             font-size: 1.5em;
             color: #777;
             margin-top: 20px;
         }
-        a {
+        .error-fragment a {
             color: #000;
             text-decoration: underline;
         }
     </style>
 </head>
-<body>
-<h1 th:text="${status}"></h1>
-<p th:text="${error}"></p>
-<p>Back to the homepage: <a th:href="@{/}">homepage</a>.</p>
+<body class="error-fragment">
+    <h1 th:text="${status}"></h1>
+    <p th:text="${error}"></p>
+    <p>Back to the homepage: <a th:href="@{/}">homepage</a>.</p>
 </body>
 </html>

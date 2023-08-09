@@ -21,7 +21,7 @@ public class TestPopulateUsersController {
     @Autowired
     GenerateRandomUsers generateRandomUsers;
 
-    static final int N_USERS_TO_ADD = 10;
+    static final int N_USERS_TO_ADD = 12;
 
 
     /**

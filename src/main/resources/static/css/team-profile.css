@@ -1,7 +1,7 @@
 .team-profile-form .wrapper-profile {
-    height: 480px;
+    transition: 0.2s height ease-out;
     width: 900px;
-    border-radius: 0 0 20px 20px;
+    border-radius: 20px;
     box-shadow: 0 0 30px rgba(0, 0, 0, .5);
     border: 0 solid rgba(255, 255, 255, .5);
 }
@@ -14,11 +14,14 @@
 @media (max-width: 1000px) {
     .wrapper-profile {
         width: 90vw !important;
-        display: block !important;
     }
 }
 
-@media (max-width: 850px) {
+@media (max-width: 960px) {
+    .team-profile-form {
+        min-height: unset;
+    }
+
     .wrapper-profile {
         display: flex !important;
         flex-direction: column !important;
@@ -31,40 +34,120 @@
     .wrapper-profile .profile-pic {
         width: 100% !important;
         position: static !important;
-        height: 310px;
     }
 
     .wrapper-profile .team-info {
-        width: 90% !important;
+        width: 100% !important;
         position: static !important;
-        padding-top: 0 !important;
+        padding: 0 5% 0 5%;
     }
 
     .wrapper-profile .profile-buttons {
         position: static !important;
-        width: 90% !important;
-        margin: 20px 0 !important;
+        width: 100% !important;
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
     }
 
     .wrapper-profile .join-token {
         position: static !important;
         width: 90% !important;
-        margin: 0 0 20px !important;
         padding-top: 0;
+        align-items: unset;
+        margin: 20px 0;
+    }
+
+    .profile-top-content, .team-display .profile-top-content {
+        display: block !important;
+    }
+
+    .content-box {
+        width: inherit;
+    }
+
+    .team-display {
+        width: unset;
+    }
+
+    .grouped-buttons {
+        order: 1;
+        margin-bottom: 15px;
+    }
+
+    .back-button {
+        order: 2;
+    }
+    .back-button {
+        max-width: 100px;
+    }
+
+    .profile-buttons {
+        padding: 20px !important;
+    }
+
+}
+
+@media (max-width: 850px) {
+   .formation-display.active {
+        display: block !important;
+    }
+
+    .create-formation-display {
+        margin-bottom: 10px;
+    }
+
+    .formation-RHS button {
+        margin-right: 10px;
+    }
+}
+
+@media (max-width:  500px) {
+    .profile-buttons button {
+        padding: 0 15px;
+    }
+
+    #edit-profile {
+        border-radius: 30px 7px 7px 30px;
+        margin-right: 3px;
+    }
+
+    #edit-roles {
+        border-radius: 7px;
+        margin-right: 3px;
+    }
+
+    #activities {
+        border-radius: 7px 30px 30px 7px;
+        margin-right: 0;
+    }
+
+    .profile-buttons {
+        display: unset;
+    }
+
+    .grouped-buttons {
+        justify-content: left !important;
+    }
+
+    .grouped-buttons button {
+        white-space: unset !important;
+    }
+
+}
+
+
+@media (max-width: 540px) {
+    .tab .tab-button {
+        display: none;
     }
 }
 
 .join-token {
-    position: absolute;
-    right: 2%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 3.2%;
+    margin-top: -30px;
 }
-
 
 .join-token-box {
     width: 220px;
@@ -80,6 +163,7 @@
     height: 50px;
     border-radius: 0 50px 50px 0;
     font-weight: 600;
+    border-right: 6px solid #1B263B;
 }
 
 .join-token label {
@@ -88,6 +172,7 @@
     font-weight: 600;
     white-space: nowrap;
     padding-bottom: 5px;
+    padding-right: 10px;
 }
 
 .join-token-box button {
@@ -95,7 +180,6 @@
     background: none;
     border: none;
     height: 30px;
-    margin: 0 2px 0 12px;
     cursor: pointer;
 }
 
@@ -151,7 +235,6 @@
     display:flex;
     justify-content:space-around;
     align-items:center;
-    position:absolute;
     top:-60px;
     width:100%;
     background:white;
@@ -172,27 +255,24 @@
 }
 
 .tab-line{
-    position: absolute;
-    top:54px;
-    left:18px;
-    width:20%;
-    height:5px;
-    background-color:#1B263B;
-    border-radius:10px;
+    position: relative;
+    top: -4px;
+    left: 3px;
+    width: 20%;
+    height: 5px;
+    background-color: #1B263B;
+    border-radius: 10px;
     transition: all .3s ease-in-out;
+    display: none;
 }
 
 .tab.active .tab-button{
     color:#1B263B;
 }
 
-.content {
-    height: 100%;
-}
-
 .content-box{
     display:none;
-    height: inherit;
+    height: 89.3%;
 }
 
 .content-box.active{
@@ -213,15 +293,22 @@
 .tab{
     display: flex;
     align-items: center;
+    cursor: pointer;
 }
 
 .formation-list {
-    width: 20%;
-    min-width: 20%;
-    padding: 3px 4px 3px 4px;
+    width: 0;
     box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.19);
     border-radius: 0 0 0 20px;
     overflow: auto;
+    min-height: 440px;
+    transition: 0.2s;
+    height: 100%;
+    background: white;
+}
+
+.formation-list.active {
+    width: 175px;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -242,7 +329,7 @@
     padding: 10px;
     display: flex;
     cursor: pointer;
-    margin: 0 0 5px;
+    margin: 5px;
 }
 
 .formation-list li:active, .formation-list li.active {
@@ -261,6 +348,7 @@
 
 .content.formations {
     display: flex;
+    overflow: hidden;
 }
 
 .formation-display {
@@ -268,9 +356,11 @@
 }
 
 .input-box {
-    width: 130px;
+    min-width: 96px;
     height: unset;
     margin: unset;
+    width: 30%;
+
 }
 
 .error-message, .formation-display {
@@ -327,6 +417,54 @@
     width: 33%;
     text-align: center;
 }
+
+.team-display .profile-top-content {
+    justify-content: space-between;
+    display: flex;
+}
+
+.back-button {
+    margin-right: 30%;
+}
+
+.grouped-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: inherit;
+}
+
+.grouped-buttons button {
+    white-space: nowrap;
+}
+
+.toggle-formation-button {
+    height: 50px;
+    cursor: pointer;
+    border: none;
+    color: #0b2239;
+    border-radius: 0 10px 10px 0;
+    width: 30px;
+    background: white;
+    box-shadow: 2px 0 4px -1px rgba(0, 0, 0, 0.19);
+    font-weight: bold;
+    font-size: 20px;
+    font-family: revert;
+    padding: 0 0 2px 0;
+}
+
+.formation-list-outer {
+    display: flex;
+    margin-right: -30px;
+    align-items: center;
+    z-index: 2;
+}
+
+.formation-outer {
+    display: flex;
+    justify-content: center;
+}
+
+
 
 
 
