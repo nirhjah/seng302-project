@@ -3,9 +3,6 @@ package nz.ac.canterbury.seng302.tab.entity.competition;
 import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
-
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -137,4 +134,5 @@ public abstract class Competition {
     public long getStartDate() {
         return startDate;
     }
+
 }
