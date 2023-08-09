@@ -122,6 +122,9 @@ public class CreateTeamFormController {
 
 
         List<String> knownSports = sportService.getAllSportNames();
+
+        //Add Default ID BC OTHERWISE EDIT TEAM APPEARS
+        model.addAttribute("teamID", -1);
         model.addAttribute("knownSports", knownSports);
  
         return CREATE_TEAM_TEMPLATE;

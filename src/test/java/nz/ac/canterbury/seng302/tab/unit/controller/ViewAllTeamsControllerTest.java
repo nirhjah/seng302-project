@@ -72,7 +72,7 @@ public class ViewAllTeamsControllerTest {
     @Test
     public void testViewTeamsWithNoTeams() throws Exception {
         mockMvc.perform(get("/view-teams"))
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/home"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("viewAllTeams"));
     }
 }
