@@ -1,15 +1,16 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
-
 import nz.ac.canterbury.seng302.tab.entity.Club;
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
 import nz.ac.canterbury.seng302.tab.helper.ImageType;
 import nz.ac.canterbury.seng302.tab.service.ClubImageService;
 import nz.ac.canterbury.seng302.tab.service.ClubService;
-import org.junit.jupiter.api.Assertions;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,8 +37,12 @@ public class ClubImageServiceTest {
     @Autowired
     private ClubService clubService;
 
+    @Autowired
+    private UserService userService;
+
     Location location;
     Club club;
+    User manager = User.defaultDummyUser();
 
     byte[] bytes = new byte[] {1,2,4,76,8,56,34,22,76,99,12,11,8,75};
     MultipartFile mockedFileJpg = new MockMultipartFile("my_image.jpg", bytes);
@@ -47,10 +53,13 @@ public class ClubImageServiceTest {
     MultipartFile mockedFileSvg = new MockMultipartFile("my_image.svg", bytes);
     MultipartFile mockedFileSvgCapital = new MockMultipartFile("my_image.SVG", bytes);
 
+    public ClubImageServiceTest() throws IOException {
+    }
+
     @BeforeEach
     public void beforeEach() throws IOException {
         location = new Location(null, null, null, "Christchurch", null, "New Zealand");
-        club = new Club("Rugby Club", location, "soccer",null);
+        club = new Club("Rugby Club", location, "soccer", manager);
         clubService.updateOrAddClub(club);
 
         FileDataSaver.clearTestFolder();
@@ -125,5 +134,39 @@ public class ClubImageServiceTest {
         var bytes = is.readAllBytes();
 
         assertArrayEquals(bytes, clubImageService.getDefaultBytes());
+    }
+
+    private final String FOLDER_NAME = "CLUB_LOGOS";
+
+    @Test
+    public void testFolderOk() {
+        assertEquals(clubImageService.getFolderName(), FOLDER_NAME);
+    }
+
+    public void testSaveThenReadThroughClubSavePng(MultipartFile mockMultipartFile) throws IOException {
+        Mockito.when(userService.getCurrentUser()).thenReturn(Optional.of(manager));
+
+        clubImageService.updateClubLogo(club, mockMultipartFile);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "image/png");
+
+        ResponseEntity<byte[]> expected = ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .headers(headers)
+                .body(mockMultipartFile.getBytes());
+
+        var got = clubImageService.getImageResponse(club);
+
+        assertEquals(expected, got);
+        assertEquals(club.getImageType(), ImageType.PNG_OR_JPEG);
+    }
+
+    @Test
+    public void testSavingNormally() throws IOException {
+        testSaveThenReadThroughClubSavePng(mockedFileJpg);
+        testSaveThenReadThroughClubSavePng(mockedFilePng);
+        testSaveThenReadThroughClubSavePng(mockedFilePngCapital);
+        testSaveThenReadThroughClubSavePng(mockedFileJpeg);
     }
 }
