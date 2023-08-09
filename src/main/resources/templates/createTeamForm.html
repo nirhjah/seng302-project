@@ -4,6 +4,7 @@
 <head>
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <link th:href="@{/css/create-team.css}" rel="stylesheet"/>
+    <link th:href="@{/css/create-competition.css}" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -103,8 +104,11 @@
                         <select id="competitiveness" name="competitiveness" th:field="*{competitiveness}">
                             <option value="" disabled selected>Level</option>
                             <option th:each="competitivenessOption : ${T(nz.ac.canterbury.seng302.tab.entity.Grade.Competitiveness).values()}"
-                                    th:value="${competitivenessOption}" th:text="${competitivenessOption.description}"></option>
+                                    th:value="${competitivenessOption}"
+                                    th:text="${competitivenessOption.description}"></option>
                         </select>
+                    <div th:each="err : ${#fields.errors('competitiveness')}" th:text="${err}" class="error-message"></div>
+
                     </div>
                     <div>
                         <select id="sex" name="sex" th:field="*{sex}">
@@ -113,6 +117,8 @@
                                     th:value="${sexOption}"
                                     th:text="${sexOption.description}"></option>
                         </select>
+                    <div th:each="err : ${#fields.errors('sex')}" th:text="${err}" class="error-message"></div>
+
                     </div>
                     <div>
                         <select id="age" name="age" th:field="*{age}">
@@ -121,9 +127,10 @@
                                     th:value="${ageOption}"
                                     th:text="${ageOption.description}"></option>
                         </select>
+                    <div th:each="err : ${#fields.errors('age')}" th:text="${err}" class="error-message"></div>
+
                     </div>
                 </div>
-                <div th:each="err : ${#fields.errors('grade')}" th:text="${err}" class="error-message"></div>
             </div>
 
             <div class="submit-button">
