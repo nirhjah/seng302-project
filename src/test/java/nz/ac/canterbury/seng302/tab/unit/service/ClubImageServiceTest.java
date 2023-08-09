@@ -4,6 +4,7 @@ import nz.ac.canterbury.seng302.tab.entity.Club;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
+import nz.ac.canterbury.seng302.tab.helper.GenerateRandomUsers;
 import nz.ac.canterbury.seng302.tab.helper.ImageType;
 import nz.ac.canterbury.seng302.tab.service.ClubImageService;
 import nz.ac.canterbury.seng302.tab.service.ClubService;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -37,12 +39,14 @@ public class ClubImageServiceTest {
     @Autowired
     private ClubService clubService;
 
-    @Autowired
+    @SpyBean
     private UserService userService;
+
+    private GenerateRandomUsers generateRandomUsers = new GenerateRandomUsers();
 
     Location location;
     Club club;
-    User manager = User.defaultDummyUser();
+    User manager;
 
     byte[] bytes = new byte[] {1,2,4,76,8,56,34,22,76,99,12,11,8,75};
     MultipartFile mockedFileJpg = new MockMultipartFile("my_image.jpg", bytes);
@@ -59,6 +63,8 @@ public class ClubImageServiceTest {
     @BeforeEach
     public void beforeEach() throws IOException {
         location = new Location(null, null, null, "Christchurch", null, "New Zealand");
+        manager = generateRandomUsers.createRandomUser();
+        userService.updateOrAddUser(manager);
         club = new Club("Rugby Club", location, "soccer", manager);
         clubService.updateOrAddClub(club);
 
