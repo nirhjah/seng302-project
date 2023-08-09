@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.service.CompetitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,8 @@ public class CreateTeamFormController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CompetitionService competitionService;
 
     /**
      * Gives all the necessary regex to the HTML front-end, so validation can occur
