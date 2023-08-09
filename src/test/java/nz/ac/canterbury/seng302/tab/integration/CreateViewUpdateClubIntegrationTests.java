@@ -201,8 +201,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @Then("The club is created into the system")
     public void the_club_is_created_into_the_system() {
-        verify(clubService, times(1)).updateOrAddClub(any());
-
+        verify(clubService, atLeast(1)).updateOrAddClub(any());
     }
 
 
@@ -295,7 +294,7 @@ public class CreateViewUpdateClubIntegrationTests {
                 .param("country", "New Zealand")
                 .param("postcode", "1111")
                 .param("selectedTeams", team.getTeamId().toString())).andExpect(status().isFound());
-        verify(clubService, times(1)).updateOrAddClub(any());
+        verify(clubService, atLeast(1)).updateOrAddClub(any());
 
     }
 

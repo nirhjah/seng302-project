@@ -179,6 +179,9 @@ public class CreateClubController {
                 return "createClubForm";
             }
 
+            // We need this line so that the ImageService knows the Id of the entity.
+            club = clubService.updateOrAddClub(club);
+
             // If there's a logo, set it.
             clubImageService.saveImage(club, clubLogo);
 
