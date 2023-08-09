@@ -179,8 +179,6 @@ public class CreateClubController {
                 return "createClubForm";
             }
 
-            clubService.updateOrAddClub(club);
-
             // If there's a logo, set it.
             clubImageService.updateClubLogo(club, clubLogo);
 
