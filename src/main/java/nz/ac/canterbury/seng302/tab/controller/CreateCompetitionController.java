@@ -27,6 +27,7 @@ import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.entity.Grade.Age;
 import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
 import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
 import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
@@ -262,9 +263,14 @@ public class CreateCompetitionController {
      */
     @GetMapping(path = "/create-competition/get_teams", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CompetitionTeamInfo>> getTeamsJSON(@RequestParam String sport,
-                                                            @RequestParam(required = false, defaultValue = "") String search) {
+                                                            @RequestParam(required = false, defaultValue = "") String search,
+                                                            @RequestParam(required = false) String age,
+                                                            @RequestParam(required = false) String sex,
+                                                            @RequestParam(required = false) String competiveness) {
+        Age age = new Age();
+        Grade grade = new Grade();
         return ResponseEntity.ok().body(
-                teamService.findTeamsBySportAndSearch(sport, search).stream().map(team -> new CompetitionTeamInfo(
+                teamService.findTeamsBySportAndSearchAndGrade(sport, search, grade).stream().map(team -> new CompetitionTeamInfo(
                         team.getTeamId(),
                         team.getName()
                 )).toList()
