@@ -16,7 +16,7 @@
     </div>
 
     <div class="wrapper">
-        <form th:action="@{createCompetition}" th:object="${createAndEditCompetitionForm}" id="createAndEditCompetitionForm" method="post">
+        <form th:action="@{create-competition}" th:object="${createAndEditCompetitionForm}" id="createAndEditCompetitionForm" method="post">
             <input type="hidden" th:if="${competitionID != null}" th:name="competitionID" th:value="${competitionID}"/>
 
             <div class="create-header">
@@ -283,7 +283,7 @@
     function getCompetitors() {
         if (!inactiveCover.classList.contains("active")) {
             const type = typeCheckbox.checked ? "users" : "teams"
-            axios.get("createCompetition/get_" + type, {params: {sport: sportsInput.value, search: searchQuery.value}})
+            axios.get("create-competition/get_" + type, {params: {sport: sportsInput.value, search: searchQuery.value}})
                 .then(response => {
                     generateUsersTeams(response.data);
                 })
