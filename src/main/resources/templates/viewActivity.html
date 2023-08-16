@@ -43,10 +43,37 @@
             </div>
         </div>
 
-        <div class="content-box active" id="general-tab" style="margin-bottom: 500px">
-            <div class="content">
-                <h2 th:text="${activity.getDescription()}"></h2>
-                <h3 th:if="${activity.team != null}" th:text="${activity.team}"></h3>
+        <div class="content-box active" id="general-tab" style="margin-bottom: 50px">
+            <div class="content general">
+                <div class="general-activity-header" style="font-size: x-large; text-align: center; padding: 20px">
+                    <h2 th:text="${activityStart}"></h2>
+                </div>
+                <div class="general-activity-body" style="text-align: center">
+                    <h2 style="font-size: x-large" th:text="${activity.activityType.name()}"></h2>
+                    <div style="width: 100%; display: inline-block">
+                    <div class="general-activity-left" style="width: 46%; float:left; margin-right: 2%; margin-left: 2%">
+                        <img th:src="@{/image/icons/location.svg}"/>
+                        <div>
+                            <h3 class="attribute-type">Location</h3>
+                            <h3 th:text="*{activity.location}"></h3>
+                        </div>
+                    </div>
+                    <div class="general-activity-right" style="width: 46%; float:left; margin-right: 2%; margin-left: 2%">
+                        <h3 th:if="${activity.team != null}" class="attribute-type">Team</h3>
+                        <h3 th:if="${activity.team != null}" th:text="${activity.team.name}"></h3>
+                        <br th:if="${activity.team != null}">
+                        <h3 class="attribute-type">Description</h3>
+                        <h3 th:text="${activity.description}"></h3>
+                        <br>
+                        <h3 class="attribute-type">Activity Start</h3>
+                        <h3 th:text="${activityStart}"></h3>
+                        <br>
+                        <h3 class="attribute-type">Activity End</h3>
+                        <h3 th:text="${activityEnd}"></h3>
+
+                    </div>
+                    </div>
+                </div>
             </div>
         </div>
 

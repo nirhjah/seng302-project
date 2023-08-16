@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -148,6 +149,9 @@ public class ViewActivityController {
 
         logger.info("activityFacts: {}", activityFacts);
         model.addAttribute("activity", activity);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE dd MMMM yyyy KK:mm a");
+        model.addAttribute("activityStart", activity.getActivityStart().format(formatter));
+        model.addAttribute("activityEnd", activity.getActivityEnd().format(formatter));
 
         model.addAttribute("activityFacts", activityFacts);
 
