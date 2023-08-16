@@ -26,7 +26,7 @@
     <div class="wrapper-profile" id="wrapper-profile">
         <div class="tab-box">
             <div class="tab active">
-                <img class="tab-icon" th:src="@{/image/icons/team.svg}"/>
+                <img class="tab-icon" th:src="@{/image/icons/activity.png}"/>
                 <button class="tab-button"> General &nbsp;</button>
             </div>
             <div class="tab" id="formations-tab" th:if="${canShowScores}">
@@ -34,54 +34,44 @@
                 <button class="tab-button" >Formations &nbsp;</button>
             </div>
             <div class="tab">
-                <img class ="tab-icon" th:src="@{/image/icons/statistics.png}"/>
+                <img class ="tab-icon" th:src="@{/image/icons/editform.svg}"/>
                 <button class="tab-button" > Facts &nbsp;</button>
                 <div class="tab-line"></div>
             </div>
-            <div class="tab" id="competitions-tab" th:if="${canShowScores}">
-                <img class ="tab-icon"  th:src="@{/image/icons/gradeLevel.png}"/>
+            <div class="tab" id="score-tab" th:if="${canShowScores}">
+                <img class ="tab-icon"  th:src="@{/image/icons/score.svg}"/>
                 <button class="tab-button" > Score &nbsp;</button>
             </div>
         </div>
 
-        <div class="content-box active" id="team-profile-tab" style="margin-bottom: 500px">
+        <div class="content-box active" id="general-tab" style="margin-bottom: 500px">
             <div class="content">
 
                 <h1>General</h1>
 
             </div>
         </div>
+
+
         <div class="content-box" style="margin-bottom: 500px">
            <div class="content">
                <h1>formations</h1>
-
            </div>
         </div>
-        <div class="content-box" id="statistics-tab" style="margin-bottom: 500px">
-            <div class="content">
-                <h1>stats</h1>
 
+
+        <div class="content-box" id="facts-tab" style="margin-bottom: 500px">
+            <div class="content">
+                <h1>facts</h1>
             </div>
         </div>
 
 
-
-
-
-
-
-        <div class="content-box" id="comp-tab" style="margin-bottom: 500px">
+        <div class="content-box" id="scores-tab" style="margin-bottom: 500px">
             <div class="content">
-
-                <h1>competitions</h1>
-
+                <h1>score</h1>
             </div>
         </div>
-
-
-
-
-
 
 
     </div>
@@ -103,11 +93,11 @@
                 });
                 tab.classList.add('active');
                 if (index === 0) {
-                    tabLine.style.left = "18px"; //64
+                    tabLine.style.left = "18px";
                 } else if (index === 1) {
-                    tabLine.style.left = "247px"; //368
+                    tabLine.style.left = "247px";
                 } else if (index === 2) {
-                    tabLine.style.left = "460px"; //670
+                    tabLine.style.left = "460px";
                 }
                 else {
                     tabLine.style.left = "685px";
@@ -322,6 +312,7 @@
     };
 </script>
 </div>-->
+</div>
 </body>
 <footer>
     <p>
