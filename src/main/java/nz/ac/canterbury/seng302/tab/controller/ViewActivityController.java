@@ -161,6 +161,7 @@ public class ViewActivityController {
         model.addAttribute("defaultFactType", FactType.FACT);
 
         model.addAttribute("outcomeString", outcomeString(activity));
+        model.addAttribute("currentUser", userService.getCurrentUser());
         populateOther(model, activity);
 
         return "viewActivity";
