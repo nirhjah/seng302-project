@@ -1,8 +1,9 @@
-package nz.ac.canterbury.seng302.tab.service;
+package nz.ac.canterbury.seng302.tab.service.image;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.ImageService;
 import nz.ac.canterbury.seng302.tab.helper.ImageType;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

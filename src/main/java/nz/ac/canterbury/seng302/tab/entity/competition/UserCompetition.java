@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,14 +18,19 @@ public class UserCompetition extends Competition {
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<User> players = new HashSet<>();
 
-    public UserCompetition(String name, Grade grade, String sport, Location location) {
-        super(name, grade, sport, location);
-    }
-    
     public UserCompetition() {}
 
     public UserCompetition(String name, Grade grade, String sport) {
-      super(name, grade, sport);
+        super(name, grade, sport);
+    }
+
+    public UserCompetition(String name, Grade grade, String sport, Location location) {
+        super(name, grade, sport, location);
+    }
+
+    public UserCompetition(String name, Grade grade, String sport, Location location, User player) {
+        super(name, grade, sport, location);
+        addPlayer(player);
     }
 
     public UserCompetition(String name, Grade grade, String sport, Location location, Set<User> players) {
@@ -33,10 +39,14 @@ public class UserCompetition extends Competition {
     }
 
     public Set<User> getPlayers() {
-        return players;
+        return Collections.unmodifiableSet(players);
     }
 
     public void addPlayer(User player) {
         players.add(player);
+    }
+
+    public void setPlayers(Set<User> players) {
+        this.players = players;
     }
 }

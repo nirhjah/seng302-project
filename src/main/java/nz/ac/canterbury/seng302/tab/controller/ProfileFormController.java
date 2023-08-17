@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import nz.ac.canterbury.seng302.tab.service.*;
+import nz.ac.canterbury.seng302.tab.service.image.TeamImageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,14 +48,19 @@ public class ProfileFormController {
     private ActivityService activityService;
 
     @Autowired
+    private CompetitionService competitionService;
+
+    @Autowired
     private FactService factService;
 
-    public ProfileFormController(UserService userService, TeamService teamService, ActivityService activityService, FactService factService, FormationService formationService) {
+    public ProfileFormController(UserService userService, TeamService teamService, ActivityService activityService, FactService factService, FormationService formationService, CompetitionService competitionService) {
         this.userService = userService;
         this.formationService = formationService;
         this.teamService = teamService;
         this.activityService = activityService;
         this.factService = factService;
+        this.competitionService = competitionService;
+
     }
 
     /**
@@ -86,6 +92,7 @@ public class ProfileFormController {
         model.addAttribute("displayLocation", team.getLocation());
         model.addAttribute("displayToken", team.getToken());
         model.addAttribute("clubId",teamService.getTeamClubId(team));
+        model.addAttribute("teamCompetitions", competitionService.getAllCompetitionsWithTeam(team));
 
         if( team.getTeamClub()!=null){
             model.addAttribute("clubName",team.getTeamClub().getName());

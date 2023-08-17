@@ -35,7 +35,7 @@ public class U33EditLineUpE2E {
     @Given("viewing the edit page for a team activity for that team")
     public void viewing_the_edit_page_for_a_team_activity_for_that_team() {
         //first click view team activities
-        PlaywrightBrowser.page.locator("#viewTeamActivitiesBtn").click();
+        PlaywrightBrowser.page.locator("#activities").click();
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("#editActivityBtn").first().click();
     }

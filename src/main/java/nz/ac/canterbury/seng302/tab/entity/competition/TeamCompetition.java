@@ -6,6 +6,8 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedGradeException;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,21 +20,25 @@ public class TeamCompetition extends Competition {
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Team> teams = new HashSet<>();
 
+    public TeamCompetition() {}
+
+    public TeamCompetition(String name, Grade grade, String sport) {
+        super(name, grade, sport);
+    }
+
+    public TeamCompetition(String name, Grade grade, String sport, Location location) {
+        super(name, grade, sport, location);
+    }
+
+    public TeamCompetition(String name, Grade grade, String sport, Location location, Team team) {
+        super(name, grade, sport, location);
+        this.teams.add(team);
+    }
+
     public TeamCompetition(String name, Grade grade, String sport, Location location, Set<Team> teams) {
       super(name, grade, sport, location);
       this.teams = teams;
     }
-  
-    public TeamCompetition(String name, Grade grade, String sport, Location location, Team team) {
-      super(name, grade, sport, location);
-      this.teams.add(team);
-    }
-
-    public TeamCompetition(String name, Grade grade, String sport) {
-      super(name, grade, sport);
-    }
-    
-    public TeamCompetition() {}
 
     /**
      * Checks whether or not we can add a team to a competition.
@@ -54,5 +60,13 @@ public class TeamCompetition extends Competition {
             throw new UnmatchedGradeException(team.getGrade(), getGrade());
         }
         this.teams.add(team);
+    }
+
+    public Set<Team> getTeams() {
+      return Collections.unmodifiableSet(this.teams);
+    }
+
+    public void setTeams(Collection<Team> teams) {
+      this.teams = Set.copyOf(teams);
     }
 }

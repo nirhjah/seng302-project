@@ -3,7 +3,7 @@ package nz.ac.canterbury.seng302.tab.unit.service;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
 import nz.ac.canterbury.seng302.tab.helper.GenerateRandomUsers;
-import nz.ac.canterbury.seng302.tab.service.UserImageService;
+import nz.ac.canterbury.seng302.tab.service.image.UserImageService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;

@@ -4,29 +4,20 @@
 }
 
 .wrapper-profile {
-    position: absolute;
     width: 850px;
-    height: 500px;
-    display: grid;
+    display: block;
 }
 
 .wrapper-profile .user-info {
-    position: absolute;
-    top: 0;
     width: 400px;
     height: 440px;
-    right: 0;
 }
 
 .wrapper-profile .team-info {
-    position: absolute;
-    top: 0;
-    width: 60%;
-    justify-content: flex-start;
-    align-items: center;
-    padding-top: 5%;
-    left: 35%;
+    display: inline-block;
     transition: 0.5s;
+    padding-top: 40px;
+    width: 65%;
 }
 
 .team-info h3, .user-info h3 {
@@ -42,9 +33,6 @@
     color: #1b263b;
 }
 
-.team-info form {
-    width: 100%;
-}
 
 .team-info h2 {
     font-size: 35px;
@@ -74,23 +62,16 @@
 }
 
 .wrapper-profile .profile-pic {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 289px;
+    width: 320px;
     height: 350px;
 }
 
 .profile-buttons {
-    float: right;
-    position: absolute;
-    right: 5%;
-    bottom: 30px;
-    display: flex;
-    left: 5%;
-    align-items: center;
-    justify-content: space-between;
     transition: 0.5s;
+    padding: 20px 54px 30px 54px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
 }
 
 
@@ -113,10 +94,10 @@
     margin: 5px 0;
     border: 2px dashed #778DA9;
     border-radius: 11px;
-    overflow-y: scroll;
     max-height: 100px;
     gap: 3px;
     align-content: flex-start;
+    overflow: hidden;
 }
 
 .sport-box li {
@@ -182,7 +163,7 @@
 }
 
 .team-display {
-    width: 100%;
+    width: 90%;
 }
 
 .user-label{
@@ -202,6 +183,24 @@
     margin-right: 10px;
 }
 
+.attribute-type {
+    color: #919191 !important;
+    font-size: 18px !important;
+    font-weight: 500 !important;
+}
+
+.profile-top-content {
+    display: flex;
+}
+
+.profile-bottom-content {
+    display: flex;
+    justify-content: right;
+    width: inherit;
+}
+
+
+
 
 
 
@@ -218,7 +217,7 @@
     width: 100%;
 }
 
-.last5 li:hover {
+.last5 li:hover, .competitions li:hover {
     cursor: pointer;
     transform: scaleX(1.03) scaleY(1.03);
     box-shadow: 0 2px 3px 4px rgba(0, 0, 0, 0.2);
@@ -229,7 +228,7 @@
     height: 50px;
 }
 
-.last5 h3 {
+.last5 h3, .competitions h3 {
     color: #1B263B;
     font-size: 25px;
     font-weight: 600;
@@ -239,14 +238,39 @@
 }
 
 
-.last5 h4 {
+.last5 h4, .competitions h4 {
     top: 40px;
     right: 28%;
     text-align: left;
     font-size: 14px;
 }
 
-.last5 li .r {
+.last5 li .r, .competitions li .r {
     display: flex;
     align-items: center;
 }
+
+.competitions ul {
+    overflow:hidden;
+    overflow-y:scroll;
+    height: 428px;
+    display: grid;
+    grid-template-columns: repeat(2, 350px [col-start]);
+    justify-content: center;
+    padding-bottom: 20px;
+}
+
+.competitions li {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 5%;
+    margin-left: 5%;
+    margin-right: 5%;
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    height: 150px;
+}
+
+
