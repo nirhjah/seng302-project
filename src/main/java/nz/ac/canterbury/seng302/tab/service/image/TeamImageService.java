@@ -1,9 +1,11 @@
-package nz.ac.canterbury.seng302.tab.service;
+package nz.ac.canterbury.seng302.tab.service.image;
 
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.ImageService;
 import nz.ac.canterbury.seng302.tab.helper.ImageType;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -90,6 +92,7 @@ public class TeamImageService extends ImageService<Team> {
             // else, fail
             saveImage(team, file);
         }
+        teamService.updateTeam(team);
     }
 
     /**

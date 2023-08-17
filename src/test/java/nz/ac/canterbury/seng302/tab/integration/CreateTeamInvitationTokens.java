@@ -6,7 +6,6 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import nz.ac.canterbury.seng302.tab.controller.*;
 import nz.ac.canterbury.seng302.tab.entity.*;
-import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.*;
 import nz.ac.canterbury.seng302.tab.service.*;
 import org.junit.jupiter.api.Assertions;
@@ -66,6 +65,9 @@ public class CreateTeamInvitationTokens {
     private FactService factService;
 
     @Autowired
+    private CompetitionService competitionService;
+
+    @Autowired
     private FormationService formationService;
 
 
@@ -83,14 +85,12 @@ public class CreateTeamInvitationTokens {
         userRepository = applicationContext.getBean(UserRepository.class);
 
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
-        EmailService emailService = applicationContext.getBean(EmailService.class);
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
-        FederationService federationService = applicationContext.getBean(FederationService.class);
 
-        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder, federationService));
+        userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new ProfileFormController(userService, teamService, activityService, factService, formationService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ProfileFormController(userService, teamService, activityService, factService, formationService, competitionService)).build();
 
         Authentication authentication = Mockito.mock(Authentication.class);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);

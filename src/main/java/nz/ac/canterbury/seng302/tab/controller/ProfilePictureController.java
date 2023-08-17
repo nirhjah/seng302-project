@@ -1,8 +1,8 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import nz.ac.canterbury.seng302.tab.service.ClubImageService;
-import nz.ac.canterbury.seng302.tab.service.TeamImageService;
-import nz.ac.canterbury.seng302.tab.service.UserImageService;
+import nz.ac.canterbury.seng302.tab.service.image.ClubImageService;
+import nz.ac.canterbury.seng302.tab.service.image.TeamImageService;
+import nz.ac.canterbury.seng302.tab.service.image.UserImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

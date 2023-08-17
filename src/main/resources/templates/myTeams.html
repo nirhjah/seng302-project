@@ -85,7 +85,7 @@
     </div>
 
 
-    <div th:if="${displayTeams != null}" th:insert="fragments/pagination.html :: pagination(pageName='my-teams')"></div>
+    <div th:if="${displayTeams != null}" th:insert="~{fragments/pagination.html :: pagination(pageName='my-teams')}"></div>
 
     <footer>
         <p>

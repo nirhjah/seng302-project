@@ -83,4 +83,63 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
         @Query("SELECT distinct u.favoriteSports FROM UserEntity u")
         public List<Sport> findAllUserSports();
+
+        @Query("""
+            SELECT DISTINCT u
+            FROM UserEntity u LEFT JOIN u.favoriteSports s
+              WHERE s.name = :sport
+              AND (:name is null OR
+                lower(:name) like lower(concat('%', u.firstName, '%'))
+              OR (lower(:name) like lower(concat('%', u.lastName, '%')))
+              OR (lower(u.firstName) like lower(concat('%', :name, '%')))
+              OR (lower(u.lastName) like lower(concat('%', :name, '%'))))""")
+        List<User> findUserBySportAndName(@Param("sport") String sport, @Param("name") String name);
+
+        @Query(nativeQuery = true, value =
+            "SELECT u.* FROM USER_ENTITY u " +
+            "WHERE u.ID NOT IN (" +
+            "    SELECT DISTINCT a.user_Id FROM Authority a WHERE a.role = 'ROLE_FEDERATION_MANAGER'" +
+            ")")
+        Page<User> findUsersThatArentFedMans(Pageable pageable);
+
+
+        @Query(nativeQuery = true, value =
+            "SELECT u.* FROM USER_ENTITY u " +
+            "WHERE u.ID NOT IN (" +
+            "    SELECT DISTINCT a.user_Id FROM Authority a WHERE a.role = 'ROLE_FEDERATION_MANAGER'" +
+            ") " +
+            "AND ( " +
+            "    lower(:name) like lower(concat('%', u.FIRST_NAME, '%')) " +
+            "    OR lower(:name) like lower(concat('%', u.LAST_NAME, '%')) " +
+            "    OR lower(u.FIRST_NAME) like lower(concat('%', :name, '%')) " +
+            "    OR lower(u.LAST_NAME) like lower(concat('%', :name, '%')) " +
+            ")")
+        Page<User> findUsersThatArentFedMansByName(Pageable pageable, @Param("name") String name);
+
+
+        @Query(nativeQuery = true, value =
+            "SELECT u.* FROM USER_ENTITY u " +
+            "WHERE u.ID NOT IN (" +
+            "    SELECT DISTINCT a.user_Id FROM Authority a WHERE a.role = 'ROLE_FEDERATION_MANAGER'" +
+            ") " +
+            "AND ( " +
+            "    lower(:email) = lower(u.EMAIL) " +
+            ")")
+        Page<User> findUsersThatArentFedMansByEmail(Pageable pageable, @Param("email") String email);
+
+
+        @Query(nativeQuery = true, value =
+            "SELECT * FROM user_entity u " +
+            "WHERE u.ID NOT IN (" +
+            "    SELECT DISTINCT a.user_Id FROM Authority a WHERE a.role = 'ROLE_FEDERATION_MANAGER'" +
+            ") " +
+            "AND ( " +
+            "    lower(:search) like lower(concat('%', u.FIRST_NAME, '%')) " +
+            "    OR lower(:search) like lower(concat('%', u.LAST_NAME, '%')) " +
+            "    OR lower(u.FIRST_NAME) like lower(concat('%', :search, '%')) " +
+            "    OR lower(u.LAST_NAME) like lower(concat('%', :search, '%')) " +
+            "    OR lower(:search) = lower(u.EMAIL) " +
+            ")")
+        Page<User> findUsersThatArentFedMansByNameOrEmail(Pageable pageable, @Param("search") String search);
+
 }
