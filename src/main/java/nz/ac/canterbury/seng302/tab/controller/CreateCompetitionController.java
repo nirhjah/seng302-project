@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -166,13 +167,14 @@ public class CreateCompetitionController {
                         .map(teamService::getTeam)
                         .filter(Objects::nonNull)
                         .collect(Collectors.toSet());
-                competition = new TeamCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), teams);
+                competition = new TeamCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), LocalDateTime.now(), LocalDateTime.now(), teams);
+                // TODO: (for the front end competition task, the current start and end time for the controller is wrong)
             } else {
                 Set<User> users = IDs.stream()
                         .map(userService::getUser)
                         .filter(Objects::nonNull)
                         .collect(Collectors.toSet());
-                competition = new UserCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), users);
+                competition = new UserCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), LocalDateTime.now(), LocalDateTime.now(), users);
             }
 
             competitionService.updateOrAddCompetition(competition);

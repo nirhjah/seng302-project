@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -31,6 +32,12 @@ public abstract class Competition {
     @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
 
+    @Column(nullable = true)
+    private LocalDateTime competitionStart;
+
+    @Column(nullable = true)
+    private LocalDateTime competitionEnd;
+
     protected Competition() {}
     
     /**
@@ -40,15 +47,17 @@ public abstract class Competition {
      * @param sport competition sport
      * @param location competition location 
     */
-    protected Competition(String name, Grade grade, String sport, Location location) {
+    protected Competition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd) {
         this.name = name;
         this.grade = grade;
         this.sport = sport;
         this.location = location;
+        this.competitionStart = competitionStart;
+        this.competitionEnd = competitionEnd;
     }
     
     /**
-     * constructor without setting location -- for testing purposes 
+     * constructor without setting location and time -- for testing purposes 
      * @param name competition name
      * @param grade competition grade
      * @param sport competition sport
