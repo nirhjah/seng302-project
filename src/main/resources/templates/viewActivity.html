@@ -26,7 +26,7 @@
         <div class="tab-box">
             <div class="tab active">
                 <img class="tab-icon" th:src="@{/image/icons/activity.png}"/>
-                <button class="tab-button"> General &nbsp;</button>
+                <button class="tab-button">General &nbsp;</button>
             </div>
             <div class="tab" id="formations-tab" th:if="${canShowScores}">
                 <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
@@ -34,12 +34,12 @@
             </div>
             <div class="tab">
                 <img class ="tab-icon" th:src="@{/image/icons/editform.svg}"/>
-                <button class="tab-button" > Facts &nbsp;</button>
+                <button class="tab-button" >Facts &nbsp;</button>
                 <div class="tab-line"></div>
             </div>
             <div class="tab" id="score-tab" th:if="${canShowScores}">
                 <img class ="tab-icon"  th:src="@{/image/icons/score.svg}"/>
-                <button class="tab-button" > Score &nbsp;</button>
+                <button class="tab-button" >Score &nbsp;</button>
             </div>
         </div>
 
@@ -87,18 +87,17 @@
 
 
                 <div class="goalFacts" style="margin-top: 5%; margin-right: 5%; margin-bottom: 5%">
-
+                    <div style="padding-bottom: 4%">
+                        <h4 style="float: left; margin-left: 45px"> Player </h4>
+                        <h4 style="float: left;"> Goal </h4>
+                        <h4 style="float: right; margin-left: 10px; padding-right: 25px"> Time </h4>
+                    </div>
                     <ul>
-                        <div style="padding-bottom: 5%">
-                            <h4 style="float: left; margin-left: 45px"> Player </h4>
-                            <h4 style="float: left; margin-left: 25%"> Goal </h4>
-                            <h4 style="float: right; margin-left: 10px; padding-right: 25px"> Time </h4>
-                        </div>
                         <li th:each="goal : ${activityGoals}">
                             <div>
                                 <h3 th:text="${goal.scorer.firstName + ' ' + goal.scorer.lastName}"> </h3>
-                                <h4 style="float: left; margin-left: 20px;" th:text="${goal.goalValue}"></h4>
-                                <h4 style="margin-left: 60px" th:text="${goal.timeOfEvent}"></h4>
+                                <h4 style="float: left; margin-left: 30px; margin-top: 1px;" th:text="${goal.goalValue}"></h4>
+                                <h4 style="margin-left: 72px; margin-top: 1px" th:text="${goal.timeOfEvent}"></h4>
                             </div>
 
                         </li>
