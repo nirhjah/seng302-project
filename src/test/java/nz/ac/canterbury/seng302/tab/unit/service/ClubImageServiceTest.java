@@ -27,8 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class ClubImageServiceTest {
@@ -57,11 +56,11 @@ public class ClubImageServiceTest {
     MultipartFile mockedFileSvg = new MockMultipartFile("my_image.svg", bytes);
     MultipartFile mockedFileSvgCapital = new MockMultipartFile("my_image.SVG", bytes);
 
-    public ClubImageServiceTest() throws IOException {
+    public ClubImageServiceTest() {
     }
 
     @BeforeEach
-    public void beforeEach() throws IOException {
+    void beforeEach() throws IOException {
         location = new Location(null, null, null, "Christchurch", null, "New Zealand");
         manager = generateRandomUsers.createRandomUser();
         userService.updateOrAddUser(manager);
@@ -72,7 +71,7 @@ public class ClubImageServiceTest {
     }
 
     @Test
-    public void testSaveWithNoErrors() {
+    void testSaveWithNoErrors() {
         clubImageService.saveImage(club, mockedFileJpg);
         clubImageService.saveImage(club, mockedFilePng);
         clubImageService.saveImage(club, mockedFileJpeg);
@@ -94,7 +93,7 @@ public class ClubImageServiceTest {
         var got = clubImageService.getImageResponse(club);
 
         assertEquals(expected, got);
-        assertEquals(club.getImageType(), ImageType.PNG_OR_JPEG);
+        assertEquals(ImageType.PNG_OR_JPEG, club.getImageType());
     }
 
 
@@ -111,30 +110,32 @@ public class ClubImageServiceTest {
         var got = clubImageService.getImageResponse(club);
 
         assertEquals(expected, got);
-        assertEquals(club.getImageType(), ImageType.SVG);
+        assertEquals(ImageType.SVG, club.getImageType());
     }
 
     @Test
-    public void testSaveThenReadForPngsAndJpegs() throws IOException {
-        testSaveThenReadImage(mockedFilePng);
-        testSaveThenReadImage(mockedFilePngCapital);
-        testSaveThenReadImage(mockedFileJpeg);
-        testSaveThenReadImage(mockedFileJpg);
+    void testSaveThenReadForPngsAndJpegs() {
+        assertDoesNotThrow(() -> {
+            testSaveThenReadImage(mockedFilePng);
+            testSaveThenReadImage(mockedFilePngCapital);
+            testSaveThenReadImage(mockedFileJpeg);
+            testSaveThenReadImage(mockedFileJpg);
+        });
     }
 
     @Test
-    public void testSaveThenReadForSvgs() throws IOException {
+    void testSaveThenReadForSvgs() throws IOException {
         testSaveThenReadSvg(mockedFileSvg);
         testSaveThenReadSvg(mockedFileSvgCapital);
     }
 
     @Test
-    public void testDefaultImageTypeOk() {
+    void testDefaultImageTypeOk() {
         assertEquals(ImageType.SVG, clubImageService.getDefaultImageType());
     }
 
     @Test
-    public void testDefaultImageDataOk() throws IOException {
+    void testDefaultImageDataOk() throws IOException {
         Resource resource = new ClassPathResource("/static/image/icons/club-logo.svg");
         InputStream is = resource.getInputStream();
         var bytes = is.readAllBytes();
@@ -149,7 +150,7 @@ public class ClubImageServiceTest {
         assertEquals(clubImageService.getFolderName(), FOLDER_NAME);
     }
 
-    public void testSaveThenReadThroughClubSavePng(MultipartFile mockMultipartFile) throws IOException {
+    private void testSaveThenReadThroughClubSavePng(MultipartFile mockMultipartFile) throws IOException {
         Mockito.when(userService.getCurrentUser()).thenReturn(Optional.of(manager));
 
         clubImageService.updateClubLogo(club, mockMultipartFile);
@@ -165,11 +166,11 @@ public class ClubImageServiceTest {
         var got = clubImageService.getImageResponse(club);
 
         assertEquals(expected, got);
-        assertEquals(club.getImageType(), ImageType.PNG_OR_JPEG);
+        assertEquals(ImageType.PNG_OR_JPEG, club.getImageType());
     }
 
     @Test
-    public void testSavingNormally() throws IOException {
+    void testSavingNormally() throws IOException {
         testSaveThenReadThroughClubSavePng(mockedFileJpg);
         testSaveThenReadThroughClubSavePng(mockedFilePng);
         testSaveThenReadThroughClubSavePng(mockedFilePngCapital);
