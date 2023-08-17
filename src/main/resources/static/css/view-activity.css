@@ -136,17 +136,28 @@
     background:#415A77;
     color:white;
 }
+
+.score-display h3,
+.score-display h1,
+.score-display h4,
 .act-details h3,
 .act-details h4 {
     margin: 10px 0;
 }
 
+.score-display h3,
 .act-details h3{
     text-align:center;
     padding-top:15px;
     font-size:23px;
 }
 
+.score-display h1 {
+    text-align:center;
+    padding-top:15px;
+}
+
+.score-display h4,
 .act-details h4{
     padding-left:28px;
     font-size:19px;
@@ -261,7 +272,7 @@
     font-family:sans-serif;
 }
 
-.act-score .team-names span{
+.act-score .team-names h3{
     padding-right:25px;
     font-size:18px;
     color:#415A77;
@@ -371,4 +382,70 @@ hr.rounded {
 
 .submit-button {
     margin: unset;
+}
+
+
+.score-display {
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+    border-radius: 20px;
+    position: relative;
+    flex: 1;
+    background:#415A77;
+    color:white;
+
+    width: 50%;
+    margin-left: 5%;
+    margin-top: 5%;
+    margin-bottom: 10%;
+}
+
+
+
+.goalFacts li {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 5%;
+    margin-right: 5%;
+    display: flex;
+    justify-content: space-between;
+    width: 300px;
+    height: 50px;
+    margin-left: 10%;
+}
+
+.goalFacts ul {
+    overflow:hidden;
+    overflow-y:scroll;
+    height: 400px;
+}
+
+
+.goalFacts h3 {
+    color: #1B263B;
+    font-size: 20px;
+    font-weight: 600;
+    text-decoration-thickness: 2px;
+    text-align: left;
+    margin-bottom: 10px;
+    float: left;
+}
+
+
+.goalFacts h4 {
+    top: 40px;
+    right: 28%;
+    text-align: left;
+    font-size: 20px;
+    margin-top: 5px;
+    float: right;
+    margin-left: 85px;
+}
+
+.goalFacts li .r {
+    display: flex;
+    align-items: center;
 }

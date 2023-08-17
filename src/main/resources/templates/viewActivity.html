@@ -67,11 +67,50 @@
         </div>
 
 
-        <div class="content-box" id="scores-tab" style="margin-bottom: 500px">
+        <div class="content-box" id="scores-tab">
             <div class="content">
 
+                <div>
+                <div class="score-display" style="float: left">
+<!--<h3 style="margin-top: 10%;"> Team            A vs            Team B </h3>-->
+                    <div>
+                        <h3 style="float: left; margin-left: 10%">Team A</h3>
+                        <h3 style="float: right; margin-right: 10%"> Team B </h3>
+                    </div>
+                    <h2 style="margin-left: 47%"> vs </h2>
+                <!-- <h1> 43 : 25 </h1> -->
+                    <h1 th:text="${activity.activityTeamScore != null && activity.otherTeamScore != null ? activity.activityTeamScore + ' : ' + activity.otherTeamScore : 'NA'}"></h1>
+                <!-- <h3> Winner: Team A </h3> -->
+                    <h3 id="winnerText" th:text="${outcomeString}" ></h3>
+                </div>
 
-            </div>
+
+
+                <div class="goalFacts" style="margin-top: 5%; margin-right: 5%; margin-bottom: 5%">
+
+                    <ul>
+                        <div style="padding-bottom: 5%">
+                            <h4 style="float: left; margin-left: 45px"> Player </h4>
+                            <h4 style="float: left; margin-left: 25%"> Goal </h4>
+                            <h4 style="float: right; margin-left: 10px; padding-right: 25px"> Time </h4>
+                        </div>
+                        <li th:each="goal : ${activityGoals}">
+                            <div>
+                                <h3 th:text="${goal.scorer.firstName + ' ' + goal.scorer.lastName}"> </h3>
+                                <h4 style="float: left; margin-left: 20px;" th:text="${goal.goalValue}"></h4>
+                                <h4 style="margin-left: 60px" th:text="${goal.timeOfEvent}"></h4>
+                            </div>
+
+                        </li>
+                    </ul>
+                </div>
+
+
+                </div>
+
+
+</div>
+
         </div>
 
 
