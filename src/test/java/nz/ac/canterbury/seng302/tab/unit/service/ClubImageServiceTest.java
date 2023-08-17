@@ -56,9 +56,6 @@ public class ClubImageServiceTest {
     MultipartFile mockedFileSvg = new MockMultipartFile("my_image.svg", bytes);
     MultipartFile mockedFileSvgCapital = new MockMultipartFile("my_image.SVG", bytes);
 
-    public ClubImageServiceTest() {
-    }
-
     @BeforeEach
     void beforeEach() throws IOException {
         location = new Location(null, null, null, "Christchurch", null, "New Zealand");
@@ -72,10 +69,12 @@ public class ClubImageServiceTest {
 
     @Test
     void testSaveWithNoErrors() {
-        clubImageService.saveImage(club, mockedFileJpg);
-        clubImageService.saveImage(club, mockedFilePng);
-        clubImageService.saveImage(club, mockedFileJpeg);
-        clubImageService.saveImage(club, mockedFileSvg);
+        assertDoesNotThrow(() -> {
+            clubImageService.saveImage(club, mockedFileJpg);
+            clubImageService.saveImage(club, mockedFilePng);
+            clubImageService.saveImage(club, mockedFileJpeg);
+            clubImageService.saveImage(club, mockedFileSvg);
+        });
     }
 
 

@@ -44,7 +44,7 @@ public class CreateClubController {
     private final static String createAndEditClubFormString="CreateAndEditClubForm";
     private final static String selectedTeamString="selectedTeams";
 
-    private static final String form = "createClubForm";
+    private static final String FORM = "createClubForm";
 
     @Autowired
     public CreateClubController(ClubService clubService,UserService userService, TeamService teamService, ClubImageService clubImageService) {
@@ -79,7 +79,7 @@ public class CreateClubController {
                 model.addAttribute("isEditing", false);
             }
         }
-        return form;
+        return FORM;
     }
 
     /**
@@ -148,7 +148,7 @@ public class CreateClubController {
 
             if (!editClub.isManagedBy(user)) {
                 // If we aren't managing the club, then redirect to createClub.
-                return form;
+                return FORM;
             }
 
             editClub.setSport(sport);
@@ -157,7 +157,7 @@ public class CreateClubController {
             if (bindingResult.hasErrors()) {
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 prefillModelWithClub(model, editClub);
-                return form;
+                return FORM;
             }
 
             editClub.setName(name);
@@ -178,7 +178,7 @@ public class CreateClubController {
 
             if (bindingResult.hasErrors()) {
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return form;
+                return FORM;
             }
 
             // We need this line so that the ImageService knows the Id of the entity.
