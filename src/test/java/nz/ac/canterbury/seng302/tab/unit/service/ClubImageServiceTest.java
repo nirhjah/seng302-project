@@ -30,7 +30,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class ClubImageServiceTest {
+class ClubImageServiceTest {
 
     @Autowired
     private ClubImageService clubImageService;
@@ -145,7 +145,7 @@ public class ClubImageServiceTest {
     private final String FOLDER_NAME = "CLUB_LOGOS";
 
     @Test
-    public void testFolderOk() {
+    void testFolderOk() {
         assertEquals(clubImageService.getFolderName(), FOLDER_NAME);
     }
 
