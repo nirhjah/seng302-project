@@ -46,30 +46,27 @@
         <div class="content-box active" id="general-tab" style="margin-bottom: 50px">
             <div class="content general">
                 <div class="general-activity-header" style="font-size: x-large; text-align: center; padding: 20px">
-                    <h2 th:text="|${activity.activityType.name()}: ${activityStart}|"></h2>
+                    <h2 th:text="|${activity.activityType.name()}: ${activityStartTitle}|"></h2>
                 </div>
                 <div class="general-activity-body" style="text-align: center">
                     <div style="width: 100%; display: inline-block">
-                    <div class="general-activity-left" style="width: 46%; float:left; margin-right: 2%; margin-left: 2%">
+                    <div class="general-activity-left" style="width: 46%; float:left; margin-right: 2%; margin-left: 2%; text-align: left">
                         <div>
                             <h3 class="attribute-type">Location</h3>
                             <h3 th:text="*{activity.location}"></h3>
                             <br>
-                            <h3 class="attribute-type">Activity Start</h3>
-                            <h3 th:text="${activityStart}"></h3>
-                            <br>
-                            <h3 class="attribute-type">Activity End</h3>
-                            <h3 th:text="${activityEnd}"></h3>
+                            <h3 class="attribute-type">Date and Time</h3>
+                            <h3 th:text="${activityDateTime}"></h3>
                         </div>
                     </div>
-                    <div class="general-activity-right" style="width: 46%; float:left; margin-right: 2%; margin-left: 2%">
+                    <div class="general-activity-right" style="width: 46%; float:left; margin-left: 4%; text-align: left">
                         <h3 th:if="${activity.team != null}" class="attribute-type">Team</h3>
                         <h3 th:if="${activity.team != null}" th:text="${activity.team.name}"></h3>
                         <br th:if="${activity.team != null}">
                         <h3 class="attribute-type">Description</h3>
                         <h3 th:text="${activity.description}"></h3>
 
-                        <div class="submit-button" style="padding-top: 25px">
+                        <div class="submit-button" style="padding-top: 25px; width: 100%">
                             <a th:if="${activity.team==null || (activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}"
                                th:href="@{createActivity(edit=${activity.id})}" type="button">
                                 <button type="submit" id="editActivityBtn">Edit</button>

@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.sql.Date;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -150,8 +151,17 @@ public class ViewActivityController {
         logger.info("activityFacts: {}", activityFacts);
         model.addAttribute("activity", activity);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE dd MMMM yyyy KK:mm a");
-        model.addAttribute("activityStart", activity.getActivityStart().format(formatter));
-        model.addAttribute("activityEnd", activity.getActivityEnd().format(formatter));
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("KK:mm a");
+
+        DateTimeFormatter titleFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy KK:mm a");
+        model.addAttribute("activityStartTitle", activity.getActivityStart().format(titleFormatter));
+
+        if (activity.getActivityStart().toLocalDate().equals(activity.getActivityEnd().toLocalDate())) {
+            model.addAttribute("activityDateTime", activity.getActivityStart().format(formatter)
+                    .concat("-").concat(activity.getActivityEnd().format(timeFormatter)));
+        } else {
+            model.addAttribute("activityDateTime", activity.getActivityStart().format(formatter).concat(" - ").concat(activity.getActivityEnd().format(formatter)));
+        }
 
         model.addAttribute("activityFacts", activityFacts);
 
