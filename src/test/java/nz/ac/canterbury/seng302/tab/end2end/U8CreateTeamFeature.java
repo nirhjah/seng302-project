@@ -57,6 +57,12 @@ public class U8CreateTeamFeature {
         PlaywrightBrowser.page.locator("input#country").type(country);
     }
 
+    @When("I enter a team address of {string}")
+    public void i_enter_a_team_address_of(String addr1) {
+        PlaywrightBrowser.page.locator("input#address-line-1").type(addr1);
+    }
+
+
     @When("I submit the Create Team form")
     public void i_submit_the_create_team_form() {
         PlaywrightBrowser.page.locator("[data-cy=submit]").click();
