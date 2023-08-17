@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.helper;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
