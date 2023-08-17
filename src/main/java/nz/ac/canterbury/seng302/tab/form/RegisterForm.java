@@ -15,8 +15,8 @@ import java.util.Date;
  */
 public class RegisterForm {
 
-    private static final String EMAIL = "myemail@gmail.com";
-    private static final String PASSWORD = "Hello123$";
+    private static final String DEFAULT_EMAIL = "myemail@gmail.com";
+    private static final String DEFAULT_PASSWORD = "Hello123$";
 
     /**
      * Generates a dummy register form.
@@ -27,11 +27,11 @@ public class RegisterForm {
         var form =  new RegisterForm();
         form.setCity("Christchurch");
         form.setCountry("New Zealand");
-        form.setEmail(EMAIL);
+        form.setEmail(DEFAULT_EMAIL);
         form.setFirstName("Bobby");
         form.setLastName("Johnson");
-        form.setPassword(PASSWORD);
-        form.setConfirmPassword(PASSWORD);
+        form.setPassword(DEFAULT_PASSWORD);
+        form.setConfirmPassword(DEFAULT_PASSWORD);
         var d = new Date(2002-1900, Calendar.JULY, 5);
         form.setSuburb("St Albans");
         form.setAddressLine1("56 Mays Road");
