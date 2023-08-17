@@ -1,7 +1,6 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
 import nz.ac.canterbury.seng302.tab.helper.ImageService;
 import nz.ac.canterbury.seng302.tab.helper.ImageType;
 import org.slf4j.Logger;

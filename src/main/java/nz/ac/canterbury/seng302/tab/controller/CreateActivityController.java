@@ -5,8 +5,6 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.List;
-import java.util.Optional;
 
 import nz.ac.canterbury.seng302.tab.api.response.FormationInfo;
 import nz.ac.canterbury.seng302.tab.api.response.PlayerFormationInfo;
