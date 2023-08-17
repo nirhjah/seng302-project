@@ -17,17 +17,17 @@ public abstract class Competition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CompetitionId")
-    private long competitionId;
+    protected long competitionId;
   
     @Column(nullable = false)
     private String name;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
-    private Grade grade;
+    protected Grade grade;
 
     @Column(nullable = false)
-    private String sport;
+    protected String sport;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
