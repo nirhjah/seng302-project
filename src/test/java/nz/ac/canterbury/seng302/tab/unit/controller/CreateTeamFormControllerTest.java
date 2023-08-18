@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -470,7 +471,7 @@ public class CreateTeamFormControllerTest {
      * Tests whether the rendered form contains the appropriate values when an error occurs
     */
     @Test
-    public void whenFormIsInvalid_formRemainsPopulated() throws Exception {
+    void whenFormIsInvalid_formRemainsPopulated() throws Exception {
         String badName = "INV@L!D_N@ME";
         String badSport = "BEING SUPER EV!L";
         String badAddr1 = "PalaceOfDoingBadThings";
@@ -479,7 +480,7 @@ public class CreateTeamFormControllerTest {
         String badCountry = "Evil States of America";
         String badPostcode = "I love posting code";
         String badSuburb = "Where all the villains live";
-        mockMvc.perform(post("/createTeam", 42L)
+        mockMvc.perform(post("/createTeam")
                         .param("teamID", String.valueOf(TEAM_ID))
                         .param("name", badName)
                         .param("sport", badSport)
@@ -499,4 +500,60 @@ public class CreateTeamFormControllerTest {
                 .andExpect(content().string(containsString(badPostcode)))
                 .andExpect(content().string(containsString(badSuburb)));
     }
+
+    // =================================================================
+    // The following tests address a rendering issue, where a failed
+    // POST causes the returned form to say the opposite of the page
+    // "Create Team" <=> "Edit Team" 
+    @Test
+    void createTeam_onGet_pageSaysCreateTeam() throws Exception {
+        mockMvc.perform(get("/createTeam"))
+            .andExpect(status().isOk())
+            // "Create Team" should be in the title & header, and have a "Submit" button.
+            .andExpect(model().attribute("isEditing", false))
+            .andExpect(content().string(containsString("<title>Create Team</title>")))
+            // I can't get a Hamcrest regex to just match "element with Create Team", so
+            // I need the extra attributes which might make it flakey
+            .andExpect(content().string(containsString("<h1 data-cy=\"header\">Create Team</h1>")))
+            .andExpect(content().string(containsString("<button type=\"submit\">Create</button>")));
+    }
+
+    @Test
+    void createTeam_onSubmissionFail_stillSaysCreateTeam() throws Exception {
+        mockMvc.perform(post("/createTeam"))    // A blank form is invalid
+            .andExpect(status().isBadRequest())
+            // "Create Team" should be in the title & header, and have a "Submit" button.
+            .andExpect(model().attribute("isEditing", false))
+            .andExpect(content().string(containsString("<title>Create Team</title>")))
+            .andExpect(content().string(containsString("<h1 data-cy=\"header\">Create Team</h1>")))
+            .andExpect(content().string(containsString("<button type=\"submit\">Create</button>")));
+    }
+
+    @Test
+    void editTeam_onGet_pageSaysEditTeam() throws Exception {
+        doReturn(team).when(mockTeamService).getTeam(TEAM_ID);
+        mockMvc.perform(get("/createTeam")
+                        .param("edit", TEAM_ID.toString()))
+            .andExpect(status().isOk())
+            // "Edit Team" should be in the title & header, and have a "Save" button.
+            .andExpect(model().attribute("isEditing", true))
+            .andExpect(content().string(containsString("<title>Edit Team</title>")))
+            .andExpect(content().string(containsString("<h1 data-cy=\"header\">Edit Team</h1>")))
+            .andExpect(content().string(containsString("<button type=\"submit\">Save</button>")));
+    }
+
+    @Test
+    void editTeam_onSubmissionFail_stillSaysEditTeam() throws Exception {
+        doReturn(team).when(mockTeamService).getTeam(TEAM_ID);
+        mockMvc.perform(post("/createTeam")
+                            .param("teamID", TEAM_ID.toString()))
+            .andExpect(status().isBadRequest())
+            // "Edit Team" should be in the title & header, and have a "Save" button.
+            .andExpect(model().attribute("isEditing", true))
+            .andExpect(content().string(containsString("<title>Edit Team</title>")))
+            .andExpect(content().string(containsString("<h1 data-cy=\"header\">Edit Team</h1>")))
+            .andExpect(content().string(containsString("<button type=\"submit\">Save</button>")));
+    }
+
+
 }
