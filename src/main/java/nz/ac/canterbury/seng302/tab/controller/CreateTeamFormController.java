@@ -159,6 +159,7 @@ public class CreateTeamFormController {
         }
 
         createAndEditTeamForm.prepopulate(team);
+        model.addAttribute("teamID", teamID);
 
         List<String> knownSports = sportService.getAllSportNames();
         model.addAttribute("knownSports", knownSports);
@@ -187,7 +188,9 @@ public class CreateTeamFormController {
             HttpServletResponse httpServletResponse,
             Model model,
             HttpServletRequest httpServletRequest) throws IOException {
-        logger.info("POST /createTeam - update team");
+        
+        boolean editingTeam = (teamID != -1);
+        logger.info("POST /createTeam - {} team", (editingTeam ? "updating" : "creating"));
 
 
         // I'm starting to regret this pattern
@@ -196,13 +199,13 @@ public class CreateTeamFormController {
             return REDIRECT_HOME;
         }
 
-        boolean editingTeam = (teamID != -1);
 
         // Are there form errors?
         if (bindingResult.hasErrors()) {
             logger.error("{}", bindingResult);
             prefillModel(model, httpServletRequest);
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            model.addAttribute("teamID", teamID);
             model.addAttribute(IS_EDITING_KEY, editingTeam);
             logger.info("bad request");
             return CREATE_TEAM_TEMPLATE;
