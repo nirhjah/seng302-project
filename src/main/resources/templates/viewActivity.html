@@ -85,21 +85,35 @@
 
                 <div class="goalFacts">
                     <div style="padding-bottom: 4%">
-                        <h4 style="float: left; margin-left: 45px"> Player </h4>
-                        <h4 style="float: left; margin-left: 100px"> Goal </h4>
-                        <h4 style="float: right; margin-left: 10px; padding-right: 25px"> Time </h4>
+                        <h4 class="player-header"> Player </h4>
+                        <h4 class="goal-header"> Goal </h4>
+                        <h4 class="time-header"> Time </h4>
                     </div>
                     <ul>
                         <li th:each="goal : ${activityGoals}">
-                            <div>
+                           <!-- <div>
                                 <h3 th:text="${goal.scorer.firstName + ' ' + goal.scorer.lastName}"> </h3>
                                 <h4 style="float: left; margin-left: 30px; margin-top: 1px;" th:text="${goal.goalValue}"></h4>
                                 <h4 style="margin-left: 72px; margin-top: 1px" th:text="${goal.timeOfEvent} + '\''"></h4>
+                            </div>-->
+
+                            <button class="collapsible" >
+
+                                <h3 th:text="${goal.scorer.firstName + ' ' + goal.scorer.lastName}"> </h3>
+                                <h4 style="float: left; margin-left: 30px; margin-top: 1px; font-size: 20px" th:text="${goal.goalValue}"></h4>
+                                <h4 style="margin-left: 72px; margin-top: 1px; font-size: 20px" th:text="${goal.timeOfEvent} + '\''"></h4>
+
+                            </button>
+
+                            <div class="goal-description">
+                                <p th:text="${goal.description}"></p>
                             </div>
+
 
                         </li>
                     </ul>
                 </div>
+
 
 
                 </div>
@@ -116,6 +130,23 @@
 
 
     <script>
+
+        var collapsible = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < collapsible.length; i++) {
+            collapsible[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.maxHeight){
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            });
+        }
+
+
         const tabs = document.querySelectorAll('.tab');
         const tabLine = document.querySelector('.tab-line');
         const displayBox = document.querySelectorAll('.content-box');
