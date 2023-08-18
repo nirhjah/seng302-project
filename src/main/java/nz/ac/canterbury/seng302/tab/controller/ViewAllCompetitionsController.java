@@ -76,6 +76,7 @@ public class ViewAllCompetitionsController {
                                       Model model, HttpServletRequest request) {
         model.addAttribute("httpServletRequest",request);
 
+        page = Math.max(1, page);
         Page<Competition> pageResult = getPageResult(page, times, sports);
 
         List<Competition> competitions = pageResult.stream().toList();

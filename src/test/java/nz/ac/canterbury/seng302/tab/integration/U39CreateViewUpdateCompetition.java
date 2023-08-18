@@ -9,7 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.controller.CreateCompetitionController;
 import nz.ac.canterbury.seng302.tab.controller.FederationManagerInviteController;
 import nz.ac.canterbury.seng302.tab.controller.InviteToFederationManagerController;
+import nz.ac.canterbury.seng302.tab.controller.ViewAllCompetitionsController;
 import nz.ac.canterbury.seng302.tab.entity.*;
+import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
 import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
 import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
@@ -34,6 +36,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.Instant;
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -86,6 +89,20 @@ public class U39CreateViewUpdateCompetition {
     private final List<User> users = new ArrayList<>();
 
     private final List<Team> teams = new ArrayList<>();
+
+
+    /*
+      The number of competitions to generate for each time frame
+     */
+    private static final int NUM_PAST = 7;
+    private static final int NUM_FUTURE = 17;
+    private static final int NUM_CURRENT = 13;
+
+    // The filter arguments to pass into the viewAllCompetitions request:
+    private ViewAllCompetitionsController.Timing timing = null;
+    private List<String> filterSports = new ArrayList<>();
+
+
 
     private void setupMocking() {
         // get all the necessary beans
@@ -145,6 +162,8 @@ public class U39CreateViewUpdateCompetition {
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
+
+        filterSports = new ArrayList<>();
 
         when(userService.getCurrentUser()).thenReturn(Optional.of(user));
     }
@@ -473,5 +492,89 @@ public class U39CreateViewUpdateCompetition {
             mockMvc.perform(get(url)).andExpect(status().isFound()).andExpect(view().name("federationManagerInvite"));
 
         }
+    }
+
+    @Given("I am on a page dedicated to displaying competitions")
+    public void iAmOnAPageDedicatedToDisplayingCompetitions() throws Exception {
+        mockMvc.perform(get("/view-all-competitions"))
+                .andExpect(status().isOk()) // Accepted 200
+                .andExpect(view().name("viewAllCompetitions"));
+    }
+
+    private void generateCompetitionsForSport(String sport, int multiplier) {
+        long time = Instant.now().getEpochSecond();
+        long smallTimeStep = 5000;
+        long bigTimeStep = 10000;
+
+        for (int i=1; i<NUM_PAST * multiplier; i++) {
+            Competition comp = new UserCompetition("myCompetition", Grade.randomGrade(), sport);
+            comp.setDate(time - bigTimeStep, time - smallTimeStep);
+            competitionService.updateOrAddCompetition(comp);
+        }
+
+        for (int i=1; i<NUM_FUTURE * multiplier; i++) {
+            Competition comp = new UserCompetition("myCompetition", Grade.randomGrade(), sport);
+            comp.setDate(time + smallTimeStep, time + bigTimeStep);
+            competitionService.updateOrAddCompetition(comp);
+        }
+
+        for (int i=1; i<NUM_CURRENT * multiplier; i++) {
+            Competition comp = new UserCompetition("myCompetition", Grade.randomGrade(), sport);
+            comp.setDate(time - bigTimeStep, time + bigTimeStep);
+            competitionService.updateOrAddCompetition(comp);
+        }
+    }
+
+    Map<String, Integer> competitionsPerSport = Map.of(
+            "soccer", 1,
+            "hockey", 2,
+            "rugby", 3
+    );
+
+    @And("there exist past and current competitions for a {string}")
+    public void thereExistPastAndCurrentCompetitionsForASport(String sport) {
+        generateCompetitionsForSport(sport, competitionsPerSport.get(sport));
+    }
+
+    @When("I apply a filter for that {string} and select an option to display all competitions")
+    public void iApplyAFilterForThatSportAndSelectAnOptionToDisplayAllCompetitions(String sport) {
+        timing = null;
+        filterSports.add(sport);
+    }
+
+    @When("I apply a filter for that {string} and I select an option to display only current competitions")
+    public void iApplyAFilterForThatSportAndISelectAnOptionToDisplayOnlyCurrentCompetitions(String sport) {
+        timing = ViewAllCompetitionsController.Timing.CURRENT;
+        filterSports.add(sport);
+    }
+
+    @When("I apply a filter for that {string} and I select an option to display only past competitions")
+    public void iApplyAFilterForThatSportAndISelectAnOptionToDisplayOnlyPastCompetitions(String sport) {
+        timing = ViewAllCompetitionsController.Timing.PAST;
+        filterSports.add(sport);
+    }
+
+    @Then("I am shown all competitions, past and current for the selected {string}")
+    public void iAmShownAllCompetitionsPastAndCurrentForTheSelectedSport(String sport) throws Exception {
+        mockMvc.perform(get("view-all-competitions")
+                .param("page", "1")
+                .param("sports", String.join(",", List.of(sport)))
+                .param("timing", timing.name()));
+    }
+
+    @Then("I am shown only current competitions for the selected {string}")
+    public void iAmShownOnlyCurrentCompetitionsForTheSelectedSport(String sport) throws Exception {
+        mockMvc.perform(get("view-all-competitions")
+                .param("page", "1")
+                .param("sports", String.join(",", List.of(sport)))
+                .param("timing", timing.name()));
+    }
+
+    @Then("I am shown only past competitions for the selected {string}")
+    public void iAmShownOnlyPastCompetitionsForTheSelectedSport(String sport) throws Exception {
+        mockMvc.perform(get("view-all-competitions")
+                .param("page", "1")
+                .param("sports", String.join(",", List.of(sport)))
+                .param("timing", timing.name()));
     }
 }
