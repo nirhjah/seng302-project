@@ -1,9 +1,6 @@
 package nz.ac.canterbury.seng302.tab.helper.interfaces;
 
 import nz.ac.canterbury.seng302.tab.helper.ImageType;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Set;
 
 public interface HasImage {
     /**

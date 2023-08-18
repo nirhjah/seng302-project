@@ -2,8 +2,6 @@ package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
 
-import java.util.List;
-
 
 /**
  * Sport entity for storing information about sports.

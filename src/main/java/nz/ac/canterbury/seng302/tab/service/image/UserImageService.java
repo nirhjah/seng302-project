@@ -25,7 +25,7 @@ import java.util.Optional;
 @ComponentScan("nz.ac.canterbury.seng302.tab.service")
 public class UserImageService extends ImageService<User> {
 
-    private final Logger logger = LoggerFactory.getLogger(UserImageService.class);
+    private final Logger userLogger = LoggerFactory.getLogger(UserImageService.class);
 
     private final UserService userService;
 
@@ -84,7 +84,7 @@ public class UserImageService extends ImageService<User> {
             saveImage(optionalUser.get(), file);
             userService.updateOrAddUser(optionalUser.get());
         } else {
-            logger.error("Current user is non-existant!");
+            userLogger.error("Current user is non-existant!");
         }
     }
 
