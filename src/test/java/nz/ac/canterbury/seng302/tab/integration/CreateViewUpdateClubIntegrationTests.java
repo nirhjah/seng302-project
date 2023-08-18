@@ -133,7 +133,7 @@ public class CreateViewUpdateClubIntegrationTests {
         locationService= Mockito.spy(new LocationService(locationRepository));
         sportService= Mockito.spy(new SportService(sportRepository));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService, clubImageService), new ProfileFormController(userService, teamService, activityService, factService, formationService), new ViewClubController(userService, teamService, clubService)
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService, clubImageService), new ProfileFormController(userService, teamService, activityService, factService, formationService,competitionService), new ViewClubController(userService, teamService, clubService)
         , new ViewAllTeamsController(teamService, userService, locationService,sportService)).build();
 
         Authentication authentication = Mockito.mock(Authentication.class);
