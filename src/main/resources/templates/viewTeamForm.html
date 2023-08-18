@@ -81,21 +81,21 @@
                                 <img th:src="@{/image/icons/name.svg}"/>
                                 <div>
                                     <h3 class="attribute-type">Name</h3>
-                                    <h3 th:text="*{displayName}"></h3>
+                                    <h3 data-cy="name" th:text="*{displayName}"></h3>
                                 </div>
                             </div>
                             <div class="user-label">
                                 <img th:src="@{/image/icons/sports-alt.svg}"/>
                                 <div>
                                     <h3 class="attribute-type">Sport</h3>
-                                    <h3 th:text="*{displaySport}"></h3>
+                                    <h3 data-cy="sport" th:text="*{displaySport}"></h3>
                                 </div>
                             </div>
                             <div class="user-label">
                                 <img th:src="@{/image/icons/location.svg}"/>
                                 <div>
                                     <h3 class="attribute-type">Location</h3>
-                                    <h3 th:text="*{displayLocation}"></h3>
+                                    <h3 data-cy="location" th:text="*{displayLocation}"></h3>
                                 </div>
                             </div>
                         </div>
