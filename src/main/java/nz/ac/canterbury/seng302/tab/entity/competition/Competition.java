@@ -47,6 +47,16 @@ public abstract class Competition {
      * @param sport competition sport
      * @param location competition location 
     */
+
+    /**
+     * main constructor
+     * @param name
+     * @param grade
+     * @param sport
+     * @param location
+     * @param competitionStart
+     * @param competitionEnd
+     * */
     protected Competition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd) {
         this.name = name;
         this.grade = grade;
