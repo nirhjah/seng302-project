@@ -91,22 +91,16 @@
                     </div>
                     <ul>
                         <li th:each="goal : ${activityGoals}">
-                           <!-- <div>
-                                <h3 th:text="${goal.scorer.firstName + ' ' + goal.scorer.lastName}"> </h3>
-                                <h4 style="float: left; margin-left: 30px; margin-top: 1px;" th:text="${goal.goalValue}"></h4>
-                                <h4 style="margin-left: 72px; margin-top: 1px" th:text="${goal.timeOfEvent} + '\''"></h4>
-                            </div>-->
-
                             <button class="collapsible" >
 
                                 <h3 th:text="${goal.scorer.firstName + ' ' + goal.scorer.lastName}"> </h3>
                                 <h4 style="float: left; margin-left: 30px; margin-top: 1px; font-size: 20px" th:text="${goal.goalValue}"></h4>
-                                <h4 style="margin-left: 72px; margin-top: 1px; font-size: 20px" th:text="${goal.timeOfEvent} + '\''"></h4>
+                                <h4 style="margin-left: 72px; margin-top: 1px; font-size: 20px" th:text="${goal.timeOfEvent} + 'm'"></h4>
 
                             </button>
 
                             <div class="goal-description">
-                                <p th:text="${goal.description}"></p>
+                                <p style="margin-bottom: 10px" th:text="${goal.description}"></p>
                             </div>
 
 
@@ -141,10 +135,11 @@
                 if (content.style.maxHeight){
                     content.style.maxHeight = null;
                 } else {
-                    content.style.maxHeight = content.scrollHeight + "px";
+                    content.style.maxHeight = content.scrollHeight + 5 + "px";
                 }
             });
         }
+
 
 
         const tabs = document.querySelectorAll('.tab');

@@ -494,7 +494,23 @@ hr.rounded {
 }
 
 
+.goal-description {
+    padding: 0 18px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    background-color: #f1f1f1;
+    margin-left: 10%;
+    margin-right: 2%;
+    border-radius: 0 0 10px 10px;
+}
+
+
 @media (max-width: 700px) {
+
+    .goal-description {
+        margin: 0 7% 0 2% !important;
+    }
 
     .goalFacts ul {
         width: 350px;
@@ -529,15 +545,7 @@ hr.rounded {
         margin-left: 25px; !important;
     }
 
-    .goal-description {
-        margin-left: 2%; !important;
-        margin-right: 7%; !important;
-    }
-
-
 }
-
-
 
 
 
@@ -547,32 +555,6 @@ hr.rounded {
     box-shadow: 0 2px 3px 4px rgba(0, 0, 0, 0.2);
 }
 
-.collapsible:after {
-    content: '\002B';
-    color: black;
-    font-weight: bold;
-    float: right;
-    margin-left: 5px;
-    font-size: 20px;
-}
-
-.active:after {
-    content: "\2212";
-    color: black;
-    font-weight: bold;
-    font-size: 20px;
-
-}
 
 
-.goal-description {
-    padding: 0 18px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.2s ease-out;
-    background-color: #f1f1f1;
-    margin-left: 10%;
-    margin-right: 2%;
-    border-radius: 0 0 10px 10px;
-}
 
