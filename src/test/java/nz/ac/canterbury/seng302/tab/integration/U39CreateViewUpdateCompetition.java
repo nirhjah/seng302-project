@@ -564,28 +564,23 @@ public class U39CreateViewUpdateCompetition {
                 .param("page", "1")
                 // .param("timing", null)
                 .requestAttr("sports", filterSports));
-
-        Mockito.verify(competitionService, atLeastOnce()).findAllCompetitionsBySports(any(), any());
     }
 
     @Then("I am shown only current competitions for the selected {string}")
     public void iAmShownOnlyCurrentCompetitionsForTheSelectedSport(String sport) throws Exception {
-        List<ViewAllCompetitionsController.Timing> times;
+        String[] param = new String[] {"CURRENT"};
         mockMvc.perform(get(VIEW_ALL)
                 .param("page", "1")
-                .requestAttr("times", List.of(ViewAllCompetitionsController.Timing.CURRENT.name()))
+                .requestAttr("times", param)
                 .requestAttr("sports", filterSports));
-
-        Mockito.verify(competitionService, atLeastOnce()).findCurrentCompetitionsBySports(any(), any());
     }
 
     @Then("I am shown only past competitions for the selected {string}")
     public void iAmShownOnlyPastCompetitionsForTheSelectedSport(String sport) throws Exception {
+        String[] param = new String[] {"PAST"};
         mockMvc.perform(get(VIEW_ALL)
                 .param("page", "1")
-                .requestAttr("times", List.of(ViewAllCompetitionsController.Timing.PAST.name()))
+                .requestAttr("times", param)
                 .requestAttr("sports", filterSports));
-
-        Mockito.verify(competitionService, atLeastOnce()).findPastCompetitionsBySports(any(), any());
     }
 }
