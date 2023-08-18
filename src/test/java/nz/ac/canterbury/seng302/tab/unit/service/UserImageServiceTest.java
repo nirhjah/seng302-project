@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.mockito.ArgumentMatchers.any;
 
 @Import({UserImageService.class})
 @SpringBootTest

@@ -1,17 +1,11 @@
 package nz.ac.canterbury.seng302.tab.form;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import nz.ac.canterbury.seng302.tab.validator.UserFormValidators;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
-import static nz.ac.canterbury.seng302.tab.validator.UserFormValidators.INVALID_NAME_MSG;
-import static org.springframework.http.RequestEntity.post;
 
 /**
  * The form provided to the user when registering for the website.
@@ -21,8 +15,8 @@ import static org.springframework.http.RequestEntity.post;
  */
 public class RegisterForm {
 
-    private static final String EMAIL = "myemail@gmail.com";
-    private static final String PASSWORD = "Hello123$";
+    private static final String DEFAULT_EMAIL = "myemail@gmail.com";
+    private static final String DEFAULT_PASSWORD = "Hello123$";
 
     /**
      * Generates a dummy register form.
@@ -33,11 +27,11 @@ public class RegisterForm {
         var form =  new RegisterForm();
         form.setCity("Christchurch");
         form.setCountry("New Zealand");
-        form.setEmail(EMAIL);
+        form.setEmail(DEFAULT_EMAIL);
         form.setFirstName("Bobby");
         form.setLastName("Johnson");
-        form.setPassword(PASSWORD);
-        form.setConfirmPassword(PASSWORD);
+        form.setPassword(DEFAULT_PASSWORD);
+        form.setConfirmPassword(DEFAULT_PASSWORD);
         var d = new Date(2002-1900, Calendar.JULY, 5);
         form.setSuburb("St Albans");
         form.setAddressLine1("56 Mays Road");

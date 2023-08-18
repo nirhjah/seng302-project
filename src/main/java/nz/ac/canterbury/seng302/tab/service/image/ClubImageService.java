@@ -21,8 +21,6 @@ import java.util.Optional;
 @Service
 public class ClubImageService extends ImageService<Club> {
 
-    private final Logger logger = LoggerFactory.getLogger(ClubImageService.class);
-
     @Autowired
     private ClubService clubService;
 
