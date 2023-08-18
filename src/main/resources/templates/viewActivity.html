@@ -92,10 +92,10 @@
                     <ul>
                         <li th:each="goal : ${activityGoals}">
                             <button class="collapsible" >
-
+                                <img th:src="@{/user-profile-picture/{id}(id = ${goal.scorer.userId})}"  class="li-player-image"  alt="Player Image">
                                 <h3 th:text="${goal.scorer.firstName + ' ' + goal.scorer.lastName}"> </h3>
-                                <h4 style="float: left; margin-left: 30px; margin-top: 1px; font-size: 20px" th:text="${goal.goalValue}"></h4>
-                                <h4 style="margin-left: 72px; margin-top: 1px; font-size: 20px" th:text="${goal.timeOfEvent} + 'm'"></h4>
+                                <h4 style="float: left; margin-left: auto; margin-top: 1px; font-size: 20px" th:text="${goal.goalValue}"></h4>
+                                <h4 style="margin-left: auto; margin-top: 1px; font-size: 20px" th:text="${goal.timeOfEvent} + 'm'"></h4>
 
                             </button>
 

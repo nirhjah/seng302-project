@@ -469,7 +469,7 @@ hr.rounded {
     font-size: 20px;
     margin-top: 5px;
     float: left;
-    margin-left: 110px;
+    margin-left: 120px;
 
 }
 
@@ -534,7 +534,7 @@ hr.rounded {
 
 
     .goal-header {
-        margin-left: 95px; !important;
+        margin-left: 110px; !important;
     }
 
     .time-header {
@@ -554,5 +554,11 @@ hr.rounded {
 }
 
 
-
+.li-player-image {
+    width: 25px;
+    height: 25px;
+    margin-right: 2px;
+    border-radius: 50%;
+    background-color: white;
+}
 
