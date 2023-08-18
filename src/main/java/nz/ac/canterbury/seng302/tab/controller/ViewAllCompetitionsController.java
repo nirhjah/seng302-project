@@ -29,11 +29,15 @@ import static nz.ac.canterbury.seng302.tab.controller.ViewAllCompetitionsControl
 @Controller
 public class ViewAllCompetitionsController {
 
-    @Autowired
     private CompetitionService competitionService;
 
-    @Autowired
     private SportService sportService;
+
+    @Autowired
+    public ViewAllCompetitionsController(CompetitionService competitionService, SportService sportService) {
+        this.competitionService = competitionService;
+        this.sportService = sportService;
+    }
 
     private static final int PAGE_SIZE = 8;
 

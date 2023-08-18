@@ -27,6 +27,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -75,6 +76,7 @@ public class U39CreateViewUpdateCompetition {
     private CompetitionRepository competitionRepository;
 
     private MockMvc mockMvc;
+    private MockMvc viewAllMockMvc;
 
     private User user;
 
@@ -94,22 +96,23 @@ public class U39CreateViewUpdateCompetition {
     /*
       The number of competitions to generate for each time frame
      */
-    private static final int NUM_PAST = 7;
-    private static final int NUM_FUTURE = 17;
-    private static final int NUM_CURRENT = 13;
+    private static final int NUM_PAST = 1;
+    private static final int NUM_FUTURE = 1;
+    private static final int NUM_CURRENT = 1;
 
     // The filter arguments to pass into the viewAllCompetitions request:
     private ViewAllCompetitionsController.Timing timing = null;
     private List<String> filterSports = new ArrayList<>();
 
+    private String VIEW_ALL = "/view-all-competitions";
 
 
     private void setupMocking() {
         // get all the necessary beans
-
         userRepository = applicationContext.getBean(UserRepository.class);
         teamRepository = applicationContext.getBean(TeamRepository.class);
         competitionRepository = applicationContext.getBean(CompetitionRepository.class);
+        SportService sportService = applicationContext.getBean(SportService.class);
 
         // Delete leftover data
         userRepository.deleteAll();
@@ -129,9 +132,10 @@ public class U39CreateViewUpdateCompetition {
         );
 
         CreateCompetitionController createCompetitionController = new CreateCompetitionController(competitionService, userService, teamService);
+        ViewAllCompetitionsController viewAllCompetitionsController = new ViewAllCompetitionsController(competitionService, sportService);
 
         FederationManagerInviteController fedManInvite = new FederationManagerInviteController(userService, federationService);
-        this.mockMvc = MockMvcBuilders.standaloneSetup(inviteController, fedManInvite, createCompetitionController).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(inviteController, fedManInvite, createCompetitionController, viewAllCompetitionsController).build();
     }
 
     @Before("@create_view_update_competition")
@@ -496,7 +500,7 @@ public class U39CreateViewUpdateCompetition {
 
     @Given("I am on a page dedicated to displaying competitions")
     public void iAmOnAPageDedicatedToDisplayingCompetitions() throws Exception {
-        mockMvc.perform(get("/view-all-competitions"))
+        mockMvc.perform(get(VIEW_ALL))
                 .andExpect(status().isOk()) // Accepted 200
                 .andExpect(view().name("viewAllCompetitions"));
     }
@@ -556,25 +560,32 @@ public class U39CreateViewUpdateCompetition {
 
     @Then("I am shown all competitions, past and current for the selected {string}")
     public void iAmShownAllCompetitionsPastAndCurrentForTheSelectedSport(String sport) throws Exception {
-        mockMvc.perform(get("view-all-competitions")
+        mockMvc.perform(get(VIEW_ALL)
                 .param("page", "1")
-                .param("sports", String.join(",", List.of(sport)))
-                .param("timing", timing.name()));
+                // .param("timing", null)
+                .requestAttr("sports", filterSports));
+
+        Mockito.verify(competitionService, atLeastOnce()).findAllCompetitionsBySports(any(), any());
     }
 
     @Then("I am shown only current competitions for the selected {string}")
     public void iAmShownOnlyCurrentCompetitionsForTheSelectedSport(String sport) throws Exception {
-        mockMvc.perform(get("view-all-competitions")
+        List<ViewAllCompetitionsController.Timing> times;
+        mockMvc.perform(get(VIEW_ALL)
                 .param("page", "1")
-                .param("sports", String.join(",", List.of(sport)))
-                .param("timing", timing.name()));
+                .requestAttr("times", List.of(ViewAllCompetitionsController.Timing.CURRENT.name()))
+                .requestAttr("sports", filterSports));
+
+        Mockito.verify(competitionService, atLeastOnce()).findCurrentCompetitionsBySports(any(), any());
     }
 
     @Then("I am shown only past competitions for the selected {string}")
     public void iAmShownOnlyPastCompetitionsForTheSelectedSport(String sport) throws Exception {
-        mockMvc.perform(get("view-all-competitions")
+        mockMvc.perform(get(VIEW_ALL)
                 .param("page", "1")
-                .param("sports", String.join(",", List.of(sport)))
-                .param("timing", timing.name()));
+                .requestAttr("times", List.of(ViewAllCompetitionsController.Timing.PAST.name()))
+                .requestAttr("sports", filterSports));
+
+        Mockito.verify(competitionService, atLeastOnce()).findPastCompetitionsBySports(any(), any());
     }
 }
