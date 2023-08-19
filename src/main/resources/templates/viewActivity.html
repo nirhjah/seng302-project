@@ -28,14 +28,14 @@
                 <img class="tab-icon" th:src="@{/image/icons/activity.png}"/>
                 <button class="tab-button"> General &nbsp;</button>
             </div>
-            <div class="tab" id="formations-tab" th:if="${canShowScores}">
-                <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
-                <button class="tab-button" >Formations &nbsp;</button>
-            </div>
             <div class="tab">
                 <img class ="tab-icon" th:src="@{/image/icons/editform.svg}"/>
                 <button class="tab-button" > Facts &nbsp;</button>
                 <div class="tab-line"></div>
+            </div>
+            <div class="tab" id="formations-tab" th:if="${canShowScores}">
+                <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
+                <button class="tab-button" >Formations &nbsp;</button>
             </div>
             <div class="tab" id="score-tab" th:if="${canShowScores}">
                 <img class ="tab-icon"  th:src="@{/image/icons/score.svg}"/>
@@ -52,10 +52,10 @@
 
         <div class="content-box" id="facts-tab">
             <div class="content">
-                <div class="submit-button">
-                    <button>Add Fact</button>
+                <div class="submit-button" style="padding-top: 10px; padding-bottom: 10px">
+                    <button style="width: 50%">Add Fact</button>
                 </div>
-                <table>
+                <table style="height: 400px; overflow: scroll; padding: 15px">
                     <thead>
                     <tr>
                         <th> Time </th>
