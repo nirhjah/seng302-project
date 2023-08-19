@@ -38,7 +38,7 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @WithMockUser
-public class ProfileFormControllerTest {
+public class ViewTeamControllerTest {
 
     @Autowired
     private TeamImageService teamImageService;

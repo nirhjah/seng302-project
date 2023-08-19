@@ -28,7 +28,7 @@ import nz.ac.canterbury.seng302.tab.entity.User;
  * Spring Boot Controller class for the ProfileForm
  */
 @Controller
-public class ProfileFormController {
+public class ViewTeamController {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -53,7 +53,7 @@ public class ProfileFormController {
     @Autowired
     private FactService factService;
 
-    public ProfileFormController(UserService userService, TeamService teamService, ActivityService activityService, FactService factService, FormationService formationService, CompetitionService competitionService) {
+    public ViewTeamController(UserService userService, TeamService teamService, ActivityService activityService, FactService factService, FormationService formationService, CompetitionService competitionService) {
         this.userService = userService;
         this.formationService = formationService;
         this.teamService = teamService;

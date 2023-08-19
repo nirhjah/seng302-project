@@ -90,7 +90,7 @@ public class CreateTeamInvitationTokens {
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new ProfileFormController(userService, teamService, activityService, factService, formationService, competitionService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewTeamController(userService, teamService, activityService, factService, formationService, competitionService)).build();
 
         Authentication authentication = Mockito.mock(Authentication.class);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);

@@ -118,7 +118,7 @@ public class ViewMyActivitiesIntegrationTests {
         teamService = Mockito.spy(new TeamService(teamRepository));
         activityService = Mockito.spy(new ActivityService(activityRepository));
         factService = Mockito.spy(new FactService(factRepository));
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ProfileFormController(userService, teamService, activityService, factService, formationService, competitionService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ViewTeamController(userService, teamService, activityService, factService, formationService, competitionService)).build();
 
         userRepository.deleteAll();
         teamRepository.deleteAll();
