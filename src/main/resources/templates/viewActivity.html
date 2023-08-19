@@ -50,6 +50,32 @@
             </div>
         </div>
 
+        <div class="content-box" id="facts-tab">
+            <div class="content">
+                <div class="submit-button">
+                    <button>Add Fact</button>
+                </div>
+                <table>
+                    <thead>
+                    <tr>
+                        <th> Time </th>
+                        <th> Description </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${activityFacts.isEmpty()}">
+                        <td colspan="2"> No Recorded Facts </td>
+                    </tr>
+                    <tr th:each="fact : ${factList}">
+                        <td><span th:text="${fact.timeOfEvent}"> Title </span></td>
+                        <td><span th:text="${fact.description}"> Author </span></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
 
         <div class="content-box" style="margin-bottom: 500px">
            <div class="content">
@@ -57,15 +83,6 @@
 
            </div>
         </div>
-
-
-        <div class="content-box" id="facts-tab" style="margin-bottom: 500px">
-            <div class="content">
-
-
-            </div>
-        </div>
-
 
         <div class="content-box" id="scores-tab" style="margin-bottom: 500px">
             <div class="content">

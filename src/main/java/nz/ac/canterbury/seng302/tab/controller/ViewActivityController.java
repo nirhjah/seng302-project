@@ -150,6 +150,7 @@ public class ViewActivityController {
         model.addAttribute("activity", activity);
 
         model.addAttribute("activityFacts", activityFacts);
+        model.addAttribute("factList", factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity));
 
         // Rambling that's required for navBar.html
         model.addAttribute("httpServletRequest", request);
