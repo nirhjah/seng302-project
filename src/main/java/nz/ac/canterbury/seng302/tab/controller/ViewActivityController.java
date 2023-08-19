@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.sql.Date;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -148,6 +150,18 @@ public class ViewActivityController {
 
         logger.info("activityFacts: {}", activityFacts);
         model.addAttribute("activity", activity);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE dd MMMM yyyy K:mm a");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("KK:mm a");
+
+        DateTimeFormatter titleFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+        model.addAttribute("activityStartTitle", activity.getActivityStart().format(titleFormatter));
+
+        if (activity.getActivityStart().toLocalDate().equals(activity.getActivityEnd().toLocalDate())) {
+            model.addAttribute("activityDateTime", activity.getActivityStart().format(formatter)
+                    .concat(" - ").concat(activity.getActivityEnd().format(timeFormatter)));
+        } else {
+            model.addAttribute("activityDateTime", activity.getActivityStart().format(formatter).concat(" - ").concat(activity.getActivityEnd().format(formatter)));
+        }
 
         model.addAttribute("activityFacts", activityFacts);
 
@@ -157,6 +171,7 @@ public class ViewActivityController {
         model.addAttribute("defaultFactType", FactType.FACT);
 
         model.addAttribute("outcomeString", outcomeString(activity));
+        model.addAttribute("currentUser", userService.getCurrentUser());
         populateOther(model, activity);
 
         return "viewActivity";
