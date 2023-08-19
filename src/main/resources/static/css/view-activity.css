@@ -410,9 +410,9 @@ hr.rounded {
     border-radius: 10px 10px 10px 10px;
     display: flex;
     justify-content: space-between;
-    width: 340px;
+    width: 320px;
     height: 50px;
-    margin: 5% 0% 3% 1%;
+    margin: 5% 3% 3% 4%;
     background-color: white;
     border: 2px solid #778da9;
 
@@ -478,7 +478,7 @@ hr.rounded {
 
 .timeDiv {
     margin-top: -10px;
-    margin-right: -3px;
+    margin-right: -9px;
     font-size: 15px;
     color: grey;
     margin-left: auto;
@@ -490,8 +490,8 @@ hr.rounded {
     overflow: hidden;
     transition: max-height 0.2s ease-out;
     background-color: white;
-    margin-right: 3px;
-    margin-left: 1%;
+    margin-right: 12px;
+    margin-left: 4%;
     margin-top: -12px;
     border-radius: 0 0 10px 10px;
     border: 2px #778da9;
@@ -520,7 +520,7 @@ hr.rounded {
     color: #1B263B;
     float: left;
     margin-right: auto;
-    margin-left: 65px;
+    margin-left: 55px;
     font-size: 20px
 }
 
