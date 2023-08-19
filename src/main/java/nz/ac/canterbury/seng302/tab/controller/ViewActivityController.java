@@ -181,6 +181,68 @@ public class ViewActivityController {
         return outcomeString;
     }
 
+
+    /**
+     * Handles adding an overall score to an activity
+     * @param actId           activity to add overall score to
+     * @param overallScoreTeam overall score of team
+     * @param overallScoreOpponent overall score of opponent
+     * @param createEventForm      CreateEventForm object used for validation
+     * @param bindingResult        BindingResult used for errors
+     * @param request              request
+     * @param model                model to be filled
+     * @param httpServletResponse   httpServerletResponse
+     * @param redirectAttributes    stores error message to be displayed
+     * @return  view activity page
+     */
+    @PostMapping("/overallScore")
+    public String createEvent(
+            @RequestParam(name = "actId", defaultValue = "-1") long actId,
+            @RequestParam(name = "overallScoreTeam", defaultValue = "") String overallScoreTeam,
+            @RequestParam(name = "overallScoreOpponent", defaultValue = "") String overallScoreOpponent,
+            @Validated CreateEventForm createEventForm,
+            BindingResult bindingResult,
+            HttpServletRequest request,
+            Model model,
+            HttpServletResponse httpServletResponse,
+            RedirectAttributes redirectAttributes) {
+
+        model.addAttribute(overallScoreTeamString, overallScoreTeam);
+
+        model.addAttribute("httpServletRequest", request);
+
+        Activity activity = activityService.findActivityById(actId);
+        String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
+
+        if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 1) {
+            logger.info("scores not same type");
+            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "Both teams require scores of the same type"));
+        }
+
+        if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 2) {
+            logger.info("one score is empty");
+            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "Other score field cannot be empty"));
+        }
+
+        if (bindingResult.hasErrors()) {
+            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            redirectAttributes.addFlashAttribute("scoreInvalid", "Leave Modal Open");
+            redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
+            return viewActivityRedirectUrl;
+        }
+
+
+        if (overallScoreTeam != null && overallScoreOpponent != null) {
+            activity.setOtherTeamScore(overallScoreOpponent);
+            activity.setActivityTeamScore(overallScoreTeam);
+        }
+
+        activityService.updateOrAddActivity(activity);
+
+        return viewActivityRedirectUrl;
+
+    }
+
     /**
      * Handles creating an event and adding overall scores
      * @param actId       activity ID to add stats/event to
@@ -208,7 +270,7 @@ public class ViewActivityController {
             @RequestParam(name = "description", defaultValue = "") String description,
             @RequestParam(name = "overallScoreTeam", defaultValue = "") String overallScoreTeam,
             @RequestParam(name = "overallScoreOpponent", defaultValue = "") String overallScoreOpponent,
-            @RequestParam(name = "activityOutcomes", defaultValue = "NONE") ActivityOutcome activityOutcome,
+            @RequestParam(name = "activityOutcomes", defaultValue = "None") ActivityOutcome activityOutcome,
             @RequestParam(name = "time") String time,
             @RequestParam(name = "goalValue", defaultValue = "1") int goalValue,
             @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
