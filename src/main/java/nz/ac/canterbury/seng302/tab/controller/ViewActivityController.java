@@ -150,15 +150,15 @@ public class ViewActivityController {
 
         logger.info("activityFacts: {}", activityFacts);
         model.addAttribute("activity", activity);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE dd MMMM yyyy KK:mm a");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE dd MMMM yyyy K:mm a");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("KK:mm a");
 
-        DateTimeFormatter titleFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy KK:mm a");
+        DateTimeFormatter titleFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
         model.addAttribute("activityStartTitle", activity.getActivityStart().format(titleFormatter));
 
         if (activity.getActivityStart().toLocalDate().equals(activity.getActivityEnd().toLocalDate())) {
             model.addAttribute("activityDateTime", activity.getActivityStart().format(formatter)
-                    .concat("-").concat(activity.getActivityEnd().format(timeFormatter)));
+                    .concat(" - ").concat(activity.getActivityEnd().format(timeFormatter)));
         } else {
             model.addAttribute("activityDateTime", activity.getActivityStart().format(formatter).concat(" - ").concat(activity.getActivityEnd().format(formatter)));
         }
