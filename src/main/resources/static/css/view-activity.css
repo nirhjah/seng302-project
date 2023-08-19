@@ -372,3 +372,7 @@ hr.rounded {
 .submit-button {
     margin: unset;
 }
+
+table, th, td {
+    border: 1px solid #0b2239;
+}

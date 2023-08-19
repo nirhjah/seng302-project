@@ -150,7 +150,32 @@ public class ViewActivityController {
         model.addAttribute("activity", activity);
 
         model.addAttribute("activityFacts", activityFacts);
-        model.addAttribute("factList", factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity));
+        List<Fact> factList = factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity);
+        factList.add(new Fact("null", null, activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+        factList.add(new Fact("Hello", "time", activity));
+
+
+
+        model.addAttribute("factList", factList);
 
         // Rambling that's required for navBar.html
         model.addAttribute("httpServletRequest", request);

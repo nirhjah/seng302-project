@@ -50,25 +50,25 @@
             </div>
         </div>
 
-        <div class="content-box" id="facts-tab">
-            <div class="content">
+        <div class="content-box" id="facts-tab" style="margin-bottom: 16px">
+            <div class="content" style="height: 400px; overflow: auto;">
                 <div class="submit-button" style="padding-top: 10px; padding-bottom: 10px">
                     <button style="width: 50%">Add Fact</button>
                 </div>
-                <table style="height: 400px; overflow: scroll; padding: 15px">
-                    <thead>
+                <table style="padding: 15px; border-collapse: collapse; border: 2px solid ">
+                    <thead style="background-color: #0b2239">
                     <tr>
-                        <th> Time </th>
-                        <th> Description </th>
+                        <th style="width: 30%"> Time </th>
+                        <th style="width: 70%"> Description </th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:if="${activityFacts.isEmpty()}">
+                    <tr th:if="${factList.isEmpty()}">
                         <td colspan="2"> No Recorded Facts </td>
                     </tr>
                     <tr th:each="fact : ${factList}">
-                        <td><span th:text="${fact.timeOfEvent}"> Title </span></td>
-                        <td><span th:text="${fact.description}"> Author </span></td>
+                        <td><span th:text="${fact.timeOfEvent}">No Time Listed</span></td>
+                        <td><span th:text="${fact.description}"> Description</span></td>
                     </tr>
                     </tbody>
                 </table>
