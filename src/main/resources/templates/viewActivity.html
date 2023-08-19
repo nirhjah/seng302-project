@@ -125,9 +125,7 @@
 
                 <div class="goalFacts">
                     <div class="goal-table-headers">
-                        <h4 class="player-header"> Player </h4>
-                        <h4 class="goal-header"> Goal </h4>
-                        <h4 class="time-header"> Time </h4>
+                        <h4 class="player-header"> Scoring </h4>
                     </div>
                     <ul>
                         <li th:each="goal : ${activityGoals}">
@@ -175,8 +173,21 @@
                 var content = this.nextElementSibling;
                 if (content.style.maxHeight){
                     content.style.maxHeight = null;
+                    content.style.border = "none";
+                    this.style.borderRadius = "10px 10px 10px 10px";
+                    this.style.borderBottom = "1px solid rgb(65, 90, 119)"
+
+
+
                 } else {
                     content.style.maxHeight = content.scrollHeight + 5 + "px";
+
+                    content.style.border = "1px rgb(65, 90, 119)"
+                    content.style.borderStyle = "none solid solid solid"
+                    this.style.borderRadius = "10px 10px 0 0";
+                    this.style.borderBottom = "none";
+
+             
                 }
             });
         }
