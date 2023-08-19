@@ -26,24 +26,60 @@
         <div class="tab-box">
             <div class="tab active">
                 <img class="tab-icon" th:src="@{/image/icons/activity.png}"/>
-                <button class="tab-button">General &nbsp;</button>
+                <button class="tab-button"> General &nbsp;</button>
             </div>
             <div class="tab" id="formations-tab" th:if="${canShowScores}">
                 <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
-                <button class="tab-button" >Formations &nbsp;</button>
+                <button class="tab-button" > Formations &nbsp;</button>
             </div>
             <div class="tab">
                 <img class ="tab-icon" th:src="@{/image/icons/editform.svg}"/>
-                <button class="tab-button" >Facts &nbsp;</button>
+                <button class="tab-button" > Facts &nbsp;</button>
                 <div class="tab-line"></div>
             </div>
             <div class="tab" id="score-tab" th:if="${canShowScores}">
                 <img class ="tab-icon"  th:src="@{/image/icons/score.svg}"/>
-                <button class="tab-button" >Score &nbsp;</button>
+                <button class="tab-button" > Score &nbsp;</button>
             </div>
         </div>
 
-        <div class="content-box active" id="general-tab" style="margin-bottom: 500px">
+        <div class="content-box active" id="general-tab">
+            <div class="content general">
+                <div class="general-activity-header" style="font-size: x-large; text-align: center; padding: 20px">
+                    <h2 th:text="|${activity.activityType.name()}: ${activityStartTitle}|"></h2>
+                </div>
+                <div class="general-activity-body" style="text-align: center">
+                    <div style="width: 100%; display: inline-block">
+                    <div class="general-activity-left" style="width: 46%; float:left; margin-right: 1%; margin-left: 3%; text-align: left">
+                        <div>
+                            <h3 class="attribute-type">Location</h3>
+                            <h3 th:text="*{activity.location}"></h3>
+                            <br>
+                            <h3 class="attribute-type">Date and Time</h3>
+                            <h3 th:text="${activityDateTime}"></h3>
+                        </div>
+                    </div>
+                    <div class="general-activity-right" style="width: 46%; float:left; margin-left: 2%; margin-right:2%;text-align: left">
+                        <h3 th:if="${activity.team != null}" class="attribute-type">Team</h3>
+                        <h3 th:if="${activity.team != null}" th:text="${activity.team.name}"></h3>
+                        <br th:if="${activity.team != null}">
+                        <h3 class="attribute-type">Description</h3>
+                        <h3 th:text="${activity.description}"></h3>
+                    </div>
+                        <div style="width: 100%; display: inline-block">
+                        <div class="submit-button" style="width: 25%; min-width: 150px; float: left; padding-top: 25px; padding-bottom: 8px">
+                            <a th:if="${activity.team==null || (activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}"
+                               th:href="@{createActivity(edit=${activity.id})}" type="button">
+                                <button type="submit" id="editActivityBtn">Edit</button>
+                            </a>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box" id="facts-tab" style="margin-bottom: 500px">
             <div class="content">
 
 
@@ -59,26 +95,25 @@
         </div>
 
 
-        <div class="content-box" id="facts-tab" style="margin-bottom: 500px">
-            <div class="content">
-
-
-            </div>
-        </div>
-
-
         <div class="content-box" id="scores-tab">
             <div class="content">
 
                 <div>
                 <div class="score-display">
                     <div class="team-names-display">
-                        <h3>Team A</h3>
-                        <h3> vs </h3>
-                        <h3>Team B</h3>
+
+                        <h3 style="font-size: 30px" th:text="${activity.team}"></h3>
+                        <h3 style="font-weight: 100; font-size: 27px"> vs </h3>
+                        <h3 style="font-size: 30px">Opponent</h3>
                     </div>
-                    <h1 th:text="${activity.activityTeamScore != null && activity.otherTeamScore != null ? activity.activityTeamScore + ' : ' + activity.otherTeamScore : 'NA'}"></h1>
-                    <h3 id="winnerText" th:text="${outcomeString}" ></h3>
+
+                    <div class="team-scores" th:if="${activity.activityTeamScore != null && activity.otherTeamScore != null}">
+
+                        <h1 class="teamScore" th:text="${activity.activityTeamScore}"></h1>
+                        <h1 style="font-weight: 100"> - </h1>
+                        <h1 class="otherTeamScore" th:text="${activity.otherTeamScore}"></h1>
+                    </div>
+                    <h3 class="winner-text" id="winnerText" th:text="${outcomeString}" ></h3>
                 </div>
 
                     <div class="submit-button">
@@ -126,27 +161,27 @@
 
 
 
-                                <div class="goalFacts">
-                    <div style="padding-bottom: 4%">
-                        <h4 class="player-header"> Player </h4>
-                        <h4 class="goal-header"> Goal </h4>
-                        <h4 class="time-header"> Time </h4>
+                <div class="goalFacts">
+                    <div class="goal-table-headers">
+                        <h4 class="player-header"> Scoring </h4>
                     </div>
                     <ul>
                         <li th:each="goal : ${activityGoals}">
                             <button class="collapsible" >
-                                <img th:src="@{/user-profile-picture/{id}(id = ${goal.scorer.userId})}"  class="li-player-image"  alt="Player Image">
+                                <img th:src="@{/user-profile-picture/{id}(id = ${goal.scorer.userId})}"  class="scorer-player-image"  alt="Player Image">
                                 <h3 th:text="${goal.scorer.firstName + ' ' + goal.scorer.lastName}"> </h3>
-                                <h4 style="float: left; margin-left: auto; margin-top: 1px; font-size: 20px" th:text="${goal.goalValue}"></h4>
-                                <h4 style="margin-left: auto; margin-top: 1px; font-size: 20px" th:text="${goal.timeOfEvent} + 'm'"></h4>
+                                <h4 class="goal-text" th:text="${goal.goalValue == 1 ? goal.goalValue + ' pt' : goal.goalValue + ' pts'}"></h4>
+
+                                <div class="timeDiv">
+                                    <h4 style="margin-top: 1px;" th:text="${goal.timeOfEvent} + '\''"></h4>
+                                </div>
 
                             </button>
 
                             <div class="goal-description">
-                                <p style="margin-bottom: 10px" th:text="${goal.description}"></p>
+                                <hr class="solid">
+                                <p th:text="${goal.description}"></p>
                             </div>
-
-
                         </li>
                     </ul>
                 </div>
@@ -177,8 +212,21 @@
                 var content = this.nextElementSibling;
                 if (content.style.maxHeight){
                     content.style.maxHeight = null;
+                    content.style.border = "none";
+                    this.style.borderRadius = "10px 10px 10px 10px";
+                    this.style.borderBottom = "2px solid #778da9"
+
+
+
                 } else {
                     content.style.maxHeight = content.scrollHeight + 5 + "px";
+
+                    content.style.border = "2px #778da9"
+                    content.style.borderStyle = "none solid solid solid"
+                    this.style.borderRadius = "10px 10px 0 0";
+                    this.style.borderBottom = "none";
+
+
                 }
             });
         }

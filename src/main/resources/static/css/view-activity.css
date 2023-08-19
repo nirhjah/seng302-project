@@ -386,18 +386,17 @@ hr.rounded {
 
 
 .score-display {
-    height: 280px;
+    height: fit-content;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+    box-shadow: 0 0 5px rgba(0, 0, 0, .5);
     border-radius: 20px;
     position: relative;
     flex: 1;
     background:#415A77;
     color:white;
-
+    padding-bottom: 5%;
     float: left;
-
     width: 50%;
     margin-left: 3%;
     margin-top: 5%;
@@ -407,16 +406,15 @@ hr.rounded {
 
 
 .goalFacts button {
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     padding: 15px;
-    border-radius: 10px;
+    border-radius: 10px 10px 10px 10px;
     display: flex;
     justify-content: space-between;
-    width: 330px;
+    width: 320px;
     height: 50px;
-    margin: 5% 5% 1% 10%;
+    margin: 5% 3% 3% 4%;
     background-color: white;
-    border: none;
+    border: 2px solid #778da9;
 
 }
 
@@ -424,6 +422,9 @@ hr.rounded {
     overflow:hidden;
     overflow-y:scroll;
     height: 400px;
+    margin-left: 57%;
+    border: 4px solid #415A77;
+    border-radius: 0 0 20px 20px;
 }
 
 
@@ -433,45 +434,16 @@ hr.rounded {
     font-weight: 600;
     text-decoration-thickness: 2px;
     text-align: left;
-    margin-bottom: 10px;
     float: left;
-}
-
-
-/*.goalFacts h4 {
-    top: 40px;
-    right: 28%;
-    text-align: left;
-    font-size: 20px;
-    margin-top: 5px;
-    float: right;
-    margin-left: 85px;
-}*/
-
-.time-header {
-    font-size: 20px;
-    margin-top: 5px;
-    float: right;
-    margin-left: 10px;
-    padding-right: 40px;
-
 }
 
 .player-header {
     font-size: 20px;
-    margin-top: 5px;
     float: left;
-    margin-left: 45px
+    margin-left: 155px
 
 }
 
-.goal-header {
-    font-size: 20px;
-    margin-top: 5px;
-    float: left;
-    margin-left: 120px;
-
-}
 
 .goalFacts button .r {
     display: flex;
@@ -489,33 +461,88 @@ hr.rounded {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 0px 70px;
+    padding: 0px 45px;
     margin-top: 20px;
 }
 
+.winner-text {
+    font-size: 21px !important;
+}
+
+.team-scores {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0px 160px;
+}
+
+.timeDiv {
+    margin-top: -10px;
+    margin-right: -9px;
+    font-size: 15px;
+    color: grey;
+    margin-left: auto;
+}
 
 .goal-description {
     padding: 0 18px;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.2s ease-out;
-    background-color: #f1f1f1;
-    margin-left: 10%;
-    margin-right: 2%;
+    background-color: white;
+    margin-right: 12px;
+    margin-left: 4%;
+    margin-top: -12px;
     border-radius: 0 0 10px 10px;
+    border: 2px #778da9;
 }
 
+.goal-description hr,
+.goal-description p {
+    margin-bottom: 10px;
+}
+
+
+.goal-table-headers {
+    padding-bottom: 4%;
+    background-color: #415A77;
+    margin-left: 57%;
+    padding-top: 2%;
+    border-radius: 20px 20px 0 0;
+}
+
+.goal-table-headers h4 {
+    color: white;
+}
+
+
+.goal-text {
+    color: #1B263B;
+    float: left;
+    margin-right: auto;
+    margin-left: 55px;
+    font-size: 20px
+}
 
 @media (max-width: 700px) {
 
     .goal-description {
-        margin: 0 7% 0 2% !important;
+        margin: -12px 12px 0 3% !important;
+    }
+
+    .goal-text {
+        margin-left: 48px !important;
+    }
+
+    .goal-table-headers {
+        padding-bottom: 10% !important;
+        margin-left: 1.5% !important;
+        width: 100% !important;
     }
 
     .goalFacts ul {
-        width: 350px;
+        width: 340px;
         margin-left: 5px; !important;
-        padding-top: 15px;
     }
 
     .score-display {
@@ -524,25 +551,31 @@ hr.rounded {
     }
 
     .team-names-display {
-        padding: 0px 30px; !important;
+        padding: 0px 15px; !important;
+    }
+
+    .team-names-display h3 {
+        font-size: 23px !important;
+
+    }
+
+    .team-scores {
+        padding: 0px 90px; !important;
     }
 
     .goalFacts button {
-        margin-left: 2%; !important;
-        width: 320px; !important;
+        margin-left: 3%; !important;
+        width: 310px; !important;
     }
 
 
-    .goal-header {
-        margin-left: 110px; !important;
-    }
-
-    .time-header {
-        padding-right: 21px; !important;
+    .goalFacts {
+        padding-top: 80%;
     }
 
     .player-header {
-        margin-left: 25px; !important;
+        margin-left: 130px; !important;
+        margin-top: 5px;
     }
 
 }
@@ -554,11 +587,13 @@ hr.rounded {
 }
 
 
-.li-player-image {
+.scorer-player-image {
     width: 25px;
     height: 25px;
-    margin-right: 2px;
     border-radius: 50%;
     background-color: white;
+    margin-top: -2px;
+    margin-right: 10px;
+    border: 1px solid black;
 }
 
