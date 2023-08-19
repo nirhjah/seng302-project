@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.service.image;
 
 import nz.ac.canterbury.seng302.tab.entity.Club;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.helper.ImageService;
 import nz.ac.canterbury.seng302.tab.helper.ImageType;
 import nz.ac.canterbury.seng302.tab.service.ClubService;
@@ -23,6 +24,9 @@ public class ClubImageService extends ImageService<Club> {
 
     @Autowired
     private ClubService clubService;
+
+    @Autowired
+    private UserService userService;
 
     private final byte[] defaultClubLogo;
 
@@ -61,12 +65,23 @@ public class ClubImageService extends ImageService<Club> {
      * @param file The file that represents the image
      */
     public void updateClubLogo(Club club, MultipartFile file) {
+        Optional<User> optionalUser = userService.getCurrentUser();
+        if (optionalUser.isEmpty()) {
+            logger.error("No user.");
+            return;
+        }
+
         long id = club.getClubId();
         if (clubService.findClubById(id).isPresent()) {
             saveImage(club, file);
         }
     }
 
+    /**
+     * Returns a ResponseEntity for use in an @ResponseBody.
+     * @param id The id of the Entity in question
+     * @return A responseEntity
+     */
     public ResponseEntity<byte[]> getImageResponse(long id) {
         Optional<Club> optClub = clubService.findClubById(id);
         if (optClub.isPresent()) {

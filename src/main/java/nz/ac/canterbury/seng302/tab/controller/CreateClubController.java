@@ -44,6 +44,8 @@ public class CreateClubController {
     private final static String createAndEditClubFormString="CreateAndEditClubForm";
     private final static String selectedTeamString="selectedTeams";
 
+    private static final String FORM = "createClubForm";
+
     @Autowired
     public CreateClubController(ClubService clubService,UserService userService, TeamService teamService, ClubImageService clubImageService) {
         this.clubService = clubService;
@@ -69,10 +71,15 @@ public class CreateClubController {
         if (clubId != null) {
             Optional<Club> optClub = clubService.findClubById(clubId);
             if (optClub.isPresent()) {
+                // Then we are editing
+                model.addAttribute("isEditing", true);
                 prefillModelWithClub(model, optClub.get());
+            } else {
+                // We are creating a new club
+                model.addAttribute("isEditing", false);
             }
         }
-        return "createClubForm";
+        return FORM;
     }
 
     /**
@@ -137,13 +144,20 @@ public class CreateClubController {
         Optional<Club> optClub = clubService.findClubById(clubId);
         if (optClub.isPresent()) {
             Club editClub = optClub.get();
+            User user = optUser.get();
+
+            if (!editClub.isManagedBy(user)) {
+                // If we aren't managing the club, then redirect to createClub.
+                return FORM;
+            }
+
             editClub.setSport(sport);
             setTeamsClub(selectedTeams, editClub, bindingResult);
 
             if (bindingResult.hasErrors()) {
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 prefillModelWithClub(model, editClub);
-                return "createClubForm";
+                return FORM;
             }
 
             editClub.setName(name);
@@ -153,6 +167,7 @@ public class CreateClubController {
             clubImageService.updateClubLogo(editClub, clubLogo);
 
             clubService.updateOrAddClub(editClub);
+
             return "redirect:/view-club?clubID=" + editClub.getClubId();
 
         } else {
@@ -163,15 +178,17 @@ public class CreateClubController {
 
             if (bindingResult.hasErrors()) {
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return "createClubForm";
+                return FORM;
             }
+
+            // We need this line so that the ImageService knows the Id of the entity.
+            club = clubService.updateOrAddClub(club);
+
+            // If there's a logo, set it.
+            clubImageService.saveImage(club, clubLogo);
 
             clubService.updateOrAddClub(club);
 
-            if (Objects.equals(clubLogo.getOriginalFilename(), "")) {
-                // If there's a logo, set it.
-                clubImageService.updateClubLogo(club, clubLogo);
-            }
             return "redirect:/view-club?clubID=" + club.getClubId();
         }
     }

@@ -42,9 +42,6 @@ public class Club implements Identifiable, HasImage {
         this.location = location;
         this.sport = sport;
         this.manager = manager;
-
-        Resource resource = new ClassPathResource("/static/image/icons/club-logo.svg");
-        InputStream is = resource.getInputStream();
     }
 
     public ImageType getImageType() {

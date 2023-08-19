@@ -121,9 +121,11 @@ public abstract class ImageService<Entity extends Identifiable & HasImage> exten
             String extension = optExtension.get().toLowerCase();
             boolean ok = false;
             if (PNGS.contains(extension)) {
+                logger.info("Saving png/jpg file: {}", entity.getId());
                 entity.setImageType(ImageType.PNG_OR_JPEG);
                 ok = saveFile(entity.getId(), multipartFile);
             } else if (SVGS.contains(extension)){
+                logger.info("Saving SVG file: {}", entity.getId());
                 entity.setImageType(ImageType.SVG);
                 ok = saveFile(entity.getId(), multipartFile);
             }
