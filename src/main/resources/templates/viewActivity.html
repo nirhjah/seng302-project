@@ -43,7 +43,7 @@
             </div>
         </div>
 
-        <div class="content-box active" id="general-tab" style="margin-bottom: 50px">
+        <div class="content-box active" id="general-tab">
             <div class="content general">
                 <div class="general-activity-header" style="font-size: x-large; text-align: center; padding: 20px">
                     <h2 th:text="|${activity.activityType.name()}: ${activityStartTitle}|"></h2>
@@ -67,7 +67,7 @@
                         <h3 th:text="${activity.description}"></h3>
                     </div>
                         <div style="width: 100%; display: inline-block">
-                        <div class="submit-button" style="padding-top: 25px; width: 25%; float: left">
+                        <div class="submit-button" style="width: 25%; min-width: 150px; float: left; padding-top: 25px">
                             <a th:if="${activity.team==null || (activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}"
                                th:href="@{createActivity(edit=${activity.id})}" type="button">
                                 <button type="submit" id="editActivityBtn">Edit</button>
