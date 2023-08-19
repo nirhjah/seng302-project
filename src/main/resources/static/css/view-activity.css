@@ -396,9 +396,7 @@ hr.rounded {
     background:#415A77;
     color:white;
     padding-bottom: 5%;
-
     float: left;
-
     width: 50%;
     margin-left: 3%;
     margin-top: 5%;
@@ -408,19 +406,15 @@ hr.rounded {
 
 
 .goalFacts button {
-    /*
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    */
     padding: 15px;
     border-radius: 10px 10px 10px 10px;
     display: flex;
     justify-content: space-between;
     width: 340px;
     height: 50px;
-    /*margin: 0 5% 1% 0%;*/
     margin: 5% 0% 3% 1%;
     background-color: white;
-    border: 1px solid #415A77;
+    border: 2px solid #778da9;
 
 }
 
@@ -440,28 +434,7 @@ hr.rounded {
     font-weight: 600;
     text-decoration-thickness: 2px;
     text-align: left;
-    margin-bottom: 10px;
     float: left;
-}
-
-
-/*.goalFacts h4 {
-    top: 40px;
-    right: 28%;
-    text-align: left;
-    font-size: 20px;
-    margin-top: 5px;
-    float: right;
-    margin-left: 85px;
-}*/
-
-.time-header {
-    font-size: 20px;
-    margin-top: 5px;
-    float: right;
-    margin-left: 10px;
-    padding-right: 40px;
-
 }
 
 .player-header {
@@ -471,13 +444,6 @@ hr.rounded {
 
 }
 
-.goal-header {
-    font-size: 20px;
-    margin-top: 5px;
-    float: left;
-    margin-left: 120px;
-
-}
 
 .goalFacts button .r {
     display: flex;
@@ -510,7 +476,13 @@ hr.rounded {
     padding: 0px 160px;
 }
 
-
+.timeDiv {
+    margin-top: -10px;
+    margin-right: -3px;
+    font-size: 15px;
+    color: grey;
+    margin-left: auto;
+}
 
 .goal-description {
     padding: 0 18px;
@@ -522,10 +494,12 @@ hr.rounded {
     margin-left: 1%;
     margin-top: -12px;
     border-radius: 0 0 10px 10px;
+    border: 2px #778da9;
+}
 
-    border: 1px rgb(65, 90, 119);
-   /* border-style: none solid solid solid;
-    border: 1px #415A77;*/
+.goal-description hr,
+.goal-description p {
+    margin-bottom: 10px;
 }
 
 
@@ -542,11 +516,22 @@ hr.rounded {
 }
 
 
+.goal-text {
+    color: #1B263B;
+    float: left;
+    margin-right: auto;
+    margin-left: 65px;
+    font-size: 20px
+}
 
 @media (max-width: 700px) {
 
     .goal-description {
-        margin: -12px 5px 0 2% !important;
+        margin: -12px 12px 0 3% !important;
+    }
+
+    .goal-text {
+        margin-left: 48px !important;
     }
 
     .goal-table-headers {
@@ -579,21 +564,13 @@ hr.rounded {
     }
 
     .goalFacts button {
-        margin-left: 2%; !important;
-        width: 320px; !important;
+        margin-left: 3%; !important;
+        width: 310px; !important;
     }
 
 
     .goalFacts {
         padding-top: 80%;
-    }
-
-    .goal-header {
-        margin-left: 110px; !important;
-    }
-
-    .time-header {
-        padding-right: 21px; !important;
     }
 
     .player-header {
@@ -610,11 +587,13 @@ hr.rounded {
 }
 
 
-.li-player-image {
+.scorer-player-image {
     width: 25px;
     height: 25px;
-    margin-right: 2px;
     border-radius: 50%;
     background-color: white;
+    margin-top: -2px;
+    margin-right: 10px;
+    border: 1px solid black;
 }
 
