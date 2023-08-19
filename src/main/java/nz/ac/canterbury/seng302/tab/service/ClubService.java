@@ -55,4 +55,17 @@ public class ClubService {
     public Club updateOrAddClub(Club club) {
         return clubRepository.save(club);
     }
+
+
+    /**
+     * Retrieves the default club logo image as a Base64 encoded string.
+     * @return A Base64 encoded string representing the default club logo image.
+     * @throws IOException If an I/O error occurs while reading the default logo image.
+     */
+    public String setDefaultLogo() throws IOException {
+        Resource resource = new ClassPathResource("/static/image/icons/club-logo.svg");
+        InputStream is = resource.getInputStream();
+        return Base64.getEncoder().encodeToString(is.readAllBytes());
+    }
+
 }
