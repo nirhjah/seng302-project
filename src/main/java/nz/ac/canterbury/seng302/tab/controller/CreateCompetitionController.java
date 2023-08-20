@@ -168,7 +168,6 @@ public class CreateCompetitionController {
                         .filter(Objects::nonNull)
                         .collect(Collectors.toSet());
                 competition = new TeamCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), LocalDateTime.now(), LocalDateTime.now(), teams);
-                // TODO: (for the front end competition task, the current start and end time for the controller is wrong)
             } else {
                 Set<User> users = IDs.stream()
                         .map(userService::getUser)
