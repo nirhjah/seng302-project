@@ -90,11 +90,11 @@
                     </div>
                     <div class="sub-list">
                         <ul>
-                            <li>
-
+                            <li th:each="subsitution : ${activitySubstitutions}">
+                                <span class="player-in" th:text="${subsitution.playerOn.firstName + ' ' + subsitution.playerOn.lastName}"></span>
+                                <span class="player-out" th:text="${subsitution.playerOff.firstName + ' ' + subsitution.playerOff.lastName}"></span>
                             </li>
                         </ul>
-
                     </div>
 
                 </div>
