@@ -399,18 +399,18 @@ hr.rounded {
 
 .sub-table{
     height:40vh;
-    width:300px;
+    width:350px;
     margin:0 50px;
     border-radius:10px;
-    border:2px solid red;
+    border:4px solid #415a77;
 }
 
 .sub-header{
     height:20%;
-    background:red;
+    background:#415a77;
+    border-radius:5px 5px 0 0 ;
 }
 
 .sub-list{
     height:80%;
-    background:green;
 }
