@@ -165,30 +165,6 @@ public class ViewActivityController {
 
         model.addAttribute("activityFacts", activityFacts);
         List<Fact> factList = factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity);
-        // DEFAULT VALUES TO BE REMOVED ONCE ADD FACT IS COMPLETE
-        factList.add(new Fact("null", null, activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-        factList.add(new Fact("Hello", "time", activity));
-
-
 
         model.addAttribute("factList", factList);
 
