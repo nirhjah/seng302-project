@@ -91,8 +91,19 @@
                     <div class="sub-list">
                         <ul>
                             <li th:each="subsitution : ${activitySubstitutions}">
-                                <span class="player-in" th:text="${subsitution.playerOn.firstName + ' ' + subsitution.playerOn.lastName}"></span>
-                                <span class="player-out" th:text="${subsitution.playerOff.firstName + ' ' + subsitution.playerOff.lastName}"></span>
+                                <div class="sub-card">
+                                    <span class="player-in"
+                                          th:text="${subsitution.playerOn.firstName + ' ' + subsitution.playerOn.lastName}"></span>
+                                    <img class="swap-icon" th:src="@{/image/icons/swap.svg}"/>
+                                    <span class="player-out"
+                                          th:text="${subsitution.playerOff.firstName + ' ' + subsitution.playerOff.lastName}"></span>
+                                    <div class="dropdown-container">
+                                        <img class="dropdown-icon" th:src="@{/image/icons/dropdown.svg}" onclick="toggleDropdown(this)"/>
+                                    </div>
+                                </div>
+                                <div class="sub-desc">
+                                    <p>Testing this</p>
+                                </div>
                             </li>
                         </ul>
                     </div>
@@ -114,56 +125,57 @@
             <div class="content">
 
                 <div>
-                <div class="score-display">
-                    <div class="team-names-display">
+                    <div class="score-display">
+                        <div class="team-names-display">
 
-                        <h3 style="font-size: 30px" th:text="${activity.team}"></h3>
-                        <h3 style="font-weight: 100; font-size: 27px"> vs </h3>
-                        <h3 style="font-size: 30px">Opponent</h3>
+                            <h3 style="font-size: 30px" th:text="${activity.team}"></h3>
+                            <h3 style="font-weight: 100; font-size: 27px"> vs </h3>
+                            <h3 style="font-size: 30px">Opponent</h3>
+                        </div>
+
+                        <div class="team-scores"
+                             th:if="${activity.activityTeamScore != null && activity.otherTeamScore != null}">
+
+                            <h1 class="teamScore" th:text="${activity.activityTeamScore}"></h1>
+                            <h1 style="font-weight: 100"> - </h1>
+                            <h1 class="otherTeamScore" th:text="${activity.otherTeamScore}"></h1>
+                        </div>
+                        <h3 class="winner-text" id="winnerText" th:text="${outcomeString}"></h3>
                     </div>
 
-                    <div class="team-scores" th:if="${activity.activityTeamScore != null && activity.otherTeamScore != null}">
 
-                        <h1 class="teamScore" th:text="${activity.activityTeamScore}"></h1>
-                        <h1 style="font-weight: 100"> - </h1>
-                        <h1 class="otherTeamScore" th:text="${activity.otherTeamScore}"></h1>
-                    </div>
-                    <h3 class="winner-text" id="winnerText" th:text="${outcomeString}" ></h3>
-                </div>
+                    <div class="goalFacts">
+                        <div class="goal-table-headers">
+                            <h4 class="player-header"> Scoring </h4>
+                        </div>
+                        <ul>
+                            <li th:each="goal : ${activityGoals}">
+                                <button class="collapsible">
+                                    <img th:src="@{/user-profile-picture/{id}(id = ${goal.scorer.userId})}"
+                                         class="scorer-player-image" alt="Player Image">
+                                    <h3 th:text="${goal.scorer.firstName + ' ' + goal.scorer.lastName}"></h3>
+                                    <h4 class="goal-text"
+                                        th:text="${goal.goalValue == 1 ? goal.goalValue + ' pt' : goal.goalValue + ' pts'}"></h4>
 
+                                    <div class="timeDiv">
+                                        <h4 style="margin-top: 1px;" th:text="${goal.timeOfEvent} + '\''"></h4>
+                                    </div>
 
+                                </button>
 
-                <div class="goalFacts">
-                    <div class="goal-table-headers">
-                        <h4 class="player-header"> Scoring </h4>
-                    </div>
-                    <ul>
-                        <li th:each="goal : ${activityGoals}">
-                            <button class="collapsible" >
-                                <img th:src="@{/user-profile-picture/{id}(id = ${goal.scorer.userId})}"  class="scorer-player-image"  alt="Player Image">
-                                <h3 th:text="${goal.scorer.firstName + ' ' + goal.scorer.lastName}"> </h3>
-                                <h4 class="goal-text" th:text="${goal.goalValue == 1 ? goal.goalValue + ' pt' : goal.goalValue + ' pts'}"></h4>
-
-                                <div class="timeDiv">
-                                    <h4 style="margin-top: 1px;" th:text="${goal.timeOfEvent} + '\''"></h4>
+                                <div class="goal-description">
+                                    <hr class="solid">
+                                    <p th:text="${goal.description}"></p>
                                 </div>
-
-                            </button>
-
-                            <div class="goal-description">
-                                <hr class="solid">
-                                <p th:text="${goal.description}"></p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-
+                            </li>
+                        </ul>
+                    </div>
 
 
                 </div>
 
 
-</div>
+            </div>
 
         </div>
 
@@ -172,20 +184,32 @@
 
 
     <script>
+        function toggleDropdown(icon){
+            const subCard = icon.closest('.sub-card');
+            const subDesc = subCard.nextElementSibling;
+            console.log(subDesc.style.display)
+            if (subDesc.style.display === 'none' ||subDesc.style.display === '') {
+                icon.style.transform = 'rotate(180deg)';
+                subDesc.style.display='block';
+            }
+            else {
+                icon.style.transform = 'rotate(0deg)';
+                subDesc.style.display='none';
+            }
+        }
 
         var collapsible = document.getElementsByClassName("collapsible");
         var i;
 
         for (i = 0; i < collapsible.length; i++) {
-            collapsible[i].addEventListener("click", function() {
+            collapsible[i].addEventListener("click", function () {
                 this.classList.toggle("active");
                 var content = this.nextElementSibling;
-                if (content.style.maxHeight){
+                if (content.style.maxHeight) {
                     content.style.maxHeight = null;
                     content.style.border = "none";
                     this.style.borderRadius = "10px 10px 10px 10px";
                     this.style.borderBottom = "2px solid #778da9"
-
 
 
                 } else {
@@ -200,7 +224,6 @@
                 }
             });
         }
-
 
 
         const tabs = document.querySelectorAll('.tab');
