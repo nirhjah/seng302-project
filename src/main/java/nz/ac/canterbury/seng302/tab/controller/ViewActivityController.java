@@ -185,10 +185,10 @@ public class ViewActivityController {
     private String outcomeString(Activity activity) {
         String outcomeString = "";
         if (activity.getOutcome() == ActivityOutcome.Win) {
-            outcomeString = "Winner: Team A";
+            outcomeString = "Winner: " + activity.getTeam().getName();
         }
         if (activity.getOutcome() == ActivityOutcome.Loss) {
-            outcomeString = "Winner: Team B";
+            outcomeString = "Winner: Opponent Team";
         }
         if (activity.getOutcome() == ActivityOutcome.Draw) {
             outcomeString = "Draw";
