@@ -647,8 +647,13 @@ hr.rounded {
 .sub-list{
     height:80%;
     padding:15px;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 .sub-list li{
-    background:red;
+    height:60px;
+    margin-bottom:15px;
+    border: 2px solid rgba(65, 90, 119, 0.5);
+    border-radius:10px;
 }

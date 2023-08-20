@@ -1,12 +1,10 @@
 package nz.ac.canterbury.seng302.tab.authentication;
 
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
@@ -93,7 +91,13 @@ public class AdminAccount implements CommandLineRunner {
                 LocalDateTime.of(2026, 1,1,6,30),
                 LocalDateTime.of(2026, 1,1,8,30), admin,
                 new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
-        game.addFactList(List.of(new Substitution("testing this", "1h 20m", game, player, sub), new Goal("Goal was scored", "1h 40m", game, player, 1)));
+//        game.addFactList(List.of(new Substitution("testing this", "1h 20m", game, player, sub), new Goal("Goal was scored", "1h 40m", game, player, 1)));
+
+        List<Fact> factList = new ArrayList<>();
+        for (int i=0; i<10; i++){
+            factList.add(new Substitution("testing this", "1h 20m", game, player, sub));
+        }
+        game.addFactList(factList);
         activityRepository.save(game);
 
         return admin;
