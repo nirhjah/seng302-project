@@ -356,6 +356,11 @@ hr.rounded {
     .modal-content.event {
         transform: translate(-69%, 100%) !important;
         overflow-y: unset;
+        bottom: 40% !important;
+        width: 90% !important;
+        margin-left: 67% !important;
+        height: 40% !important;
+
     }
 
     .overall-scores-box {
@@ -525,6 +530,12 @@ hr.rounded {
 }
 
 @media (max-width: 700px) {
+
+    .submit-button {
+        top: 47% !important;
+        margin-left: 17% !important;
+    }
+
 
     .goal-description {
         margin: -12px 12px 0 3% !important;

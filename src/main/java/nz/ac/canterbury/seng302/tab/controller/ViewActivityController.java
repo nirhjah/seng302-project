@@ -211,7 +211,7 @@ public class ViewActivityController {
      * @return  view activity page
      */
     @PostMapping("/overallScore")
-    public String createEvent(
+    public String overallScoreForm(
             @RequestParam(name = "actId", defaultValue = "-1") long actId,
             @RequestParam(name = "overallScoreTeam", defaultValue = "") String overallScoreTeam,
             @RequestParam(name = "overallScoreOpponent", defaultValue = "") String overallScoreOpponent,
@@ -243,6 +243,10 @@ public class ViewActivityController {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             redirectAttributes.addFlashAttribute("scoreInvalid", "Leave Modal Open");
             redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
+
+            redirectAttributes.addFlashAttribute("stayOnTab_name", "scoreTab");
+            redirectAttributes.addFlashAttribute("stayOnTab_index", 3);
+
             return viewActivityRedirectUrl;
         }
 
@@ -253,6 +257,9 @@ public class ViewActivityController {
         }
 
         activityService.updateOrAddActivity(activity);
+
+        redirectAttributes.addFlashAttribute("stayOnTab_name", "scoreTab");
+        redirectAttributes.addFlashAttribute("stayOnTab_index", 3);
 
         return viewActivityRedirectUrl;
 
@@ -414,6 +421,7 @@ public class ViewActivityController {
 
         activity.addFactList(factList);
         activityService.updateOrAddActivity(activity);
+
 
         return viewActivityRedirectUrl;
     }

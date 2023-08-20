@@ -24,7 +24,7 @@
 
     <div class="wrapper-profile" id="wrapper-profile">
         <div class="tab-box">
-            <div class="tab active">
+            <div class="tab active" id="generalTab">
                 <img class="tab-icon" th:src="@{/image/icons/activity.png}"/>
                 <button class="tab-button"> General &nbsp;</button>
             </div>
@@ -32,12 +32,12 @@
                 <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
                 <button class="tab-button" > Formations &nbsp;</button>
             </div>
-            <div class="tab">
+            <div class="tab" id="factsTab">
                 <img class ="tab-icon" th:src="@{/image/icons/editform.svg}"/>
                 <button class="tab-button" > Facts &nbsp;</button>
                 <div class="tab-line"></div>
             </div>
-            <div class="tab" id="score-tab" th:if="${canShowScores}">
+            <div class="tab" id="scoreTab" th:if="${canShowScores}">
                 <img class ="tab-icon"  th:src="@{/image/icons/score.svg}"/>
                 <button class="tab-button" > Score &nbsp;</button>
             </div>
@@ -116,8 +116,37 @@
                     <h3 class="winner-text" id="winnerText" th:text="${outcomeString}" ></h3>
                 </div>
 
-                    <div class="submit-button">
-                        <button th:unless="${noFacts}" onclick="modal.style.display = 'block'" type="button">Add Overall Score</button>
+
+
+
+                <div class="goalFacts">
+                    <div class="goal-table-headers">
+                        <h4 class="player-header"> Scoring </h4>
+                    </div>
+                    <ul>
+                        <li th:each="goal : ${activityGoals}">
+                            <button class="collapsible" >
+                                <img th:src="@{/user-profile-picture/{id}(id = ${goal.scorer.userId})}"  class="scorer-player-image"  alt="Player Image">
+                                <h3 th:text="${goal.scorer.firstName + ' ' + goal.scorer.lastName}"> </h3>
+                                <h4 class="goal-text" th:text="${goal.goalValue == 1 ? goal.goalValue + ' pt' : goal.goalValue + ' pts'}"></h4>
+
+                                <div class="timeDiv">
+                                    <h4 style="margin-top: 1px;" th:text="${goal.timeOfEvent} + '\''"></h4>
+                                </div>
+
+                            </button>
+
+                            <div class="goal-description">
+                                <hr class="solid">
+                                <p th:text="${goal.description}"></p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+
+                    <div class="submit-button" style="position: absolute; top: 75%; margin-left: 2%">
+                        <button style="width: 160%;" th:unless="${noFacts}" onclick="modal.style.display = 'block'" type="button">Add Overall Score</button>
                     </div>
 
 
@@ -149,42 +178,17 @@
                                 <label class="helpText"> Scores for both teams should be of same type i.e either 12-4 and 9-3 or 23 and 18 </label>
 
 
-                                <div class="submit-button">
-                                    <button style="width: 30% !important;" id="createEvent" type="submit" class="registerLoginButton">Add activity statistics</button>
+                                <div class="submit-button" style="padding-top: 5%;">
+                                    <button id="createEvent" type="submit" class="registerLoginButton">Add activity statistics</button>
                                 </div>
+
+                                <span id="stayOnTab_Name" style="display: none;" th:text="${stayOnTab_name}"></span>
+                                <span id="stayOnTab_index" style="display: none;" th:text="${stayOnTab_index}"></span>
 
                             </form>
                         </div>
 
                     </div>
-
-
-
-
-                <div class="goalFacts">
-                    <div class="goal-table-headers">
-                        <h4 class="player-header"> Scoring </h4>
-                    </div>
-                    <ul>
-                        <li th:each="goal : ${activityGoals}">
-                            <button class="collapsible" >
-                                <img th:src="@{/user-profile-picture/{id}(id = ${goal.scorer.userId})}"  class="scorer-player-image"  alt="Player Image">
-                                <h3 th:text="${goal.scorer.firstName + ' ' + goal.scorer.lastName}"> </h3>
-                                <h4 class="goal-text" th:text="${goal.goalValue == 1 ? goal.goalValue + ' pt' : goal.goalValue + ' pts'}"></h4>
-
-                                <div class="timeDiv">
-                                    <h4 style="margin-top: 1px;" th:text="${goal.timeOfEvent} + '\''"></h4>
-                                </div>
-
-                            </button>
-
-                            <div class="goal-description">
-                                <hr class="solid">
-                                <p th:text="${goal.description}"></p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
 
 
 
@@ -206,6 +210,7 @@
         var collapsible = document.getElementsByClassName("collapsible");
         var i;
 
+
         for (i = 0; i < collapsible.length; i++) {
             collapsible[i].addEventListener("click", function() {
                 this.classList.toggle("active");
@@ -215,30 +220,57 @@
                     content.style.border = "none";
                     this.style.borderRadius = "10px 10px 10px 10px";
                     this.style.borderBottom = "2px solid #778da9"
-
-
-
                 } else {
                     content.style.maxHeight = content.scrollHeight + 5 + "px";
-
                     content.style.border = "2px #778da9"
                     content.style.borderStyle = "none solid solid solid"
                     this.style.borderRadius = "10px 10px 0 0";
                     this.style.borderBottom = "none";
-
-
                 }
             });
         }
 
 
 
+        //tab functionality
         const tabs = document.querySelectorAll('.tab');
         const tabLine = document.querySelector('.tab-line');
         const displayBox = document.querySelectorAll('.content-box');
         const displayContent = document.querySelectorAll('.content');
-        const wrapperProfile = document.getElementById("wrapper-profile")
 
+
+        //Functionality for going back to tab after form submission
+
+        var stayOnTab_Name =  document.getElementById("stayOnTab_Name").innerHTML;
+        var stayOnTab_Index =  document.getElementById("stayOnTab_index").innerHTML;
+
+        console.log("tabname" + stayOnTab_Name);
+        console.log("tabindex" + stayOnTab_Index);
+
+        if (stayOnTab_Name === "scoreTab" || stayOnTab_Name === "generalTab" || stayOnTab_Name === "formations-tab" || stayOnTab_Name === "factsTab") {
+            var tabToBeActive = document.getElementById(stayOnTab_Name)
+
+            console.log(tabToBeActive)
+            console.log(stayOnTab_Name)
+            tabs.forEach(otherTab => {
+                otherTab.classList.remove('active');
+            });
+            tabToBeActive.classList.add('active')
+
+            displayBox.forEach(box => {
+                box.classList.remove('active')
+            });
+            displayBox[stayOnTab_Index].classList.add('active');
+            displayContent.forEach(content => {
+                content.classList.remove('active')
+            });
+            displayContent[stayOnTab_Index].classList.add('active');
+
+        }
+
+
+
+        //Functionality for clicking on tabs
         tabs.forEach((tab, index) => {
             tab.addEventListener('click', (e) => {
                 tabs.forEach(otherTab => {
