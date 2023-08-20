@@ -597,3 +597,6 @@ hr.rounded {
     border: 1px solid black;
 }
 
+table, th, td {
+    border: 1px solid #0b2239;
+}
