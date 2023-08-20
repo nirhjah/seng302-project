@@ -25,7 +25,7 @@ public class DefaultFunctions {
     }
 
     public static void pwCreateFormation() {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/profile?teamID=1");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=1");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("div.tab#formations-tab").click();
         PlaywrightBrowser.page.locator("li#create-formation-li").click();

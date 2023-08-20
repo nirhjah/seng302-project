@@ -6,10 +6,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
-import nz.ac.canterbury.seng302.tab.service.CompetitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,20 +35,22 @@ import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
  */
 @Controller
 public class CreateTeamFormController {
-
+    
     Logger logger = LoggerFactory.getLogger(CreateTeamFormController.class);
 
-    @Autowired
+    private static final String CREATE_TEAM_TEMPLATE = "createTeamForm";
+    private static final String REDIRECT_HOME = "redirect:/home";
+    private static final String IS_EDITING_KEY = "isEditing";
+
     private TeamService teamService;
-
-    @Autowired
     private SportService sportService;
-
-    @Autowired
     private UserService userService;
 
-    @Autowired
-    private CompetitionService competitionService;
+    public CreateTeamFormController(TeamService teamService, SportService sportService, UserService userService) {
+        this.teamService = teamService;
+        this.sportService = sportService;
+        this.userService = userService;
+    }
 
     /**
      * Gives all the necessary regex to the HTML front-end, so validation can occur
@@ -83,10 +83,6 @@ public class CreateTeamFormController {
                 trimmedPostcode, trimmedCountry);
     }
 
-    private static final String CREATE_TEAM_TEMPLATE = "createTeamForm";
-
-    private static final String REDIRECT_HOME = "redirect:/home";
-
     /**
      * Triggers the generation of a new token for a team
      * @param teamID the id of the team.
@@ -103,7 +99,7 @@ public class CreateTeamFormController {
                 logger.info("POST /generateTeamToken, new token: {}", team.getToken());
             }
         }
-        return String.format("redirect:./profile?teamID=%s", teamID);
+        return String.format("redirect:./team-info?teamID=%s", teamID);
     }
 
     /**
@@ -116,8 +112,8 @@ public class CreateTeamFormController {
             CreateAndEditTeamForm createAndEditTeamForm) throws MalformedURLException {
 
         logger.info("GET /createTeam - new team");
-
         prefillModel(model, request);
+        model.addAttribute(IS_EDITING_KEY, false);
 
         URL url = new URL(request.getRequestURL().toString());
         String path = (url.getPath() + "/..");
@@ -126,8 +122,6 @@ public class CreateTeamFormController {
 
         List<String> knownSports = sportService.getAllSportNames();
 
-        //Add Default ID BC OTHERWISE EDIT TEAM APPEARS
-        model.addAttribute("teamID", -1);
         model.addAttribute("knownSports", knownSports);
  
         return CREATE_TEAM_TEMPLATE;
@@ -146,12 +140,14 @@ public class CreateTeamFormController {
 
         logger.info("GET /createTeam - updated team with ID={}", teamID);
         prefillModel(model, request);
+        model.addAttribute(IS_EDITING_KEY, true);
         
         // I'm starting to regret this pattern
         Optional<User> user = userService.getCurrentUser();
         if (user.isEmpty()) {
             return "redirect:login";
         }
+        
         // Does the team exist?
         Team team = teamService.getTeam(teamID);
         if (team == null) {
@@ -163,6 +159,7 @@ public class CreateTeamFormController {
         }
 
         createAndEditTeamForm.prepopulate(team);
+        model.addAttribute("teamID", teamID);
 
         List<String> knownSports = sportService.getAllSportNames();
         model.addAttribute("knownSports", knownSports);
@@ -191,7 +188,9 @@ public class CreateTeamFormController {
             HttpServletResponse httpServletResponse,
             Model model,
             HttpServletRequest httpServletRequest) throws IOException {
-        logger.info("POST /createTeam - update team");
+        
+        boolean editingTeam = (teamID != -1);
+        logger.info("POST /createTeam - {} team", (editingTeam ? "updating" : "creating"));
 
 
         // I'm starting to regret this pattern
@@ -200,20 +199,18 @@ public class CreateTeamFormController {
             return REDIRECT_HOME;
         }
 
-        boolean editingTeam = (teamID != -1);
 
         // Are there form errors?
         if (bindingResult.hasErrors()) {
             logger.error("{}", bindingResult);
             prefillModel(model, httpServletRequest);
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            if (teamID != -1) {
-                model.addAttribute("teamID", teamID);
-            }
+            model.addAttribute("teamID", teamID);
+            model.addAttribute(IS_EDITING_KEY, editingTeam);
             logger.info("bad request");
             return CREATE_TEAM_TEMPLATE;
         }
-        
+
         Team team;
         if (editingTeam) {  // Updating an existing team
             // Does the team exist?
@@ -245,6 +242,6 @@ public class CreateTeamFormController {
             sportService.addSport(new Sport(trimmedSport));
         }
 
-        return String.format("redirect:./profile?teamID=%s", team.getTeamId());
+        return String.format("redirect:./team-info?teamID=%s", team.getTeamId());
     }
 }

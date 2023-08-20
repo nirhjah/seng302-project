@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.sql.Date;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -148,6 +150,18 @@ public class ViewActivityController {
 
         logger.info("activityFacts: {}", activityFacts);
         model.addAttribute("activity", activity);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE dd MMMM yyyy K:mm a");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("KK:mm a");
+
+        DateTimeFormatter titleFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+        model.addAttribute("activityStartTitle", activity.getActivityStart().format(titleFormatter));
+
+        if (activity.getActivityStart().toLocalDate().equals(activity.getActivityEnd().toLocalDate())) {
+            model.addAttribute("activityDateTime", activity.getActivityStart().format(formatter)
+                    .concat(" - ").concat(activity.getActivityEnd().format(timeFormatter)));
+        } else {
+            model.addAttribute("activityDateTime", activity.getActivityStart().format(formatter).concat(" - ").concat(activity.getActivityEnd().format(formatter)));
+        }
 
         model.addAttribute("activityFacts", activityFacts);
         List<Fact> factList = factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity);
@@ -184,6 +198,7 @@ public class ViewActivityController {
         model.addAttribute("defaultFactType", FactType.FACT);
 
         model.addAttribute("outcomeString", outcomeString(activity));
+        model.addAttribute("currentUser", userService.getCurrentUser());
         populateOther(model, activity);
 
         return "viewActivity";
@@ -197,10 +212,10 @@ public class ViewActivityController {
     private String outcomeString(Activity activity) {
         String outcomeString = "";
         if (activity.getOutcome() == ActivityOutcome.Win) {
-            outcomeString = "Winner: Team A";
+            outcomeString = "Winner: " + activity.getTeam().getName();
         }
         if (activity.getOutcome() == ActivityOutcome.Loss) {
-            outcomeString = "Winner: Team B";
+            outcomeString = "Winner: Opponent Team";
         }
         if (activity.getOutcome() == ActivityOutcome.Draw) {
             outcomeString = "Draw";

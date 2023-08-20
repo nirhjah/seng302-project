@@ -136,17 +136,28 @@
     background:#415A77;
     color:white;
 }
+
+.score-display h3,
+.score-display h1,
+.score-display h4,
 .act-details h3,
 .act-details h4 {
     margin: 10px 0;
 }
 
+.score-display h3,
 .act-details h3{
     text-align:center;
     padding-top:15px;
     font-size:23px;
 }
 
+.score-display h1 {
+    text-align:center;
+    padding-top:15px;
+}
+
+.score-display h4,
 .act-details h4{
     padding-left:28px;
     font-size:19px;
@@ -261,7 +272,7 @@
     font-family:sans-serif;
 }
 
-.act-score .team-names span{
+.act-score .team-names h3{
     padding-right:25px;
     font-size:18px;
     color:#415A77;
@@ -371,6 +382,219 @@ hr.rounded {
 
 .submit-button {
     margin: unset;
+}
+
+
+.score-display {
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 5px rgba(0, 0, 0, .5);
+    border-radius: 20px;
+    position: relative;
+    flex: 1;
+    background:#415A77;
+    color:white;
+    padding-bottom: 5%;
+    float: left;
+    width: 50%;
+    margin-left: 3%;
+    margin-top: 5%;
+    margin-bottom: 10%;
+}
+
+
+
+.goalFacts button {
+    padding: 15px;
+    border-radius: 10px 10px 10px 10px;
+    display: flex;
+    justify-content: space-between;
+    width: 320px;
+    height: 50px;
+    margin: 5% 3% 3% 4%;
+    background-color: white;
+    border: 2px solid #778da9;
+
+}
+
+.goalFacts ul {
+    overflow:hidden;
+    overflow-y:scroll;
+    height: 400px;
+    margin-left: 57%;
+    border: 4px solid #415A77;
+    border-radius: 0 0 20px 20px;
+}
+
+
+.goalFacts h3 {
+    color: #1B263B;
+    font-size: 20px;
+    font-weight: 600;
+    text-decoration-thickness: 2px;
+    text-align: left;
+    float: left;
+}
+
+.player-header {
+    font-size: 20px;
+    float: left;
+    margin-left: 155px
+
+}
+
+
+.goalFacts button .r {
+    display: flex;
+    align-items: center;
+}
+
+.goalFacts {
+    margin-top: 5%;
+    margin-right: 3%;
+    margin-bottom: 5%
+}
+
+
+.team-names-display {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0px 45px;
+    margin-top: 20px;
+}
+
+.winner-text {
+    font-size: 21px !important;
+}
+
+.team-scores {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0px 160px;
+}
+
+.timeDiv {
+    margin-top: -10px;
+    margin-right: -9px;
+    font-size: 15px;
+    color: grey;
+    margin-left: auto;
+}
+
+.goal-description {
+    padding: 0 18px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    background-color: white;
+    margin-right: 12px;
+    margin-left: 4%;
+    margin-top: -12px;
+    border-radius: 0 0 10px 10px;
+    border: 2px #778da9;
+}
+
+.goal-description hr,
+.goal-description p {
+    margin-bottom: 10px;
+}
+
+
+.goal-table-headers {
+    padding-bottom: 4%;
+    background-color: #415A77;
+    margin-left: 57%;
+    padding-top: 2%;
+    border-radius: 20px 20px 0 0;
+}
+
+.goal-table-headers h4 {
+    color: white;
+}
+
+
+.goal-text {
+    color: #1B263B;
+    float: left;
+    margin-right: auto;
+    margin-left: 55px;
+    font-size: 20px
+}
+
+@media (max-width: 700px) {
+
+    .goal-description {
+        margin: -12px 12px 0 3% !important;
+    }
+
+    .goal-text {
+        margin-left: 48px !important;
+    }
+
+    .goal-table-headers {
+        padding-bottom: 10% !important;
+        margin-left: 1.5% !important;
+        width: 100% !important;
+    }
+
+    .goalFacts ul {
+        width: 340px;
+        margin-left: 5px; !important;
+    }
+
+    .score-display {
+        width: 300px;
+        margin-left: 8%; !important;
+    }
+
+    .team-names-display {
+        padding: 0px 15px; !important;
+    }
+
+    .team-names-display h3 {
+        font-size: 23px !important;
+
+    }
+
+    .team-scores {
+        padding: 0px 90px; !important;
+    }
+
+    .goalFacts button {
+        margin-left: 3%; !important;
+        width: 310px; !important;
+    }
+
+
+    .goalFacts {
+        padding-top: 80%;
+    }
+
+    .player-header {
+        margin-left: 130px; !important;
+        margin-top: 5px;
+    }
+
+}
+
+
+
+.collapsible:hover {
+    cursor: pointer;
+}
+
+
+.scorer-player-image {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: white;
+    margin-top: -2px;
+    margin-right: 10px;
+    border: 1px solid black;
 }
 
 table, th, td {

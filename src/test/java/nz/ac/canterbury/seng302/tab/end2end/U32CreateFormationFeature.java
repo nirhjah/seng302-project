@@ -1,12 +1,10 @@
 package nz.ac.canterbury.seng302.tab.end2end;
 
 import com.microsoft.playwright.ElementHandle;
-import com.microsoft.playwright.options.LoadState;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import nz.ac.canterbury.seng302.tab.service.FormationService;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.Arrays;
@@ -29,7 +27,7 @@ public class U32CreateFormationFeature {
 
     @Given("I am on my team’s profile")
     public void iAmOnMyTeamSProfile() throws Exception {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/profile?teamID=1");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=1");
     }
 
     @When("I click on a UI element to see all the team’s formations")
