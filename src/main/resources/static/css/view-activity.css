@@ -360,6 +360,16 @@ hr.rounded {
         float: none !important;
         margin-left: 50% !important;
     }
+
+    #formation-tab .content{
+        flex-direction:column !important;
+        justify-content:center;
+        align-items:center;
+    }
+    .sub-table{
+        margin-top:30px !important;
+    }
+
 }
 
 .helpText {
@@ -371,4 +381,36 @@ hr.rounded {
 
 .submit-button {
     margin: unset;
+}
+
+#formation-tab{
+    height:fit-content;
+    padding: 50px 25px;
+
+}
+.formation-outer{
+    width:50%;
+}
+
+#formation-tab .content{
+    display:flex;
+    flex-direction:row;
+}
+
+.sub-table{
+    height:40vh;
+    width:300px;
+    margin:0 50px;
+    border-radius:10px;
+    border:2px solid red;
+}
+
+.sub-header{
+    height:20%;
+    background:red;
+}
+
+.sub-list{
+    height:80%;
+    background:green;
 }

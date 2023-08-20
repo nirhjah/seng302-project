@@ -1,14 +1,16 @@
 package nz.ac.canterbury.seng302.tab.authentication;
 
-import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import org.springframework.beans.factory.annotation.Value;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -28,13 +30,15 @@ public class AdminAccount implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private final ActivityRepository activityRepository;
     private String adminEmail;
     private String adminPassword;
 
-    public AdminAccount(UserRepository userRepository, PasswordEncoder passwordEncoder,
+    public AdminAccount(UserRepository userRepository,ActivityRepository activityRepository, PasswordEncoder passwordEncoder,
             @Value("${adminEmail:admin@gmail.com}") String adminEmail,
             @Value("${adminPassword:1}") String adminPassword) {
         this.userRepository = userRepository;
+        this.activityRepository= activityRepository;
         this.passwordEncoder = passwordEncoder;
         this.adminEmail = adminEmail;
         this.adminPassword = adminPassword;
@@ -63,7 +67,7 @@ public class AdminAccount implements CommandLineRunner {
     /**
      * Creates an admin account if one doesn't exist, or returns the existing one.
      */
-    private User createOrGetAdminAccount() throws IOException {
+    private User createOrGetAdminAccount() throws Exception {
         // Don't create a duplicate admin
         Optional<User> currentAdmin = userRepository.findByEmail(adminEmail);
         if (currentAdmin.isPresent()) {
@@ -79,6 +83,17 @@ public class AdminAccount implements CommandLineRunner {
         admin.setFavoriteSports(List.of(sport));
         // You need to confirm your email before you can log in.
         admin.confirmEmail();
+
+        User sub = new User("Hee", "Account", "tab@gmail.com", "password",
+                new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
+        User player = new User("Test", "Account", "tab.team900@gmail.com", "password",
+                new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
+        Activity game = new Activity(ActivityType.Game, null, "A Test Game",
+                LocalDateTime.of(2026, 1,1,6,30),
+                LocalDateTime.of(2026, 1,1,8,30), admin,
+                new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
+        game.addFactList(List.of(new Substitution("testing this", "1h 20m", game, player, sub)));
+        activityRepository.save(game);
 
         return admin;
     }
