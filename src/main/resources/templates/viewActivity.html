@@ -31,14 +31,14 @@
                 <img class="tab-icon" th:src="@{/image/icons/activity.png}"/>
                 <button class="tab-button"> General &nbsp;</button>
             </div>
-            <div class="tab" id="formations-tab" th:if="${canShowScores}">
-                <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
-                <button class="tab-button" > Formations &nbsp;</button>
-            </div>
             <div class="tab">
                 <img class ="tab-icon" id="factsTab" th:src="@{/image/icons/editform.svg}"/>
                 <button class="tab-button" > Facts &nbsp;</button>
                 <div class="tab-line"></div>
+            </div>
+            <div class="tab" id="formations-tab" th:if="${canShowScores}">
+                <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
+                <button class="tab-button" >Formations &nbsp;</button>
             </div>
             <div class="tab" id="scoreTab" th:if="${canShowScores}">
                 <img class ="tab-icon"  th:src="@{/image/icons/score.svg}"/>
@@ -82,19 +82,37 @@
             </div>
         </div>
 
-        <div class="content-box" id="facts-tab" style="margin-bottom: 500px">
-            <div class="content">
-
+        <div class="content-box" id="facts-tab" style="margin-bottom: 16px">
+            <div class="content" style="height: 400px; overflow: auto;">
+                <div class="submit-button" style="padding-top: 10px; padding-bottom: 10px">
+                    <button style="width: 50%">Add Fact</button>
+                </div>
+                <table style="padding: 15px; border-collapse: collapse; border: 2px solid; margin:2%; width:96%">
+                    <thead style="background-color: #0b2239">
+                    <tr>
+                        <th style="width: 30%; background-color: #0b2239"> Time </th>
+                        <th style="width: 70%; background-color: #0b2239"> Description </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${factList.isEmpty()}">
+                        <td colspan="2"> No Recorded Facts </td>
+                    </tr>
+                    <tr th:each="fact : ${factList}">
+                        <td><span th:text="${fact.timeOfEvent} ?: 'No Time Recorded'">No Time Listed</span></td>
+                        <td><span th:text="${fact.description}">Description</span></td>
+                    </tr>
+                    </tbody>
+                </table>
 
             </div>
         </div>
 
-
         <div class="content-box" style="margin-bottom: 500px">
-           <div class="content">
+            <div class="content">
 
 
-           </div>
+            </div>
         </div>
 
 
@@ -154,8 +172,6 @@
 
 
 </div>
-
-        </div>
 
 
     </div>
