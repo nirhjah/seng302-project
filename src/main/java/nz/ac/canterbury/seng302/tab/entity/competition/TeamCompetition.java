@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -40,19 +39,6 @@ public class TeamCompetition extends Competition {
     public TeamCompetition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd, Set<Team> teams) {
         super(name, grade, sport, location, competitionStart, competitionEnd);
         this.teams = teams;
-    }
-    
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Competition competition = (Competition) o;
-        return Objects.equals(super.competitionId, competition.getCompetitionId());
-    }
-
-    @Override
-    public int hashCode() {
-        return 31 + Objects.hash(competitionId, grade, sport);
     }
 
     /**

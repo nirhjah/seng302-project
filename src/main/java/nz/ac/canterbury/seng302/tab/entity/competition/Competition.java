@@ -78,6 +78,12 @@ public abstract class Competition {
         this.sport = sport;
     }
 
+    /**
+     * Compares this Competition instance with another object for equality. Two instances are considered equal if they have the same competition ID.
+     *
+     * @param o The object to compare against.
+     * @return true if the objects are equal, false otherwise.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -86,6 +92,11 @@ public abstract class Competition {
         return Objects.equals(competitionId, competition.getCompetitionId());
     }
 
+    /**
+     * Computes a hash code value for a competition. The hash code is calculated based on the competition ID, grade, and sport of the instance.
+     *
+     * @return A hash code value for this object.
+     */
     @Override
     public int hashCode() {
         return 31 + Objects.hash(competitionId, grade, sport);
