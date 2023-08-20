@@ -55,11 +55,11 @@
                 <div class="submit-button" style="padding-top: 10px; padding-bottom: 10px">
                     <button style="width: 50%">Add Fact</button>
                 </div>
-                <table style="padding: 15px; border-collapse: collapse; border: 2px solid ">
+                <table style="padding: 15px; border-collapse: collapse; border: 2px solid; margin:2%; width:96%">
                     <thead style="background-color: #0b2239">
                     <tr>
-                        <th style="width: 30%"> Time </th>
-                        <th style="width: 70%"> Description </th>
+                        <th style="width: 30%; background-color: #0b2239"> Time </th>
+                        <th style="width: 70%; background-color: #0b2239"> Description </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -67,8 +67,8 @@
                         <td colspan="2"> No Recorded Facts </td>
                     </tr>
                     <tr th:each="fact : ${factList}">
-                        <td><span th:text="${fact.timeOfEvent}">No Time Listed</span></td>
-                        <td><span th:text="${fact.description}"> Description</span></td>
+                        <td><span th:text="${fact.timeOfEvent} ?: 'No Time Recorded'">No Time Listed</span></td>
+                        <td><span th:text="${fact.description}">Description</span></td>
                     </tr>
                     </tbody>
                 </table>
