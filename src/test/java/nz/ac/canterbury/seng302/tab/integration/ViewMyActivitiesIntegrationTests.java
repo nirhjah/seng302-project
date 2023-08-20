@@ -317,7 +317,7 @@ public class ViewMyActivitiesIntegrationTests {
     public void iMTakenToTheTeamsProfilePage() throws Exception {
         Team teamMock = mock(Team.class);
         when(teamMock.isManager(user)).thenReturn(false);
-        MvcResult result = mockMvc.perform(get("/profile").param("teamID", selectedTeam.getTeamId().toString()))
+        MvcResult result = mockMvc.perform(get("/team-info").param("teamID", selectedTeam.getTeamId().toString()))
                 .andExpect(status().isOk()).andExpect(view().name("viewTeamForm"))
                 .andReturn();
         Assertions.assertEquals(selectedTeam.getTeamId(), result.getModelAndView().getModel().get("teamID"));

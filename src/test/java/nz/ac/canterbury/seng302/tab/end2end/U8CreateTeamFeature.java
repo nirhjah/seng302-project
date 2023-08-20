@@ -76,7 +76,7 @@ public class U8CreateTeamFeature {
     @Then("I am brought to this team's page")
     public void i_am_brought_to_this_team_s_page() throws Exception {
         URL url = new URL(PlaywrightBrowser.page.url());
-        assertEquals("/profile", url.getPath());
+        assertEquals("/team-info", url.getPath());
     }
 
     @Then("the team name, sport, and location are {string}, {string}, and {string}")

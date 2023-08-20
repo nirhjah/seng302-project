@@ -99,7 +99,7 @@ public class CreateTeamFormController {
                 logger.info("POST /generateTeamToken, new token: {}", team.getToken());
             }
         }
-        return String.format("redirect:./profile?teamID=%s", teamID);
+        return String.format("redirect:./team-info?teamID=%s", teamID);
     }
 
     /**
@@ -242,6 +242,6 @@ public class CreateTeamFormController {
             sportService.addSport(new Sport(trimmedSport));
         }
 
-        return String.format("redirect:./profile?teamID=%s", team.getTeamId());
+        return String.format("redirect:./team-info?teamID=%s", team.getTeamId());
     }
 }

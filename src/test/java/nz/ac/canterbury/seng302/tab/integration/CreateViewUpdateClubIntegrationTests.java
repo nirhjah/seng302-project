@@ -372,7 +372,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @Given("I am on the team’s profile page and the team belongs to a club,")
     public void i_am_on_the_team_s_profile_page_and_the_team_belongs_to_a_club() throws Exception {
-        mockMvc.perform(get("/profile")
+        mockMvc.perform(get("/team-info")
                         .param("teamID", team.getTeamId().toString()))
                 .andExpect(status().isOk());
     }
