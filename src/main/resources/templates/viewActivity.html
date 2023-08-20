@@ -95,11 +95,61 @@
         </div>
 
 
-        <div class="content-box" id="scores-tab" style="margin-bottom: 500px">
+        <div class="content-box" id="scores-tab">
             <div class="content">
 
+                <div>
+                <div class="score-display">
+                    <div class="team-names-display">
 
-            </div>
+                        <h3 style="font-size: 30px" th:text="${activity.team}"></h3>
+                        <h3 style="font-weight: 100; font-size: 27px"> vs </h3>
+                        <h3 style="font-size: 30px">Opponent</h3>
+                    </div>
+
+                    <div class="team-scores" th:if="${activity.activityTeamScore != null && activity.otherTeamScore != null}">
+
+                        <h1 class="teamScore" th:text="${activity.activityTeamScore}"></h1>
+                        <h1 style="font-weight: 100"> - </h1>
+                        <h1 class="otherTeamScore" th:text="${activity.otherTeamScore}"></h1>
+                    </div>
+                    <h3 class="winner-text" id="winnerText" th:text="${outcomeString}" ></h3>
+                </div>
+
+
+
+                <div class="goalFacts">
+                    <div class="goal-table-headers">
+                        <h4 class="player-header"> Scoring </h4>
+                    </div>
+                    <ul>
+                        <li th:each="goal : ${activityGoals}">
+                            <button class="collapsible" >
+                                <img th:src="@{/user-profile-picture/{id}(id = ${goal.scorer.userId})}"  class="scorer-player-image"  alt="Player Image">
+                                <h3 th:text="${goal.scorer.firstName + ' ' + goal.scorer.lastName}"> </h3>
+                                <h4 class="goal-text" th:text="${goal.goalValue == 1 ? goal.goalValue + ' pt' : goal.goalValue + ' pts'}"></h4>
+
+                                <div class="timeDiv">
+                                    <h4 style="margin-top: 1px;" th:text="${goal.timeOfEvent} + '\''"></h4>
+                                </div>
+
+                            </button>
+
+                            <div class="goal-description">
+                                <hr class="solid">
+                                <p th:text="${goal.description}"></p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+
+
+                </div>
+
+
+</div>
+
         </div>
 
 
@@ -109,6 +159,37 @@
 
 
     <script>
+
+        var collapsible = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < collapsible.length; i++) {
+            collapsible[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.maxHeight){
+                    content.style.maxHeight = null;
+                    content.style.border = "none";
+                    this.style.borderRadius = "10px 10px 10px 10px";
+                    this.style.borderBottom = "2px solid #778da9"
+
+
+
+                } else {
+                    content.style.maxHeight = content.scrollHeight + 5 + "px";
+
+                    content.style.border = "2px #778da9"
+                    content.style.borderStyle = "none solid solid solid"
+                    this.style.borderRadius = "10px 10px 0 0";
+                    this.style.borderBottom = "none";
+
+
+                }
+            });
+        }
+
+
+
         const tabs = document.querySelectorAll('.tab');
         const tabLine = document.querySelector('.tab-line');
         const displayBox = document.querySelectorAll('.content-box');
