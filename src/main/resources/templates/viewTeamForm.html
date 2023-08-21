@@ -77,42 +77,47 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="user-label">
-                                <img th:src="@{/image/icons/name.svg}"/>
-                                <div>
-                                    <h3 class="attribute-type">Name</h3>
-                                    <h3 data-cy="name" th:text="*{displayName}"></h3>
-                                </div>
-                            </div>
-                            <div class="user-label">
-                                <img th:src="@{/image/icons/sports-alt.svg}"/>
-                                <div>
-                                    <h3 class="attribute-type">Sport</h3>
-                                    <h3 data-cy="sport" th:text="*{displaySport}"></h3>
-                                </div>
-                            </div>
-                            <div class="user-label">
-                                <img th:src="@{/image/icons/location.svg}"/>
-                                <div>
-                                    <h3 class="attribute-type">Location</h3>
-                                    <h3 data-cy="location" th:text="*{displayLocation}"></h3>
-                                </div>
-                            </div>
-                            <div class="user-label" th:if="${clubId}">
-                                <div class="wrapper">
-                                    <div class ="logo">
-                                        <img th:src="@{/club-logo/{id}(id = ${clubId}">
-                                    </div>
-                                    <div class="club-info">
-                                        <h1 class="club-header">Club Profile</h1>
-                                        <div class="club-label">
-                                            <h3 th:text="|Name: *{clubName}|"></h3>
+                            <div class="float-container">
+                                
+                                    
+                                <div class="float-child">
+                                    <div class="user-label">
+                                        <img th:src="@{/image/icons/name.svg}"/>
+                                        <div>
+                                            <h3 class="attribute-type">Name</h3>
+                                            <h3 data-cy="name" th:text="*{displayName}"></h3>
                                         </div>
                                     </div>
+                                    <div class="user-label">
+                                        <img th:src="@{/image/icons/sports-alt.svg}"/>
+                                        <div>
+                                            <h3 class="attribute-type">Sport</h3>
+                                            <h3 data-cy="sport" th:text="*{displaySport}"></h3>
+                                        </div>
+                                    </div>
+                                    <div class="user-label">
+                                        <img th:src="@{/image/icons/location.svg}"/>
+                                        <div>
+                                            <h3 class="attribute-type">Location</h3>
+                                            <h3 data-cy="location" th:text="*{displayLocation}"></h3>
+                                        </div>
+                                    </div>
+                                        <div>
+                                            <h3 class="attribute-type">Location</h3>
+                                            <h3 data-cy="location" th:text="*{displayLocation}"></h3>
+                                        </div>
                                 </div>
-                                <div>
-                                    <h3 class="attribute-type">Location</h3>
-                                    <h3 data-cy="location" th:text="*{displayLocation}"></h3>
+                                <div class="float-child" th:if="${clubId}">
+                                    <a th:href="@{/view-club?clubID={id}(id=${clubId})}" class="club-link">
+                                        <div class="club-link">
+                                            <div class ="logo">
+                                                <img th:src="@{/club-logo/{id}(id = ${clubId})}">
+                                            </div>
+                                            <div class="club-info">
+                                                <h1 class="club-header" th:text="| *{clubName}|"></h1>
+                                            </div>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
