@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import nz.ac.canterbury.seng302.tab.repository.LineUpPositionRepository;
 import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,11 @@ public class LineUpService {
 
     @Autowired
     LineUpRepository lineUpRepository;
+
+    @Autowired
+    public LineUpService(LineUpRepository lineUpRepository) {
+        this.lineUpRepository = lineUpRepository;
+    }
 
     public Optional<List<LineUp>> findLineUpsByTeam(long id) {
         return lineUpRepository.findLineUpByTeamTeamId(id);

@@ -16,7 +16,7 @@
         <h1>[[${actId != null ? 'Edit' : 'Create'}]] Activity</h1>
     </div>
     <div class="wrapper">
-        <form th:action="@{createActivity}" th:object="${createActivityForm}" id="createActivityForm" method="post">
+        <form th:action="@{create-activity}" th:object="${createActivityForm}" id="createActivityForm" method="post">
             <input type="hidden" th:if="${actId != null}" th:name="actId" th:value="${actId}"/>
 
             <!--/* Activity Type dropdown */-->

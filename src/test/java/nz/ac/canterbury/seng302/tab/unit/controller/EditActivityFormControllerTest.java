@@ -118,7 +118,7 @@ public class EditActivityFormControllerTest {
     @Test
     public void testDisplayingEditActivityReturns200() throws Exception {
         when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
-        mockMvc.perform(get("/createActivity?edit={id}", activity.getId()))
+        mockMvc.perform(get("/create-activity?edit={id}", activity.getId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("createActivityForm"));
     }
@@ -880,7 +880,7 @@ public class EditActivityFormControllerTest {
                     {"1":"1-2-3","2":"2-3-4"}
                 """;
 
-        mockMvc.perform(get("/createActivity/get_team_formation")
+        mockMvc.perform(get("/create-activity/get_team_formation")
                         .param("teamId", String.valueOf(TEAM_ID)))
                 .andExpect(status().isOk());
     }
@@ -901,7 +901,7 @@ public class EditActivityFormControllerTest {
                     {"1":"1-2-3","2":"2-3-4"}
                 """;
 
-        mockMvc.perform(get("/createActivity/get_team_formation")
+        mockMvc.perform(get("/create-activity/get_team_formation")
                         .param("teamId", String.valueOf(TEAM_ID)))
                 .andExpect(status().isOk());
     }
@@ -913,7 +913,7 @@ public class EditActivityFormControllerTest {
         when(mockTeamService.getTeam(TEAM_ID)).thenReturn(otherTeam);
 
 
-        mockMvc.perform(get("/createActivity/get_team_formation")
+        mockMvc.perform(get("/create-activity/get_team_formation")
                         .param("teamId", String.valueOf(TEAM_ID)))
                 .andExpect(status().isForbidden())
                 .andExpect(content().string(""));
@@ -927,7 +927,7 @@ public class EditActivityFormControllerTest {
         when(mockTeamService.getTeam(TEAM_ID)).thenReturn(otherTeam);
 
 
-        mockMvc.perform(get("/createActivity/get_team_formation")
+        mockMvc.perform(get("/create-activity/get_team_formation")
                         .param("teamId", String.valueOf(TEAM_ID)))
                 .andExpect(status().isForbidden())
                 .andExpect(content().string(""));

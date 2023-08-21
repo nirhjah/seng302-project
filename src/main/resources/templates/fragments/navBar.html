@@ -17,7 +17,7 @@
                     <li class="navbar-create-button" sec:authorize="isAuthenticated()">
                         <div class="navbar-create-dropdown">
                             <a th:href="@{createTeam}">Create Team</a>
-                            <a th:href="@{createActivity}">Create Activity</a>
+                            <a th:href="@{create-activity}">Create Activity</a>
                             <a th:href="@{createClub}">Create Club</a>
                             <a th:href="@{create-competition}" sec:authorize="hasAnyRole('ROLE_USER', 'ADMIN')">Create Competition</a>
                         </div>

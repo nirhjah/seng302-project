@@ -1,6 +1,6 @@
 @create_activity
-Feature Activity Creation:
-  Scenario Page Exists for Creating Activity:
+Feature: Activity Creation
+  Scenario: Page Exists for Creating Activity
     Given I am anywhere on the system,
     When I click on a UI element to create an activity,
     Then I see a form to create an activity.

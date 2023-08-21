@@ -154,6 +154,7 @@ public class CreateActivityController {
                     ActivityFormValidators.FORMATION_DOES_NOT_EXIST_MSG));
             }
         }
+        System.out.println(bindingResult.getAllErrors());
     }
 
     /**
@@ -309,7 +310,7 @@ public class CreateActivityController {
      * A JSON API endpoint, which gives the formations of an associated team. Used by the createActivity page to update
      * @return A json object of type <code>{formationId: "formationString", ...}</code>
      */
-    @GetMapping(path = "/createActivity/get_team_formation", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/create-activity/get_team_formation", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<FormationInfo>> getTeamFormation(@RequestParam("teamId") long teamId) {
         logger.info("GET /createActivity/get_team_formation");
         // CHECK: Are we logged in?

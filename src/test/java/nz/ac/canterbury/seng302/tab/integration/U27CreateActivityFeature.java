@@ -94,6 +94,14 @@ public class U27CreateActivityFeature {
 
     private final LocalDateTime endDateTime = LocalDateTime.now().plus(2, ChronoUnit.DAYS);
 
+    private final String DEFAULT_ADDR_LINE_1 = "20 Kirkwood Ave";
+
+    private final String DEFAULT_POSTCODE = "8041";
+
+    private final String DEFAULT_CITY = "Christchurch";
+
+    private final String DEFAULT_COUNTRY = "New Zealand";
+
 
     private void setupMocking() {
         // get all the necessary beans
@@ -104,7 +112,6 @@ public class U27CreateActivityFeature {
         formationRepository = applicationContext.getBean(FormationRepository.class);
         lineUpRepository = applicationContext.getBean(LineUpRepository.class);
         lineUpPositionRepository = applicationContext.getBean(LineUpPositionRepository.class);
-
 
         // Delete leftover data
         userRepository.deleteAll();
@@ -121,6 +128,11 @@ public class U27CreateActivityFeature {
         federationService = Mockito.spy(applicationContext.getBean(FederationService.class));
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
+        activityService = Mockito.spy(new ActivityService(activityRepository));
+        formationService = Mockito.spy(new FormationService(formationRepository));
+        lineUpService = Mockito.spy(new LineUpService(lineUpRepository));
+        lineUpPositionService = Mockito.spy(new LineUpPositionService(lineUpPositionRepository));
+
         InviteToFederationManagerController inviteController = new InviteToFederationManagerController(
                 userService, emailService, federationService
         );
@@ -141,6 +153,7 @@ public class U27CreateActivityFeature {
         team = new Team("test1", "Hockey", location2);
 
         user.confirmEmail();
+        team.setManager(user);
         userRepository.save(user);
         teamRepository.save(team);
 
@@ -181,7 +194,11 @@ public class U27CreateActivityFeature {
                         .param("activityType", String.valueOf(defaultActivityType))
                         .param("description", String.valueOf(Grade.Age.ADULT))
                         .param("startDateTime", String.valueOf(startDateTime))
-                        .param("endDateTime", String.valueOf(endDateTime)))
+                        .param("endDateTime", String.valueOf(endDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().isFound())
                 .andExpect(view().name("viewActivityForm"));
     }

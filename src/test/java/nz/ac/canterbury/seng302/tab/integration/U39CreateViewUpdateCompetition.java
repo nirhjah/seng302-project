@@ -233,8 +233,9 @@ public class U39CreateViewUpdateCompetition {
 
     @And("I am shown a ui element that display full details for the competition.")
     public void iAmShownAUiElementThatDisplayFullDetailsForTheCompetition() throws Exception {
-        mockMvc.perform(get("/viewCompetition")
-                        .param("id", String.valueOf(competition.getCompetitionId())))
+        System.out.println(String.valueOf(competition.getCompetitionId()));
+        mockMvc.perform(get("/view-competition")
+                        .param("competitionID", String.valueOf(competition.getCompetitionId())))
                 .andExpect(status().isOk()) // Accepted 200
                 .andExpect(view().name("viewCompetitionForm"));
     }
