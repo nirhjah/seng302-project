@@ -333,6 +333,14 @@
 .overall-score-input {
     width: 50%;
     padding: 5px;
+    margin-left: 15px;
+    float: right;
+}
+
+.addOverallScoreIcon {
+    cursor: pointer;
+    width: 70%;
+    margin-left: 20%;
 }
 
 
@@ -370,6 +378,17 @@ hr.rounded {
 
 
 @media (max-width: 700px) {
+    .teamScoreDiv {
+        margin-left: -38px !important;
+    }
+
+
+    .addOverallScoreIcon {
+        cursor: pointer;
+        width: 34%;
+        margin-left: 33%;
+    }
+
     .modal-content.event, .overall-score-modal-content {
         transform: translate(-69%, 100%) !important;
         overflow-y: unset;
@@ -388,6 +407,7 @@ hr.rounded {
 
     .overall-scores-box {
         padding-bottom: 15% !important;
+        margin-left: -3% !important;
     }
 
     .view-activity-form {
@@ -397,7 +417,8 @@ hr.rounded {
 
     .opponentScoreDiv {
         float: none !important;
-        margin-left: 50% !important;
+        margin-left: 49% !important;
+        width: 60% !important;
     }
 }
 
