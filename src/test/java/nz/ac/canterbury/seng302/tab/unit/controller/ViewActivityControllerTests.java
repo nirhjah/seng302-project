@@ -3,8 +3,7 @@ package nz.ac.canterbury.seng302.tab.unit.controller;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -88,8 +87,10 @@ public class ViewActivityControllerTests {
     private Activity activity;
 
 
+
     @BeforeEach
     void beforeEach() throws IOException {
+        activityRepository.deleteAll();
         Date userDOB;
         try {
             userDOB = new SimpleDateFormat("YYYY-mm-dd").parse(USER_DOB);
@@ -105,6 +106,7 @@ public class ViewActivityControllerTests {
         Location activityLocation = new Location(ACTVITY_ADDRESS_LINE_1, ACTVITY_ADDRESS_LINE_2, ACTVITY_SUBURB,
                 ACTVITY_CITY, ACTVITY_POSTCODE, ACTVITY_COUNTRY);
         activity= new Activity(ActivityType.Game, team, "description",start, end, testUser, activityLocation);
+
         activityRepository.save(activity);
 
         List<Fact> factList = new ArrayList<>();
@@ -130,7 +132,7 @@ public class ViewActivityControllerTests {
         mockMvc.perform(get("/view-activity?activityID={id}","1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("viewActivity"))
-                .andExpect(MockMvcResultMatchers.model().attribute("activity", activity));
+                .andExpect(model().attribute("activity", activity));
     }
 
     @Test
@@ -215,6 +217,19 @@ public class ViewActivityControllerTests {
                 .andExpect(view().name("redirect:./view-activity?activityID=1"));
         verify(mockActivityService, times(0)).updateOrAddActivity(any());
 
+    }
+
+    @Test
+    public void testAddingOverallScoreBothSameCorrectFormat() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+
+        mockMvc.perform(post("/overallScore", 42L)
+                        .param("actId", "1")
+                        .param("overallScoreTeam", "5-3")
+                        .param("overallScoreOpponent", "2-6")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID=1"));
+        verify(mockActivityService, times(1)).updateOrAddActivity(any());
     }
 
 }
