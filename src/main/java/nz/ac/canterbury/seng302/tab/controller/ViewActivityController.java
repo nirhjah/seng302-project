@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
