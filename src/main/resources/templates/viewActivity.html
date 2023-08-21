@@ -22,13 +22,16 @@
 
 <div class="team-profile-form">
 
+    <span id="stayOnTab_Name" style="display: none;" th:text="${stayOnTab_name}"></span>
+    <span id="stayOnTab_index" style="display: none;" th:text="${stayOnTab_index}"></span>
+
     <div class="wrapper-profile" id="wrapper-profile">
         <div class="tab-box">
-            <div class="tab active">
+            <div class="tab active" id="generalTab">
                 <img class="tab-icon" th:src="@{/image/icons/activity.png}"/>
                 <button class="tab-button"> General &nbsp;</button>
             </div>
-            <div class="tab">
+            <div class="tab" id="factsTab" >
                 <img class ="tab-icon" th:src="@{/image/icons/editform.svg}"/>
                 <button class="tab-button" > Facts &nbsp;</button>
                 <div class="tab-line"></div>
@@ -37,7 +40,7 @@
                 <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
                 <button class="tab-button" >Formations &nbsp;</button>
             </div>
-            <div class="tab" id="score-tab" th:if="${canShowScores}">
+            <div class="tab" id="scoreTab" th:if="${canShowScores}">
                 <img class ="tab-icon"  th:src="@{/image/icons/score.svg}"/>
                 <button class="tab-button" > Score &nbsp;</button>
             </div>
@@ -159,6 +162,8 @@
                             </div>
                         </li>
                     </ul>
+
+
                 </div>
 
 
@@ -205,13 +210,44 @@
         }
 
 
-
         const tabs = document.querySelectorAll('.tab');
         const tabLine = document.querySelector('.tab-line');
         const displayBox = document.querySelectorAll('.content-box');
         const displayContent = document.querySelectorAll('.content');
-        const wrapperProfile = document.getElementById("wrapper-profile")
 
+
+        //functionality staying on tab after form submission
+        var stayOnTab_Name =  document.getElementById("stayOnTab_Name").innerHTML;
+        var stayOnTab_Index =  document.getElementById("stayOnTab_index").innerHTML;
+
+        console.log("tabname" + stayOnTab_Name);
+        console.log("tabindex" + stayOnTab_Index);
+
+        if (stayOnTab_Name === "scoreTab" || stayOnTab_Name === "generalTab" || stayOnTab_Name === "formations-tab" || stayOnTab_Name === "factsTab") {
+            var tabToBeActive = document.getElementById(stayOnTab_Name)
+
+            console.log(tabToBeActive)
+            console.log(stayOnTab_Name)
+            tabs.forEach(otherTab => {
+                otherTab.classList.remove('active');
+            });
+            tabToBeActive.classList.add('active')
+
+            displayBox.forEach(box => {
+                box.classList.remove('active')
+            });
+            displayBox[stayOnTab_Index].classList.add('active');
+            displayContent.forEach(content => {
+                content.classList.remove('active')
+            });
+            displayContent[stayOnTab_Index].classList.add('active');
+
+        }
+
+
+
+
+        //functionality for clicking on tabs
         tabs.forEach((tab, index) => {
             tab.addEventListener('click', (e) => {
                 tabs.forEach(otherTab => {
