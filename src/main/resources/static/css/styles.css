@@ -355,6 +355,7 @@ ul {
     color: black;
 }
 .multipleSelection {
+    position: relative;
     background-color: #415A77;
     font-family: "Noto Sans", sans-serif;
     font-size: 1em;

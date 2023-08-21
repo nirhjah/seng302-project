@@ -38,7 +38,8 @@
             </li>
         </ul>
     </div>
-    <div th:insert="fragments/pagination.html :: pagination(pageName='view-team-activities')"></div>
+    <div th:insert="~{fragments/pagination.html :: pagination(pageName='view-team-activities')}"></div>
+
     <footer>
         <p>
             Image by <a

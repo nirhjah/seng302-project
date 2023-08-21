@@ -4,8 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.helper.GenerateRandomTeams;
 import nz.ac.canterbury.seng302.tab.service.LocationService;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -22,9 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Spring Boot Controller for View Teams Form
@@ -70,16 +66,8 @@ public class ViewAllTeamsController {
     }
 
     private void populateFilterDropdowns(Model model) {
-        var sports = sportService.getAllSports()
-                .stream()
-                .map(Sport::getName)
-                .distinct()
-                .toList();
-        var cities = locationService.getLocationList()
-                .stream()
-                .map(Location::getCity)
-                .distinct()
-                .toList();
+        List<String> sports = teamService.getAllTeamSports();
+        List<String> cities = teamService.getAllTeamCities();
 
         model.addAttribute("sports", sports);
         model.addAttribute("cities", cities);
@@ -100,11 +88,6 @@ public class ViewAllTeamsController {
             Model model, HttpServletRequest request) {
         logger.info("GET /view-teams");
         model.addAttribute("httpServletRequest", request);
-        
-        // If no teams exist in the database
-        if (teamService.getNumberOfTeams() == 0) {
-            return "redirect:/home";
-        }
 
         int internalPageNo = pageNo - 1;
 

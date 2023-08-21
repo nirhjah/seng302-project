@@ -1,6 +1,7 @@
 
 package nz.ac.canterbury.seng302.tab.service;
 
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
 import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
 import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
@@ -77,6 +78,24 @@ public class CompetitionService {
      */
     public Competition updateOrAddCompetition(Competition competition) {
         return competitionRepository.save(competition);
+    }
+
+    /**
+     * Returns a list of competitions the given team is apart of
+     * @param team Team we want list of competitions of
+     * @return list of competitions team is apart of
+     */
+    public List<Competition> getAllCompetitionsWithTeam(Team team) {
+       List<Competition> competitionsTeamIsIn = new ArrayList<>();
+        for (Competition competition : getAllTeamCompetitions()) {
+            if (competition instanceof TeamCompetition) {
+                if (((TeamCompetition) competition).getTeams().contains(team)) {
+                    competitionsTeamIsIn.add(competition);
+                }
+            }
+        }
+        return competitionsTeamIsIn;
+
     }
 
     /**
