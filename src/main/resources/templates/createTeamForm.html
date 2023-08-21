@@ -104,7 +104,7 @@
             </div>
             <div th:if="${invalid_input != null}" th:text="${invalid_input}" class="error-message"></div>
             <div data-cy="cancel" class="cancel-link">
-                <a th:if="${isEditing}" th:href="@{profile(teamID=${teamID})}">Cancel</a>
+                <a th:if="${isEditing}" th:href="@{team-info(teamID=${teamID})}">Cancel</a>
                 <a th:unless="${isEditing}" th:href="@{home}">Cancel</a>
             </div>
         </form>
