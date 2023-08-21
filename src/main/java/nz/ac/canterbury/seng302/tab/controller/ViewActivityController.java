@@ -278,8 +278,6 @@ public class ViewActivityController {
      * @param actId       activity ID to add stats/event to
      * @param factType    selected fact type
      * @param description description of event
-     * @param overallScoreTeam  overall score for team
-     * @param overallScoreOpponent overall score for opponent
      * @param activityOutcome outcome of activity (win loss or draw) for team
      * @param time                 time of event
      * @param scorerId             user ID of scorer
@@ -298,8 +296,6 @@ public class ViewActivityController {
             @RequestParam(name = "actId", defaultValue = "-1") long actId,
             @RequestParam(name = "factType", defaultValue = "FACT")  FactType factType,
             @RequestParam(name = "description", defaultValue = "") String description,
-            @RequestParam(name = "overallScoreTeam", defaultValue = "") String overallScoreTeam,
-            @RequestParam(name = "overallScoreOpponent", defaultValue = "") String overallScoreOpponent,
             @RequestParam(name = "activityOutcomes", defaultValue = "None") ActivityOutcome activityOutcome,
             @RequestParam(name = "time") String time,
             @RequestParam(name = "goalValue", defaultValue = "1") int goalValue,
@@ -319,23 +315,12 @@ public class ViewActivityController {
         logger.info(String.format("got the player on id: %s", subOffId));
         logger.info(String.format("got the scorer id: %s", scorerId));
 
-        model.addAttribute(overallScoreTeamString, overallScoreTeam);
         model.addAttribute("httpServletRequest", request);
 
         Activity activity = activityService.findActivityById(actId);
         Fact fact;
         String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
 
-
-        if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 1) {
-            logger.info("scores not same type");
-            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "Both teams require scores of the same type"));
-        }
-
-        if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 2) {
-            logger.info("one score is empty");
-            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "Other score field cannot be empty"));
-        }
 
         if (factType == FactType.SUBSTITUTION && subOffId == subOnId) {
             logger.info("players cannot sub themselves");
@@ -420,12 +405,6 @@ public class ViewActivityController {
             activity.setActivityOutcome(activityOutcome);
         }
 
-
-
-        if (overallScoreTeam != null && overallScoreOpponent != null) {
-            activity.setOtherTeamScore(overallScoreOpponent);
-            activity.setActivityTeamScore(overallScoreTeam);
-        }
 
         activity.addFactList(factList);
         activityService.updateOrAddActivity(activity);

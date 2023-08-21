@@ -186,27 +186,19 @@ public class ViewActivityControllerTests {
 
     @Test
     public void testAddingActivityTeamGoalUseDefault() throws Exception {
-        mockMvc.perform(post("/view-activity", 42L)
+        mockMvc.perform(post("/overallScore", 42L)
                         .param("actId", "1")
-                        .param("factType", String.valueOf(FactType.GOAL))
                         .param("overallScoreTeam", "1")
                         .param("overallScoreOpponent", "1")
-                        .param("activityOutcomes", String.valueOf(ActivityOutcome.None))
-                        .param("time", "1")
-                        .param("goalValue", "")
-                        .param("scorer", "-1")
-                        .param("playerOn", "1")
-                        .param("playerOff", "1" )
-                        .param("description", "")
                 )
                 .andExpect(view().name("redirect:./view-activity?activityID=1"));
         verify(mockActivityService, times(2)).validateActivityScore(any(), any());
     }
 
+
     @Test
     public void testAddingSubstitutionFactWithSamePlayerOnPlayerOff() throws Exception {
         System.out.println(activity.getId());
-        System.out.println("nirhja");
         mockMvc.perform(post("/view-activity", 42L)
                         .param("actId", "1")
                         .param("factType", String.valueOf(FactType.SUBSTITUTION))
