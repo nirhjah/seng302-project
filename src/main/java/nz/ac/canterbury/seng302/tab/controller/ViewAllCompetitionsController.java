@@ -1,11 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
-import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
-import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
-import nz.ac.canterbury.seng302.tab.repository.CompetitionRepository;
 import nz.ac.canterbury.seng302.tab.service.CompetitionService;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 
 import static nz.ac.canterbury.seng302.tab.controller.ViewAllCompetitionsController.Timing.CURRENT;
