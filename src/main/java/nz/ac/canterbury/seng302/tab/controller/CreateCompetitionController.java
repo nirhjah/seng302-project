@@ -223,6 +223,9 @@ public class CreateCompetitionController {
         form.setSex(grade.getSex());
         form.setCompetitiveness(grade.getCompetitiveness());
 
+        form.setStartDateTime(competition.getCompetitionStart());
+        form.setEndDateTime(competition.getCompetitionEnd());
+
         Location location = competition.getLocation();
         if (location != null) {
             form.setAddressLine1(location.getAddressLine1());

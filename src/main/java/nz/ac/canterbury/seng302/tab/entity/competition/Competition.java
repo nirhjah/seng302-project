@@ -38,6 +38,20 @@ public abstract class Competition {
     @Column(nullable = true)
     private LocalDateTime competitionEnd;
 
+    public LocalDateTime getCompetitionStart() {
+        return competitionStart;
+    }
+    public LocalDateTime getCompetitionEnd() {
+        return competitionEnd;
+    }
+
+    public void setCompetitionStart(LocalDateTime competitionStart) {
+        this.competitionStart = competitionStart;
+    }
+    public void setCompetitionEnd(LocalDateTime competitionEnd) {
+        this.competitionEnd = competitionEnd;
+    }
+
     protected Competition() {}
     
     /**

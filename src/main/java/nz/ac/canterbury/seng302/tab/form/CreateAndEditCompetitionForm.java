@@ -4,9 +4,12 @@ import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
 import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,11 +48,42 @@ public class CreateAndEditCompetitionForm {
 
     private Grade.Sex sex;
 
+    @ActivityFormValidators.startActivityValidator
+    private LocalDateTime startDateTime;
+
+    @ActivityFormValidators.endActivityValidator
+    private LocalDateTime endDateTime;
+
     private Grade.Competitiveness competitiveness;
 
     private Set<Team> teams;
 
     private Set<User> players;
+
+    // New Zealand Daylight time is +13
+    private static final ZoneOffset NZDT = ZoneOffset.ofHours(13);
+
+    public static LocalDateTime convertToLocalDateTime(long epochSecond) {
+        return LocalDateTime.ofEpochSecond(epochSecond, 0, NZDT);
+    }
+
+    public static long convertToEpochSecond(LocalDateTime localDateTime) {
+        return localDateTime.toEpochSecond(NZDT);
+    }
+
+    public void setStartDateTime(long epochSecond) {
+        startDateTime = convertToLocalDateTime(epochSecond);
+    }
+    public void setEndDateTime(long epochSecond) {
+        endDateTime = convertToLocalDateTime(epochSecond);
+    }
+
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
+    }
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
+    }
 
     public String getName() {
         return name;
