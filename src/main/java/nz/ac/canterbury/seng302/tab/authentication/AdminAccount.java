@@ -95,7 +95,8 @@ public class AdminAccount implements CommandLineRunner {
 
         List<Fact> factList = new ArrayList<>();
         for (int i=0; i<10; i++){
-            factList.add(new Substitution("testing this", "1h 20m", game, player, sub));
+            factList.add(new Substitution("testing this", "20", game, player, sub));
+            factList.add(new Goal ("A goal was scored again", "10", game, admin, 4));
         }
         game.addFactList(factList);
         activityRepository.save(game);

@@ -90,18 +90,30 @@
                     </div>
                     <div class="sub-list">
                         <ul>
-                            <li th:each="subsitution : ${activitySubstitutions}">
+                            <li class="sub-container" th:each="subsitution : ${activitySubstitutions}">
                                 <div class="sub-card">
-                                    <span class="player-in"
-                                          th:text="${subsitution.playerOn.firstName + ' ' + subsitution.playerOn.lastName}"></span>
+                                    <div class="player-in-container">
+                                        <img th:src="@{/user-profile-picture/{id}(id = ${subsitution.playerOn.userId})}" style="height: 30px">
+                                        <span>IN</span>
+                                        <span class="player-in"
+                                              th:text="${subsitution.playerOn.firstName + ' ' + subsitution.playerOn.lastName}"></span>
+                                    </div>
                                     <img class="swap-icon" th:src="@{/image/icons/swap.svg}"/>
-                                    <span class="player-out"
-                                          th:text="${subsitution.playerOff.firstName + ' ' + subsitution.playerOff.lastName}"></span>
+                                    <div class="player-out-container">
+                                        <span>OUT</span>
+                                        <span class="player-out"
+                                              th:text="${subsitution.playerOff.firstName + ' ' + subsitution.playerOff.lastName}"></span>
+                                    </div>
                                     <div class="dropdown-container">
-                                        <img class="dropdown-icon" th:src="@{/image/icons/dropdown.svg}" onclick="toggleDropdown(this)"/>
+                                        <img class="dropdown-icon" th:src="@{/image/icons/dropdown.svg}"
+                                             onclick="toggleDropdown(this)"/>
+                                    </div>
+                                    <div class="time-container">
+                                        <h4 th:text="${subsitution.timeOfEvent} + '\''"></h4>
                                     </div>
                                 </div>
                                 <div class="sub-desc">
+                                    <hr>
                                     <p>Testing this</p>
                                 </div>
                             </li>
@@ -179,22 +191,29 @@
 
         </div>
 
-
     </div>
 
 
     <script>
-        function toggleDropdown(icon){
+        function toggleDropdown(icon) {
             const subCard = icon.closest('.sub-card');
             const subDesc = subCard.nextElementSibling;
+            const subLi = subCard.parentElement;
+            console.log(subLi.className);
             console.log(subDesc.style.display)
-            if (subDesc.style.display === 'none' ||subDesc.style.display === '') {
+            if (subDesc.style.display === 'none' || subDesc.style.display === '') {
                 icon.style.transform = 'rotate(180deg)';
-                subDesc.style.display='block';
-            }
-            else {
+                subDesc.style.display = 'block';
+                subLi.style.border = '2px solid rgb(119, 141, 169)';
+                subLi.style.borderRadius = '10px';
+                subLi.style.height = 'fit-content';
+                subCard.style.border = 'none';
+            } else {
                 icon.style.transform = 'rotate(0deg)';
-                subDesc.style.display='none';
+                subDesc.style.display = 'none';
+                subLi.style.border = 'none';
+                subCard.style.border = '2px solid rgb(119, 141, 169)';
+                subLi.style.height = 'none';
             }
         }
 

@@ -608,8 +608,6 @@ hr.rounded {
     border: 1px solid black;
 }
 
-
-
 #formation-tab{
     height:fit-content;
     padding: 50px 25px;
@@ -656,12 +654,14 @@ hr.rounded {
     align-items:center;
     justify-content:center;
     height:60px;
-    margin-bottom:15px;
-    border: 2px solid rgba(65, 90, 119, 0.5);
+    border: 2px solid rgb(119, 141, 169);
     border-radius:10px;
     position: relative;
 }
-
+.sub-list li{
+    margin-bottom:15px;
+    color: #1B263B;
+}
 .dropdown-icon{
     height:10px;
     cursor:pointer;
@@ -672,10 +672,49 @@ hr.rounded {
     right: 0;
     margin: 0 8px 5px 0;
 }
-
 .swap-icon{
     height:23px;
 }
 .sub-desc{
+    font-size:13px;
     display:none;
+}
+.sub-desc hr{
+    margin: 0 5px;
+    color: rgb(119, 141, 169,0.8);
+}
+.sub-desc p{
+    padding: 5px 10px;
+}
+
+.time-container{
+    position:absolute;
+    top: 0;
+    right: 0;
+    margin:5px;
+}
+
+.player-out-container span{
+    display:block;
+}
+
+.player-in-container span{
+    display:block;
+}
+
+.player-in-container span:nth-child(1), .player-out-container span:nth-child(1){
+    font-size:12px;
+    font-weight:600;
+}
+
+.player-in-container span:nth-child(2), .player-out-container span:nth-child(2){
+    font-weight:700;
+}
+
+.player-in-container span:nth-child(1){
+    color: #5DBB63;
+}
+
+.player-out-container span:nth-child(1){
+    color: #EA3B52;
 }
