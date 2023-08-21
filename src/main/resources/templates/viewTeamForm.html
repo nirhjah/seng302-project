@@ -98,6 +98,23 @@
                                     <h3 data-cy="location" th:text="*{displayLocation}"></h3>
                                 </div>
                             </div>
+                            <div class="user-label" th:if="${clubId}">
+                                <div class="wrapper">
+                                    <div class ="logo">
+                                        <img th:src="@{/club-logo/{id}(id = ${clubId}">
+                                    </div>
+                                    <div class="club-info">
+                                        <h1 class="club-header">Club Profile</h1>
+                                        <div class="club-label">
+                                            <h3 th:text="|Name: *{clubName}|"></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 class="attribute-type">Location</h3>
+                                    <h3 data-cy="location" th:text="*{displayLocation}"></h3>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
