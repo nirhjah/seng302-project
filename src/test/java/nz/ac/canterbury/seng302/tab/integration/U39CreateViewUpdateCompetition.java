@@ -505,39 +505,33 @@ public class U39CreateViewUpdateCompetition {
                 .andExpect(view().name("viewAllCompetitions"));
     }
 
-    private void generateCompetitionsForSport(String sport, int multiplier) {
+    private void generateCompetitionsForSport(String sport) {
         long time = Instant.now().getEpochSecond();
         long smallTimeStep = 5000;
         long bigTimeStep = 10000;
 
-        for (int i=1; i<NUM_PAST * multiplier; i++) {
+        for (int i=0; i<NUM_PAST; i++) {
             Competition comp = new UserCompetition("myCompetition", Grade.randomGrade(), sport);
             comp.setDate(time - bigTimeStep, time - smallTimeStep);
             competitionService.updateOrAddCompetition(comp);
         }
 
-        for (int i=1; i<NUM_FUTURE * multiplier; i++) {
+        for (int i=0; i<NUM_FUTURE; i++) {
             Competition comp = new UserCompetition("myCompetition", Grade.randomGrade(), sport);
             comp.setDate(time + smallTimeStep, time + bigTimeStep);
             competitionService.updateOrAddCompetition(comp);
         }
 
-        for (int i=1; i<NUM_CURRENT * multiplier; i++) {
+        for (int i=0; i<NUM_CURRENT; i++) {
             Competition comp = new UserCompetition("myCompetition", Grade.randomGrade(), sport);
             comp.setDate(time - bigTimeStep, time + bigTimeStep);
             competitionService.updateOrAddCompetition(comp);
         }
     }
 
-    Map<String, Integer> competitionsPerSport = Map.of(
-            "soccer", 1,
-            "hockey", 2,
-            "rugby", 3
-    );
-
     @And("there exist past and current competitions for a {string}")
     public void thereExistPastAndCurrentCompetitionsForASport(String sport) {
-        generateCompetitionsForSport(sport, competitionsPerSport.get(sport));
+        generateCompetitionsForSport(sport);
     }
 
     @When("I apply a filter for that {string} and select an option to display all competitions")
@@ -560,27 +554,34 @@ public class U39CreateViewUpdateCompetition {
 
     @Then("I am shown all competitions, past and current for the selected {string}")
     public void iAmShownAllCompetitionsPastAndCurrentForTheSelectedSport(String sport) throws Exception {
+        String[] sports = new String[] {sport};
+        // We dont pass in the timing here, because `null` timing implies
+        // that ALL competitions should be shown.
         mockMvc.perform(get(VIEW_ALL)
                 .param("page", "1")
-                // .param("timing", null)
-                .requestAttr("sports", filterSports));
+                .param("sports", sports));
+        Mockito.verify(competitionService).findAllCompetitionsBySports(any(), eq(List.of(sport)));
     }
 
     @Then("I am shown only current competitions for the selected {string}")
     public void iAmShownOnlyCurrentCompetitionsForTheSelectedSport(String sport) throws Exception {
         String[] param = new String[] {"CURRENT"};
+        String[] sports = new String[] {sport};
         mockMvc.perform(get(VIEW_ALL)
                 .param("page", "1")
-                .requestAttr("times", param)
-                .requestAttr("sports", filterSports));
+                .param("times", param)
+                .param("sports", sports));
+        Mockito.verify(competitionService).findCurrentCompetitionsBySports(any(), eq(List.of(sport)));
     }
 
     @Then("I am shown only past competitions for the selected {string}")
     public void iAmShownOnlyPastCompetitionsForTheSelectedSport(String sport) throws Exception {
         String[] param = new String[] {"PAST"};
+        String[] sports = new String[] {sport};
         mockMvc.perform(get(VIEW_ALL)
                 .param("page", "1")
-                .requestAttr("times", param)
-                .requestAttr("sports", filterSports));
+                .param("times", param)
+                .param("sports", sports));
+        Mockito.verify(competitionService).findPastCompetitionsBySports(any(), eq(List.of(sport)));
     }
 }
