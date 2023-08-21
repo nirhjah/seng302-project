@@ -60,22 +60,11 @@ public class CreateAndEditCompetitionForm {
 
     private Set<User> players;
 
-    // New Zealand Daylight time is +13
-    private static final ZoneOffset NZDT = ZoneOffset.ofHours(13);
-
-    public static LocalDateTime convertToLocalDateTime(long epochSecond) {
-        return LocalDateTime.ofEpochSecond(epochSecond, 0, NZDT);
+    public void setStartDateTime(LocalDateTime dateTime) {
+        startDateTime = dateTime;
     }
-
-    public static long convertToEpochSecond(LocalDateTime localDateTime) {
-        return localDateTime.toEpochSecond(NZDT);
-    }
-
-    public void setStartDateTime(long epochSecond) {
-        startDateTime = convertToLocalDateTime(epochSecond);
-    }
-    public void setEndDateTime(long epochSecond) {
-        endDateTime = convertToLocalDateTime(epochSecond);
+    public void setEndDateTime(LocalDateTime dateTime) {
+        endDateTime = dateTime;
     }
 
     public LocalDateTime getEndDateTime() {

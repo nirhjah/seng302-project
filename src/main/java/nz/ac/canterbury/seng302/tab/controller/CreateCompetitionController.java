@@ -142,6 +142,8 @@ public class CreateCompetitionController {
             editCompetition.setSport(form.getSport());
             editCompetition.setGrade(form.getGrade());
             editCompetition.setLocation(form.getLocation());
+            editCompetition.setCompetitionEnd(form.getEndDateTime());
+            editCompetition.setCompetitionStart(form.getStartDateTime());
             if (usersOrTeams.equals("teams")) {
                 Set<Team> teams = IDs.stream()
                         .map(teamService::getTeam)
@@ -167,13 +169,13 @@ public class CreateCompetitionController {
                         .map(teamService::getTeam)
                         .filter(Objects::nonNull)
                         .collect(Collectors.toSet());
-                competition = new TeamCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), LocalDateTime.now(), LocalDateTime.now(), teams);
+                competition = new TeamCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), form.getStartDateTime(), form.getEndDateTime(), teams);
             } else {
                 Set<User> users = IDs.stream()
                         .map(userService::getUser)
                         .filter(Objects::nonNull)
                         .collect(Collectors.toSet());
-                competition = new UserCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), LocalDateTime.now(), LocalDateTime.now(), users);
+                competition = new UserCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), form.getStartDateTime(), form.getEndDateTime(), users);
             }
 
             competitionService.updateOrAddCompetition(competition);
