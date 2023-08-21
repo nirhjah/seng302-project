@@ -64,6 +64,8 @@ public class ViewActivityController {
 
     String overallScoreTeamString = "overallScoreTeam";
 
+    String httpServletRequestString = "httpServletRequest";
+
     @Autowired
     public ViewActivityController(UserService userService, ActivityService activityService, TeamService teamService,FactService factService) {
         this.userService = userService;
@@ -169,7 +171,7 @@ public class ViewActivityController {
         model.addAttribute("factList", factList);
 
         // Rambling that's required for navBar.html
-        model.addAttribute("httpServletRequest", request);
+        model.addAttribute(httpServletRequestString, request);
         model.addAttribute("possibleFactTypes", FactType.values());
         model.addAttribute("defaultFactType", FactType.FACT);
 
@@ -227,7 +229,7 @@ public class ViewActivityController {
 
         model.addAttribute(overallScoreTeamString, overallScoreTeam);
 
-        model.addAttribute("httpServletRequest", request);
+        model.addAttribute(httpServletRequestString, request);
 
         Activity activity = activityService.findActivityById(actId);
         String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
@@ -314,7 +316,7 @@ public class ViewActivityController {
         logger.info(String.format("got the player on id: %s", subOffId));
         logger.info(String.format("got the scorer id: %s", scorerId));
 
-        model.addAttribute("httpServletRequest", request);
+        model.addAttribute(httpServletRequestString, request);
 
         Activity activity = activityService.findActivityById(actId);
         Fact fact;
