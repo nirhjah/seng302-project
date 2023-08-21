@@ -1,6 +1,6 @@
-#@add_activity_stats
-#Feature: U34 – Add activity statistics
-#
+@add_activity_stats
+Feature: U34 – Add activity statistics
+
 #  Scenario: AC1
 #    Given I am a manager or coach,
 #    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
@@ -12,13 +12,13 @@
 #    And I am viewing an activity of any type
 #    When the activity has begun
 #    Then I am able to record facts through a dedicated UI element.
-#
+
 #  Scenario: AC3
 #    Given I am a manager or coach,
 #    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
 #    When the activity has ended,
 #    Then I am able to add an outcome for the overall activity through a dedicated UI element
-#
+
 #  Scenario: AC4
 #    Given I am a manager or coach,
 #    And I am viewing an activity of the type “Game” or “Friendly”
@@ -34,29 +34,29 @@
 #    And I am adding a goal, substitution or fact
 #    And I am specifying a team member to be associated with the statistics
 #    Then the I can only specify players (not managers or coaches)
-#
-#  Scenario: AC6
-#    Given I am a manager or coach,
-#    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
-#    When the activity has begun
-#    And there is a current overall score
-#    Then I am able to update the overall score again
-#
-#  Scenario: AC7
-#    Given I am a manager or coach,
-#    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
-#    When I am adding the overall score
-#    And I enter the score in the format “5” for Team A and “7” for Team B, or “5-6” for Team A and “7-6” for Team B
-#    Then the application accepts the scores as the format matches
-#
-#
-#  Scenario: AC8
-#    Given I am a manager or coach,
-#    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
-#    When I am adding the overall score
-#    And I enter the score in the format “5” for Team A and “7-6” for Team B
-#    Then the application doesn’t accept the scores as the format doesn’t match and an error message displays telling the user that “Error: The score formats do not match”
-#
+
+  Scenario: AC6
+    Given I am a manager or coach,
+    And I am viewing an activity of the type Game or Friendly
+    When the activity has begun
+    And there is a current overall score
+    Then I am able to update the overall score again
+
+  Scenario: AC7
+    Given I am a manager or coach,
+    And I am viewing an activity of the type Game or Friendly
+    When I am adding the overall score
+    And I enter the score in the format 5 for Team A and 7 for Team B, or 5-6 for Team A and 7-6 for Team B
+    Then the application accepts the scores as the format matches
+
+
+  Scenario: AC8
+    Given I am a manager or coach,
+    And I am viewing an activity of the type Game or Friendly
+    When I am adding the overall score
+    And I enter the score in the format 5 for Team A and 7-6 for Team B
+    Then the application does not accept the scores as the format does not match and an error message displays telling the user that the score formats do not match
+
 #  Scenario: AC9
 #    Given I am a manager or coach,
 #    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
