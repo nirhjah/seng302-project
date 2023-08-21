@@ -164,6 +164,9 @@ public class ViewActivityController {
         }
 
         model.addAttribute("activityFacts", activityFacts);
+        List<Fact> factList = factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity);
+
+        model.addAttribute("factList", factList);
 
         // Rambling that's required for navBar.html
         model.addAttribute("httpServletRequest", request);

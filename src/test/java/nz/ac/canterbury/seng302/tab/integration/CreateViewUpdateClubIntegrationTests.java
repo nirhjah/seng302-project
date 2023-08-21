@@ -5,7 +5,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import nz.ac.canterbury.seng302.tab.controller.CreateClubController;
-import nz.ac.canterbury.seng302.tab.controller.ProfileFormController;
+import nz.ac.canterbury.seng302.tab.controller.ViewTeamController;
 import nz.ac.canterbury.seng302.tab.controller.ViewClubController;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.enums.Role;
@@ -120,7 +120,7 @@ public class CreateViewUpdateClubIntegrationTests {
         clubService = Mockito.spy(new ClubService(clubRepository));
         teamService = Mockito.spy(new TeamService(teamRepository));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService, clubImageService), new ProfileFormController(userService, teamService, activityService, factService, formationService, competitionService), new ViewClubController(userService, teamService, clubService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService, clubImageService), new ViewTeamController(userService, teamService, activityService, factService, formationService, competitionService), new ViewClubController(userService, teamService, clubService)).build();
 
         Authentication authentication = Mockito.mock(Authentication.class);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
@@ -372,7 +372,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @Given("I am on the team’s profile page and the team belongs to a club,")
     public void i_am_on_the_team_s_profile_page_and_the_team_belongs_to_a_club() throws Exception {
-        mockMvc.perform(get("/profile")
+        mockMvc.perform(get("/team-info")
                         .param("teamID", team.getTeamId().toString()))
                 .andExpect(status().isOk());
     }

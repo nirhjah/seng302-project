@@ -51,7 +51,7 @@
                                     <label for="file" class="file-label">
                                         Edit Profile Picture </label>
                                 </div>
-                                <input type="file" name="file" class="form-control-file" id="file">
+                                <input type="file" name="file" class="form-control-file" id="file" accept=".jpg, .jpeg, .png, .svg, .svg+xml">
                                 <input type="hidden" name="teamID" th:value="${teamID}">
                             </div>
                         </form>
@@ -146,7 +146,7 @@
                     </ul>
                     <button class="toggle-formation-button"><</button>
                 </div>
-                <form class="formation-display" method="post" th:action="@{/profile/create-formation}" onsubmit="return submissionCheck(document.getElementById('formation-string').value)">
+                <form class="formation-display" method="post" th:action="@{/team-info/create-formation}" onsubmit="return submissionCheck(document.getElementById('formation-string').value)">
                     <div class="formation-LHS">
                         <div class="create-formation-display">
                             <div class="input-box">
