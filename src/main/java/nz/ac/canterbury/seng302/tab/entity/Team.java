@@ -247,19 +247,23 @@ public class Team implements Identifiable, HasImage {
      * Remove all team roles for this user.
      * We should call this function if we are updating a user's role.
      * @param user The user to remove the team roles for
+     * @return <code>true</code> if any role was removed.
      *
      */
-    private void removeTeamRoleForUser(User user) {
-        var id = user.getUserId();
-        teamRoles.removeIf(tRole -> tRole.getUser().getUserId() == id);
+    private boolean removeTeamRoleForUser(User user) {
+        long id = user.getUserId();
+        return teamRoles.removeIf(tRole -> tRole.getUser().getUserId() == id);
     }
 
     /** Sets team role for a user
-     * @param user, the User we are changing
+     * @param user the User we are changing
      * @param role the role we are changing to user to
      */
     public void setRole(User user, Role role) {
-        removeTeamRoleForUser(user);
+        if (!removeTeamRoleForUser(user)) {
+            System.out.println(String.format("Failed to delete the roles for \"%s\" in team \"%s\"", user.getEmail(), this.getName()));
+            // throw new IllegalStateException(String.format("Failed to delete the roles for \"%s\" in team \"%s\"", user.getEmail(), this.getName()));
+        }
         TeamRole teamRole = new TeamRole();
         teamRole.setUser(user);
         teamRole.setRole(role);
