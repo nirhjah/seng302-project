@@ -171,7 +171,7 @@ public class U39CreateViewUpdateCompetition {
 
     @And("I input valid information for name, sport and grade,")
     public void iInputValidInformationForNameSportAndGradeLevel() throws Exception {
-        mockMvc.perform(multipart("/create-competition", 42L)
+        mockMvc.perform(multipart("/create-competition")
                         .param("name", "Sample Competition")
                         .param("sport", "Soccer")
                         .param("age", String.valueOf(Grade.Age.ADULT))
@@ -232,12 +232,11 @@ public class U39CreateViewUpdateCompetition {
     }
 
     @And("I am shown a ui element that display full details for the competition.")
-    public void iAmShownAUiElementThatDisplayFullDetailsForTheCompetition() {
-        // Commented out while viewCompetition is not on dev
-        //        mockMvc.perform(get("/viewCompetition")
-        //                        .param("id", String.valueOf(competition.getCompetitionId())))
-        //                .andExpect(status().isOk()) // Accepted 200
-        //                .andExpect(view().name("viewCompetitionForm"));
+    public void iAmShownAUiElementThatDisplayFullDetailsForTheCompetition() throws Exception {
+        mockMvc.perform(get("/viewCompetition")
+                        .param("id", String.valueOf(competition.getCompetitionId())))
+                .andExpect(status().isOk()) // Accepted 200
+                .andExpect(view().name("viewCompetitionForm"));
     }
 
     @And("I input invalid information for one of name, sport or grade,")

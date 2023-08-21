@@ -55,7 +55,7 @@ public class DefaultFunctions {
             PlaywrightBrowser.page.locator("button#create-formation-button").click();
 
             //create activity
-            PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createActivity");
+            PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-activity");
             PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
             PlaywrightBrowser.page.locator("#activityType").selectOption("Game");

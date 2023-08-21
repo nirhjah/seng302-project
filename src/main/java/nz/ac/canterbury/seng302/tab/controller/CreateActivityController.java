@@ -165,13 +165,13 @@ public class CreateActivityController {
      * @return the create activity template
      * @throws MalformedURLException thrown in some cases
      */
-    @GetMapping("/createActivity")
+    @GetMapping("/create-activity")
     public String activityForm(
             @RequestParam(name="edit", required=false) Long actId,
             CreateActivityForm createActivityForm,
             Model model,
             HttpServletRequest httpServletRequest) throws MalformedURLException {
-        logger.info("GET /createActivity");
+        logger.info("GET /create-activity");
         model.addAttribute("httpServletRequest", httpServletRequest);
         prefillModel(model, httpServletRequest);
 
@@ -215,7 +215,7 @@ public class CreateActivityController {
      * @return returns my activity page iff the details are valid, returns to activity page otherwise
      * @throws MalformedURLException thrown in some cases
      */
-    @PostMapping("/createActivity")
+    @PostMapping("/create-activity")
     public String createActivity(
             @RequestParam(name = "actId", defaultValue = "-1") Long actId,
             @RequestParam(name = "playerAndPositions", required = false) String playerAndPositions,
@@ -225,7 +225,7 @@ public class CreateActivityController {
             HttpServletResponse httpServletResponse,
             Model model) throws MalformedURLException {
 
-        logger.info("POST /createActivity");
+        logger.info("POST /create-activity");
         model.addAttribute("httpServletRequest", httpServletRequest);
         prefillModel(model, httpServletRequest);
 
