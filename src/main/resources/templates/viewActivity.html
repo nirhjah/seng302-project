@@ -168,14 +168,14 @@
                 </div>
 
 
-                    <div class="submit-button" style="position: absolute; top: 75%; margin-left: 2%">
+                    <div th:if="${(activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}" class="submit-button" style="position: absolute; top: 75%; margin-left: 2%">
                         <button style="width: 160%;" th:unless="${noFacts}" onclick="modal.style.display = 'block'" type="button">Add Overall Score</button>
                     </div>
 
 
                     <div id="addEventModal" class="modal" th:style="${scoreInvalid != null ? 'display:block' : 'display:none'}">
 
-                        <div class="modal-content event" style="bottom: unset">
+                        <div class="overall-score-modal-content event" style="bottom: unset">
                             <span class="close" onclick="modal.style.display = 'none'">&times;</span>
                             <form style="height: unset" th:action="@{overallScore}" id="createEventForm" method="post" th:object="${createEventForm}" class="view-activity-form">
                                 <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
@@ -195,14 +195,14 @@
 
                                     </div>
                                 </div>
-                                <div th:each="err : ${#fields.errors('overallScoreTeam')}" th:text="${err}" class="error-message"></div>
+                                <div th:each="err : ${#fields.errors('overallScoreTeam')}" th:text="${err}" style="display: unset" class="error-message"></div>
 
 
                                 <label class="helpText"> Scores for both teams should be of same type i.e either 12-4 and 9-3 or 23 and 18 </label>
 
 
                                 <div class="submit-button" style="padding-top: 5%;">
-                                    <button id="createEvent" type="submit" class="registerLoginButton">Add activity statistics</button>
+                                    <button id="createEvent" type="submit" class="registerLoginButton" style="width: 50%">Add activity statistics</button>
                                 </div>
 
 

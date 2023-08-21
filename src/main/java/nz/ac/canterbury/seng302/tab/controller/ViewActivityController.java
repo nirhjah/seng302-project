@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -240,6 +241,10 @@ public class ViewActivityController {
         if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 2) {
             logger.info("one score is empty");
             bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "Other score field cannot be empty"));
+        }
+
+        if (LocalDateTime.now().isBefore(activity.getActivityStart())) {
+            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "You can only add an overall score once the activity starts"));
         }
 
         if (bindingResult.hasErrors()) {
