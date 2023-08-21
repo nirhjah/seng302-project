@@ -235,7 +235,7 @@ public class ViewActivityController {
 
         if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 1) {
             logger.info("scores not same type");
-            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "Both teams require scores of the same type"));
+            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "The score formats do not match"));
         }
 
         if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 2) {
