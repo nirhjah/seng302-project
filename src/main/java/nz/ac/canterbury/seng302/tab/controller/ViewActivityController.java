@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import java.sql.Date;
+import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +16,11 @@ import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.enums.FactType;
+import nz.ac.canterbury.seng302.tab.form.AddFactForm;
 import nz.ac.canterbury.seng302.tab.form.CreateEventForm;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import nz.ac.canterbury.seng302.tab.service.FactService;
+import nz.ac.canterbury.seng302.tab.validator.FactValidators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +62,8 @@ public class ViewActivityController {
     private FactService factService;
 
     String createEventFormBindingResult = "createEventFormBindingResult";
+
+    String addFactFormBindingResult = "addFactFormBindingResult";
 
     String createEventFormString = "createEventForm";
 
@@ -118,7 +123,8 @@ public class ViewActivityController {
             HttpServletRequest request,
             CreateEventForm createEventForm) {
 
-        model.addAttribute(createEventFormString, new CreateEventForm());
+        model.addAttribute(createEventFormString, createEventForm);
+        model.addAttribute("addFactForm", new AddFactForm());
 
         if (model.asMap().containsKey(createEventFormBindingResult))
         {
@@ -126,6 +132,11 @@ public class ViewActivityController {
                     model.asMap().get(createEventFormBindingResult));
         }
 
+        if (model.asMap().containsKey(addFactFormBindingResult))
+        {
+            model.addAttribute("org.springframework.validation.BindingResult.addFactForm",
+                    model.asMap().get(addFactFormBindingResult));
+        }
         Activity activity = activityService.findActivityById(activityID);
         if (activity == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
@@ -202,10 +213,7 @@ public class ViewActivityController {
     /**
      * Handles adding an overall score to an activity
      * @param actId           activity to add overall score to
-     * @param overallScoreTeam overall score of team
-     * @param overallScoreOpponent overall score of opponent
-     * @param createEventForm      CreateEventForm object used for validation
-     * @param bindingResult        BindingResult used for errors
+     * @param result        BindingResult used for errors
      * @param request              request
      * @param model                model to be filled
      * @param httpServletResponse   httpServerletResponse
@@ -213,18 +221,44 @@ public class ViewActivityController {
      * @return  view activity page
      */
     @PostMapping("/addFact")
-    public String overallScoreForm(
+    public String addFactForm(
             @RequestParam(name = "actId", defaultValue = "-1") long actId,
             @RequestParam(name = "timeOfFact", required = false) String timeOfFact,
-            @RequestParam(name = "descriptionOfFact") String description,
+            @RequestParam(name = "description") String description,
+            @Validated AddFactForm addFactForm,
+            BindingResult result,
             HttpServletRequest request,
             Model model,
             HttpServletResponse httpServletResponse,
             RedirectAttributes redirectAttributes) {
         model.addAttribute("httpServletRequest", request);
-
         Activity activity = activityService.findActivityById(actId);
         String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
+        if (!timeOfFact.isEmpty()) {
+            try {
+                int time = Integer.parseInt(timeOfFact);
+                int totalActivityMinutes = (int) Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
+                if (time > totalActivityMinutes) {
+                    result.addError(new FieldError("addFactForm", "timeOfFact", FactValidators.timeErrorMessage));
+                }
+            } catch (NumberFormatException e) {
+                result.addError(new FieldError("addFactForm", "timeOfFact", "Must be an int"));
+            }
+        } else {
+            timeOfFact = null;
+        }
+        redirectAttributes.addFlashAttribute("stayOnTab_name", "facts-tab");
+        redirectAttributes.addFlashAttribute("stayOnTab_index", 1);
+
+        if (result.hasErrors()) {
+            logger.info(result.getAllErrors().toString());
+            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            redirectAttributes.addFlashAttribute("factInvalid", "Leave Modal Open");
+            redirectAttributes.addFlashAttribute(addFactFormBindingResult, result);
+            return viewActivityRedirectUrl;
+
+        }
+
         Fact fact = new Fact(description, timeOfFact, activity);
         factService.addOrUpdate(fact);
         redirectAttributes.addFlashAttribute("stayOnTab_Name", "facts-tab");
