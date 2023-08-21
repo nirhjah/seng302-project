@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -16,20 +17,26 @@ public abstract class Competition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CompetitionId")
-    private long competitionId;
+    protected long competitionId;
   
     @Column(nullable = false)
     private String name;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
-    private Grade grade;
+    protected Grade grade;
 
     @Column(nullable = false)
-    private String sport;
+    protected String sport;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
+
+    @Column(nullable = true)
+    private LocalDateTime competitionStart;
+
+    @Column(nullable = true)
+    private LocalDateTime competitionEnd;
 
     protected Competition() {}
     
@@ -40,15 +47,27 @@ public abstract class Competition {
      * @param sport competition sport
      * @param location competition location 
     */
-    protected Competition(String name, Grade grade, String sport, Location location) {
+
+    /**
+     * main constructor
+     * @param name
+     * @param grade
+     * @param sport
+     * @param location
+     * @param competitionStart
+     * @param competitionEnd
+     * */
+    protected Competition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd) {
         this.name = name;
         this.grade = grade;
         this.sport = sport;
         this.location = location;
+        this.competitionStart = competitionStart;
+        this.competitionEnd = competitionEnd;
     }
     
     /**
-     * constructor without setting location -- for testing purposes 
+     * constructor without setting location and time -- for testing purposes 
      * @param name competition name
      * @param grade competition grade
      * @param sport competition sport
@@ -59,6 +78,12 @@ public abstract class Competition {
         this.sport = sport;
     }
 
+    /**
+     * Compares this Competition instance with another object for equality. Two instances are considered equal if they have the same competition ID.
+     *
+     * @param o The object to compare against.
+     * @return true if the objects are equal, false otherwise.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -67,6 +92,11 @@ public abstract class Competition {
         return Objects.equals(competitionId, competition.getCompetitionId());
     }
 
+    /**
+     * Computes a hash code value for a competition. The hash code is calculated based on the competition ID, grade, and sport of the instance.
+     *
+     * @return A hash code value for this object.
+     */
     @Override
     public int hashCode() {
         return 31 + Objects.hash(competitionId, grade, sport);
