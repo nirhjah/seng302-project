@@ -85,8 +85,32 @@
         <div class="content-box" id="facts-tab" style="margin-bottom: 16px">
             <div class="content" style="height: 400px; overflow: auto;">
                 <div class="submit-button" style="padding-top: 10px; padding-bottom: 10px">
-                    <button style="width: 50%">Add Fact</button>
+                    <button style="width: 50%" onclick="modal.style.display = 'block'">Add Fact</button>
                 </div>
+
+                <div id="addEventModal" class="modal">
+
+                    <div class="modal-content event" style="bottom: unset">
+                        <span class="close" onclick="modal.style.display = 'none'">&times;</span>
+                        <form style="height: unset" th:action="@{addFact}" id="createEventForm" method="post" th:object="${createEventForm}" class="view-activity-form">
+                            <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
+                            <h3>Add Fact</h3>
+
+                            <div class="add-fact-box">
+                                <label for="time-of-fact">Time of Fact:</label>
+                                <input class="fact-input" name="timeOfFact" id="time-of-fact" type="number">
+                                <label for="desc-of-fact">Description:</label>
+                                <input class="fact-input" name="descriptionOfFact" id="desc-of-fact" type="text-area">
+                            </div>
+                            <div class="submit-button" style="padding-top: 5%;">
+                                <button id="createEvent" type="submit" class="registerLoginButton">Add Fact</button>
+                            </div>
+
+                        </form>
+                    </div>
+
+                </div>
+
                 <table style="padding: 15px; border-collapse: collapse; border: 2px solid; margin:2%; width:96%">
                     <thead style="background-color: #0b2239">
                     <tr>

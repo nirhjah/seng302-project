@@ -200,6 +200,42 @@ public class ViewActivityController {
     }
 
     /**
+     * Handles adding an overall score to an activity
+     * @param actId           activity to add overall score to
+     * @param overallScoreTeam overall score of team
+     * @param overallScoreOpponent overall score of opponent
+     * @param createEventForm      CreateEventForm object used for validation
+     * @param bindingResult        BindingResult used for errors
+     * @param request              request
+     * @param model                model to be filled
+     * @param httpServletResponse   httpServerletResponse
+     * @param redirectAttributes    stores error message to be displayed
+     * @return  view activity page
+     */
+    @PostMapping("/addFact")
+    public String overallScoreForm(
+            @RequestParam(name = "actId", defaultValue = "-1") long actId,
+            @RequestParam(name = "timeOfFact", required = false) String timeOfFact,
+            @RequestParam(name = "descriptionOfFact") String description,
+            HttpServletRequest request,
+            Model model,
+            HttpServletResponse httpServletResponse,
+            RedirectAttributes redirectAttributes) {
+        model.addAttribute("httpServletRequest", request);
+
+        Activity activity = activityService.findActivityById(actId);
+        String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
+        Fact fact = new Fact(description, timeOfFact, activity);
+        factService.addOrUpdate(fact);
+        redirectAttributes.addFlashAttribute("stayOnTab_Name", "facts-tab");
+        redirectAttributes.addFlashAttribute("stayOnTab_index", 1);
+        return viewActivityRedirectUrl;
+
+    }
+
+
+
+    /**
      * Handles creating an event and adding overall scores
      * @param actId       activity ID to add stats/event to
      * @param factType    selected fact type
