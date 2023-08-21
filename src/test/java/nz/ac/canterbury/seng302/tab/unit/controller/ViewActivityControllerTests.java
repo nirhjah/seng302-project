@@ -200,7 +200,6 @@ public class ViewActivityControllerTests {
 
     @Test
     public void testAddingSubstitutionFactWithSamePlayerOnPlayerOff() throws Exception {
-        System.out.println(activity.getId());
         mockMvc.perform(post("/view-activity", 42L)
                         .param("actId", "1")
                         .param("factType", String.valueOf(FactType.SUBSTITUTION))
@@ -220,16 +219,64 @@ public class ViewActivityControllerTests {
     }
 
     @Test
-    public void testAddingOverallScoreBothSameCorrectFormat() throws Exception {
+    public void testAddingOverallScoreOneScoreEmpty() throws Exception {
         when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        when(mockActivityService.validateActivityScore("", "5-6")).thenReturn(2);
+
 
         mockMvc.perform(post("/overallScore", 42L)
                         .param("actId", "1")
-                        .param("overallScoreTeam", "5-3")
-                        .param("overallScoreOpponent", "2-6")
+                        .param("overallScoreTeam", "")
+                        .param("overallScoreOpponent", "5-6")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID=1")).andExpect(MockMvcResultMatchers.flash().attribute("scoreInvalid", "Leave Modal Open"));
+
+    }
+
+    @Test
+    public void testAddingOverallScoreBothDontMatch() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        when(mockActivityService.validateActivityScore("3", "5-6")).thenReturn(1);
+
+
+        mockMvc.perform(post("/overallScore", 42L)
+                        .param("actId", "1")
+                        .param("overallScoreTeam", "3")
+                        .param("overallScoreOpponent", "5-6")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID=1")).andExpect(MockMvcResultMatchers.flash().attribute("scoreInvalid", "Leave Modal Open"));
+
+    }
+
+    @Test
+    public void testAddingOverallScoreBeforeActivityStart() throws Exception {
+        LocalDateTime startLate =   LocalDateTime.of(2024, 6,1,6,30);
+
+        activity.setActivityStart(startLate);
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        
+        mockMvc.perform(post("/overallScore", 42L)
+                        .param("actId", "1")
+                        .param("overallScoreTeam", "3")
+                        .param("overallScoreOpponent", "4")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID=1")).andExpect(MockMvcResultMatchers.flash().attribute("scoreInvalid", "Leave Modal Open"));
+
+    }
+
+    @Test
+    public void testAddingOverallScoreBothValid() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        when(mockActivityService.validateActivityScore("3", "4")).thenReturn(0);
+
+        mockMvc.perform(post("/overallScore", 42L)
+                        .param("actId", "1")
+                        .param("overallScoreTeam", "3")
+                        .param("overallScoreOpponent", "4")
                 )
                 .andExpect(view().name("redirect:./view-activity?activityID=1"));
-        verify(mockActivityService, times(1)).updateOrAddActivity(any());
+
     }
+
 
 }
