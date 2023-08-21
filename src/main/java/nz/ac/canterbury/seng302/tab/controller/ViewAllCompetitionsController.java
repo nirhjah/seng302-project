@@ -70,51 +70,12 @@ public class ViewAllCompetitionsController {
         };
     }
 
-    @Autowired
-    CompetitionRepository competitionRepository;
-
-    private void createWithSport(String sport) {
-        int NUM_PAST = 10;
-        int NUM_FUTURE = 10;
-        int NUM_CURRENT = 10;
-        int SECONDS_PER_DAY = 10000;
-        long now = Instant.now().getEpochSecond();
-
-        for (int i=0; i<NUM_PAST; i++) {
-            Competition c1 = new TeamCompetition("Past competition", Grade.randomGrade(), sport);
-            c1.setDate(now - SECONDS_PER_DAY, now - 1);
-            competitionRepository.save(c1);
-        }
-
-        for (int i=0; i<NUM_CURRENT; i++) {
-            Competition c1 = new TeamCompetition("Current competition", Grade.randomGrade(), sport);
-            c1.setDate(now - SECONDS_PER_DAY, now + SECONDS_PER_DAY);
-            competitionRepository.save(c1);
-        }
-
-        for (int i=0; i<NUM_FUTURE; i++) {
-            Competition c1 = new TeamCompetition("Future competition", Grade.randomGrade(), sport);
-            c1.setDate(now + SECONDS_PER_DAY, now + SECONDS_PER_DAY * 2);
-            competitionRepository.save(c1);
-        }
-    }
-
-    private boolean tested = false;
-    private void test() {
-        if (!tested) {
-            createWithSport("soccer");
-            tested = true;
-        }
-    }
-
     @GetMapping("/view-all-competitions")
     public String viewAllCompetitions(@RequestParam(name = "page", defaultValue = "1") int page,
                                       @RequestParam(name = "sports", required=false) List<String> sports,
                                       @RequestParam(name = "times", required = false) List<String> times,
                                       Model model, HttpServletRequest request) {
         model.addAttribute("httpServletRequest",request);
-
-        test();
 
         page = Math.max(1, page);
         Page<Competition> pageResult = getPageResult(page, times, sports);
