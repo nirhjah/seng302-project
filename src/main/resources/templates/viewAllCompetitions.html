@@ -42,7 +42,9 @@
                     <div class="competition-name" th:text="${competition.name}"></div>
                     <div class="competition-content" th:text="${competition.grade.getDisplayString()}"></div>
                     <div class="competition-content" th:text="${competition.sport}"></div>
-                    <div class="competition-content" th:text="${competition.location.toString()}"></div>
+                    <div th:unless="${competition.location == null}">
+                        <div class="competition-content" th:text="${competition.location.toString()}"></div>
+                    </div>
                 </div>
             </div>
         </div>
