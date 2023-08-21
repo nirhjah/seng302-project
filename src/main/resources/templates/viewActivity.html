@@ -83,8 +83,9 @@
         </div>
 
         <div class="content-box" id="facts-tab" style="margin-bottom: 16px">
-            <div class="content" style="max-height: 400px; min-height:  overflow: auto;">
-                <div class="submit-button" style="padding-top: 10px; padding-bottom: 10px">
+            <div class="content" style="max-height: 400px; overflow: auto;">
+                <div th:if="${(activity.team!=null && (activity.team.isManager(activity.activityOwner) ||
+                activity.team.isCoach(activity.activityOwner))) || activity.team==null}" class="submit-button" style="padding-top: 10px; padding-bottom: 10px">
                     <button style="width: 50%" onclick="modal.style.display = 'block'">Add Fact</button>
                 </div>
 
