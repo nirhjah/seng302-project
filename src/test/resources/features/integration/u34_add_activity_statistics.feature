@@ -7,11 +7,11 @@ Feature: U34 – Add activity statistics
 #    When the activity has begun
 #    Then I am able to add an overall score, and record any substitutions or goals through a dedicated UI element for each.
 #
-#  Scenario: AC2
-#    Given I am a manager or coach,
-#    And I am viewing an activity of any type
-#    When the activity has begun
-#    Then I am able to record facts through a dedicated UI element.
+  Scenario: AC2
+    Given I am a manager or coach,
+    And I am viewing an activity of any type
+    When the activity has begun
+    Then I am able to record facts through a dedicated UI element.
 
 #  Scenario: AC3
 #    Given I am a manager or coach,
@@ -95,10 +95,10 @@ Feature: U34 – Add activity statistics
 #    And I am adding a substitution
 #    Then I must fill out the required fields of time, player on and player off, and optionally fill out the description field
 #
-#  Scenario: AC14
-#    Given I am a manager or coach,
-#    And I am viewing an activity of any type
-#    When the activity has begun
-#    And I am adding a fact about the activity
-#    Then I must fill out the required field of description and optionally the time it occurred.
+  Scenario: AC14
+    Given I am a manager or coach,
+    And I am viewing an activity of any type
+    When the activity has begun
+    And I am adding a fact about the activity
+    Then I must fill out the required field of description and optionally the time it occurred.
 #

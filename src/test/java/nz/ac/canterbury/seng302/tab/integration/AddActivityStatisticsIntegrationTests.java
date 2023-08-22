@@ -6,6 +6,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import nz.ac.canterbury.seng302.tab.controller.*;
 import nz.ac.canterbury.seng302.tab.entity.*;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.repository.*;
 import nz.ac.canterbury.seng302.tab.service.*;
@@ -73,12 +74,16 @@ public class AddActivityStatisticsIntegrationTests {
 
     private Activity activity;
 
+    private Activity otherActivity;
+
     private FactRepository factRespository;
 
 
     private ActivityRepository activityRepository;
 
     LocalDateTime startTime;
+
+    private Fact fact;
 
 
 
@@ -118,11 +123,13 @@ public class AddActivityStatisticsIntegrationTests {
         activity = new Activity(ActivityType.Game, null, "Test description",
                startTime,  endTime, null,
                 new Location(null, null, null, "CHCH", null, "NZ"));
-
+        otherActivity = new Activity(ActivityType.Other, null, "testing", startTime, endTime, null,
+                new Location(null, null, null, "chch", null, "nz"));
 
         teamRepository.save(team);
         userRepository.save(user);
         activityRepository.save(activity);
+        activityRepository.save(otherActivity);
 
         when(userService.getCurrentUser()).thenReturn(Optional.of(user));
     }
@@ -196,6 +203,35 @@ public class AddActivityStatisticsIntegrationTests {
     public void the_application_doesn_t_accept_the_scores_as_the_format_doesn_t_match_and_an_error_message_displays_telling_the_user_that_error_the_score_formats_do_not_match() {
         verify(activityService, times(0)).updateOrAddActivity(any());
 
+    }
+
+    @Given("I am viewing an activity of any type")
+    public void i_am_viewing_an_activity_of_any_type() throws Exception {
+        mockMvc.perform(get("/view-activity").param("activityID", String.valueOf(otherActivity.getId())))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+    }
+
+    @Then("I am able to record facts through a dedicated UI element.")
+    public void i_am_able_to_record_facts_through_a_dedicated_ui_element() throws Exception {
+        mockMvc.perform(get("/view-activity").param("activityID", String.valueOf(otherActivity.getId())))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+    }
+
+    @When("I am adding a fact about the activity")
+    public void i_am_adding_a_fact_about_the_activity() {
+        fact = new Fact(null, "I fell over", otherActivity);
+    }
+
+    @Then("I must fill out the required field of description and optionally the time it occurred.")
+    public void i_must_fill_out_the_required_field_of_description_and_optionally_the_time_it_occurred() throws Exception {
+        mockMvc.perform(post("/addFact")
+                        .param("activityID", String.valueOf(otherActivity.getId()))
+                        .param("timeOfFact", fact.getTimeOfEvent())
+                        .param("description", fact.getDescription()))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn();
     }
 
 
