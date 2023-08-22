@@ -50,7 +50,7 @@ public class Team implements Identifiable, HasImage {
             joinColumns = @JoinColumn(name = "team_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<User> teamMembers = new HashSet<User>();
+    private Set<User> teamMembers = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="clubId")
@@ -66,7 +66,7 @@ public class Team implements Identifiable, HasImage {
     protected Team() {
     }
 
-    public Team(String name, String sport, Location location) throws IOException {
+    public Team(String name, String sport, Location location) {
         this.name = name;
         this.location = location;
         this.sport = sport;
@@ -186,11 +186,13 @@ public class Team implements Identifiable, HasImage {
      * @return new random token only containing characters and numbers
      */
     public void generateToken(TeamService teamService) {
-        String token = generateToken();
-        while (teamService.findByToken(token).isPresent()) {
-            token = generateToken();
+        // Generates a new token if the current one is already in use.
+        // This should never happen, but you never know
+        String possibleToken = generateToken();
+        while (teamService.findByToken(possibleToken).isPresent()) {
+            possibleToken = generateToken();
         }
-        setToken(token);
+        setToken(possibleToken);
     }
 
     /**
@@ -242,34 +244,28 @@ public class Team implements Identifiable, HasImage {
         return getTeamCoaches().stream().anyMatch((u) -> u.getUserId() == userId);
     }
 
-
-    /**
-     * Remove all team roles for this user.
-     * We should call this function if we are updating a user's role.
-     * @param user The user to remove the team roles for
-     * @return <code>true</code> if any role was removed.
-     *
-     */
-    private boolean removeTeamRoleForUser(User user) {
-        long id = user.getUserId();
-        return teamRoles.removeIf(tRole -> tRole.getUser().getUserId() == id);
-    }
-
     /** Sets team role for a user
      * @param user the User we are changing
      * @param role the role we are changing to user to
      */
     public void setRole(User user, Role role) {
-        if (!removeTeamRoleForUser(user)) {
-            System.out.println(String.format("Failed to delete the roles for \"%s\" in team \"%s\"", user.getEmail(), this.getName()));
-            // throw new IllegalStateException(String.format("Failed to delete the roles for \"%s\" in team \"%s\"", user.getEmail(), this.getName()));
+        Optional<TeamRole> oTeamRole = teamRoles.stream()
+                .filter(r -> r.getUser().getId() == user.getId())
+                .findFirst();
+        TeamRole teamRole;
+        if (oTeamRole.isEmpty()) {
+            // If the user doesn't have any role, create it
+            teamRole = new TeamRole();
+            teamRole.setUser(user);
+            teamRole.setRole(role);
+            teamRole.setTeam(this);
+            teamRoles.add(teamRole);
+            teamMembers.add(user);
+        } else {
+            // If the user does have one, update it in-place
+            teamRole = oTeamRole.get();
+            teamRole.setRole(role);
         }
-        TeamRole teamRole = new TeamRole();
-        teamRole.setUser(user);
-        teamRole.setRole(role);
-        teamRole.setTeam(this);
-        teamRoles.add(teamRole);
-        teamMembers.add(user);
     }
 
     public Set<TeamRole> getTeamRoles() {
