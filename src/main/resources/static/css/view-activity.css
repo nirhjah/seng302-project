@@ -651,7 +651,7 @@ justify-content: center;
     .goal-table{
         margin-top:30px !important;
         width:350px !important;
-        margin-left: unset !important;
+        margin-left: 10% !important;
     }
 
 
