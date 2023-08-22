@@ -9,7 +9,6 @@ import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,11 +22,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class EditTeamRoleController {
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
     private TeamService teamService;
-
-    @Autowired
     private UserService userService;
+
+    private static final String TEMPLATE_NAME = "editTeamRoleForm";
+    private static final String REDIRECT_HOME = "redirect:/home";
+
+    public EditTeamRoleController(TeamService teamService, UserService userService) {
+        this.teamService = teamService;
+        this.userService = userService;
+    }
 
     /**
      * Takes the user to the edit ream roles page
@@ -36,30 +40,30 @@ public class EditTeamRoleController {
      */
     @GetMapping("/editTeamRole")
     public String getTeamRoles(@RequestParam(name = "edit", required = true) Long teamID,
-            Model model, HttpServletRequest request) throws Exception {
+            Model model, HttpServletRequest request) {
         logger.info("GET /getTeamRoles");
         Optional<User> user = userService.getCurrentUser();
 
         if (user.isEmpty()) {
             logger.error("No current user?");
-            return "redirect:/home";
+            return REDIRECT_HOME;
         }
 
         Team team = teamService.getTeam(teamID);
         if (team == null) {
             logger.error("Team ID does not exist!");
-            return "redirect:/home";
+            return REDIRECT_HOME;
         }
 
         if (!team.isManager(user.get())) {
             logger.error("Attempted to edit a team when not manager!");
-            return "redirect:/home";
+            return REDIRECT_HOME;
         }
 
         model.addAttribute("user", user.get());
         model.addAttribute("httpServletRequest", request);
         populateListsInModel(team, model);
-        return "editTeamRoleForm";
+        return TEMPLATE_NAME;
     }
 
     /**
@@ -74,15 +78,13 @@ public class EditTeamRoleController {
     public String editTeamRoles(@RequestParam(name = "teamID", required = true) String teamID,
             @RequestParam("userRoles") List<String> userRoles,
             @RequestParam("userIds") List<Long> userIds, Model model,
-            HttpServletRequest request) throws Exception {
+            HttpServletRequest request) {
         logger.info("GET /editTeamRole");
-        logger.info("{}", userRoles);
-        logger.info("{}", userIds);
 
         Optional<User> user = userService.getCurrentUser();
         if (user.isEmpty()) {
             logger.error("No current user?");
-            return "redirect:/home";
+            return REDIRECT_HOME;
         }
 
         model.addAttribute("httpServletRequest", request);
@@ -90,12 +92,12 @@ public class EditTeamRoleController {
         Team team = teamService.getTeam(Long.parseLong(teamID));
         if (team == null) {
             logger.error("Team ID does not exist!");
-            return "redirect:/home";
+            return REDIRECT_HOME;
         }
 
         if (!team.isManager(user.get())) {
             logger.error("Attempted to edit a team when not manager!");
-            return "redirect:/home";
+            return REDIRECT_HOME;
         }
 
         populateListsInModel(team, model);
@@ -105,7 +107,7 @@ public class EditTeamRoleController {
             model.addAttribute(
                     "managerError",
                     "Error: A manager is required for a team, with a maximum of 3 per team.");
-            return "editTeamRoleForm";
+            return TEMPLATE_NAME;
         }
 
         int len = Math.min(userRoles.size(), userIds.size());
@@ -115,7 +117,7 @@ public class EditTeamRoleController {
         }
         teamService.updateTeam(team);
 
-        return "editTeamRoleForm";
+        return TEMPLATE_NAME;
     }
 
     private void updateRole(Team team, long id, String userRole) {
