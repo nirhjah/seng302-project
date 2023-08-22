@@ -147,13 +147,9 @@ public class CreateActivityController {
         // This is because the front-end greys out the Formation dropdown if the conditions aren't met,
         // so the value may be set but it's invalid.
         long formationId = createActivityForm.getFormation();
-        if (formationId != -1 && formationId != 0 && (Activity.canContainFormation(createActivityForm.getActivityType(), team))) {
-            // Check that your team has this formation
-            if (formationService.findFormationById(formationId).map(form -> form.getTeam().equals(team)).isEmpty()) {
-
+        if (formationId != -1 && formationId != 0 && (Activity.canContainFormation(createActivityForm.getActivityType(), team)) && formationService.findFormationById(formationId).map(form -> form.getTeam().equals(team)).isEmpty() ) {
                 bindingResult.addError(new FieldError("CreateActivityForm", "formation",
                     ActivityFormValidators.FORMATION_DOES_NOT_EXIST_MSG));
-            }
         }
     }
 
