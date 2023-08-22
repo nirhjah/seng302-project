@@ -20,6 +20,7 @@ import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.FactService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,12 +80,17 @@ public class ViewActivityControllerTests {
     @Autowired
     private ActivityRepository activityRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private Team team;
 
     @Autowired
     private TeamRepository teamRepository;
 
     private Activity activity;
+
+    private Activity otherActivity;
 
 
 
@@ -105,9 +111,13 @@ public class ViewActivityControllerTests {
         LocalDateTime end = LocalDateTime.of(2023, 7,1,8,30);
         Location activityLocation = new Location(ACTVITY_ADDRESS_LINE_1, ACTVITY_ADDRESS_LINE_2, ACTVITY_SUBURB,
                 ACTVITY_CITY, ACTVITY_POSTCODE, ACTVITY_COUNTRY);
+        Location activityLocation1 = new Location(ACTVITY_ADDRESS_LINE_1, ACTVITY_ADDRESS_LINE_2, ACTVITY_SUBURB,
+                ACTVITY_CITY, ACTVITY_POSTCODE, ACTVITY_COUNTRY);
         activity= new Activity(ActivityType.Game, team, "description",start, end, testUser, activityLocation);
+        otherActivity= new Activity(ActivityType.Other, null, "description",start, end, null, activityLocation1);
 
         activityRepository.save(activity);
+        activityRepository.save(otherActivity);
 
         List<Fact> factList = new ArrayList<>();
         factList.add(new Fact("Someone fell over", "1h 25m", activity));
@@ -278,5 +288,50 @@ public class ViewActivityControllerTests {
 
     }
 
+    @Test
+    public void testAddFactDescriptionAndTime() throws Exception {
+        when(mockActivityService.findActivityById(otherActivity.getId())).thenReturn(otherActivity);
 
+        mockMvc.perform(post("/addFact", 42L)
+                        .param("actId", String.valueOf(otherActivity.getId()))
+                        .param("timeOfFact", "3")
+                        .param("description", "4")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID="+otherActivity.getId()));
+    }
+
+    @Test
+    public void testAddFactNoDescriptionAndTime() throws Exception {
+        when(mockActivityService.findActivityById(otherActivity.getId())).thenReturn(otherActivity);
+
+        mockMvc.perform(post("/addFact", 42L)
+                        .param("actId", String.valueOf(otherActivity.getId()))
+                        .param("timeOfFact", "3")
+                )
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testAddFactDescriptionAndStringForTime() throws Exception {
+        when(mockActivityService.findActivityById(otherActivity.getId())).thenReturn(otherActivity);
+
+        mockMvc.perform(post("/addFact", 42L)
+                        .param("actId", String.valueOf(otherActivity.getId()))
+                        .param("timeOfFact", "favour")
+                        .param("description", "chchc")
+                )
+                .andExpect(status().isFound());
+    }
+
+    @Test
+    public void testAddFactDescriptionAndToolongTime() throws Exception {
+        when(mockActivityService.findActivityById(otherActivity.getId())).thenReturn(otherActivity);
+
+        mockMvc.perform(post("/addFact", 42L)
+                        .param("actId", String.valueOf(otherActivity.getId()))
+                        .param("timeOfFact", "99999999999999")
+                        .param("description", "chchc")
+                )
+                .andExpect(status().isFound());
+    }
 }
