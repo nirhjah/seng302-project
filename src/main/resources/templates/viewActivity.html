@@ -92,17 +92,22 @@
                         <ul>
                             <li class="sub-container" th:each="subsitution : ${activitySubstitutions}">
                                 <div class="sub-card">
-                                    <div class="player-in-container">
-                                        <img th:src="@{/user-profile-picture/{id}(id = ${subsitution.playerOn.userId})}" style="height: 30px">
-                                        <span>IN</span>
-                                        <span class="player-in"
-                                              th:text="${subsitution.playerOn.firstName + ' ' + subsitution.playerOn.lastName}"></span>
+                                    <div class="player-container">
+                                        <img class="player-image" th:src="@{/user-profile-picture/{id}(id = ${subsitution.playerOn.userId})}">
+                                        <div class="player-in-container">
+                                            <span>IN</span>
+                                            <span class="player-in"
+                                                  th:text="${subsitution.playerOn.firstName + ' ' + subsitution.playerOn.lastName}"></span>
+                                        </div>
                                     </div>
                                     <img class="swap-icon" th:src="@{/image/icons/swap.svg}"/>
-                                    <div class="player-out-container">
-                                        <span>OUT</span>
-                                        <span class="player-out"
-                                              th:text="${subsitution.playerOff.firstName + ' ' + subsitution.playerOff.lastName}"></span>
+                                    <div class="player-container">
+                                        <img class="player-image" th:src="@{/user-profile-picture/{id}(id = ${subsitution.playerOn.userId})}">
+                                        <div class="player-out-container">
+                                            <span>OUT</span>
+                                            <span class="player-out"
+                                                  th:text="${subsitution.playerOff.firstName + ' ' + subsitution.playerOff.lastName}"></span>
+                                        </div>
                                     </div>
                                     <div class="dropdown-container">
                                         <img class="dropdown-icon" th:src="@{/image/icons/dropdown.svg}"

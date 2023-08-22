@@ -372,6 +372,11 @@ hr.rounded {
         margin-left: 50% !important;
     }
 
+
+
+}
+
+@media (max-width: 760px){
     #formation-tab .content{
         flex-direction:column !important;
         justify-content:center;
@@ -379,9 +384,16 @@ hr.rounded {
     }
     .sub-table{
         margin-top:30px !important;
-        width:350px !important;
     }
+}
 
+@media (max-width: 480px){
+    .sub-table{
+        width:320px !important;
+    }
+    .sub-list li .sub-card{
+        height:80px !important;
+    }
 }
 
 .helpText {
@@ -625,7 +637,7 @@ hr.rounded {
 .sub-table{
     height:48vh;
     width:420px;
-    margin:0 50px;
+    margin:0 30px;
     border-radius:20px;
     border:4px solid #415a77;
 }
@@ -653,10 +665,11 @@ hr.rounded {
     display:flex;
     align-items:center;
     justify-content:center;
-    height:60px;
+    height:68px;
     border: 2px solid rgb(119, 141, 169);
     border-radius:10px;
     position: relative;
+    padding:0 5px;
 }
 .sub-list li{
     margin-bottom:15px;
@@ -674,10 +687,16 @@ hr.rounded {
 }
 .swap-icon{
     height:23px;
+    margin:0 10px;
 }
 .sub-desc{
     font-size:13px;
     display:none;
+}
+
+.sub-card .time-container{
+    color:gray;
+    font-size:15px;
 }
 .sub-desc hr{
     margin: 0 5px;
@@ -703,12 +722,11 @@ hr.rounded {
 }
 
 .player-in-container span:nth-child(1), .player-out-container span:nth-child(1){
-    font-size:12px;
-    font-weight:600;
+    font-size:11px;
 }
 
 .player-in-container span:nth-child(2), .player-out-container span:nth-child(2){
-    font-weight:700;
+    font-weight:600;
 }
 
 .player-in-container span:nth-child(1){
@@ -717,4 +735,16 @@ hr.rounded {
 
 .player-out-container span:nth-child(1){
     color: #EA3B52;
+}
+
+.player-container{
+    display:flex;
+    align-items:center;
+}
+
+.player-image{
+    height:30px;
+    margin:0 10px;
+    border-radius:50%;
+    border: 1px solid gray;
 }
