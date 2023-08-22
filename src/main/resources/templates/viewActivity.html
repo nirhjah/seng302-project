@@ -149,7 +149,9 @@
         <div class="content-box" id="scores-tab">
             <div class="content">
 
-                <div>
+
+ <div style="display: flex; flex-direction: column; align-items: center">
+
                 <div class="score-display">
                     <div class="team-names-display">
 
@@ -168,40 +170,86 @@
                 </div>
 
 
+     <div class="overallScoreButtonDiv" style="margin-right: 61%;">
+     <div th:if="${(activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}" class="submit-button" style="width: 250%; margin-left: 2%">
+         <button th:unless="${noFacts}" onclick="modal.style.display = 'block'" type="button">Add Overall Score</button>
+     </div>
+     </div>
 
-                <div class="goalFacts">
-                    <div class="goal-table-headers">
-                        <h4 class="player-header"> Scoring </h4>
-                    </div>
-                    <ul>
-                        <li th:each="goal : ${activityGoals}">
-                            <button class="collapsible" >
-                                <img th:src="@{/user-profile-picture/{id}(id = ${goal.scorer.userId})}"  class="scorer-player-image"  alt="Player Image">
-                                <h3 th:text="${goal.scorer.firstName + ' ' + goal.scorer.lastName}"> </h3>
-                                <h4 class="goal-text" th:text="${goal.goalValue == 1 ? goal.goalValue + ' pt' : goal.goalValue + ' pts'}"></h4>
+     <div id="addEventModal" class="modal" th:style="${scoreInvalid != null ? 'display:block' : 'display:none'}">
 
-                                <div class="timeDiv">
-                                    <h4 style="margin-top: 1px;" th:text="${goal.timeOfEvent} + '\''"></h4>
-                                </div>
+         <div class="overall-score-modal-content event" style="bottom: unset">
+             <span class="close" style="margin-top: -15px; margin-right: -6px" onclick="modal.style.display = 'none'">&times;</span>
+             <form style="height: unset" th:action="@{overallScore}" id="createEventForm" method="post" th:object="${createEventForm}" class="view-activity-form">
+                 <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
+                 <h3>Add Overall Score</h3>
 
-                            </button>
+                 <div class="overall-scores-box">
 
-                            <div class="goal-description">
-                                <hr class="solid">
-                                <p th:text="${goal.description}"></p>
-                            </div>
-                        </li>
-                    </ul>
+                     <div class="teamScoreDiv" style="float: left;">
+                         <label style="margin-left: 95px; display:block;" for="overall-score-team">Team</label>
+                         <input class="overall-score-input" name="overallScoreTeam" id="overall-score-team" type="text-area" th:field="*{overallScoreTeam}" th:value="${overallScoreTeamSaved}" data-cy="overallScoreTeam">
 
+                     </div>
 
-                </div>
+                     <div class="opponentScoreDiv">
+                         <label style="display:block; margin-left: 15px" for="overall-score-opponent">Opponent</label>
+                         <input style="margin-right: 10px; float: left" class="overall-score-input" name="overallScoreOpponent" id="overall-score-opponent" type="text-area" th:field="*{overallScoreOpponent}" th:value="${overallScoreOpponentSaved}" data-cy="overallScoreOpponent">
+
+                     </div>
+                 </div>
+                 <div th:each="err : ${#fields.errors('overallScoreTeam')}" th:text="${err}" style="display: unset" class="error-message"></div>
 
 
+                 <label style="padding-top: 10px;" class="helpText"> Scores for both teams should be of same type i.e either 12-4 and 9-3 or 23 and 18 </label>
 
-                </div>
+
+                 <div class="submit-button">
+                     <button style="all: initial" id="createEvent" type="submit"> <img class="addOverallScoreIcon" th:src="@{/image/icons/BlueAddIcon.svg}"/> </button>
+                 </div>
+
+
+             </form>
+         </div>
+
+     </div>
+
 
 
 </div>
+
+
+                <div class="goal-table" style="margin-left: 4%">
+                    <div class="goal-header">
+                        <h4 class="goal-title">Scoring</h4>
+                    </div>
+                    <div class="goals-list">
+                        <ul>
+                            <li th:each="goal : ${activityGoals}">
+                                <button class="collapsible" >
+                                    <img th:src="@{/user-profile-picture/{id}(id = ${goal.scorer.userId})}"  class="scorer-player-image"  alt="Player Image">
+                                    <h3 th:text="${goal.scorer.firstName + ' ' + goal.scorer.lastName}"> </h3>
+                                    <h4 class="goal-text" th:text="${goal.goalValue == 1 ? goal.goalValue + ' pt' : goal.goalValue + ' pts'}"></h4>
+
+                                    <div class="timeDiv">
+                                        <h4 style="margin-top: 1px;" th:text="${goal.timeOfEvent} + '\''"></h4>
+                                    </div>
+
+                                </button>
+
+                                <div class="goal-description">
+                                    <hr class="solid">
+                                    <p th:text="${goal.description}"></p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+</div>
+
+        </div>
 
 
     </div>
@@ -214,6 +262,7 @@
         var collapsible = document.getElementsByClassName("collapsible");
         var i;
 
+
         for (i = 0; i < collapsible.length; i++) {
             collapsible[i].addEventListener("click", function() {
                 this.classList.toggle("active");
@@ -223,23 +272,19 @@
                     content.style.border = "none";
                     this.style.borderRadius = "10px 10px 10px 10px";
                     this.style.borderBottom = "2px solid #778da9"
-
-
-
                 } else {
                     content.style.maxHeight = content.scrollHeight + 5 + "px";
-
                     content.style.border = "2px #778da9"
                     content.style.borderStyle = "none solid solid solid"
                     this.style.borderRadius = "10px 10px 0 0";
                     this.style.borderBottom = "none";
-
-
                 }
             });
         }
 
 
+
+        //tab functionality
         const tabs = document.querySelectorAll('.tab');
         const tabLine = document.querySelector('.tab-line');
         const displayBox = document.querySelectorAll('.content-box');

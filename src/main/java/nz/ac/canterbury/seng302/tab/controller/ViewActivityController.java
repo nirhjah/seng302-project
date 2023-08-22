@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.time.LocalDateTime;
 import java.sql.Date;
 import java.time.Duration;
 import java.time.format.DateTimeFormatter;
@@ -68,6 +69,8 @@ public class ViewActivityController {
     String createEventFormString = "createEventForm";
 
     String overallScoreTeamString = "overallScoreTeam";
+
+    String httpServletRequestString = "httpServletRequest";
 
     @Autowired
     public ViewActivityController(UserService userService, ActivityService activityService, TeamService teamService,FactService factService) {
@@ -180,7 +183,7 @@ public class ViewActivityController {
         model.addAttribute("factList", factList);
 
         // Rambling that's required for navBar.html
-        model.addAttribute("httpServletRequest", request);
+        model.addAttribute(httpServletRequestString, request);
         model.addAttribute("possibleFactTypes", FactType.values());
         model.addAttribute("defaultFactType", FactType.FACT);
 
@@ -267,6 +270,79 @@ public class ViewActivityController {
 
     }
 
+    /**
+     * Handles adding an overall score to an activity
+     * @param actId           activity to add overall score to
+     * @param overallScoreTeam overall score of team
+     * @param overallScoreOpponent overall score of opponent
+     * @param createEventForm      CreateEventForm object used for validation
+     * @param bindingResult        BindingResult used for errors
+     * @param request              request
+     * @param model                model to be filled
+     * @param httpServletResponse   httpServerletResponse
+     * @param redirectAttributes    stores error message to be displayed
+     * @return  view activity page
+     */
+    @PostMapping("/overallScore")
+    public String overallScoreForm(
+            @RequestParam(name = "actId", defaultValue = "-1") long actId,
+            @RequestParam(name = "overallScoreTeam", defaultValue = "") String overallScoreTeam,
+            @RequestParam(name = "overallScoreOpponent", defaultValue = "") String overallScoreOpponent,
+            @Validated CreateEventForm createEventForm,
+            BindingResult bindingResult,
+            HttpServletRequest request,
+            Model model,
+            HttpServletResponse httpServletResponse,
+            RedirectAttributes redirectAttributes) {
+
+        model.addAttribute(overallScoreTeamString, overallScoreTeam);
+
+        model.addAttribute(httpServletRequestString, request);
+
+        Activity activity = activityService.findActivityById(actId);
+        String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
+
+        if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 1) {
+            logger.info("scores not same type");
+            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "The score formats do not match"));
+        }
+
+        if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 2) {
+            logger.info("one score is empty");
+            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "Other score field cannot be empty"));
+        }
+
+        if (LocalDateTime.now().isBefore(activity.getActivityStart())) {
+            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "You can only add an overall score once the activity starts"));
+        }
+
+        if (bindingResult.hasErrors()) {
+            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            redirectAttributes.addFlashAttribute("scoreInvalid", "Leave Modal Open");
+            redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
+
+            redirectAttributes.addFlashAttribute("stayOnTab_name", "scoreTab");
+            redirectAttributes.addFlashAttribute("stayOnTab_index", 3);
+
+            return viewActivityRedirectUrl;
+        }
+
+
+        if (overallScoreTeam != null && overallScoreOpponent != null) {
+            activity.setOtherTeamScore(overallScoreOpponent);
+            activity.setActivityTeamScore(overallScoreTeam);
+        }
+
+        activityService.updateOrAddActivity(activity);
+
+        redirectAttributes.addFlashAttribute("stayOnTab_name", "scoreTab");
+        redirectAttributes.addFlashAttribute("stayOnTab_index", 3);
+
+        return viewActivityRedirectUrl;
+
+    }
+
+
 
 
     /**
@@ -274,8 +350,6 @@ public class ViewActivityController {
      * @param actId       activity ID to add stats/event to
      * @param factType    selected fact type
      * @param description description of event
-     * @param overallScoreTeam  overall score for team
-     * @param overallScoreOpponent overall score for opponent
      * @param activityOutcome outcome of activity (win loss or draw) for team
      * @param time                 time of event
      * @param scorerId             user ID of scorer
@@ -294,9 +368,7 @@ public class ViewActivityController {
             @RequestParam(name = "actId", defaultValue = "-1") long actId,
             @RequestParam(name = "factType", defaultValue = "FACT")  FactType factType,
             @RequestParam(name = "description", defaultValue = "") String description,
-            @RequestParam(name = "overallScoreTeam", defaultValue = "") String overallScoreTeam,
-            @RequestParam(name = "overallScoreOpponent", defaultValue = "") String overallScoreOpponent,
-            @RequestParam(name = "activityOutcomes", defaultValue = "NONE") ActivityOutcome activityOutcome,
+            @RequestParam(name = "activityOutcomes", defaultValue = "None") ActivityOutcome activityOutcome,
             @RequestParam(name = "time") String time,
             @RequestParam(name = "goalValue", defaultValue = "1") int goalValue,
             @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
@@ -315,23 +387,12 @@ public class ViewActivityController {
         logger.info(String.format("got the player on id: %s", subOffId));
         logger.info(String.format("got the scorer id: %s", scorerId));
 
-        model.addAttribute(overallScoreTeamString, overallScoreTeam);
-        model.addAttribute("httpServletRequest", request);
+        model.addAttribute(httpServletRequestString, request);
 
         Activity activity = activityService.findActivityById(actId);
         Fact fact;
         String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
 
-
-        if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 1) {
-            logger.info("scores not same type");
-            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "Both teams require scores of the same type"));
-        }
-
-        if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 2) {
-            logger.info("one score is empty");
-            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "Other score field cannot be empty"));
-        }
 
         if (factType == FactType.SUBSTITUTION && subOffId == subOnId) {
             logger.info("players cannot sub themselves");
@@ -417,14 +478,9 @@ public class ViewActivityController {
         }
 
 
-
-        if (overallScoreTeam != null && overallScoreOpponent != null) {
-            activity.setOtherTeamScore(overallScoreOpponent);
-            activity.setActivityTeamScore(overallScoreTeam);
-        }
-
         activity.addFactList(factList);
         activityService.updateOrAddActivity(activity);
+
 
         return viewActivityRedirectUrl;
     }
