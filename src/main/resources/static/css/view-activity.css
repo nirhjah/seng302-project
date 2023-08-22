@@ -394,6 +394,13 @@ hr.rounded {
     .sub-list li .sub-card{
         height:80px !important;
     }
+
+    .dropdown-container {
+        right: auto !important;
+    }
+    .player-in-container span:nth-child(2), .player-out-container span:nth-child(2){
+        font-size:13px !important;
+    }
 }
 
 .helpText {
