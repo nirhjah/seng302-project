@@ -456,7 +456,7 @@ hr.rounded {
     */
     margin-left: 3%;
     margin-top: 5%;
-    margin-bottom: 10%;
+    margin-bottom: 24%;
 }
 
 
@@ -531,7 +531,7 @@ hr.rounded {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 0px 45px;
+    padding: 0px 33px;
     margin-top: 20px;
 }
 
@@ -690,7 +690,7 @@ justify-content: center;
     .score-display {
         width: 300px;
         margin-left: unset; !important;
-        margin-bottom: 35% !important;
+        margin-bottom: 10% !important;
     }
 
     .team-names-display {

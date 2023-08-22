@@ -120,7 +120,7 @@
             <div class="content">
 
 
- <div>
+ <div style="display: flex; flex-direction: column; align-items: center">
 
                 <div class="score-display">
                     <div class="team-names-display">
@@ -140,9 +140,9 @@
                 </div>
 
 
-     <div class="overallScoreButtonDiv">
-     <div th:if="${(activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}" class="submit-button" style="position: absolute; top: 77%; margin-left: 2%">
-         <button style="width: 160%;" th:unless="${noFacts}" onclick="modal.style.display = 'block'" type="button">Add Overall Score</button>
+     <div class="overallScoreButtonDiv" style="margin-right: 61%;">
+     <div th:if="${(activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}" class="submit-button" style="width: 250%; margin-left: 2%">
+         <button th:unless="${noFacts}" onclick="modal.style.display = 'block'" type="button">Add Overall Score</button>
      </div>
      </div>
 
