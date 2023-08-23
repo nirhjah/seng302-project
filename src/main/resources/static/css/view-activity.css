@@ -311,6 +311,8 @@
 .overall-scores-box {
     padding-bottom: 4%;
     margin-top: 3%;
+    padding-left: 14%;
+    padding-right: 15%;
 }
 
 .add-event-btn {
@@ -330,11 +332,16 @@
     margin-top: 1%;
 }
 
-.overall-score-input {
-    width: 50%;
+.overall-score-input {/*
+    width: 50%;*/
+
+    /*
+    width: max-content;
+    */
+    width: 65%;
     padding: 5px;
-    margin-left: 15px;
-    float: right;
+  /*  margin-left: 15px;
+    float: right;*/
     border: #0b2239 2px solid;
     border-radius: 5px;
 }
@@ -356,7 +363,8 @@ hr.rounded {
 }
 
 .opponentScoreDiv {
-    float: right;
+    float: left;
+    width: auto;
 }
 
 .view-activity-form {
@@ -426,7 +434,8 @@ hr.rounded {
         margin-left: 72% !important;
         height: fit-content !important;
 
-        width: inherit !important;
+        /*width: inherit !important;*/
+        width: 97% !important;
 
     }
 
@@ -439,7 +448,9 @@ hr.rounded {
 
     .overall-scores-box {
         padding-bottom: 3% !important;
+        /*
         margin-left: -3% !important;
+        */
     }
 
     .view-activity-form {
