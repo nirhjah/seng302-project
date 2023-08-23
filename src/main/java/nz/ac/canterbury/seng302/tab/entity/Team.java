@@ -131,8 +131,9 @@ public class Team implements Identifiable, HasImage {
         return this.teamId;
     }
 
+    @Override
     public long getId() {
-        return teamId;
+        return getTeamId();
     }
 
     public String getName() {
