@@ -250,6 +250,9 @@ public class ViewActivityController {
         } else {
             timeOfFact = null;
         }
+        if (LocalDateTime.now().isBefore(activity.getActivityStart())) {
+            result.addError(new FieldError("addFactForm", "timeOfFact", "You can only add a fact once the activity starts"));
+        }
         redirectAttributes.addFlashAttribute("stayOnTab_name", "facts-tab");
         redirectAttributes.addFlashAttribute("stayOnTab_index", 1);
 
