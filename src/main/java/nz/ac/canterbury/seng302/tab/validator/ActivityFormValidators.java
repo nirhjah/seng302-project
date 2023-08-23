@@ -24,7 +24,7 @@ public class ActivityFormValidators {
 
     public static final String NO_DESC_MSG = "Description is required";
 
-    public static final String DESC_CONTAINS_INVALID_CHAR_MSG = "Description must contain letters";
+    public static final String DESC_CONTAINS_INVALID_CHAR_MSG = "Description must contain at least 1 letter";
 
     public static final String START_DATE_REQUIRED_MSG = "Start date and time is required";
 
@@ -38,10 +38,11 @@ public class ActivityFormValidators {
 
     public static final String FORMATION_DOES_NOT_EXIST_MSG = "The specified team does not have this formation";
 
-    /**
-     * Regex taken from <a href="https://stackoverflow.com/a/56276700">...</a>
-     */
-    public static final String DESCRIPTION_REGEX = "^(?=[^A-Za-z]*[A-Za-z])[ -~]*$";
+    // U27 AC7 - An invalid description is "...made of numbers or non-alphabetical characters only"
+    // This means an *invalid* description contains no letters
+    // Therefore, a *valid* description contains a letter anywhere
+    // Other than that, we're not picky about what they type.
+    public static final String DESCRIPTION_REGEX = "(.*)\\p{L}(.*)";
 
     /**
      * Checks start time is valid
