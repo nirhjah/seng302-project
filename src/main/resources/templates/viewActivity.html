@@ -156,8 +156,8 @@
 
                  <div class="overall-scores-box">
 
-                     <div class="teamScoreDiv" style="float: left;">
-                         <label style="margin-left: 95px; display:block;" for="overall-score-team">Team</label>
+                     <div class="opponentScoreDiv" style="float: left;">
+                         <label class="teamScoreLabel" style="margin-left: 95px; display:block;" for="overall-score-team">Team</label>
                          <input class="overall-score-input" name="overallScoreTeam" id="overall-score-team" type="text-area" th:field="*{overallScoreTeam}" th:value="${overallScoreTeamSaved}" data-cy="overallScoreTeam">
 
                      </div>
@@ -171,11 +171,11 @@
                  <div th:each="err : ${#fields.errors('overallScoreTeam')}" th:text="${err}" style="display: unset" class="error-message"></div>
 
 
-                 <label style="padding-top: 10px;" class="helpText"> Scores for both teams should be of same type i.e either 12-4 and 9-3 or 23 and 18 </label>
+                 <label style="padding-top: 10px;" class="helpText"> Scores for both teams should be of the same format i.e either 12-4 and 9-3 or 23 and 18 </label>
 
 
-                 <div class="submit-button">
-                     <button style="all: initial" id="createEvent" type="submit"> <img class="addOverallScoreIcon" th:src="@{/image/icons/BlueAddIcon.svg}"/> </button>
+                 <div style="padding-bottom: 11px; padding-top: 11px;" class="submit-button">
+                     <button style="width: 30%" id="createEvent" type="submit"> Add </button>
                  </div>
 
 

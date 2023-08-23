@@ -309,7 +309,7 @@
 }
 
 .overall-scores-box {
-    padding-bottom: 11%;
+    padding-bottom: 4%;
     margin-top: 3%;
 }
 
@@ -335,6 +335,8 @@
     padding: 5px;
     margin-left: 15px;
     float: right;
+    border: #0b2239 2px solid;
+    border-radius: 5px;
 }
 
 .addOverallScoreIcon {
@@ -384,7 +386,11 @@ hr.rounded {
 }
 
 
-@media (max-width: 700px) {
+    @media (max-width: 700px) {
+
+    .submit-button {
+        margin-left: 17% !important;
+    }
 
     .overallScoreButtonDiv {
         margin-left: 11% !important;
@@ -427,12 +433,12 @@ hr.rounded {
 
     .overall-score-modal-content button {
         margin-left: -21% !important;
-        width: 79% !important;
+        width: 30% !important;
     }
 
 
     .overall-scores-box {
-        padding-bottom: 15% !important;
+        padding-bottom: 3% !important;
         margin-left: -3% !important;
     }
 
@@ -442,9 +448,9 @@ hr.rounded {
     }
 
     .opponentScoreDiv {
-        float: none !important;
-        margin-left: 49% !important;
-        width: 60% !important;
+     /*   float: none !important;
+        margin-left: 49% !important;*/
+        width: 45% !important;
     }
 }
 
@@ -687,7 +693,9 @@ justify-content: center;
 
     .submit-button {
         top: 53% !important;
+        /*
         margin-left: 17% !important;
+        */
         left: 14%;
     }
 
