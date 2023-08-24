@@ -414,11 +414,19 @@ hr.rounded {
     width: 100%;
 }
 
+.time-goal-value-div {
+    margin-top: 10px;
+}
+
+
+.time-goal-value-div .error-message {
+    margin-top: -10px;
+    padding-bottom: 10px;
+    display: unset;
+}
+
     @media (max-width: 700px) {
 
-    .submit-button {
-        margin-left: 17% !important;
-    }
 
     .teamScoreDiv {
         margin-left: -38px !important;

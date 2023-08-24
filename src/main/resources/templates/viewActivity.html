@@ -269,14 +269,13 @@
                                th:field="*{description}"></textarea>
                  </div>
 
-
+            <div class="time-goal-value-div">
                  <div>
                      <label class="goal-form-labels" for="time-of-goal">Time of Goal<span class="required">*</span></label>
                      <input class="goal-inputs" name="timeOfGoal" id="time-of-goal" min="1" type="number" th:field="*{time}" th:value="${time}">
                      <label class="goal-form-labels" for="time-of-goal"> minutes</label>
-
-                     <div style="display: unset" th:each="err : ${#fields.errors('time')}" th:text="${err}" class="error-message"></div>
- </div>
+                </div>
+                 <div th:each="err : ${#fields.errors('time')}" th:text="${err}" class="error-message"></div>
 
                  <div>
                      <label class="goal-form-labels" for="goal-value">Goal Value</label>
@@ -285,7 +284,7 @@
 
                  </div>
 
-
+            </div>
 
                  <div style="padding-bottom: 11px; padding-top: 11px;" class="submit-button">
                      <button style="width: 30%" id="createGoal" type="submit"> Add </button>
