@@ -90,7 +90,7 @@ public class CreateTeamInvitationTokens {
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new ProfileFormController(userService, teamService, activityService, factService, formationService, competitionService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewTeamController(userService, teamService, activityService, factService, formationService, competitionService)).build();
 
         Authentication authentication = Mockito.mock(Authentication.class);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
@@ -118,7 +118,7 @@ public class CreateTeamInvitationTokens {
 
     @When("I am viewing the profile page of that team")
     public void i_am_viewing_the_profile_page_of_that_team() throws Exception {
-        mockMvc.perform(get("/profile")
+        mockMvc.perform(get("/team-info")
                         .param("teamID", "1"))
 
                 .andExpect(view().name("viewTeamForm"));
@@ -126,14 +126,14 @@ public class CreateTeamInvitationTokens {
 
     @Then("I can see a unique secret token for my team that is exactly 12 char long with a combination of letters and numbers, but no special characters")
     public void i_can_see_a_unique_secret_token_for_my_team_that_is_exactly_char_long_with_a_combination_of_letters_and_numbers_but_no_special_characters() throws Exception {
-        mockMvc.perform(get("/profile")
+        mockMvc.perform(get("/team-info")
                         .param("teamID", "1"))
                 .andExpect(MockMvcResultMatchers.model().attribute("displayToken", team.getToken()));
     }
 
     @Given("I am on the team profile page")
     public void i_am_on_the_team_profile_page() throws Exception {
-        mockMvc.perform(get("/profile")
+        mockMvc.perform(get("/team-info")
                         .param("teamID", "1"))
                 .andExpect(view().name("viewTeamForm"));
     }

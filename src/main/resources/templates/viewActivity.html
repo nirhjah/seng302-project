@@ -20,11 +20,19 @@
 
 <div class="team-profile-form">
 
+    <span id="stayOnTab_Name" style="display: none;" th:text="${stayOnTab_name}"></span>
+    <span id="stayOnTab_index" style="display: none;" th:text="${stayOnTab_index}"></span>
+
     <div class="wrapper-profile" id="wrapper-profile">
         <div class="tab-box">
-            <div class="tab active">
+            <div class="tab active" id="generalTab">
                 <img class="tab-icon" th:src="@{/image/icons/activity.png}"/>
                 <button class="tab-button"> General &nbsp;</button>
+            </div>
+            <div class="tab" id="factsTab" >
+                <img class ="tab-icon" th:src="@{/image/icons/editform.svg}"/>
+                <button class="tab-button" > Facts &nbsp;</button>
+                <div class="tab-line"></div>
             </div>
             <div class="tab" id="formations-tab" th:if="${canShowScores}">
                 <img class="tab-icon" th:src="@{/image/icons/formation.svg}"/>
@@ -131,11 +139,32 @@
         </div>
 
 
-        <div class="content-box" id="facts-tab" style="margin-bottom: 500px">
-            <div class="content">
+        <div class="content-box" id="facts-tab" style="margin-bottom: 16px">
+            <div class="content" style="height: 400px; overflow: auto;">
+                <div class="submit-button" style="padding-top: 10px; padding-bottom: 10px">
+                    <button style="width: 50%">Add Fact</button>
+                </div>
+                <table style="padding: 15px; border-collapse: collapse; border: 2px solid; margin:2%; width:96%">
+                    <thead style="background-color: #0b2239">
+                    <tr>
+                        <th style="width: 30%; background-color: #0b2239"> Time </th>
+                        <th style="width: 70%; background-color: #0b2239"> Description </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${factList.isEmpty()}">
+                        <td colspan="2"> No Recorded Facts </td>
+                    </tr>
+                    <tr th:each="fact : ${factList}">
+                        <td><span th:text="${fact.timeOfEvent} ?: 'No Time Recorded'">No Time Listed</span></td>
+                        <td><span th:text="${fact.description}">Description</span></td>
+                    </tr>
+                    </tbody>
+                </table>
 
             </div>
         </div>
+
 
 
         <div class="content-box" id="scores-tab">
@@ -254,8 +283,40 @@
         const tabLine = document.querySelector('.tab-line');
         const displayBox = document.querySelectorAll('.content-box');
         const displayContent = document.querySelectorAll('.content');
-        const wrapperProfile = document.getElementById("wrapper-profile")
 
+
+        //functionality staying on tab after form submission
+        var stayOnTab_Name =  document.getElementById("stayOnTab_Name").innerHTML;
+        var stayOnTab_Index =  document.getElementById("stayOnTab_index").innerHTML;
+
+        console.log("tabname" + stayOnTab_Name);
+        console.log("tabindex" + stayOnTab_Index);
+
+        if (stayOnTab_Name === "scoreTab" || stayOnTab_Name === "generalTab" || stayOnTab_Name === "formations-tab" || stayOnTab_Name === "factsTab") {
+            var tabToBeActive = document.getElementById(stayOnTab_Name)
+
+            console.log(tabToBeActive)
+            console.log(stayOnTab_Name)
+            tabs.forEach(otherTab => {
+                otherTab.classList.remove('active');
+            });
+            tabToBeActive.classList.add('active')
+
+            displayBox.forEach(box => {
+                box.classList.remove('active')
+            });
+            displayBox[stayOnTab_Index].classList.add('active');
+            displayContent.forEach(content => {
+                content.classList.remove('active')
+            });
+            displayContent[stayOnTab_Index].classList.add('active');
+
+        }
+
+
+
+
+        //functionality for clicking on tabs
         tabs.forEach((tab, index) => {
             tab.addEventListener('click', (e) => {
                 tabs.forEach(otherTab => {
@@ -576,7 +637,7 @@
             playerOffLabel.style.display = "block";
             playerOffLabel.appendChild(requiredSpan);
 
-
+            
             /*[# th:each="player : ${activity.getInvoledMembersNoManager()}"]*/
             // Create an option element for each team member
             var option = document.createElement("option");
@@ -588,7 +649,7 @@
             // Append the select element to the additional fields div
             additionalFieldsDiv.appendChild(playerOffLabel);
             additionalFieldsDiv.appendChild(selectPlayerOff);
-
+            
             // new select element for the player subbed on 
             var selectPlayerOn = document.createElement("select");
             selectPlayerOn.name = "playerOn";

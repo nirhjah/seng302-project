@@ -755,3 +755,6 @@ hr.rounded {
     border-radius:50%;
     border: 1px solid gray;
 }
+table, th, td {
+    border: 1px solid #0b2239;
+}

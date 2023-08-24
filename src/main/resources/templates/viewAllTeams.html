@@ -35,7 +35,7 @@
     <!--/* The table of teams */-->
     <div class="card-container">
         <div th:each="team : ${listOfTeams}" class="card"
-             th:onclick="|window.location.href='@{profile(teamID=${team.teamId})}'|">
+             th:onclick="|window.location.href='@{team-info(teamID=${team.teamId})}'|">
             <div class="card-wrapper">
                 <div class="card-image">
                     <img th:src="@{/team-profile-picture/{id}(id = ${team.teamId})}" class="card-img-top" alt="Team image">

@@ -38,7 +38,7 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @WithMockUser
-public class ProfileFormControllerTest {
+public class ViewTeamControllerTest {
 
     @Autowired
     private TeamImageService teamImageService;
@@ -93,7 +93,7 @@ public class ProfileFormControllerTest {
         Mockito.when(activityService.numberOfTotalGamesAndFriendlies(team)).thenReturn(0);
         Mockito.when(activityService.getLast5GamesOrFriendliesForTeamWithOutcome(team)).thenReturn(null);
         Mockito.when(factService.getTop5Scorers(team)).thenReturn(null);
-        mockMvc.perform(get("/profile")
+        mockMvc.perform(get("/team-info")
                 .param("teamID", TEAM_ID.toString()))
             .andExpect(status().isOk())
             .andExpect(view().name("viewTeamForm"))
@@ -107,7 +107,7 @@ public class ProfileFormControllerTest {
         Mockito.when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         Mockito.doReturn(TEAM_ID).when(team).getTeamId();
 
-        mockMvc.perform(get("/profile")
+        mockMvc.perform(get("/team-info")
                         .param("teamID", "2"))
                 .andExpect(status().isNotFound());
     }
@@ -119,11 +119,11 @@ public class ProfileFormControllerTest {
         try (FileInputStream input = new FileInputStream(file)) {
             MockMultipartFile multipartFile = new MockMultipartFile("file",
                     file.getName(), "image/png", input.readAllBytes());
-            mockMvc.perform(multipart("/profile")
+            mockMvc.perform(multipart("/team-info")
                         .file(multipartFile)
                         .param("teamID", TEAM_ID.toString()))
                     .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl(String.format("/profile?teamID=%s", TEAM_ID)));
+                    .andExpect(redirectedUrl(String.format("/team-info?teamID=%s", TEAM_ID)));
         }
 
     }
@@ -136,7 +136,7 @@ public class ProfileFormControllerTest {
         try (FileInputStream input = new FileInputStream(file)) {
             MockMultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain",
                     input.readAllBytes());
-            mockMvc.perform(multipart("/profile?teamID={id}", TEAM_ID).file(multipartFile))
+            mockMvc.perform(multipart("/team-info?teamID={id}", TEAM_ID).file(multipartFile))
                     .andExpect(status().is3xxRedirection());
         }
 
@@ -152,7 +152,7 @@ public class ProfileFormControllerTest {
         try (FileInputStream input = new FileInputStream(file)) {
             MockMultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "image/png",
                     input.readAllBytes());
-            mockMvc.perform(multipart("/profile?teamID={id}", TEAM_ID).file(multipartFile))
+            mockMvc.perform(multipart("/team-info?teamID={id}", TEAM_ID).file(multipartFile))
                     .andExpect(status().is3xxRedirection());
         }
 
@@ -162,13 +162,13 @@ public class ProfileFormControllerTest {
 
     @Test
     public void testCreatingAValidFormation() throws Exception {
-        mockMvc.perform(post("/profile/create-formation", 42L)
+        mockMvc.perform(post("/team-info/create-formation", 42L)
                         .param("formation", "1-4-4-2")
                         .param("customPlayerPositions", "")
                         .param("custom", String.valueOf(false))
                         .param("teamID", String.valueOf(TEAM_ID)))
                 .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/profile?teamID=" + TEAM_ID));
+                .andExpect(view().name("redirect:/team-info?teamID=" + TEAM_ID));
         verify(mockFormationService, times(1)).addOrUpdateFormation(any());
     }
 

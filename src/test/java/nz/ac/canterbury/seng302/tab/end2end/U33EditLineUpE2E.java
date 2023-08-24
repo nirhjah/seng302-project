@@ -27,7 +27,7 @@ public class U33EditLineUpE2E {
 
     @Given("I am the manager of a team")
     public void i_am_the_manager_of_a_team() {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/profile?teamID=2");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=2");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
     }
