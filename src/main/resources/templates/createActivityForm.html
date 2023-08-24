@@ -94,8 +94,8 @@
             <!--/* Activity Description */-->
             <div class="description-box">
                 <label for="description">Description: <span class="required">*</span></label>
-                <textarea class="description-text" id="description" th:value="*{description}" th:name="description" autofocus placeholder=""
-                          th:text="${description}"></textarea>
+                <textarea class="description-text" id="description" th:name="description" autofocus placeholder=""
+                          th:text="*{description}"></textarea>
                 <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
                 <p id="charCount" class="charCount"></p>
             </div>

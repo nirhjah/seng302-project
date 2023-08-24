@@ -85,8 +85,17 @@ public class CreateActivityForm {
         return description;
     }
 
+    /**
+     * Sets the description field (called by Spring when filling the form)
+     */
     public void setDescription(String description) {
-        this.description = description;
+        // We strip this so the description isn't just "\n\n\n\nHELLO\n\n"
+        String newDescription = description.strip();
+        // Bug: On Windows newlines are "\r\n", on Linux (and in browsers) they're "\n".
+        // So a newline heavy description can fail the length test on Windows.
+        // Fix: Strip out the "\r"
+        newDescription = newDescription.replace("\r\n", "\n");
+        this.description = newDescription;
     }
 
     public LocalDateTime getStartDateTime() {
@@ -106,7 +115,6 @@ public class CreateActivityForm {
     }
 
     public String getAddressLine1() {
-
         return addressLine1;
     }
 
