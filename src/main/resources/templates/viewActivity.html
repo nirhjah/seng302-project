@@ -162,9 +162,11 @@
         <div class="content-box" id="scores-tab">
             <div class="content">
 
-                <div>
-                    <div class="score-display">
-                        <div class="team-names-display">
+
+ <div style="display: flex; flex-direction: column; align-items: center">
+
+                <div class="score-display">
+                    <div class="team-names-display">
 
                             <h3 style="font-size: 30px" th:text="${activity.team}"></h3>
                             <h3 style="font-weight: 100; font-size: 27px"> vs </h3>
@@ -182,18 +184,66 @@
                     </div>
 
 
-                    <div class="goalFacts">
-                        <div class="goal-table-headers">
-                            <h4 class="player-header"> Scoring </h4>
-                        </div>
+     <div class="overallScoreButtonDiv" style="margin-right: 61%;">
+     <div th:if="${(activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}" class="submit-button" style="width: 185%; margin-left: 2%">
+         <button th:unless="${noFacts}" onclick="modal.style.display = 'block'" type="button">Add Overall Score</button>
+     </div>
+     </div>
+
+     <div id="addEventModal" class="modal" th:style="${scoreInvalid != null ? 'display:block' : 'display:none'}">
+
+         <div class="overall-score-modal-content event" style="bottom: unset">
+             <span class="close" style="margin-top: -15px; margin-right: -6px" onclick="modal.style.display = 'none'">&times;</span>
+             <form style="height: unset" th:action="@{overallScore}" id="createEventForm" method="post" th:object="${createEventForm}" class="view-activity-form">
+                 <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
+                 <h3 style="text-align: center">Add Overall Score</h3>
+
+                 <div class="overall-scores-box">
+
+                     <div class="opponentScoreDiv" style="float: left;">
+                         <label class="teamScoreLabel" style="display:block; color: #919191;" for="overall-score-team">Team</label>
+                         <input class="overall-score-input" name="overallScoreTeam" id="overall-score-team" type="text-area" th:field="*{overallScoreTeam}" th:value="${overallScoreTeamSaved}" data-cy="overallScoreTeam">
+
+                     </div>
+
+                     <div class="opponentScoreDiv" style="float:right">
+                         <label style="color: #919191; display:block; margin-left: 36%" for="overall-score-opponent">Opponent</label>
+                         <input style="float: right" class="overall-score-input" name="overallScoreOpponent" id="overall-score-opponent" type="text-area" th:field="*{overallScoreOpponent}" th:value="${overallScoreOpponentSaved}" data-cy="overallScoreOpponent">
+
+                     </div>
+                 </div>
+                 <div th:each="err : ${#fields.errors('overallScoreTeam')}" th:text="${err}" style="display: unset" class="error-message"></div>
+
+
+                 <label style="padding-top: 10px;" class="helpText"> Scores for both teams should be of the same format i.e either 12-4 and 9-3 or 23 and 18 </label>
+
+
+                 <div style="padding-bottom: 11px; padding-top: 11px;" class="submit-button">
+                     <button style="width: 30%" id="createEvent" type="submit"> Add </button>
+                 </div>
+
+
+             </form>
+         </div>
+
+     </div>
+
+
+
+</div>
+
+
+                <div class="goal-table" style="margin-left: 4%">
+                    <div class="goal-header">
+                        <h4 class="goal-title">Scoring</h4>
+                    </div>
+                    <div class="goals-list">
                         <ul>
                             <li th:each="goal : ${activityGoals}">
-                                <button class="collapsible">
-                                    <img th:src="@{/user-profile-picture/{id}(id = ${goal.scorer.userId})}"
-                                         class="scorer-player-image" alt="Player Image">
-                                    <h3 th:text="${goal.scorer.firstName + ' ' + goal.scorer.lastName}"></h3>
-                                    <h4 class="goal-text"
-                                        th:text="${goal.goalValue == 1 ? goal.goalValue + ' pt' : goal.goalValue + ' pts'}"></h4>
+                                <button class="collapsible" >
+                                    <img th:src="@{/user-profile-picture/{id}(id = ${goal.scorer.userId})}"  class="scorer-player-image"  alt="Player Image">
+                                    <h3 th:text="${goal.scorer.firstName + ' ' + goal.scorer.lastName}"> </h3>
+                                    <h4 class="goal-text" th:text="${goal.goalValue == 1 ? goal.goalValue + ' pt' : goal.goalValue + ' pts'}"></h4>
 
                                     <div class="timeDiv">
                                         <h4 style="margin-top: 1px;" th:text="${goal.timeOfEvent} + '\''"></h4>
@@ -209,13 +259,12 @@
                         </ul>
                     </div>
 
-
                 </div>
 
-
-            </div>
+</div>
 
         </div>
+
 
     </div>
 
@@ -246,6 +295,7 @@
         var collapsible = document.getElementsByClassName("collapsible");
         var i;
 
+
         for (i = 0; i < collapsible.length; i++) {
             collapsible[i].addEventListener("click", function () {
                 this.classList.toggle("active");
@@ -259,18 +309,17 @@
 
                 } else {
                     content.style.maxHeight = content.scrollHeight + 5 + "px";
-
                     content.style.border = "2px #778da9"
                     content.style.borderStyle = "none solid solid solid"
                     this.style.borderRadius = "10px 10px 0 0";
                     this.style.borderBottom = "none";
-
-
                 }
             });
         }
 
 
+
+        //tab functionality
         const tabs = document.querySelectorAll('.tab');
         const tabLine = document.querySelector('.tab-line');
         const displayBox = document.querySelectorAll('.content-box');
@@ -284,7 +333,7 @@
         console.log("tabname" + stayOnTab_Name);
         console.log("tabindex" + stayOnTab_Index);
 
-        if (stayOnTab_Name === "scoreTab" || stayOnTab_Name === "generalTab" || stayOnTab_Name === "formations-tab" || stayOnTab_Name === "factsTab") {
+        if (stayOnTab_Name === "score-tab" || stayOnTab_Name === "generalTab" || stayOnTab_Name === "formations-tab" || stayOnTab_Name === "factsTab") {
             var tabToBeActive = document.getElementById(stayOnTab_Name)
 
             console.log(tabToBeActive)
