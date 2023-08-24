@@ -332,16 +332,9 @@
     margin-top: 1%;
 }
 
-.overall-score-input {/*
-    width: 50%;*/
-
-    /*
-    width: max-content;
-    */
+.overall-score-input {
     width: 65%;
     padding: 5px;
-  /*  margin-left: 15px;
-    float: right;*/
     border: #0b2239 2px solid;
     border-radius: 5px;
 }
@@ -384,9 +377,6 @@ hr.rounded {
 }
 
 .overall-score-modal-content.event {
-    /*
-    width: 32%;
-    */
     width: max-content;
     position: relative;
     bottom: 40%;
@@ -404,9 +394,6 @@ hr.rounded {
 }
 
 .add-goal-modal-content.event {
-    /*
-    width: 32%;
-    */
     width: max-content;
     position: relative;
     bottom: 40%;
@@ -414,7 +401,17 @@ hr.rounded {
 }
 
 .overallScoreButtonDiv {
-    margin-right: 61%;
+    width: 50%;
+    float: left;
+}
+
+.goalScoreButtonDiv {
+    width: 50%;
+    float: right;
+}
+
+.score-form-button-div {
+    width: 100%;
 }
 
     @media (max-width: 700px) {
@@ -423,9 +420,6 @@ hr.rounded {
         margin-left: 17% !important;
     }
 
-    .overallScoreButtonDiv {
-        margin-left: 11% !important;
-    }
     .teamScoreDiv {
         margin-left: -38px !important;
     }
@@ -433,31 +427,15 @@ hr.rounded {
 
     .addOverallScoreIcon {
         cursor: pointer;
-        /*
-        width: 34%;
-        */
         width: 23% !important;
-      /*  margin-left: 33%;*/
     }
 
     .modal-content.event, .overall-score-modal-content {
-        /*
-        transform: translate(-69%, 100%) !important;
-        */
         transform: translate(-72%, 71%) !important;
         overflow-y: unset;
         bottom: 40% !important;
-       /* width: 90% !important;*/
-        /*
-        width: max-content !important;
-        */
-        /*
-        margin-left: 67% !important;
-        */
         margin-left: 72% !important;
         height: fit-content !important;
-
-        /*width: inherit !important;*/
         width: 97% !important;
 
     }
@@ -471,9 +449,6 @@ hr.rounded {
 
     .overall-scores-box {
         padding-bottom: 3% !important;
-        /*
-        margin-left: -3% !important;
-        */
     }
 
     .view-activity-form {
@@ -482,8 +457,6 @@ hr.rounded {
     }
 
     .opponentScoreDiv {
-     /*   float: none !important;
-        margin-left: 49% !important;*/
         width: 45% !important;
     }
 
@@ -543,14 +516,18 @@ hr.rounded {
     padding-bottom: 5%;
     float: left;
     width: 416px;
-    /*
-    width: 45%;
-    */
     margin-left: 3%;
     margin-top: 5%;
     margin-bottom: 24%;
 }
 
+.goal-form-labels {
+    color: #919191;
+}
+
+.overall-score-modal-content h3, .add-goal-modal-content h3 {
+    text-align: center;
+}
 
 
 .goals-list button {
@@ -581,18 +558,6 @@ hr.rounded {
     border: #0b2239 2px solid;
     border-radius: 5px;
 }
-
-.goalFacts ul {
-    /*overflow:hidden;
-    overflow-y:scroll;
-    height: 80%;
-    padding: 15px;*/
-    /*height: 400px;
-    margin-left: 57%;
-    border: 4px solid #415A77;
-    border-radius: 0 0 20px 20px;*/
-}
-
 
 .goals-list h3 {
     color: #1B263B;
@@ -676,15 +641,11 @@ hr.rounded {
 
 
 .goal-table-headers {
-   /* padding-bottom: 4%;
-    margin-left: 57%;
-    padding-top: 2%;*/
-
     height: 15%;
     background-color: #415A77;
     border-radius: 20px 20px 0 0;
-display: flex;
-justify-content: center;
+    display: flex;
+    justify-content: center;
     align-items: center;
     font-size: 20px;
     color: white;
@@ -741,7 +702,7 @@ justify-content: center;
 
 
 
-@media (max-width: 972px) { /*859*/
+@media (max-width: 972px) {
 
     .goals-list button {
         width: 320px !important;
@@ -764,9 +725,6 @@ justify-content: center;
 
     .submit-button {
         top: 53% !important;
-        /*
-        margin-left: 17% !important;
-        */
         left: 14%;
     }
 
@@ -784,11 +742,6 @@ justify-content: center;
         margin-left: 1.5% !important;
         width: 100% !important;
     }
-/*
-    .goalFacts ul {
-        width: 340px;
-        margin-left: 5px; !important;
-    }*/
 
     .score-display {
         width: 300px;
@@ -814,13 +767,9 @@ justify-content: center;
         width: 310px; !important;
     }
 
-
     .goalFacts {
-       /* padding-top: 80%;*/
-
         margin-top:30px !important;
-        width:350px !important;
-
+        width: 350px !important;
     }
 
     .player-header {

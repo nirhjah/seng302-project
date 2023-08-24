@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
@@ -14,9 +15,11 @@ import org.springframework.data.domain.PageRequest;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service class for Activity
@@ -264,32 +267,16 @@ public class ActivityService {
         return activityRepository.findActivitiesByTeamAndActivityType(team, activityType);
     }
 
-    /**
-     * increments the home teams score by one
-     **/
-    public void updateTeamsScore(Activity activity, int goalValue) {
-        String score = activity.getActivityTeamScore();
-        if (score == null) {
-            score = "0";
-        }
-        int parsedScore = Integer.parseInt(score);
-        parsedScore += goalValue;
-
-        activity.setActivityTeamScore(String.valueOf(parsedScore));
-    }
 
     /**
-     * increments the away teams score by one
-     * @param activity The activity to update the other team's score
-     **/
-    public void updateAwayTeamsScore(Activity activity, int goalValue) {
-        String score = activity.getOtherTeamScore();
-        if (score == null) {
-            score = "0";
-        }
-        int parsedScore = Integer.parseInt(score);
-        parsedScore += goalValue;
-
-        activity.setOtherTeamScore(String.valueOf(parsedScore));
+     * Sorts given list of goals by time
+     * @param goalsList list of goals
+     * @return list of goals sorted in ascending time order
+     */
+    public List<Goal> sortGoalTimesAscending(List<Goal> goalsList) {
+        return goalsList.stream()
+                .sorted(Comparator.comparingInt(goal -> Integer.parseInt(goal.getTimeOfEvent())))
+                .collect(Collectors.toList());
     }
+
 }

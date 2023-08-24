@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
-import nz.ac.canterbury.seng302.tab.entity.Fact.OppositionGoal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
@@ -153,7 +152,7 @@ public class ViewActivityController {
                 }
             }
             model.addAttribute("activitySubstitutions", activitySubstitutions);
-            model.addAttribute("activityGoals", activityGoals);
+            model.addAttribute("activityGoals", activityService.sortGoalTimesAscending(activityGoals));
         }
 
         logger.info("activityFacts: {}", activityFacts);

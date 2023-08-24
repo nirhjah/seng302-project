@@ -183,12 +183,21 @@
                     <h3 class="winner-text" id="winnerText" th:text="${outcomeString}" ></h3>
                 </div>
 
+     <div class="score-form-button-div">
 
-     <div class="overallScoreButtonDiv" style="margin-right: 61%;">
-     <div th:if="${(activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}" class="submit-button" style="width: 185%; margin-left: 2%">
+     <div class="overallScoreButtonDiv">
+     <div th:if="${(activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}" class="submit-button">
          <button th:unless="${noFacts}" onclick="overallScoreModal.style.display = 'block'" type="button">Add Overall Score</button>
      </div>
      </div>
+
+     <div class="goalScoreButtonDiv">
+         <div th:if="${(activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}" class="submit-button">
+             <button th:unless="${noFacts}" onclick="addGoalModal.style.display = 'block'" type="button">Add Goal</button>
+         </div>
+     </div>
+
+         </div>
 
      <div id="addOverallScoreModal" class="modal" th:style="${scoreInvalid != null ? 'display:block' : 'display:none'}">
 
@@ -231,11 +240,6 @@
 
 
 
-     <div class="overallScoreButtonDiv">
-         <div th:if="${(activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}" class="submit-button" style="width: 185%; margin-left: 2%">
-             <button th:unless="${noFacts}" onclick="addGoalModal.style.display = 'block'" type="button">Add Goal</button>
-         </div>
-     </div>
 
      <div id="addGoalModal" class="modal" th:style="${goalInvalid != null ? 'display:block' : 'display:none'}">
 
@@ -247,7 +251,7 @@
 
 
                  <div class="select-container">
-                     <label for="scorer" style="display: block">Scorer <span class="required">*</span> </label>
+                     <label class="goal-form-labels" for="scorer" style="display: block">Scorer <span class="required">*</span> </label>
                      <div class="select-box">
                          <select id="scorer" name="scorer">
                              <option th:each="player : ${playersInTeam}"
@@ -260,23 +264,24 @@
                  </div>
 
                  <div class="description-box">
-                     <label for="description">Description</label>
+                     <label class="goal-form-labels" for="description">Description</label>
                      <textarea class="description-text" id="description" th:name="description" autofocus placeholder=""
                                th:field="*{description}"></textarea>
                  </div>
 
 
                  <div>
-                     <label for="time-of-goal">Time of Goal (Minutes)</label>
+                     <label class="goal-form-labels" for="time-of-goal">Time of Goal<span class="required">*</span></label>
                      <input class="goal-inputs" name="timeOfGoal" id="time-of-goal" min="1" type="number" th:field="*{time}" th:value="${time}">
+                     <label class="goal-form-labels" for="time-of-goal"> minutes</label>
 
                      <div style="display: unset" th:each="err : ${#fields.errors('time')}" th:text="${err}" class="error-message"></div>
  </div>
 
                  <div>
-                     <label for="goal-value">Goal Value</label>
+                     <label class="goal-form-labels" for="goal-value">Goal Value</label>
                      <input min="1" type="number" class="goal-inputs" name="goalValue" id="goal-value" th:value="${goalValue}">
-                     <label class="helpText"> Value defaults to 1 if not entered </label>
+                     <label class="helpText"> Goal value defaults to 1 if not entered </label>
 
                  </div>
 
@@ -342,6 +347,19 @@
 
 
     <script>
+
+        var addGoalModal = document.getElementById("addGoalModal");
+        var overallScoreModal = document.getElementById("addOverallScoreModal");
+
+        window.onclick = function(event) {
+            if (event.target === overallScoreModal) {
+                overallScoreModal.style.display = "none";
+            }
+            if (event.target === addGoalModal) {
+                addGoalModal.style.display = "none";
+            }
+        }
+
         function toggleDropdown(icon) {
             const subCard = icon.closest('.sub-card');
             const subDesc = subCard.nextElementSibling;
@@ -468,21 +486,3 @@
 
 </html>
 
-<script>
-    var addGoalModal = document.getElementById("addGoalModal");
-
-  /*  window.onclick = function(event) {
-        if (event.target == addGoalModal) {
-            addGoalModal.style.display = "none";
-        }
-    }*/
-
-
-    var overallScoreModal = document.getElementById("addOverallScoreModal");
-
-    window.onclick = function(event) {
-        if (event.target === overallScoreModal || event.target === addGoalModal) {
-            overallScoreModal.style.display = "none";
-        }
-    }
-</script>
