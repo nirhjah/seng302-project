@@ -193,7 +193,7 @@
      <div id="addOverallScoreModal" class="modal" th:style="${scoreInvalid != null ? 'display:block' : 'display:none'}">
 
          <div class="overall-score-modal-content event" style="bottom: unset">
-             <span class="close" style="margin-top: -15px; margin-right: -6px" onclick="overallScoreModal.style.display = 'none'">&times;</span>
+             <span class="close" onclick="overallScoreModal.style.display = 'none'">&times;</span>
              <form style="height: unset" th:action="@{overall-score}" id="createEventForm" method="post" th:object="${createEventForm}" class="view-activity-form">
                  <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
                  <h3>Add Overall Score</h3>

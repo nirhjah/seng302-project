@@ -146,7 +146,7 @@ public class AddActivityStatisticsIntegrationTests {
 
     @When("there is a current overall score")
     public void there_is_a_current_overall_score() throws Exception {
-        mockMvc.perform(post("/overallScore")
+        mockMvc.perform(post("/overall-score")
                 .param("actId", String.valueOf(activity.getId()))
                 .param("overallScoreTeam", "5")
                 .param("overallScoreOpponent", "10"));
@@ -155,7 +155,7 @@ public class AddActivityStatisticsIntegrationTests {
 
     @Then("I am able to update the overall score again")
     public void i_am_able_to_update_the_overall_score_again() throws Exception {
-        mockMvc.perform(post("/overallScore")
+        mockMvc.perform(post("/overall-score")
                 .param("actId", String.valueOf(activity.getId()))
                 .param("overallScoreTeam", "5")
                 .param("overallScoreOpponent", "10"));
@@ -173,7 +173,7 @@ public class AddActivityStatisticsIntegrationTests {
 
     @When("I enter the score in the format 5 for Team A and 7 for Team B, or 5-6 for Team A and 7-6 for Team B")
     public void i_enter_the_score_in_the_format_for_team_a_and_for_team_b_or_for_team_a_and_for_team_b() throws Exception {
-        mockMvc.perform(post("/overallScore")
+        mockMvc.perform(post("/overall-score")
                 .param("actId", String.valueOf(activity.getId()))
                 .param("overallScoreTeam", "5-6")
                 .param("overallScoreOpponent", "7-6"));
@@ -186,7 +186,7 @@ public class AddActivityStatisticsIntegrationTests {
 
     @When("I enter the score in the format 5 for Team A and 7-6 for Team B")
     public void i_enter_the_score_in_the_format_for_team_a_and_for_team_b() throws Exception {
-        mockMvc.perform(post("/overallScore")
+        mockMvc.perform(post("/overall-score")
                 .param("actId", String.valueOf(activity.getId()))
                 .param("overallScoreTeam", "5")
                 .param("overallScoreOpponent", "7-6"));

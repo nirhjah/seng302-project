@@ -188,7 +188,7 @@ public class ViewActivityControllerTests {
 
     @Test
     public void testAddingActivityTeamGoalUseDefault() throws Exception {
-        mockMvc.perform(post("/overallScore", 42L)
+        mockMvc.perform(post("/overall-score", 42L)
                         .param("actId", "1")
                         .param("overallScoreTeam", "1")
                         .param("overallScoreOpponent", "1")
@@ -224,7 +224,7 @@ public class ViewActivityControllerTests {
         when(mockActivityService.validateActivityScore("", "5-6")).thenReturn(2);
 
 
-        mockMvc.perform(post("/overallScore", 42L)
+        mockMvc.perform(post("/overall-score", 42L)
                         .param("actId", "1")
                         .param("overallScoreTeam", "")
                         .param("overallScoreOpponent", "5-6")
@@ -239,7 +239,7 @@ public class ViewActivityControllerTests {
         when(mockActivityService.validateActivityScore("3", "5-6")).thenReturn(1);
 
 
-        mockMvc.perform(post("/overallScore", 42L)
+        mockMvc.perform(post("/overall-score", 42L)
                         .param("actId", "1")
                         .param("overallScoreTeam", "3")
                         .param("overallScoreOpponent", "5-6")
@@ -255,7 +255,7 @@ public class ViewActivityControllerTests {
         activity.setActivityStart(startLate);
         when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
         
-        mockMvc.perform(post("/overallScore", 42L)
+        mockMvc.perform(post("/overall-score", 42L)
                         .param("actId", "1")
                         .param("overallScoreTeam", "3")
                         .param("overallScoreOpponent", "4")
@@ -269,7 +269,7 @@ public class ViewActivityControllerTests {
         when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
         when(mockActivityService.validateActivityScore("3", "4")).thenReturn(0);
 
-        mockMvc.perform(post("/overallScore", 42L)
+        mockMvc.perform(post("/overall-score", 42L)
                         .param("actId", "1")
                         .param("overallScoreTeam", "3")
                         .param("overallScoreOpponent", "4")
