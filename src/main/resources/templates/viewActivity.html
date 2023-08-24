@@ -231,7 +231,7 @@
 
 
 
-     <div class="overallScoreButtonDiv" style="margin-right: 61%;">
+     <div class="overallScoreButtonDiv">
          <div th:if="${(activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}" class="submit-button" style="width: 185%; margin-left: 2%">
              <button th:unless="${noFacts}" onclick="addGoalModal.style.display = 'block'" type="button">Add Goal</button>
          </div>
@@ -240,7 +240,7 @@
      <div id="addGoalModal" class="modal" th:style="${goalInvalid != null ? 'display:block' : 'display:none'}">
 
          <div class="add-goal-modal-content event" style="bottom: unset">
-             <span class="close" style="margin-top: -15px; margin-right: -6px" onclick="addGoalModal.style.display = 'none'">&times;</span>
+             <span class="close" onclick="addGoalModal.style.display = 'none'">&times;</span>
              <form style="height: unset" th:action="@{addGoal}" id="goalForm" method="post" th:object="${createEventForm}" class="view-activity-form">
                  <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
                  <h3>Add Goal</h3>
@@ -254,6 +254,8 @@
                                      th:value="${player.userId}"
                                      th:text="${player.firstName + ' ' + player.lastName}"></option>
                          </select>
+                         <div style="display: unset" th:each="err : ${#fields.errors('scorer')}" th:text="${err}" class="error-message"></div>
+
                      </div>
                  </div>
 
@@ -266,14 +268,14 @@
 
                  <div>
                      <label for="time-of-goal">Time of Goal (Minutes)</label>
-                     <input style="margin-bottom: 15px; width: 20%; border: #0b2239 2px solid; border-radius: 5px" class="fact-input" name="timeOfGoal" id="time-of-goal" type="number" th:field="*{time}" th:value="${time}">
+                     <input class="goal-inputs" name="timeOfGoal" id="time-of-goal" min="1" type="number" th:field="*{time}" th:value="${time}">
 
                      <div style="display: unset" th:each="err : ${#fields.errors('time')}" th:text="${err}" class="error-message"></div>
  </div>
 
                  <div>
                      <label for="goal-value">Goal Value</label>
-                     <input min="1" type="number" style="margin-bottom: 15px; width: 20%; border: #0b2239 2px solid; border-radius: 5px" class="fact-input" name="goalValue" id="goal-value" th:value="${goalValue}">
+                     <input min="1" type="number" class="goal-inputs" name="goalValue" id="goal-value" th:value="${goalValue}">
                      <label class="helpText"> Value defaults to 1 if not entered </label>
 
                  </div>

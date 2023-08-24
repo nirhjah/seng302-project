@@ -239,20 +239,16 @@ public class ViewActivityController {
 
         Optional<User> potentialScorer = userService.findUserById(scorerId);
         if (potentialScorer.isEmpty()) {
-            logger.error("Scorer Id not found");
-/*
             bindingResult.addError(new FieldError(createEventFormString, "scorer", "Player is required"));
-*/
-
         }
-
 
         if (time.isBlank()) {
-            bindingResult.addError(new FieldError(createEventFormString, "time", "Field must not be blank"));
+            bindingResult.addError(new FieldError(createEventFormString, "time", "Field cannot be blank"));
         }
 
+
         if (LocalDateTime.now().isBefore(activity.getActivityStart())) {
-            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "You can only add a goal once the activity starts"));
+            bindingResult.addError(new FieldError(createEventFormString, "scorer", "You can only add a goal once the activity starts"));
         }
 
         if (bindingResult.hasErrors()) {
