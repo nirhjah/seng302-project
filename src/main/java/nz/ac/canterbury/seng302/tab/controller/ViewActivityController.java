@@ -250,6 +250,10 @@ public class ViewActivityController {
             bindingResult.addError(new FieldError(createEventFormString, "time", FIELD_CANNOT_BE_BLANK_MSG));
         }
 
+        if (!activityService.checkTimeOfFactWithinActivity(activity, Integer.parseInt(time))) {
+            bindingResult.addError(new FieldError(createEventFormString, "time", GOAL_NOT_SCORED_WITHIN_DURATION));
+        }
+
         if (LocalDateTime.now().isBefore(activity.getActivityStart())) {
             bindingResult.addError(new FieldError(createEventFormString, "scorer", ADDING_GOAL_BEFORE_ACTIVITY_START_MSG));
         }

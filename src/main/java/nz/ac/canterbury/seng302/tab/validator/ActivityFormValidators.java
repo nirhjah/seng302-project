@@ -49,6 +49,8 @@ public class ActivityFormValidators {
 
     public static final String PLAYER_IS_REQUIRED_MSG = "Player is required";
 
+    public static final String GOAL_NOT_SCORED_WITHIN_DURATION = "Goal must be scored within duration of activity";
+
     /**
      * Regex taken from <a href="https://stackoverflow.com/a/56276700">...</a>
      */

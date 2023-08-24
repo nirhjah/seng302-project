@@ -279,4 +279,14 @@ public class ActivityService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Checks if given time of fact is within the duration of an activity
+     * @param activity activity to get duration
+     * @param timeOfFact time of fact to be checked
+     * @return true if time of fact is within activity duration, false otherwise
+     */
+    public boolean checkTimeOfFactWithinActivity(Activity activity, int timeOfFact) {
+        return timeOfFact <= Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
+    }
+
 }
