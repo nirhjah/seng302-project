@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.entity;
 import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"team_id", "user_id"}))
 @Entity(name = "TeamRole")
 public class TeamRole {
 

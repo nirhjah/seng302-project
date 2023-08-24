@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
+import org.hibernate.annotations.Cascade;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -220,16 +221,20 @@ public class Team {
         return getTeamCoaches().stream().anyMatch((u) -> u.getUserId() == userId);
     }
 
-
     /**
-     * Remove all team roles for this user.
-     * We should call this function if we are updating a user's role.
-     * @param user The user to remove the team roles for
-     *
+     * Gets a team role for the given user.
+     * @param user
      */
-    private void removeTeamRoleForUser(User user) {
-        var id = user.getUserId();
-        teamRoles.removeIf(tRole -> tRole.getUser().getUserId() == id);
+    public TeamRole getTeamRole(User user) {
+        long id = user.getUserId();
+        for (TeamRole teamRole: teamRoles) {
+            if (teamRole.getUser().getUserId() == id) {
+                return teamRole;
+            }
+        }
+        TeamRole teamRole = new TeamRole();
+        teamRole.setUser(user);
+        return teamRole;
     }
 
     /**
@@ -237,8 +242,7 @@ public class Team {
      * @param role the role we are changing to user to
      */
     public void setRole(User user, Role role) {
-        removeTeamRoleForUser(user);
-        TeamRole teamRole = new TeamRole();
+        TeamRole teamRole = getTeamRole(user);
         teamRole.setUser(user);
         teamRole.setRole(role);
         teamRole.setTeam(this);

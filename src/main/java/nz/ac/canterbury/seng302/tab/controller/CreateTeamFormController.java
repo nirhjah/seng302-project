@@ -8,6 +8,7 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.helper.GenerateRandomUsers;
 import nz.ac.canterbury.seng302.tab.service.SportService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
@@ -218,6 +219,13 @@ public class CreateTeamFormController {
             }
             team.generateToken(teamService);
             team = teamService.addTeam(team);
+
+            GenerateRandomUsers gru = new GenerateRandomUsers();
+            for (int i=0; i < 10; i++) {
+                var u = gru.createRandomUser();
+                userService.updateOrAddUser(u);
+                userService.userJoinTeam(u, team);
+            }
         }
         teamID = team.getTeamId();
 
