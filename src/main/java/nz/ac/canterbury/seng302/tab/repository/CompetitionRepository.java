@@ -22,18 +22,6 @@ public interface CompetitionRepository extends CrudRepository<Competition, Long>
 
     List<Competition> findAll();
 
-
-
-    @Query("""
-        SELECT DISTINCT c
-        FROM Competition c
-        WHERE c.startDate > :now
-        AND (:#{#filteredSports.size()} = 0 OR c.sport IN (:filteredSports))
-        """)
-    Page<Competition> findUpcomingCompetitionsBySports(Pageable pageable,
-                                                   @Param("filteredSports") List<String> filteredSports,
-                                                   @Param("now") long now);
-
     @Query("""
         SELECT DISTINCT c
         FROM Competition c

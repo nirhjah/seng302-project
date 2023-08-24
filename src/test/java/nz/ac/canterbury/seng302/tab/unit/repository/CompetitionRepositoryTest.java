@@ -71,13 +71,6 @@ public class CompetitionRepositoryTest {
     }
 
     @Test
-    public void testFuture() {
-        // tests future competition querying
-        var comps = competitionRepository.findUpcomingCompetitionsBySports(allRequest, List.of(SOCCER), now).toList();
-        Assertions.assertEquals(comps.size(), NUM_FUTURE);
-    }
-
-    @Test
     public void testCurrent() {
         // tests current competition querying
         var comps = competitionRepository.findCurrentCompetitionsBySports(allRequest, List.of(SOCCER), now).toList();
@@ -134,29 +127,11 @@ public class CompetitionRepositoryTest {
         Assertions.assertEquals(comps.size(), size);
     }
 
-
     @Test
     public void testAllCurrentQuery() {
         var sports = List.of(HOCKEY, BASKETBALL, SOCCER);
         var comps = competitionRepository.findCurrentCompetitionsBySports(allRequest, sports, now).toList();
         var size = NUM_CURRENT * 3;
-        Assertions.assertEquals(comps.size(), size);
-    }
-
-    @Test
-    public void testFutureQuery() {
-        // tests past competition querying, across multiple sports.
-        var sports = List.of(HOCKEY, BASKETBALL, SOCCER);
-        var comps = competitionRepository.findUpcomingCompetitionsBySports(allRequest, sports, now).toList();
-        var size = NUM_FUTURE * 3;
-        Assertions.assertEquals(comps.size(), size);
-    }
-
-    @Test
-    public void testEmptyListWorks() {
-        List<String> sports = List.of();
-        var comps = competitionRepository.findUpcomingCompetitionsBySports(allRequest, sports, now).toList();
-        var size = NUM_FUTURE * 3;
         Assertions.assertEquals(comps.size(), size);
     }
 }

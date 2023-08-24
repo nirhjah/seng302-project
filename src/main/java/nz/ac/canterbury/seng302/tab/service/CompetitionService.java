@@ -116,22 +116,6 @@ public class CompetitionService {
     }
 
     /**
-     * Finds upcoming competitions by sport.
-     * @param pageable The pageable detailing information about the query
-     * @param filteredSports The list of sports to filter by
-     * @return The Page of competitions
-     */
-    public Page<Competition> findUpcomingCompetitionsBySports(Pageable pageable, List<String> filteredSports) {
-        long now = Instant.now().getEpochSecond();
-        if (filteredSports == null) {
-            filteredSports = EMPTY_LIST;
-        } else {
-            filteredSports = filteredSports.stream().map(String::toLowerCase).toList();
-        }
-        return competitionRepository.findUpcomingCompetitionsBySports(pageable, filteredSports, now);
-    }
-
-    /**
      * Finds current competitions by sport.
      * @param pageable The pageable detailing information about the query
      * @param filteredSports The list of sports to filter by
