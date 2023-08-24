@@ -105,12 +105,11 @@
                                 </div>
                                 <div class="float-child" th:if="${clubId}">
                                     <a th:href="@{/view-club?clubID={id}(id=${clubId})}" class="club-link">
-                                        <div class="club-link">
-                                            <div class ="logo">
-                                                <img th:src="@{/club-logo/{id}(id = ${clubId})}">
-                                            </div>
-                                            <div class="club-info">
-                                                <h1 class="club-header" th:text="| *{clubName}|"></h1>
+                                        <div class="user-label">
+                                                <img th:src="@{/club-logo/{id}(id = ${clubId})}"/>
+                                            <div>
+                                                <h3 class="attribute-type">club</h3>
+                                                <h3 data-cy="club" th:text="*{clubName}"></h3>
                                             </div>
                                         </div>
                                     </a>
