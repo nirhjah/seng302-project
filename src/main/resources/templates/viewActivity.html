@@ -30,18 +30,13 @@
                 <button class="tab-button"> General &nbsp;</button>
             </div>
             <div class="tab" id="factsTab" >
-                <img class ="tab-icon" th:src="@{/image/icons/editform.svg}"/>
+                <img class ="tab-icon" th:src="@{/image/icons/editform.svg}" />
                 <button class="tab-button" > Facts &nbsp;</button>
                 <div class="tab-line"></div>
             </div>
             <div class="tab" id="formations-tab" th:if="${canShowScores}">
                 <img class="tab-icon" th:src="@{/image/icons/formation.svg}"/>
                 <button class="tab-button"> Formations &nbsp;</button>
-            </div>
-            <div class="tab">
-                <img class="tab-icon" th:src="@{/image/icons/editform.svg}"/>
-                <button class="tab-button"> Facts &nbsp;</button>
-                <div class="tab-line"></div>
             </div>
             <div class="tab" id="score-tab" th:if="${canShowScores}">
                 <img class="tab-icon" th:src="@{/image/icons/score.svg}"/>
@@ -85,6 +80,32 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="content-box" id="facts-tab" style="margin-bottom: 16px">
+            <div class="content" style="height: 400px; overflow: auto;">
+                <div class="submit-button" style="padding-top: 10px; padding-bottom: 10px">
+                    <button style="width: 50%">Add Fact</button>
+                </div>
+                <table style="padding: 15px; border-collapse: collapse; border: 2px solid; margin:2%; width:96%">
+                    <thead style="background-color: #0b2239">
+                    <tr>
+                        <th style="width: 30%; background-color: #0b2239"> Time </th>
+                        <th style="width: 70%; background-color: #0b2239"> Description </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${factList.isEmpty()}">
+                        <td colspan="2"> No Recorded Facts </td>
+                    </tr>
+                    <tr th:each="fact : ${factList}">
+                        <td><span th:text="${fact.timeOfEvent} ?: 'No Time Recorded'">No Time Listed</span></td>
+                        <td><span th:text="${fact.description}">Description</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+
             </div>
         </div>
 
@@ -137,35 +158,6 @@
 
             </div>
         </div>
-
-
-        <div class="content-box" id="facts-tab" style="margin-bottom: 16px">
-            <div class="content" style="height: 400px; overflow: auto;">
-                <div class="submit-button" style="padding-top: 10px; padding-bottom: 10px">
-                    <button style="width: 50%">Add Fact</button>
-                </div>
-                <table style="padding: 15px; border-collapse: collapse; border: 2px solid; margin:2%; width:96%">
-                    <thead style="background-color: #0b2239">
-                    <tr>
-                        <th style="width: 30%; background-color: #0b2239"> Time </th>
-                        <th style="width: 70%; background-color: #0b2239"> Description </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:if="${factList.isEmpty()}">
-                        <td colspan="2"> No Recorded Facts </td>
-                    </tr>
-                    <tr th:each="fact : ${factList}">
-                        <td><span th:text="${fact.timeOfEvent} ?: 'No Time Recorded'">No Time Listed</span></td>
-                        <td><span th:text="${fact.description}">Description</span></td>
-                    </tr>
-                    </tbody>
-                </table>
-
-            </div>
-        </div>
-
-
 
         <div class="content-box" id="scores-tab">
             <div class="content">
@@ -343,196 +335,6 @@
             });
         });
     </script>
-
-
-    <!--<div class="act-container">
-        <div class="act-info">
-            <div class="act-details">
-                <h3 th:if="${activity.team != null}" th:text="${activity.team} + 's'"></h3>
-
-                <h3> Activity Information </h3>
-                <h4 th:text="|Type:&nbsp&nbsp ${activity.activityType}|"></h4>
-                <h4 th:text="|Location:&nbsp&nbsp ${activity.location}|"></h4>
-                <h4 th:text="|Description:&nbsp&nbsp ${activity.description}|"></h4>
-
-                <div class="edit-act-button">
-                    <a th:if="${(activity.team!=null && (activity.team.isManager(activity.activityOwner) ||
-                    activity.team.isCoach(activity.activityOwner))) || activity.team==null}" class="edit-button"
-                       th:href="@{createActivity(edit=${activity.id})}">
-                        <button type="button"><img th:src="@{image/icons/pencil.svg}"> <span>Edit Activity</span></button>
-                    </a>
-                </div>
-
-            </div>
-            <div class="nested-grid">
-                <div class="act-date-time">
-                    <div class="start-date-time">
-                        <h4> Start </h4>
-                        <span class="date"
-                              th:with="startDate=${#temporals.format(activity.activityStart, 'dd MMM yyyy')}"
-                              th:text="${startDate}">
-
-                        </span>
-                        <span class="time" th:with="startTime=${#temporals.format(activity.activityStart, 'hh:mma')}"
-                              th:text="${startTime}">
-
-                        </span>
-
-                    </div>
-                    <div class="end-date-time">
-                        <h4> End </h4>
-                        <span class="date" th:with="endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')}"
-                              th:text="${endDate}">
-                        </span>
-                        <span class="time" th:with="endTime=${#temporals.format(activity.activityEnd, 'hh:mma')}"
-                              th:text="${endTime}">
-
-                        </span>
-
-                    </div>
-                </div>
-                <div class="act-score" th:if="${canShowScores}">
-                    <div class ="team-names">
-                        <span>Team A</span>
-                        <span> vs </span>
-                        <span> Team B </span>
-                    </div>
-                    <div class="score">
-                        <span th:text="${activity.activityTeamScore != null && activity.otherTeamScore != null ? activity.activityTeamScore + ' : ' + activity.otherTeamScore : 'NA'}"></span>
-                    </div>
-                    <span id="winnerText" style="margin-right: 5%" th:text="${outcomeString}" ></span>
-                </div>
-
-                <div class="submit-button">
-                    <button th:unless="${noFacts}" onclick="modal.style.display = 'block'" type="button">Add Activity Statistics</button>
-                </div>
-            </div>
-
-            <div id="addEventModal" class="modal" th:style="${scoreInvalid != null ? 'display:block' : 'display:none'}">
-
-                <div class="modal-content event">
-                    <span class="close" onclick="modal.style.display = 'none'">&times;</span>
-                    <form th:action="@{view-activity}" id="createEventForm" method="post" th:object="${createEventForm}" class="view-activity-form">
-                        <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
-                        <h3>Add Overall Score</h3>
-
-                        <div class="overall-scores-box">
-
-                            <div style="float: left">
-                            <label style="display:block;" for="overall-score-team">Team:</label>
-                                <input class="overall-score-input" name="overallScoreTeam" id="overall-score-team" type="text-area" th:field="*{overallScoreTeam}" th:value="${overallScoreTeamSaved}" data-cy="overallScoreTeam">
-
-                            </div>
-
-                            <div class="opponentScoreDiv">
-                                <label style="display:block; margin-left: 46%;" for="overall-score-opponent">Opponent:</label>
-                                <input style="float: right; margin-right: 10px;" class="overall-score-input" name="overallScoreOpponent" id="overall-score-opponent" type="text-area" th:field="*{overallScoreOpponent}" th:value="${overallScoreOpponentSaved}" data-cy="overallScoreOpponent">
-
-                            </div>
-                        </div>
-                        <div th:each="err : ${#fields.errors('overallScoreTeam')}" th:text="${err}" class="error-message"></div>
-
-
-                        <label class="helpText"> Scores for both teams should be of same type i.e either 12-4 and 9-3 or 23 and 18 </label>
-
-
-                        <div class="select-container">
-                        <label for="activityOutcomes" style="display: block">Outcome of Game for Home Team <span class="required">*</span> </label>
-                        <div class="select-box">
-                            <select id="activityOutcomes" name="activityOutcomes">
-                                <option th:value="${noOutcome}">Outcome of Activity</option>
-                                <option th:each="outcome : ${activityOutcomes}"
-                                        th:value="${outcome}"
-                                        th:text="${outcome}"
-                                        th:selected="${outcome == selectedOutcome}"></option>
-                            </select>
-                        </div>
-                        </div>
-
-                        <hr class="rounded">
-                        <h3 style="margin-bottom: 3%;">Add a new event</h3>
-
-                        <div th:if="${!noFacts}" class="select-container">
-                            <label for="factType" style="display: block">Event Type: <span class="required">*</span> </label>
-                            <div class="select-box">
-                                <select id="factType" name="factType">
-                                    <option th:value="${noFact}">Select Fact Type</option>
-
-                                    <option th:each="fact : ${possibleFactTypes}"
-                                            th:value="${fact}"
-                                            th:text="${fact}"></option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="select-container" id="factDescBox">
-                            <div class="description-box">
-                            <label for="description">Description: <span class="required">*</span></label>
-                            <textarea class="description-text" id="description" th:name="description" autofocus placeholder=""
-                              th:text="${description}"></textarea>
-                            </div>
-                            <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
-
-                            <label for="time"></label>
-                            <input type="text-area" name="time" value="time">
-                            <div id="additionalFields"></div>
-                            <div th:each="err : ${#fields.errors('subOn')}" th:text="${err}" class="error-message"></div>
-
-                        </div>
-                        <div class="submit-button">
-                            <button id="createEvent" type="submit" class="registerLoginButton">Add activity statistics</button>
-                        </div>
-
-                    </form>
-
-                </div>
-
-            </div>
-            <div th:unless="${noFacts}" class="act-facts">
-                <h4> Facts </h4>
-                <div class="facts-table">
-                    <ul>
-                        <li th:each="fact : ${activityFacts}">
-                            <span class="description" th:text="${fact.description}"></span>
-                            <span class="time" th:text="${fact.timeOfEvent}"></span>
-                        </li>
-                    </ul>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="act-game-friendly" th:if="${canShowPlayers}">
-            <div class="act-lineup">
-                <h3> Line Up </h3>
-                <div th:insert="~{fragments/formationDisplay.html}"></div>
-                <input type="hidden" onload=renderPlayers("4-1-2-2") />
-            </div>
-            <div class="act-subs" th:if="${canShowPlayers}">
-                <h4> Substitutions </h4>
-                <div class="subs-table">
-                    <ul>
-                        <li th:each="fact : ${activitySubstitutions}">
-                            <span class="sub-pic">
-                                <img th:src="@{/user-profile-picture/{id}(id = ${fact.playerOn.userId})}"  alt="User image">
-                            </span>
-                            <span class="description"
-                                  th:text="${fact.playerOn.firstName} + '         ' + ${fact.playerOn.lastName}"></span>
-                            <span class="description" th:text="${fact.timeOfEvent}"></span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-
-        </div>
-    </div>
-    <script type="text/javascript" th:inline="javascript">
-        window.onload = function() {
-            renderPlayers("4-1-2-2");
-        };
-    </script>
-    </div>-->
 </div>
 </body>
 <footer>

@@ -5,7 +5,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import nz.ac.canterbury.seng302.tab.controller.CreateClubController;
-import nz.ac.canterbury.seng302.tab.controller.ProfileFormController;
 import nz.ac.canterbury.seng302.tab.controller.ViewAllTeamsController;
 import nz.ac.canterbury.seng302.tab.controller.ViewTeamController;
 import nz.ac.canterbury.seng302.tab.controller.ViewClubController;
@@ -138,7 +137,7 @@ public class CreateViewUpdateClubIntegrationTests {
         sportService= Mockito.spy(new SportService(sportRepository));
         competitionService= Mockito.spy(new CompetitionService(competitionRepository));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService, clubImageService), new ProfileFormController(userService, teamService, activityService, factService, formationService,competitionService), new ViewClubController(userService, teamService, clubService)
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService, clubImageService), new ViewTeamController(userService, teamService, activityService, factService, formationService,competitionService), new ViewClubController(userService, teamService, clubService)
         , new ViewAllTeamsController(teamService, userService, locationService,sportService)).build();
 
         Authentication authentication = Mockito.mock(Authentication.class);

@@ -57,7 +57,7 @@ public class AdminAccount implements CommandLineRunner {
     /**
      * Creates an admin account if one doesn't exist, or returns the existing one.
      */
-    private User createOrGetAdminAccount() throws Exception {
+    private User createOrGetAdminAccount(){
         // Don't create a duplicate admin
         Optional<User> currentAdmin = userRepository.findByEmail(adminEmail);
         if (currentAdmin.isPresent()) {
