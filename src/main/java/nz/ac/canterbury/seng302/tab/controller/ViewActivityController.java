@@ -174,7 +174,7 @@ public class ViewActivityController {
         model.addAttribute(httpServletRequestString, request);
         model.addAttribute("possibleFactTypes", FactType.values());
         model.addAttribute("defaultFactType", FactType.FACT);
-
+        model.addAttribute("playersInTeam", activity.getInvolvedMembersNoManagerAndCoaches());
         model.addAttribute("outcomeString", outcomeString(activity));
         model.addAttribute("currentUser", userService.getCurrentUser());
         populateOther(model, activity);
@@ -200,6 +200,92 @@ public class ViewActivityController {
         }
         return outcomeString;
     }
+
+
+
+
+    /**
+     * Handles adding a goal with scorer, desc (optional) and value to an activity
+     * @param actId           activity to add overall score to
+     * @param createEventForm      CreateEventForm object used for validation
+     * @param bindingResult        BindingResult used for errors
+     * @param request              request
+     * @param model                model to be filled
+     * @param httpServletResponse   httpServerletResponse
+     * @param redirectAttributes    stores error message to be displayed
+     * @return  view activity page
+     */
+    @PostMapping("/addGoal")
+    public String addGoalForm(
+            @RequestParam(name = "actId", defaultValue = "-1") long actId,
+            @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
+            @RequestParam(name = "goalValue", defaultValue = "1") int goalValue,
+            @RequestParam(name = "time") String time,
+            @RequestParam(name = "description", defaultValue = "") String description,
+            @Validated CreateEventForm createEventForm,
+            BindingResult bindingResult,
+            HttpServletRequest request,
+            Model model,
+            HttpServletResponse httpServletResponse,
+            RedirectAttributes redirectAttributes) {
+
+
+        model.addAttribute(httpServletRequestString, request);
+
+        Activity activity = activityService.findActivityById(actId);
+        String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
+
+
+
+        Optional<User> potentialScorer = userService.findUserById(scorerId);
+        if (potentialScorer.isEmpty()) {
+            logger.error("Scorer Id not found");
+/*
+            bindingResult.addError(new FieldError(createEventFormString, "scorer", "Player is required"));
+*/
+
+        }
+
+
+        if (time.isBlank()) {
+            bindingResult.addError(new FieldError(createEventFormString, "time", "Field must not be blank"));
+        }
+
+        if (LocalDateTime.now().isBefore(activity.getActivityStart())) {
+            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "You can only add a goal once the activity starts"));
+        }
+
+        if (bindingResult.hasErrors()) {
+            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            redirectAttributes.addFlashAttribute("goalInvalid", "Leave Modal Open");
+            redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
+
+            redirectAttributes.addFlashAttribute("stayOnTab_name", "scoreTab");
+            redirectAttributes.addFlashAttribute("stayOnTab_index", 3);
+
+            return viewActivityRedirectUrl;
+        }
+
+        List<Fact> factList = new ArrayList<>();
+        User scorer = potentialScorer.get();
+        Fact goalFact = new Goal(description, time, activity, scorer, goalValue);
+
+
+        factList.add(goalFact);
+
+        activity.addFactList(factList);
+
+
+
+        activityService.updateOrAddActivity(activity);
+
+        redirectAttributes.addFlashAttribute("stayOnTab_name", "scoreTab");
+        redirectAttributes.addFlashAttribute("stayOnTab_index", 3);
+
+        return viewActivityRedirectUrl;
+
+    }
+
 
 
     /**

@@ -394,6 +394,26 @@ hr.rounded {
 }
 
 
+.add-goal-modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 32%;
+    border-radius: 20px;
+}
+
+.add-goal-modal-content.event {
+    /*
+    width: 32%;
+    */
+    width: max-content;
+    position: relative;
+    bottom: 40%;
+    overflow-y: initial;
+}
+
+
     @media (max-width: 700px) {
 
     .submit-button {
