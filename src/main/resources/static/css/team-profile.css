@@ -491,3 +491,16 @@
     width: 85%;
     height: auto;
 }
+
+/* blow are the changes that make the logo a fixed size and also put elipses on words longer than 15 chars*/
+.logo {
+    width: 100px;
+    text-align: center;
+}
+
+.club-header {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 15ch;
+}
