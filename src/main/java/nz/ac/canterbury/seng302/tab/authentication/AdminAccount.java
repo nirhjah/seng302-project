@@ -1,15 +1,8 @@
 package nz.ac.canterbury.seng302.tab.authentication;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
-import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
-import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
-import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
-import nz.ac.canterbury.seng302.tab.enums.ActivityType;
-import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import org.springframework.beans.factory.annotation.Value;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -29,15 +22,13 @@ public class AdminAccount implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private final ActivityRepository activityRepository;
     private String adminEmail;
     private String adminPassword;
 
-    public AdminAccount(UserRepository userRepository,ActivityRepository activityRepository, PasswordEncoder passwordEncoder,
+    public AdminAccount(UserRepository userRepository,PasswordEncoder passwordEncoder,
             @Value("${adminEmail:admin@gmail.com}") String adminEmail,
             @Value("${adminPassword:1}") String adminPassword) {
         this.userRepository = userRepository;
-        this.activityRepository= activityRepository;
         this.passwordEncoder = passwordEncoder;
         this.adminEmail = adminEmail;
         this.adminPassword = adminPassword;
@@ -82,24 +73,6 @@ public class AdminAccount implements CommandLineRunner {
         admin.setFavoriteSports(List.of(sport));
         // You need to confirm your email before you can log in.
         admin.confirmEmail();
-
-        User sub = new User("Hee", "Account", "tab@gmail.com", "password",
-                new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
-        User player = new User("Test", "Account", "tab.team900@gmail.com", "password",
-                new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
-        Activity game = new Activity(ActivityType.Game, null, "A Test Game",
-                LocalDateTime.of(2026, 1,1,6,30),
-                LocalDateTime.of(2026, 1,1,8,30), admin,
-                new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
-//        game.addFactList(List.of(new Substitution("testing this", "1h 20m", game, player, sub), new Goal("Goal was scored", "1h 40m", game, player, 1)));
-
-        List<Fact> factList = new ArrayList<>();
-        for (int i=0; i<10; i++){
-            factList.add(new Substitution("testing this jhkjhjk", "20", game, player, sub));
-            factList.add(new Goal ("A goal was scored again", "10", game, admin, 4));
-        }
-        game.addFactList(factList);
-        activityRepository.save(game);
 
         return admin;
     }
