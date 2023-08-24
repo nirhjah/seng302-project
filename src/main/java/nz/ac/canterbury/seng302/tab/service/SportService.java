@@ -18,6 +18,12 @@ public class SportService {
     @Autowired
     SportRepository sportRepository;
 
+    @Autowired
+    public SportService(  SportRepository sportRepository) {
+        this.sportRepository = sportRepository;
+    }
+
+
     public List<Sport> getAllSports() { return sportRepository.findAll(); }
 
     public Sport addSport(Sport sport) { return sportRepository.save(sport); }
