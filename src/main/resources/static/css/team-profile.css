@@ -478,6 +478,13 @@
     float: left;
 }
 
+@media (max-width: 768px) {
+    .float-child {
+        width: 100;
+        float: none;
+    }
+}
+
 .club-link {
     display: flex;
     justify-content: center;
@@ -494,7 +501,7 @@
 
 /* blow are the changes that make the logo a fixed size and also put elipses on words longer than 15 chars*/
 .logo {
-    width: 100px;
+    width: 60px;
     text-align: center;
 }
 
