@@ -58,8 +58,9 @@ public class Club implements Identifiable, HasImage {
         return clubId;
     }
 
+    @Override
     public long getId() {
-        return clubId;
+        return getClubId();
     }
 
     public String getName() {
