@@ -443,32 +443,4 @@ public class CreateViewUpdateClubIntegrationTests {
                 .param("postcode", "")).andExpect(status().isBadRequest());
     }
 
-    @Then("I can see the name of the club.")
-    public void i_can_see_the_name_of_the_club(){
-//        System.out.println(team.getTeamClub());
-//        String clubName = (String) result.getModelAndView().getModel().get("clubName");
-//        Assertions.assertEquals(teamsClub.getName(), clubName);
-    }
-
-    @Given("I am on the teams search form,")
-    public void i_am_on_the_teams_search_form() throws Exception {
-        mockMvc.perform(get("/view-teams")).andExpect(status().isOk())
-                .andExpect(view().name("viewAllTeams"));
-    }
-
-    @When("the search string contains the name of the club,")
-    public void the_search_string_contains_the_name_of_the_club() {
-    }
-
-    @Then("the teams belonging to that club is shown in the list of results.")
-    public void the_teams_belonging_to_that_club_is_shown_in_the_list_of_results() {
-    }
-
-    @Given("I am anywhere on the system where I can see a team’s profile \\(e.g. in search results) and the team belongs to a club,")
-    public void iAmAnywhereOnTheSystemWhereICanSeeATeamSProfileEGInSearchResultsAndTheTeamBelongsToAClub() throws Exception {
-        result=mockMvc.perform(get("/profile").param("teamID", String.valueOf(team.getTeamId())))
-                .andExpect(status().isOk())
-                .andExpect(view().name("viewTeamForm"))
-                .andReturn();
-    }
 }
