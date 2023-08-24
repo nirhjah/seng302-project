@@ -260,7 +260,7 @@ public class ViewActivityController {
             redirectAttributes.addFlashAttribute("goalInvalid", "Leave Modal Open");
             redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
 
-            redirectAttributes.addFlashAttribute("stayOnTab_name", "scoreTab");
+            redirectAttributes.addFlashAttribute("stayOnTab_name", "score-tab");
             redirectAttributes.addFlashAttribute("stayOnTab_index", 3);
 
             return viewActivityRedirectUrl;
@@ -279,7 +279,7 @@ public class ViewActivityController {
 
         activityService.updateOrAddActivity(activity);
 
-        redirectAttributes.addFlashAttribute("stayOnTab_name", "scoreTab");
+        redirectAttributes.addFlashAttribute("stayOnTab_name", "score-tab");
         redirectAttributes.addFlashAttribute("stayOnTab_index", 3);
 
         return viewActivityRedirectUrl;
@@ -339,7 +339,7 @@ public class ViewActivityController {
             redirectAttributes.addFlashAttribute("scoreInvalid", "Leave Modal Open");
             redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
 
-            redirectAttributes.addFlashAttribute("stayOnTab_name", "scoreTab");
+            redirectAttributes.addFlashAttribute("stayOnTab_name", "score-tab");
             redirectAttributes.addFlashAttribute("stayOnTab_index", 3);
 
             return viewActivityRedirectUrl;
@@ -353,7 +353,7 @@ public class ViewActivityController {
 
         activityService.updateOrAddActivity(activity);
 
-        redirectAttributes.addFlashAttribute("stayOnTab_name", "scoreTab");
+        redirectAttributes.addFlashAttribute("stayOnTab_name", "score-tab");
         redirectAttributes.addFlashAttribute("stayOnTab_index", 3);
 
         return viewActivityRedirectUrl;
