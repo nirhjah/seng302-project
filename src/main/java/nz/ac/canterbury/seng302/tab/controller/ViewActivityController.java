@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -175,6 +176,9 @@ public class ViewActivityController {
 
         model.addAttribute("outcomeString", outcomeString(activity));
         model.addAttribute("currentUser", userService.getCurrentUser());
+        if (activity.getActivityEnd().isBefore(LocalDateTime.now())) {
+            model.addAttribute("completed", "idk");
+        }
         populateOther(model, activity);
 
         return "viewActivity";
@@ -197,6 +201,35 @@ public class ViewActivityController {
             outcomeString = "Draw";
         }
         return outcomeString;
+    }
+
+    /**
+     * Handles adding an overall score to an activity
+     * @param actId           activity to add overall score to
+     * @param activityOutcome outcome of the activity
+     * @param request              request
+     * @param model                model to be filled
+     * @param httpServletResponse   httpServerletResponse
+     * @param redirectAttributes    stores error message to be displayed
+     * @return  view activity page
+     */
+    @PostMapping("/addOutcome")
+    public String addFactForm(
+            @RequestParam(name = "actId", defaultValue = "-1") long actId,
+            @RequestParam(name = "activityOutcomes", defaultValue = "NONE") ActivityOutcome activityOutcome,
+            HttpServletRequest request,
+            Model model,
+            HttpServletResponse httpServletResponse,
+            RedirectAttributes redirectAttributes) {
+        model.addAttribute("httpServletRequest", request);
+        Activity activity = activityService.findActivityById(actId);
+        String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
+        if (activityOutcome != ActivityOutcome.None) {
+            activity.setActivityOutcome(activityOutcome);
+        }
+        activityService.updateOrAddActivity(activity);
+        return viewActivityRedirectUrl;
+
     }
 
     /**
