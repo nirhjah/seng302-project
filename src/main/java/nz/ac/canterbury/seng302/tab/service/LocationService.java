@@ -12,6 +12,11 @@ public class LocationService {
     @Autowired
     private LocationRepository locationRepository;
 
+    @Autowired
+    public LocationService( LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
+    }
+
     /**
      * Gets all locations stored in the database.
      * @return a list of all locations in the database

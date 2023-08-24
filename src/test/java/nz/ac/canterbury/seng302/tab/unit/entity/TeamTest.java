@@ -71,7 +71,7 @@ public class TeamTest {
     @Test
     public void GivenATeamIsCreated_WhenIgetTheRoleList_thenTheListWillContainTheManger() throws Exception {
         User user = Mockito.spy(new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", location));
-        Mockito.when(user.getUserId()).thenReturn(1L);
+        Mockito.doReturn(1L).when(user).getUserId();
 
         Team team = new Team("test", "Sport", location, user);
         Set<TeamRole> roles = team.getTeamRoles();
@@ -85,9 +85,9 @@ public class TeamTest {
     @Test
     public void GivenIAddAMember_whenICallGetTeamRoleList_thenTheListWillContainTheMember() throws Exception {
         User user = Mockito.spy(new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", location));
-        Mockito.when(user.getUserId()).thenReturn(1L);
         User member = Mockito.spy(new User("Jane", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "JaneDoe@example.com", "Password123!", location));
-        Mockito.when(member.getUserId()).thenReturn(2L);
+        Mockito.doReturn(1L).when(user).getUserId();
+        Mockito.doReturn(2L).when(member).getUserId();
 
         Team team = new Team("test", "Sport", location, user);
 
@@ -103,27 +103,27 @@ public class TeamTest {
 
     @Test
     public void GivenIAddACoach_whenICallGetTeamRoleList_thenTheListWillContainTheCoach() throws Exception {
-        User user = Mockito.spy(new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", location));
-        Mockito.when(user.getUserId()).thenReturn(1L);
+        User manager = Mockito.spy(new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", location));
+        Mockito.doReturn(1L).when(manager).getUserId();
         User coach = Mockito.spy(new User("Coach", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "CoachDoe@example.com", "Password123!", location));
-        Mockito.when(coach.getUserId()).thenReturn(3L);
+        Mockito.doReturn(3L).when(coach).getUserId();
 
-        Team team = new Team("test", "Sport", location, user);
+        Team team = new Team("test", "Sport", location, manager);
         team.setCoach(coach);
 
         Set<TeamRole> roleList = team.getTeamRoles();
 
-        var hasOneCoach = roleList.stream().filter((teamRole) -> teamRole.getRole() == Role.COACH).count() == 1;
-        var hasOneManager = roleList.stream().filter((teamRole) -> teamRole.getRole() == Role.MANAGER).count() == 1;
-        assertTrue(hasOneCoach, "doesn't have one coach");
-        assertTrue(hasOneManager, "doesn't have one manager");
+        long numCoach = roleList.stream().filter((teamRole) -> teamRole.getRole() == Role.COACH).count();
+        long numManager = roleList.stream().filter((teamRole) -> teamRole.getRole() == Role.MANAGER).count();
+        assertEquals(1, numCoach, "doesn't have one coach");
+        assertEquals(1, numManager, "doesn't have one manager");
     }
 
     @Test
     public void testAddTeamsToUser() throws IOException {
 
         Team team1 = new Team("team1", "cricket");
-       Team team2 = new Team("team2", "hockey");
+        Team team2 = new Team("team2", "hockey");
 
         teamRepository.save(team1);
         teamRepository.save(team2);
