@@ -38,6 +38,8 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import static nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators.*;
+
 /**
  * Spring Boot Controller class for the View Activity Page
  */
@@ -65,6 +67,10 @@ public class ViewActivityController {
     String overallScoreTeamString = "overallScoreTeam";
 
     String httpServletRequestString = "httpServletRequest";
+
+    String scoreTabName = "score-tab";
+
+    int scoreTabIndex = 3;
 
     @Autowired
     public ViewActivityController(UserService userService, ActivityService activityService, TeamService teamService,FactService factService) {
@@ -203,10 +209,9 @@ public class ViewActivityController {
 
 
 
-
     /**
-     * Handles adding a goal with scorer, desc (optional) and value to an activity
-     * @param actId           activity to add overall score to
+     * Handles adding a goal fact with scorer, desc (optional), time and value to an activity
+     * @param actId           activity to add goal fact to
      * @param createEventForm      CreateEventForm object used for validation
      * @param bindingResult        BindingResult used for errors
      * @param request              request
@@ -215,7 +220,7 @@ public class ViewActivityController {
      * @param redirectAttributes    stores error message to be displayed
      * @return  view activity page
      */
-    @PostMapping("/addGoal")
+    @PostMapping("/add-goal")
     public String addGoalForm(
             @RequestParam(name = "actId", defaultValue = "-1") long actId,
             @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
@@ -239,26 +244,23 @@ public class ViewActivityController {
 
         Optional<User> potentialScorer = userService.findUserById(scorerId);
         if (potentialScorer.isEmpty()) {
-            bindingResult.addError(new FieldError(createEventFormString, "scorer", "Player is required"));
+            bindingResult.addError(new FieldError(createEventFormString, "scorer", PLAYER_IS_REQUIRED_MSG));
         }
 
         if (time.isBlank()) {
-            bindingResult.addError(new FieldError(createEventFormString, "time", "Field cannot be blank"));
+            bindingResult.addError(new FieldError(createEventFormString, "time", FIELD_CANNOT_BE_BLANK_MSG));
         }
 
-
         if (LocalDateTime.now().isBefore(activity.getActivityStart())) {
-            bindingResult.addError(new FieldError(createEventFormString, "scorer", "You can only add a goal once the activity starts"));
+            bindingResult.addError(new FieldError(createEventFormString, "scorer", ADDING_GOAL_BEFORE_ACTIVITY_START_MSG));
         }
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             redirectAttributes.addFlashAttribute("goalInvalid", "Leave Modal Open");
             redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
-
-            redirectAttributes.addFlashAttribute("stayOnTab_name", "score-tab");
-            redirectAttributes.addFlashAttribute("stayOnTab_index", 3);
-
+            redirectAttributes.addFlashAttribute("stayOnTab_name", scoreTabName);
+            redirectAttributes.addFlashAttribute("stayOnTab_index", scoreTabIndex);
             return viewActivityRedirectUrl;
         }
 
@@ -266,17 +268,12 @@ public class ViewActivityController {
         User scorer = potentialScorer.get();
         Fact goalFact = new Goal(description, time, activity, scorer, goalValue);
 
-
         factList.add(goalFact);
-
         activity.addFactList(factList);
-
-
-
         activityService.updateOrAddActivity(activity);
 
-        redirectAttributes.addFlashAttribute("stayOnTab_name", "score-tab");
-        redirectAttributes.addFlashAttribute("stayOnTab_index", 3);
+        redirectAttributes.addFlashAttribute("stayOnTab_name", scoreTabName);
+        redirectAttributes.addFlashAttribute("stayOnTab_index", scoreTabIndex);
 
         return viewActivityRedirectUrl;
 
@@ -297,7 +294,7 @@ public class ViewActivityController {
      * @param redirectAttributes    stores error message to be displayed
      * @return  view activity page
      */
-    @PostMapping("/overallScore")
+    @PostMapping("/overall-score")
     public String overallScoreForm(
             @RequestParam(name = "actId", defaultValue = "-1") long actId,
             @RequestParam(name = "overallScoreTeam", defaultValue = "") String overallScoreTeam,
@@ -310,24 +307,21 @@ public class ViewActivityController {
             RedirectAttributes redirectAttributes) {
 
         model.addAttribute(overallScoreTeamString, overallScoreTeam);
-
         model.addAttribute(httpServletRequestString, request);
 
         Activity activity = activityService.findActivityById(actId);
         String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
 
         if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 1) {
-            logger.info("scores not same type");
-            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "The score formats do not match"));
+            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, SCORE_FORMATS_DONT_MATCH_MSG));
         }
 
         if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 2) {
-            logger.info("one score is empty");
-            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "Other score field cannot be empty"));
+            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, OTHER_SCORE_CANNOT_BE_EMPTY_MSG));
         }
 
         if (LocalDateTime.now().isBefore(activity.getActivityStart())) {
-            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, "You can only add an overall score once the activity starts"));
+            bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, ADDING_STAT_BEFORE_START_TIME_MSG));
         }
 
         if (bindingResult.hasErrors()) {
@@ -335,8 +329,8 @@ public class ViewActivityController {
             redirectAttributes.addFlashAttribute("scoreInvalid", "Leave Modal Open");
             redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
 
-            redirectAttributes.addFlashAttribute("stayOnTab_name", "score-tab");
-            redirectAttributes.addFlashAttribute("stayOnTab_index", 3);
+            redirectAttributes.addFlashAttribute("stayOnTab_name", scoreTabName);
+            redirectAttributes.addFlashAttribute("stayOnTab_index", scoreTabIndex);
 
             return viewActivityRedirectUrl;
         }
@@ -349,8 +343,8 @@ public class ViewActivityController {
 
         activityService.updateOrAddActivity(activity);
 
-        redirectAttributes.addFlashAttribute("stayOnTab_name", "score-tab");
-        redirectAttributes.addFlashAttribute("stayOnTab_index", 3);
+        redirectAttributes.addFlashAttribute("stayOnTab_name", scoreTabName);
+        redirectAttributes.addFlashAttribute("stayOnTab_index", scoreTabIndex);
 
         return viewActivityRedirectUrl;
 
@@ -363,7 +357,6 @@ public class ViewActivityController {
      * @param description description of event
      * @param activityOutcome outcome of activity (win loss or draw) for team
      * @param time                 time of event
-     * @param scorerId             user ID of scorer
      * @param subOffId             user ID of sub off
      * @param subOnId              user ID of sub on
      * @param createEventForm      CreateEventForm object used for validation
@@ -381,8 +374,6 @@ public class ViewActivityController {
             @RequestParam(name = "description", defaultValue = "") String description,
             @RequestParam(name = "activityOutcomes", defaultValue = "None") ActivityOutcome activityOutcome,
             @RequestParam(name = "time") String time,
-            @RequestParam(name = "goalValue", defaultValue = "1") int goalValue,
-            @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
             @RequestParam(name = "playerOff", defaultValue = "-1") int subOffId,
             @RequestParam(name = "playerOn", defaultValue = "-1") int subOnId,
             @Validated CreateEventForm createEventForm,
@@ -396,7 +387,6 @@ public class ViewActivityController {
         logger.info(String.format("got the act id: %s", actId));
         logger.info(String.format("got the player on id: %s", subOnId));
         logger.info(String.format("got the player on id: %s", subOffId));
-        logger.info(String.format("got the scorer id: %s", scorerId));
 
         model.addAttribute(httpServletRequestString, request);
 
@@ -434,20 +424,6 @@ public class ViewActivityController {
 
                 break;
 
-            case GOAL:
-                Optional<User> potentialScorer = userService.findUserById(scorerId);
-                if (potentialScorer.isEmpty()) {
-                    logger.error("Scorer Id not found");
-                    return viewActivityRedirectUrl;
-                }
-
-                User scorer = potentialScorer.get();
-                fact = new Goal(description, time, activity, scorer, goalValue);
-                factList.add(fact);
-
-
-                break;
-
             case SUBSTITUTION:
                 Optional<User> potentialSubOff = userService.findUserById(subOffId);
                 if (potentialSubOff.isEmpty()){
@@ -465,13 +441,6 @@ public class ViewActivityController {
                 User playerOn = potentialSubOn.get();
 
                 fact = new Substitution(description, time, activity, playerOff, playerOn);
-                factList.add(fact);
-
-                break;
-
-            case OPPOSITION_GOAL:
-
-                fact = new OppositionGoal(description, time, activity, goalValue);
                 factList.add(fact);
 
                 break;

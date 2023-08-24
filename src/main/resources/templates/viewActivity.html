@@ -194,7 +194,7 @@
 
          <div class="overall-score-modal-content event" style="bottom: unset">
              <span class="close" style="margin-top: -15px; margin-right: -6px" onclick="overallScoreModal.style.display = 'none'">&times;</span>
-             <form style="height: unset" th:action="@{overallScore}" id="createEventForm" method="post" th:object="${createEventForm}" class="view-activity-form">
+             <form style="height: unset" th:action="@{overall-score}" id="createEventForm" method="post" th:object="${createEventForm}" class="view-activity-form">
                  <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
                  <h3>Add Overall Score</h3>
 
@@ -241,7 +241,7 @@
 
          <div class="add-goal-modal-content event" style="bottom: unset">
              <span class="close" onclick="addGoalModal.style.display = 'none'">&times;</span>
-             <form style="height: unset" th:action="@{addGoal}" id="goalForm" method="post" th:object="${createEventForm}" class="view-activity-form">
+             <form style="height: unset" th:action="@{add-goal}" id="goalForm" method="post" th:object="${createEventForm}" class="view-activity-form">
                  <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
                  <h3>Add Goal</h3>
 
