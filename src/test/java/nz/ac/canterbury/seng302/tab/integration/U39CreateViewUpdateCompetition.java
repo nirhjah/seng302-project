@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.controller.CreateCompetitionController;
 import nz.ac.canterbury.seng302.tab.controller.FederationManagerInviteController;
 import nz.ac.canterbury.seng302.tab.controller.InviteToFederationManagerController;
+import nz.ac.canterbury.seng302.tab.controller.ViewCompetitionController;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
 import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
@@ -113,9 +114,10 @@ public class U39CreateViewUpdateCompetition {
         );
 
         CreateCompetitionController createCompetitionController = new CreateCompetitionController(competitionService, userService, teamService);
+        ViewCompetitionController viewCompetitionController = new ViewCompetitionController(competitionService);
 
         FederationManagerInviteController fedManInvite = new FederationManagerInviteController(userService, federationService);
-        this.mockMvc = MockMvcBuilders.standaloneSetup(inviteController, fedManInvite, createCompetitionController).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(inviteController, fedManInvite, createCompetitionController, viewCompetitionController).build();
     }
 
     @Before("@create_view_update_competition")
@@ -238,7 +240,7 @@ public class U39CreateViewUpdateCompetition {
         mockMvc.perform(get("/view-competition")
                         .param("competitionID", String.valueOf(competition.getCompetitionId())))
                 .andExpect(status().isOk()) // Accepted 200
-                .andExpect(view().name("viewCompetitionForm"));
+                .andExpect(view().name("viewCompetition"));
     }
 
     @And("I input invalid information for one of name, sport or grade,")

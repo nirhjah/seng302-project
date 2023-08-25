@@ -105,7 +105,6 @@ public class U27CreateActivityFeature {
 
     private void setupMocking() {
         // get all the necessary beans
-
         userRepository = applicationContext.getBean(UserRepository.class);
         teamRepository = applicationContext.getBean(TeamRepository.class);
         activityRepository = applicationContext.getBean(ActivityRepository.class);
@@ -114,8 +113,8 @@ public class U27CreateActivityFeature {
         lineUpPositionRepository = applicationContext.getBean(LineUpPositionRepository.class);
 
         // Delete leftover data
-        userRepository.deleteAll();
         teamRepository.deleteAll();
+        userRepository.deleteAll();
         activityRepository.deleteAll();
         formationRepository.deleteAll();
         lineUpRepository.deleteAll();
