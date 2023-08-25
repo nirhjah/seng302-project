@@ -13,7 +13,7 @@ public class CreateEventForm {
 
   private Activity activity;
 
-  private User scorer;
+  private int scorer;
 
   private String overallScoreTeam;
 
@@ -83,11 +83,11 @@ public class CreateEventForm {
   }
 
 
-  public User getScorer() {
+  public int getScorer() {
     return scorer;
   }
 
-  public void setScorer(User scorer) {
+  public void setScorer(int scorer) {
     this.scorer = scorer;
   }
 }

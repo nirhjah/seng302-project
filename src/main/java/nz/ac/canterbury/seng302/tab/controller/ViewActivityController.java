@@ -59,6 +59,7 @@ public class ViewActivityController {
     @Autowired
     private FactService factService;
 
+
     String createEventFormBindingResult = "createEventFormBindingResult";
 
     String createEventFormString = "createEventForm";
@@ -222,7 +223,7 @@ public class ViewActivityController {
     @PostMapping("/add-goal")
     public String addGoalForm(
             @RequestParam(name = "actId", defaultValue = "-1") long actId,
-            @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
+            @RequestParam(name = "scorer") int scorerId,
             @RequestParam(name = "goalValue", defaultValue = "1") int goalValue,
             @RequestParam(name = "time") String time,
             @RequestParam(name = "description", defaultValue = "") String description,
@@ -242,6 +243,7 @@ public class ViewActivityController {
 
         Optional<User> potentialScorer = userService.findUserById(scorerId);
         if (potentialScorer.isEmpty()) {
+            System.out.println("scorer id in the if loop" + scorerId);
             bindingResult.addError(new FieldError(createEventFormString, "scorer", PLAYER_IS_REQUIRED_MSG));
         }
 
@@ -260,6 +262,9 @@ public class ViewActivityController {
 
         if (bindingResult.hasErrors()) {
             System.out.println("there was error");
+            System.out.println(scorerId);
+          //  System.out.println(userService.findUserById(3).get().getFirstName());
+
             System.out.println(bindingResult.getAllErrors());
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             redirectAttributes.addFlashAttribute("goalInvalid", "Leave Modal Open");

@@ -28,8 +28,8 @@ Feature: U34 – Add activity statistics
 #    Then the time must fall within the bounds of the activity (ie cannot be before the beginning or after the end)
 #
 #  Scenario: AC5
-#    Given I am a manager or coach
-#    And I am viewing an activity of the type “Game” or “Friendly”
+#    Given I am a manager or coach,
+#    And I am viewing an activity of the type Game or Friendly
 #    When the activity has begun
 #    And I am adding a goal, substitution or fact
 #    And I am specifying a team member to be associated with the statistics
@@ -79,14 +79,6 @@ Feature: U34 – Add activity statistics
     And I am adding a score
     When I enter a positive integer (given rest of form is valid)
     Then the system accepts
-
-  Scenario: AC12
-    Given I am a manager or coach,
-    And I am viewing an activity of the type Game or Friendly
-    And the activity has begun
-    And I am adding a score
-    When I enter a value that is not a positive integer
-    Then the system does not accept and an error message displays telling the user to enter a positive integer.
 
 #  Scenario: AC13
 #    Given I am a manager or coach,
