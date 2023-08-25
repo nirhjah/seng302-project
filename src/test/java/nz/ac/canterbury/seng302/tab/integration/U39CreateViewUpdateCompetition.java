@@ -34,6 +34,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -126,7 +127,7 @@ public class U39CreateViewUpdateCompetition {
         Location location2 = new Location("adminAddr1", "adminAddr2", "adminSuburb", "adminCity", "4dm1n", "adminLand");
         team = new Team("test1", "Hockey", location2);
         competition = new UserCompetition("comp", new Grade(Grade.DEFAULT_AGE, Grade.Sex.MENS, Grade.DEFAULT_COMPETITIVENESS), "sport",
-                new Location(null, null, null, null, null, null));
+                new Location(null, null, null, null, null, null), LocalDateTime.now(), LocalDateTime.now());
         Sport sport = new Sport("soccer");
         user.setFavoriteSports(List.of(sport));
         user.confirmEmail();

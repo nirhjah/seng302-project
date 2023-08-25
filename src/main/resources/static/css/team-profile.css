@@ -464,14 +464,71 @@
     justify-content: center;
 }
 
-
-
-
-
-
-
-
 .club-link >span{
     color:#415a77;
 }
 
+.float-container {
+    border: 3px solid #fff;
+    padding: 20px;
+}
+
+.float-child {
+    width: 50%;
+    float: left;
+}
+
+.club-link {
+    display: flex;
+    align-items: center;
+    color: black;
+    text-decoration: none;
+}
+
+.logo img{
+    margin-right: 10px;
+    width: 85%;
+    height: auto;
+}
+
+.logo {
+    width: 60px;
+    text-align: center;
+}
+
+.club-header {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 15ch;
+}
+
+@media (max-width: 500px) {
+    .float-child {
+        width: 100;
+        float: none;
+    }
+    
+    .club-link {
+        display: flex;
+        align-items: center;
+        color: black;
+        text-decoration: none;
+        justify-content: flex-start;
+    }
+
+    .logo {
+        width: 60px;
+        margin: 0 auto 10px; 
+    }
+
+    .logo img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+    
+    .club-header {
+        max-width: 10ch;
+    }
+}
