@@ -1,5 +1,5 @@
 @edit_line_up_e2e
-Feature: U33 Edit Line Up - E2E
+Feature: U33 Edit Line Up (E2E)
 
   Scenario: AC3: Set player from team to a selected position on a formation
     Given I am the manager of a team
