@@ -1,6 +1,4 @@
 package nz.ac.canterbury.seng302.tab.form;
-
-import jakarta.validation.constraints.NotBlank;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.FactType;

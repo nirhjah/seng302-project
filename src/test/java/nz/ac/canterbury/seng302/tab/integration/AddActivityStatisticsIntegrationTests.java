@@ -35,6 +35,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
@@ -125,6 +126,7 @@ public class AddActivityStatisticsIntegrationTests {
         activityRepository.save(activity);
 
         when(userService.getCurrentUser()).thenReturn(Optional.of(user));
+
     }
 
     @Given("I am a manager or coach,")
@@ -196,6 +198,64 @@ public class AddActivityStatisticsIntegrationTests {
     public void the_application_doesn_t_accept_the_scores_as_the_format_doesn_t_match_and_an_error_message_displays_telling_the_user_that_error_the_score_formats_do_not_match() {
         verify(activityService, times(0)).updateOrAddActivity(any());
 
+    }
+
+
+    @Given("I am adding a score")
+    public void i_am_adding_a_score() throws Exception {
+        mockMvc.perform(get("/view-activity").param("activityID", String.valueOf(activity.getId())))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+    }
+
+
+
+    @When("I do not enter a value into the goal value field \\(and rest of form is right)")
+    public void i_do_not_enter_a_value_into_the_goal_value_field_and_rest_of_form_is_right() throws Exception {
+        when(activityService.checkTimeOfFactWithinActivity(activity, 4)).thenReturn(true);
+
+        mockMvc.perform(post("/add-goal")
+                .param("actId", String.valueOf(activity.getId()))
+                .param("scorer", "1")
+                .param("goalValue", "")
+                .param("time", "4")
+                .param("description", ""));
+
+    }
+
+    @Then("the system accepts and uses a default value of 1")
+    public void the_system_accepts_and_uses_a_default_value_of() {
+
+
+        verify(activityService, times(1)).updateOrAddActivity(any());
+
+        System.out.println("fact list" + activity.getFactList().get(0));
+
+
+    }
+
+    @When("I enter a positive integer \\(given rest of form is valid)")
+    public void i_enter_a_positive_integer_given_rest_of_form_is_valid() {
+        // Write code here that turns the phrase above into concrete actions
+        throw new io.cucumber.java.PendingException();
+    }
+
+    @Then("the system accepts")
+    public void the_system_accepts() {
+        // Write code here that turns the phrase above into concrete actions
+        throw new io.cucumber.java.PendingException();
+    }
+
+    @When("I enter a value that is not a positive integer")
+    public void i_enter_a_value_that_is_not_a_positive_integer() {
+        // Write code here that turns the phrase above into concrete actions
+        throw new io.cucumber.java.PendingException();
+    }
+
+    @Then("the system does not accept and an error message displays telling the user to enter a positive integer.")
+    public void the_system_does_not_accept_and_an_error_message_displays_telling_the_user_to_enter_a_positive_integer() {
+        // Write code here that turns the phrase above into concrete actions
+        throw new io.cucumber.java.PendingException();
     }
 
 

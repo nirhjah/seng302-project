@@ -418,11 +418,12 @@ hr.rounded {
     margin-top: 10px;
 }
 
+.goalTime-input-div {
+    margin-bottom: -10px;
+}
 
-.time-goal-value-div .error-message {
-    margin-top: -10px;
-    padding-bottom: 10px;
-    display: unset;
+.goal-input-div {
+    margin-top: 10px;
 }
 
     @media (max-width: 700px) {
