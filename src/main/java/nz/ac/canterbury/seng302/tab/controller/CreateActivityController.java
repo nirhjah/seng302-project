@@ -131,6 +131,7 @@ public class CreateActivityController {
                         ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + team.getCreationDate().format(formatter)));
             }
             // This user needs the authority to create/update activities
+            System.out.println(team.getTeamManagers());
             boolean hasCreateAuth = team.isCoach(currentUser) || team.isManager(currentUser);
             if (!hasCreateAuth) {
                 bindingResult.addError(new FieldError("CreateActivityForm", "team", ActivityFormValidators.NOT_A_COACH_OR_MANAGER));

@@ -10,6 +10,7 @@ import nz.ac.canterbury.seng302.tab.controller.FederationManagerInviteController
 import nz.ac.canterbury.seng302.tab.controller.InviteToFederationManagerController;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.*;
 import nz.ac.canterbury.seng302.tab.service.*;
@@ -113,8 +114,8 @@ public class U27CreateActivityFeature {
         lineUpPositionRepository = applicationContext.getBean(LineUpPositionRepository.class);
 
         // Delete leftover data
-        teamRepository.deleteAll();
         userRepository.deleteAll();
+        teamRepository.deleteAll();
         activityRepository.deleteAll();
         formationRepository.deleteAll();
         lineUpRepository.deleteAll();
@@ -152,16 +153,24 @@ public class U27CreateActivityFeature {
         team = new Team("test1", "Hockey", location2);
 
         user.confirmEmail();
-        team.setManager(user);
         userRepository.save(user);
         teamRepository.save(team);
+        User userActual = userService.getUser(user.getUserId());
+        Team teamActual = teamService.getTeam(team.getTeamId());
+        System.out.println(teamService.getTeam(team.getTeamId()).getTeamManagers());
 
         Authentication authentication = mock(Authentication.class);
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
+        //Mock User
         when(userService.getCurrentUser()).thenReturn(Optional.of(user));
+
+        // Generic Team for testing
+        teamActual = spy(teamActual);
+        when(teamActual.isManager(user)).thenReturn(Boolean.TRUE);
+        when(teamService.getTeam(anyLong())).thenReturn(teamActual);
     }
 
     @Given("I am anywhere on the system,")
