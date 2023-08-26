@@ -163,54 +163,28 @@
             <div class="content">
 
 
- <div style="display: flex; flex-direction: column; align-items: center">
+ <div class="scoreboard">
 
                 <div class="score-display">
 
                     <div>
                         <h3 style="font-size: 30px" th:text="${activity.team}"></h3>
 
-                        <h1 th:if="${activity.activityTeamScore != null && activity.otherTeamScore != null}" class="teamScore" th:text="${activity.activityTeamScore}"></h1>
 
                     </div>
 
 
-                    <hr style="margin-top: 15px; border: 3px solid white;"></hr>
-                    <div style="
-                        border-left: 6px solid white;
-                        height: 213px;
-                        position: absolute;
-                        left: 66%;
-                        margin-left: -3px;
-                        top: 0;"></div>
+                    <hr class="scoreboard-divider">
+                    <div class="scores-div">
+                        <h1 th:if="${activity.activityTeamScore != null && activity.otherTeamScore != null}" class="teamScore" th:text="${activity.activityTeamScore}"></h1>
+                        <h1 th:if="${activity.activityTeamScore != null && activity.otherTeamScore != null}" class="otherTeamScore" th:text="${activity.otherTeamScore}"></h1>
+                    </div>
                     <div>
                         <h3 style="font-size: 30px">Opponent</h3>
-
-                        <h1 th:if="${activity.activityTeamScore != null && activity.otherTeamScore != null}" class="otherTeamScore" th:text="${activity.otherTeamScore}"></h1>
-
-
                     </div>
-
-
-
-
-
-              <!--      <div class="team-names-display">
-
-                            <h3 style="font-size: 30px" th:text="${activity.team}"></h3>
-                            <h3 style="font-weight: 100; font-size: 27px"> vs </h3>
-                            <h3 style="font-size: 30px">Opponent</h3>
-                        </div>-->
-
-                    <!--    <div class="team-scores"
-                             th:if="${activity.activityTeamScore != null && activity.otherTeamScore != null}">
-
-                        <h1 class="teamScore" th:text="${activity.activityTeamScore}"></h1>
-                        <h1 style="font-weight: 100"> - </h1>
-                        <h1 class="otherTeamScore" th:text="${activity.otherTeamScore}"></h1>
-                    </div>-->
-                    <h3 class="winner-text" id="winnerText" th:text="${outcomeString}" ></h3>
                 </div>
+
+     <h3 class="winner-text" id="winnerText" th:text="${outcomeString}" ></h3>
 
      <div class="score-form-button-div">
 
