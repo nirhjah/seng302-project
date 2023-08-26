@@ -261,9 +261,6 @@
                                      th:value="${player.userId}"
                                      th:text="${player.firstName + ' ' + player.lastName}"></option>
                          </select>
-<!--
-                         <div style="display: unset" th:each="err : ${#fields.errors('scorer')}" th:text="${err}" class="error-message"></div>
--->
 
                          <ul>
                              <li style="display: unset" th:each="err : ${#fields.errors('scorer')}" th:text="${err}" class="error-message" />
@@ -280,10 +277,6 @@
             <div class="time-goal-value-div">
                  <div style="margin-bottom: -10px" class="goalTime-input-div">
                      <label class="goal-form-labels" for="time-of-goal">Time of Goal (minutes)<span class="required">*</span></label>
-<!--
-                     <input class="goal-inputs" name="timeOfGoal" id="time-of-goal" min="1" type="number" th:field="*{time}" th:value="${time}">
--->
-
 
                      <div class="number-spinner">
                          <button style="margin-right: 5px;" class="decreaseTime">-</button>
@@ -303,10 +296,6 @@
                          <input type="number" class="valueInputGoal" value="1" min="1" id="goal-value" name="goalValue">
                          <button style="margin-left: 5px;" class="increaseGoal">+</button>
                      </div>
-
-                     <label class="helpText"> Goal value defaults to 1 if not entered </label>
-
-
 
                  </div>
 
