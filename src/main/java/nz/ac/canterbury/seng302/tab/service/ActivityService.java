@@ -276,7 +276,7 @@ public class ActivityService {
     public List<Goal> sortGoalTimesAscending(List<Goal> goalsList) {
         return goalsList.stream()
                 .sorted(Comparator.comparingInt(goal -> Integer.parseInt(goal.getTimeOfEvent())))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

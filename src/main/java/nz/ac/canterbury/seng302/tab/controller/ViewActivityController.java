@@ -68,7 +68,15 @@ public class ViewActivityController {
 
     String httpServletRequestString = "httpServletRequest";
 
+    String leaveModalOpenString = "Leave Modal Open";
+
+    String stayOnTabNameString = "stayOnTab_name";
+
+    String stayOnTabIndexString = "stayOnTab_index";
+
     String scoreTabName = "score-tab";
+
+    String viewActivityRedirect = "redirect:./view-activity?activityID=%s";
 
     int scoreTabIndex = 3;
 
@@ -238,12 +246,11 @@ public class ViewActivityController {
         model.addAttribute(httpServletRequestString, request);
 
         Activity activity = activityService.findActivityById(actId);
-        String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
+        String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
 
 
         Optional<User> potentialScorer = userService.findUserById(scorerId);
         if (potentialScorer.isEmpty()) {
-            System.out.println("scorer id in the if loop" + scorerId);
             bindingResult.addError(new FieldError(createEventFormString, "scorer", PLAYER_IS_REQUIRED_MSG));
         }
 
@@ -256,34 +263,34 @@ public class ViewActivityController {
         }
 
         if (LocalDateTime.now().isBefore(activity.getActivityStart())) {
-            System.out.println("is before error");
             bindingResult.addError(new FieldError(createEventFormString, "scorer", ADDING_GOAL_BEFORE_ACTIVITY_START_MSG));
         }
 
         if (bindingResult.hasErrors()) {
-            System.out.println("there was error");
-            System.out.println(scorerId);
-          //  System.out.println(userService.findUserById(3).get().getFirstName());
-
-            System.out.println(bindingResult.getAllErrors());
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            redirectAttributes.addFlashAttribute("goalInvalid", "Leave Modal Open");
+            redirectAttributes.addFlashAttribute("goalInvalid", leaveModalOpenString);
             redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
-            redirectAttributes.addFlashAttribute("stayOnTab_name", scoreTabName);
-            redirectAttributes.addFlashAttribute("stayOnTab_index", scoreTabIndex);
+            redirectAttributes.addFlashAttribute(stayOnTabNameString, scoreTabName);
+            redirectAttributes.addFlashAttribute(stayOnTabIndexString, scoreTabIndex);
             return viewActivityRedirectUrl;
         }
 
         List<Fact> factList = new ArrayList<>();
-        User scorer = potentialScorer.get();
-        Fact goalFact = new Goal(description, time, activity, scorer, goalValue);
+        if (potentialScorer.isPresent()) {
+            User scorer = potentialScorer.get();
+            Fact goalFact = new Goal(description, time, activity, scorer, goalValue);
+            factList.add(goalFact);
+            activity.addFactList(factList);
+            activityService.updateOrAddActivity(activity);
+        }
 
-        factList.add(goalFact);
-        activity.addFactList(factList);
-        activityService.updateOrAddActivity(activity);
 
-        redirectAttributes.addFlashAttribute("stayOnTab_name", scoreTabName);
-        redirectAttributes.addFlashAttribute("stayOnTab_index", scoreTabIndex);
+
+
+
+
+        redirectAttributes.addFlashAttribute(stayOnTabNameString, scoreTabName);
+        redirectAttributes.addFlashAttribute(stayOnTabIndexString, scoreTabIndex);
 
         return viewActivityRedirectUrl;
 
@@ -319,7 +326,7 @@ public class ViewActivityController {
         model.addAttribute(httpServletRequestString, request);
 
         Activity activity = activityService.findActivityById(actId);
-        String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
+        String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
 
         if (activityService.validateActivityScore(overallScoreTeam, overallScoreOpponent) == 1) {
             bindingResult.addError(new FieldError(createEventFormString, overallScoreTeamString, SCORE_FORMATS_DONT_MATCH_MSG));
@@ -335,11 +342,11 @@ public class ViewActivityController {
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            redirectAttributes.addFlashAttribute("scoreInvalid", "Leave Modal Open");
+            redirectAttributes.addFlashAttribute("scoreInvalid", leaveModalOpenString);
             redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
 
-            redirectAttributes.addFlashAttribute("stayOnTab_name", scoreTabName);
-            redirectAttributes.addFlashAttribute("stayOnTab_index", scoreTabIndex);
+            redirectAttributes.addFlashAttribute(stayOnTabNameString, scoreTabName);
+            redirectAttributes.addFlashAttribute(stayOnTabIndexString, scoreTabIndex);
 
             return viewActivityRedirectUrl;
         }
@@ -352,8 +359,8 @@ public class ViewActivityController {
 
         activityService.updateOrAddActivity(activity);
 
-        redirectAttributes.addFlashAttribute("stayOnTab_name", scoreTabName);
-        redirectAttributes.addFlashAttribute("stayOnTab_index", scoreTabIndex);
+        redirectAttributes.addFlashAttribute(stayOnTabNameString, scoreTabName);
+        redirectAttributes.addFlashAttribute(stayOnTabIndexString, scoreTabIndex);
 
         return viewActivityRedirectUrl;
 
@@ -401,7 +408,7 @@ public class ViewActivityController {
 
         Activity activity = activityService.findActivityById(actId);
         Fact fact;
-        String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
+        String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
 
 
         if (factType == FactType.SUBSTITUTION && subOffId == subOnId) {
@@ -418,7 +425,7 @@ public class ViewActivityController {
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            redirectAttributes.addFlashAttribute("scoreInvalid", "Leave Modal Open");
+            redirectAttributes.addFlashAttribute("scoreInvalid", leaveModalOpenString);
             redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
             return viewActivityRedirectUrl;
         }
