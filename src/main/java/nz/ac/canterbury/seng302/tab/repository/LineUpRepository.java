@@ -1,6 +1,8 @@
 package nz.ac.canterbury.seng302.tab.repository;
 
+import nz.ac.canterbury.seng302.tab.entity.Formation;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,5 +13,10 @@ import java.util.Optional;
 public interface LineUpRepository extends CrudRepository<LineUp, Long> {
 
     Optional<List<LineUp>> findLineUpByTeamTeamId(Long teamId);
+
+    Optional<LineUp> findLineUpsByActivityId(Long activityId);
+
+    @Query("SELECT l.formation FROM LineUp l WHERE l.lineUpId = :lineUpId")
+    Optional<Formation> findFormationByLineUpId(Long lineUpId);
 
 }

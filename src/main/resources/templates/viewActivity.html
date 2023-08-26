@@ -36,7 +36,11 @@
             </div>
             <div class="tab" id="formations-tab" th:if="${canShowScores}">
                 <img class="tab-icon" th:src="@{/image/icons/formation.svg}"/>
-                <button class="tab-button"> Formations &nbsp;</button>
+                <button class="tab-button" onclick="loadFormation(this)"
+                        th:data-formation = "${formation.formation}"
+                        th:data-custom = "${formation.custom}"
+                        th:data-customPlayers="${formation.customPlayerPositions}" > Formations &nbsp;</button>
+
             </div>
             <div class="tab" id="score-tab" th:if="${canShowScores}">
                 <img class="tab-icon" th:src="@{/image/icons/score.svg}"/>
@@ -354,9 +358,6 @@
 
         }
 
-
-
-
         //functionality for clicking on tabs
         tabs.forEach((tab, index) => {
             tab.addEventListener('click', (e) => {
@@ -406,6 +407,19 @@
     }
 </script>
 <script th:inline="javascript">
+    function loadFormation(button){
+        const playersAndPositions = /*[[${playersAndPositions}]]*/ {};
+        console.log(playersAndPositions);
+        var formation = button.getAttribute("data-formation");
+        var custom = button.getAttribute("data-custom");
+        var customPlayers = button.getAttribute("data-customPlayers");
+
+        generatedOrCustom(formation, custom, customPlayerPositions);
+        console.log(formation);
+        console.log(custom);
+        console.log(customPlayers);
+    };
+
     // Get a reference to the dropdown select element
     var factTypeSelect = document.getElementById("factType");
 

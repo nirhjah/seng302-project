@@ -2,9 +2,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
@@ -12,12 +10,14 @@ import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.OppositionGoal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
+import nz.ac.canterbury.seng302.tab.entity.Formation;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.form.CreateEventForm;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FactService;
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +34,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -57,6 +55,10 @@ public class ViewActivityController {
 
     @Autowired
     private FactService factService;
+    @Autowired
+    private LineUpService lineUpService;
+    @Autowired
+    private LineUpPositionService lineUpPositionService;
 
     String createEventFormBindingResult = "createEventFormBindingResult";
 
@@ -120,6 +122,7 @@ public class ViewActivityController {
             HttpServletRequest request,
             CreateEventForm createEventForm) {
 
+
         model.addAttribute(createEventFormString, new CreateEventForm());
 
         if (model.asMap().containsKey(createEventFormBindingResult))
@@ -132,6 +135,19 @@ public class ViewActivityController {
         if (activity == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
+
+        Map<Integer, Long> playersAndPosition = new HashMap<Integer, Long>();
+
+        LineUp lineUp = lineUpService.findLineUpsByActivity(activityID).get();
+        List<LineUpPosition> lineupPosition = (lineUpPositionService.findLineUpPositionsByLineUp(lineUp.getLineUpId())).get();
+        Formation formation =lineUpService.findFormationByLineUpId(lineUp.getLineUpId()).get();
+        for (LineUpPosition position : lineupPosition) {
+            int positionId = position.getPosition();
+            User player = position.getPlayer();
+            playersAndPosition.put(positionId, player.getId());
+        }
+
+        model.addAttribute("playersAndPositions",playersAndPosition);
 
         List<Fact> activityFacts = factService.getAllFactsForActivity(activity);
         if (!activityFacts.isEmpty()){
@@ -169,7 +185,7 @@ public class ViewActivityController {
         List<Fact> factList = factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity);
 
         model.addAttribute("factList", factList);
-
+        model.addAttribute("formation", formation);
         // Rambling that's required for navBar.html
         model.addAttribute(httpServletRequestString, request);
         model.addAttribute("possibleFactTypes", FactType.values());
@@ -362,8 +378,6 @@ public class ViewActivityController {
                 User scorer = potentialScorer.get();
                 fact = new Goal(description, time, activity, scorer, goalValue);
                 factList.add(fact);
-
-
                 break;
 
             case SUBSTITUTION:
