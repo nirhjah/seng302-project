@@ -6,12 +6,8 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import nz.ac.canterbury.seng302.tab.controller.CreateActivityController;
-import nz.ac.canterbury.seng302.tab.controller.FederationManagerInviteController;
-import nz.ac.canterbury.seng302.tab.controller.InviteToFederationManagerController;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
-import nz.ac.canterbury.seng302.tab.enums.Role;
-import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.*;
 import nz.ac.canterbury.seng302.tab.service.*;
 import org.mockito.Mockito;
@@ -43,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
+@ContextConfiguration(classes = IntegrationTestConfigurations.class)
 public class U27CreateActivityFeature {
 
 
@@ -67,9 +64,6 @@ public class U27CreateActivityFeature {
 
     @SpyBean
     private LineUpPositionService lineUpPositionService;
-
-    @SpyBean
-    private FederationService federationService;
 
     private UserRepository userRepository;
 
@@ -113,19 +107,10 @@ public class U27CreateActivityFeature {
         lineUpRepository = applicationContext.getBean(LineUpRepository.class);
         lineUpPositionRepository = applicationContext.getBean(LineUpPositionRepository.class);
 
-        // Delete leftover data
-        userRepository.deleteAll();
-        teamRepository.deleteAll();
-        activityRepository.deleteAll();
-        formationRepository.deleteAll();
-        lineUpRepository.deleteAll();
-        lineUpPositionRepository.deleteAll();
-
         // Spy
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
-        EmailService emailService = applicationContext.getBean(EmailService.class);
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
-        federationService = Mockito.spy(applicationContext.getBean(FederationService.class));
+
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
         activityService = Mockito.spy(new ActivityService(activityRepository));
@@ -133,14 +118,22 @@ public class U27CreateActivityFeature {
         lineUpService = Mockito.spy(new LineUpService(lineUpRepository));
         lineUpPositionService = Mockito.spy(new LineUpPositionService(lineUpPositionRepository));
 
-        InviteToFederationManagerController inviteController = new InviteToFederationManagerController(
-                userService, emailService, federationService
-        );
 
-        CreateActivityController createActivityController = new CreateActivityController(teamService, userService, activityService, formationService, lineUpService, lineUpPositionService);
+        this.mockMvc = MockMvcBuilders.standaloneSetup( new CreateActivityController(teamService, userService, activityService, formationService, lineUpService, lineUpPositionService)).build();
 
-        FederationManagerInviteController fedManInvite = new FederationManagerInviteController(userService, federationService);
-        this.mockMvc = MockMvcBuilders.standaloneSetup(inviteController, fedManInvite, createActivityController).build();
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        // Delete leftover data
+        formationRepository.deleteAll();
+        lineUpRepository.deleteAll();
+        lineUpPositionRepository.deleteAll();
+        activityRepository.deleteAll();
+        teamRepository.deleteAll();
+        userRepository.deleteAll();
+
     }
 
     @Before("@create_activity")
@@ -150,27 +143,25 @@ public class U27CreateActivityFeature {
         user = new User("Admin", "Admin", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "test@test.com", "plaintextPassword", location);
         Location location2 = new Location("adminAddr1", "adminAddr2", "adminSuburb", "adminCity", "4dm1n", "adminLand");
-        team = new Team("test1", "Hockey", location2);
+        team = new Team("test1", "Hockey", location2, user);
 
-        user.confirmEmail();
-        userRepository.save(user);
+
         teamRepository.save(team);
-        User userActual = userService.getUser(user.getUserId());
-        Team teamActual = teamService.getTeam(team.getTeamId());
-        System.out.println(teamService.getTeam(team.getTeamId()).getTeamManagers());
 
-        Authentication authentication = mock(Authentication.class);
-        SecurityContext securityContext = mock(SecurityContext.class);
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
+        userRepository.save(user);
+      /*  User userActual = userService.getUser(user.getUserId());
+        Team teamActual = teamService.getTeam(team.getTeamId());
+        System.out.println(teamService.getTeam(team.getTeamId()).getTeamManagers());*/
+
 
         //Mock User
         when(userService.getCurrentUser()).thenReturn(Optional.of(user));
 
+
         // Generic Team for testing
-        teamActual = spy(teamActual);
+      /*  teamActual = spy(teamActual);
         when(teamActual.isManager(user)).thenReturn(Boolean.TRUE);
-        when(teamService.getTeam(anyLong())).thenReturn(teamActual);
+        when(teamService.getTeam(anyLong())).thenReturn(teamActual);*/
     }
 
     @Given("I am anywhere on the system,")
@@ -197,6 +188,7 @@ public class U27CreateActivityFeature {
 
     @When("I enter valid values for the team it relates to, the activity type, a short description, and the activity start and end time and location and create the activity")
     public void iEnterValidValuesForTheTeamItRelatesToTheActivityTypeAShortDescriptionAndTheActivityStartAndEndTimeAndLocationAndCreateTheActivity() throws Exception {
+
         mockMvc.perform(multipart("/create-activity")
                         .param("team", String.valueOf(team.getTeamId()))
                         .param("activityType", String.valueOf(defaultActivityType))
