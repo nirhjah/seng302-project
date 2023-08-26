@@ -231,7 +231,7 @@ public class ViewActivityController {
     @PostMapping("/add-goal")
     public String addGoalForm(
             @RequestParam(name = "actId", defaultValue = "-1") long actId,
-            @RequestParam(name = "scorer") int scorerId,
+            @RequestParam(name = "scorer", defaultValue = "-1") int scorerId,
             @RequestParam(name = "goalValue", defaultValue = "1") int goalValue,
             @RequestParam(name = "time") String time,
             @RequestParam(name = "description", defaultValue = "") String description,

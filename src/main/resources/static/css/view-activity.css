@@ -3,6 +3,46 @@
 }
 
 
+.number-spinner {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.number-spinner button {
+    padding: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid grey;
+    background-color: white;
+}
+
+
+.number-spinner button:hover {
+    background-color: #f0ebeb;
+}
+
+.number-spinner input {
+    width: 58px;
+    text-align: center;
+    border: 2px solid #415a77;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+
 /* width is ~ current width / 90 * 100 */
 @media (max-width: 1000px) {
     .wrapper-profile {
@@ -718,11 +758,11 @@ hr.rounded {
 
 .scoreboard-divider {
     margin-top: 21px;
-    border: 3px solid white;
+    border: 1px solid white;
 }
 
 .scores-div {
-    border-left: 6px solid white;
+    border-left: 3px solid white;
     height: 191px;
     position: absolute;
     left: 66%;
