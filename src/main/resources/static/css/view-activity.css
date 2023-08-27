@@ -53,6 +53,15 @@ input[type=number] {
 }
 
 
+.goalTime-input-div label {
+    margin-left: 6px;
+
+}
+
+.goal-input-div label {
+    margin-left: 20px;
+}
+
 @media (max-width: 1585px) {
     .add-goal-modal-content.event {
         width: max-content !important;
