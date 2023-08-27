@@ -103,7 +103,7 @@
             </div>
 
             <label class="selectTeamsLabel"> Select Teams </label>
-            <select name="selectedTeams" id="selectedTeams" multiple>
+            <select th:field="*{selectedTeams}" name="selectedTeams" id="selectedTeams" multiple>
                 <option class="selectTeamsOption" th:each="team : ${listOfTeams}"
                         th:value="${team.teamId}"
                         th:text="${team}"

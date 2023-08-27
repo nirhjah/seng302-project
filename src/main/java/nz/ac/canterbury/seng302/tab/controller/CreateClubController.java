@@ -68,10 +68,17 @@ public class CreateClubController {
 
         logger.info("GET /createClub");
         prefillModel(model, request);
+
         if (clubId != null) {
             Optional<Club> optClub = clubService.findClubById(clubId);
             if (optClub.isPresent()) {
                 prefillModelWithClub(model, optClub.get());
+
+                List<String> selectedTeamIds = teamService.findTeamsByClub(optClub.get())
+                        .stream()
+                        .map(team -> String.valueOf(team.getTeamId())).toList();
+                createAndEditClubForm.setSelectedTeams(selectedTeamIds);
+
                 createAndEditClubForm.prepopulate(optClub.get());
 
             }
@@ -173,6 +180,9 @@ public class CreateClubController {
 
             if (bindingResult.hasErrors()) {
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                model.addAttribute("selectedTeams", selectedTeams);
+                model.addAttribute("selectedTeams", createAndEditClubForm.getSelectedTeams());
+
                 return "createClubForm";
             }
 
@@ -200,7 +210,7 @@ public class CreateClubController {
             if (selectedTeams != null) {
                 for (String team : selectedTeams) {
                     if ( teamService.getTeam(Long.parseLong(team)).getTeamClub() != null ) {
-                        bindingResult.addError(new FieldError(createAndEditClubFormString, selectedTeamString, "Team already belongs to another club"));
+                        bindingResult.addError(new FieldError(createAndEditClubFormString, selectedTeamString, teamService.getTeam(Long.parseLong(team)).getName() + " already belongs to another club"));
                     }
                     else {
                         teamService.getTeam(Long.parseLong(team)).setTeamClub(club);
