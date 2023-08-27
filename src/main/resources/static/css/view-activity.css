@@ -9,6 +9,15 @@
     margin-bottom: 10px;
 }
 
+
+.decreaseGoal, .decreaseTime {
+    margin-right: 5px;
+}
+
+.increaseGoal, .increaseTime {
+    margin-left: 5px;
+}
+
 .number-spinner button {
     padding: 5px 10px;
     font-size: 16px;
@@ -16,7 +25,7 @@
     border-radius: 5px;
     border: 1px solid grey;
     background-color: white;
-    width: 19%;
+    width: 25%;
 }
 
 
@@ -25,7 +34,7 @@
 }
 
 .number-spinner input {
-    width: 58px;
+    width: 52px;
     text-align: center;
     border: 2px solid #415a77;
     border-radius: 5px;
@@ -43,6 +52,14 @@ input[type=number] {
     -moz-appearance: textfield;
 }
 
+
+@media (max-width: 1585px) {
+    .add-goal-modal-content.event {
+        width: max-content !important;
+    }
+
+
+}
 
 /* width is ~ current width / 90 * 100 */
 @media (max-width: 1000px) {
@@ -459,6 +476,8 @@ hr.rounded {
 
 .time-goal-value-div {
     margin-top: 10px;
+    display: flex;
+    flex-direction: row;
 }
 
 .goalTime-input-div {
@@ -466,7 +485,7 @@ hr.rounded {
 }
 
 .goal-input-div {
-    margin-top: 22px;
+    margin-left: 22px;
 }
 
     @media (max-width: 700px) {
@@ -778,16 +797,24 @@ hr.rounded {
 
 @media (max-width: 972px) {
 
+    .time-goal-value-div {
+        display: unset;
+    }
+
+    .goal-input-div {
+        margin-left: unset !important;
+    }
+
     .goal-input-div label {
         margin-left: 74px !important;
     }
 
     .goalTime-input-div label {
-        margin-left: 32px !important;
+        margin-left: 59px !important;
     }
 
     .number-spinner {
-        margin-left: 44px !important;
+        margin-left: 34px !important;
     }
 
     .score-display h1 {

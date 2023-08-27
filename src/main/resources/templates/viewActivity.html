@@ -275,31 +275,32 @@
                  </div>
 
             <div class="time-goal-value-div">
+
                  <div style="margin-bottom: -10px" class="goalTime-input-div">
-                     <label class="goal-form-labels" for="time-of-goal">Time of Goal (minutes)<span class="required">*</span></label>
+                     <label class="goal-form-labels" for="time-of-goal">Time (minutes)<span class="required">*</span></label>
 
-                     <div class="number-spinner">
-                         <button style="margin-right: 5px;" class="decreaseTime">-</button>
+                     <div style="margin-bottom: 10%" class="number-spinner">
+                         <button class="decreaseTime">-</button>
                          <input type="number" class="valueInputTime" value="1" min="1" id="time-of-goal" name="timeOfGoal" th:field="*{time}">
-                         <button style="margin-left: 5px;" class="increaseTime">+</button>
+                         <button class="increaseTime">+</button>
                      </div>
-
-
                 </div>
-                 <div style="display: unset" th:each="err : ${#fields.errors('time')}" th:text="${err}" class="error-message"></div>
+
 
                  <div class="goal-input-div">
                      <label class="goal-form-labels" for="goal-value">Goal Value</label>
-
                      <div class="number-spinner">
-                         <button style="margin-right: 5px;" class="decreaseGoal">-</button>
+                         <button class="decreaseGoal">-</button>
                          <input type="number" class="valueInputGoal" value="1" min="1" id="goal-value" name="goalValue">
-                         <button style="margin-left: 5px;" class="increaseGoal">+</button>
+                         <button class="increaseGoal">+</button>
                      </div>
 
                  </div>
 
             </div>
+
+                 <div style="display: unset" th:each="err : ${#fields.errors('time')}" th:text="${err}" class="error-message"></div>
+
 
                  <div style="padding-bottom: 11px; padding-top: 11px;" class="submit-button">
                      <button style="width: 30%" id="createGoal" type="submit"> Add </button>
