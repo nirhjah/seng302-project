@@ -52,19 +52,6 @@ public class CreateTeamFormController {
         this.userService = userService;
     }
 
-    /**
-     * Gives all the necessary regex to the HTML front-end, so validation can occur
-     * before submission.
-     */
-    private void prefillModel(Model model, HttpServletRequest httpServletRequest) {
-        model.addAttribute("countryCitySuburbNameRegex", TeamFormValidators.VALID_COUNTRY_SUBURB_CITY_REGEX);
-        model.addAttribute("countryCitySuburbNameRegexMsg", TeamFormValidators.INVALID_CHARACTERS_MSG);
-        model.addAttribute("teamNameUnicodeRegex", teamService.teamNameUnicodeRegex);
-        model.addAttribute("teamNameMsg", TeamFormValidators.INVALID_CHARACTERS_MSG_TEAM_NAME);
-        model.addAttribute("sportUnicodeRegex", teamService.sportUnicodeRegex);
-        model.addAttribute("sportUnicodeMsg", TeamFormValidators.INVALID_SPORT_MSG);
-        model.addAttribute("httpServletRequest", httpServletRequest);
-    }
 
     /**
      * Creates a location entity from details provided in the form
@@ -112,7 +99,9 @@ public class CreateTeamFormController {
             CreateAndEditTeamForm createAndEditTeamForm) throws MalformedURLException {
 
         logger.info("GET /createTeam - new team");
-        prefillModel(model, request);
+
+        model.addAttribute("httpServletRequest", request);
+
         model.addAttribute(IS_EDITING_KEY, false);
 
         URL url = new URL(request.getRequestURL().toString());
@@ -139,7 +128,9 @@ public class CreateTeamFormController {
             CreateAndEditTeamForm createAndEditTeamForm) throws MalformedURLException {
 
         logger.info("GET /createTeam - updated team with ID={}", teamID);
-        prefillModel(model, request);
+
+        model.addAttribute("httpServletRequest", request);
+
         model.addAttribute(IS_EDITING_KEY, true);
         
         // I'm starting to regret this pattern
@@ -203,7 +194,9 @@ public class CreateTeamFormController {
         // Are there form errors?
         if (bindingResult.hasErrors()) {
             logger.error("{}", bindingResult);
-            prefillModel(model, httpServletRequest);
+
+            model.addAttribute("httpServletRequest", httpServletRequest);
+
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("teamID", teamID);
             model.addAttribute(IS_EDITING_KEY, editingTeam);

@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.form;
 
+import nz.ac.canterbury.seng302.tab.entity.Club;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
@@ -106,5 +107,18 @@ public class CreateAndEditClubForm {
 
     public Location getLocation() {
         return new Location(this.addressLine1, this.addressLine2, this.suburb, this.city, this.postcode, this.country);
+    }
+
+
+    public void prepopulate(Club club) {
+        Location location = club.getLocation();
+        this.name = club.getName();
+        this.sport = club.getSport();
+        this.addressLine1 = location.getAddressLine1();
+        this.addressLine2 = location.getAddressLine2();
+        this.postcode = location.getPostcode();
+        this.country = location.getCountry();
+        this.city = location.getCity();
+        this.suburb = location.getSuburb();
     }
 }

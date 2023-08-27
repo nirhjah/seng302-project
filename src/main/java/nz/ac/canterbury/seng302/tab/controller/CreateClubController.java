@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+
 import java.util.*;
+
 
 /**
  * Spring Boot Controller class for the Create Club Form
@@ -70,6 +72,8 @@ public class CreateClubController {
             Optional<Club> optClub = clubService.findClubById(clubId);
             if (optClub.isPresent()) {
                 prefillModelWithClub(model, optClub.get());
+                createAndEditClubForm.prepopulate(optClub.get());
+
             }
         }
         return "createClubForm";
@@ -86,7 +90,13 @@ public class CreateClubController {
         String addressLine1= createAndEditClubForm.getAddressLine1().trim();
         if (addressLine1.isEmpty()) {
             bindingResult.addError(new FieldError(createAndEditClubFormString, "addressLine1", "Field cannot be empty"));
+        } else {
+            if (!addressLine1.matches("^(?=.*[a-zA-Z])(?=.*[0-9]).+$")) {
+                bindingResult.addError(new FieldError(createAndEditClubFormString, "addressLine1", "Field cannot be number only"));
+
+            }
         }
+
         String postcode = createAndEditClubForm.getPostcode().trim();
         if (postcode.isEmpty()) {
             bindingResult.addError(new FieldError(createAndEditClubFormString, "postcode", "Field cannot be empty"));
