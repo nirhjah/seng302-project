@@ -28,8 +28,8 @@ Feature: U34 – Add activity statistics
 #    Then the time must fall within the bounds of the activity (ie cannot be before the beginning or after the end)
 #
 #  Scenario: AC5
-#    Given I am a manager or coach
-#    And I am viewing an activity of the type “Game” or “Friendly”
+#    Given I am a manager or coach,
+#    And I am viewing an activity of the type Game or Friendly
 #    When the activity has begun
 #    And I am adding a goal, substitution or fact
 #    And I am specifying a team member to be associated with the statistics
@@ -59,35 +59,27 @@ Feature: U34 – Add activity statistics
 
 #  Scenario: AC9
 #    Given I am a manager or coach,
-#    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
+#    And I am viewing an activity of the type Game or Friendly
 #    And the activity has begun
 #    When I click the UI element to add a goal
 #    Then there is a form with the required field of scorer and time it occurred and the optional fields description and value.
-#
-#  Scenario: AC10
-#    Given I am a manager or coach,
-#    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
-#    And the activity has begun
-#    And I am adding a score
-#    When I don’t enter a value into the goal value field (and rest of form is right)
-#    Then the system accepts and uses a default value of 1
-#
-#  Scenario: AC11
-#    Given I am a manager or coach,
-#    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
-#    And the activity has begun
-#    And I am adding a score
-#    When I enter a positive integer (given rest of form is valid)
-#    Then the system accepts
-#
-#  Scenario: AC12
-#    Given I am a manager or coach,
-#    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
-#    And the activity has begun
-#    And I am adding a score
-#    When I enter a value that is not a positive integer
-#    Then the system doesn’t accept and an error message displays telling the user to enter a positive integer.
-#
+
+  Scenario: AC10
+    Given I am a manager or coach,
+    And I am viewing an activity of the type Game or Friendly
+    And the activity has begun
+    And I am adding a score
+    When I do not enter a value into the goal value field (and rest of form is right)
+    Then the system accepts and uses a default value of 1
+
+  Scenario: AC11
+    Given I am a manager or coach,
+    And I am viewing an activity of the type Game or Friendly
+    And the activity has begun
+    And I am adding a score
+    When I enter a positive integer (given rest of form is valid)
+    Then the system accepts
+
 #  Scenario: AC13
 #    Given I am a manager or coach,
 #    And I am viewing an activity of the type ‘Game’ or ‘Friendly’

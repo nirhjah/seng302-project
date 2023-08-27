@@ -20,6 +20,7 @@ import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.FactService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -84,12 +85,16 @@ public class ViewActivityControllerTests {
     @Autowired
     private TeamRepository teamRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private Activity activity;
 
-
+    private User activityPlayer;
 
     @BeforeEach
     void beforeEach() throws IOException {
+        userRepository.deleteAll();
         activityRepository.deleteAll();
         Date userDOB;
         try {
@@ -99,10 +104,15 @@ public class ViewActivityControllerTests {
         }
         Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY,
                 USER_POSTCODE, USER_COUNTRY);
+        Location testLocation2 = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY,
+                USER_POSTCODE, USER_COUNTRY);
         User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD, testLocation);
+        activityPlayer = new User("Bob", "Smith", userDOB, "bob@gmail.com", USER_PWORD, testLocation2);
+        userRepository.save(activityPlayer);
+
         team = new Team("test", "Hockey", testLocation, testUser);
         LocalDateTime start =   LocalDateTime.of(2023, 6,1,6,30);
-        LocalDateTime end = LocalDateTime.of(2023, 7,1,8,30);
+        LocalDateTime end = LocalDateTime.of(2025, 7,1,8,30);
         Location activityLocation = new Location(ACTVITY_ADDRESS_LINE_1, ACTVITY_ADDRESS_LINE_2, ACTVITY_SUBURB,
                 ACTVITY_CITY, ACTVITY_POSTCODE, ACTVITY_COUNTRY);
         activity= new Activity(ActivityType.Game, team, "description",start, end, testUser, activityLocation);
@@ -116,6 +126,8 @@ public class ViewActivityControllerTests {
         factList.add(new Fact("Testing scrollable feature", "1h 25m", activity));
 
         teamRepository.save(team);
+        activityPlayer.joinTeam(team);
+
         when(mockActivityService.findActivityById(Long.parseLong("1"))).thenReturn(activity);
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
         when(mockTeamService.findTeamsWithUser(testUser)).thenReturn(List.of(team));
@@ -188,7 +200,7 @@ public class ViewActivityControllerTests {
 
     @Test
     public void testAddingActivityTeamGoalUseDefault() throws Exception {
-        mockMvc.perform(post("/overallScore", 42L)
+        mockMvc.perform(post("/overall-score", 42L)
                         .param("actId", "1")
                         .param("overallScoreTeam", "1")
                         .param("overallScoreOpponent", "1")
@@ -224,7 +236,7 @@ public class ViewActivityControllerTests {
         when(mockActivityService.validateActivityScore("", "5-6")).thenReturn(2);
 
 
-        mockMvc.perform(post("/overallScore", 42L)
+        mockMvc.perform(post("/overall-score", 42L)
                         .param("actId", "1")
                         .param("overallScoreTeam", "")
                         .param("overallScoreOpponent", "5-6")
@@ -239,7 +251,7 @@ public class ViewActivityControllerTests {
         when(mockActivityService.validateActivityScore("3", "5-6")).thenReturn(1);
 
 
-        mockMvc.perform(post("/overallScore", 42L)
+        mockMvc.perform(post("/overall-score", 42L)
                         .param("actId", "1")
                         .param("overallScoreTeam", "3")
                         .param("overallScoreOpponent", "5-6")
@@ -255,7 +267,7 @@ public class ViewActivityControllerTests {
         activity.setActivityStart(startLate);
         when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
         
-        mockMvc.perform(post("/overallScore", 42L)
+        mockMvc.perform(post("/overall-score", 42L)
                         .param("actId", "1")
                         .param("overallScoreTeam", "3")
                         .param("overallScoreOpponent", "4")
@@ -269,12 +281,70 @@ public class ViewActivityControllerTests {
         when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
         when(mockActivityService.validateActivityScore("3", "4")).thenReturn(0);
 
-        mockMvc.perform(post("/overallScore", 42L)
+        mockMvc.perform(post("/overall-score", 42L)
                         .param("actId", "1")
                         .param("overallScoreTeam", "3")
                         .param("overallScoreOpponent", "4")
                 )
                 .andExpect(view().name("redirect:./view-activity?activityID=1"));
+
+    }
+
+    @Test
+    public void testAddingGoalValidFields() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        when(mockActivityService.checkTimeOfFactWithinActivity(activity, 2)).thenReturn(true);
+        when(mockUserService.findUserById(Long.parseLong("2"))).thenReturn(Optional.of(activityPlayer));
+
+        mockMvc.perform(post("/add-goal", 42L)
+                        .param("actId", "1")
+                        .param("scorer", "2")
+                        .param("goalValue", "1")
+                        .param("description", "goal scored")
+                        .param("time", "2")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID=1")).andExpect(status().isFound());
+
+        verify(mockActivityService, times(1)).updateOrAddActivity(any());
+
+    }
+
+
+    @Test
+    public void testAddingGoal_timeBlank() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        when(mockActivityService.checkTimeOfFactWithinActivity(activity, 2)).thenReturn(true);
+        when(mockUserService.findUserById(Long.parseLong("2"))).thenReturn(Optional.of(activityPlayer));
+
+        mockMvc.perform(post("/add-goal", 42L)
+                        .param("actId", "1")
+                        .param("scorer", "2")
+                        .param("goalValue", "1")
+                        .param("description", "goal scored")
+                        .param("time", "")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID=1"));
+
+        verify(mockActivityService, times(0)).updateOrAddActivity(any());
+
+    }
+
+    @Test
+    public void testAddingGoal_scorerBlank() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        when(mockActivityService.checkTimeOfFactWithinActivity(activity, 2)).thenReturn(true);
+        when(mockUserService.findUserById(Long.parseLong("2"))).thenReturn(Optional.of(activityPlayer));
+
+        mockMvc.perform(post("/add-goal", 42L)
+                        .param("actId", "1")
+                        .param("scorer", "1")
+                        .param("goalValue", "1")
+                        .param("description", "goal scored")
+                        .param("time", "")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID=1"));
+
+        verify(mockActivityService, times(0)).updateOrAddActivity(any());
 
     }
 
