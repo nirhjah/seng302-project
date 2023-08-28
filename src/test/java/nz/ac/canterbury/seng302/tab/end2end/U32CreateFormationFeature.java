@@ -114,8 +114,14 @@ public class U32CreateFormationFeature {
     }
 
     @Then("the formation is persisted in the system")
-    public void theFormationIsPersistedInTheSystem() {
+    public void theFormationIsPersistedInTheSystem() throws Exception {
+        String url = PlaywrightBrowser.page.url();
+        Assertions.assertTrue(url.contains("/team-info"),
+            "The current URL '"+url+"' did not contain '/team-info'");
+
+        PlaywrightBrowser.page.locator("#formations-tab").click();    // Saving a formation returns you to the first tab
         List<ElementHandle> formationListElements = PlaywrightBrowser.page.querySelectorAll(".formation-li");
+        Assertions.assertNotEquals(0, formationListElements.size(), "Could not find any formation elements on the page");
         Assertions.assertEquals("1-4-3-3", formationListElements.get(formationListElements.size()-1).textContent().trim());
     }
 
