@@ -1055,6 +1055,28 @@ hr.rounded {
     border-radius:50%;
     border: 1px solid gray;
 }
+
 table, th, td {
     border: 1px solid #0b2239;
+}
+
+.content {
+    max-height: 550px;
+    overflow: auto;
+}
+
+.add-fact-title {
+    text-align: center;
+    font-size: x-large;
+    padding-bottom: 10px
+}
+
+.fact-desc textarea {
+    width: 100%;
+    border: #0b2239 2px solid;
+    border-radius: 5px
+}
+
+#time-of-fact {
+    max-width: 25%;
 }

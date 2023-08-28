@@ -36,7 +36,6 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
@@ -241,7 +240,7 @@ public class AddActivityStatisticsIntegrationTests {
 
     @Then("I must fill out the required field of description and optionally the time it occurred.")
     public void i_must_fill_out_the_required_field_of_description_and_optionally_the_time_it_occurred() throws Exception {
-        mockMvc.perform(post("/addFact")
+        mockMvc.perform(post("/add-fact")
                         .param("activityID", String.valueOf(otherActivity.getId()))
                         .param("timeOfFact", fact.getTimeOfEvent())
                         .param("description", fact.getDescription()))

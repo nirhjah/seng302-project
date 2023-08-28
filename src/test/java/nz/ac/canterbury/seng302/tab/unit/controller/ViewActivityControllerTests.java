@@ -88,9 +88,6 @@ public class ViewActivityControllerTests {
     @Autowired
     private TeamRepository teamRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
     private Activity activity;
 
     private User activityPlayer;
@@ -363,7 +360,7 @@ public class ViewActivityControllerTests {
     public void testAddFactDescriptionAndTime() throws Exception {
         when(mockActivityService.findActivityById(otherActivity.getId())).thenReturn(otherActivity);
 
-        mockMvc.perform(post("/addFact", 42L)
+        mockMvc.perform(post("/add-fact", 42L)
                         .param("actId", String.valueOf(otherActivity.getId()))
                         .param("timeOfFact", "3")
                         .param("description", "4")
@@ -375,7 +372,7 @@ public class ViewActivityControllerTests {
     public void testAddFactNoDescriptionAndTime() throws Exception {
         when(mockActivityService.findActivityById(otherActivity.getId())).thenReturn(otherActivity);
 
-        mockMvc.perform(post("/addFact", 42L)
+        mockMvc.perform(post("/add-fact", 42L)
                         .param("actId", String.valueOf(otherActivity.getId()))
                         .param("timeOfFact", "3")
                 )
@@ -386,7 +383,7 @@ public class ViewActivityControllerTests {
     public void testAddFactDescriptionAndStringForTime() throws Exception {
         when(mockActivityService.findActivityById(otherActivity.getId())).thenReturn(otherActivity);
 
-        mockMvc.perform(post("/addFact", 42L)
+        mockMvc.perform(post("/add-fact", 42L)
                         .param("actId", String.valueOf(otherActivity.getId()))
                         .param("timeOfFact", "favour")
                         .param("description", "chchc")
@@ -398,7 +395,7 @@ public class ViewActivityControllerTests {
     public void testAddFactDescriptionAndToolongTime() throws Exception {
         when(mockActivityService.findActivityById(otherActivity.getId())).thenReturn(otherActivity);
 
-        mockMvc.perform(post("/addFact", 42L)
+        mockMvc.perform(post("/add-fact", 42L)
                         .param("actId", String.valueOf(otherActivity.getId()))
                         .param("timeOfFact", "99999999999999")
                         .param("description", "chchc")

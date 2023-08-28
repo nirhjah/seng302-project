@@ -1,7 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import java.time.LocalDateTime;
-import java.sql.Date;
 import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -237,7 +236,7 @@ public class ViewActivityController {
      * @param redirectAttributes    stores error message to be displayed
      * @return  view activity page
      */
-    @PostMapping("/addFact")
+    @PostMapping("/add-fact")
     public String addFactForm(
             @RequestParam(name = "actId", defaultValue = "-1") long actId,
             @RequestParam(name = "timeOfFact", required = false) String timeOfFact,
