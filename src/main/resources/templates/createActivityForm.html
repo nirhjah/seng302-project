@@ -65,7 +65,7 @@
                 <div th:each="err : ${#fields.errors('formation')}" th:text="${err}" class="error-message"></div>
             </div>
 
-            <div class="formation-activity-display">
+            <div th:style="${actId != null ? 'display:block' : 'display:none'}" class="formation-activity-display">
                 <div>
                     <input type="hidden" id="playerAndPositions" name="playerAndPositions">
                     <div class="subs-reserves-box">
