@@ -26,6 +26,8 @@ import java.io.IOException;
 
 import java.util.*;
 
+import static nz.ac.canterbury.seng302.tab.validator.LocationValidators.INVALID_CHARACTERS_MSG;
+
 
 /**
  * Spring Boot Controller class for the Create Club Form
@@ -98,8 +100,8 @@ public class CreateClubController {
         if (addressLine1.isEmpty()) {
             bindingResult.addError(new FieldError(createAndEditClubFormString, "addressLine1", "Field cannot be empty"));
         } else {
-            if (!addressLine1.matches("^(?=.*[a-zA-Z])(?=.*[0-9]).+$")) {
-                bindingResult.addError(new FieldError(createAndEditClubFormString, "addressLine1", "Field cannot be number only"));
+            if (!addressLine1.matches("^[a-zA-Z0-9 ',-]*$")) {
+                bindingResult.addError(new FieldError(createAndEditClubFormString, "addressLine1", INVALID_CHARACTERS_MSG));
 
             }
         }

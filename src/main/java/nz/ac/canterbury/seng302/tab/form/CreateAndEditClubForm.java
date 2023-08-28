@@ -18,7 +18,6 @@ public class CreateAndEditClubForm {
     @TeamFormValidators.teamSportValidator(message = TeamFormValidators.INVALID_SPORT_MSG)
     private String sport;
 
-    @LocationValidators.addressValidator
     private String addressLine1;
     @LocationValidators.addressValidator
     private String addressLine2;
