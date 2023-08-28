@@ -31,7 +31,7 @@ public class PlaywrightBrowser {
     static String baseUrl = "localhost:8080";
 
 
-    @BeforeAll
+    @BeforeAll(order=1)
     public static void openResources() {
         playwright = Playwright.create();
         browser = playwright.chromium().launch();
@@ -48,12 +48,12 @@ public class PlaywrightBrowser {
         page.navigate(baseUrl);
     }
 
-    @After
+    @After(order=99999)
     public void closeContext() {
         browserContext.close();
     }
 
-    @AfterAll
+    @AfterAll(order=99999)
     public static void closeResources() {
         playwright.close();
     }
