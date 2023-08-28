@@ -39,6 +39,7 @@ public class ViewAllCompetitionsController {
     public enum Timing {
         PAST, CURRENT
     }
+
     List<Timing> timingValues = List.of(Timing.values());
 
     private Page<Competition> getPageResult(int page, List<String> times, List<String> sports) {

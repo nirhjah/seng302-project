@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
+import nz.ac.canterbury.seng302.tab.controller.ViewAllCompetitionsController;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -32,6 +33,10 @@ public class ViewAllCompetitionsControllerTest {
     @SpyBean
     private CompetitionService competitionService;
 
+    private static final String PAST = ViewAllCompetitionsController.Timing.PAST.toString();
+    private static final String CURRENT = ViewAllCompetitionsController.Timing.CURRENT.toString();
+    private static final String BOTH = PAST + "," + CURRENT;
+
     @BeforeEach
     public void beforeAll() throws IOException {
         Location location = new Location("94 mays road", "St Albans", "St Ablans", "Chch", "8054", "nznz");
@@ -49,11 +54,49 @@ public class ViewAllCompetitionsControllerTest {
                 .andExpect(view().name("viewAllCompetitions")).andExpect(model().attributeExists("listOfCompetitions"));
     }
     @Test
-    public void testViewAllCompetitionsWithParamsReturns200() throws Exception {
+    public void testViewAllCompetitionsWithParamFindAllReturns200() throws Exception {
+        mockMvc.perform(get("/view-all-competitions")
+                        .param("page", "2")
+                        .param("sports", "Football,Basketball"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("viewAllCompetitions"))
+                .andExpect(model().attributeExists("listOfCompetitions"));
+
+        Mockito.verify(competitionService, Mockito.atLeast(1)).findAllCompetitionsBySports(any(), any());
+    }
+
+    @Test
+    public void testViewAllCompetitionsWithParamFindCurrentReturns200() throws Exception {
         mockMvc.perform(get("/view-all-competitions")
                         .param("page", "2")
                         .param("sports", "Football,Basketball")
-                        .param("time", "11"))
+                        .param("times", CURRENT))
+                .andExpect(status().isOk())
+                .andExpect(view().name("viewAllCompetitions"))
+                .andExpect(model().attributeExists("listOfCompetitions"));
+
+        Mockito.verify(competitionService, Mockito.atLeast(1)).findCurrentCompetitionsBySports(any(), any());
+    }
+
+    @Test
+    public void testViewAllCompetitionsWithParamFindPastReturns200() throws Exception {
+        mockMvc.perform(get("/view-all-competitions")
+                        .param("page", "2")
+                        .param("sports", "Football,Baseball")
+                        .param("times", PAST))
+                .andExpect(status().isOk())
+                .andExpect(view().name("viewAllCompetitions"))
+                .andExpect(model().attributeExists("listOfCompetitions"));
+
+        Mockito.verify(competitionService, Mockito.atLeast(1)).findPastCompetitionsBySports(any(), any());
+    }
+
+    @Test
+    public void testViewAllCompetitionsWithParamFindPastAndCurrentReturns200() throws Exception {
+        mockMvc.perform(get("/view-all-competitions")
+                        .param("page", "2")
+                        .param("sports", "Football,Baseball")
+                        .param("times", BOTH))
                 .andExpect(status().isOk())
                 .andExpect(view().name("viewAllCompetitions"))
                 .andExpect(model().attributeExists("listOfCompetitions"));
