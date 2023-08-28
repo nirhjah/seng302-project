@@ -52,12 +52,11 @@
                 <div class="select-box">
                     <label for="team">Activity formation <em>(Team Game and Team Friendly only)</em></label>
                     <select name="formation" id="formation-dropdown" th:disabled="${#lists.isEmpty(teamFormations)}">
-                        <option value="-1" onclick="onFormationOptionClick(event)">(No Formation)</option>
+                        <option value="-1">(No Formation)</option>
                         <option th:each="forma : ${teamFormations}"
                                 th:value="${forma.formationId}"
                                 th:text="${forma.formation}"
                                 th:selected="${forma == selectedFormation}"
-                                onclick="onFormationOptionClick(event)"
                                 th:data-custom="${forma.custom}"
                                 th:data-custom-positions="${forma.customPlayerPositions}"
                         ></option>
@@ -340,9 +339,14 @@
             });
     }
 
-    function onFormationOptionClick(event) {
-        loadFormation(event.target);
-    }
+    document.getElementById("formation-dropdown").addEventListener("change", function(event) {
+        const selectedOption = event.target.options[event.target.selectedIndex];
+
+        loadFormation(selectedOption);
+    });
+
+
+
 
     function loadFormation(target) {
         const reservesLi = document.querySelectorAll(".reserves-li");
@@ -363,9 +367,10 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() {
-        const selectedFormationId  = formationDropdown.value;
-        const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex]
-        if (selectedFormationId != -1) {
+        const formationDropdown = document.getElementById("formation-dropdown");
+        const selectedFormationId = formationDropdown.value;
+        const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex];
+        if (selectedFormationId !== "-1") {
             loadFormation(selectedFormation);
         }
     });
@@ -396,7 +401,9 @@
         let item = document.createElement("option");
             item.value = -1;
             item.innerText = emptyValueName;
+/*
             item.addEventListener("click", onFormationOptionClick);
+*/
             formationDropdown.appendChild(item);
         // Add the remaining fields
         for (let i = 0; i < formationList.length; i++) {
@@ -406,7 +413,9 @@
             option.value = formation.formationID;
             option.setAttribute("data-custom-positions", formation.customPlayerPositions);
             option.setAttribute("data-custom", formation.custom);
+/*
             option.addEventListener("click", onFormationOptionClick);
+*/
             formationDropdown.appendChild(option);
             if (i==0) {
                 populateReserves(formation.players);

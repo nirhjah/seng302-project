@@ -125,10 +125,13 @@ public class CreateActivityController {
         
         if (team != null) {
             // The dates are after the team's creation date
-            if (!activityService.validateActivityDateTime(team.getCreationDate(), createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-                bindingResult.addError(new FieldError("CreateActivityForm", "endDateTime",
-                        ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + team.getCreationDate().format(formatter)));
+
+            if (createActivityForm.getStartDateTime() != null && createActivityForm.getEndDateTime() != null) {
+                if (!activityService.validateActivityDateTime(team.getCreationDate(), createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                    bindingResult.addError(new FieldError("CreateActivityForm", "endDateTime",
+                            ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + team.getCreationDate().format(formatter)));
+                }
             }
             // This user needs the authority to create/update activities
             boolean hasCreateAuth = team.isCoach(currentUser) || team.isManager(currentUser);
