@@ -149,8 +149,8 @@ public class U39CreateViewUpdateCompetition {
         Location location2 = new Location("adminAddr1", "adminAddr2", "adminSuburb", "adminCity", "4dm1n", "adminLand");
         team = new Team("test1", "Hockey", location2);
         Location compLoc = new Location(null, null, null, null, null, null);
-        Date date = Date.from(Instant.now());
-        competition = new UserCompetition("comp", new Grade(Grade.DEFAULT_AGE, Grade.Sex.MENS, Grade.DEFAULT_COMPETITIVENESS), "sport", compLoc, date, date, Collections.<User>emptySet());
+        LocalDateTime now = LocalDateTime.now();
+        competition = new UserCompetition("comp", new Grade(Grade.DEFAULT_AGE, Grade.Sex.MENS, Grade.DEFAULT_COMPETITIVENESS), "sport", compLoc, now, now, Collections.<User>emptySet());
         Sport sport = new Sport("soccer");
         user.setFavoriteSports(List.of(sport));
         user.confirmEmail();
@@ -515,10 +515,10 @@ public class U39CreateViewUpdateCompetition {
     }
 
     private void setDateTo(Competition competition, long start, long end) {
-        Date now = Date.from(Instant.now());
-        Date startDate = addSeconds(now, start);
-        Date endDate = addSeconds(now, end);
-        competition.setDate(startDate, endDate);
+        long now = Instant.now().getEpochSecond();
+        long startDate = now + start;
+        long endDate = now + end;
+        competition.setDateAsEpochSecond(startDate, endDate);
     }
 
     private void generateCompetitionsForSport(String sport) {

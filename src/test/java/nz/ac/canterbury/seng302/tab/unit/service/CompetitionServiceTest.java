@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
+import io.cucumber.java.sl.In;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Grade.Sex;
 import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
@@ -119,36 +120,37 @@ class CompetitionServiceTest {
         }
     }
 
-    private Competition generateCompetition(Date time, int i) {
+    private Competition generateCompetition(Instant time, int i) {
         String name = "Test" + i;
         String sport = SPORTS.get(i);
         Competition comp = new TeamCompetition(name, new Grade(Sex.OTHER), sport);
-        Date start = (Date) time.clone();
-        Date end = (Date) time.clone();
-        start.setTime(start.getTime() - 1000);
-        end.setTime(end.getTime() + 1000);
-        comp.setDate(start, end);
+        long timeEpochSecond = time.getEpochSecond();
+        long start = timeEpochSecond - 1000;
+        long end = timeEpochSecond + 1000;
+        comp.setDateAsEpochSecond(start, end);
         return comp;
     }
 
-    private void generateCompetitionsByTime(Date time) {
+    /**
+     * generates competitions at a specific time
+     * @param instant The time to generate competitions for
+     */
+    private void generateCompetitionsByTime(Instant instant) {
         for (int i=0; i<COUNT; i++) {
-            Competition comp = generateCompetition(time, i);
+            Competition comp = generateCompetition(instant, i);
             competitionService.updateOrAddCompetition(comp);
         }
     }
 
     private void generatePastFutureCurrent() {
-        Date now = Date.from(Instant.now());
+        Instant now = Instant.now();
+        long dt = 50000; // change in seconds
         generateCompetitionsByTime(now);
-        long dt = 50000;
 
-        Date past = (Date)now.clone();
-        past.setTime(past.getTime() - dt);
+        Instant past = Instant.now().plusSeconds(dt);
         generateCompetitionsByTime(past);
 
-        Date future = (Date)now.clone();
-        future.setTime(past.getTime() + dt);
+        Instant future = Instant.now().minusSeconds(dt);
         generateCompetitionsByTime(future);
     }
 
@@ -158,6 +160,13 @@ class CompetitionServiceTest {
         List<String> sports = List.of("soccer");
         var comps = competitionService.findPastCompetitionsBySports(pageable, sports);
         assertEquals(SPORT_COUNT, comps.stream().toList().size());
+    }
+
+    @Test
+    void testFindAll() {
+        generateCompetitionsByTime(Instant.now());
+        var list = competitionService.findAll();
+        assertEquals(COUNT, list.size());
     }
 
     @Test

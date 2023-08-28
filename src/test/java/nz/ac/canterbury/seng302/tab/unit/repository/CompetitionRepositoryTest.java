@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.unit.repository;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
 import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
+import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
 import nz.ac.canterbury.seng302.tab.repository.CompetitionRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +17,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @DataJpaTest
@@ -34,7 +37,6 @@ public class CompetitionRepositoryTest {
 
     private final int SECONDS_PER_DAY = 86400;
 
-    private Date now;
     private long nowSeconds; // Same as `now`, but in seconds since 1970 unix epoch
 
     private final String SOCCER = "soccer";
@@ -44,29 +46,28 @@ public class CompetitionRepositoryTest {
     // no queries should return more than 100.
     private final PageRequest allRequest = PageRequest.of(0, 100);
 
-    private static LocalDateTime addSeconds(Date date, long seconds) {
-        LocalDateTime localDateTime = LocalDateTime.of(date, )
-        return date.plusSeconds(seconds);
-    }
-
     private void createWithSport(String sport) {
         for (int i=0; i<NUM_PAST; i++) {
             Competition c1 = new TeamCompetition("Past competition", Grade.randomGrade(), sport);
-            c1.setDate(start, end);
+            long start = nowSeconds - 1000;
+            long end = nowSeconds - 1;
+            c1.setDateAsEpochSecond(start, end);
             competitionRepository.save(c1);
         }
 
         for (int i=0; i<NUM_CURRENT; i++) {
             Competition c1 = new TeamCompetition("Current competition", Grade.randomGrade(), sport);
             long start = nowSeconds - 1000;
-            long end = nowSeconds - 1000;
-            c1.setDate(start, end);
+            long end = nowSeconds + 1000;
+            c1.setDateAsEpochSecond(start, end);
             competitionRepository.save(c1);
         }
 
         for (int i=0; i<NUM_FUTURE; i++) {
             Competition c1 = new TeamCompetition("Future competition", Grade.randomGrade(), sport);
-            c1.setDate(start, end);
+            long start = nowSeconds + 1000;
+            long end = nowSeconds + 2000;
+            c1.setDateAsEpochSecond(start, end);
             competitionRepository.save(c1);
         }
     }
@@ -74,8 +75,7 @@ public class CompetitionRepositoryTest {
     @BeforeEach
     public void beforeEach() {
         competitionRepository.deleteAll();
-        now = Date.from(Instant.now());
-        nowSeconds = now.getTime();
+        nowSeconds = Instant.now().getEpochSecond();
 
         createWithSport(SOCCER);
         createWithSport(HOCKEY);
@@ -83,17 +83,23 @@ public class CompetitionRepositoryTest {
     }
 
     @Test
+    public void testBasic() {
+        var result = competitionRepository.findCurrentCompetitionsBySports(allRequest, List.of(), nowSeconds).get().toList();
+        assertEquals(TOTAL, result.size());
+    }
+
+    @Test
     public void testCurrent() {
         // tests current competition querying
         var comps = competitionRepository.findCurrentCompetitionsBySports(allRequest, List.of(SOCCER), nowSeconds).toList();
-        Assertions.assertEquals(NUM_CURRENT, comps.size());
+        assertEquals(NUM_CURRENT, comps.size());
     }
 
     @Test
     public void testPast() {
         // tests past competition querying
         var comps = competitionRepository.findPastCompetitionsBySports(allRequest, List.of(SOCCER), nowSeconds).toList();
-        Assertions.assertEquals(NUM_PAST, comps.size());
+        assertEquals(NUM_PAST, comps.size());
     }
 
     @Test
@@ -102,7 +108,7 @@ public class CompetitionRepositoryTest {
         var sports = List.of(HOCKEY, BASKETBALL);
         var comps = competitionRepository.findPastCompetitionsBySports(allRequest, sports, nowSeconds).toList();
         var size = NUM_PAST * 2; // x2 to account for both hockey AND bball.
-        Assertions.assertEquals(size, comps.size());
+        assertEquals(size, comps.size());
     }
 
     @Test
@@ -111,7 +117,7 @@ public class CompetitionRepositoryTest {
         var sports = List.of(HOCKEY, BASKETBALL);
         var comps = competitionRepository.findCurrentCompetitionsBySports(allRequest, sports, nowSeconds).toList();
         var size = NUM_CURRENT * 2;
-        Assertions.assertEquals(size, comps.size());
+        assertEquals(size, comps.size());
     }
 
     @Test
@@ -120,14 +126,14 @@ public class CompetitionRepositoryTest {
         var sports = List.of(HOCKEY, SOCCER);
         var comps = competitionRepository.findCurrentCompetitionsBySports(allRequest, sports, nowSeconds).toList();
         var size = NUM_CURRENT * 2;
-        Assertions.assertEquals(size, comps.size());
+        assertEquals(size, comps.size());
     }
 
     @Test
     public void testAll() {
         var comps = competitionRepository.findAll();
         var size = TOTAL * 3; // num sports is 3.
-        Assertions.assertEquals(size, comps.size());
+        assertEquals(size, comps.size());
     }
 
     @Test
@@ -136,7 +142,7 @@ public class CompetitionRepositoryTest {
         var sports = List.of(HOCKEY, BASKETBALL, SOCCER);
         var comps = competitionRepository.findPastCompetitionsBySports(allRequest, sports, nowSeconds).toList();
         var size = NUM_PAST * 3;
-        Assertions.assertEquals(size, comps.size());
+        assertEquals(size, comps.size());
     }
 
     @Test
@@ -144,6 +150,6 @@ public class CompetitionRepositoryTest {
         var sports = List.of(HOCKEY, BASKETBALL, SOCCER);
         var comps = competitionRepository.findCurrentCompetitionsBySports(allRequest, sports, nowSeconds).toList();
         var size = NUM_CURRENT * 3;
-        Assertions.assertEquals(size, comps.size());
+        assertEquals(size, comps.size());
     }
 }

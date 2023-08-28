@@ -164,14 +164,14 @@ public class CreateCompetitionController {
                         .map(teamService::getTeam)
                         .filter(Objects::nonNull)
                         .collect(Collectors.toSet());
-                Date now = Date.from(Instant.now());
+                LocalDateTime now = LocalDateTime.now();
                 competition = new TeamCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), now, now, teams);
             } else {
                 Set<User> users = IDs.stream()
                         .map(userService::getUser)
                         .filter(Objects::nonNull)
                         .collect(Collectors.toSet());
-                Date now = Date.from(Instant.now());
+                LocalDateTime now = LocalDateTime.now();
                 competition = new UserCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), now, now, users);
             }
 

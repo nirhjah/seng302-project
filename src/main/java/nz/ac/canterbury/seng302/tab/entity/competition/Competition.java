@@ -8,6 +8,7 @@ import org.springframework.cglib.core.Local;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Objects;
 
@@ -47,8 +48,8 @@ public abstract class Competition {
     private long competitionEnd;
 
     // Timezone of where the app is running.
-    // This isn't ideal, but our competition dates are non-timezoned anyway
-    private static ZoneId DEFAULT_ZONE = ZoneId.systemDefault();
+    // This should be set to 0, since in our application, we have no timezones.
+    private static ZoneOffset DEFAULT_ZONE = ZoneOffset.ofHours(0);
 
     protected Competition() {}
     
@@ -69,13 +70,13 @@ public abstract class Competition {
      * @param competitionStart
      * @param competitionEnd
      * */
-    protected Competition(String name, Grade grade, String sport, Location location, Date competitionStart, Date competitionEnd) {
+    protected Competition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd) {
         this.name = name;
         this.grade = grade;
         this.sport = sport;
         this.location = location;
-        this.competitionStart = competitionStart.getTime();
-        this.competitionEnd = competitionEnd.getTime();
+        this.competitionStart = competitionStart.toEpochSecond(DEFAULT_ZONE);
+        this.competitionEnd = competitionEnd.toEpochSecond(DEFAULT_ZONE);
     }
     
     /**
@@ -123,24 +124,14 @@ public abstract class Competition {
     }
 
     /**
-     * Sets the start and end dates of a competition.
-     * The default timeZone is used.
-     * @param startDate The start time of the competition
-     * @param endDate The end time for the competition
-     */
-    public void setDate(Date startDate, Date endDate) {
-        setDateAsEpochSecond(startDate.getTime(), endDate.getTime());
-    }
-
-    /**
-     * Sets the start/end dates of a competition, given Local datetimes.
+     * Sets the start/end dates of a competition, given Local date-times.
      * @param startDate The start time of the competition
      * @param endDate The end time for the competition
      */
     public void setDate(LocalDateTime startDate, LocalDateTime endDate) {
-        Date start = Date.from(startDate.atZone(DEFAULT_ZONE).toInstant());
-        Date end = Date.from(endDate.atZone(DEFAULT_ZONE).toInstant());
-        setDate(start, end);
+        long start = startDate.toEpochSecond(DEFAULT_ZONE);
+        long end = endDate.toEpochSecond(DEFAULT_ZONE);
+        setDateAsEpochSecond(start, end);
     }
 
     public void setDateAsEpochSecond(long competitionStart, long competitionEnd) {

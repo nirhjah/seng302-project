@@ -26,11 +26,11 @@ public class UserCompetition extends Competition {
         super(name, grade, sport);
     }
 
-    public UserCompetition(String name, Grade grade, String sport, Location location, Date competitionStart, Date competitionEnd) {
+    public UserCompetition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd) {
         super(name, grade, sport, location, competitionStart, competitionEnd);
     }
 
-    public UserCompetition(String name, Grade grade, String sport, Location location, Date competitionStart, Date competitionEnd, Set<User> players) {
+    public UserCompetition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd, Set<User> players) {
         super(name, grade, sport, location, competitionStart, competitionEnd);
         this.players = players;
     }
