@@ -7,6 +7,7 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,16 +26,11 @@ public class UserCompetition extends Competition {
         super(name, grade, sport);
     }
 
-    public UserCompetition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, Date competitionEnd) {
+    public UserCompetition(String name, Grade grade, String sport, Location location, Date competitionStart, Date competitionEnd) {
         super(name, grade, sport, location, competitionStart, competitionEnd);
     }
 
-    public UserCompetition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd, User player) {
-        super(name, grade, sport, location, competitionStart, competitionEnd);
-        addPlayer(player);
-    }
-
-    public UserCompetition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd, Set<User> players) {
+    public UserCompetition(String name, Grade grade, String sport, Location location, Date competitionStart, Date competitionEnd, Set<User> players) {
         super(name, grade, sport, location, competitionStart, competitionEnd);
         this.players = players;
     }

@@ -24,15 +24,6 @@ public class TeamCompetition extends Competition {
         super(name, grade, sport);
     }
 
-    public TeamCompetition(String name, Grade grade, String sport, Location location, Date competitionStart, Date competitionEnd) {
-        super(name, grade, sport, location, competitionStart, competitionEnd);
-    }
-
-    public TeamCompetition(String name, Grade grade, String sport, Location location,  Date competitionStart, Date competitionEnd, Team team) {
-        super(name, grade, sport, location, competitionStart, competitionEnd);
-        this.teams.add(team);
-    }
-
     public TeamCompetition(String name, Grade grade, String sport, Location location, Date competitionStart, Date competitionEnd, Set<Team> teams) {
         super(name, grade, sport, location, competitionStart, competitionEnd);
         this.teams = teams;

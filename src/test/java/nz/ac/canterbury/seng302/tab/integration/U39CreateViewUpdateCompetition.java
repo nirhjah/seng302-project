@@ -148,8 +148,9 @@ public class U39CreateViewUpdateCompetition {
                 "test@test.com", "plaintextPassword", location);
         Location location2 = new Location("adminAddr1", "adminAddr2", "adminSuburb", "adminCity", "4dm1n", "adminLand");
         team = new Team("test1", "Hockey", location2);
-        competition = new UserCompetition("comp", new Grade(Grade.DEFAULT_AGE, Grade.Sex.MENS, Grade.DEFAULT_COMPETITIVENESS), "sport",
-                new Location(null, null, null, null, null, null), LocalDateTime.now(), LocalDateTime.now());
+        Location compLoc = new Location(null, null, null, null, null, null);
+        Date date = Date.from(Instant.now());
+        competition = new UserCompetition("comp", new Grade(Grade.DEFAULT_AGE, Grade.Sex.MENS, Grade.DEFAULT_COMPETITIVENESS), "sport", compLoc, date, date, Collections.<User>emptySet());
         Sport sport = new Sport("soccer");
         user.setFavoriteSports(List.of(sport));
         user.confirmEmail();

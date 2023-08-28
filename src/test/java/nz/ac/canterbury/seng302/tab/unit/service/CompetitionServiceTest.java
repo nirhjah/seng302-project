@@ -2,30 +2,26 @@ package nz.ac.canterbury.seng302.tab.unit.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Grade.Sex;
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
 import nz.ac.canterbury.seng302.tab.entity.competition.TeamCompetition;
 import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
 import nz.ac.canterbury.seng302.tab.repository.CompetitionRepository;
 import nz.ac.canterbury.seng302.tab.service.CompetitionService;
-
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-
-import java.awt.print.Pageable;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.*;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -123,24 +119,36 @@ class CompetitionServiceTest {
         }
     }
 
-    private void generateCompetitionsByTime(LocalDateTime time) {
+    private Competition generateCompetition(Date time, int i) {
+        String name = "Test" + i;
+        String sport = SPORTS.get(i);
+        Competition comp = new TeamCompetition(name, new Grade(Sex.OTHER), sport);
+        Date start = (Date) time.clone();
+        Date end = (Date) time.clone();
+        start.setTime(start.getTime() - 1000);
+        end.setTime(end.getTime() + 1000);
+        comp.setDate(start, end);
+        return comp;
+    }
+
+    private void generateCompetitionsByTime(Date time) {
         for (int i=0; i<COUNT; i++) {
-            String name = "Test" + i;
-            String sport = SPORTS.get(i);
-            Competition comp = new TeamCompetition(name, new Grade(Sex.OTHER), sport);
-            comp.setDate(time.minusSeconds(1000), time.plusSeconds(1000));
+            Competition comp = generateCompetition(time, i);
             competitionService.updateOrAddCompetition(comp);
         }
     }
 
     private void generatePastFutureCurrent() {
-        LocalDateTime now = LocalDateTime.now();
+        Date now = Date.from(Instant.now());
         generateCompetitionsByTime(now);
+        long dt = 50000;
 
-        var past = now.minusSeconds(50000);
+        Date past = (Date)now.clone();
+        past.setTime(past.getTime() - dt);
         generateCompetitionsByTime(past);
 
-        var future = now.plusSeconds(50000);
+        Date future = (Date)now.clone();
+        future.setTime(past.getTime() + dt);
         generateCompetitionsByTime(future);
     }
 

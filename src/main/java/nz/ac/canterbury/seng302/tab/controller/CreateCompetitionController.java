@@ -171,7 +171,8 @@ public class CreateCompetitionController {
                         .map(userService::getUser)
                         .filter(Objects::nonNull)
                         .collect(Collectors.toSet());
-                competition = new UserCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), LocalDateTime.now(), LocalDateTime.now(), users);
+                Date now = Date.from(Instant.now());
+                competition = new UserCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), now, now, users);
             }
 
             competitionService.updateOrAddCompetition(competition);
