@@ -58,7 +58,7 @@ public class ViewAllCompetitionsControllerTest {
                 .andExpect(view().name("viewAllCompetitions"))
                 .andExpect(model().attributeExists("listOfCompetitions"));
 
-        Mockito.verify(competitionService, Mockito.atLeast(1)).findPastCompetitionsBySports(any(), any());
+        Mockito.verify(competitionService, Mockito.atLeast(1)).findAllCompetitionsBySports(any(), any());
     }
 }
 
