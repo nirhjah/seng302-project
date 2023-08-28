@@ -366,6 +366,24 @@ public class ViewActivityController {
 
     }
 
+    @PostMapping("/add-sub")
+    public String createSub(
+                            @RequestParam(name="actId", defaultValue="-1") long actId,
+                            @RequestParam(name="playerOn", defaultValue="-1") int subOnId,
+                            @RequestParam(name="playerOff", defaultValue="-1") int subOffId,
+                            @RequestParam(name = "time") String time) {
+        
+        logger.info(String.format("got the player on id: %s", subOnId));
+        logger.info(String.format("got the player off id: %s", subOffId));
+        logger.info(String.format("got the time %s", time));
+        String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
+
+
+
+        return viewActivityRedirectUrl;
+    }
+
+    // TODO probably remove below code since its unused
     /**
      * Handles creating an event and adding overall scores
      * @param actId       activity ID to add stats/event to
@@ -480,5 +498,7 @@ public class ViewActivityController {
 
         return viewActivityRedirectUrl;
     }
+
+
 
 }

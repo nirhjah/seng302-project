@@ -113,8 +113,41 @@
             <div class="content">
                  <div id="addSubModal" class="modal">
                      <div class="add-goal-modal-content event" style="bottom: unset">
-                         <span class="close" onclick="addSubModal.style.display = 'none'">&times;</span>
-                        <p> hello there</p>
+                        <span class="close" onclick="addSubModal.style.display = 'none'">&times;</span>
+                        <h3>Add Goal</h3>
+                        <form style="height: unset" th:action="@{add-sub}" id="createEventForm" method="post" th:object="${createEventForm}" class="view-activity-form">
+                            <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
+                             <div class="select-container">
+                                 <label class="goal-form-labels" for="playerOff" style="display: block">Player Off <span class="required">*</span> </label>
+                                 <div class="select-box">
+                                     <select id="playerOff" name="playerOff">
+                                         <option th:each="player : ${playersInTeam}"
+                                                 th:value="${player.userId}"
+                                                 th:text="${player.firstName + ' ' + player.lastName}"></option>
+                                     </select>
+                                </div>
+                                 <label class="goal-form-labels" for="playerOn" style="display: block">Player On <span class="required">*</span> </label>
+                                 <div class="select-box">
+                                     <select id="playerOn" name="playerOn">
+                                         <option th:each="player : ${playersInTeam}"
+                                                 th:value="${player.userId}"
+                                                 th:text="${player.firstName + ' ' + player.lastName}"></option>
+                                     </select>
+                                </div>
+                                 <div style="margin-bottom: -10px" class="goalTime-input-div">
+                                     <label class="goal-form-labels" for="time-of-goal">Time (minutes)<span class="required">*</span></label>
+
+                                     <div style="margin-bottom: 10%" class="number-spinner">
+                                         <button class="decreaseTime">-</button>
+                                         <input type="number" class="valueInputTime" value="1" min="1" id="time-of-sub" name="timeOfSub" th:field="*{time}">
+                                         <button class="increaseTime">+</button>
+                                     </div>
+                                </div>
+                                 <div style="padding-bottom: 11px; padding-top: 11px;" class="submit-button">
+                                     <button style="width: 30%" id="addSub" type="submit"> Add </button>
+                                 </div>
+                             </div>
+                        </form>
                      </div>
                  </div>
                 <div class="formation-outer"
