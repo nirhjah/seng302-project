@@ -1,12 +1,9 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -167,7 +164,8 @@ public class CreateCompetitionController {
                         .map(teamService::getTeam)
                         .filter(Objects::nonNull)
                         .collect(Collectors.toSet());
-                competition = new TeamCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), LocalDateTime.now(), LocalDateTime.now(), teams);
+                Date now = Date.from(Instant.now());
+                competition = new TeamCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), now, now, teams);
             } else {
                 Set<User> users = IDs.stream()
                         .map(userService::getUser)

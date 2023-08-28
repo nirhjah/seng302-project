@@ -7,10 +7,7 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedGradeException;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Class for Team Competition - competition composed of teams only
@@ -27,16 +24,16 @@ public class TeamCompetition extends Competition {
         super(name, grade, sport);
     }
 
-    public TeamCompetition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd) {
+    public TeamCompetition(String name, Grade grade, String sport, Location location, Date competitionStart, Date competitionEnd) {
         super(name, grade, sport, location, competitionStart, competitionEnd);
     }
 
-    public TeamCompetition(String name, Grade grade, String sport, Location location,  LocalDateTime competitionStart, LocalDateTime competitionEnd, Team team) {
+    public TeamCompetition(String name, Grade grade, String sport, Location location,  Date competitionStart, Date competitionEnd, Team team) {
         super(name, grade, sport, location, competitionStart, competitionEnd);
         this.teams.add(team);
     }
 
-    public TeamCompetition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd, Set<Team> teams) {
+    public TeamCompetition(String name, Grade grade, String sport, Location location, Date competitionStart, Date competitionEnd, Set<Team> teams) {
         super(name, grade, sport, location, competitionStart, competitionEnd);
         this.teams = teams;
     }

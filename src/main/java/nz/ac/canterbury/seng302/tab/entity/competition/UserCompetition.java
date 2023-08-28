@@ -25,7 +25,7 @@ public class UserCompetition extends Competition {
         super(name, grade, sport);
     }
 
-    public UserCompetition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd) {
+    public UserCompetition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, Date competitionEnd) {
         super(name, grade, sport, location, competitionStart, competitionEnd);
     }
 

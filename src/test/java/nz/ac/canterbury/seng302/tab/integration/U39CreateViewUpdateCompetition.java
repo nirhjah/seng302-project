@@ -507,28 +507,39 @@ public class U39CreateViewUpdateCompetition {
                 .andExpect(view().name("viewAllCompetitions"));
     }
 
+    private static Date addSeconds(Date date, long seconds) {
+        Date ret = (Date) date.clone();
+        ret.setTime(date.getTime() + seconds);
+        return ret;
+    }
+
+    private void setDateTo(Competition competition, long start, long end) {
+        Date now = Date.from(Instant.now());
+        Date startDate = addSeconds(now, start);
+        Date endDate = addSeconds(now, end);
+        competition.setDate(startDate, endDate);
+    }
 
     private void generateCompetitionsForSport(String sport) {
-        long time = Instant.now().getEpochSecond();
         long smallTimeStep = 5000;
         long bigTimeStep = 10000;
-        LocalDateTime now = LocalDateTime.now();
+        Date now = Date.from(Instant.now());
 
         for (int i=0; i<NUM_PAST; i++) {
             Competition comp = new UserCompetition("myCompetition", Grade.randomGrade(), sport);
-            comp.setDate(now.minusSeconds(bigTimeStep), now.minusSeconds(smallTimeStep));
+            setDateTo(competition, -bigTimeStep, -smallTimeStep);
             competitionService.updateOrAddCompetition(comp);
         }
 
         for (int i=0; i<NUM_FUTURE; i++) {
             Competition comp = new UserCompetition("myCompetition", Grade.randomGrade(), sport);
-            comp.setDate(now.plusSeconds(smallTimeStep), now.plusSeconds(bigTimeStep));
+            setDateTo(competition, smallTimeStep, bigTimeStep);
             competitionService.updateOrAddCompetition(comp);
         }
 
         for (int i=0; i<NUM_CURRENT; i++) {
             Competition comp = new UserCompetition("myCompetition", Grade.randomGrade(), sport);
-            comp.setDate(now.minusSeconds(bigTimeStep), now.plusSeconds(bigTimeStep));
+            setDateTo(competition, -bigTimeStep, bigTimeStep);
             competitionService.updateOrAddCompetition(comp);
         }
     }

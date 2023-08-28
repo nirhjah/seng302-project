@@ -110,17 +110,13 @@ public class CompetitionService {
      * @return The Page of competitions
      */
     public Page<Competition> findPastCompetitionsBySports(Pageable pageable, List<String> filteredSports) {
-        LocalDateTime now = LocalDateTime.now();
         if (filteredSports == null) {
             filteredSports = EMPTY_LIST;
         } else {
             filteredSports = filteredSports.stream().map(String::toLowerCase).toList();
         }
+        Date now = Date.from(Instant.now());
         return competitionRepository.findPastCompetitionsBySports(pageable, filteredSports, now);
-    }
-
-    private Date convertToDate(LocalDateTime time) {
-        return Date.from(time.toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
     /**
@@ -130,13 +126,12 @@ public class CompetitionService {
      * @return The Page of competitions
      */
     public Page<Competition> findCurrentCompetitionsBySports(Pageable pageable, List<String> filteredSports) {
-        LocalDateTime now = LocalDateTime.now();
         if (filteredSports == null) {
             filteredSports = EMPTY_LIST;
         } else {
             filteredSports = filteredSports.stream().map(String::toLowerCase).toList();
         }
-        Date dateNow = convertToDate(now);
+        Date now = Date.from(Instant.now());
         return competitionRepository.findCurrentCompetitionsBySports(pageable, filteredSports, now);
     }
 

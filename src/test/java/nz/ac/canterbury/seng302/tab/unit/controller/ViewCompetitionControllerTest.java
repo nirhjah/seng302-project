@@ -26,8 +26,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Optional;
 
@@ -77,8 +79,9 @@ public class ViewCompetitionControllerTest {
         userRepository.save(user);
         teamRepository.save(team);
 
-        teamCompetition = new TeamCompetition("Rugby Competition", new Grade(Grade.Age.UNDER_18S, Grade.Sex.MENS), "Rugby", new Location("5 Test Lane", "", "", "Christchurch", "8042", "New Zealand"), LocalDateTime.now(), LocalDateTime.now(), team);
-        userCompetition = new UserCompetition("Rugby Competition", new Grade(Grade.Age.UNDER_18S, Grade.Sex.MENS), "Rugby", new Location("5 Test Lane", "", "", "Christchurch", "8042", "New Zealand"), LocalDateTime.now(), LocalDateTime.now(), user);
+        Date now = Date.from(Instant.now());
+        teamCompetition = new TeamCompetition("Rugby Competition", new Grade(Grade.Age.UNDER_18S, Grade.Sex.MENS), "Rugby", new Location("5 Test Lane", "", "", "Christchurch", "8042", "New Zealand"), now, now, team);
+        userCompetition = new UserCompetition("Rugby Competition", new Grade(Grade.Age.UNDER_18S, Grade.Sex.MENS), "Rugby", new Location("5 Test Lane", "", "", "Christchurch", "8042", "New Zealand"), now, now, user);
 
         competitionRepository.save(teamCompetition);
 

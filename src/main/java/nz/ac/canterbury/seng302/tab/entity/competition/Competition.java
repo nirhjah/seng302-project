@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -34,10 +33,10 @@ public abstract class Competition {
     private Location location;
 
     @Column(nullable = true)
-    private LocalDateTime competitionStart;
+    private Date competitionStart;
 
     @Column(nullable = true)
-    private LocalDateTime competitionEnd;
+    private Date competitionEnd;
 
     protected Competition() {}
     
@@ -58,7 +57,7 @@ public abstract class Competition {
      * @param competitionStart
      * @param competitionEnd
      * */
-    protected Competition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd) {
+    protected Competition(String name, Grade grade, String sport, Location location, Date competitionStart, Date competitionEnd) {
         this.name = name;
         this.grade = grade;
         this.sport = sport;
@@ -117,7 +116,7 @@ public abstract class Competition {
      * @param startDate The start time of the competition
      * @param endDate The end time for the competition
      */
-    public void setDate(LocalDateTime startDate, LocalDateTime endDate) {
+    public void setDate(Date startDate, Date endDate) {
         this.competitionStart = startDate;
         this.competitionEnd = endDate;
     }
@@ -150,11 +149,11 @@ public abstract class Competition {
         this.location = location;
     }
 
-    public LocalDateTime getCompetitionEnd() {
+    public Date getCompetitionEnd() {
         return competitionEnd;
     }
 
-    public LocalDateTime getCompetitionStart() {
+    public Date getCompetitionStart() {
         return competitionStart;
     }
 

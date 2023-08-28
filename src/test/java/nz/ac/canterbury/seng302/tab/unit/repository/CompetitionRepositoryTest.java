@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 
@@ -32,7 +33,7 @@ public class CompetitionRepositoryTest {
 
     private final int SECONDS_PER_DAY = 86400;
 
-    private LocalDateTime now;
+    private Date now;
 
     private final String SOCCER = "soccer";
     private final String HOCKEY = "hockey";
@@ -41,22 +42,34 @@ public class CompetitionRepositoryTest {
     // no queries should return more than 100.
     private final PageRequest allRequest = PageRequest.of(0, 100);
 
+    private static Date addSeconds(Date date, long seconds) {
+        Date ret = (Date) date.clone();
+        ret.setTime(date.getTime() + seconds);
+        return ret;
+    }
+
     private void createWithSport(String sport) {
         for (int i=0; i<NUM_PAST; i++) {
             Competition c1 = new TeamCompetition("Past competition", Grade.randomGrade(), sport);
-            c1.setDate(now.minusSeconds(SECONDS_PER_DAY), now.minusSeconds(1));
+            Date start = addSeconds(now, -SECONDS_PER_DAY);
+            Date end = addSeconds(now, -1);
+            c1.setDate(start, end);
             competitionRepository.save(c1);
         }
 
         for (int i=0; i<NUM_CURRENT; i++) {
             Competition c1 = new TeamCompetition("Current competition", Grade.randomGrade(), sport);
-            c1.setDate(now.minusSeconds(SECONDS_PER_DAY), now.plusSeconds(SECONDS_PER_DAY));
+            Date start = addSeconds(now, -SECONDS_PER_DAY);
+            Date end = addSeconds(now, SECONDS_PER_DAY);
+            c1.setDate(start, end);
             competitionRepository.save(c1);
         }
 
         for (int i=0; i<NUM_FUTURE; i++) {
             Competition c1 = new TeamCompetition("Future competition", Grade.randomGrade(), sport);
-            c1.setDate(now.plusSeconds(SECONDS_PER_DAY), now.plusSeconds(SECONDS_PER_DAY * 2));
+            Date start = addSeconds(now, SECONDS_PER_DAY);
+            Date end = addSeconds(now, SECONDS_PER_DAY * 2);
+            c1.setDate(start, end);
             competitionRepository.save(c1);
         }
     }
@@ -64,7 +77,7 @@ public class CompetitionRepositoryTest {
     @BeforeEach
     public void beforeEach() {
         competitionRepository.deleteAll();
-        now = LocalDateTime.now();
+        now = Date.from(Instant.now());
 
         createWithSport(SOCCER);
         createWithSport(HOCKEY);
