@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Import;
 
 import java.awt.print.Pageable;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import org.junit.jupiter.api.AfterEach;
@@ -122,24 +123,24 @@ class CompetitionServiceTest {
         }
     }
 
-    private void generateCompetitionsByTime(long time) {
+    private void generateCompetitionsByTime(LocalDateTime time) {
         for (int i=0; i<COUNT; i++) {
             String name = "Test" + i;
             String sport = SPORTS.get(i);
             Competition comp = new TeamCompetition(name, new Grade(Sex.OTHER), sport);
-            comp.setDate(time - 1000, time + 1000);
+            comp.setDate(time.minusSeconds(1000), time.plusSeconds(1000));
             competitionService.updateOrAddCompetition(comp);
         }
     }
 
     private void generatePastFutureCurrent() {
-        long now = Instant.now().getEpochSecond();
+        LocalDateTime now = LocalDateTime.from(Instant.now());
         generateCompetitionsByTime(now);
 
-        long past = now - 50000;
+        var past = now.minusSeconds(50000);
         generateCompetitionsByTime(past);
 
-        long future = now + 50000;
+        var future = now.plusSeconds(50000);
         generateCompetitionsByTime(future);
     }
 

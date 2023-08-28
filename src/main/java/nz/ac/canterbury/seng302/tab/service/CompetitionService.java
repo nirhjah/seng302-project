@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -106,7 +108,7 @@ public class CompetitionService {
      * @return The Page of competitions
      */
     public Page<Competition> findPastCompetitionsBySports(Pageable pageable, List<String> filteredSports) {
-        long now = Instant.now().getEpochSecond();
+        LocalDateTime now = LocalDateTime.now();
         if (filteredSports == null) {
             filteredSports = EMPTY_LIST;
         } else {
@@ -122,7 +124,7 @@ public class CompetitionService {
      * @return The Page of competitions
      */
     public Page<Competition> findCurrentCompetitionsBySports(Pageable pageable, List<String> filteredSports) {
-        long now = Instant.now().getEpochSecond();
+        LocalDateTime now = LocalDateTime.now();
         if (filteredSports == null) {
             filteredSports = EMPTY_LIST;
         } else {

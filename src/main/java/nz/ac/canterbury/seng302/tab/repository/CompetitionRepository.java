@@ -8,6 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,22 +26,22 @@ public interface CompetitionRepository extends CrudRepository<Competition, Long>
     @Query("""
         SELECT DISTINCT c
         FROM Competition c
-        WHERE c.endDate < :now
+        WHERE c.competitionEnd < :now
         AND (:#{#filteredSports.size()} = 0 OR c.sport IN (:filteredSports))
         """)
     Page<Competition> findPastCompetitionsBySports(Pageable pageable,
                                                    @Param("filteredSports") List<String> filteredSports,
-                                                   @Param("now") long now);
+                                                   @Param("now") LocalDateTime now);
 
     @Query("""
             SELECT DISTINCT c
             FROM Competition c
               WHERE ((:#{#filteredSports.size}=0 OR (c.sport in :filteredSports))
-              AND ((:now >= c.startDate) AND (:now <= c.endDate)))
+              AND ((:now >= c.competitionStart) AND (:now <= c.competitionStart)))
               """)
     Page<Competition> findCurrentCompetitionsBySports(Pageable pageable,
                                                       @Param("filteredSports") List<String> filteredSports,
-                                                      @Param("now") long now);
+                                                      @Param("now") LocalDateTime now);
 
 
     @Query("""

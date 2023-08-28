@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -31,7 +32,7 @@ public class CompetitionRepositoryTest {
 
     private final int SECONDS_PER_DAY = 86400;
 
-    private long now;
+    private LocalDateTime now;
 
     private final String SOCCER = "soccer";
     private final String HOCKEY = "hockey";
@@ -43,19 +44,19 @@ public class CompetitionRepositoryTest {
     private void createWithSport(String sport) {
         for (int i=0; i<NUM_PAST; i++) {
             Competition c1 = new TeamCompetition("Past competition", Grade.randomGrade(), sport);
-            c1.setDate(now - SECONDS_PER_DAY, now - 1);
+            c1.setDate(now.minusSeconds(SECONDS_PER_DAY), now.minusSeconds(1));
             competitionRepository.save(c1);
         }
 
         for (int i=0; i<NUM_CURRENT; i++) {
             Competition c1 = new TeamCompetition("Current competition", Grade.randomGrade(), sport);
-            c1.setDate(now - SECONDS_PER_DAY, now + SECONDS_PER_DAY);
+            c1.setDate(now.minusSeconds(SECONDS_PER_DAY), now.plusSeconds(SECONDS_PER_DAY));
             competitionRepository.save(c1);
         }
 
         for (int i=0; i<NUM_FUTURE; i++) {
             Competition c1 = new TeamCompetition("Future competition", Grade.randomGrade(), sport);
-            c1.setDate(now + SECONDS_PER_DAY, now + SECONDS_PER_DAY * 2);
+            c1.setDate(now.plusSeconds(SECONDS_PER_DAY), now.plusSeconds(SECONDS_PER_DAY * 2));
             competitionRepository.save(c1);
         }
     }
@@ -63,7 +64,7 @@ public class CompetitionRepositoryTest {
     @BeforeEach
     public void beforeEach() {
         competitionRepository.deleteAll();
-        now = Instant.EPOCH.getEpochSecond();
+        now = LocalDateTime.from(Instant.now());
 
         createWithSport(SOCCER);
         createWithSport(HOCKEY);

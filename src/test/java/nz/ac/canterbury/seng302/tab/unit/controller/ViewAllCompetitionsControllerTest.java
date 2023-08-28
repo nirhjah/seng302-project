@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -36,7 +37,10 @@ public class ViewAllCompetitionsControllerTest {
         Location location = new Location("94 mays road", "St Albans", "St Ablans", "Chch", "8054", "nznz");
 
         Set<User> users = Set.of();
-        Competition comp1 = new UserCompetition("Test1", new Grade(Grade.Age.UNDER_14S, Grade.Sex.MENS), "football", location, users);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime start = now.minusSeconds(1000);
+        LocalDateTime end = now.plusSeconds(1000);
+        Competition comp1 = new UserCompetition("Test1", new Grade(Grade.Age.UNDER_14S, Grade.Sex.MENS), "football", location, start, end, users);
         competitionService.updateOrAddCompetition(comp1);
     }
 

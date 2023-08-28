@@ -510,22 +510,23 @@ public class U39CreateViewUpdateCompetition {
         long time = Instant.now().getEpochSecond();
         long smallTimeStep = 5000;
         long bigTimeStep = 10000;
+        LocalDateTime now = LocalDateTime.from(Instant.now());
 
         for (int i=0; i<NUM_PAST; i++) {
             Competition comp = new UserCompetition("myCompetition", Grade.randomGrade(), sport);
-            comp.setDate(time - bigTimeStep, time - smallTimeStep);
+            comp.setDate(now.minusSeconds(bigTimeStep), now.minusSeconds(smallTimeStep));
             competitionService.updateOrAddCompetition(comp);
         }
 
         for (int i=0; i<NUM_FUTURE; i++) {
             Competition comp = new UserCompetition("myCompetition", Grade.randomGrade(), sport);
-            comp.setDate(time + smallTimeStep, time + bigTimeStep);
+            comp.setDate(now.plusSeconds(smallTimeStep), now.plusSeconds(bigTimeStep));
             competitionService.updateOrAddCompetition(comp);
         }
 
         for (int i=0; i<NUM_CURRENT; i++) {
             Competition comp = new UserCompetition("myCompetition", Grade.randomGrade(), sport);
-            comp.setDate(time - bigTimeStep, time + bigTimeStep);
+            comp.setDate(now.minusSeconds(bigTimeStep), now.plusSeconds(bigTimeStep));
             competitionService.updateOrAddCompetition(comp);
         }
     }
