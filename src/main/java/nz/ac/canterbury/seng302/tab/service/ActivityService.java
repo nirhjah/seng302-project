@@ -2,8 +2,11 @@ package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +18,8 @@ import org.springframework.data.domain.PageRequest;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service class for Activity
@@ -26,6 +27,12 @@ import java.util.Optional;
 @Service
 public class ActivityService {
 
+   /* @Autowired
+    LineUpService lineUpService;*/
+
+    /*@Autowired
+    LineUpPositionService lineUpPositionService;
+*/
     private final ActivityRepository activityRepository;
 
     @Autowired
@@ -249,6 +256,81 @@ public class ActivityService {
             totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes();;
         }
         return totalTime;
+    }
+
+
+/*    public List<User> playersInLineUp(Activity activity) {
+        List<LineUp> activityLineups = lineUpService.findLineUpByActivity(activity.getId()).get();
+        LineUp lineup = activityLineups.get(0);
+        Optional<List<LineUpPosition>> optionaLineupPositions = lineUpPositionService.findLineUpPositionsByLineUp(lineup.getLineUpId());
+        if (optionaLineupPositions.isEmpty()) {
+            return List.of();
+        }
+        List<User> playersInLineUp = optionaLineupPositions.get().stream().map(x -> x.getPlayer()).collect(Collectors.toList());
+
+        return playersInLineUp;
+    }*/
+
+    public List<Substitution> substitutionsForActivity(Activity act) {
+        List<Substitution> activitySubstitutions = new ArrayList<>();
+
+        for (Object fact : act.getFactList()) {
+            if(fact instanceof Substitution) {
+                activitySubstitutions.add((Substitution) fact);
+
+            }
+        }
+        return activitySubstitutions;
+    }
+
+    /**
+     * Gets all substitution facts that the given user is a part of (either player on or player off)
+     * @param act activity to get substitution facts of
+     * @param user user to check if in sub facts
+     * @return list of sub facts user is in
+     */
+    public List<Substitution> subFactsUserIsIn(Activity act, User user) {
+        List<Substitution> activitySubstitutions = new ArrayList<>();
+
+        for (Object fact : act.getFactList()) {
+            if(fact instanceof Substitution) {
+                if (((Substitution) fact).getPlayerOff() == user || ((Substitution) fact).getPlayerOn() == user) {
+                    activitySubstitutions.add((Substitution) fact);
+                }
+            }
+        }
+        return activitySubstitutions;
+    }
+
+    public long getOverallPlayTimeForUserBasedOnSubs(User user, Team team) {
+        List<Activity> games = findActivitiesByTeamAndActivityType(team, ActivityType.Game);
+        List<Activity> friendlies = findActivitiesByTeamAndActivityType(team, ActivityType.Friendly);
+        games.addAll(friendlies);
+        long totalTime = 0;
+        for (Activity act : games) {
+
+            //need to put this into an if loop to check if user is in the starting lineup -> then first check for player off
+            //otherwise check for player on (currently only checking player on)
+
+            //if (playersInLineUp(act).contains(user)) {
+
+
+            for (int i = 0; i < subFactsUserIsIn(act, user).size() - 1; i += 2) {
+
+                Substitution sub1 = subFactsUserIsIn(act, user).get(i);
+                Substitution sub2 = subFactsUserIsIn(act, user).get(i + 1);
+                System.out.println("user on   " + "at: "  + sub1.getTimeOfEvent() + sub1.getPlayerOn().getFirstName()  + " other player on (user off): " + "at: "  + sub2.getTimeOfEvent() + sub2.getPlayerOn().getFirstName());
+
+                int timeBetweenPlayerOnAndOff = Integer.parseInt(sub2.getTimeOfEvent()) - Integer.parseInt(sub1.getTimeOfEvent());
+                totalTime += timeBetweenPlayerOnAndOff;
+            }
+
+        }
+
+        System.out.println("Total time overall for user " + totalTime);
+        return totalTime;
+
+
     }
 
     /**
