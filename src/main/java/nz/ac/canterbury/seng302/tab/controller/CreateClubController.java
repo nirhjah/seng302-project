@@ -45,8 +45,12 @@ public class CreateClubController {
 
     private final ClubImageService clubImageService;
 
-    private final static String createAndEditClubFormString="CreateAndEditClubForm";
-    private final static String selectedTeamString="selectedTeams";
+    private final static String createAndEditClubFormString = "CreateAndEditClubForm";
+    private final static String selectedTeamString = "selectedTeams";
+
+    private final static String httpServletRequestString = "httpServletRequest";
+
+    private final static String addressLine1String = "addressLine1";
 
     @Autowired
     public CreateClubController(ClubService clubService,UserService userService, TeamService teamService, ClubImageService clubImageService) {
@@ -98,10 +102,10 @@ public class CreateClubController {
     private void postCreateClubErrorChecking(BindingResult bindingResult, CreateAndEditClubForm createAndEditClubForm){
         String addressLine1= createAndEditClubForm.getAddressLine1().trim();
         if (addressLine1.isEmpty()) {
-            bindingResult.addError(new FieldError(createAndEditClubFormString, "addressLine1", "Field cannot be empty"));
+            bindingResult.addError(new FieldError(createAndEditClubFormString, addressLine1String, "Field cannot be empty"));
         } else {
             if (!addressLine1.matches("^[a-zA-Z0-9 ',-]*$")) {
-                bindingResult.addError(new FieldError(createAndEditClubFormString, "addressLine1", INVALID_CHARACTERS_MSG));
+                bindingResult.addError(new FieldError(createAndEditClubFormString, addressLine1String, INVALID_CHARACTERS_MSG));
 
             }
         }
@@ -182,8 +186,8 @@ public class CreateClubController {
 
             if (bindingResult.hasErrors()) {
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                model.addAttribute("selectedTeams", selectedTeams);
-                model.addAttribute("selectedTeams", createAndEditClubForm.getSelectedTeams());
+                model.addAttribute(selectedTeamString, selectedTeams);
+                model.addAttribute(selectedTeamString, createAndEditClubForm.getSelectedTeams());
 
                 return "createClubForm";
             }
@@ -234,7 +238,7 @@ public class CreateClubController {
         model.addAttribute("clubId", club.getClubId());
         model.addAttribute("name", club.getName());
         model.addAttribute("sport", club.getSport());
-        model.addAttribute("addressLine1", club.getLocation().getAddressLine1());
+        model.addAttribute(addressLine1String, club.getLocation().getAddressLine1());
         model.addAttribute("addressLine2", club.getLocation().getAddressLine2());
         model.addAttribute("suburb", club.getLocation().getSuburb());
         model.addAttribute("postcode", club.getLocation().getPostcode());
@@ -255,7 +259,7 @@ public class CreateClubController {
                 teamsUserManagerOf.add(team);
             }
         }
-        model.addAttribute("httpServletRequest", httpServletRequest);
+        model.addAttribute(httpServletRequestString, httpServletRequest);
         model.addAttribute("listOfTeams", teamsUserManagerOf);
     }
 
