@@ -3,7 +3,11 @@ package nz.ac.canterbury.seng302.tab.entity.competition;
 import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import org.springframework.cglib.core.Local;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Objects;
 
@@ -32,11 +36,19 @@ public abstract class Competition {
     @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
 
+    /*
+     * The reason we must have longs here, is because JPA REFUSES to allow for
+     * date comparison in custom queries, for some reason.
+     * So instead, we represent dates as a long; time in seconds since the 1970 UNIX epoch.
+     */
     @Column(nullable = true)
-    private Date competitionStart;
+    private long competitionStart;
+    @Column(nullable = true)
+    private long competitionEnd;
 
-    @Column(nullable = true)
-    private Date competitionEnd;
+    // Timezone of where the app is running.
+    // This isn't ideal, but our competition dates are non-timezoned anyway
+    private static ZoneId DEFAULT_ZONE = ZoneId.systemDefault();
 
     protected Competition() {}
     
@@ -62,8 +74,8 @@ public abstract class Competition {
         this.grade = grade;
         this.sport = sport;
         this.location = location;
-        this.competitionStart = competitionStart;
-        this.competitionEnd = competitionEnd;
+        this.competitionStart = competitionStart.getTime();
+        this.competitionEnd = competitionEnd.getTime();
     }
     
     /**
@@ -111,14 +123,29 @@ public abstract class Competition {
     }
 
     /**
-     * Sets the date in UTC format. (Milliseconds since unix epoch.)
-     * You can get the milliseconds by doing Date.getTime()
+     * Sets the start and end dates of a competition.
+     * The default timeZone is used.
      * @param startDate The start time of the competition
      * @param endDate The end time for the competition
      */
     public void setDate(Date startDate, Date endDate) {
-        this.competitionStart = startDate;
-        this.competitionEnd = endDate;
+        setDateAsEpochSecond(startDate.getTime(), endDate.getTime());
+    }
+
+    /**
+     * Sets the start/end dates of a competition, given Local datetimes.
+     * @param startDate The start time of the competition
+     * @param endDate The end time for the competition
+     */
+    public void setDate(LocalDateTime startDate, LocalDateTime endDate) {
+        Date start = Date.from(startDate.atZone(DEFAULT_ZONE).toInstant());
+        Date end = Date.from(endDate.atZone(DEFAULT_ZONE).toInstant());
+        setDate(start, end);
+    }
+
+    public void setDateAsEpochSecond(long competitionStart, long competitionEnd) {
+        this.competitionStart = competitionStart;
+        this.competitionEnd = competitionEnd;
     }
 
     public void setName(String name) {
@@ -149,12 +176,23 @@ public abstract class Competition {
         this.location = location;
     }
 
-    public Date getCompetitionEnd() {
+    /**
+     * The reason we must have longs here, is because JPA REFUSES to allow for
+     * date comparison in custom queries, for some reason.
+     * So instead, we represent dates as a long; time in seconds since the 1970 UNIX epoch.
+     * @return long the competition end date
+     */
+    public long getCompetitionEnd() {
         return competitionEnd;
     }
-
-    public Date getCompetitionStart() {
+    public long getCompetitionStart() {
         return competitionStart;
     }
 
+    public LocalDateTime getCompetitionEndDate() {
+        return LocalDateTime.from(Instant.ofEpochSecond(competitionEnd));
+    }
+    public LocalDateTime getCompetitionStartDate() {
+        return LocalDateTime.from(Instant.ofEpochSecond(competitionStart));
+    }
 }

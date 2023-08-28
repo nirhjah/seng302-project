@@ -115,7 +115,7 @@ public class CompetitionService {
         } else {
             filteredSports = filteredSports.stream().map(String::toLowerCase).toList();
         }
-        Date now = Date.from(Instant.now());
+        long now = Instant.now().getEpochSecond();
         return competitionRepository.findPastCompetitionsBySports(pageable, filteredSports, now);
     }
 
@@ -131,7 +131,7 @@ public class CompetitionService {
         } else {
             filteredSports = filteredSports.stream().map(String::toLowerCase).toList();
         }
-        Date now = Date.from(Instant.now());
+        long now = Instant.now().getEpochSecond();
         return competitionRepository.findCurrentCompetitionsBySports(pageable, filteredSports, now);
     }
 

@@ -32,7 +32,7 @@ public interface CompetitionRepository extends CrudRepository<Competition, Long>
         """)
     Page<Competition> findPastCompetitionsBySports(Pageable pageable,
                                                    @Param("filteredSports") List<String> filteredSports,
-                                                   @Param("now") Date now);
+                                                   @Param("now") long now);
 
     @Query("""
             SELECT DISTINCT c
@@ -42,7 +42,7 @@ public interface CompetitionRepository extends CrudRepository<Competition, Long>
               """)
     Page<Competition> findCurrentCompetitionsBySports(Pageable pageable,
                                                       @Param("filteredSports") List<String> filteredSports,
-                                                      @Param("now") Date now);
+                                                      @Param("now") long now);
 
 
     @Query("""
