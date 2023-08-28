@@ -28,7 +28,7 @@ import nz.ac.canterbury.seng302.tab.entity.User;
  * Spring Boot Controller class for the ProfileForm
  */
 @Controller
-public class ProfileFormController {
+public class ViewTeamController {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -53,7 +53,7 @@ public class ProfileFormController {
     @Autowired
     private FactService factService;
 
-    public ProfileFormController(UserService userService, TeamService teamService, ActivityService activityService, FactService factService, FormationService formationService, CompetitionService competitionService) {
+    public ViewTeamController(UserService userService, TeamService teamService, ActivityService activityService, FactService factService, FormationService formationService, CompetitionService competitionService) {
         this.userService = userService;
         this.formationService = formationService;
         this.teamService = teamService;
@@ -72,12 +72,12 @@ public class ProfileFormController {
      *               for use in thymeleaf
      * @return thymeleaf profileForm
      */
-    @GetMapping("/profile")
+    @GetMapping("/team-info")
     public String profileForm(
             Model model,
             @RequestParam(value = "teamID") Long teamID,
             HttpServletRequest request) {
-        logger.info("GET /profileForm");
+        logger.info("GET /viewTeamForm");
 
         // Gets the team from the database, or giving a 404 if not found.
         Team team = teamService.getTeam(teamID);
@@ -139,13 +139,13 @@ public class ProfileFormController {
      * @param file               uploaded MultipartFile file
      * @return Takes user back to profile page
      */
-    @PostMapping("/profile")
+    @PostMapping("/team-info")
     public String uploadPicture(
             @RequestParam("file") MultipartFile file,
             @RequestParam("teamID") long teamID) {
-        logger.info("POST /profile");
+        logger.info("POST /team-info");
         teamImageService.updateProfilePicture(teamID, file);
-        return "redirect:/profile?teamID=" + teamID;
+        return "redirect:/team-info?teamID=" + teamID;
     }
 
     /**
@@ -161,14 +161,14 @@ public class ProfileFormController {
      *               players rather than simply being from a generated formation string
      * @return reloads the page
      */
-    @PostMapping("/profile/create-formation")
+    @PostMapping("/team-info/create-formation")
     public String createAndUpdateFormation(
             @RequestParam("formation") String newFormation,
             @RequestParam("teamID") long teamID,
             @RequestParam(name="formationID", defaultValue = "-1") long formationID,
             @RequestParam("customPlayerPositions") String customPlayerPositions,
             @RequestParam("custom") Boolean custom) {
-        logger.info("POST /profile");
+        logger.info("POST /team-info");
         Team team = teamService.getTeam(teamID);
         Optional<Formation> formationOptional = formationService.getFormation(formationID);
         Formation formation;
@@ -181,7 +181,7 @@ public class ProfileFormController {
         formation.setCustomPlayerPositions(customPlayerPositions);
         formation.setCustom(custom);
         formationService.addOrUpdateFormation(formation);
-        return "redirect:/profile?teamID=" + teamID;
+        return "redirect:/team-info?teamID=" + teamID;
     }
 
 }

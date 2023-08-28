@@ -137,7 +137,7 @@ public class CreateTeamFormControllerTest {
                         .param("postcode", "fghj")
                         .param("suburb", "ilam"))
                 .andExpect(status().isFound())
-                .andExpect(view().name("redirect:./profile?teamID="+TEAM_ID));
+                .andExpect(view().name("redirect:./team-info?teamID="+TEAM_ID));
     }
 
     /**
@@ -351,7 +351,7 @@ public class CreateTeamFormControllerTest {
                         .param("postcode", "fghj")
                         .param("suburb", "ilam"))
                 .andExpect(status().isFound())
-                .andExpect(view().name("redirect:./profile?teamID=" + TEAM_ID));
+                .andExpect(view().name("redirect:./team-info?teamID=" + TEAM_ID));
     }
 
     /**
@@ -372,7 +372,7 @@ public class CreateTeamFormControllerTest {
                         .param("postcode", "fghj")
                         .param("suburb", "ilam"))
                 .andExpect(status().isFound())
-                .andExpect(view().name("redirect:./profile?teamID=" + TEAM_ID));
+                .andExpect(view().name("redirect:./team-info?teamID=" + TEAM_ID));
     }
 
     /**
@@ -393,7 +393,7 @@ public class CreateTeamFormControllerTest {
                         .param("postcode", "fghj")
                         .param("suburb", ""))
                 .andExpect(status().isFound())
-                .andExpect(view().name("redirect:./profile?teamID=" + TEAM_ID));
+                .andExpect(view().name("redirect:./team-info?teamID=" + TEAM_ID));
     }
 
     /**
@@ -414,7 +414,7 @@ public class CreateTeamFormControllerTest {
                         .param("postcode", "")
                         .param("suburb", ""))
                 .andExpect(status().isFound())
-                .andExpect(view().name("redirect:./profile?teamID=" + TEAM_ID));
+                .andExpect(view().name("redirect:./team-info?teamID=" + TEAM_ID));
     }
 
     /**
@@ -435,7 +435,7 @@ public class CreateTeamFormControllerTest {
                         .param("postcode", "")
                         .param("suburb", ""))
                 .andExpect(status().isFound())
-                .andExpect(view().name("redirect:./profile?teamID=" + TEAM_ID));
+                .andExpect(view().name("redirect:./team-info?teamID=" + TEAM_ID));
 
     }
 
@@ -452,7 +452,7 @@ public class CreateTeamFormControllerTest {
                         .param("postcode", "7897")
                         .param("suburb", ""))
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrlPattern("**/profile?teamID=" + TEAM_ID));
+                .andExpect(redirectedUrlPattern("**/team-info?teamID=" + TEAM_ID));
         verify(mockSportService, times(1)).addSport(any());
     }
 
@@ -461,7 +461,7 @@ public class CreateTeamFormControllerTest {
         mockMvc.perform(post("/generateTeamToken", 42L)
                         .param("teamID", String.valueOf(TEAM_ID)))
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrlPattern("**/profile?teamID=" + TEAM_ID));
+                .andExpect(redirectedUrlPattern("**/team-info?teamID=" + TEAM_ID));
 
         verify(mockTeamService, times(1)).updateTeam(any());
         Assertions.assertNotNull(team.getToken());

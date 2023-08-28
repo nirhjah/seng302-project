@@ -1,14 +1,8 @@
 package nz.ac.canterbury.seng302.tab.authentication;
 
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import nz.ac.canterbury.seng302.tab.entity.Sport;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Value;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -31,7 +25,7 @@ public class AdminAccount implements CommandLineRunner {
     private String adminEmail;
     private String adminPassword;
 
-    public AdminAccount(UserRepository userRepository, PasswordEncoder passwordEncoder,
+    public AdminAccount(UserRepository userRepository,PasswordEncoder passwordEncoder,
             @Value("${adminEmail:admin@gmail.com}") String adminEmail,
             @Value("${adminPassword:1}") String adminPassword) {
         this.userRepository = userRepository;
@@ -63,7 +57,7 @@ public class AdminAccount implements CommandLineRunner {
     /**
      * Creates an admin account if one doesn't exist, or returns the existing one.
      */
-    private User createOrGetAdminAccount() throws IOException {
+    private User createOrGetAdminAccount(){
         // Don't create a duplicate admin
         Optional<User> currentAdmin = userRepository.findByEmail(adminEmail);
         if (currentAdmin.isPresent()) {

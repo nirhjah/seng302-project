@@ -1,11 +1,15 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.enums.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
+import nz.ac.canterbury.seng302.tab.repository.FactRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import org.junit.jupiter.api.Assertions;
@@ -16,6 +20,7 @@ import org.springframework.context.annotation.Import;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @DataJpaTest
@@ -31,6 +36,8 @@ public class ActivityServiceTest {
     @Autowired
     TeamRepository teamRepository;
 
+    @Autowired
+    FactRepository factRepository;
     /**
      * Tests validator for if a start date is before the end
      */
@@ -286,6 +293,85 @@ public class ActivityServiceTest {
         activityRepository.save(training);
         activityRepository.save(game);
         Assertions.assertEquals(120, activityService.getTotalTimeAUserHasPlayedForATeam(u, team));
+    }
+
+    @Test
+    public void testSortGoalTimesAscending() throws Exception {
+
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        User player = new User("Another", "Test", "test1234@test.com", "Password1!",
+                new Location(null, null, null, "CHCH", null, "NZ"));
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+        activityRepository.save(activity);
+
+        List<Fact> factList = new ArrayList<>();
+        List<Goal> goalsList = new ArrayList<>();
+
+        Goal goal1 = new Goal("Goal was scored", "40", activity, player, 1);
+        Goal goal2 = new Goal("Goal was scored again", "25", activity, player, 1);
+        Goal goal3 = new Goal("Goal was scored yet again", "27", activity, player, 1);
+
+        factRepository.save(goal1);
+        factRepository.save(goal2);
+        factRepository.save(goal3);
+
+        factList.add(goal1);
+        factList.add(goal2);
+        factList.add(goal3);
+
+        activity.addFactList(factList);
+
+        activityRepository.save(activity);
+
+        for (Object fact : activity.getFactList()) {
+            if(fact instanceof Goal) {
+                goalsList.add((Goal) fact);
+            }
+        }
+
+        List<Goal> expectedGoalList = List.of(goal2, goal3, goal1);
+        Assertions.assertEquals(expectedGoalList, activityService.sortGoalTimesAscending(goalsList));
+
+    }
+
+
+    @Test
+    public void testcheckTimeOfFactWithinActivity_FactTimeOutOfDuration() throws Exception {
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+        activityRepository.save(activity);
+        Assertions.assertFalse(activityService.checkTimeOfFactWithinActivity(activity, 130));
+
+    }
+
+    @Test
+    public void testcheckTimeOfFactWithinActivity_FactTimeWithinDuration() throws Exception {
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+        activityRepository.save(activity);
+
+        Assertions.assertTrue(activityService.checkTimeOfFactWithinActivity(activity, 20));
     }
     
 

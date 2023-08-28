@@ -17,8 +17,8 @@
     </div>
     <div class="wrapper-activities">
         <ul class="activities-table">
-            <li th:each="activity : ${activities}" th:onclick="|window.location.href='/view-activity?activityID=${activity.id}'|">
-                <span class="title"><a th:if="${activity.team!=null}" th:href="@{profile(teamID=${activity.team.teamId})}" th:text="${activity.team != null} ? ${activity.team.name} : 'Personal'"></a></span>
+            <li th:each="activity : ${activities}" th:onclick="|window.location.href='@{view-activity(activityID=${activity.id})}'|">
+                <span class="title"><a th:if="${activity.team!=null}" th:href="@{team-info(teamID=${activity.team.teamId})}" th:text="${activity.team != null} ? ${activity.team.name} : 'Personal'"></a></span>
                 <span class="details" th:with="startDate=${#temporals.format(activity.activityStart, 'dd MMM yyyy')},
                                                             endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')},
                                                             startTime=${#temporals.format(activity.activityStart, 'hh:mma')},

@@ -27,7 +27,7 @@ public class U32CreateFormationFeature {
 
     @Given("I am on my team’s profile")
     public void iAmOnMyTeamSProfile() throws Exception {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/profile?teamID=1");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=1");
     }
 
     @When("I click on a UI element to see all the team’s formations")
