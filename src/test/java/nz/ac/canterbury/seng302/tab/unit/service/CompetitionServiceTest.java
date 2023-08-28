@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
-import io.cucumber.java.sl.In;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Grade.Sex;
 import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
@@ -20,7 +19,6 @@ import org.springframework.data.domain.PageRequest;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @Import(CompetitionService.class)
 class CompetitionServiceTest {
-    Logger logger = LoggerFactory.getLogger(CompetitionService.class);
 
     @Autowired
     private CompetitionService competitionService;

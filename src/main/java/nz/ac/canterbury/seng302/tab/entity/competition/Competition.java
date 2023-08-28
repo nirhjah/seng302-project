@@ -181,9 +181,9 @@ public abstract class Competition {
     }
 
     public LocalDateTime getCompetitionEndDate() {
-        return LocalDateTime.from(Instant.ofEpochSecond(competitionEnd));
+        return LocalDateTime.ofEpochSecond(competitionEnd, 0, DEFAULT_ZONE);
     }
     public LocalDateTime getCompetitionStartDate() {
-        return LocalDateTime.from(Instant.ofEpochSecond(competitionStart));
+        return LocalDateTime.ofEpochSecond(competitionStart, 0, DEFAULT_ZONE);
     }
 }
