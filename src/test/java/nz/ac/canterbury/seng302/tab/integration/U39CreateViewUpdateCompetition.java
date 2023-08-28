@@ -39,6 +39,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -506,11 +507,12 @@ public class U39CreateViewUpdateCompetition {
                 .andExpect(view().name("viewAllCompetitions"));
     }
 
+
     private void generateCompetitionsForSport(String sport) {
         long time = Instant.now().getEpochSecond();
         long smallTimeStep = 5000;
         long bigTimeStep = 10000;
-        LocalDateTime now = LocalDateTime.from(Instant.now());
+        LocalDateTime now = LocalDateTime.now();
 
         for (int i=0; i<NUM_PAST; i++) {
             Competition comp = new UserCompetition("myCompetition", Grade.randomGrade(), sport);

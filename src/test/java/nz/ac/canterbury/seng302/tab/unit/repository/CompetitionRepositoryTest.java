@@ -64,7 +64,7 @@ public class CompetitionRepositoryTest {
     @BeforeEach
     public void beforeEach() {
         competitionRepository.deleteAll();
-        now = LocalDateTime.from(Instant.now());
+        now = LocalDateTime.now();
 
         createWithSport(SOCCER);
         createWithSport(HOCKEY);

@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -117,6 +119,10 @@ public class CompetitionService {
         return competitionRepository.findPastCompetitionsBySports(pageable, filteredSports, now);
     }
 
+    private Date convertToDate(LocalDateTime time) {
+        return Date.from(time.toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
     /**
      * Finds current competitions by sport.
      * @param pageable The pageable detailing information about the query
@@ -130,6 +136,7 @@ public class CompetitionService {
         } else {
             filteredSports = filteredSports.stream().map(String::toLowerCase).toList();
         }
+        Date dateNow = convertToDate(now);
         return competitionRepository.findCurrentCompetitionsBySports(pageable, filteredSports, now);
     }
 

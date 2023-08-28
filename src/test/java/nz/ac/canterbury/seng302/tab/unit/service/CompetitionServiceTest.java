@@ -134,7 +134,7 @@ class CompetitionServiceTest {
     }
 
     private void generatePastFutureCurrent() {
-        LocalDateTime now = LocalDateTime.from(Instant.now());
+        LocalDateTime now = LocalDateTime.now();
         generateCompetitionsByTime(now);
 
         var past = now.minusSeconds(50000);

@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +42,7 @@ public interface CompetitionRepository extends CrudRepository<Competition, Long>
               """)
     Page<Competition> findCurrentCompetitionsBySports(Pageable pageable,
                                                       @Param("filteredSports") List<String> filteredSports,
-                                                      @Param("now") LocalDateTime now);
+                                                      @Param("now") Date now);
 
 
     @Query("""
