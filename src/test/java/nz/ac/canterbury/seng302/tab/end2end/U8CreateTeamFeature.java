@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.end2end;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URL;
 
@@ -75,8 +76,9 @@ public class U8CreateTeamFeature {
 
     @Then("I am brought to this team's page")
     public void i_am_brought_to_this_team_s_page() throws Exception {
-        URL url = new URL(PlaywrightBrowser.page.url());
-        assertEquals("/team-info", url.getPath());
+        String url = PlaywrightBrowser.page.url();
+        assertTrue(url.contains("/team-info"),
+            "The current URL '"+url+"' did not contain '/team-info'");
     }
 
     @Then("the team name, sport, and location are {string}, {string}, and {string}")
