@@ -41,7 +41,7 @@ public class PlaywrightBrowser {
         baseUrl = Objects.equals(System.getenv("USER"), "gitlab-runner") ? "localhost:9500/test" : "localhost:8080";
     }
 
-    @Before
+    @Before(order=1)        // Fix suggested by Matthew: Ensure this is ALWAYS run first
     public void openContext() {
         browserContext = browser.newContext();
         page = browserContext.newPage();
