@@ -294,7 +294,11 @@ public class CreateActivityController {
 
         if (playerAndPositions != null && !playerAndPositions.isEmpty()) {
             List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
-            saveLineUp(positionsAndPlayers, bindingResult);
+
+            if (createActivityForm.getFormation() != -1) {
+                saveLineUp(positionsAndPlayers, bindingResult);
+
+            }
             if (bindingResult.hasErrors() && actId != -1) { //only throw error if we are on edit act page
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 if (activity != null) {
@@ -388,6 +392,9 @@ public class CreateActivityController {
         }
 
         if (error) {
+
+
+
             bindingResult.addError(new FieldError("createActivityForm", "lineup", "The line-up is not complete"));
 
         }
