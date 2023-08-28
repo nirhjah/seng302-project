@@ -200,6 +200,7 @@ public class CreateActivityController {
         }
 
         fillModelWithActivity(model, activity);
+        createActivityForm.prepopulate(activity);
         return TEMPLATE_NAME;
     }
 
@@ -241,6 +242,7 @@ public class CreateActivityController {
                 model.addAttribute("actId", actId);
                 fillModelWithActivity(model, activity);
             }
+
             return TEMPLATE_NAME;
         }
 
@@ -333,6 +335,7 @@ public class CreateActivityController {
         }
 
         List<FormationInfo> formations = createFormationsJSON(team);
+
 
         return ResponseEntity.ok().body(formations);
     }
