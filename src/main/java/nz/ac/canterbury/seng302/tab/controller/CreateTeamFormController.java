@@ -42,7 +42,7 @@ public class CreateTeamFormController {
     private static final String REDIRECT_HOME = "redirect:/home";
     private static final String IS_EDITING_KEY = "isEditing";
 
-    private static final String httpServletRequestString = "httpServletRequest";
+    private static final String HTTP_SERVLET_REQUEST_STRING = "httpServletRequest";
 
     private TeamService teamService;
     private SportService sportService;
@@ -102,7 +102,7 @@ public class CreateTeamFormController {
 
         logger.info("GET /createTeam - new team");
 
-        model.addAttribute(httpServletRequestString, request);
+        model.addAttribute(HTTP_SERVLET_REQUEST_STRING, request);
 
         model.addAttribute(IS_EDITING_KEY, false);
 
@@ -131,7 +131,7 @@ public class CreateTeamFormController {
 
         logger.info("GET /createTeam - updated team with ID={}", teamID);
 
-        model.addAttribute(httpServletRequestString, request);
+        model.addAttribute(HTTP_SERVLET_REQUEST_STRING, request);
 
         model.addAttribute(IS_EDITING_KEY, true);
         
@@ -156,7 +156,7 @@ public class CreateTeamFormController {
 
         List<String> knownSports = sportService.getAllSportNames();
         model.addAttribute("knownSports", knownSports);
-        model.addAttribute(httpServletRequestString, request);
+        model.addAttribute(HTTP_SERVLET_REQUEST_STRING, request);
 
         URL url = new URL(request.getRequestURL().toString());
         String path = (url.getPath() + "/..");
@@ -197,7 +197,7 @@ public class CreateTeamFormController {
         if (bindingResult.hasErrors()) {
             logger.error("{}", bindingResult);
 
-            model.addAttribute(httpServletRequestString, httpServletRequest);
+            model.addAttribute(HTTP_SERVLET_REQUEST_STRING, httpServletRequest);
 
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("teamID", teamID);
