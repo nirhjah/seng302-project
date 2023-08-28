@@ -12,4 +12,6 @@ public interface LineUpRepository extends CrudRepository<LineUp, Long> {
 
     Optional<List<LineUp>> findLineUpByTeamTeamId(Long teamId);
 
+    Optional<List<LineUp>> findLineUpByActivityId(Long activityId);
+
 }

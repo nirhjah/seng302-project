@@ -5,18 +5,24 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.form.CreateEventForm;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import nz.ac.canterbury.seng302.tab.service.FactService;
+import nz.ac.canterbury.seng302.tab.service.LineUpPositionService;
+import nz.ac.canterbury.seng302.tab.service.LineUpService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +65,11 @@ public class ViewActivityController {
     @Autowired
     private FactService factService;
 
+    @Autowired
+    private LineUpService lineUpService;
+
+    @Autowired
+    private LineUpPositionService lineUpPositionService;
 
     String createEventFormBindingResult = "createEventFormBindingResult";
 
@@ -183,6 +194,11 @@ public class ViewActivityController {
         List<Fact> factList = factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity);
 
         model.addAttribute("factList", factList);
+
+        // attributes for the subs
+
+        List<User> playersInLineUp = getAllPlayersPlaying(activity.getId());
+        model.addAttribute("playersInLineUp", playersInLineUp);
 
         // Rambling that's required for navBar.html
         model.addAttribute(httpServletRequestString, request);
@@ -376,11 +392,42 @@ public class ViewActivityController {
         logger.info(String.format("got the player on id: %s", subOnId));
         logger.info(String.format("got the player off id: %s", subOffId));
         logger.info(String.format("got the time %s", time));
+        logger.info(String.format("activity %s", actId));
         String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
+        
+        List<User> playersInLineUp = getAllPlayersPlaying(actId);
+        if (playersInLineUp.isEmpty()) {
+            logger.error("There are no players in the lineup but a sub was made ");
+        }
 
 
 
         return viewActivityRedirectUrl;
+    }
+
+    /**
+     * returns a list of the users that are currently in the lineup 
+     * @param actId the activity id 
+     * @return a list of the users that are currently in the lineup for the activity, if there are no players the returns an empty list 
+    */
+    private List<User> getAllPlayersPlaying(long actId) {
+        List<LineUp> activityLineups = lineUpService.findLineUpByActivity(actId).get();
+        for (LineUp lineup : activityLineups) {
+            logger.info(String.format("the id of the activity is %d", lineup.getTeam().getId()));
+        }
+        // TODO we are grabbing the first one now but i dont know if there can possibly be multiple objects in this list
+        LineUp lineup = activityLineups.get(0);
+        Optional<List<LineUpPosition>> optionaLineupPositions = lineUpPositionService.findLineUpPositionsByLineUp(lineup.getLineUpId());
+        if (optionaLineupPositions.isEmpty()) {
+            // there are no players to be subbed off so return an empty list and expect the caller to handle this 
+            return List.of();
+        }
+        List<User> playersInLineUp = optionaLineupPositions.get().stream().map(x -> x.getPlayer()).collect(Collectors.toList());
+        for (User player : playersInLineUp) {
+            logger.info(String.format("the player name is %s", player.getFirstName()));
+        }
+
+        return playersInLineUp;
     }
 
     // TODO probably remove below code since its unused

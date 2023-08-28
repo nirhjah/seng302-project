@@ -121,7 +121,7 @@
                                  <label class="goal-form-labels" for="playerOff" style="display: block">Player Off <span class="required">*</span> </label>
                                  <div class="select-box">
                                      <select id="playerOff" name="playerOff">
-                                         <option th:each="player : ${playersInTeam}"
+                                         <option th:each="player : ${playersInLineUp}"
                                                  th:value="${player.userId}"
                                                  th:text="${player.firstName + ' ' + player.lastName}"></option>
                                      </select>
