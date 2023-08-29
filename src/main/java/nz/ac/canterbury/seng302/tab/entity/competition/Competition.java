@@ -45,7 +45,7 @@ public abstract class Competition {
 
     // Timezone of where the app is running.
     // This should be set to 0, since in our application, we have no timezones.
-    private static ZoneOffset DEFAULT_ZONE = ZoneOffset.ofHours(0);
+    private static final ZoneOffset DEFAULT_ZONE = ZoneOffset.ofHours(0);
 
     protected Competition() {}
     

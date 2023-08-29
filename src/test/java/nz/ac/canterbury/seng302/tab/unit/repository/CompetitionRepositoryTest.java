@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @DataJpaTest
-public class CompetitionRepositoryTest {
+class CompetitionRepositoryTest {
 
     @Autowired
     private CompetitionRepository competitionRepository;

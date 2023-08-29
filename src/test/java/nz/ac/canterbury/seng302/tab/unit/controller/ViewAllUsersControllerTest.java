@@ -77,7 +77,7 @@ public class ViewAllUsersControllerTest {
 
     @WithMockUser(username = "johndoe@example.com", password = "Password123!", roles = "USER")
     @Test
-    public void testViewPageOfUsersWithParams() throws Exception {
+    void testViewPageOfUsersWithParams() throws Exception {
         mockMvc.perform(get("/view-users")
                         .param("page", "2")
                         .param("currentSearch", "John")
