@@ -13,10 +13,7 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
-import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
-import nz.ac.canterbury.seng302.tab.repository.FactRepository;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
-import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import nz.ac.canterbury.seng302.tab.repository.*;
 import nz.ac.canterbury.seng302.tab.service.*;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
@@ -75,6 +72,8 @@ public class ViewActivityStatisticIntegrationTests {
 
     private Date date;
 
+    private LineUpPositionRepository lineUpPositionRepository;
+    private LineUpRepository lineUpRepository;
 
 
     @Before("@ViewActivityStatistics")
@@ -83,6 +82,9 @@ public class ViewActivityStatisticIntegrationTests {
         teamRepository = applicationContext.getBean(TeamRepository.class);
         activityRepository = applicationContext.getBean(ActivityRepository.class);
         factRespository = applicationContext.getBean(FactRepository.class);
+
+        lineUpPositionRepository = applicationContext.getBean(LineUpPositionRepository.class);
+        lineUpRepository = applicationContext.getBean(LineUpRepository.class);
         userRepository.deleteAll();
         teamRepository.deleteAll();
         activityRepository.deleteAll();
@@ -93,7 +95,7 @@ public class ViewActivityStatisticIntegrationTests {
 
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
-        activityService = Mockito.spy(new ActivityService(activityRepository));
+        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository));
         factService= Mockito.spy(new FactService(factRespository));
         this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ViewActivityController(userService,activityService,teamService,factService)).build();
 

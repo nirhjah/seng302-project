@@ -9,6 +9,8 @@ import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
+import nz.ac.canterbury.seng302.tab.repository.LineUpPositionRepository;
+import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,11 +35,17 @@ public class ActivityService {
     /*@Autowired
     LineUpPositionService lineUpPositionService;
 */
+
+    private final LineUpRepository lineUpRepository;
+
+    private final LineUpPositionRepository lineUpPositionRepository;
     private final ActivityRepository activityRepository;
 
     @Autowired
-    public ActivityService(ActivityRepository activityRepository) {
+    public ActivityService(ActivityRepository activityRepository, LineUpRepository lineUpRepository, LineUpPositionRepository lineUpPositionRepository) {
         this.activityRepository = activityRepository;
+        this.lineUpRepository = lineUpRepository;
+        this.lineUpPositionRepository = lineUpPositionRepository;
     }
 
     public static final String activityScoreHyphenRegex = "^(\\p{N}+-(\\p{N}+))+$";
@@ -259,28 +267,17 @@ public class ActivityService {
     }
 
 
-/*    public List<User> playersInLineUp(Activity activity) {
-        List<LineUp> activityLineups = lineUpService.findLineUpByActivity(activity.getId()).get();
+    public List<User> playersInLineUp(Activity activity) {
+        List<LineUp> activityLineups = lineUpRepository.findLineUpByActivityId(activity.getId()).get();
+
         LineUp lineup = activityLineups.get(0);
-        Optional<List<LineUpPosition>> optionaLineupPositions = lineUpPositionService.findLineUpPositionsByLineUp(lineup.getLineUpId());
+        Optional<List<LineUpPosition>> optionaLineupPositions = lineUpPositionRepository.findLineUpPositionsByLineUpLineUpId(lineup.getLineUpId());
         if (optionaLineupPositions.isEmpty()) {
             return List.of();
         }
         List<User> playersInLineUp = optionaLineupPositions.get().stream().map(x -> x.getPlayer()).collect(Collectors.toList());
 
         return playersInLineUp;
-    }*/
-
-    public List<Substitution> substitutionsForActivity(Activity act) {
-        List<Substitution> activitySubstitutions = new ArrayList<>();
-
-        for (Object fact : act.getFactList()) {
-            if(fact instanceof Substitution) {
-                activitySubstitutions.add((Substitution) fact);
-
-            }
-        }
-        return activitySubstitutions;
     }
 
     /**
@@ -308,25 +305,38 @@ public class ActivityService {
         games.addAll(friendlies);
         long totalTime = 0;
         for (Activity act : games) {
-
-            //need to put this into an if loop to check if user is in the starting lineup -> then first check for player off
-            //otherwise check for player on (currently only checking player on)
-
-            //if (playersInLineUp(act).contains(user)) {
-
-
-            for (int i = 0; i < subFactsUserIsIn(act, user).size() - 1; i += 2) {
-
-                Substitution sub1 = subFactsUserIsIn(act, user).get(i);
-                Substitution sub2 = subFactsUserIsIn(act, user).get(i + 1);
-                System.out.println("user on   " + "at: "  + sub1.getTimeOfEvent() + sub1.getPlayerOn().getFirstName()  + " other player on (user off): " + "at: "  + sub2.getTimeOfEvent() + sub2.getPlayerOn().getFirstName());
-
-                int timeBetweenPlayerOnAndOff = Integer.parseInt(sub2.getTimeOfEvent()) - Integer.parseInt(sub1.getTimeOfEvent());
-                totalTime += timeBetweenPlayerOnAndOff;
+            int listSize = subFactsUserIsIn(act, user).size();
+            if (playersInLineUp(act).contains(user)) {
+                //user in lineup
+                totalTime += Integer.parseInt( subFactsUserIsIn(act, user).get(0).getTimeOfEvent());
+                //added time here because user was already player on
+                for (int i = 1; i < subFactsUserIsIn(act, user).size() - 1; i += 2) {
+                    Substitution sub1 = subFactsUserIsIn(act, user).get(i);
+                    Substitution sub2 = subFactsUserIsIn(act, user).get(i + 1);
+                    System.out.println("user off   " + "at: " + sub1.getTimeOfEvent() + sub1.getPlayerOff().getFirstName() + " other player ff (user on): " + "at: " + sub2.getTimeOfEvent() + sub2.getPlayerOff().getFirstName());
+                    int timeBetweenPlayerOnAndOff = Integer.parseInt(sub2.getTimeOfEvent()) - Integer.parseInt(sub1.getTimeOfEvent());
+                    totalTime += timeBetweenPlayerOnAndOff;
+                        System.out.println("TIME after next increment " + totalTime);
+                }
+        } else {
+                //not in lineup starting so check for player on
+                for (int i = 0; i < subFactsUserIsIn(act, user).size() - 1; i += 2) {
+                    Substitution sub1 = subFactsUserIsIn(act, user).get(i);
+                    Substitution sub2 = subFactsUserIsIn(act, user).get(i + 1);
+                    System.out.println("user on   " + "at: " + sub1.getTimeOfEvent() + sub1.getPlayerOn().getFirstName() + " other player on (user off): " + "at: " + sub2.getTimeOfEvent() + sub2.getPlayerOn().getFirstName());
+                    int timeBetweenPlayerOnAndOff = Integer.parseInt(sub2.getTimeOfEvent()) - Integer.parseInt(sub1.getTimeOfEvent());
+                    totalTime += timeBetweenPlayerOnAndOff;
+                }
             }
 
-        }
+            Substitution lastSubFact = subFactsUserIsIn(act, user).get(listSize-1);
+            if (lastSubFact.getPlayerOn() == user) {
+                System.out.println("Last sub fact is player on so calculating time from subbed on to end of game.");
+                totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes() - Integer.parseInt(subFactsUserIsIn(act, user).get(listSize - 1).getTimeOfEvent());
+            }
+            System.out.println("act total time:" + totalTime);
 
+        }
         System.out.println("Total time overall for user " + totalTime);
         return totalTime;
 

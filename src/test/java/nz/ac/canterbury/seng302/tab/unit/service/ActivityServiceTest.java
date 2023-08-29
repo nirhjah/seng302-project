@@ -1,17 +1,16 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
+import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.enums.*;
-import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
-import nz.ac.canterbury.seng302.tab.repository.FactRepository;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.repository.*;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
+import nz.ac.canterbury.seng302.tab.service.LineUpPositionService;
+import nz.ac.canterbury.seng302.tab.service.LineUpService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,16 @@ public class ActivityServiceTest {
     ActivityRepository activityRepository;
 
     @Autowired
+    LineUpRepository lineUpRepository;
+
+    @Autowired
+    LineUpPositionRepository lineUpPositionRepository;
+
+    @Autowired
     TeamRepository teamRepository;
+
+    @Autowired
+    FormationRepository formationRepository;
 
     @Autowired
     FactRepository factRepository;
@@ -386,6 +394,7 @@ public class ActivityServiceTest {
 
         player.joinTeam(team);
         player2.joinTeam(team);
+
         Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
                 LocalDateTime.of(2023, 1,1,6,30),
                 LocalDateTime.of(2023, 1,1,8,30),
@@ -394,22 +403,24 @@ public class ActivityServiceTest {
 
         List<Fact> factList1 = new ArrayList<>(); //player2 time 60
         Substitution sub = new Substitution("Player was taken off, player2 on", "10", activity, player, player2);
-        Substitution sub2 = new Substitution("second fact: Player2 was taken off, player on", "30", activity, player2, player);
+        Substitution sub2 = new Substitution("second fact: Player2 was taken off, player on", "30", activity, player2, player); // +20
         Substitution sub3 = new Substitution("third fact: Player was taken off, player2 on", "40", activity, player, player2);
-        Substitution sub4 = new Substitution("fourth fact: Player2 was taken off, player on", "80", activity, player2, player);
+        Substitution sub4 = new Substitution("fourth fact: Player2 was taken off, player on", "80", activity, player2, player); // +40
+
+        Substitution sub5 = new Substitution("fourth fact: Player was taken off, player2 on", "100", activity, player, player2); // +20 ?
 
         factRepository.save(sub);
         factRepository.save(sub2);
         factRepository.save(sub3);
         factRepository.save(sub4);
+        factRepository.save(sub5);
 
         factList1.add(sub);
         factList1.add(sub2);
         factList1.add(sub3);
         factList1.add(sub4);
+        factList1.add(sub5);
 
-        activity.addFactList(factList1);
-        activityRepository.save(activity);
 
         Activity activity2 = new Activity(ActivityType.Friendly, team, "FRIENDLY with Team",
                 LocalDateTime.of(2024, 1,1,6,30),
@@ -417,27 +428,45 @@ public class ActivityServiceTest {
                 creator,  new Location(null, null, null,
                 "dunedin", null, "New Zealand"));
 
-        List<Fact> factList2 = new ArrayList<>(); //player2 time 30
-        Substitution subf = new Substitution("Player was taken off, player2 on", "10", activity, player, player2);
-        Substitution subf2 = new Substitution("second fact: Player2 was taken off, player on", "30", activity, player2, player);
-        Substitution subf3 = new Substitution("third fact: Player was taken off, player2 on", "40", activity, player, player2);
-        Substitution subf4 = new Substitution("fourth fact: Player2 was taken off, player on", "50", activity, player2, player);
+        List<Fact> factList2 = new ArrayList<>();
+        Substitution subf = new Substitution("Player2 was taken off 10 mins in, player on", "10", activity, player2, player); // +10 = 70
+        Substitution subf2 = new Substitution("second fact: Player was taken off, player2 on 30 mins in", "30", activity, player, player2);
+        Substitution subf3 = new Substitution("third fact: Player2 was taken off after 40 mins, player on", "40", activity, player2, player); // +10 = 80
+        Substitution subf4 = new Substitution("fourth fact: Player was taken off 50 mins in, player2 on", "50", activity, player, player2); // + 70 (120-50) = 150
 
         factRepository.save(subf);
         factRepository.save(subf2);
         factRepository.save(subf3);
-        factRepository.save(subf4);
+           factRepository.save(subf4);
 
         factList2.add(subf);
         factList2.add(subf2);
         factList2.add(subf3);
         factList2.add(subf4);
-
         activity2.addFactList(factList2);
+
+        Formation formation = new Formation("1", team);
+        formationRepository.save(formation);
+        activity.setFormation(formation);
+        activity2.setFormation(formation);
+        activity.addFactList(factList1);
+        activityRepository.save(activity);
         activityRepository.save(activity2);
 
 
-        Assertions.assertEquals(90, activityService.getOverallPlayTimeForUserBasedOnSubs(player2, team));
+        LineUp activityLineUp = new LineUp(activity.getFormation().get(), team, activity);
+        LineUp activity2LineUp = new LineUp(activity2.getFormation().get(), team, activity2);
+
+        lineUpRepository.save(activityLineUp);
+        lineUpRepository.save(activity2LineUp);
+
+        LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, player, 1);
+        LineUpPosition lineUpPosition2 = new LineUpPosition(activity2LineUp, player2, 1);
+
+        lineUpPositionRepository.save(lineUpPosition);
+        lineUpPositionRepository.save(lineUpPosition2);
+
+        Assertions.assertEquals(170, activityService.getOverallPlayTimeForUserBasedOnSubs(player2, team));
     }
 
 }

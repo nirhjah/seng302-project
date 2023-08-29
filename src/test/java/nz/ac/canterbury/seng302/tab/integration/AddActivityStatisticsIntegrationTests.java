@@ -84,6 +84,8 @@ public class AddActivityStatisticsIntegrationTests {
 
     LocalDateTime startTime;
 
+    private LineUpPositionRepository lineUpPositionRepository;
+    private LineUpRepository lineUpRepository;
 
 
     @Before("@add_activity_stats")
@@ -93,13 +95,15 @@ public class AddActivityStatisticsIntegrationTests {
         userRepository = applicationContext.getBean(UserRepository.class);
         activityRepository = applicationContext.getBean(ActivityRepository.class);
         factRespository = applicationContext.getBean(FactRepository.class);
+        lineUpPositionRepository = applicationContext.getBean(LineUpPositionRepository.class);
+        lineUpRepository = applicationContext.getBean(LineUpRepository.class);
 
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
 
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
-        activityService = Mockito.spy(new ActivityService(activityRepository));
+        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository));
         factService= Mockito.spy(new FactService(factRespository));
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivityController(userService,activityService,teamService,factService)).build();
