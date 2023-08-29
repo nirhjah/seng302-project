@@ -40,7 +40,7 @@
             <div class="content">
                 <div class="profile-top-content">
                     <div class="profile-pic">
-                        <form id="upload-picture" method="post" th:action="@{profile}" enctype="multipart/form-data">
+                        <form id="upload-picture" method="post" th:action="@{team-info}" enctype="multipart/form-data">
                             <div class="image-styling">
                                 <img th:src="@{/team-profile-picture/{id}(id = ${teamID})}" width="200" height="200">
                                 </br>
@@ -77,32 +77,49 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="user-label">
-                                <img th:src="@{/image/icons/name.svg}"/>
-                                <div>
-                                    <h3 class="attribute-type">Name</h3>
-                                    <h3 data-cy="name" th:text="*{displayName}"></h3>
+                            <div class="float-container">
+                                
+                                    
+                                <div class="float-child">
+                                    <div class="user-label">
+                                        <img th:src="@{/image/icons/name.svg}"/>
+                                        <div>
+                                            <h3 class="attribute-type">Name</h3>
+                                            <h3 data-cy="name" th:text="*{displayName}"></h3>
+                                        </div>
+                                    </div>
+                                    <div class="user-label">
+                                        <img th:src="@{/image/icons/sports-alt.svg}"/>
+                                        <div>
+                                            <h3 class="attribute-type">Sport</h3>
+                                            <h3 data-cy="sport" th:text="*{displaySport}"></h3>
+                                        </div>
+                                    </div>
+                                    <div class="user-label">
+                                        <img th:src="@{/image/icons/location.svg}"/>
+                                        <div>
+                                            <h3 class="attribute-type">Location</h3>
+                                            <h3 data-cy="location" th:text="*{displayLocation}"></h3>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="user-label">
-                                <img th:src="@{/image/icons/sports-alt.svg}"/>
-                                <div>
-                                    <h3 class="attribute-type">Sport</h3>
-                                    <h3 data-cy="sport" th:text="*{displaySport}"></h3>
-                                </div>
-                            </div>
-                            <div class="user-label">
-                                <img th:src="@{/image/icons/location.svg}"/>
-                                <div>
-                                    <h3 class="attribute-type">Location</h3>
-                                    <h3 data-cy="location" th:text="*{displayLocation}"></h3>
+                                <div class="float-child" th:if="${clubId}">
+                                    <a th:href="@{/view-club?clubID={id}(id=${clubId})}" class="club-link">
+                                        <div class="user-label">
+                                                <img th:src="@{/club-logo/{id}(id = ${clubId})}"/>
+                                            <div>
+                                                <h3 class="attribute-type">Club</h3>
+                                                <h3 data-cy="club" th:text="*{clubName}"></h3>
+                                            </div>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="profile-bottom-content">
-                    <form th:action="@{profile}" class="profile-buttons" method="post">
+                    <form th:action="@{team-info}" class="profile-buttons" method="post">
                         <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
                         <div class="grouped-buttons">
                             <div class="edit-button">
@@ -168,7 +185,7 @@
         </div>
         <div class="content-box" id="statistics-tab" style="margin-bottom: 300px">
             <div class="content">
-                <form th:action="@{profile}" class="profile-buttons" method="post">
+                <form th:action="@{team-info}" class="profile-buttons" method="post">
                     <a class="edit-button" th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
                         <button type="button">View Team Activities</button>
                     </a>
