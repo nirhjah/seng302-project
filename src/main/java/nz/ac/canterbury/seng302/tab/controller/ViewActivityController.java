@@ -197,8 +197,12 @@ public class ViewActivityController {
 
         // attributes for the subs
 
+        // all players who are currently playing - for the sub off
         List<User> playersInLineUp = getAllPlayersPlaying(activity.getId());
         model.addAttribute("playersInLineUp", playersInLineUp);
+        // all players who arent playing - for the sub on
+        List<User> playersNotInLineUp = getAllPlayersNotPlaying(activity.getId());
+        model.addAttribute("playersNotInLineUp", playersNotInLineUp);
 
         // Rambling that's required for navBar.html
         model.addAttribute(httpServletRequestString, request);
@@ -428,6 +432,20 @@ public class ViewActivityController {
         }
 
         return playersInLineUp;
+    }
+
+    /**
+     * TODO: this just has all the players who arent playing as available subs but right now there isnt any functionality for otherwise in the backend
+     * @param actId the activity id 
+     * @return a list of users who arent playing in the current activity (on the bench)
+    */
+    private List<User> getAllPlayersNotPlaying(long actId) {
+        List<User> playersPlaying = getAllPlayersPlaying(actId);
+        List<User> playersInTeam = new ArrayList<>(activityService.findActivityById(actId).getTeam().getTeamMembers());
+
+        List<User> playersNotPlaying = playersInTeam.stream().filter(player -> !playersPlaying.contains(player)).collect(Collectors.toList());
+        
+        return playersNotPlaying;
     }
 
     // TODO probably remove below code since its unused
