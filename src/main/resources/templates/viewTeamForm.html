@@ -161,7 +161,7 @@
                         </li>
 
                     </ul>
-                    <button class="toggle-formation-button"><</button>
+                    <button class="toggle-formation-button">&lt;</button>
                 </div>
                 <form class="formation-display" method="post" th:action="@{/team-info/create-formation}" onsubmit="return submissionCheck(document.getElementById('formation-string').value)">
                     <div class="formation-LHS">
@@ -286,6 +286,9 @@
     </footer>
 
     <script>
+
+        /** A valid formation contains between [0, 8] dash separated single digit numbers*/
+        const VALID_FORMATION_REGEX = /[1-9](\-[1-9]){0,7}/;
         const input = document.getElementById('file');
 
         input.addEventListener('change', () => {
@@ -410,26 +413,9 @@
             }
             return valid
         }
-
+        
         function validateFormation(formation) {
-            if (formation.length === 0) {
-                return false
-            }
-            let isNumber = false;
-            let isDash = true;
-            for (let i = 0; i < formation.length; i++) {
-                let current = formation[i];
-                if (isDash && ['1','2','3','4','5','6','7','8','9'].includes(current)) {
-                    isNumber = true;
-                    isDash = false;
-                } else if (isNumber && current === '-' && i !== formation.length-1) {
-                    isNumber = false;
-                    isDash = true;
-                } else {
-                    return false;
-                }
-            }
-            return true;
+            return VALID_FORMATION_REGEX.test(formation);
         }
 
         const toggleFormationButton = document.querySelector(".toggle-formation-button");
