@@ -299,13 +299,43 @@ public class ActivityService {
         return activitySubstitutions;
     }
 
-    public long getOverallPlayTimeForUserBasedOnSubs(User user, Team team) {
+    public Map<User, Long> top5UsersByOverallPlayTimeInTeam(Team team) {
+        Map<User, Long> topUsersWithPlayTime = new HashMap<>();
+        for (User teamMember : team.getTeamMembers()) {
+            long teamMembersPlayTime = getOverallPlayTimeForUserBasedOnSubs(teamMember, team);
+            topUsersWithPlayTime.put(teamMember, teamMembersPlayTime);
+
+        }
+
+        Map<User, Long> sortedTop5 = topUsersWithPlayTime.entrySet()
+                .stream()
+                .sorted(Map.Entry.<User, Long>comparingByValue(Comparator.reverseOrder()))
+                .limit(5)
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (score1, score2) -> score1,
+                        LinkedHashMap::new
+                ));
+
+        return sortedTop5;
+
+    }
+    
+
+        public long getOverallPlayTimeForUserBasedOnSubs(User user, Team team) {
         List<Activity> games = findActivitiesByTeamAndActivityType(team, ActivityType.Game);
         List<Activity> friendlies = findActivitiesByTeamAndActivityType(team, ActivityType.Friendly);
         games.addAll(friendlies);
         long totalTime = 0;
         for (Activity act : games) {
             int listSize = subFactsUserIsIn(act, user).size();
+
+            if (listSize == 0) {
+                System.out.println("player dont have any sub facts about them " + user.getFirstName());
+                break;
+            }
+
             if (playersInLineUp(act).contains(user)) {
                 //user in lineup
                 totalTime += Integer.parseInt( subFactsUserIsIn(act, user).get(0).getTimeOfEvent());

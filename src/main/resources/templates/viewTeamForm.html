@@ -232,6 +232,8 @@
 
                         <h3>Substitutions:</h3>
                         <h4>n/a</h4>
+                        <h4 th:each="player : ${overallPlayersPlaytime}" th:text="|${player.key.firstName} ${player.value.toString()}|"></h4>
+
                     </div>
                 </div>
             </div>
