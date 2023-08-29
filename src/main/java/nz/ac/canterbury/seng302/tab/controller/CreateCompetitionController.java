@@ -174,10 +174,10 @@ public class CreateCompetitionController {
         boolean isTeamCompetition = usersOrTeams.equals("teams");
 
         if (bindingResult.hasErrors()) {
-            System.out.println("ERRORS HERE:");
-            System.out.println(bindingResult.getAllErrors());
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             if (IDs != null) {
+                // We still add IDs, even though there was an error,
+                // because we don't want the client to lose their work.
                 addIdsToModel(model, IDs, isTeamCompetition);
             }
             return "createCompetitionForm";
@@ -318,6 +318,4 @@ public class CreateCompetitionController {
                 )).toList()
         );
     }
-
-
 }
