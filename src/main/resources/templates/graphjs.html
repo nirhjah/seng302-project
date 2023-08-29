@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+
+
+
+<div class="hi" style="width: 50%; align-self: center">
+  <canvas id="myChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const ctx = document.getElementById('myChart');
+
+  new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ["Real Madrid", "Liverpool", "Chelsea", "Wolves", "Tottenham"],
+            datasets: [{
+            label: 'Goal difference',
+            data: [-5, 5, 2, 3, -2],
+            backgroundColor: function(context) {
+                const index = context.dataIndex
+                const value = context.dataset.data[index]
+                return value < 0 ? 'red' : 'green'
+            },
+                borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {beginAtZero: true}
+      }
+    },
+      plugins: [{
+          beforeDraw: function(c) {
+              // var data = c.data.datasets[0].data;
+              // for (let i in data) {
+              //     let bar = c.data.datasets[0]._meta['0'].data[i]._model;
+              //     if (data[i] > 0) {
+              //         bar.backgroundColor = '#66ff66';
+              //     } else {
+              //         bar.backgroundColor = '#ff3333';
+              //     }
+              // }
+          }
+      }]
+
+  });
+</script>
+
+
+</html>
