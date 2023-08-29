@@ -3,13 +3,9 @@ package nz.ac.canterbury.seng302.tab.entity.competition;
 import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
-import org.springframework.cglib.core.Local;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.Date;
 import java.util.Objects;
 
 /**

@@ -48,7 +48,7 @@ public class ViewAllCompetitionsController {
         if (times == null) {
             times = List.of();
         }
-        if (times.size() == 0 || times.size() == timingValues.size()) {
+        if (times.isEmpty() || times.size() == timingValues.size()) {
             return competitionService.findAllCompetitionsBySports(pageable, sports);
         }
         String selectedTime = times.get(0);

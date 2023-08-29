@@ -73,7 +73,7 @@ public class CompetitionRepositoryTest {
     }
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         competitionRepository.deleteAll();
         nowSeconds = Instant.now().getEpochSecond();
 
@@ -83,27 +83,27 @@ public class CompetitionRepositoryTest {
     }
 
     @Test
-    public void testBasic() {
+    void testBasic() {
         var result = competitionRepository.findCurrentCompetitionsBySports(allRequest, List.of(), nowSeconds).get().toList();
         assertEquals(TOTAL, result.size());
     }
 
     @Test
-    public void testCurrent() {
+    void testCurrent() {
         // tests current competition querying
         var comps = competitionRepository.findCurrentCompetitionsBySports(allRequest, List.of(SOCCER), nowSeconds).toList();
         assertEquals(NUM_CURRENT, comps.size());
     }
 
     @Test
-    public void testPast() {
+    void testPast() {
         // tests past competition querying
         var comps = competitionRepository.findPastCompetitionsBySports(allRequest, List.of(SOCCER), nowSeconds).toList();
         assertEquals(NUM_PAST, comps.size());
     }
 
     @Test
-    public void testPastMultiple() {
+    void testPastMultiple() {
         // tests past competition querying, across multiple sports.
         var sports = List.of(HOCKEY, BASKETBALL);
         var comps = competitionRepository.findPastCompetitionsBySports(allRequest, sports, nowSeconds).toList();
@@ -112,7 +112,7 @@ public class CompetitionRepositoryTest {
     }
 
     @Test
-    public void testCurrentMultiple() {
+    void testCurrentMultiple() {
         // tests current competition querying, across multiple filtered sports.
         var sports = List.of(HOCKEY, BASKETBALL);
         var comps = competitionRepository.findCurrentCompetitionsBySports(allRequest, sports, nowSeconds).toList();
@@ -121,7 +121,7 @@ public class CompetitionRepositoryTest {
     }
 
     @Test
-    public void testFutureMultiple() {
+    void testFutureMultiple() {
         // tests current competition querying, across multiple filtered sports.
         var sports = List.of(HOCKEY, SOCCER);
         var comps = competitionRepository.findCurrentCompetitionsBySports(allRequest, sports, nowSeconds).toList();
@@ -130,14 +130,14 @@ public class CompetitionRepositoryTest {
     }
 
     @Test
-    public void testAll() {
+    void testAll() {
         var comps = competitionRepository.findAll();
         var size = TOTAL * 3; // num sports is 3.
         assertEquals(size, comps.size());
     }
 
     @Test
-    public void testAllPastQuery() {
+    void testAllPastQuery() {
         // tests past competition querying, across multiple sports.
         var sports = List.of(HOCKEY, BASKETBALL, SOCCER);
         var comps = competitionRepository.findPastCompetitionsBySports(allRequest, sports, nowSeconds).toList();
@@ -146,7 +146,7 @@ public class CompetitionRepositoryTest {
     }
 
     @Test
-    public void testAllCurrentQuery() {
+    void testAllCurrentQuery() {
         var sports = List.of(HOCKEY, BASKETBALL, SOCCER);
         var comps = competitionRepository.findCurrentCompetitionsBySports(allRequest, sports, nowSeconds).toList();
         var size = NUM_CURRENT * 3;

@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-public class ViewAllCompetitionsControllerTest {
+class ViewAllCompetitionsControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -38,7 +38,7 @@ public class ViewAllCompetitionsControllerTest {
     private static final String BOTH = PAST + "," + CURRENT;
 
     @BeforeEach
-    public void beforeAll() throws IOException {
+    void beforeAll() throws IOException {
         Location location = new Location("94 mays road", "St Albans", "St Ablans", "Chch", "8054", "nznz");
 
         Set<User> users = Set.of();
@@ -48,13 +48,13 @@ public class ViewAllCompetitionsControllerTest {
     }
 
     @Test
-    public void testViewAllCompetitionsReturns200() throws Exception {
+    void testViewAllCompetitionsReturns200() throws Exception {
         mockMvc.perform(get("/view-all-competitions"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("viewAllCompetitions")).andExpect(model().attributeExists("listOfCompetitions"));
     }
     @Test
-    public void testViewAllCompetitionsWithParamFindAllReturns200() throws Exception {
+    void testViewAllCompetitionsWithParamFindAllReturns200() throws Exception {
         mockMvc.perform(get("/view-all-competitions")
                         .param("page", "2")
                         .param("sports", "Football,Basketball"))
@@ -66,7 +66,7 @@ public class ViewAllCompetitionsControllerTest {
     }
 
     @Test
-    public void testViewAllCompetitionsWithParamFindCurrentReturns200() throws Exception {
+    void testViewAllCompetitionsWithParamFindCurrentReturns200() throws Exception {
         mockMvc.perform(get("/view-all-competitions")
                         .param("page", "2")
                         .param("sports", "Football,Basketball")
@@ -79,7 +79,7 @@ public class ViewAllCompetitionsControllerTest {
     }
 
     @Test
-    public void testViewAllCompetitionsWithParamFindPastReturns200() throws Exception {
+    void testViewAllCompetitionsWithParamFindPastReturns200() throws Exception {
         mockMvc.perform(get("/view-all-competitions")
                         .param("page", "2")
                         .param("sports", "Football,Baseball")
@@ -92,7 +92,7 @@ public class ViewAllCompetitionsControllerTest {
     }
 
     @Test
-    public void testViewAllCompetitionsWithParamFindPastAndCurrentReturns200() throws Exception {
+    void testViewAllCompetitionsWithParamFindPastAndCurrentReturns200() throws Exception {
         mockMvc.perform(get("/view-all-competitions")
                         .param("page", "2")
                         .param("sports", "Football,Baseball")
