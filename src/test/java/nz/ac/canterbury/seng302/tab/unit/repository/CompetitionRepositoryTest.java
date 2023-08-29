@@ -27,8 +27,6 @@ class CompetitionRepositoryTest {
     @Autowired
     private CompetitionRepository competitionRepository;
 
-    String SPORT = "soccer";
-
     private final int NUM_PAST = 6;
     private final int NUM_FUTURE = 4;
     private final int NUM_CURRENT = 5;
