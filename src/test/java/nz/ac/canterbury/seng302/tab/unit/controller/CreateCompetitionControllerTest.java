@@ -35,7 +35,6 @@ public class CreateCompetitionControllerTest {
     String VIEW = "/create-competition";
 
     String TEAMS_ENUM = "teams";
-    String USERS_ENUM = "users";
 
     static MockHttpServletRequestBuilder addValues(MockHttpServletRequestBuilder builder, String name, String sport) {
         LocalDateTime start = LocalDateTime.now();
@@ -53,6 +52,12 @@ public class CreateCompetitionControllerTest {
                 .param("competitiveness", grade.getCompetitiveness().toString());
     }
 
+    static MockHttpServletRequestBuilder addDates(MockHttpServletRequestBuilder builder) {
+        return builder
+                .param("startDateTime", "2026:20:02")
+                .param("endDateTime", "2026:21:02");
+    }
+
     @BeforeEach
     void beforeEach() {
         competitionRepository.deleteAll();
@@ -68,16 +73,20 @@ public class CreateCompetitionControllerTest {
 
         builder = addValues(builder, name, sport);
         builder = addGrade(builder, grade);
+        builder = addDates(builder);
 
         mockMvc.perform(builder);
 
-        Optional<Competition> optionalCompetition = competitionService.findCompetitionById(1L);
+        Optional<Competition> optionalCompetition = competitionService
+                .findAll()
+                .stream()
+                .findAny();
 
         assertTrue(optionalCompetition.isPresent());
         Competition competition = optionalCompetition.get();
 
-        assertNotNull(competition.getCompetitionEnd());
-        assertNotNull(competition.getCompetitionStart());
+        assertNotNull(competition.getCompetitionEndDate());
+        assertNotNull(competition.getCompetitionStartDate());
 
         assertEquals(competition.getName(), name);
         assertEquals(competition.getSport(), sport);

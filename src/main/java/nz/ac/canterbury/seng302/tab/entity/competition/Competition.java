@@ -47,20 +47,6 @@ public abstract class Competition {
     // This should be set to 0, since in our application, we have no timezones.
     private static final ZoneOffset DEFAULT_ZONE = ZoneOffset.ofHours(0);
 
-    public LocalDateTime getCompetitionStart() {
-        return competitionStart;
-    }
-    public LocalDateTime getCompetitionEnd() {
-        return competitionEnd;
-    }
-
-    public void setCompetitionStart(LocalDateTime competitionStart) {
-        this.competitionStart = competitionStart;
-    }
-    public void setCompetitionEnd(LocalDateTime competitionEnd) {
-        this.competitionEnd = competitionEnd;
-    }
-
     protected Competition() {}
     
     /**

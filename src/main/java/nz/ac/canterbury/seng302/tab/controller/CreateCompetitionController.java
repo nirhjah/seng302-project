@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -76,6 +75,72 @@ public class CreateCompetitionController {
     }
 
     /**
+     * Takes a list of Ids.
+     * If the competition is a TeamCompetition,
+     * Adds teams to a competition.
+     * If the competition is a UserCompetition,
+     * adds users instead.
+     * @param competition The competition to edit
+     * @param IDs A list of ids. These are primary keys.
+     */
+    private void editCompetitionParticipants(Competition competition, List<Long> IDs) {
+        if (competition instanceof TeamCompetition teamCompetition) {
+            Set<Team> teams = IDs.stream()
+                    .map(teamService::getTeam)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+            teamCompetition.setTeams(teams);
+        } else if (competition instanceof UserCompetition userCompetition) {
+            Set<User> users = IDs.stream()
+                    .map(userService::getUser)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+            userCompetition.setPlayers(users);
+        } else {
+            // should never happen
+            throw new RuntimeException("Wot wot??");
+        }
+    }
+
+    /**
+     * Edits an existing competition, according to the form passed in.
+     * @param competition The competition to edit
+     * @param form The form passed in by the user
+     */
+    private void editExistingCompetition(Competition competition, CreateAndEditCompetitionForm form) {
+        competition.setName(form.getName());
+        competition.setSport(form.getSport());
+        competition.setGrade(form.getGrade());
+        competition.setLocation(form.getLocation());
+        competition.setDate(form.getStartDateTime(), form.getEndDateTime());
+    }
+
+    private Set<Team> getTeamsFromIds(List<Long> IDs) {
+        return IDs.stream()
+                .map(teamService::getTeam)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
+
+    private Set<User> getUsersFromIds(List<Long> IDs) {
+        return IDs.stream()
+                .map(userService::getUser)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
+
+    private void addIdsToModel(Model model, List<Long> IDs, boolean isTeamCompetition) {
+        if (isTeamCompetition) {
+            Set<Team> teams = getTeamsFromIds(IDs);
+            model.addAttribute("teams", teams);
+        } else {
+            // else, its a user competition
+            Set<User> users = getUsersFromIds(IDs);
+            model.addAttribute("users", users);
+        }
+    }
+
+    /**
      * Handles the creation or editing of a competition based on the provided form data.
      * This method is invoked when a POST request is made to "/create-competition" endpoint.
      *
@@ -106,76 +171,41 @@ public class CreateCompetitionController {
         }
 
         postCreateActivityErrorChecking(bindingResult, form, IDs);
-
+        boolean isTeamCompetition = usersOrTeams.equals("teams");
 
         if (bindingResult.hasErrors()) {
+            System.out.println("ERRORS HERE:");
             System.out.println(bindingResult.getAllErrors());
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             if (IDs != null) {
-                if (usersOrTeams.equals("teams")) {
-                    Set<Team> teams = IDs.stream()
-                            .map(teamService::getTeam)
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toSet());
-                    model.addAttribute("teams", teams);
-                } else {
-                    Set<User> users = IDs.stream()
-                            .map(userService::getUser)
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toSet());
-                    model.addAttribute("users", users);
-                }
+                addIdsToModel(model, IDs, isTeamCompetition);
             }
             return "createCompetitionForm";
         }
 
         Optional<Competition> optionalCompetition = competitionService.findCompetitionById(competitionID);
         if (optionalCompetition.isPresent()) {
-
             Competition editCompetition = optionalCompetition.get();
-            editCompetition.setName(form.getName());
-            editCompetition.setSport(form.getSport());
-            editCompetition.setGrade(form.getGrade());
-            editCompetition.setLocation(form.getLocation());
-            editCompetition.setCompetitionEnd(form.getEndDateTime());
-            editCompetition.setCompetitionStart(form.getStartDateTime());
-            if (usersOrTeams.equals("teams")) {
-                Set<Team> teams = IDs.stream()
-                        .map(teamService::getTeam)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toSet());
-                ((TeamCompetition) editCompetition).setTeams(teams);
-            } else {
-                Set<User> users = IDs.stream()
-                        .map(userService::getUser)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toSet());
-                ((UserCompetition) editCompetition).setPlayers(users);
-            }
 
-            competitionService.updateOrAddCompetition(editCompetition);
+            editExistingCompetition(editCompetition, form);
+            editCompetitionParticipants(editCompetition, IDs);
+
+            editCompetition = competitionService.updateOrAddCompetition(editCompetition);
             return "redirect:/view-competition?competitionID=" + editCompetition.getCompetitionId();
 
         } else {
             Competition competition;
 
-            if (usersOrTeams.equals("teams")) {
-                Set<Team> teams = IDs.stream()
-                        .map(teamService::getTeam)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toSet());
+            if (isTeamCompetition) {
+                Set<Team> teams = getTeamsFromIds(IDs);
                 competition = new TeamCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), form.getStartDateTime(), form.getEndDateTime(), teams);
             } else {
-                Set<User> users = IDs.stream()
-                        .map(userService::getUser)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toSet());
+                Set<User> users = getUsersFromIds(IDs);
                 competition = new UserCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), form.getStartDateTime(), form.getEndDateTime(), users);
             }
 
-            competitionService.updateOrAddCompetition(competition);
+            competition = competitionService.updateOrAddCompetition(competition);
             return "redirect:/view-competition?competitionID=" + competition.getCompetitionId();
-
         }
     }
 
@@ -220,8 +250,8 @@ public class CreateCompetitionController {
         form.setSex(grade.getSex());
         form.setCompetitiveness(grade.getCompetitiveness());
 
-        form.setStartDateTime(competition.getCompetitionStart());
-        form.setEndDateTime(competition.getCompetitionEnd());
+        form.setStartDateTime(competition.getCompetitionStartDate());
+        form.setEndDateTime(competition.getCompetitionEndDate());
 
         Location location = competition.getLocation();
         if (location != null) {
