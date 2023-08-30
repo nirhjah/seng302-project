@@ -55,6 +55,7 @@
     canvas.freeDrawingBrush.color = '#ff0000';
 
     function handleButtonClick(buttonClass, drawMode, selectMode) {
+      canvas.style.cursor = 'auto'
       const buttons = document.querySelectorAll('.whiteboard-buttons button');
       buttons.forEach(button => button.classList.remove('active'));
       document.querySelector('.' + buttonClass).classList.add('active');
@@ -70,6 +71,7 @@
 
     document.querySelector('.erase-button').addEventListener('click', function() {
       handleButtonClick('erase-button', false, false);
+      canvas.style.cursor = 'url(path-to-your-custom-cursor-image), auto';
     });
 
     document.querySelector('.shape-button').addEventListener('click', function() {
@@ -91,6 +93,7 @@
         handleButtonClick('draw-button', true, false);
       } else if (event.key === 'e') {
         handleButtonClick('erase-button', false, false);
+        canvas.style.cursor = 'url(path-to-your-custom-cursor-image), auto';
       } else if (event.key === 'x') {
         handleButtonClick('shape-button', false, false);
       } else if (event.key === 'Delete' || event.key === 'Backspace') {
