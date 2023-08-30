@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+  <link th:href="@{/css/whiteboard.css}" rel="stylesheet">
+  <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</title>
+</head>
+<body class="view-teams-background">
+  <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+  <div class="whiteboard-form">
+    <div class="whiteboard-wrapper">
+      <div class="whiteboard-buttons">
+        <button class="select-button"></button>
+        <button class="draw-button"></button>
+        <button class="erase-button"></button>
+        <button class="shape-button"></button>
+      </div>
+      <div class="whiteboard-dropdowns"></div>
+      <div class="whiteboard">
+        <canvas id="canvas" width="800" height="1000"></canvas>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Get a reference to the canvas element
+    let canvas = new fabric.Canvas('canvas');
+    canvas.setBackgroundImage('image/icons/pitch.svg');
+    let activeMode = null;
+
+    // Event listeners for mode buttons
+    document.querySelector('.draw-button').addEventListener('click', function() {
+      activeMode = 'freeDraw';
+      canvas.isDrawingMode = true;
+      canvas.selection = false;
+    });
+
+    document.querySelector('.erase-button').addEventListener('click', function() {
+      activeMode = 'erase';
+      canvas.isDrawingMode = false;
+      canvas.selection = false;
+    });
+
+    document.querySelector('.shape-button').addEventListener('click', function() {
+      activeMode = 'drawCircle';
+      canvas.isDrawingMode = false;
+      canvas.selection = false;
+    });
+
+    document.querySelector('.select-button').addEventListener('click', function() {
+      activeMode = 'select';
+      canvas.isDrawingMode = false;
+      canvas.selection = true;
+    });
+
+    // Event listener for canvas interactions
+    canvas.on('mouse:down', function(options) {
+      if (activeMode === 'drawCircle') {
+        let circle = new fabric.Circle({
+          left: options.e.clientX - canvas._offset.left,
+          top: options.e.clientY - canvas._offset.top,
+          radius: 30,
+          fill: 'blue'
+        });
+        canvas.add(circle);
+      } else if (activeMode === 'erase') {
+        let pointer = canvas.getPointer(options.e);
+        let objects = canvas.getObjects();
+        for (let i = 0; i < objects.length; i++) {
+          if (objects[i].containsPoint(pointer)) {
+            canvas.remove(objects[i]);
+          }
+        }
+      }
+    });
+
+    canvas.on('mouse:move', function(options) {
+      if (canvas.isDrawingMode && canvas.freeDrawingBrush.color === 'white') {
+
+      }
+    });
+
+  });
+</script>
+</html>

@@ -1,0 +1,13 @@
+.white-form {
+    justify-content: center;
+    align-items: center;
+    display:flex;
+    flex-direction:column
+}
+
+.whiteboard-wrapper {
+    background-color: white;
+    width: 500px;
+}
+
+
