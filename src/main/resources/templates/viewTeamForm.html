@@ -153,8 +153,8 @@
                         </li>
                         <li th:each="formation : ${formations}"
                             th:data-formation="${formation.formation}"
-                            th:data-custom="${formation.custom}"
                             th:data-pos="${formation.customPlayerPositions}"
+                            th:data-custom="${formation.custom ? 'true' : null}"
                             onclick="renderSavedFormation(this.dataset.formation, this.dataset.custom, this.dataset.pos)"
                             class="formation-li">
                             <span class="title">
@@ -180,7 +180,6 @@
                             </div>
                             <button type="button" id="generate-formation-button" onclick="render(document.getElementById('formation-string').value, null) ">Generate Formation</button>
                         </div>
-                        <div class="error-message">Formation must match specified form e.g. 1-4-4-2</div>
                     </div>
                     <div class="formation-RHS">
                         <div class="formation-outer" th:insert="~{fragments/formationDisplay.html::formationDisplay(${isUserManagerOrCoach})}"></div>
@@ -429,6 +428,7 @@
         }
         
         function validateFormation(formation) {
+            console.log("Little bo beep")
             return VALID_FORMATION_REGEX.test(formation);
         }
 
