@@ -104,7 +104,7 @@
                                         <label class="fact-input" for="time-of-fact">Time (minutes)</label>
                                         </div>
                                         <div style="display: unset" th:each="err : ${#fields.errors('timeOfFact')}" th:text="${err}" class="error-message"></div>
-                                        <div style="margin-bottom: 10%" class="number-spinner">
+                                        <div style="margin-bottom: 10%; padding-top: 5px" class="number-spinner">
                                                 <button class="decreaseTime">-</button>
                                             <input type="number" class="valueInputTime" value="1" min="1" id="time-of-fact" name="timeOfFact" th:field="*{timeOfFact}">
                                             <button class="increaseTime">+</button>

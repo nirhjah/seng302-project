@@ -1073,6 +1073,7 @@ table, th, td {
 
 .fact-desc textarea {
     width: 100%;
+    margin-top: 5px;
     border: #0b2239 2px solid;
     border-radius: 5px
 }
