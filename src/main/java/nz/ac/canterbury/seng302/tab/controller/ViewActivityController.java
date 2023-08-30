@@ -137,6 +137,7 @@ public class ViewActivityController {
         }
 
         Map<Integer, Long> playersAndPosition = new HashMap<Integer, Long>();
+        Map<Integer, String> playerNames = new HashMap<Integer, String>();
 
         LineUp lineUp = lineUpService.findLineUpsByActivity(activityID).get();
         List<LineUpPosition> lineupPosition = (lineUpPositionService.findLineUpPositionsByLineUp(lineUp.getLineUpId())).get();
@@ -145,9 +146,11 @@ public class ViewActivityController {
             int positionId = position.getPosition();
             User player = position.getPlayer();
             playersAndPosition.put(positionId, player.getId());
+            playerNames.put(positionId, player.getFirstName() + " " + player.getLastName());
         }
 
         model.addAttribute("playersAndPositions",playersAndPosition);
+        model.addAttribute("playerNames", playerNames);
 
         List<Fact> activityFacts = factService.getAllFactsForActivity(activity);
         if (!activityFacts.isEmpty()){

@@ -114,7 +114,7 @@
         <div class="content-box" id="formation-tab">
             <div class="content">
                 <div class="formation-outer"
-                     th:insert="~{fragments/formationDisplay.html::formationDisplay(true)}"
+                     th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"
                      th:data-formation="${formation.formation}"
                      th:data-custom="${formation.custom}"
                      th:data-customPlayers="${formation.customPlayerPositions}"></div>
@@ -422,29 +422,48 @@
     // const positions = pitch.childNodes;
 
     document.addEventListener("DOMContentLoaded", function () {
-        const pitch = document.querySelector(".pitch");
-        if (pitch) {
+        // const pitch = document.querySelector(".pitch");
+        // if (pitch) {
             console.log("createactivity")
             setTimeout(function () {
                 loadFormation();
-                console.log("This code will be executed every 2000ms");
-            }, 1000);
-        }
+            }, 1500);
+    //     }
     });
     function loadFormation() {
-        const playersAndPositions = /*[[${playersAndPositions}]]*/ {};
-        console.log(playersAndPositions);
-
         const formationOuter = document.querySelector(".formation-outer");
         var formation = formationOuter.getAttribute("data-formation");
         var custom = formationOuter.getAttribute("data-custom");
         var customPlayers = formationOuter.getAttribute("data-customPlayers");
         generatedOrCustom(formation, JSON.parse(custom), customPlayers);
-        // addPlayers(playersAndPositions);
+        addPlayers();
     }
-    // function addPlayers(playersAndPosition){
-    //
-    // }
+    function addPlayers() {
+        const playersAndPositions = /*[[${playersAndPositions}]]*/ {};
+        const positions = pitch.childNodes;
+
+        for (let i = 0; i < positions.length; i++) {
+            const position = positions[i];
+            const playersCount = playersAndPositions[i + 1] || 0;
+
+            const playerNameElement = position.querySelector('h3');
+
+            const label = document.createElement('span');
+            label.textContent = `(${playersCount} players)`;
+            label.classList.add('position-label');
+
+            playerNameElement.appendChild(label);
+
+
+            const playerImage = position.querySelector('.player-profile-img');
+
+
+            playerImage.src = "/user-profile-picture/" + playersCount;
+            playerImage.alt = "My Profile";
+
+            position.style.backgroundImage = '';
+        }
+    }
 
     // Get a reference to the dropdown select element
     var factTypeSelect = document.getElementById("factType");
