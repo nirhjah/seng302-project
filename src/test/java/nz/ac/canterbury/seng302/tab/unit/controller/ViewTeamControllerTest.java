@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -76,7 +77,9 @@ public class ViewTeamControllerTest {
                 "New Zealand");
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "johndoe@example.com", "Password123!", userLocation);
-                
+        
+        team.setCoach(user);
+
         team = Mockito.spy(team);
         user = Mockito.spy(user);
 
@@ -162,7 +165,8 @@ public class ViewTeamControllerTest {
 
     @Test
     public void testCreatingAValidFormation() throws Exception {
-        mockMvc.perform(post("/team-info/create-formation", 42L)
+        when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
+        mockMvc.perform(post("/team-info/create-formation")
                         .param("formation", "1-4-4-2")
                         .param("customPlayerPositions", "")
                         .param("custom", String.valueOf(false))
