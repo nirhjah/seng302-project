@@ -111,7 +111,7 @@ public class ViewTeamController {
         int totalGamesAndFriendlies = activityService.numberOfTotalGamesAndFriendlies(team);
 
         List<Activity> activities = activityService.getLast5GamesOrFriendliesForTeamWithOutcome(team);
-        List<Map<User, Long>> scorerAndPoints = factService.getTop5Scorers(team);
+        Map<User, Long> scorerAndPoints = factService.getTop5Scorers(team);
 
         model.addAttribute("top5Scorers", scorerAndPoints);
         model.addAttribute("last5GOrF", activities);

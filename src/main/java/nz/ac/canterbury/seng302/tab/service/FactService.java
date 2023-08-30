@@ -9,9 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class FactService {
@@ -97,14 +96,26 @@ public class FactService {
      * @param team team that top scorers are to be found from
      * @return a List of mapping of top scorer by name to their number of goals
      */
-    public List<Map<User, Long>> getTop5Scorers(Team team) {
-        List<Object[]> scorers =  factRepository.getListOfTopScorersAndTheirScores(team);
-        List<Map<User, Long>> scoreInformation = new ArrayList<>();
+    public Map<User, Long> getTop5Scorers(Team team) {
+        List<Object[]> scorers = factRepository.getListOfTopScorersAndTheirScores(team);
+        Map<User, Long> scoreInformation = new HashMap<>();
         for (Object[] scorerInfo : scorers) {
             User u = (User) scorerInfo[0];
             Long i = (Long) scorerInfo[1];
-            scoreInformation.add(Map.of(u, i));
+            scoreInformation.put(u, i);
         }
-        return scoreInformation;
+
+
+        Map<User, Long> sortedScoreInformation = scoreInformation.entrySet()
+                .stream()
+                .sorted(Map.Entry.<User, Long>comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (score1, score2) -> score1,
+                        LinkedHashMap::new
+                ));
+
+        return sortedScoreInformation;
     }
 }
