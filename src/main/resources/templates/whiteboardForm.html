@@ -37,7 +37,7 @@
         </button>
         <button class="delete-button">
           <span class="tooltip">Clear (C)</span>
-          <img class="default-svg" src="/image/icons/circle.svg" />
+          <img class="default-svg" src="/image/icons/clear.svg" />
         </button>
       </div>
       <div class="whiteboard">
@@ -50,7 +50,6 @@
 
   document.addEventListener("DOMContentLoaded", function() {
     let canvas = new fabric.Canvas('canvas');
-    canvas.setBackgroundImage('image/icons/pitch.svg');
     let activeMode = null;
     canvas.freeDrawingBrush.width = 5;
     canvas.freeDrawingBrush.color = '#ff0000';
@@ -81,6 +80,10 @@
       handleButtonClick('select-button', false, true);
     });
 
+    document.querySelector('.delete-button').addEventListener('click', function() {
+      canvas.clear();
+    });
+
     document.addEventListener('keydown', function(event) {
       if (event.key === 's') {
         handleButtonClick('select-button', false, true);
@@ -92,6 +95,8 @@
         handleButtonClick('shape-button', false, false);
       } else if (event.key === 'Delete' || event.key === 'Backspace') {
         canvas.remove(canvas.getActiveObject());
+      } else if (event.key === 'c') {
+        canvas.clear();
       }
     });
 

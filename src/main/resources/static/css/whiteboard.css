@@ -5,6 +5,11 @@
     flex-direction:column
 }
 
+.canvas-container {
+    background-image: url('../image/icons/pitch.svg');
+    background-repeat: no-repeat;
+}
+
 .whiteboard-wrapper {
     background-color: white;
     border-radius: 10px;
@@ -57,6 +62,10 @@
 .whiteboard-buttons button.active {
     background: #0b2239;
     border: 2px white solid;
+}
+
+.whiteboard-buttons .delete-button {
+    background: #EA3B52;
 }
 
 /* Hide the selected SVG by default */
