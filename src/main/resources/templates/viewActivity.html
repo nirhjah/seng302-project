@@ -419,10 +419,16 @@
 </script>
 <script th:inline="javascript">
 
-    document.addEventListener("DOMContentLoaded", function() {
+    // const positions = pitch.childNodes;
+
+    document.addEventListener("DOMContentLoaded", function () {
         const pitch = document.querySelector(".pitch");
         if (pitch) {
-            loadFormation();
+            console.log("createactivity")
+            setTimeout(function () {
+                loadFormation();
+                console.log("This code will be executed every 2000ms");
+            }, 1000);
         }
     });
     function loadFormation() {
@@ -433,12 +439,12 @@
         var formation = formationOuter.getAttribute("data-formation");
         var custom = formationOuter.getAttribute("data-custom");
         var customPlayers = formationOuter.getAttribute("data-customPlayers");
-        console.log(formation);
-        console.log(custom);
-        console.log(customPlayers);
-
-        generatedOrCustom(formation, custom, customPlayers);
+        generatedOrCustom(formation, JSON.parse(custom), customPlayers);
+        // addPlayers(playersAndPositions);
     }
+    // function addPlayers(playersAndPosition){
+    //
+    // }
 
     // Get a reference to the dropdown select element
     var factTypeSelect = document.getElementById("factType");

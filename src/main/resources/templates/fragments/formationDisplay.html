@@ -15,10 +15,9 @@ Required variables: formationEditable, true if you want the formation to be edit
     const customPlayerPositions = document.querySelector(".custom-player-positions");
 
     function generatedOrCustom(formation, custom, customPlayerPositions) {
-      if (custom=== "true") {
+      if (custom) {
         renderPlayersCustom(customPlayerPositions)
       } else {
-        console.log("reached render players")
         renderPlayers(formation)
       }
     }
@@ -26,7 +25,6 @@ Required variables: formationEditable, true if you want the formation to be edit
     // Generates the players and sets their position on the pitch
     function renderPlayers(formationString) {
       const formation = formationString.split("-").map(num => parseInt(num));
-      console.log(formation)
       const totalPlayers = formation.reduce((acc, curr) => acc + curr, 0);
       // Clears players
       while (pitch.firstChild) {
@@ -50,10 +48,6 @@ Required variables: formationEditable, true if you want the formation to be edit
             dragElement(player);
           }
 
-          console.log(formation);
-          console.log(formation.length+1);
-          console.log(pitch.offsetHeight);
-          console.log( ((i + 1) / (formation.length + 1)) * pitch.offsetHeight - player.offsetHeight / 2 + "px")
           player.style.bottom = ((i + 1) / (formation.length + 1)) * pitch.offsetHeight - player.offsetHeight / 2 + "px";
           player.style.left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * pitch.offsetWidth - player.offsetWidth / 2 + "px";
           formation[i] -= 1;
