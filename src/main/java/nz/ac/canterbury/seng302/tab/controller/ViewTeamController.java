@@ -93,7 +93,7 @@ public class ViewTeamController {
         model.addAttribute("displayToken", team.getToken());
         model.addAttribute("clubId",teamService.getTeamClubId(team));
         model.addAttribute("teamCompetitions", competitionService.getAllCompetitionsWithTeam(team));
-        model.addAttribute("overallPlayersPlaytime", activityService.top5UsersByOverallPlayTimeInTeam(team));
+        model.addAttribute("overallPlayersPlaytime", activityService.top5UsersWithPlayTimeAndAverageInTeam(team));
         if( team.getTeamClub()!=null){
             model.addAttribute("clubName",team.getTeamClub().getName());
         }

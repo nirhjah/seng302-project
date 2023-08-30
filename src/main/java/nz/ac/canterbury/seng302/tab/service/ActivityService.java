@@ -299,7 +299,37 @@ public class ActivityService {
         return activitySubstitutions;
     }
 
-    public Map<User, Long> top5UsersByOverallPlayTimeInTeam(Team team) {
+
+    public Map<User, List<Long>> top5UsersWithPlayTimeAndAverageInTeam(Team team) {
+        Map<User, List<Long>> topUsersWithPlayTimeAndAverage = new HashMap<>();
+
+        for (User teamMember : team.getTeamMembers()) {
+            long teamMembersPlayTime = getOverallPlayTimeForUserBasedOnSubs(teamMember, team);
+            long averagePlayTime = getAveragePlayTime(teamMember, team);
+
+            List<Long> playTimeAndAverage = new ArrayList<>();
+            playTimeAndAverage.add(teamMembersPlayTime);
+            playTimeAndAverage.add(averagePlayTime);
+
+            topUsersWithPlayTimeAndAverage.put(teamMember, playTimeAndAverage);
+        }
+
+        Map<User, List<Long>> sortedTop5 = topUsersWithPlayTimeAndAverage.entrySet()
+                .stream()
+                .sorted((time1, time2) -> Long.compare(time2.getValue().get(0), time1.getValue().get(0)))
+                .limit(5)
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (playTimeAndAverage1, playTimeAndAverage2) -> playTimeAndAverage1,
+                        LinkedHashMap::new
+                ));
+
+        return sortedTop5;
+    }
+
+
+   /* public Map<User, Long> top5UsersByOverallPlayTimeInTeam(Team team) {
         Map<User, Long> topUsersWithPlayTime = new HashMap<>();
         for (User teamMember : team.getTeamMembers()) {
             long teamMembersPlayTime = getOverallPlayTimeForUserBasedOnSubs(teamMember, team);
@@ -320,8 +350,22 @@ public class ActivityService {
 
         return sortedTop5;
 
+    }*/
+
+    public long getAveragePlayTime(User user, Team team) {
+        long totalPlayTime = getOverallPlayTimeForUserBasedOnSubs(user, team);
+        long totalGames = getTotalGamesUserPlayed(user, team);
+        long averageTime = 0;
+        if(totalPlayTime != 0 && totalGames != 0) {
+             averageTime = totalPlayTime/totalGames;
+
+        }
+
+        System.out.println("user " + user.getFirstName() + "has played total games: " + totalGames);
+
+        return averageTime;
+
     }
-    
 
         public long getOverallPlayTimeForUserBasedOnSubs(User user, Team team) {
         List<Activity> games = findActivitiesByTeamAndActivityType(team, ActivityType.Game);
@@ -372,6 +416,38 @@ public class ActivityService {
 
 
     }
+
+
+    /**
+     * Gets total number of games/friendlies a user has participated in based on starting lineup and sub facts
+     * @param user user to get total number of games/friendlies
+     * @param team team the user is in to get stats of
+     * @return total number of games/friendlies user participated in
+     */
+    public long getTotalGamesUserPlayed(User user, Team team) {
+        List<Activity> games = findActivitiesByTeamAndActivityType(team, ActivityType.Game);
+        List<Activity> friendlies = findActivitiesByTeamAndActivityType(team, ActivityType.Friendly);
+        games.addAll(friendlies); //all teams games and friendlies
+
+        List<Activity> activitiesUserPlayedIn = new ArrayList<>();
+        for (Activity act : games) {
+            if (playersInLineUp(act).contains(user)) {
+                activitiesUserPlayedIn.add(act);
+            } else {
+                // check sub facts
+                for (Object fact : act.getFactList()) {
+                    if (fact instanceof Substitution) {
+                        if (((Substitution) fact).getPlayerOff() == user || ((Substitution) fact).getPlayerOn() == user) {
+                            activitiesUserPlayedIn.add(act);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return activitiesUserPlayedIn.size();
+    }
+
 
     /**
      * Get total matches

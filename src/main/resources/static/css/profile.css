@@ -217,6 +217,15 @@
     width: 100%;
 }
 
+
+.top5Players li {
+    /*
+    width: fit-content;
+    */
+    margin-left: unset;
+    margin-right: unset;
+}
+
 .last5 li:hover, .competitions li:hover {
     cursor: pointer;
     transform: scaleX(1.03) scaleY(1.03);
@@ -281,8 +290,8 @@
 }
 .outcome-grid {
     display: grid;
-    grid-template-columns: repeat(2, 100px);
-    grid-template-rows: repeat(2, 100px);
+    grid-template-columns: repeat(2, 110px);
+    grid-template-rows: repeat(2, 110px);
     grid-gap: 17px;
 }
 .cell {
@@ -335,4 +344,14 @@
     margin-bottom:15px;
     font-size:17px;
     margin-top: 1%;
+}
+
+.player-time-div h4 {
+    padding-left: unset;
+    font-size: 13px;
+}
+
+.player-time-div {
+    width: 52%;
+    margin-top: 8px;
 }
