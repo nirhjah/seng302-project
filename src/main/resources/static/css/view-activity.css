@@ -822,9 +822,9 @@ hr.rounded {
         margin-left: 59px !important;
     }
 
-    .number-spinner {
-        margin-left: 34px !important;
-    }
+    /*.number-spinner {*/
+    /*    margin-left: 34px !important;*/
+    /*}*/
 
     .score-display h1 {
         margin-left: -26px;
