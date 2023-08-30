@@ -9,6 +9,7 @@ import nz.ac.canterbury.seng302.tab.service.image.TeamImageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +25,7 @@ import nz.ac.canterbury.seng302.tab.entity.Formation;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
+import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 /**
  * Spring Boot Controller class for the ProfileForm
  */
@@ -168,8 +170,22 @@ public class ViewTeamController {
             @RequestParam(name="formationID", defaultValue = "-1") long formationID,
             @RequestParam("customPlayerPositions") String customPlayerPositions,
             @RequestParam("custom") Boolean custom) {
-        logger.info("POST /team-info");
+        logger.info("POST /team-info/create-formation");
+
+        User currentUser = userService.getCurrentUser().orElseThrow();
+        // Is the formation valid?
+        if (!newFormation.matches(TeamFormValidators.VALID_FORMATION_REGEX)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, TeamFormValidators.INVALID_FORMATION_MSG);
+        }
         Team team = teamService.getTeam(teamID);
+        // Does the team exist?
+        if (team == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No team with this ID exists");
+        }
+        // Are you allowed to modify this team?
+        if (!team.isCoach(currentUser) && !team.isManager(currentUser)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient permissions to modify this team's formations");
+        }
         Optional<Formation> formationOptional = formationService.getFormation(formationID);
         Formation formation;
         if (formationOptional.isPresent()) {
