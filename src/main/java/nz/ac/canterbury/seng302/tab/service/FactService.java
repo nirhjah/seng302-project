@@ -107,4 +107,6 @@ public class FactService {
         }
         return scoreInformation;
     }
+
+    public void addOrUpdate(Fact fact) {factRepository.save(fact);}
 }

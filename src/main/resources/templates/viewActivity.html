@@ -29,7 +29,7 @@
                 <img class="tab-icon" th:src="@{/image/icons/activity.png}"/>
                 <button class="tab-button"> General &nbsp;</button>
             </div>
-            <div class="tab" id="factsTab" >
+            <div class="tab" id="facts-tab" >
                 <img class ="tab-icon" th:src="@{/image/icons/editform.svg}" />
                 <button class="tab-button" > Facts &nbsp;</button>
                 <div class="tab-line"></div>
@@ -84,11 +84,49 @@
         </div>
 
         <div class="content-box" id="facts-tab" style="margin-bottom: 16px">
-            <div class="content" style="height: 400px; overflow: auto;">
-                <div class="submit-button" style="padding-top: 10px; padding-bottom: 10px">
-                    <button style="width: 50%">Add Fact</button>
+            <div class="content">
+                <div th:if="${activity.team==null || (activity.team !=null && (activity.team.isManager(currentUser.get()) ||
+                activity.team.isCoach(currentUser.get())))}" class="submit-button" style="padding-top: 10px; padding-bottom: 10px">
+                    <button style="width: 50%" onclick="addFactModal.style.display = 'block'">Add Fact</button>
                 </div>
-                <table style="padding: 15px; border-collapse: collapse; border: 2px solid; margin:2%; width:96%">
+
+                <div id="addFactModal" class="modal" th:style="${factInvalid != null ? 'display:block' : 'display:none'}">
+
+                    <div class="add-goal-modal-content event" style="bottom: unset">
+                        <span class="close" onclick="addFactModal.style.display = 'none'">&times;</span>
+                        <form style="height: unset" th:action="@{add-fact}" id="addFactForm" method="post" th:object="${addFactForm}" class="view-activity-form">
+                            <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
+                            <h3 class="add-fact-title">Add Fact</h3>
+                            <div class="add-fact-box">
+                                <div>
+                                    <div style="margin-bottom: -10px" class="factTime-input-div">
+                                        <div>
+                                        <label class="fact-input" for="time-of-fact">Time (minutes)</label>
+                                        </div>
+                                        <div style="display: unset" th:each="err : ${#fields.errors('timeOfFact')}" th:text="${err}" class="error-message"></div>
+                                        <div style="margin-bottom: 10%; padding-top: 5px" class="number-spinner">
+                                                <button class="decreaseTime">-</button>
+                                            <input type="number" class="valueInputTime" value="1" min="1" id="time-of-fact" name="timeOfFact" th:field="*{timeOfFact}">
+                                            <button class="increaseTime">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="fact-desc">
+                                    <label class="fact-input" for="desc-of-fact">Description*:</label>
+                                    <textarea class="fact-input" name="description" id="desc-of-fact" type="text-area" rows="5" th:field="*{description}" th:value="${description}"></textarea>
+                                </div>
+                                <div style="display: unset" th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
+                            </div>
+                            <div class="submit-button" style="padding-top: 5%;">
+                                <button id="createEvent" type="submit" class="registerLoginButton">Add Fact</button>
+                            </div>
+
+                        </form>
+                    </div>
+
+                </div>
+
+                <table style="padding: 15px; border-collapse: collapse; border: 2px solid; border-radius: 5px; margin:2%; width:96%">
                     <thead style="background-color: #0b2239">
                     <tr>
                         <th style="width: 30%; background-color: #0b2239"> Time </th>
@@ -197,13 +235,13 @@
      <div class="score-form-button-div">
 
          <div class="overallScoreButtonDiv">
-             <div th:if="${(activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}" class="submit-button">
+             <div th:if="${activity.team != null && (activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}" class="submit-button">
                  <button th:unless="${noFacts}" onclick="overallScoreModal.style.display = 'block'" type="button">Add Overall Score</button>
              </div>
          </div>
 
          <div class="goalScoreButtonDiv">
-             <div th:if="${(activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}" class="submit-button">
+             <div th:if="${activity.team != null && (activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}" class="submit-button">
                  <button th:unless="${noFacts}" onclick="addGoalModal.style.display = 'block'" type="button">Add Goal</button>
              </div>
          </div>
@@ -447,6 +485,7 @@
         var addGoalModal = document.getElementById("addGoalModal");
         var overallScoreModal = document.getElementById("addOverallScoreModal");
         var addSubModal = document.getElementById("addSubModal");
+        var addFactModal = document.getElementById("addFactModal");
 
         window.onclick = function(event) {
             if (event.target === overallScoreModal) {
@@ -523,7 +562,7 @@
         console.log("tabname" + stayOnTab_Name);
         console.log("tabindex" + stayOnTab_Index);
 
-        if (stayOnTab_Name === "score-tab" || stayOnTab_Name === "generalTab" || stayOnTab_Name === "formations-tab" || stayOnTab_Name === "factsTab") {
+        if (stayOnTab_Name === "score-tab" || stayOnTab_Name === "generalTab" || stayOnTab_Name === "formations-tab" || stayOnTab_Name === "facts-tab") {
             var tabToBeActive = document.getElementById(stayOnTab_Name)
 
             console.log(tabToBeActive)
