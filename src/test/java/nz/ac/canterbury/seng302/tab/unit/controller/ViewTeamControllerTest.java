@@ -20,6 +20,8 @@ import nz.ac.canterbury.seng302.tab.service.*;
 import nz.ac.canterbury.seng302.tab.service.image.TeamImageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -163,8 +165,25 @@ public class ViewTeamControllerTest {
         assertFalse(Arrays.equals(savedBytes, fileBytes));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"1", "1-2", "9-9", "1-4-4-2", "1-2-3-4-5-6-7-8", "9-9-9-9-9-9-9-9"})
+    public void createFormation_validFormation_succeeds(String formation) throws Exception {
+        when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
+        mockMvc.perform(post("/team-info/create-formation")
+                        .param("formation", formation)
+                        .param("customPlayerPositions", "")
+                        .param("custom", String.valueOf(false))
+                        .param("teamID", String.valueOf(TEAM_ID)))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/team-info?teamID=" + TEAM_ID));
+        verify(mockFormationService, times(1)).addOrUpdateFormation(any());
+    }
+
+    /** Extra test to ensure both managers AND coaches can do this */
     @Test
-    public void testCreatingAValidFormation() throws Exception {
+    public void createFormation_validFormation_isCoach_succeeds() throws Exception {
+        Mockito.doReturn(true).when(team).isCoach(user);
+        Mockito.doReturn(false).when(team).isManager(user);
         when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         mockMvc.perform(post("/team-info/create-formation")
                         .param("formation", "1-4-4-2")
@@ -174,6 +193,42 @@ public class ViewTeamControllerTest {
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/team-info?teamID=" + TEAM_ID));
         verify(mockFormationService, times(1)).addOrUpdateFormation(any());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "hi", "0", "99", "H1-4", "0-1-2", "1-0"})
+    public void createFormation_invalidFormation_fails(String formation) throws Exception {
+        when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
+        mockMvc.perform(post("/team-info/create-formation")
+                        .param("formation", formation)
+                        .param("customPlayerPositions", "")
+                        .param("custom", String.valueOf(false))
+                        .param("teamID", String.valueOf(TEAM_ID)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void createFormation_nonexistentTeam_fails() throws Exception {
+        when(mockTeamService.getTeam(TEAM_ID)).thenReturn(null);
+        mockMvc.perform(post("/team-info/create-formation")
+                        .param("formation", "1-4-4-2")
+                        .param("customPlayerPositions", "")
+                        .param("custom", String.valueOf(false))
+                        .param("teamID", String.valueOf(TEAM_ID)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void createFormation_notManagerOrCoach_fails() throws Exception {
+        Mockito.doReturn(false).when(team).isCoach(user);
+        Mockito.doReturn(false).when(team).isManager(user);
+        when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
+        mockMvc.perform(post("/team-info/create-formation")
+                        .param("formation", "1-4-4-2")
+                        .param("customPlayerPositions", "")
+                        .param("custom", String.valueOf(false))
+                        .param("teamID", String.valueOf(TEAM_ID)))
+                .andExpect(status().isForbidden());
     }
 
 }
