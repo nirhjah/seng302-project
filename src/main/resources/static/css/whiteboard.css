@@ -1,4 +1,4 @@
-.white-form {
+.whiteboard-form {
     justify-content: center;
     align-items: center;
     display:flex;
@@ -7,7 +7,76 @@
 
 .whiteboard-wrapper {
     background-color: white;
-    width: 500px;
+    border-radius: 10px;
+    padding: 20px;
 }
+
+.whiteboard-buttons {
+    background: #0b2239;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    border-radius: 5px 5px 0 0;
+}
+
+.whiteboard-buttons button {
+    height: 35px;
+    width: 35px;
+    border: none;
+    background: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.whiteboard-buttons button .tooltip {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    margin-top: -73px;
+    position: absolute;
+    z-index: 1;
+}
+
+.whiteboard-buttons button:hover .tooltip {
+    visibility: visible;
+}
+
+
+.whiteboard-buttons button img {
+    height: 25px;
+}
+
+.whiteboard-buttons button.active {
+    background: #0b2239;
+    border: 2px white solid;
+}
+
+/* Hide the selected SVG by default */
+.selected-svg {
+    display: none;
+}
+
+/* Show the selected SVG when the button has the "active" class */
+.active .selected-svg {
+    display: inline-block;
+}
+
+/* Show the default SVG when the button doesn't have the "active" class */
+.default-svg {
+    display: inline-block;
+}
+
+.active .default-svg {
+    display: none;
+}
+
 
 

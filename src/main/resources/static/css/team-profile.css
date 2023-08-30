@@ -445,7 +445,7 @@
     border-radius: 0 10px 10px 0;
     width: 30px;
     background: white;
-    box-shadow: 2px 0 4px -1px rgba(0, 0, 0, 0.19);
+    box-shadow: 4px 0 4px -1px rgba(0, 0, 0, 0.19);
     font-weight: bold;
     font-size: 20px;
     font-family: revert;
@@ -505,7 +505,7 @@
 
 @media (max-width: 500px) {
     .float-child {
-        width: 100;
+        width: 100vw;
         float: none;
     }
     

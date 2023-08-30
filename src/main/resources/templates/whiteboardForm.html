@@ -5,7 +5,7 @@
   <link th:href="@{/css/whiteboard.css}" rel="stylesheet">
   <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</title>
 </head>
@@ -13,54 +13,91 @@
   <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
   <div class="whiteboard-form">
     <div class="whiteboard-wrapper">
-      <div class="whiteboard-buttons">
-        <button class="select-button"></button>
-        <button class="draw-button"></button>
-        <button class="erase-button"></button>
-        <button class="shape-button"></button>
-      </div>
       <div class="whiteboard-dropdowns"></div>
+      <div class="whiteboard-buttons">
+        <button class="select-button active">
+          <span class="tooltip">Select (S)</span>
+          <img class="selected-svg" src="/image/icons/cursor-selected.svg" />
+          <img class="default-svg" src="/image/icons/cursor.svg" />
+        </button>
+        <button class="draw-button">
+          <span class="tooltip">Draw (D)</span>
+          <img class="selected-svg" src="/image/icons/pencil-selected.svg" />
+          <img class="default-svg" src="/image/icons/pencil.svg" />
+        </button>
+        <button class="erase-button">
+          <span class="tooltip">Erase (E)</span>
+          <img class="selected-svg" src="/image/icons/eraser-selected.svg" />
+          <img class="default-svg" src="/image/icons/eraser.svg" />
+        </button>
+        <button class="shape-button">
+          <span class="tooltip">Shape (X)</span>
+          <img class="selected-svg" src="/image/icons/circle-selected.svg" />
+          <img class="default-svg" src="/image/icons/circle.svg" />
+        </button>
+        <button class="delete-button">
+          <span class="tooltip">Clear (C)</span>
+          <img class="default-svg" src="/image/icons/circle.svg" />
+        </button>
+      </div>
       <div class="whiteboard">
-        <canvas id="canvas" width="800" height="1000"></canvas>
+        <canvas id="canvas" width="560" height="700"></canvas>
       </div>
     </div>
   </div>
 </body>
 <script>
+
   document.addEventListener("DOMContentLoaded", function() {
-    // Get a reference to the canvas element
     let canvas = new fabric.Canvas('canvas');
     canvas.setBackgroundImage('image/icons/pitch.svg');
     let activeMode = null;
+    canvas.freeDrawingBrush.width = 5;
+    canvas.freeDrawingBrush.color = '#ff0000';
 
-    // Event listeners for mode buttons
+    function handleButtonClick(buttonClass, drawMode, selectMode) {
+      const buttons = document.querySelectorAll('.whiteboard-buttons button');
+      buttons.forEach(button => button.classList.remove('active'));
+      document.querySelector('.' + buttonClass).classList.add('active');
+      activeMode = buttonClass;
+      canvas.isDrawingMode = drawMode;
+      canvas.selection = selectMode;
+    }
+
+
     document.querySelector('.draw-button').addEventListener('click', function() {
-      activeMode = 'freeDraw';
-      canvas.isDrawingMode = true;
-      canvas.selection = false;
+      handleButtonClick('draw-button', true, false);
     });
 
     document.querySelector('.erase-button').addEventListener('click', function() {
-      activeMode = 'erase';
-      canvas.isDrawingMode = false;
-      canvas.selection = false;
+      handleButtonClick('erase-button', false, false);
     });
 
     document.querySelector('.shape-button').addEventListener('click', function() {
-      activeMode = 'drawCircle';
-      canvas.isDrawingMode = false;
-      canvas.selection = false;
+      handleButtonClick('shape-button', false, false);
     });
 
     document.querySelector('.select-button').addEventListener('click', function() {
-      activeMode = 'select';
-      canvas.isDrawingMode = false;
-      canvas.selection = true;
+      handleButtonClick('select-button', false, true);
+    });
+
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 's') {
+        handleButtonClick('select-button', false, true);
+      } else if (event.key === 'd') {
+        handleButtonClick('draw-button', true, false);
+      } else if (event.key === 'e') {
+        handleButtonClick('erase-button', false, false);
+      } else if (event.key === 'x') {
+        handleButtonClick('shape-button', false, false);
+      } else if (event.key === 'Delete' || event.key === 'Backspace') {
+        canvas.remove(canvas.getActiveObject());
+      }
     });
 
     // Event listener for canvas interactions
     canvas.on('mouse:down', function(options) {
-      if (activeMode === 'drawCircle') {
+      if (activeMode === 'shape-button') {
         let circle = new fabric.Circle({
           left: options.e.clientX - canvas._offset.left,
           top: options.e.clientY - canvas._offset.top,
@@ -68,7 +105,7 @@
           fill: 'blue'
         });
         canvas.add(circle);
-      } else if (activeMode === 'erase') {
+      } else if (activeMode === 'erase-button') {
         let pointer = canvas.getPointer(options.e);
         let objects = canvas.getObjects();
         for (let i = 0; i < objects.length; i++) {
@@ -79,12 +116,8 @@
       }
     });
 
-    canvas.on('mouse:move', function(options) {
-      if (canvas.isDrawingMode && canvas.freeDrawingBrush.color === 'white') {
-
-      }
-    });
 
   });
+
 </script>
 </html>

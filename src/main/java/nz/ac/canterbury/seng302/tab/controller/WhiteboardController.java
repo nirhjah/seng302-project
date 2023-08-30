@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class WhiteboardController {
 
     @GetMapping("/whiteboard")
-    public String getTemplate(Model model, HttpServletResponse httpServletResponse, HttpServletRequest request) {
-
+    public String getTemplate(Model model, HttpServletRequest request) {
+        model.addAttribute("httpServletRequest", request);
         return "whiteboardForm";
     }
 
