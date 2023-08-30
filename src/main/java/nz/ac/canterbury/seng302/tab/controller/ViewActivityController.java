@@ -146,7 +146,7 @@ public class ViewActivityController {
             int positionId = position.getPosition();
             User player = position.getPlayer();
             playersAndPosition.put(positionId, player.getId());
-            playerNames.put(positionId, player.getFirstName() + " " + player.getLastName());
+            playerNames.put(positionId, player.getFirstName());
         }
 
         model.addAttribute("playersAndPositions",playersAndPosition);

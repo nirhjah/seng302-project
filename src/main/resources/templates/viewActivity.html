@@ -440,28 +440,26 @@
     }
     function addPlayers() {
         const playersAndPositions = /*[[${playersAndPositions}]]*/ {};
+        const playerNames = /*[[${playerNames}]]*/ {};
         const positions = pitch.childNodes;
 
         for (let i = 0; i < positions.length; i++) {
             const position = positions[i];
-            const playersCount = playersAndPositions[i + 1] || 0;
-
+            const playerId = playersAndPositions[i + 1];
+            const playerName = playerNames[i+1];
             const playerNameElement = position.querySelector('h3');
 
-            const label = document.createElement('span');
-            label.textContent = `(${playersCount} players)`;
-            label.classList.add('position-label');
-
-            playerNameElement.appendChild(label);
-
+            playerNameElement.textContent =playerName;
+            playerNameElement.style.display='inline-block';
+            playerNameElement.style.width='auto';
 
             const playerImage = position.querySelector('.player-profile-img');
 
 
-            playerImage.src = "/user-profile-picture/" + playersCount;
+            playerImage.src = "/user-profile-picture/" + playerId;
             playerImage.alt = "My Profile";
 
-            position.style.backgroundImage = '';
+            position.style.backgroundImage = 'none';
         }
     }
 
