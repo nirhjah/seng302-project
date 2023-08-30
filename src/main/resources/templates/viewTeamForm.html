@@ -146,25 +146,33 @@
             <div class="content formations">
                 <div class="formation-list-outer">
                     <ul class="formation-list active">
-                        <li id="create-formation-li" onclick="render('1-4-4-2', null)">
+                        <li th:if="${isUserManagerOrCoach}" id="create-formation-li" onclick="render('1-4-4-2', null)">
                             <h3>Create a Formation</h3>
                             <img th:src="@{/image/icons/add-symbol.svg}" alt=""/>
                             <input type="hidden" class="formation-id" value="-1"/>
                         </li>
                         <li th:each="formation : ${formations}"
-                            th:attr="onclick='renderSavedFormation(\'' + ${formation.formation} + '\',' + ${formation.custom} + ',\'' + ${formation.customPlayerPositions} + '\');'"
+                            th:data-formation="${formation.formation}"
+                            th:data-custom="${formation.custom}"
+                            th:data-pos="${formation.customPlayerPositions}"
+                            onclick="renderSavedFormation(this.dataset.formation, this.dataset.custom, this.dataset.pos)"
                             class="formation-li">
                             <span class="title">
                                 <h3 th:text="${formation.formation} + (${formation.custom} ? ' Custom' : '')"></h3>
                             </span>
                             <input type="hidden" class="formation-id" th:value="${formation.formationId}" />
                         </li>
+                        <!--/* Tell the user if there's no formations */-->
+                        <div th:if="${#lists.isEmpty(formations)}" class="no-formation">
+                            <h3>No Formations</h3>
+                        </div>
 
                     </ul>
                     <button class="toggle-formation-button">&lt;</button>
                 </div>
                 <form class="formation-display" method="post" th:action="@{/team-info/create-formation}" onsubmit="return submissionCheck(document.getElementById('formation-string').value)">
-                    <div class="formation-LHS">
+                    <!--/* The LHS contains the input, and removing it centres the formation */-->
+                    <div class="formation-LHS" th:style="${isUserManagerOrCoach ? '' : 'display: none'}">
                         <div class="create-formation-display">
                             <div class="input-box">
                                 <input type="text" id="formation-string" name="formation">
@@ -175,10 +183,13 @@
                         <div class="error-message">Formation must match specified form e.g. 1-4-4-2</div>
                     </div>
                     <div class="formation-RHS">
-                        <div class="formation-outer" th:insert="~{fragments/formationDisplay.html::formationDisplay(true)}"></div>
-                        <input type="hidden" name="teamID" th:value="${teamID}" />
-                        <input type="hidden" name="formationID" class="current-formation-id"/>
-                        <button type="submit" class="create-formation" id="create-formation-button">Create Formation</button>
+                        <div class="formation-outer" th:insert="~{fragments/formationDisplay.html::formationDisplay(${isUserManagerOrCoach})}"></div>
+                        <!--/* Only coaches/managers can edit formations */-->
+                        <th:block th:if="${isUserManagerOrCoach}">
+                            <input type="hidden" name="teamID" th:value="${teamID}" />
+                            <input type="hidden" name="formationID" class="current-formation-id"/>
+                            <button type="submit" class="create-formation" id="create-formation-button">Create Formation</button>
+                        </th:block>
                     </div>
                 </form>
             </div>
@@ -285,10 +296,9 @@
         </p>
     </footer>
 
-    <script>
+    <script th:inline="javascript">
 
-        /** A valid formation contains between [0, 8] dash separated single digit numbers*/
-        const VALID_FORMATION_REGEX = /[1-9](\-[1-9]){0,7}/;
+        const VALID_FORMATION_REGEX = new RegExp(/*[[ ${formationRegex} ]]*/ "");
         const fileInput = document.getElementById('file');
         
         if (fileInput !== null) {

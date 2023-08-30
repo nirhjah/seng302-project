@@ -88,6 +88,7 @@ public class ViewTeamController {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
 
+        // Basic info about this team
         model.addAttribute("teamID", teamID);
         model.addAttribute("displayName", team.getName());
         model.addAttribute("displaySport", team.getSport());
@@ -96,7 +97,7 @@ public class ViewTeamController {
         model.addAttribute("clubId",teamService.getTeamClubId(team));
         model.addAttribute("teamCompetitions", competitionService.getAllCompetitionsWithTeam(team));
 
-        if( team.getTeamClub()!=null){
+        if(team.getTeamClub() != null){
             model.addAttribute("clubName",team.getTeamClub().getName());
         }
 
@@ -122,12 +123,14 @@ public class ViewTeamController {
         model.addAttribute("totalDraws", totalDraws);
         model.addAttribute("totalGOrF", totalGamesAndFriendlies);
 
-        // Rambling that's required for navBar.html
         List<Formation> formationsList = formationService.getTeamsFormations(teamID);
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("isUserManager", team.isManager(user));
         model.addAttribute("isUserManagerOrCoach", team.isManager(user) || team.isCoach(user));
         model.addAttribute("formations", formationsList);
+
+        // Regex info
+        model.addAttribute("formationRegex", TeamFormValidators.VALID_FORMATION_REGEX);
 
         return "viewTeamForm";
     }
