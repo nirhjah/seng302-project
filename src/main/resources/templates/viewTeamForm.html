@@ -289,24 +289,27 @@
 
         /** A valid formation contains between [0, 8] dash separated single digit numbers*/
         const VALID_FORMATION_REGEX = /[1-9](\-[1-9]){0,7}/;
-        const input = document.getElementById('file');
-
-        input.addEventListener('change', () => {
-            const file = input.files[0];
-            if (file.size > 10000000) {
-                alert('File size must be less than 10MB');
-                return;
-            }
-            const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/jpg'];
+        const fileInput = document.getElementById('file');
+        
+        if (fileInput !== null) {
+            fileInput.addEventListener('change', () => {
+                const file = fileInput.files[0];
+                if (file.size > 10000000) {
+                    alert('File size must be less than 10MB');
+                    return;
+                }
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/jpg'];
             if (!allowedTypes.includes(file.type)) {
                 alert('File type must be jpeg, png or svg');
                 return;
             }
             document.getElementById('upload-picture').submit();
         });
-
-        const copyButton = document.querySelector('.copy-token');
-        const tokenValue = document.querySelector('.token-value');
+    }
+        
+    const copyButton = document.querySelector('.copy-token');
+    const tokenValue = document.querySelector('.token-value');
+    if (tokenValue !== null) {
         const token = tokenValue.innerHTML;
         copyButton.addEventListener('click', () => {
             const selection = window.getSelection();
@@ -325,6 +328,7 @@
                 }, 500);
             }, 1000);
         });
+    }
 
         const tabs = document.querySelectorAll('.tab');
         const tabLine = document.querySelector('.tab-line');
