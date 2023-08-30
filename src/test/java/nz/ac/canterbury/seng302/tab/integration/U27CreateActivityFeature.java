@@ -143,20 +143,21 @@ public class U27CreateActivityFeature {
         user = new User("Admin", "Admin", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "test@test.com", "plaintextPassword", location);
         Location location2 = new Location("adminAddr1", "adminAddr2", "adminSuburb", "adminCity", "4dm1n", "adminLand");
-        team = new Team("test1", "Hockey", location2, user);
-
-
-        teamRepository.save(team);
-
-        userRepository.save(user);
+        team = new Team("test1", "Hockey", location2);
+//        teamRepository.save(team);
       /*  User userActual = userService.getUser(user.getUserId());
         Team teamActual = teamService.getTeam(team.getTeamId());
         System.out.println(teamService.getTeam(team.getTeamId()).getTeamManagers());*/
 
-
         //Mock User
         when(userService.getCurrentUser()).thenReturn(Optional.of(user));
 
+
+        when(teamService.findTeamsWithUser(any())).thenReturn(Arrays.asList(team));
+//        team = spy(team);
+//        doReturn(true).when(team).isManager(any());
+        when(team.isManager(any())).thenReturn(Boolean.TRUE);
+        when(teamService.getTeam(anyLong())).thenReturn(team);
 
         // Generic Team for testing
       /*  teamActual = spy(teamActual);
