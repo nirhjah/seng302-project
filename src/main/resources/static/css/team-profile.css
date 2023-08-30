@@ -297,6 +297,7 @@
 }
 
 .formation-list {
+    position: relative;
     width: 0;
     box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.19);
     border-radius: 0 0 0 20px;
@@ -373,7 +374,7 @@
 
 .formation-display.active {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     width: 100%;
 }
 
@@ -531,4 +532,15 @@
     .club-header {
         max-width: 10ch;
     }
+}
+
+.no-formation {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    left: 50%;
+    display: block;
+    text-align: center;
+    /* The text implicitly has a size (it's not 0x0 pixels), so account for it */
+    transform: translate(-50%, -50%);
 }
