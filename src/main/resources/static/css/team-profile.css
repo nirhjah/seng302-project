@@ -535,6 +535,7 @@
 }
 
 .no-formation {
+    color: darkgray;
     position: absolute;
     width: 100%;
     top: 50%;
@@ -543,4 +544,19 @@
     text-align: center;
     /* The text implicitly has a size (it's not 0x0 pixels), so account for it */
     transform: translate(-50%, -50%);
+}
+
+.formation-description {
+    font-style: italic;
+    font-size: small;
+}
+
+/* Other CSS files disable the icon before a <li>, this adds it back for specific children */
+ul.formation-description > li {
+    list-style: disc;
+    margin-left: 1rem;
+}
+
+.drag-info {
+    text-align: center;
 }

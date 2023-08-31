@@ -175,32 +175,28 @@
                     <div class="formation-LHS" th:style="${isUserManagerOrCoach ? '' : 'display: none'}">
                         <div class="create-formation-display">
                             <div class="input-box">
-                                <input type="text" id="formation-string" name="formation">
+                                <input type="text" id="formation-string" name="formation" placeholder="e.g. 1-4-4-2">
                                 <label for="formation-string">Formation</label>
                             </div>
                             <button type="button" id="generate-formation-button" onclick="render(document.getElementById('formation-string').value, null)">Generate Formation</button>
                         </div>
                         <br>
-                        <em>
-                            <p>
-                                Formations represent the number of players in a row
-                                <br>
-                                e.g. <strong>1-4-4-2</strong>, <strong>1-2-2</strong>, <strong>6</strong>, etc.
-                            </p>
-                            <br>
-                            <p>
-                                Players per row: Between <strong>1</strong> and <strong>9</strong>
-                                <br>
-                                Number of rows: Between <strong>1</strong> and <strong>8</strong>
-                            </p>
-                            <br>
-                            <p>
-                                You can reposition players by dragging the t-shirts
-                            </p>
-                        </em>
+                        <div class="formation-description">
+                            Formations represent the number of players in a row
+                            <ul class="formation-description">
+                                <li>
+                                    Players per row: Between <strong>1</strong> and <strong>9</strong>
+                                </li>
+                                <li>
+                                    Number of rows: Between <strong>1</strong> and <strong>8</strong>
+                                </li>
+                            </ul>
+                            e.g. <strong>1-4-4-2</strong>, <strong>1-2-2</strong>, <strong>6</strong>
+                        </div>
                         <div class="error-message">Formation must match specified form</div>
                     </div>
                     <div class="formation-RHS">
+                        <p class="formation-description drag-info">Drag shirts to move</p>
                         <div class="formation-outer" th:insert="~{fragments/formationDisplay.html::formationDisplay(${isUserManagerOrCoach})}"></div>
                         <!--/* Only coaches/managers can edit formations */-->
                         <th:block th:if="${isUserManagerOrCoach}">
