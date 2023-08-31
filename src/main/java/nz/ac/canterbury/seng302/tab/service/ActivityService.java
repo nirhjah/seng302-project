@@ -270,13 +270,12 @@ public class ActivityService {
     public List<User> playersInLineUp(Activity activity) {
         List<LineUp> activityLineups = lineUpRepository.findLineUpByActivityId(activity.getId()).get();
 
-        LineUp lineup = activityLineups.get(0);
+        LineUp lineup = activityLineups.get(1);
         Optional<List<LineUpPosition>> optionaLineupPositions = lineUpPositionRepository.findLineUpPositionsByLineUpLineUpId(lineup.getLineUpId());
         if (optionaLineupPositions.isEmpty()) {
             return List.of();
         }
         List<User> playersInLineUp = optionaLineupPositions.get().stream().map(x -> x.getPlayer()).collect(Collectors.toList());
-
         return playersInLineUp;
     }
 
@@ -368,6 +367,8 @@ public class ActivityService {
     }
 
         public long getOverallPlayTimeForUserBasedOnSubs(User user, Team team) {
+        //check if sub facts size = 0 but user in lineup, add duration of game to time
+            // if sub facts size = 0 but user not in lineup
         List<Activity> games = findActivitiesByTeamAndActivityType(team, ActivityType.Game);
         List<Activity> friendlies = findActivitiesByTeamAndActivityType(team, ActivityType.Friendly);
         games.addAll(friendlies);
@@ -375,39 +376,56 @@ public class ActivityService {
         for (Activity act : games) {
             int listSize = subFactsUserIsIn(act, user).size();
 
-            if (listSize == 0) {
-                System.out.println("player dont have any sub facts about them " + user.getFirstName());
-                break;
-            }
+
 
             if (playersInLineUp(act).contains(user)) {
                 //user in lineup
-                totalTime += Integer.parseInt( subFactsUserIsIn(act, user).get(0).getTimeOfEvent());
-                //added time here because user was already player on
-                for (int i = 1; i < subFactsUserIsIn(act, user).size() - 1; i += 2) {
-                    Substitution sub1 = subFactsUserIsIn(act, user).get(i);
-                    Substitution sub2 = subFactsUserIsIn(act, user).get(i + 1);
-                    System.out.println("user off   " + "at: " + sub1.getTimeOfEvent() + sub1.getPlayerOff().getFirstName() + " other player ff (user on): " + "at: " + sub2.getTimeOfEvent() + sub2.getPlayerOff().getFirstName());
-                    int timeBetweenPlayerOnAndOff = Integer.parseInt(sub2.getTimeOfEvent()) - Integer.parseInt(sub1.getTimeOfEvent());
-                    totalTime += timeBetweenPlayerOnAndOff;
-                        System.out.println("TIME after next increment " + totalTime);
+
+                if (listSize == 0) {
+                    System.out.println("player dont have any sub facts about them but they're in lineup" + user.getFirstName());
+                    totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes();
+
                 }
+                else {
+                    //user has subfacts
+                    totalTime += Integer.parseInt( subFactsUserIsIn(act, user).get(0).getTimeOfEvent());
+                    //added time here because user was already player on
+                    for (int i = 1; i < subFactsUserIsIn(act, user).size() - 1; i += 2) {
+                        Substitution sub1 = subFactsUserIsIn(act, user).get(i);
+                        Substitution sub2 = subFactsUserIsIn(act, user).get(i + 1);
+                        System.out.println("user off   " + "at: " + sub1.getTimeOfEvent() + sub1.getPlayerOff().getFirstName() + " other player ff (user on): " + "at: " + sub2.getTimeOfEvent() + sub2.getPlayerOff().getFirstName());
+                        int timeBetweenPlayerOnAndOff = Integer.parseInt(sub2.getTimeOfEvent()) - Integer.parseInt(sub1.getTimeOfEvent());
+                        totalTime += timeBetweenPlayerOnAndOff;
+                        System.out.println("TIME after next increment " + totalTime);
+                    }
+                }
+
         } else {
-                //not in lineup starting so check for player on
-                for (int i = 0; i < subFactsUserIsIn(act, user).size() - 1; i += 2) {
-                    Substitution sub1 = subFactsUserIsIn(act, user).get(i);
-                    Substitution sub2 = subFactsUserIsIn(act, user).get(i + 1);
-                    System.out.println("user on   " + "at: " + sub1.getTimeOfEvent() + sub1.getPlayerOn().getFirstName() + " other player on (user off): " + "at: " + sub2.getTimeOfEvent() + sub2.getPlayerOn().getFirstName());
-                    int timeBetweenPlayerOnAndOff = Integer.parseInt(sub2.getTimeOfEvent()) - Integer.parseInt(sub1.getTimeOfEvent());
-                    totalTime += timeBetweenPlayerOnAndOff;
+                //not in starting lineup so check for player on
+
+                    for (int i = 0; i < subFactsUserIsIn(act, user).size() - 1; i += 2) {
+                        Substitution sub1 = subFactsUserIsIn(act, user).get(i);
+                        Substitution sub2 = subFactsUserIsIn(act, user).get(i + 1);
+                        System.out.println("user on   " + "at: " + sub1.getTimeOfEvent() + sub1.getPlayerOn().getFirstName() + " other player on (user off): " + "at: " + sub2.getTimeOfEvent() + sub2.getPlayerOn().getFirstName());
+                        int timeBetweenPlayerOnAndOff = Integer.parseInt(sub2.getTimeOfEvent()) - Integer.parseInt(sub1.getTimeOfEvent());
+                        totalTime += timeBetweenPlayerOnAndOff;
+                    }
+
+
+
+
+            }
+
+
+            if (listSize != 0) {
+                Substitution lastSubFact = subFactsUserIsIn(act, user).get(listSize-1);
+                if (lastSubFact.getPlayerOn() == user) {
+                    System.out.println("Last sub fact is player on so calculating time from subbed on to end of game.");
+                    totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes() - Integer.parseInt(subFactsUserIsIn(act, user).get(listSize - 1).getTimeOfEvent());
                 }
             }
 
-            Substitution lastSubFact = subFactsUserIsIn(act, user).get(listSize-1);
-            if (lastSubFact.getPlayerOn() == user) {
-                System.out.println("Last sub fact is player on so calculating time from subbed on to end of game.");
-                totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes() - Integer.parseInt(subFactsUserIsIn(act, user).get(listSize - 1).getTimeOfEvent());
-            }
+
             System.out.println("act total time:" + totalTime);
 
         }
