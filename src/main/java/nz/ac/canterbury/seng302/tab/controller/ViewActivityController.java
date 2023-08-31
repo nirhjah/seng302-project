@@ -69,11 +69,13 @@ public class ViewActivityController {
     String httpServletRequestString = "httpServletRequest";
 
     @Autowired
-    public ViewActivityController(UserService userService, ActivityService activityService, TeamService teamService,FactService factService) {
+    public ViewActivityController(UserService userService, ActivityService activityService, TeamService teamService,FactService factService, LineUpService lineUpService,LineUpPositionService lineUpPositionService) {
         this.userService = userService;
         this.activityService = activityService;
         this.teamService = teamService;
         this.factService=factService;
+        this.lineUpService= lineUpService;
+        this.lineUpPositionService = lineUpPositionService;
     }
 
     /**
@@ -139,18 +141,22 @@ public class ViewActivityController {
         Map<Integer, Long> playersAndPosition = new HashMap<Integer, Long>();
         Map<Integer, String> playerNames = new HashMap<Integer, String>();
 
-        LineUp lineUp = lineUpService.findLineUpsByActivity(activityID).get();
-        List<LineUpPosition> lineupPosition = (lineUpPositionService.findLineUpPositionsByLineUp(lineUp.getLineUpId())).get();
-        Formation formation =lineUpService.findFormationByLineUpId(lineUp.getLineUpId()).get();
-        for (LineUpPosition position : lineupPosition) {
-            int positionId = position.getPosition();
-            User player = position.getPlayer();
-            playersAndPosition.put(positionId, player.getId());
-            playerNames.put(positionId, player.getFirstName());
+        Optional<LineUp> lineUp = lineUpService.findLineUpsByActivity(activityID);
+
+        if (lineUp.isPresent()) {
+            List<LineUpPosition> lineupPosition = (lineUpPositionService.findLineUpPositionsByLineUp(lineUp.get().getLineUpId())).get();
+            Formation formation = lineUpService.findFormationByLineUpId(lineUp.get().getLineUpId()).get();
+            for (LineUpPosition position : lineupPosition) {
+                int positionId = position.getPosition();
+                User player = position.getPlayer();
+                playersAndPosition.put(positionId, player.getId());
+                playerNames.put(positionId, player.getFirstName());
+            }
+            model.addAttribute("formation", formation);
+            model.addAttribute("playersAndPositions",playersAndPosition);
+            model.addAttribute("playerNames", playerNames);
         }
 
-        model.addAttribute("playersAndPositions",playersAndPosition);
-        model.addAttribute("playerNames", playerNames);
 
         List<Fact> activityFacts = factService.getAllFactsForActivity(activity);
         if (!activityFacts.isEmpty()){
@@ -188,7 +194,6 @@ public class ViewActivityController {
         List<Fact> factList = factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity);
 
         model.addAttribute("factList", factList);
-        model.addAttribute("formation", formation);
         // Rambling that's required for navBar.html
         model.addAttribute(httpServletRequestString, request);
         model.addAttribute("possibleFactTypes", FactType.values());

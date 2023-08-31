@@ -115,6 +115,7 @@
             <div class="content">
                 <div class="formation-outer"
                      th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"
+                     th:if="${formation != null}"
                      th:data-formation="${formation.formation}"
                      th:data-custom="${formation.custom}"
                      th:data-customPlayers="${formation.customPlayerPositions}"></div>
@@ -422,7 +423,7 @@
     function render() {
         setTimeout(function () {
             loadFormation();
-        }, 1100);
+        }, 500);
     }
 
     function loadFormation() {
