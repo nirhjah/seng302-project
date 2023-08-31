@@ -154,7 +154,15 @@ public class ViewTeamController {
     }
 
     /**
+     * <p>
      * Saves formation into the system or updates formation.
+     * </p>
+     * Restrictions:
+     * <ul>
+     *   <li> Invalid formation format: <code>400 BAD REQUEST</code> </li>
+     *   <li> Team doesn't exist: <code>404 NOT FOUND</code> </li>
+     *   <li> User isn't a coach/manager: <code>403 FORBIDDEN</code> </li>
+     * </ul>
      *
      * @param newFormation formation string
      * @param teamID id of the team to add the formation to
@@ -164,7 +172,7 @@ public class ViewTeamController {
      *                              "20px30px;40px20px"
      * @param custom boolean to represent whether a formation has been manually changed by dragging and dropping the
      *               players rather than simply being from a generated formation string
-     * @return reloads the page
+     * @return reloads the page on success, brings you to an error page on failure.
      */
     @PostMapping("/team-info/create-formation")
     public String createAndUpdateFormation(
@@ -176,6 +184,12 @@ public class ViewTeamController {
         logger.info("POST /team-info/create-formation");
 
         User currentUser = userService.getCurrentUser().orElseThrow();
+
+        /* 
+         * Note: This endpoint throws exceptions that will bring the user to an error page.
+         * Because there should be no way for this endpoint to fail through the website's normal flow,
+         * this is alright to do.
+         */
         // Is the formation valid?
         if (!newFormation.matches(TeamFormValidators.VALID_FORMATION_REGEX)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, TeamFormValidators.INVALID_FORMATION_MSG);
