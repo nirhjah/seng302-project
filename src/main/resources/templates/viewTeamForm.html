@@ -196,7 +196,7 @@
                         <div class="error-message">Formation must match specified form</div>
                     </div>
                     <div class="formation-RHS">
-                        <p class="formation-description drag-info">Drag shirts to move</p>
+                        <p th:if="${isUserManagerOrCoach}" class="formation-description drag-info">Drag shirts to move</p>
                         <div class="formation-outer" th:insert="~{fragments/formationDisplay.html::formationDisplay(${isUserManagerOrCoach})}"></div>
                         <!--/* Only coaches/managers can edit formations */-->
                         <th:block th:if="${isUserManagerOrCoach}">
