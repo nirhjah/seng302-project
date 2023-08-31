@@ -90,19 +90,20 @@ public class ViewActivityController {
     int scoreTabIndex = 3;
 
     @Autowired
-    public ViewActivityController(UserService userService, ActivityService activityService, TeamService teamService,FactService factService, LineUpService lineUpService,LineUpPositionService lineUpPositionService) {
+    public ViewActivityController(UserService userService, ActivityService activityService, TeamService teamService, FactService factService, LineUpService lineUpService, LineUpPositionService lineUpPositionService) {
         this.userService = userService;
         this.activityService = activityService;
         this.teamService = teamService;
-        this.factService=factService;
-        this.lineUpService= lineUpService;
+        this.factService = factService;
+        this.lineUpService = lineUpService;
         this.lineUpPositionService = lineUpPositionService;
     }
 
     /**
      * Gets all fact types and other information for statistics depending on the activity type
-     * @param model  model to add data to
-     * @param activity  current activity
+     *
+     * @param model    model to add data to
+     * @param activity current activity
      */
     private void populateOther(Model model, Activity activity) {
         ActivityType type = activity.getActivityType();
@@ -115,7 +116,8 @@ public class ViewActivityController {
          */
         List<FactType> possibleFactTypesForActivity = switch (type) {
             case Competition, Other -> List.of(FactType.FACT);
-            case Friendly, Game -> List.of(FactType.GOAL, FactType.OPPOSITION_GOAL, FactType.SUBSTITUTION, FactType.FACT);
+            case Friendly, Game ->
+                    List.of(FactType.GOAL, FactType.OPPOSITION_GOAL, FactType.SUBSTITUTION, FactType.FACT);
             case Training -> List.of();
         };
 
@@ -131,12 +133,11 @@ public class ViewActivityController {
     }
 
     /**
-     *
-     * @param model      the model to be filled
-     * @param activityID the activity ID of the activity to be displayed on the page
-     * @param request    http request
+     * @param model           the model to be filled
+     * @param activityID      the activity ID of the activity to be displayed on the page
+     * @param request         http request
      * @param createEventForm CreateEventForm object used for validation
-     * @return           view activity page
+     * @return view activity page
      */
     @GetMapping("/view-activity")
     public String viewActivityPage(
@@ -148,14 +149,12 @@ public class ViewActivityController {
         model.addAttribute(createEventFormString, createEventForm);
         model.addAttribute("addFactForm", new AddFactForm());
 
-        if (model.asMap().containsKey(createEventFormBindingResult))
-        {
+        if (model.asMap().containsKey(createEventFormBindingResult)) {
             model.addAttribute("org.springframework.validation.BindingResult.createEventForm",
                     model.asMap().get(createEventFormBindingResult));
         }
 
-        if (model.asMap().containsKey(addFactFormBindingResult))
-        {
+        if (model.asMap().containsKey(addFactFormBindingResult)) {
             model.addAttribute("org.springframework.validation.BindingResult.addFactForm",
                     model.asMap().get(addFactFormBindingResult));
         }
@@ -165,36 +164,38 @@ public class ViewActivityController {
         }
         LineUp lineUp = lineUpService.findLineUpsByActivity(activityID);
 
-        if (lineUp!=null) {
+        if (lineUp != null) {
             Map<Integer, Long> playersAndPosition = new HashMap<Integer, Long>();
             Map<Integer, String> playerNames = new HashMap<Integer, String>();
 
-
-            List<LineUpPosition> lineupPosition = (lineUpPositionService.findLineUpPositionsByLineUp(lineUp.getLineUpId())).get();
-            Formation formation = lineUpService.findFormationByLineUpId(lineUp.getLineUpId()).get();
-            for (LineUpPosition position : lineupPosition) {
-                int positionId = position.getPosition();
-
-                User player = position.getPlayer();
-
-                playersAndPosition.put(positionId, player.getId());
-                playerNames.put(positionId, player.getFirstName());
+            Optional<Formation> formation = lineUpService.findFormationByLineUpId(lineUp.getLineUpId());
+            if (formation.isPresent()) {
+                model.addAttribute("formation", formation.get());
             }
 
+            Optional<List<LineUpPosition>> lineupPosition = (lineUpPositionService.findLineUpPositionsByLineUp(lineUp.getLineUpId()));
+            if (lineupPosition.isPresent()) {
+                for (LineUpPosition position : lineupPosition.get()) {
+                    int positionId = position.getPosition();
 
-            model.addAttribute("formation", formation);
-            model.addAttribute("playersAndPositions",playersAndPosition);
+                    User player = position.getPlayer();
+
+                    playersAndPosition.put(positionId, player.getId());
+                    playerNames.put(positionId, player.getFirstName());
+                }
+            }
+            model.addAttribute("playersAndPositions", playersAndPosition);
             model.addAttribute("playerNames", playerNames);
         }
 
 
         List<Fact> activityFacts = factService.getAllFactsForActivity(activity);
-        if (!activityFacts.isEmpty()){
+        if (!activityFacts.isEmpty()) {
             List<Substitution> activitySubstitutions = new ArrayList<>();
             List<Goal> activityGoals = new ArrayList<>();
 
             for (Object fact : activityFacts) {
-                if(fact instanceof Substitution) {
+                if (fact instanceof Substitution) {
                     activitySubstitutions.add((Substitution) fact);
 
                 } else if (fact instanceof Goal) {
@@ -239,6 +240,7 @@ public class ViewActivityController {
 
     /**
      * Determines string to display depending on who won/loss/if it was draw
+     *
      * @param activity activity to get outcome of
      * @return string with display of outcome
      */
@@ -258,13 +260,14 @@ public class ViewActivityController {
 
     /**
      * Handles adding an overall score to an activity
-     * @param actId           activity to add overall score to
-     * @param result        BindingResult used for errors
-     * @param request              request
-     * @param model                model to be filled
-     * @param httpServletResponse   httpServerletResponse
-     * @param redirectAttributes    stores error message to be displayed
-     * @return  view activity page
+     *
+     * @param actId               activity to add overall score to
+     * @param result              BindingResult used for errors
+     * @param request             request
+     * @param model               model to be filled
+     * @param httpServletResponse httpServerletResponse
+     * @param redirectAttributes  stores error message to be displayed
+     * @return view activity page
      */
     @PostMapping("/add-fact")
     public String addFactForm(
@@ -319,14 +322,15 @@ public class ViewActivityController {
 
     /**
      * Handles adding a goal fact with scorer, desc (optional), time and value to an activity
-     * @param actId           activity to add goal fact to
-     * @param createEventForm      CreateEventForm object used for validation
-     * @param bindingResult        BindingResult used for errors
-     * @param request              request
-     * @param model                model to be filled
-     * @param httpServletResponse   httpServerletResponse
-     * @param redirectAttributes    stores error message to be displayed
-     * @return  view activity page
+     *
+     * @param actId               activity to add goal fact to
+     * @param createEventForm     CreateEventForm object used for validation
+     * @param bindingResult       BindingResult used for errors
+     * @param request             request
+     * @param model               model to be filled
+     * @param httpServletResponse httpServerletResponse
+     * @param redirectAttributes  stores error message to be displayed
+     * @return view activity page
      */
     @PostMapping("/add-goal")
     public String addGoalForm(
@@ -385,10 +389,6 @@ public class ViewActivityController {
         }
 
 
-
-
-
-
         redirectAttributes.addFlashAttribute(stayOnTabNameString, scoreTabName);
         redirectAttributes.addFlashAttribute(stayOnTabIndexString, scoreTabIndex);
 
@@ -399,16 +399,17 @@ public class ViewActivityController {
 
     /**
      * Handles adding an overall score to an activity
-     * @param actId           activity to add overall score to
-     * @param overallScoreTeam overall score of team
+     *
+     * @param actId                activity to add overall score to
+     * @param overallScoreTeam     overall score of team
      * @param overallScoreOpponent overall score of opponent
      * @param createEventForm      CreateEventForm object used for validation
      * @param bindingResult        BindingResult used for errors
      * @param request              request
      * @param model                model to be filled
-     * @param httpServletResponse   httpServerletResponse
-     * @param redirectAttributes    stores error message to be displayed
-     * @return  view activity page
+     * @param httpServletResponse  httpServerletResponse
+     * @param redirectAttributes   stores error message to be displayed
+     * @return view activity page
      */
     @PostMapping("/overall-score")
     public String overallScoreForm(
@@ -467,29 +468,28 @@ public class ViewActivityController {
     }
 
 
-
-
     /**
      * Handles creating an event and adding overall scores
-     * @param actId       activity ID to add stats/event to
-     * @param factType    selected fact type
-     * @param description description of event
-     * @param activityOutcome outcome of activity (win loss or draw) for team
-     * @param time                 time of event
-     * @param subOffId             user ID of sub off
-     * @param subOnId              user ID of sub on
-     * @param createEventForm      CreateEventForm object used for validation
-     * @param bindingResult        BindingResult used for errors
-     * @param request              request
-     * @param model                model to be filled
-     * @param httpServletResponse   httpServerletResponse
-     * @param redirectAttributes    stores error message to be displayed
-     * @return                       view activity page
+     *
+     * @param actId               activity ID to add stats/event to
+     * @param factType            selected fact type
+     * @param description         description of event
+     * @param activityOutcome     outcome of activity (win loss or draw) for team
+     * @param time                time of event
+     * @param subOffId            user ID of sub off
+     * @param subOnId             user ID of sub on
+     * @param createEventForm     CreateEventForm object used for validation
+     * @param bindingResult       BindingResult used for errors
+     * @param request             request
+     * @param model               model to be filled
+     * @param httpServletResponse httpServerletResponse
+     * @param redirectAttributes  stores error message to be displayed
+     * @return view activity page
      */
     @PostMapping("/view-activity")
     public String createEvent(
             @RequestParam(name = "actId", defaultValue = "-1") long actId,
-            @RequestParam(name = "factType", defaultValue = "FACT")  FactType factType,
+            @RequestParam(name = "factType", defaultValue = "FACT") FactType factType,
             @RequestParam(name = "description", defaultValue = "") String description,
             @RequestParam(name = "activityOutcomes", defaultValue = "None") ActivityOutcome activityOutcome,
             @RequestParam(name = "time") String time,
@@ -520,10 +520,9 @@ public class ViewActivityController {
         }
 
         if (factType == FactType.FACT && description.isEmpty()) {
-                logger.info("description was not provided for fact");
-                bindingResult.addError(new FieldError(createEventFormString, "description", "Fact type events require a description"));
+            logger.info("description was not provided for fact");
+            bindingResult.addError(new FieldError(createEventFormString, "description", "Fact type events require a description"));
         }
-
 
 
         if (bindingResult.hasErrors()) {
@@ -545,14 +544,14 @@ public class ViewActivityController {
 
             case SUBSTITUTION:
                 Optional<User> potentialSubOff = userService.findUserById(subOffId);
-                if (potentialSubOff.isEmpty()){
+                if (potentialSubOff.isEmpty()) {
                     logger.error("subbed off player Id not found");
                     return viewActivityRedirectUrl;
                 }
                 User playerOff = potentialSubOff.get();
 
                 Optional<User> potentialSubOn = userService.findUserById(subOnId);
-                if (potentialSubOff.isEmpty()){
+                if (potentialSubOff.isEmpty()) {
                     logger.error("subbed on player Id not found");
                     return viewActivityRedirectUrl;
                 }
