@@ -196,7 +196,7 @@ public class ViewTeamControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"", "hi", "0", "99", "H1-4", "0-1-2", "1-0"})
+    @ValueSource(strings = {"", "hi", "0", "99", "H1-4", "0-1-2", "-5", "5-", "1-0", "1-1-1-1-1-1-1-1-1"})
     public void createFormation_invalidFormation_fails(String formation) throws Exception {
         when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         mockMvc.perform(post("/team-info/create-formation")
