@@ -248,32 +248,56 @@
         handleButtonClick('shape-button', false, false);
         upperCanvas.classList.add("erase");
       } else if (event.key === 'Delete' || event.key === 'Backspace') {
-        canvas.remove(canvas.getActiveObject());
+        canvas.remove(...canvas.getActiveObjects());
       } else if (event.key === 'c') {
         canvas.clear();
       }
     });
 
     // Event listener for canvas interactions
+    let mouseDown = false; // Track mouse button state
+
     canvas.on('mouse:down', function(options) {
-      if (activeMode === 'shape-button') {
-        let circle = new fabric.Circle({
-          left: options.e.clientX - canvas._offset.left,
-          top: options.e.clientY - canvas._offset.top,
-          radius: 30,
-          fill: 'blue'
-        });
-        canvas.add(circle);
-      } else if (activeMode === 'erase-button') {
-        let pointer = canvas.getPointer(options.e);
-        let objects = canvas.getObjects();
-        for (let i = 0; i < objects.length; i++) {
-          if (objects[i].containsPoint(pointer)) {
-            canvas.remove(objects[i]);
-          }
+      if (options.e.button === 0) { // Check if left mouse button is pressed
+        mouseDown = true;
+        if (activeMode === 'erase-button') {
+          eraseObjects(options.e);
         }
       }
     });
+
+    canvas.on('mouse:up', function() {
+      mouseDown = false;
+    });
+
+    canvas.on('mouse:move', function(options) {
+      if (mouseDown && activeMode === 'erase-button') {
+        eraseObjects(options.e);
+      }
+    });
+
+    function eraseObjects(event) {
+      let pointer = canvas.getPointer(event);
+      let objects = canvas.getObjects();
+
+      for (let i = 0; i < objects.length; i++) {
+        if (objects[i].containsPoint(pointer)) {
+          canvas.remove(objects[i]);
+        }
+      }
+    }
+
+
+
+        // if (activeMode === 'shape-button') {
+    //   let circle = new fabric.Circle({
+    //     left: options.e.clientX - canvas._offset.left,
+    //     top: options.e.clientY - canvas._offset.top,
+    //     radius: 30,
+    //     fill: 'blue'
+    //   });
+    //   canvas.add(circle);
+
   });
 
 </script>
