@@ -36,7 +36,7 @@
             </div>
             <div class="tab" id="formations-tab" th:if="${canShowScores}">
                 <img class="tab-icon" th:src="@{/image/icons/formation.svg}"/>
-                <button class="tab-button"> Formations &nbsp;
+                <button class="tab-button" onclick="render()"> Formations &nbsp;
                 </button>
 
             </div>
@@ -419,17 +419,12 @@
 </script>
 <script th:inline="javascript">
 
-    // const positions = pitch.childNodes;
+    function render() {
+        setTimeout(function () {
+            loadFormation();
+        }, 1100);
+    }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        // const pitch = document.querySelector(".pitch");
-        // if (pitch) {
-            console.log("createactivity")
-            setTimeout(function () {
-                loadFormation();
-            }, 1500);
-    //     }
-    });
     function loadFormation() {
         const formationOuter = document.querySelector(".formation-outer");
         var formation = formationOuter.getAttribute("data-formation");
@@ -438,30 +433,35 @@
         generatedOrCustom(formation, JSON.parse(custom), customPlayers);
         addPlayers();
     }
+
     function addPlayers() {
         const playersAndPositions = /*[[${playersAndPositions}]]*/ {};
         const playerNames = /*[[${playerNames}]]*/ {};
         const positions = pitch.childNodes;
 
-        for (let i = 0; i < positions.length; i++) {
-            const position = positions[i];
-            const playerId = playersAndPositions[i + 1];
-            const playerName = playerNames[i+1];
-            const playerNameElement = position.querySelector('h3');
+        for (const positionIndex in playersAndPositions) {
+            const playerId = playersAndPositions[positionIndex];
+            const playerName = playerNames[positionIndex];
 
-            playerNameElement.textContent =playerName;
-            playerNameElement.style.display='inline-block';
-            playerNameElement.style.width='auto';
+            const position = positions[positionIndex - 1];
 
-            const playerImage = position.querySelector('.player-profile-img');
+            if (position) {
+                const playerNameElement = position.querySelector('h3');
+                playerNameElement.textContent = playerName;
+                playerNameElement.style.display = 'inline-block';
+                playerNameElement.style.width = 'auto';
+                playerNameElement.style.marginLeft='-4px';
 
+                const playerImage = position.querySelector('.player-profile-img');
+                playerImage.src = "/user-profile-picture/" + playerId;
+                playerImage.alt = "My Profile";
 
-            playerImage.src = "/user-profile-picture/" + playerId;
-            playerImage.alt = "My Profile";
-
-            position.style.backgroundImage = 'none';
+                position.style.backgroundImage = 'none';
+            }
         }
+
     }
+
 
     // Get a reference to the dropdown select element
     var factTypeSelect = document.getElementById("factType");
