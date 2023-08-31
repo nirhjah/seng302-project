@@ -9,10 +9,10 @@
     cursor: url('../image/icons/eraser-cursor.png') 10 15, auto !important;
 }
 
-.canvas-container {
-    background-image: url('../image/icons/pitch.svg');
-    background-repeat: no-repeat;
-}
+/*.canvas-container {*/
+/*    background-image: url('../image/icons/pitch.svg');*/
+/*    background-repeat: no-repeat;*/
+/*}*/
 
 .whiteboard-wrapper {
     display:flex;
@@ -105,9 +105,26 @@
 }
 
 .whiteboard-dropdowns .dropdown{
+    display:flex;
+    flex-direction:column;
     color: #1B263B;
     font-size:18px;
+    margin: 30px 0;
 }
+.whiteboard-dropdowns .dropdown label{
+    margin-bottom: 8px;
+}
+.whiteboard-dropdowns .dropdown select{
+    font-size:18px;
+    background:#ffffff;
+    cursor:pointer;
+    border-color:#0b2239;
+    color:#0b2239;
+    height:48px;
+    text-align:center;
+    border-radius:8px;
+}
+
 
 
 

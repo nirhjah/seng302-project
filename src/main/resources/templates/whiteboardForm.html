@@ -18,19 +18,24 @@
 
             <div class="dropdown">
                 <label for="pitch">Pitch Type</label>
-                <select class="select" id="pitch">
-                </select>
+                <select class="select" id="pitch"></select>
             </div>
 
             <div class="dropdown">
                 <label for="formation">Formation</label>
-                <select class="select" id="formation">
+                <select class="select" id="formation" disabled>
+                    <option value="disabled">disabled</option>
                 </select>
+            </div>
+
+            <div class="line">
+                <h3>or</h3>
             </div>
 
             <div class="dropdown">
                 <label for="formation">Line-Up</label>
-                <select class="select" id="lineup">
+                <select class="select" id="lineup" disabled>
+                    <option value="disabled">disabled</option>
                 </select>
             </div>
 
@@ -72,8 +77,32 @@
 </body>
 <script>
 
+    let canvas = new fabric.Canvas('canvas');
+
+    const pitchTypes = ["American Football", "Basketball", "Hockey", "Netball", "Rugby", "Soccer", "Tennis", "Volleyball"];
+    const pitchSelect = document.getElementById("pitch");
+    pitchTypes.forEach(pitchType => {
+        const option = document.createElement("option");
+        option.value = pitchType.toLowerCase().replace(" ", "-");
+        option.textContent = pitchType;
+        pitchSelect.appendChild(option);
+    });
+
+    const imagePath = "../image/pitches/";
+
+    pitchSelect.addEventListener("change", function() {
+        const selectedValue = this.value;
+        const imageUrl = `${imagePath}${selectedValue}.svg`;
+
+        fabric.Image.fromURL(imageUrl, function(img) {
+            canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+                scaleX: canvas.width / img.width,
+                scaleY: canvas.height / img.height
+            });
+        });
+    });
+
     document.addEventListener("DOMContentLoaded", function () {
-        let canvas = new fabric.Canvas('canvas');
         let activeMode = null;
         canvas.freeDrawingBrush.width = 5;
         canvas.freeDrawingBrush.color = '#ff0000';
