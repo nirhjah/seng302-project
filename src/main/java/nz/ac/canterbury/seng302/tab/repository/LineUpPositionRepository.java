@@ -12,4 +12,5 @@ public interface LineUpPositionRepository extends CrudRepository<LineUpPosition,
 
     Optional<List<LineUpPosition>> findLineUpPositionsByLineUpLineUpId(Long lineUpId);
 
+
 }
