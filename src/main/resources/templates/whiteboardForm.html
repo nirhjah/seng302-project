@@ -28,15 +28,13 @@
         <div class="customisation-box draw-button">
           <div class="style-section">
             <div class="header">
-              <h3>Style</h3>
-              <div>
-                <label>Arrow
-                  <input class="arrow-checkbox" type="checkbox">
-                </label>
-              </div>
+              <h5>Style</h5>
+              <label>Arrow
+                <input class="arrow-checkbox" type="checkbox">
+              </label>
             </div>
             <div class="content">
-              <button class="draw-style-button-solid">
+              <button class="draw-style-button-solid active">
                 <img class="selected-svg" src="/image/icons/solid-line-selected.svg" />
                 <img class="default-svg" src="/image/icons/solid-line.svg" />
               </button>
@@ -48,23 +46,23 @@
           </div>
           <div class="colour-section">
             <div class="header">
-              <h3>Style</h3>
+              <h5>Colour</h5>
             </div>
             <div class="content">
-              <input type="color" value="#ff0000">
+              <input class="colour-picker" type="color" value="#ff0000">
               <div>
-                <h3>#</h3>
-                <h3 id="colorValue">FF0000</h3>
+                <h5>#</h5>
+                <input id="colorValue" value="FF0000">
               </div>
             </div>
           </div>
           <div class="width-section">
             <div class="header">
-              <h3>Width</h3>
+              <h5>Width</h5>
             </div>
             <div class="content">
-              <input type="range" min="1" max="50" value="5">
-              <h3 id="widthValue">5</h3>
+              <input id="rangeInput" type="range" min="1" max="50" value="5">
+              <input type="number" max="50" min="1" id="widthValue" value="5">
             </div>
           </div>
         </div>
@@ -106,7 +104,11 @@
 
     function handleButtonClick(buttonClass, drawMode, selectMode) {
       const buttons = document.querySelectorAll('.whiteboard-buttons button');
-      buttons.forEach(button => button.classList.remove('active'));
+      buttons.forEach(button => {
+        if (!button.parentElement.classList.contains("content")) {
+          button.classList.remove('active')
+        }
+      });
       document.querySelector('.' + buttonClass).classList.add('active');
 
       const customisationBoxes = document.querySelectorAll('.customisation-box');
@@ -123,6 +125,17 @@
       canvas.selection = selectMode;
       upperCanvas.classList.remove("erase");
     }
+
+
+
+    document.addEventListener('mousedown', function(event) {
+      const buttonBox = document.querySelector(".whiteboard-buttons")
+      // Check if the clicked element is not the box
+      if (!buttonBox.contains(event.target)) {
+        const customisationBoxes = document.querySelectorAll('.customisation-box');
+        customisationBoxes.forEach(box => box.classList.remove('active'));
+      }
+    });
 
 
     document.querySelector('.draw-button').addEventListener('click', function() {
@@ -146,6 +159,83 @@
       canvas.clear();
     });
 
+    const drawStyleButtonSolid = document.querySelector('.draw-style-button-solid');
+    const drawStyleButtonDashed = document.querySelector('.draw-style-button-dashed');
+
+    drawStyleButtonSolid.addEventListener('click', function() {
+      switchLineTypes()
+    });
+
+    drawStyleButtonDashed.addEventListener('click', function() {
+      switchLineTypes()
+    });
+
+    const rangeInput = document.getElementById('rangeInput');
+    const widthValueInput = document.getElementById('widthValue');
+
+    rangeInput.addEventListener('input', function() {
+      widthValueInput.value = this.value;
+      canvas.freeDrawingBrush.width = parseInt(this.value, 10);
+      updateLineType()
+
+    });
+
+    widthValueInput.addEventListener('input', function() {
+      const newValue = this.value;
+      if (newValue >= 1 && newValue <= 50) {
+        rangeInput.value = newValue;
+        canvas.freeDrawingBrush.width = parseInt(this.value, 10);
+        updateLineType()
+      }
+    });
+
+    function switchLineTypes() {
+      drawStyleButtonSolid.classList.toggle('active')
+      drawStyleButtonDashed.classList.toggle('active')
+      updateLineType()
+    }
+
+    const colorPicker = document.querySelector('.colour-picker');
+    const colorValueInput = document.getElementById('colorValue');
+
+    // Event listener for the color picker
+    colorPicker.addEventListener('input', function() {
+      const newColor = this.value;
+      colorValueInput.value = newColor.substr(1).toUpperCase();
+      canvas.freeDrawingBrush.color = this.value;
+    });
+
+    // Event listener for the color value input
+    colorValueInput.addEventListener('input', function() {
+      const newColor = this.value;
+      if (isValidHexColor(newColor)) {
+        colorPicker.value = '#' + newColor;
+        canvas.freeDrawingBrush.color = '#' + newColor;
+      }
+    });
+
+    colorValueInput.addEventListener('keydown', function (event) {
+      event.stopPropagation();
+    });
+
+    // Function to check if a given string is a valid hex color
+    function isValidHexColor(hex) {
+      return /^([0-9A-F]{3}){1,2}$/i.test(hex);
+    }
+
+    function updateLineType() {
+      const canvasWidth = 5 * canvas.freeDrawingBrush.width
+      if (drawStyleButtonDashed.classList.contains('active')) {
+        canvas.freeDrawingBrush.lineDashOffset = 0;
+        canvas.freeDrawingBrush.strokeDashArray = [canvasWidth, canvasWidth / 2];
+      } else {
+        canvas.freeDrawingBrush.lineDashOffset = 0;
+        canvas.freeDrawingBrush.strokeDashArray = [];
+      }
+    }
+
+
+
     document.addEventListener('keydown', function(event) {
       if (event.key === 's') {
         handleButtonClick('select-button', false, true);
@@ -158,7 +248,7 @@
         handleButtonClick('shape-button', false, false);
         upperCanvas.classList.add("erase");
       } else if (event.key === 'Delete' || event.key === 'Backspace') {
-        canvas.remove(canvas.getActiveObjects());
+        canvas.remove(canvas.getActiveObject());
       } else if (event.key === 'c') {
         canvas.clear();
       }

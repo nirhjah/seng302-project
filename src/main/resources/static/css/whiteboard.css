@@ -62,11 +62,12 @@
 
 .whiteboard-buttons button img {
     height: 25px;
+    width: 25px;
 }
 
 .whiteboard-buttons button.active {
     background: #0b2239;
-    border: 2px white solid;
+    border: 3px white solid;
 }
 
 .whiteboard-buttons .delete-button {
@@ -77,17 +78,14 @@
     height: 30px;
 }
 
-/* Hide the selected SVG by default */
 .selected-svg {
     display: none;
 }
 
-/* Show the selected SVG when the button has the "active" class */
 .active .selected-svg {
     display: inline-block;
 }
 
-/* Show the default SVG when the button doesn't have the "active" class */
 .default-svg {
     display: inline-block;
 }
@@ -100,13 +98,14 @@
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
-    width: 77px;
     position: absolute;
     background: #0b2239;
-    height: 35px;
-    margin-top: 110px;
+    margin-top: 255px;
     z-index: 1;
     border-radius: 5px;
+    padding: 7px;
+    color: white;
+    width: 162px;
 }
 
 .customisation-box.active {
@@ -117,7 +116,7 @@
 .customisation-box::before {
     content: '';
     position: absolute;
-    top: -10px;
+    top: -7px;
     left: 9px;
     transform: rotate(180deg);
     border-style: solid;
@@ -128,5 +127,120 @@
 .customisation-box.draw-button {
     margin-left: 55px;
 }
+
+.customisation-box .header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.customisation-box .content {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.customisation-box button {
+    background: white;
+    height: 40px;
+    width: 70px;
+    border-radius: 5px;
+    margin-left: 0;
+}
+
+.customisation-box button .selected-svg {
+    display: none;
+}
+
+.customisation-box button.active .selected-svg {
+    display: inline-block;
+}
+
+.customisation-box button .default-svg {
+    display: inline-block;
+}
+
+.customisation-box button.active .default-svg {
+    display: none;
+}
+
+.draw-style-button-solid img {
+    height: 20px !important;
+    width: 70px !important;
+}
+
+.draw-style-button-dashed img {
+    height: 20px !important;
+    width: 50px !important;
+}
+
+.style-section label {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.colour-picker {
+    border: white 4px solid;
+    min-width: 70px;
+    height: 40px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.colour-section div {
+    display: flex;
+    align-items: center;
+}
+
+.colour-section .content h5 {
+    background: white;
+    color: #0b2239;
+    border-radius: 5px 0 0 5px;
+    padding: 5px;
+    height: 25px;
+    border-right: #0b2239 2px solid;
+    cursor: default;
+}
+
+#colorValue {
+    min-width: unset;
+    height: 25px;
+    width: 51px;
+    border-radius: 0 5px 5px 0;
+    border: none;
+    font-size: 12px;
+    color: #0b2239;
+    padding-left: 3px;
+}
+
+.width-section input {
+    width: 38px;
+    cursor: pointer;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    background: transparent;
+    width: 100px !important;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+    background: white;
+    height: 0.3rem;
+    border-radius: 5px;
+}
+
+/******** Firefox ********/
+input[type="range"]::-moz-range-track {
+    background: white;
+    height: 0.3rem;
+    border-radius: 5px;
+}
+
+
+
+
 
 
