@@ -402,4 +402,44 @@ public class ViewActivityControllerTests {
                 )
                 .andExpect(status().isFound());
     }
+
+    @Test
+    public void testAddOutcomeSetAsWin() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        mockMvc.perform(post("/add-outcome", 42L)
+                        .param("actId", String.valueOf(activity.getId()))
+                        .param("activityOutcomes", String.valueOf(ActivityOutcome.Win))
+                )
+                .andExpect(status().isFound());
+    }
+
+    @Test
+    public void testAddOutcomeSetNothing() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        mockMvc.perform(post("/add-outcome", 42L)
+                        .param("actId", String.valueOf(activity.getId()))
+                        .param("activityOutcomes", String.valueOf(ActivityOutcome.None))
+                )
+                .andExpect(status().isFound());
+    }
+
+    @Test
+    public void testAddOutcomeSetAsDraw() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        mockMvc.perform(post("/add-outcome", 42L)
+                        .param("actId", String.valueOf(activity.getId()))
+                        .param("activityOutcomes", String.valueOf(ActivityOutcome.Draw))
+                )
+                .andExpect(status().isFound());
+    }
+
+    @Test
+    public void testAddOutcomeSetAsLoss() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        mockMvc.perform(post("/add-outcome", 42L)
+                        .param("actId", String.valueOf(activity.getId()))
+                        .param("activityOutcomes", String.valueOf(ActivityOutcome.Loss))
+                )
+                .andExpect(status().isFound());
+    }
 }

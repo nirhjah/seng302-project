@@ -301,7 +301,7 @@ public class ViewActivityController {
      * @param redirectAttributes    stores error message to be displayed
      * @return  view activity page
      */
-    @PostMapping("/addOutcome")
+    @PostMapping("/add-outcome")
     public String addFactForm(
             @RequestParam(name = "actId", defaultValue = "-1") long actId,
             @RequestParam(name = "activityOutcomes", defaultValue = "NONE") ActivityOutcome activityOutcome,
@@ -314,10 +314,9 @@ public class ViewActivityController {
         String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
         if (activityOutcome != ActivityOutcome.None) {
             activity.setActivityOutcome(activityOutcome);
+            activityService.updateOrAddActivity(activity);
         }
-        activityService.updateOrAddActivity(activity);
         return viewActivityRedirectUrl;
-
     }
 
 
@@ -388,11 +387,6 @@ public class ViewActivityController {
             activity.addFactList(factList);
             activityService.updateOrAddActivity(activity);
         }
-
-
-
-
-
 
         redirectAttributes.addFlashAttribute(stayOnTabNameString, scoreTabName);
         redirectAttributes.addFlashAttribute(stayOnTabIndexString, scoreTabIndex);

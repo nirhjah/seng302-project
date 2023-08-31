@@ -83,7 +83,7 @@
 
                             <div class="modal-content event" style="bottom: unset; width: 20%">
                                 <span class="close" onclick="outcomeModal.style.display = 'none'">&times;</span>
-                                <form style="height: unset" th:action="@{addOutcome}" method="post">
+                                <form style="height: unset" th:action="@{add-outcome}" method="post">
                                     <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
                                     <h3 style="text-align: center; font-size: x-large; padding-bottom: 10px">Add Outcome</h3>
                                     <div class="add-fact-box">
