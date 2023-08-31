@@ -468,6 +468,48 @@
         });
 */
 
+      function render() {
+          setTimeout(function () {
+              loadFormation();
+          }, 500);
+      }
+
+      function loadFormation() {
+          const formationOuter = document.querySelector(".formation-outer");
+          var formation = formationOuter.getAttribute("data-formation");
+          var custom = formationOuter.getAttribute("data-custom");
+          var customPlayers = formationOuter.getAttribute("data-customPlayers");
+          generatedOrCustom(formation, JSON.parse(custom), customPlayers);
+          addPlayers();
+      }
+
+      function addPlayers() {
+          const playersAndPositions = /*[[${playersAndPositions}]]*/ {};
+          const playerNames = /*[[${playerNames}]]*/ {};
+          const positions = pitch.childNodes;
+
+          for (const positionIndex in playersAndPositions) {
+              const playerId = playersAndPositions[positionIndex];
+              const playerName = playerNames[positionIndex];
+
+              const position = positions[positionIndex - 1];
+
+              if (position) {
+                  const playerNameElement = position.querySelector('h3');
+                  playerNameElement.textContent = playerName;
+                  playerNameElement.style.display = 'inline-block';
+                  playerNameElement.style.width = 'auto';
+                  playerNameElement.style.marginLeft='-4px';
+
+                  const playerImage = position.querySelector('.player-profile-img');
+                  playerImage.src = "/user-profile-picture/" + playerId;
+                  playerImage.alt = "My Profile";
+
+                  position.style.backgroundImage = 'none';
+              }
+          }
+
+      }
 
         function setUpSteppers(decreaseButton, increaseButton, valueInput) {
             decreaseButton.addEventListener('click', (event) => {
@@ -650,49 +692,6 @@
     }
 </script>
 <script th:inline="javascript">
-
-    function render() {
-        setTimeout(function () {
-            loadFormation();
-        }, 500);
-    }
-
-    function loadFormation() {
-        const formationOuter = document.querySelector(".formation-outer");
-        var formation = formationOuter.getAttribute("data-formation");
-        var custom = formationOuter.getAttribute("data-custom");
-        var customPlayers = formationOuter.getAttribute("data-customPlayers");
-        generatedOrCustom(formation, JSON.parse(custom), customPlayers);
-        addPlayers();
-    }
-
-    function addPlayers() {
-        const playersAndPositions = /*[[${playersAndPositions}]]*/ {};
-        const playerNames = /*[[${playerNames}]]*/ {};
-        const positions = pitch.childNodes;
-
-        for (const positionIndex in playersAndPositions) {
-            const playerId = playersAndPositions[positionIndex];
-            const playerName = playerNames[positionIndex];
-
-            const position = positions[positionIndex - 1];
-
-            if (position) {
-                const playerNameElement = position.querySelector('h3');
-                playerNameElement.textContent = playerName;
-                playerNameElement.style.display = 'inline-block';
-                playerNameElement.style.width = 'auto';
-                playerNameElement.style.marginLeft='-4px';
-
-                const playerImage = position.querySelector('.player-profile-img');
-                playerImage.src = "/user-profile-picture/" + playerId;
-                playerImage.alt = "My Profile";
-
-                position.style.backgroundImage = 'none';
-            }
-        }
-
-    }
 
 
     // Get a reference to the dropdown select element
