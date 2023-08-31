@@ -207,7 +207,6 @@ public class ViewActivityController {
         model.addAttribute("factList", factList);
 
         // attributes for the subs
-
         // all players who are currently playing - for the sub off
         List<User> playersInLineUp = getAllPlayersPlaying(activity.getId());
         model.addAttribute("playersInLineUp", playersInLineUp);
@@ -485,21 +484,20 @@ public class ViewActivityController {
      * @return a list of the users that are currently in the lineup for the activity, if there are no players the returns an empty list 
     */
     private List<User> getAllPlayersPlaying(long actId) {
-        List<LineUp> activityLineups = lineUpService.findLineUpByActivity(actId).get();
-        for (LineUp lineup : activityLineups) {
-            logger.info(String.format("the id of the activity is %d", lineup.getTeam().getId()));
+        Optional<List<LineUp>> optionalActivityLineups = lineUpService.findLineUpByActivity(actId);
+        if (optionalActivityLineups.isEmpty()) {
+            return List.of(); 
         }
-        // TODO we are grabbing the first one now but i dont know if there can possibly be multiple objects in this list
-        LineUp lineup = activityLineups.get(0);
+        List<LineUp> activityLineups = optionalActivityLineups.get();
+        
+        LineUp lineup = activityLineups.get(activityLineups.size() -1); // here we get the last one as that is the most recent one 
         Optional<List<LineUpPosition>> optionaLineupPositions = lineUpPositionService.findLineUpPositionsByLineUp(lineup.getLineUpId());
+
         if (optionaLineupPositions.isEmpty()) {
-            // there are no players to be subbed off so return an empty list and expect the caller to handle this 
             return List.of();
         }
+
         List<User> playersInLineUp = optionaLineupPositions.get().stream().map(x -> x.getPlayer()).collect(Collectors.toList());
-        for (User player : playersInLineUp) {
-            logger.info(String.format("the player name is %s", player.getFirstName()));
-        }
 
         return playersInLineUp;
     }
