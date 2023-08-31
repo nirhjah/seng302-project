@@ -1,5 +1,4 @@
 package nz.ac.canterbury.seng302.tab.form;
-
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.FactType;
@@ -13,6 +12,8 @@ public class CreateEventForm {
   private String time;
 
   private Activity activity;
+
+  private int scorer;
 
   private String overallScoreTeam;
 
@@ -82,6 +83,12 @@ public class CreateEventForm {
   }
 
 
+  public int getScorer() {
+    return scorer;
+  }
 
+  public void setScorer(int scorer) {
+    this.scorer = scorer;
+  }
 }
 
