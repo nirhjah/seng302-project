@@ -5,6 +5,10 @@
     flex-direction:column
 }
 
+.upper-canvas.erase {
+    cursor: url('../image/icons/eraser-cursor.png') 10 15, auto !important;
+}
+
 .canvas-container {
     background-image: url('../image/icons/pitch.svg');
     background-repeat: no-repeat;
