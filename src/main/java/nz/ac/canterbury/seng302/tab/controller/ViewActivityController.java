@@ -165,8 +165,8 @@ public class ViewActivityController {
         LineUp lineUp = lineUpService.findLineUpsByActivity(activityID);
 
         if (lineUp != null) {
-            Map<Integer, Long> playersAndPosition = new HashMap<Integer, Long>();
-            Map<Integer, String> playerNames = new HashMap<Integer, String>();
+            Map<Integer, Long> playersAndPosition = new HashMap<>();
+            Map<Integer, String> playerNames = new HashMap<>();
 
             Optional<Formation> formation = lineUpService.findFormationByLineUpId(lineUp.getLineUpId());
             if (formation.isPresent()) {
