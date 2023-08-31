@@ -29,9 +29,9 @@
                 <img class="tab-icon" th:src="@{/image/icons/activity.png}"/>
                 <button class="tab-button"> General &nbsp;</button>
             </div>
-            <div class="tab" id="facts-tab" >
-                <img class ="tab-icon" th:src="@{/image/icons/editform.svg}" />
-                <button class="tab-button" > Facts &nbsp;</button>
+            <div class="tab" id="facts-tab">
+                <img class="tab-icon" th:src="@{/image/icons/editform.svg}"/>
+                <button class="tab-button"> Facts &nbsp;</button>
                 <div class="tab-line"></div>
             </div>
             <div class="tab" id="formations-tab" th:if="${canShowScores}">
@@ -88,36 +88,43 @@
         <div class="content-box" id="facts-tab" style="margin-bottom: 16px">
             <div class="content">
                 <div th:if="${activity.team==null || (activity.team !=null && (activity.team.isManager(currentUser.get()) ||
-                activity.team.isCoach(currentUser.get())))}" class="submit-button" style="padding-top: 10px; padding-bottom: 10px">
+                activity.team.isCoach(currentUser.get())))}" class="submit-button"
+                     style="padding-top: 10px; padding-bottom: 10px">
                     <button style="width: 50%" onclick="addFactModal.style.display = 'block'">Add Fact</button>
                 </div>
 
-                <div id="addFactModal" class="modal" th:style="${factInvalid != null ? 'display:block' : 'display:none'}">
+                <div id="addFactModal" class="modal"
+                     th:style="${factInvalid != null ? 'display:block' : 'display:none'}">
 
                     <div class="add-goal-modal-content event" style="bottom: unset">
                         <span class="close" onclick="addFactModal.style.display = 'none'">&times;</span>
-                        <form style="height: unset" th:action="@{add-fact}" id="addFactForm" method="post" th:object="${addFactForm}" class="view-activity-form">
+                        <form style="height: unset" th:action="@{add-fact}" id="addFactForm" method="post"
+                              th:object="${addFactForm}" class="view-activity-form">
                             <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
                             <h3 class="add-fact-title">Add Fact</h3>
                             <div class="add-fact-box">
                                 <div>
                                     <div style="margin-bottom: -10px" class="factTime-input-div">
                                         <div>
-                                        <label class="fact-input" for="time-of-fact">Time (minutes)</label>
+                                            <label class="fact-input" for="time-of-fact">Time (minutes)</label>
                                         </div>
-                                        <div style="display: unset" th:each="err : ${#fields.errors('timeOfFact')}" th:text="${err}" class="error-message"></div>
+                                        <div style="display: unset" th:each="err : ${#fields.errors('timeOfFact')}"
+                                             th:text="${err}" class="error-message"></div>
                                         <div style="margin-bottom: 10%; padding-top: 5px" class="number-spinner">
-                                                <button class="decreaseTime">-</button>
-                                            <input type="number" class="valueInputTime" value="1" min="1" id="time-of-fact" name="timeOfFact" th:field="*{timeOfFact}">
+                                            <button class="decreaseTime">-</button>
+                                            <input type="number" class="valueInputTime" value="1" min="1"
+                                                   id="time-of-fact" name="timeOfFact" th:field="*{timeOfFact}">
                                             <button class="increaseTime">+</button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="fact-desc">
                                     <label class="fact-input" for="desc-of-fact">Description*:</label>
-                                    <textarea class="fact-input" name="description" id="desc-of-fact" type="text-area" rows="5" th:field="*{description}" th:value="${description}"></textarea>
+                                    <textarea class="fact-input" name="description" id="desc-of-fact" type="text-area"
+                                              rows="5" th:field="*{description}" th:value="${description}"></textarea>
                                 </div>
-                                <div style="display: unset" th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
+                                <div style="display: unset" th:each="err : ${#fields.errors('description')}"
+                                     th:text="${err}" class="error-message"></div>
                             </div>
                             <div class="submit-button" style="padding-top: 5%;">
                                 <button id="createEvent" type="submit" class="registerLoginButton">Add Fact</button>
@@ -151,12 +158,12 @@
 
         <div class="content-box" id="formation-tab">
             <div class="content">
-                 <div id="addSubModal" class="modal">
-                     <div class="add-goal-modal-content event" style="bottom: unset">
-                         <span class="close" onclick="addGoalModal.style.display = 'none'">&times;</span>
+                <div id="addSubModal" class="modal">
+                    <div class="add-goal-modal-content event" style="bottom: unset">
+                        <span class="close" onclick="addGoalModal.style.display = 'none'">&times;</span>
                         <p> hello there</p>
-                     </div>
-                 </div>
+                    </div>
+                </div>
                 <div class="formation-outer"
                      th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"
                      th:if="${formation != null}"
@@ -217,52 +224,62 @@
             <div class="content">
 
 
- <div class="scoreboard">
+                <div class="scoreboard">
 
-                <div class="score-display">
+                    <div class="score-display">
 
-                    <div>
-                        <h3 style="font-size: 30px" th:text="${activity.team}"></h3>
+                        <div>
+                            <h3 style="font-size: 30px" th:text="${activity.team}"></h3>
 
+
+                        </div>
+
+
+                        <hr class="scoreboard-divider">
+                        <div class="scores-div">
+                            <h1 th:if="${activity.activityTeamScore != null && activity.otherTeamScore != null}"
+                                class="teamScore" th:text="${activity.activityTeamScore}"></h1>
+                            <h1 th:if="${activity.activityTeamScore != null && activity.otherTeamScore != null}"
+                                class="otherTeamScore" th:text="${activity.otherTeamScore}"></h1>
+                        </div>
+                        <div>
+                            <h3 style="font-size: 30px">Opponent</h3>
+                        </div>
+                    </div>
+
+                    <h3 class="winner-text" id="winnerText" th:text="${outcomeString}"></h3>
+
+                    <div class="score-form-button-div">
+
+                        <div class="overallScoreButtonDiv">
+                            <div th:if="${activity.team != null && (activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}"
+                                 class="submit-button">
+                                <button th:unless="${noFacts}" onclick="overallScoreModal.style.display = 'block'"
+                                        type="button">Add Overall Score
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="goalScoreButtonDiv">
+                            <div th:if="${activity.team != null && (activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}"
+                                 class="submit-button">
+                                <button th:unless="${noFacts}" onclick="addGoalModal.style.display = 'block'"
+                                        type="button">Add Goal
+                                </button>
+                            </div>
+                        </div>
 
                     </div>
 
+                    <div id="addOverallScoreModal" class="modal"
+                         th:style="${scoreInvalid != null ? 'display:block' : 'display:none'}">
 
-                    <hr class="scoreboard-divider">
-                    <div class="scores-div">
-                        <h1 th:if="${activity.activityTeamScore != null && activity.otherTeamScore != null}" class="teamScore" th:text="${activity.activityTeamScore}"></h1>
-                        <h1 th:if="${activity.activityTeamScore != null && activity.otherTeamScore != null}" class="otherTeamScore" th:text="${activity.otherTeamScore}"></h1>
-                    </div>
-                    <div>
-                        <h3 style="font-size: 30px">Opponent</h3>
-                    </div>
-                </div>
-
-     <h3 class="winner-text" id="winnerText" th:text="${outcomeString}" ></h3>
-
-     <div class="score-form-button-div">
-
-         <div class="overallScoreButtonDiv">
-             <div th:if="${activity.team != null && (activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}" class="submit-button">
-                 <button th:unless="${noFacts}" onclick="overallScoreModal.style.display = 'block'" type="button">Add Overall Score</button>
-             </div>
-         </div>
-
-         <div class="goalScoreButtonDiv">
-             <div th:if="${activity.team != null && (activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}" class="submit-button">
-                 <button th:unless="${noFacts}" onclick="addGoalModal.style.display = 'block'" type="button">Add Goal</button>
-             </div>
-         </div>
-
-         </div>
-
-     <div id="addOverallScoreModal" class="modal" th:style="${scoreInvalid != null ? 'display:block' : 'display:none'}">
-
-         <div class="overall-score-modal-content event" style="bottom: unset">
-             <span class="close" onclick="overallScoreModal.style.display = 'none'">&times;</span>
-             <form style="height: unset" th:action="@{overall-score}" id="createEventForm" method="post" th:object="${createEventForm}" class="view-activity-form">
-                 <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
-                 <h3 style="text-align: center">Add Overall Score</h3>
+                        <div class="overall-score-modal-content event" style="bottom: unset">
+                            <span class="close" onclick="overallScoreModal.style.display = 'none'">&times;</span>
+                            <form style="height: unset" th:action="@{overall-score}" id="createEventForm" method="post"
+                                  th:object="${createEventForm}" class="view-activity-form">
+                                <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
+                                <h3 style="text-align: center">Add Overall Score</h3>
 
                                 <div class="overall-scores-box">
 
@@ -293,98 +310,96 @@
                                     the same format i.e either 12-4 and 9-3 or 23 and 18 </label>
 
 
-                 <div style="padding-bottom: 11px; padding-top: 11px;" class="submit-button">
-                     <button style="width: 30%" id="createEvent" type="submit"> Add </button>
-                 </div>
+                                <div style="padding-bottom: 11px; padding-top: 11px;" class="submit-button">
+                                    <button style="width: 30%" id="createEvent" type="submit"> Add</button>
+                                </div>
 
 
-             </form>
-         </div>
+                            </form>
+                        </div>
 
-     </div>
-
-
+                    </div>
 
 
+                    <div id="addGoalModal" class="modal"
+                         th:style="${goalInvalid != null ? 'display:block' : 'display:none'}">
 
-     <div id="addGoalModal" class="modal" th:style="${goalInvalid != null ? 'display:block' : 'display:none'}">
+                        <div class="add-goal-modal-content event" style="bottom: unset">
+                            <span class="close" onclick="addGoalModal.style.display = 'none'">&times;</span>
+                            <form style="height: unset" th:action="@{add-goal}" id="goalForm" method="post"
+                                  th:object="${createEventForm}" class="view-activity-form">
+                                <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
+                                <h3>Add Goal</h3>
 
-         <div class="add-goal-modal-content event" style="bottom: unset">
-             <span class="close" onclick="addGoalModal.style.display = 'none'">&times;</span>
-             <form style="height: unset" th:action="@{add-goal}" id="goalForm" method="post" th:object="${createEventForm}" class="view-activity-form">
-                 <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
-                 <h3>Add Goal</h3>
+
+                                <div class="select-container">
+                                    <label class="goal-form-labels" for="scorer" style="display: block">Scorer <span
+                                            class="required">*</span> </label>
+                                    <div class="select-box">
+                                        <select id="scorer" name="scorer">
+                                            <option th:each="player : ${playersInTeam}"
+                                                    th:value="${player.userId}"
+                                                    th:text="${player.firstName + ' ' + player.lastName}"></option>
+                                        </select>
+
+                                        <ul>
+                                            <li style="display: unset" th:each="err : ${#fields.errors('scorer')}"
+                                                th:text="${err}" class="error-message"/>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="description-box">
+                                    <label class="goal-form-labels" for="description">Description</label>
+                                    <textarea class="description-text" id="description" th:name="description" autofocus
+                                              placeholder=""
+                                              th:field="*{description}"></textarea>
+                                </div>
+
+                                <div class="time-goal-value-div">
+
+                                    <div style="margin-bottom: -10px" class="goalTime-input-div">
+                                        <label class="goal-form-labels" for="time-of-goal">Time (minutes)<span
+                                                class="required">*</span></label>
+
+                                        <div style="margin-bottom: 10%" class="number-spinner">
+                                            <button class="decreaseTime">-</button>
+                                            <input type="number" class="valueInputTime" value="1" min="1"
+                                                   id="time-of-goal" name="timeOfGoal" th:field="*{time}">
+                                            <button class="increaseTime">+</button>
+                                        </div>
+                                    </div>
 
 
-                 <div class="select-container">
-                     <label class="goal-form-labels" for="scorer" style="display: block">Scorer <span class="required">*</span> </label>
-                     <div class="select-box">
-                         <select id="scorer" name="scorer">
-                             <option th:each="player : ${playersInTeam}"
-                                     th:value="${player.userId}"
-                                     th:text="${player.firstName + ' ' + player.lastName}"></option>
-                         </select>
+                                    <div class="goal-input-div">
+                                        <label class="goal-form-labels" for="goal-value">Goal Value</label>
+                                        <div class="number-spinner">
+                                            <button class="decreaseGoal">-</button>
+                                            <input type="number" class="valueInputGoal" value="1" min="1"
+                                                   id="goal-value" name="goalValue">
+                                            <button class="increaseGoal">+</button>
+                                        </div>
 
-                         <ul>
-                             <li style="display: unset" th:each="err : ${#fields.errors('scorer')}" th:text="${err}" class="error-message" />
-                         </ul>
-                     </div>
-                 </div>
+                                    </div>
 
-                 <div class="description-box">
-                     <label class="goal-form-labels" for="description">Description</label>
-                     <textarea class="description-text" id="description" th:name="description" autofocus placeholder=""
-                               th:field="*{description}"></textarea>
-                 </div>
+                                </div>
 
-            <div class="time-goal-value-div">
+                                <div style="display: unset" th:each="err : ${#fields.errors('time')}" th:text="${err}"
+                                     class="error-message"></div>
 
-                 <div style="margin-bottom: -10px" class="goalTime-input-div">
-                     <label class="goal-form-labels" for="time-of-goal">Time (minutes)<span class="required">*</span></label>
 
-                     <div style="margin-bottom: 10%" class="number-spinner">
-                         <button class="decreaseTime">-</button>
-                         <input type="number" class="valueInputTime" value="1" min="1" id="time-of-goal" name="timeOfGoal" th:field="*{time}">
-                         <button class="increaseTime">+</button>
-                     </div>
+                                <div style="padding-bottom: 11px; padding-top: 11px;" class="submit-button">
+                                    <button style="width: 30%" id="createGoal" type="submit"> Add</button>
+                                </div>
+
+
+                            </form>
+                        </div>
+
+                    </div>
+
+
                 </div>
-
-
-                 <div class="goal-input-div">
-                     <label class="goal-form-labels" for="goal-value">Goal Value</label>
-                     <div class="number-spinner">
-                         <button class="decreaseGoal">-</button>
-                         <input type="number" class="valueInputGoal" value="1" min="1" id="goal-value" name="goalValue">
-                         <button class="increaseGoal">+</button>
-                     </div>
-
-                 </div>
-
-            </div>
-
-                 <div style="display: unset" th:each="err : ${#fields.errors('time')}" th:text="${err}" class="error-message"></div>
-
-
-                 <div style="padding-bottom: 11px; padding-top: 11px;" class="submit-button">
-                     <button style="width: 30%" id="createGoal" type="submit"> Add </button>
-                 </div>
-
-
-             </form>
-         </div>
-
-     </div>
-
-
-
-
-
-
-
-
-
-
- </div>
 
 
                 <div class="goal-table" style="margin-left: 4%">
@@ -419,118 +434,32 @@
 
 
             </div>
-</div>
-
         </div>
 
     </div>
 
-
-    <script>
-
-      /*  const decreaseButtonGoal = document.querySelector('.decrease');
-        const increaseButtonGoal = document.querySelector('.increase');
-        const valueInputGoal = document.querySelector('.valueInput');
-
-        decreaseButtonGoal.addEventListener('click', () => {
-            event.preventDefault();
-            const currentValue = parseInt(valueInputGoal.value, 10);
-            if (currentValue > 1) {
-                valueInputGoal.value = currentValue - 1;
-            }
-        });
-
-        increaseButtonGoal.addEventListener('click', () => {
-            event.preventDefault();
-            valueInputGoal.value = parseInt(valueInputGoal.value, 10) + 1;
-        });
+</div>
 
 
-        const decreaseButtonTime = document.querySelector('.decreaseTime');
-        const increaseButtonTime = document.querySelector('.increaseTime');
-        const valueInputTime = document.querySelector('.valueInputTime');
+<script th:inline="javascript">
 
-        if (valueInputTime.value === "") {
-            valueInputTime.value = 1;
-        }
+    /*  const decreaseButtonGoal = document.querySelector('.decrease');
+      const increaseButtonGoal = document.querySelector('.increase');
+      const valueInputGoal = document.querySelector('.valueInput');
 
-        decreaseButtonTime.addEventListener('click', () => {
-            event.preventDefault();
-            const currentValue = parseInt(valueInputTime.value, 10);
-            if (currentValue > 1) {
-                valueInputTime.value = currentValue - 1;
-            }
-        });
-
-        increaseButtonTime.addEventListener('click', () => {
-            event.preventDefault();
-            valueInputTime.value = parseInt(valueInputTime.value, 10) + 1;
-        });
-*/
-
-      function render() {
-          setTimeout(function () {
-              loadFormation();
-          }, 500);
-      }
-
-      function loadFormation() {
-          const formationOuter = document.querySelector(".formation-outer");
-          var formation = formationOuter.getAttribute("data-formation");
-          var custom = formationOuter.getAttribute("data-custom");
-          var customPlayers = formationOuter.getAttribute("data-customPlayers");
-          generatedOrCustom(formation, JSON.parse(custom), customPlayers);
-          addPlayers();
-      }
-
-      function addPlayers() {
-          const playersAndPositions = /*[[${playersAndPositions}]]*/ {};
-          const playerNames = /*[[${playerNames}]]*/ {};
-          const positions = pitch.childNodes;
-
-          for (const positionIndex in playersAndPositions) {
-              const playerId = playersAndPositions[positionIndex];
-              const playerName = playerNames[positionIndex];
-
-              const position = positions[positionIndex - 1];
-
-              if (position) {
-                  const playerNameElement = position.querySelector('h3');
-                  playerNameElement.textContent = playerName;
-                  playerNameElement.style.display = 'inline-block';
-                  playerNameElement.style.width = 'auto';
-                  playerNameElement.style.marginLeft='-4px';
-
-                  const playerImage = position.querySelector('.player-profile-img');
-                  playerImage.src = "/user-profile-picture/" + playerId;
-                  playerImage.alt = "My Profile";
-
-                  position.style.backgroundImage = 'none';
-              }
+      decreaseButtonGoal.addEventListener('click', () => {
+          event.preventDefault();
+          const currentValue = parseInt(valueInputGoal.value, 10);
+          if (currentValue > 1) {
+              valueInputGoal.value = currentValue - 1;
           }
+      });
 
-      }
+      increaseButtonGoal.addEventListener('click', () => {
+          event.preventDefault();
+          valueInputGoal.value = parseInt(valueInputGoal.value, 10) + 1;
+      });
 
-        function setUpSteppers(decreaseButton, increaseButton, valueInput) {
-            decreaseButton.addEventListener('click', (event) => {
-                event.preventDefault();
-                const currentValue = parseInt(valueInput.value, 10);
-                if (currentValue > 1) {
-                    valueInput.value = currentValue - 1;
-                }
-            });
-
-            increaseButton.addEventListener('click', (event) => {
-                event.preventDefault();
-                valueInput.value = parseInt(valueInput.value, 10) + 1;
-            });
-        }
-
-
-      const decreaseButtonGoal = document.querySelector('.decreaseGoal');
-      const increaseButtonGoal = document.querySelector('.increaseGoal');
-      const valueInputGoal = document.querySelector('.valueInputGoal');
-      setUpSteppers(decreaseButtonGoal, increaseButtonGoal, valueInputGoal);
 
       const decreaseButtonTime = document.querySelector('.decreaseTime');
       const increaseButtonTime = document.querySelector('.increaseTime');
@@ -540,136 +469,225 @@
           valueInputTime.value = 1;
       }
 
-      setUpSteppers(decreaseButtonTime, increaseButtonTime, valueInputTime);
-
-
-        var addGoalModal = document.getElementById("addGoalModal");
-        var overallScoreModal = document.getElementById("addOverallScoreModal");
-        var addSubModal = document.getElementById("addSubModal");
-        var addFactModal = document.getElementById("addFactModal");
-
-        window.onclick = function(event) {
-            if (event.target === overallScoreModal) {
-                overallScoreModal.style.display = "none";
-            }
-            if (event.target === addGoalModal) {
-                addGoalModal.style.display = "none";
-            }
-          if (event.target === addSubModal) {
-                addSubModal.style.display = "none";
+      decreaseButtonTime.addEventListener('click', () => {
+          event.preventDefault();
+          const currentValue = parseInt(valueInputTime.value, 10);
+          if (currentValue > 1) {
+              valueInputTime.value = currentValue - 1;
           }
-        }
+      });
 
-        function toggleDropdown(icon) {
-            const subCard = icon.closest('.sub-card');
-            const subDesc = subCard.nextElementSibling;
-            const subLi = subCard.parentElement;
-            console.log(subLi.className);
-            console.log(subDesc.style.display)
-            if (subDesc.style.display === 'none' || subDesc.style.display === '') {
-                icon.style.transform = 'rotate(180deg)';
-                subDesc.style.display = 'block';
-                subLi.style.border = '2px solid rgb(119, 141, 169)';
-                subLi.style.borderRadius = '10px';
-                subLi.style.height = 'fit-content';
-                subCard.style.border = 'none';
-            } else {
-                icon.style.transform = 'rotate(0deg)';
-                subDesc.style.display = 'none';
-                subLi.style.border = 'none';
-                subCard.style.border = '2px solid rgb(119, 141, 169)';
-                subLi.style.height = 'none';
+      increaseButtonTime.addEventListener('click', () => {
+          event.preventDefault();
+          valueInputTime.value = parseInt(valueInputTime.value, 10) + 1;
+      });
+*/
+
+    function render() {
+        setTimeout(function () {
+            loadFormation();
+        }, 500);
+    }
+
+    function loadFormation() {
+        const formationOuter = document.querySelector(".formation-outer");
+        const formation = formationOuter.getAttribute("data-formation");
+        const custom = formationOuter.getAttribute("data-custom");
+        const customPlayers = formationOuter.getAttribute("data-customPlayers");
+        generatedOrCustom(formation, JSON.parse(custom), customPlayers);
+        addPlayers();
+    }
+
+    function addPlayers() {
+        const playersAndPositions = /*[[${playersAndPositions}]]*/ {};
+        const playerNames = /*[[${playerNames}]]*/ {};
+        const positions = pitch.childNodes;
+        console.log(playersAndPositions);
+        console.log(playerNames);
+        console.log(positions);
+
+        for (const positionIndex in playersAndPositions) {
+            const playerId = playersAndPositions[positionIndex];
+            const playerName = playerNames[positionIndex];
+
+            const position = positions[positionIndex - 1];
+
+            if (position) {
+                const playerNameElement = position.querySelector('h3');
+                playerNameElement.textContent = playerName;
+                playerNameElement.style.display = 'inline-block';
+                playerNameElement.style.width = 'auto';
+                playerNameElement.style.marginLeft = '-4px';
+
+                const playerImage = position.querySelector('.player-profile-img');
+                playerImage.src = "/user-profile-picture/" + playerId;
+                playerImage.alt = "My Profile";
+
+                position.style.backgroundImage = 'none';
             }
         }
 
-        var collapsible = document.getElementsByClassName("collapsible");
-        var i;
+    }
+
+    function setUpSteppers(decreaseButton, increaseButton, valueInput) {
+        decreaseButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            const currentValue = parseInt(valueInput.value, 10);
+            if (currentValue > 1) {
+                valueInput.value = currentValue - 1;
+            }
+        });
+
+        increaseButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            valueInput.value = parseInt(valueInput.value, 10) + 1;
+        });
+    }
 
 
-        for (i = 0; i < collapsible.length; i++) {
-            collapsible[i].addEventListener("click", function () {
-                this.classList.toggle("active");
-                var content = this.nextElementSibling;
-                if (content.style.maxHeight) {
-                    content.style.maxHeight = null;
-                    content.style.border = "none";
-                    this.style.borderRadius = "10px 10px 10px 10px";
-                    this.style.borderBottom = "2px solid #778da9"
+    const decreaseButtonGoal = document.querySelector('.decreaseGoal');
+    const increaseButtonGoal = document.querySelector('.increaseGoal');
+    const valueInputGoal = document.querySelector('.valueInputGoal');
+    setUpSteppers(decreaseButtonGoal, increaseButtonGoal, valueInputGoal);
+
+    const decreaseButtonTime = document.querySelector('.decreaseTime');
+    const increaseButtonTime = document.querySelector('.increaseTime');
+    const valueInputTime = document.querySelector('.valueInputTime');
+
+    if (valueInputTime.value === "") {
+        valueInputTime.value = 1;
+    }
+
+    setUpSteppers(decreaseButtonTime, increaseButtonTime, valueInputTime);
 
 
-                } else {
-                    content.style.maxHeight = content.scrollHeight + 5 + "px";
-                    content.style.border = "2px #778da9"
-                    content.style.borderStyle = "none solid solid solid"
-                    this.style.borderRadius = "10px 10px 0 0";
-                    this.style.borderBottom = "none";
-                }
-            });
+    var addGoalModal = document.getElementById("addGoalModal");
+    var overallScoreModal = document.getElementById("addOverallScoreModal");
+    var addSubModal = document.getElementById("addSubModal");
+    var addFactModal = document.getElementById("addFactModal");
+
+    window.onclick = function (event) {
+        if (event.target === overallScoreModal) {
+            overallScoreModal.style.display = "none";
         }
+        if (event.target === addGoalModal) {
+            addGoalModal.style.display = "none";
+        }
+        if (event.target === addSubModal) {
+            addSubModal.style.display = "none";
+        }
+    }
+
+    function toggleDropdown(icon) {
+        const subCard = icon.closest('.sub-card');
+        const subDesc = subCard.nextElementSibling;
+        const subLi = subCard.parentElement;
+        console.log(subLi.className);
+        console.log(subDesc.style.display)
+        if (subDesc.style.display === 'none' || subDesc.style.display === '') {
+            icon.style.transform = 'rotate(180deg)';
+            subDesc.style.display = 'block';
+            subLi.style.border = '2px solid rgb(119, 141, 169)';
+            subLi.style.borderRadius = '10px';
+            subLi.style.height = 'fit-content';
+            subCard.style.border = 'none';
+        } else {
+            icon.style.transform = 'rotate(0deg)';
+            subDesc.style.display = 'none';
+            subLi.style.border = 'none';
+            subCard.style.border = '2px solid rgb(119, 141, 169)';
+            subLi.style.height = 'none';
+        }
+    }
+
+    var collapsible = document.getElementsByClassName("collapsible");
+    var i;
 
 
-        //tab functionality
-        const tabs = document.querySelectorAll('.tab');
-        const tabLine = document.querySelector('.tab-line');
-        const displayBox = document.querySelectorAll('.content-box');
-        const displayContent = document.querySelectorAll('.content');
+    for (i = 0; i < collapsible.length; i++) {
+        collapsible[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+                content.style.border = "none";
+                this.style.borderRadius = "10px 10px 10px 10px";
+                this.style.borderBottom = "2px solid #778da9"
 
 
-        //functionality staying on tab after form submission
-        var stayOnTab_Name = document.getElementById("stayOnTab_Name").innerHTML;
-        var stayOnTab_Index = document.getElementById("stayOnTab_index").innerHTML;
+            } else {
+                content.style.maxHeight = content.scrollHeight + 5 + "px";
+                content.style.border = "2px #778da9"
+                content.style.borderStyle = "none solid solid solid"
+                this.style.borderRadius = "10px 10px 0 0";
+                this.style.borderBottom = "none";
+            }
+        });
+    }
 
-        console.log("tabname" + stayOnTab_Name);
-        console.log("tabindex" + stayOnTab_Index);
 
-        if (stayOnTab_Name === "score-tab" || stayOnTab_Name === "generalTab" || stayOnTab_Name === "formations-tab" || stayOnTab_Name === "facts-tab") {
-            var tabToBeActive = document.getElementById(stayOnTab_Name)
+    //tab functionality
+    const tabs = document.querySelectorAll('.tab');
+    const tabLine = document.querySelector('.tab-line');
+    const displayBox = document.querySelectorAll('.content-box');
+    const displayContent = document.querySelectorAll('.content');
 
-            console.log(tabToBeActive)
-            console.log(stayOnTab_Name)
+
+    //functionality staying on tab after form submission
+    var stayOnTab_Name = document.getElementById("stayOnTab_Name").innerHTML;
+    var stayOnTab_Index = document.getElementById("stayOnTab_index").innerHTML;
+
+    console.log("tabname" + stayOnTab_Name);
+    console.log("tabindex" + stayOnTab_Index);
+
+    if (stayOnTab_Name === "score-tab" || stayOnTab_Name === "generalTab" || stayOnTab_Name === "formations-tab" || stayOnTab_Name === "facts-tab") {
+        var tabToBeActive = document.getElementById(stayOnTab_Name)
+
+        console.log(tabToBeActive)
+        console.log(stayOnTab_Name)
+        tabs.forEach(otherTab => {
+            otherTab.classList.remove('active');
+        });
+        tabToBeActive.classList.add('active')
+
+        displayBox.forEach(box => {
+            box.classList.remove('active')
+        });
+        displayBox[stayOnTab_Index].classList.add('active');
+        displayContent.forEach(content => {
+            content.classList.remove('active')
+        });
+        displayContent[stayOnTab_Index].classList.add('active');
+
+    }
+
+    //functionality for clicking on tabs
+    tabs.forEach((tab, index) => {
+        tab.addEventListener('click', (e) => {
             tabs.forEach(otherTab => {
                 otherTab.classList.remove('active');
             });
-            tabToBeActive.classList.add('active')
-
+            tab.classList.add('active');
+            if (index === 0) {
+                tabLine.style.left = "18px";
+            } else if (index === 1) {
+                tabLine.style.left = "247px";
+            } else if (index === 2) {
+                tabLine.style.left = "460px";
+            } else {
+                tabLine.style.left = "685px";
+            }
             displayBox.forEach(box => {
                 box.classList.remove('active')
             });
-            displayBox[stayOnTab_Index].classList.add('active');
+            displayBox[index].classList.add('active');
             displayContent.forEach(content => {
                 content.classList.remove('active')
             });
-            displayContent[stayOnTab_Index].classList.add('active');
-
-        }
-
-        //functionality for clicking on tabs
-        tabs.forEach((tab, index) => {
-            tab.addEventListener('click', (e) => {
-                tabs.forEach(otherTab => {
-                    otherTab.classList.remove('active');
-                });
-                tab.classList.add('active');
-                if (index === 0) {
-                    tabLine.style.left = "18px";
-                } else if (index === 1) {
-                    tabLine.style.left = "247px";
-                } else if (index === 2) {
-                    tabLine.style.left = "460px";
-                } else {
-                    tabLine.style.left = "685px";
-                }
-                displayBox.forEach(box => {
-                    box.classList.remove('active')
-                });
-                displayBox[index].classList.add('active');
-                displayContent.forEach(content => {
-                    content.classList.remove('active')
-                });
-                displayContent[index].classList.add('active');
-            });
+            displayContent[index].classList.add('active');
         });
-    </script>
+    });
+</script>
 </div>
 </body>
 <footer>
@@ -681,152 +699,3 @@
 </footer>
 
 </html>
-
-<script>
-    var modal = document.getElementById("addEventModal");
-
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-</script>
-<script th:inline="javascript">
-
-
-    // Get a reference to the dropdown select element
-    var factTypeSelect = document.getElementById("factType");
-
-    // Get a reference to the div that will contain the additional fields
-    var additionalFieldsDiv = document.getElementById("additionalFields");
-
-
-    // Function to handle the change event of the dropdown
-    function handleDropdownChange() {
-        // Clear the additional fields div
-        additionalFieldsDiv.innerHTML = "";
-        var factDescBox = document.getElementById("factDescBox");
-
-        // Get the selected option value
-        var selectedOption = factTypeSelect.value;
-
-        //setup required span
-        var requiredSpan = document.createElement("span");
-        requiredSpan.innerText = "*";
-        requiredSpan.classList.add("required");
-
-        var oppositionGoalValueLabelHelpText = document.createElement("label");
-        oppositionGoalValueLabelHelpText.classList.add("helpText");
-        oppositionGoalValueLabelHelpText.innerHTML = "Default is 1 if not entered"
-
-        var goalValueInput = document.createElement("input");
-        var goalValueLabel = document.createElement("label");
-        goalValueLabel.innerHTML = "Goal value:";
-        goalValueLabel.style.display = "block";
-        goalValueLabel.appendChild(requiredSpan);
-        goalValueInput.name = "goalValue"
-        goalValueInput.classList.add("overall-score-input")
-        goalValueInput.type = "number"
-        goalValueInput.defaultValue = "1"
-        goalValueInput.min = "1"
-
-
-        if (selectedOption === "NONE") {
-            factDescBox.style.display = "none";
-        }
-
-        // Check if the selected option has additional fields
-        if (selectedOption === "GOAL") {
-            factDescBox.style.display = "block";
-            // Create a new select element for the scorer
-            var selectScorer = document.createElement("select");
-            selectScorer.name = "scorer";
-
-            var scorerLabel = document.createElement("label");
-            scorerLabel.innerHTML = "Scorer:";
-            scorerLabel.style.display = "block";
-            scorerLabel.appendChild(requiredSpan);
-
-            /*[# th:each="player : ${activity.getInvolvedMembers()}"]*/
-            // Create an option element for each team member
-            var option = document.createElement("option");
-            option.value = /*[[${player.getUserId()}]]*/ '';
-            option.text = /*[[${player.firstName}]]*/ '';
-            selectScorer.appendChild(option);
-            /*[/]*/
-
-            // Append the select element to the additional fields div
-            additionalFieldsDiv.appendChild(scorerLabel);
-            additionalFieldsDiv.appendChild(selectScorer);
-            additionalFieldsDiv.appendChild(goalValueLabel);
-            additionalFieldsDiv.appendChild(goalValueInput);
-            additionalFieldsDiv.appendChild(oppositionGoalValueLabelHelpText);
-
-        }
-
-        if (selectedOption === 'SUBSTITUTION') {
-            factDescBox.style.display = "block";
-
-            // new select element for the player subbed off
-            var selectPlayerOff = document.createElement("select");
-            selectPlayerOff.name = "playerOff";
-
-            var playerOffLabel = document.createElement("label");
-            playerOffLabel.innerHTML = "Player Off:";
-            playerOffLabel.style.display = "block";
-            playerOffLabel.appendChild(requiredSpan);
-
-
-            /*[# th:each="player : ${activity.getInvoledMembersNoManager()}"]*/
-            // Create an option element for each team member
-            var option = document.createElement("option");
-            option.value = /*[[${player.getUserId()}]]*/ '';
-            option.text = /*[[${player.firstName}]]*/ '';
-            selectPlayerOff.appendChild(option);
-            /*[/]*/
-
-            // Append the select element to the additional fields div
-            additionalFieldsDiv.appendChild(playerOffLabel);
-            additionalFieldsDiv.appendChild(selectPlayerOff);
-
-            // new select element for the player subbed on 
-            var selectPlayerOn = document.createElement("select");
-            selectPlayerOn.name = "playerOn";
-
-            var playerOnLabel = document.createElement("label");
-            playerOnLabel.innerHTML = "Player On:";
-            playerOnLabel.style.display = "block";
-            playerOnLabel.appendChild(requiredSpan);
-
-            /*[# th:each="player : ${activity.getInvoledMembersNoManager()}"]*/
-            // Create an option element for each team member
-            var option = document.createElement("option");
-            option.value = /*[[${player.getUserId()}]]*/ '';
-            option.text = /*[[${player.firstName}]]*/ '';
-            selectPlayerOn.appendChild(option);
-            /*[/]*/
-
-            // Append the select element to the additional fields div
-            additionalFieldsDiv.appendChild(playerOnLabel);
-            additionalFieldsDiv.appendChild(selectPlayerOn);
-        }
-
-        if (selectedOption === "OPPOSITION_GOAL") {
-            factDescBox.style.display = "block";
-
-            var oppositionGoalValueLabel = document.createElement("label");
-            oppositionGoalValueLabel.innerHTML = "Goal value:";
-            oppositionGoalValueLabel.style.display = "block";
-            oppositionGoalValueLabel.appendChild(requiredSpan);
-
-            additionalFieldsDiv.appendChild(oppositionGoalValueLabel);
-            additionalFieldsDiv.appendChild(goalValueInput);
-            additionalFieldsDiv.appendChild(oppositionGoalValueLabelHelpText);
-
-        }
-    }
-
-    handleDropdownChange()
-    // Attach the event listener to the dropdown select element
-    factTypeSelect.addEventListener("change", handleDropdownChange);
-</script>

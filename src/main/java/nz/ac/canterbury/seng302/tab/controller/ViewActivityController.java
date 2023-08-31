@@ -163,21 +163,25 @@ public class ViewActivityController {
         if (activity == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
+        LineUp lineUp = lineUpService.findLineUpsByActivity(activityID);
 
-        Map<Integer, Long> playersAndPosition = new HashMap<Integer, Long>();
-        Map<Integer, String> playerNames = new HashMap<Integer, String>();
+        if (lineUp!=null) {
+            Map<Integer, Long> playersAndPosition = new HashMap<Integer, Long>();
+            Map<Integer, String> playerNames = new HashMap<Integer, String>();
 
-        Optional<LineUp> lineUp = lineUpService.findLineUpsByActivity(activityID);
 
-        if (lineUp.isPresent()) {
-            List<LineUpPosition> lineupPosition = (lineUpPositionService.findLineUpPositionsByLineUp(lineUp.get().getLineUpId())).get();
-            Formation formation = lineUpService.findFormationByLineUpId(lineUp.get().getLineUpId()).get();
+            List<LineUpPosition> lineupPosition = (lineUpPositionService.findLineUpPositionsByLineUp(lineUp.getLineUpId())).get();
+            Formation formation = lineUpService.findFormationByLineUpId(lineUp.getLineUpId()).get();
             for (LineUpPosition position : lineupPosition) {
                 int positionId = position.getPosition();
+
                 User player = position.getPlayer();
+
                 playersAndPosition.put(positionId, player.getId());
                 playerNames.put(positionId, player.getFirstName());
             }
+
+
             model.addAttribute("formation", formation);
             model.addAttribute("playersAndPositions",playersAndPosition);
             model.addAttribute("playerNames", playerNames);

@@ -6,6 +6,7 @@ import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +24,21 @@ public class LineUpService {
         return lineUpRepository.findLineUpByTeamTeamId(id);
     }
 
-    public Optional<LineUp> findLineUpsByActivity(long id){
-        return lineUpRepository.findLineUpsByActivityId(id);
+    /**
+     * Finds the LineUp by using the activity id, return null if none is found or return the most current LineUp
+     * if there is more than one LineUp with the same activity id
+     * @param id takes in the activity id of type long
+     * @return the LineUp variable which has the activity id
+     */
+    public LineUp findLineUpsByActivity(long id){
+        List<LineUp> lineup= lineUpRepository.findLineUpsByActivityId(id);
+        if (lineup.isEmpty()){
+            return null;
+        }
+        else if (lineup.size()>1){
+            lineup.sort(Comparator.comparingLong(LineUp::getLineUpId).reversed());
+        }
+        return lineup.get(0);
     }
 
     public Optional<Formation> findFormationByLineUpId(long id){
