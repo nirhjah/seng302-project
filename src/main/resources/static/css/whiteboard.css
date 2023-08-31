@@ -15,6 +15,8 @@
 }
 
 .whiteboard-wrapper {
+    display:flex;
+    flex-direction:row;
     background-color: white;
     border-radius: 10px;
     padding: 20px;
@@ -90,6 +92,24 @@
 .active .default-svg {
     display: none;
 }
+
+.whiteboard-dropdowns{
+    width:300px;
+    margin-right:20px;
+}
+
+.whiteboard-dropdowns h3{
+    padding-top:11px;
+    color: #808080;
+    font-size:22px;
+}
+
+.whiteboard-dropdowns .dropdown{
+    color: #1B263B;
+    font-size:18px;
+}
+
+
 
 
 
