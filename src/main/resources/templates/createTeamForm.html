@@ -27,8 +27,7 @@
                 <div class="input-box">
                     <input type="text" class="form-control" id="name" name="name" th:value="*{name}"
                            data-cy="name" autofocus placeholder=""
-                           th:pattern="${teamNameUnicodeRegex}"
-                           th:title="${teamNameMsg}">
+                          >
                     <label for="name">Name <span class="required">*</span></label>
                     <div th:each="err : ${#fields.errors('name')}" th:text="${err}" class="error-message"></div>
                 </div>
@@ -36,8 +35,7 @@
                 <div class="input-box">
                     <input type="text" class="form-control" id="sport" name="sport" th:value="*{sport}"
                            data-cy="sport" autofocus placeholder=""
-                           th:pattern="${sportUnicodeRegex}"
-                           th:title="${sportUnicodeMsg}">
+                          >
                     <label for="sport">Sport <span class="required">*</span></label>
                     <div th:each="err : ${#fields.errors('sport')}" th:text="${err}" class="error-message"></div>
 
@@ -67,12 +65,12 @@
                 <div class="input-box">
                     <input type="text" class="form-control" id="suburb" th:name="suburb" th:value="*{suburb}"
                            data-cy="location" autofocus placeholder=""
-                           th:pattern="${countryCitySuburbNameRegex}" th:title="${countryCitySuburbNameRegexMsg}">
+                           >
                     <label for="suburb">Suburb</label>
                     <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
                 </div>
                 <div class="input-box">
-                    <input type="text" class="form-control" th:field="*{postcode}"
+                    <input type="text" class="form-control" id="postcode" th:field="*{postcode}"
                             data-cy="location" autofocus placeholder="">
                             <!--/* Lacks pattern/title, as the Java regex doesn't work in the browser */-->
                     <label for="postcode">Postcode</label>
@@ -84,14 +82,14 @@
                 <div class="input-box">
                     <input type="text" class="form-control" id="city" th:name="city" th:value="*{city}"
                            data-cy="location" autofocus placeholder=""
-                           th:pattern="${countryCitySuburbNameRegex}" th:title="${countryCitySuburbNameRegexMsg}">
+                          >
                     <label for="city">City <span class="required">*</span></label>
                     <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="country" th:name="country" th:value="*{country}"
                            data-cy="location" autofocus placeholder=""
-                           th:pattern="${countryCitySuburbNameRegex}" th:title="${countryCitySuburbNameRegexMsg}">
+                    >
                     <label for="country">Country <span class="required">*</span></label>
                     <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
                 </div>
