@@ -25,6 +25,49 @@
           <img class="selected-svg" src="/image/icons/pencil-selected.svg" />
           <img class="default-svg" src="/image/icons/pencil.svg" />
         </button>
+        <div class="customisation-box draw-button">
+          <div class="style-section">
+            <div class="header">
+              <h3>Style</h3>
+              <div>
+                <label>Arrow
+                  <input class="arrow-checkbox" type="checkbox">
+                </label>
+              </div>
+            </div>
+            <div class="content">
+              <button class="draw-style-button-solid">
+                <img class="selected-svg" src="/image/icons/solid-line-selected.svg" />
+                <img class="default-svg" src="/image/icons/solid-line.svg" />
+              </button>
+              <button class="draw-style-button-dashed">
+                <img class="selected-svg" src="/image/icons/dashed-line-selected.svg" />
+                <img class="default-svg" src="/image/icons/dashed-line.svg" />
+              </button>
+            </div>
+          </div>
+          <div class="colour-section">
+            <div class="header">
+              <h3>Style</h3>
+            </div>
+            <div class="content">
+              <input type="color" value="#ff0000">
+              <div>
+                <h3>#</h3>
+                <h3 id="colorValue">FF0000</h3>
+              </div>
+            </div>
+          </div>
+          <div class="width-section">
+            <div class="header">
+              <h3>Width</h3>
+            </div>
+            <div class="content">
+              <input type="range" min="1" max="50" value="5">
+              <h3 id="widthValue">5</h3>
+            </div>
+          </div>
+        </div>
         <button class="erase-button">
           <span class="tooltip">Erase (E)</span>
           <img class="selected-svg" src="/image/icons/eraser-selected.svg" />
@@ -35,6 +78,10 @@
           <img class="selected-svg" src="/image/icons/circle-selected.svg" />
           <img class="default-svg" src="/image/icons/circle.svg" />
         </button>
+        <div class="customisation-box shape-button">
+          <input type="color" id="colorPicker" value="#ff0000">
+          <input type="range" id="widthSlider" min="1" max="30" value="5">
+        </div>
         <button class="delete-button">
           <span class="tooltip">Clear (C)</span>
           <img class="default-svg" src="/image/icons/clear.svg" />
@@ -61,6 +108,16 @@
       const buttons = document.querySelectorAll('.whiteboard-buttons button');
       buttons.forEach(button => button.classList.remove('active'));
       document.querySelector('.' + buttonClass).classList.add('active');
+
+      const customisationBoxes = document.querySelectorAll('.customisation-box');
+      customisationBoxes.forEach(box => {
+        if (box.classList.contains(buttonClass)) {
+          box.classList.toggle("active")
+        } else {
+          box.classList.remove("active")
+        }
+      })
+
       activeMode = buttonClass;
       canvas.isDrawingMode = drawMode;
       canvas.selection = selectMode;
@@ -96,11 +153,12 @@
         handleButtonClick('draw-button', true, false);
       } else if (event.key === 'e') {
         handleButtonClick('erase-button', false, false);
+        upperCanvas.classList.add("erase");
       } else if (event.key === 'x') {
         handleButtonClick('shape-button', false, false);
         upperCanvas.classList.add("erase");
       } else if (event.key === 'Delete' || event.key === 'Backspace') {
-        canvas.remove(canvas.getActiveObject());
+        canvas.remove(canvas.getActiveObjects());
       } else if (event.key === 'c') {
         canvas.clear();
       }

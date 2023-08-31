@@ -44,14 +44,15 @@
 .whiteboard-buttons button .tooltip {
     visibility: hidden;
     width: 120px;
-    background-color: black;
-    color: #fff;
+    background-color: white;
+    color: #0b2239;
     text-align: center;
     border-radius: 6px;
     padding: 5px 0;
     margin-top: -73px;
     position: absolute;
     z-index: 1;
+    border: #0b2239 2px solid;
 }
 
 .whiteboard-buttons button:hover .tooltip {
@@ -70,6 +71,10 @@
 
 .whiteboard-buttons .delete-button {
     background: #EA3B52;
+}
+
+.whiteboard-buttons .delete-button img {
+    height: 30px;
 }
 
 /* Hide the selected SVG by default */
@@ -91,5 +96,37 @@
     display: none;
 }
 
+.customisation-box {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    width: 77px;
+    position: absolute;
+    background: #0b2239;
+    height: 35px;
+    margin-top: 110px;
+    z-index: 1;
+    border-radius: 5px;
+}
+
+.customisation-box.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.customisation-box::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 9px;
+    transform: rotate(180deg);
+    border-style: solid;
+    border-width: 10px 10px 0;
+    border-color: #0b2239 transparent transparent transparent;
+}
+
+.customisation-box.draw-button {
+    margin-left: 55px;
+}
 
 
