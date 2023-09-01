@@ -48,6 +48,11 @@ public class AddActivityStatisticsIntegrationTests {
 
     @SpyBean
     private UserService userService;
+    @SpyBean
+    private LineUpService lineUpService;
+
+    @SpyBean
+    private LineUpPositionService lineUpPositionService;
 
 
     @Autowired
@@ -67,6 +72,10 @@ public class AddActivityStatisticsIntegrationTests {
 
     @Autowired
     private FactService factService;
+
+    private LineUpRepository lineUpRepository;
+
+    private LineUpPositionRepository lineUpPositionRepository;
 
 
     private User user;
@@ -97,6 +106,8 @@ public class AddActivityStatisticsIntegrationTests {
         userRepository = applicationContext.getBean(UserRepository.class);
         activityRepository = applicationContext.getBean(ActivityRepository.class);
         factRespository = applicationContext.getBean(FactRepository.class);
+        lineUpRepository= applicationContext.getBean(LineUpRepository.class);
+        lineUpPositionRepository= applicationContext.getBean(LineUpPositionRepository.class);
 
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
@@ -105,8 +116,10 @@ public class AddActivityStatisticsIntegrationTests {
         teamService = Mockito.spy(new TeamService(teamRepository));
         activityService = Mockito.spy(new ActivityService(activityRepository));
         factService= Mockito.spy(new FactService(factRespository));
+        lineUpService=Mockito.spy(new LineUpService(lineUpRepository));
+        lineUpPositionService = Mockito.spy(new LineUpPositionService(lineUpPositionRepository));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivityController(userService,activityService,teamService,factService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivityController(userService,activityService,teamService,factService, lineUpService, lineUpPositionService)).build();
 
         Authentication authentication = Mockito.mock(Authentication.class);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
