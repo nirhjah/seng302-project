@@ -701,7 +701,6 @@
                 let playersAndPositions = "";
                 for (let i = 0; i < positions.length; i++) {
                         const position = positions.item(i);
-                       // console.log(position.querySelector("input").value);
 
                         if (position.querySelector("input").value != "") {
                                 playersAndPositions = playersAndPositions + position.id.replace("player", "") + " " + position.querySelector("input").value  + ", "

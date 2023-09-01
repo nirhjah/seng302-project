@@ -34,7 +34,7 @@
             </div>
 
             <div class="input-box">
-                <input type="text" class="form-control" id="name" th:name="name" th:value="${name}"
+                <input type="text" class="form-control" id="name" th:name="name" th:value="*{name}"
                        data-cy="name" autofocus placeholder=""
                        title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
                 <label for="name">Club Name <span class="required">*</span></label>
@@ -42,7 +42,7 @@
             </div>
 
             <div class="input-box">
-                <input type="text" class="form-control" id="sport" th:name="sport" th:value="${sport}"
+                <input type="text" class="form-control" id="sport" th:name="sport" th:value="*{sport}"
                        data-cy="sport" autofocus placeholder=""
                        title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
                 <label for="sport">Club Sport <span class="required">*</span></label>
@@ -53,7 +53,7 @@
             <div class="input-boxes">
                 <div class="input-box">
                     <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
-                           data-cy="location" autofocus placeholder="" autocomplete="off" th:value="${addressLine1}"
+                           data-cy="location" autofocus placeholder="" autocomplete="off" th:value="*{addressLine1}"
                            title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
                     <label for="address-line-1">Address Line 1<span class="required">*</span></label>
                     <div class="autocomplete-container" id="autocomplete-container"></div>
@@ -63,7 +63,7 @@
 
                 <div class="input-box">
                     <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
-                           data-cy="location" autofocus placeholder="" th:value="${addressLine2}"
+                           data-cy="location" autofocus placeholder="" th:value="*{addressLine2}"
                            title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
                     <label for="address-line-2">Address Line 2</label>
                 </div>
@@ -74,13 +74,13 @@
 
                 <div class="input-box">
                     <input type="text" class="form-control" id="suburb" th:name="suburb"
-                           data-cy="location" autofocus placeholder="" th:value="${suburb}">
+                           data-cy="location" autofocus placeholder="" th:value="*{suburb}">
                     <label for="suburb">Suburb</label>
                 </div>
                 <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="postcode" th:name="postcode"
-                           data-cy="location" autofocus placeholder="" th:value="${postcode}">
+                           data-cy="location" autofocus placeholder="" th:value="*{postcode}">
                     <label for="postcode">Postcode<span class="required">*</span></label>
                     <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
                 </div>
@@ -89,21 +89,21 @@
             <div class="input-boxes">
                 <div class="input-box">
                     <input type="text" class="form-control" id="city" th:name="city"
-                           data-cy="location" autofocus placeholder="" th:value="${city}">
+                           data-cy="location" autofocus placeholder="" th:value="*{city}">
                     <label for="city">City <span class="required">*</span></label>
                     <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
                 </div>
 
                 <div class="input-box">
                     <input type="text" class="form-control" id="country" th:name="country"
-                           data-cy="location" autofocus placeholder="" th:value="${country}">
+                           data-cy="location" autofocus placeholder="" th:value="*{country}">
                     <label for="country">Country <span class="required">*</span></label>
                     <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
                 </div>
             </div>
 
             <label class="selectTeamsLabel"> Select Teams </label>
-            <select name="selectedTeams" id="selectedTeams" multiple>
+            <select th:field="*{selectedTeams}" name="selectedTeams" id="selectedTeams" multiple>
                 <option class="selectTeamsOption" th:each="team : ${listOfTeams}"
                         th:value="${team.teamId}"
                         th:text="${team}"

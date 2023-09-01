@@ -51,6 +51,11 @@ public class ViewActivityStatisticIntegrationTests {
     private TeamService teamService;
     @SpyBean
     private ActivityService activityService;
+    @SpyBean
+    private LineUpService lineUpService;
+
+    @SpyBean
+    private LineUpPositionService lineUpPositionService;
 
     @SpyBean
     private FactService factService;
@@ -59,6 +64,10 @@ public class ViewActivityStatisticIntegrationTests {
     private UserRepository userRepository;
     private TeamRepository teamRepository;
     private ActivityRepository activityRepository;
+
+    private LineUpRepository lineUpRepository;
+
+    private LineUpPositionRepository lineUpPositionRepository;
 
     private MvcResult result;
 
@@ -82,9 +91,8 @@ public class ViewActivityStatisticIntegrationTests {
         teamRepository = applicationContext.getBean(TeamRepository.class);
         activityRepository = applicationContext.getBean(ActivityRepository.class);
         factRespository = applicationContext.getBean(FactRepository.class);
-
-        lineUpPositionRepository = applicationContext.getBean(LineUpPositionRepository.class);
-        lineUpRepository = applicationContext.getBean(LineUpRepository.class);
+        lineUpRepository= applicationContext.getBean(LineUpRepository.class);
+        lineUpPositionRepository= applicationContext.getBean(LineUpPositionRepository.class);
         userRepository.deleteAll();
         teamRepository.deleteAll();
         activityRepository.deleteAll();
@@ -97,7 +105,9 @@ public class ViewActivityStatisticIntegrationTests {
         teamService = Mockito.spy(new TeamService(teamRepository));
         activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository));
         factService= Mockito.spy(new FactService(factRespository));
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ViewActivityController(userService,activityService,teamService,factService)).build();
+        lineUpService=Mockito.spy(new LineUpService(lineUpRepository));
+        lineUpPositionService = Mockito.spy(new LineUpPositionService(lineUpPositionRepository));
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ViewActivityController(userService,activityService,teamService,factService, lineUpService,lineUpPositionService)).build();
 
         Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "testing@gmail.com", "Password123!", testLocation);

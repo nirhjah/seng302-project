@@ -118,4 +118,6 @@ public class FactService {
 
         return sortedScoreInformation;
     }
+
+    public void addOrUpdate(Fact fact) {factRepository.save(fact);}
 }
