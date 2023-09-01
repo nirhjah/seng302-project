@@ -29,7 +29,9 @@
             </div>
 
             <div class="line">
-                <h3>or</h3>
+                <hr>
+                <span class="or-text">or</span>
+                <hr>
             </div>
 
             <div class="dropdown">
@@ -89,20 +91,17 @@
     });
 
     const imagePath = "../image/pitches/";
-
-    pitchSelect.addEventListener("change", function() {
+    pitchSelect.addEventListener("change", function () {
         const selectedValue = this.value;
         const imageUrl = `${imagePath}${selectedValue}.svg`;
-
-        fabric.Image.fromURL(imageUrl, function(img) {
-            canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
-                scaleX: canvas.width / img.width,
-                scaleY: canvas.height / img.height
-            });
-        });
+        if (document.querySelector(".canvas-container") !== null) {
+            const canvasContainer = document.querySelector(".canvas-container");
+            canvasContainer.style.backgroundImage = `url(${imageUrl})`;
+        }
     });
 
     document.addEventListener("DOMContentLoaded", function () {
+        pitchSelect.value = "soccer";
         let activeMode = null;
         canvas.freeDrawingBrush.width = 5;
         canvas.freeDrawingBrush.color = '#ff0000';
