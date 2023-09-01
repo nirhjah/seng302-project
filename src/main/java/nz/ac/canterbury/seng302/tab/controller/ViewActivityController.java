@@ -252,7 +252,7 @@ public class ViewActivityController {
             RedirectAttributes redirectAttributes) {
         model.addAttribute(httpServletRequestString, request);
         Activity activity = activityService.findActivityById(actId);
-        String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
+        String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
         if (!timeOfFact.isEmpty()) {
             try {
                 int time = Integer.parseInt(timeOfFact);
@@ -309,7 +309,7 @@ public class ViewActivityController {
             RedirectAttributes redirectAttributes) {
         model.addAttribute(httpServletRequestString, request);
         Activity activity = activityService.findActivityById(actId);
-        String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
+        String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
         if (activityOutcome != ActivityOutcome.None) {
             activity.setActivityOutcome(activityOutcome);
             activityService.updateOrAddActivity(activity);
