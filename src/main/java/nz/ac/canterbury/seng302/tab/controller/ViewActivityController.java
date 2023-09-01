@@ -1,7 +1,5 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.sql.Date;
-import java.time.LocalDateTime;
 import java.time.LocalDateTime;
 import java.time.Duration;
 import java.time.format.DateTimeFormatter;
@@ -252,7 +250,7 @@ public class ViewActivityController {
             Model model,
             HttpServletResponse httpServletResponse,
             RedirectAttributes redirectAttributes) {
-        model.addAttribute("httpServletRequest", request);
+        model.addAttribute(httpServletRequestString, request);
         Activity activity = activityService.findActivityById(actId);
         String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
         if (!timeOfFact.isEmpty()) {
@@ -309,7 +307,7 @@ public class ViewActivityController {
             Model model,
             HttpServletResponse httpServletResponse,
             RedirectAttributes redirectAttributes) {
-        model.addAttribute("httpServletRequest", request);
+        model.addAttribute(httpServletRequestString, request);
         Activity activity = activityService.findActivityById(actId);
         String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
         if (activityOutcome != ActivityOutcome.None) {
