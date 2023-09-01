@@ -1,3 +1,4 @@
+@custom_background
 Feature: UB2 - Custom Backgrounds
 
   Scenario Outline: AC1: Users should be able to select a named pitch type from multiple
