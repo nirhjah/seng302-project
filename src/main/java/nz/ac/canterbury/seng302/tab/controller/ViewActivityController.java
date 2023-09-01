@@ -233,6 +233,9 @@ public class ViewActivityController {
         model.addAttribute("playersInTeam", activity.getInvolvedMembersNoManagerAndCoaches());
         model.addAttribute("outcomeString", outcomeString(activity));
         model.addAttribute("currentUser", userService.getCurrentUser());
+        if (activity.getActivityEnd().isBefore(LocalDateTime.now())) {
+            model.addAttribute("completed", "idk");
+        }
         populateOther(model, activity);
 
         return "viewActivity";
@@ -280,9 +283,9 @@ public class ViewActivityController {
             Model model,
             HttpServletResponse httpServletResponse,
             RedirectAttributes redirectAttributes) {
-        model.addAttribute("httpServletRequest", request);
+        model.addAttribute(httpServletRequestString, request);
         Activity activity = activityService.findActivityById(actId);
-        String viewActivityRedirectUrl = String.format("redirect:./view-activity?activityID=%s", actId);
+        String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
         if (!timeOfFact.isEmpty()) {
             try {
                 int time = Integer.parseInt(timeOfFact);
@@ -318,6 +321,35 @@ public class ViewActivityController {
         return viewActivityRedirectUrl;
 
     }
+
+    /**
+     * Handles adding an overall score to an activity
+     * @param actId           activity to add overall score to
+     * @param activityOutcome outcome of the activity
+     * @param request              request
+     * @param model                model to be filled
+     * @param httpServletResponse   httpServerletResponse
+     * @param redirectAttributes    stores error message to be displayed
+     * @return  view activity page
+     */
+    @PostMapping("/add-outcome")
+    public String addFactForm(
+            @RequestParam(name = "actId", defaultValue = "-1") long actId,
+            @RequestParam(name = "activityOutcomes", defaultValue = "NONE") ActivityOutcome activityOutcome,
+            HttpServletRequest request,
+            Model model,
+            HttpServletResponse httpServletResponse,
+            RedirectAttributes redirectAttributes) {
+        model.addAttribute(httpServletRequestString, request);
+        Activity activity = activityService.findActivityById(actId);
+        String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
+        if (activityOutcome != ActivityOutcome.None) {
+            activity.setActivityOutcome(activityOutcome);
+            activityService.updateOrAddActivity(activity);
+        }
+        return viewActivityRedirectUrl;
+    }
+
 
 
     /**
@@ -387,7 +419,6 @@ public class ViewActivityController {
             activity.addFactList(factList);
             activityService.updateOrAddActivity(activity);
         }
-
 
         redirectAttributes.addFlashAttribute(stayOnTabNameString, scoreTabName);
         redirectAttributes.addFlashAttribute(stayOnTabIndexString, scoreTabIndex);
