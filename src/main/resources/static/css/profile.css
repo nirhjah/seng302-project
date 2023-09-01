@@ -355,3 +355,27 @@
     width: 52%;
     margin-top: 8px;
 }
+
+@media (max-width: 850px) {
+    .last5Ul {
+        width: max-content !important;
+
+    }
+
+
+    .col-wrapper {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    .third-col {
+        float: unset !important;
+        width: unset !important;
+    }
+
+    .top5Players ul {
+        width: 300px !important;
+    }
+
+}

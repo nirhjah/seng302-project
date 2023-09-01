@@ -14,4 +14,6 @@ public interface LineUpRepository extends CrudRepository<LineUp, Long> {
 
     Optional<List<LineUp>> findLineUpByActivityId(Long activityId);
 
+    List<LineUp> findLineUpsByActivityId(Long activityId);
+
 }

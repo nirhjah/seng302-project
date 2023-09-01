@@ -188,9 +188,9 @@
                 <div class="col-wrapper">
                     <div class="third-col" style="padding-bottom: 20px">
 
-                        <h3>Last 5 Matches: </h3>
-                   <div class="last5">
-                       <ul>
+                        <h3 style="margin-top: 12px">Last 5 Matches: </h3>
+                   <div class="last5" style="margin-top: 57px">
+                       <ul class="last5Ul">
                            <li th:each="act : ${last5GOrF}" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|">
                                <div>
                                    <h3 th:text="${act.activityType.name()}"> </h3>
@@ -274,9 +274,9 @@
 
 
                     </div>
-                    <div style="margin-bottom: 10px; width: 33%" class="third-col">
+                    <div style="margin-bottom: 10px; width: 32%" class="third-col">
 
-                        <h3>Outcome of Games and Friendlies:</h3>
+                        <h3 style="margin-top: 12px">Outcome of Games and Friendlies:</h3>
                         <div class="outcome-container">
                             <div class="outcome-grid">
                                 <div class="cell" id="1">
