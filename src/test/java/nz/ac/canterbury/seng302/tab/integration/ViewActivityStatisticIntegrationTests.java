@@ -81,8 +81,7 @@ public class ViewActivityStatisticIntegrationTests {
 
     private Date date;
 
-    private LineUpPositionRepository lineUpPositionRepository;
-    private LineUpRepository lineUpRepository;
+
 
 
     @Before("@ViewActivityStatistics")

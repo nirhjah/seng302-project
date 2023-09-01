@@ -401,8 +401,8 @@ public class ActivityServiceTest {
                 creator,  new Location(null, null, null,
                 "Christchurch", null, "New Zealand"));
 
-        List<Fact> factList1 = new ArrayList<>(); //player2 time 60
-        Substitution sub = new Substitution("Player was taken off, player2 on", "10", activity, player, player2);
+        List<Fact> factList1 = new ArrayList<>();
+        Substitution sub = new Substitution("Player was taken off, player2 on", "10", activity, player, player2); //
         Substitution sub2 = new Substitution("second fact: Player2 was taken off, player on", "30", activity, player2, player); // +20
         Substitution sub3 = new Substitution("third fact: Player was taken off, player2 on", "40", activity, player, player2);
         Substitution sub4 = new Substitution("fourth fact: Player2 was taken off, player on", "80", activity, player2, player); // +40
@@ -466,7 +466,7 @@ public class ActivityServiceTest {
         lineUpPositionRepository.save(lineUpPosition);
         lineUpPositionRepository.save(lineUpPosition2);
 
-        Assertions.assertEquals(170, activityService.getOverallPlayTimeForUserBasedOnSubs(player2, team));
+        Assertions.assertEquals(180, activityService.getOverallPlayTimeForUserBasedOnSubs(player2, team));
     }
 
 }

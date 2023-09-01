@@ -54,15 +54,5 @@ public class LineUpService {
         return lineUpRepository.findLineUpByActivityId(actId);
     }
 
-    public LineUp findLineUpsByActivity(long id){
-        List<LineUp> lineup= lineUpRepository.findLineUpsByActivityId(id);
-        if (lineup.isEmpty()){
-            return null;
-        }
-        else if (lineup.size()>1){
-            lineup.sort(Comparator.comparingLong(LineUp::getLineUpId).reversed());
-        }
-        return lineup.get(0);
-    }
 
 }

@@ -41,14 +41,12 @@ public class ActivityService {
     private final LineUpPositionRepository lineUpPositionRepository;
     private final ActivityRepository activityRepository;
 
-    private final LineUpService lineUpService;
 
     @Autowired
-    public ActivityService(ActivityRepository activityRepository, LineUpRepository lineUpRepository, LineUpPositionRepository lineUpPositionRepository, LineUpService lineUpService) {
+    public ActivityService(ActivityRepository activityRepository, LineUpRepository lineUpRepository, LineUpPositionRepository lineUpPositionRepository) {
         this.activityRepository = activityRepository;
         this.lineUpRepository = lineUpRepository;
         this.lineUpPositionRepository = lineUpPositionRepository;
-        this.lineUpService = lineUpService;
     }
 
     public static final String activityScoreHyphenRegex = "^(\\p{N}+-(\\p{N}+))+$";
@@ -283,7 +281,10 @@ public class ActivityService {
             return List.of();
         } else {
 
-            LineUp lineUp = lineUpService.findLineUpsByActivity(activity.getId());
+            List<LineUp> lineup = lineUpRepository.findLineUpsByActivityId(activity.getId());
+            lineup.sort(Comparator.comparingLong(LineUp::getLineUpId).reversed());
+
+            LineUp lineUp =  lineup.get(0);
             //LineUp lineup = activityLineups.get(1);
             Optional<List<LineUpPosition>> lineUpPos = lineUpPositionRepository.findLineUpPositionsByLineUpLineUpId(lineUp.getLineUpId());
             if (lineUpPos.isEmpty()) {
