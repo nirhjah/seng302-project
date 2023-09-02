@@ -345,24 +345,11 @@
         loadFormation(selectedOption);
     });
 
-
-
-
+    
     var formationAndPlayersAndPositionJson = /*[[${formationAndPlayersAndPositionJson}]]*/ {};
 
-    var formationAndPlayersAndPosition = JSON.parse(formationAndPlayersAndPositionJson);
 
-    for (var formation in formationAndPlayersAndPosition) {
-        //when looping through formations check if formation == target value when dropdown changed.
-        var playersAndPosition = formationAndPlayersAndPosition[formation];
-        console.log("formation: " + formation);
 
-        for (var i = 0; i < playersAndPosition.length; i++) {
-            var playerInfo = playersAndPosition[i];
-            console.log("position: " + playerInfo[0]);
-            console.log("player: " + playerInfo[1]);
-        }
-    }
 
     function loadFormation(target) {
 
@@ -380,6 +367,42 @@
             document.querySelector(".formation-activity-display").classList.add("active");
             generatedOrCustom(formation, custom === "true", customPlayerPositions);
             addPositionFunctionality();
+            for (var formation_ in formationAndPlayersAndPositionJson) {
+                if (formation_ === formationId) {
+                    var playersAndPosition = formationAndPlayersAndPositionJson[formation_];
+                    console.log("formation: " + formation_);
+
+                    for (const positionIndex in playersAndPosition) {
+
+                        var playerInfo = playersAndPosition[positionIndex];
+
+                        console.log('this is playerinfo' + playerInfo)
+
+                        const playerId = playerInfo[1];
+
+                        const position = positions[playerInfo[0]-1]
+
+                        if (position) {
+                            // const playerNameElement = position.querySelector('h3');
+                            // playerNameElement.textContent = playerName;
+                            // playerNameElement.style.display = 'inline-block';
+                            // playerNameElement.style.width = 'auto';
+                            // playerNameElement.style.marginLeft = '-4px';
+
+                            const playerImage = position.querySelector('.player-profile-img');
+                            playerImage.src = "/user-profile-picture/" + playerId;
+                            playerImage.alt = "My Profile";
+
+                            position.style.backgroundImage = 'none';
+                        }
+
+                    }
+
+                }
+
+            }
+
+
         }
     }
 

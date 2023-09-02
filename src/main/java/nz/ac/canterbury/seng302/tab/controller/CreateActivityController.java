@@ -199,7 +199,7 @@ public class CreateActivityController {
 
 
 
-        Map<Formation, List<List<Long>>> formationAndPlayersAndPosition = new HashMap<>();
+        Map<Long, List<List<Long>>> formationAndPlayersAndPosition = new HashMap<>();
 
         for (Map.Entry<Formation, LineUp> entry : lineUpService.getLineUpsForTeam(activity.getTeam()).entrySet()) {
             Formation formation = entry.getKey();
@@ -227,20 +227,14 @@ public class CreateActivityController {
                 }
             }
 
-            formationAndPlayersAndPosition.put(formation, playersAndPosition);
+            formationAndPlayersAndPosition.put(formation.getFormationId(), playersAndPosition);
             System.out.println("formation: " + formation.getFormation());
             System.out.println("linwup: " + lineUp.getLineUpId());
         }
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String formationAndPlayersAndPositionJson;
-        try {
-            formationAndPlayersAndPositionJson = objectMapper.writeValueAsString(formationAndPlayersAndPosition);
-        } catch (JsonProcessingException e) {
-            formationAndPlayersAndPositionJson = "{}";
-        }
 
-        model.addAttribute("formationAndPlayersAndPositionJson", formationAndPlayersAndPositionJson);
+
+        model.addAttribute("formationAndPlayersAndPositionJson", formationAndPlayersAndPosition);
         fillModelWithActivity(model, activity);
         createActivityForm.prepopulate(activity);
         return TEMPLATE_NAME;
