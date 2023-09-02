@@ -4,9 +4,8 @@
   <link th:href="@{/css/styles.css}" rel="stylesheet"/>
   <link th:href="@{/css/whiteboard.css}" rel="stylesheet">
   <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Whiteboard</title>
+  <script src="webjars/fabric.js"></script>
 </head>
 <body class="view-teams-background">
   <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
@@ -391,10 +390,14 @@
       handleShapeButtonClick('line');
     });
 
+    const shapeButton = document.querySelector('.shape-button');
+
     function handleShapeButtonClick(selectedShape) {
       const buttons = document.querySelectorAll('.shape-section button');
       buttons.forEach(button => button.classList.remove('active'));
       document.querySelector('.shape-button-' + selectedShape).classList.add('active');
+      shapeButton.classList.remove(shapeButton.classList.item(1))
+      shapeButton.classList.add(selectedShape)
       shape = selectedShape
     }
 
@@ -476,12 +479,14 @@
         mouseDown = true;
         if (activeMode === 'erase-button') {
           eraseObjects(options.e);
-        } else if (activeMode === 'shape-button') {
+        } else if (activeMode === 'shape-button circle') {
           drawingShape = new fabric.Circle({
             left: options.e.clientX - canvas._offset.left,
             top: options.e.clientY - canvas._offset.top,
-            radius: 1, // Start with a small radius
-            fill: 'red',
+            radius: 1,
+            fill: innerColour,
+            stroke: outerColour,
+            strokeWidth: 5,
             originX: 'center',
             originY: 'center'
           });
