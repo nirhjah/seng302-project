@@ -277,7 +277,7 @@ public class ActivityService {
         List<LineUp> activityLineups = lineUpRepository.findLineUpByActivityId(activity.getId()).get();
 
 
-        if (activityLineups.isEmpty() || activityLineups.size() == 1 ) {
+        if (activityLineups.isEmpty()) {
             return List.of();
         } else {
 
@@ -460,7 +460,6 @@ public class ActivityService {
 
     /**
      * Get total matches
-     * TODO Make this dependant on the played matches once formation is complete
      * @param team the teams matches wanted
      * @return the total number of played matches.
      */
