@@ -345,7 +345,7 @@
         loadFormation(selectedOption);
     });
 
-    
+
     var formationAndPlayersAndPositionJson = /*[[${formationAndPlayersAndPositionJson}]]*/ {};
 
 
@@ -379,15 +379,16 @@
                         console.log('this is playerinfo' + playerInfo)
 
                         const playerId = playerInfo[1];
+                        const playerName = playerInfo[2];
 
                         const position = positions[playerInfo[0]-1]
 
                         if (position) {
-                            // const playerNameElement = position.querySelector('h3');
-                            // playerNameElement.textContent = playerName;
-                            // playerNameElement.style.display = 'inline-block';
-                            // playerNameElement.style.width = 'auto';
-                            // playerNameElement.style.marginLeft = '-4px';
+                             const playerNameElement = position.querySelector('h3');
+                             playerNameElement.textContent = playerName;
+                             playerNameElement.style.display = 'inline-block';
+                             playerNameElement.style.width = 'auto';
+                             playerNameElement.style.marginLeft = '-4px';
 
                             const playerImage = position.querySelector('.player-profile-img');
                             playerImage.src = "/user-profile-picture/" + playerId;
