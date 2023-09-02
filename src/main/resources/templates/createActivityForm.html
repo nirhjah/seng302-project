@@ -299,7 +299,7 @@
     });
 
 </script>
-<script>
+<script th:inline="javascript">
     function typeCanHaveFormation(activityType) {
         return (activityType === "Game" || activityType === "Friendly");
     }
@@ -348,7 +348,24 @@
 
 
 
+    var formationAndPlayersAndPositionJson = /*[[${formationAndPlayersAndPositionJson}]]*/ {};
+
+    var formationAndPlayersAndPosition = JSON.parse(formationAndPlayersAndPositionJson);
+
+    for (var formation in formationAndPlayersAndPosition) {
+        //when looping through formations check if formation == target value when dropdown changed.
+        var playersAndPosition = formationAndPlayersAndPosition[formation];
+        console.log("formation: " + formation);
+
+        for (var i = 0; i < playersAndPosition.length; i++) {
+            var playerInfo = playersAndPosition[i];
+            console.log("position: " + playerInfo[0]);
+            console.log("player: " + playerInfo[1]);
+        }
+    }
+
     function loadFormation(target) {
+
         const reservesLi = document.querySelectorAll(".reserves-li");
         const formationId = target.value;
         const formation = target.textContent;

@@ -1,23 +1,28 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Formation;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import nz.ac.canterbury.seng302.tab.repository.FormationRepository;
 import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class LineUpService {
 
     @Autowired
     private LineUpRepository lineUpRepository;
+
     @Autowired
-    public LineUpService(LineUpRepository lineUpRepository) {
+    private FormationRepository formationRepository;
+
+    @Autowired
+    public LineUpService(LineUpRepository lineUpRepository, FormationRepository formationRepository) {
         this.lineUpRepository = lineUpRepository;
+        this.formationRepository = formationRepository;
     }
 
     public Optional<List<LineUp>> findLineUpsByTeam(long id) {
@@ -48,4 +53,26 @@ public class LineUpService {
     public void updateOrAddLineUp(LineUp lineUp) {
         lineUpRepository.save(lineUp);
     }
+
+
+    public Map<Formation, LineUp> getLineUpsForTeam(Team team) {
+        List<Formation> teamFormations = formationRepository.findByTeamTeamId(team.getTeamId());
+        List<LineUp> allLineUps = (List<LineUp>) lineUpRepository.findAll(); // Fetch all LineUps from the repository
+
+
+        Map<Formation, LineUp> formationLineUpMap = new HashMap<>();
+        for (Formation formation : teamFormations) {
+
+            for (LineUp lineUp : allLineUps) {
+
+                if (lineUp.getTeam() == team && lineUp.getFormation().getFormationId() == formation.getFormationId()) {
+                    formationLineUpMap.put(formation, lineUp);
+                }
+            }
+        }
+
+        return formationLineUpMap;
+    }
+
+
 }

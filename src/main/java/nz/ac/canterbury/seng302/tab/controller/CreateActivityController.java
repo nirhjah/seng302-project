@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.api.response.FormationInfo;
@@ -30,10 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class CreateActivityController {
@@ -198,6 +197,50 @@ public class CreateActivityController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Incorrect permissions to edit activity");
         }
 
+
+
+        Map<Formation, List<List<Long>>> formationAndPlayersAndPosition = new HashMap<>();
+
+        for (Map.Entry<Formation, LineUp> entry : lineUpService.getLineUpsForTeam(activity.getTeam()).entrySet()) {
+            Formation formation = entry.getKey();
+            LineUp lineUp = entry.getValue();
+
+            //Map<Integer, Long> playersAndPosition = new HashMap<>();
+            List<List<Long>> playersAndPosition = new ArrayList<>();
+
+/*
+            Map<Integer, String> playerNames = new HashMap<>();
+*/
+
+            System.out.println("test");
+            Optional<List<LineUpPosition>> lineupPosition = (lineUpPositionService.findLineUpPositionsByLineUp(lineUp.getLineUpId()));
+
+            if (lineupPosition.isPresent()) {
+                for (LineUpPosition position : lineupPosition.get()) {
+                    int positionId = position.getPosition();
+
+                    User player = position.getPlayer();
+
+                    List<Long> playerInfo = Arrays.asList((long) positionId, player.getId());
+                        playersAndPosition.add(playerInfo);
+
+                }
+            }
+
+            formationAndPlayersAndPosition.put(formation, playersAndPosition);
+            System.out.println("formation: " + formation.getFormation());
+            System.out.println("linwup: " + lineUp.getLineUpId());
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String formationAndPlayersAndPositionJson;
+        try {
+            formationAndPlayersAndPositionJson = objectMapper.writeValueAsString(formationAndPlayersAndPosition);
+        } catch (JsonProcessingException e) {
+            formationAndPlayersAndPositionJson = "{}";
+        }
+
+        model.addAttribute("formationAndPlayersAndPositionJson", formationAndPlayersAndPositionJson);
         fillModelWithActivity(model, activity);
         createActivityForm.prepopulate(activity);
         return TEMPLATE_NAME;
