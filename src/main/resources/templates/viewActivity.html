@@ -235,14 +235,6 @@
                      </div>
                  </div>
                 <div class="formation-outer"
-                     th:insert="~{fragments/formationDisplay.html::formationDisplay(true)}"></div>
-                <div id="addSubModal" class="modal">
-                    <div class="add-goal-modal-content event" style="bottom: unset">
-                        <span class="close" onclick="addGoalModal.style.display = 'none'">&times;</span>
-                        <p> hello there</p>
-                    </div>
-                </div>
-                <div class="formation-outer"
                      th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"
                      th:if="${formation != null}"
                      th:data-formation="${formation.formation}"
