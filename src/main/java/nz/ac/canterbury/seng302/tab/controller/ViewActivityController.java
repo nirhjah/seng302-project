@@ -460,19 +460,53 @@ public class ViewActivityController {
                             @RequestParam(name="actId", defaultValue="-1") long actId,
                             @RequestParam(name="playerOn", defaultValue="-1") int subOnId,
                             @RequestParam(name="playerOff", defaultValue="-1") int subOffId,
-                            @RequestParam(name = "time") String time) {
+                            @RequestParam(name = "time") String time,
+                            @Validated CreateEventForm createEventForm,
+                            BindingResult bindingResult,
+                            HttpServletRequest request,
+                            Model model,
+                            HttpServletResponse httpServletResponse,
+                            RedirectAttributes redirectAttributes) {
         
         logger.info(String.format("got the player on id: %s", subOnId));
         logger.info(String.format("got the player off id: %s", subOffId));
         logger.info(String.format("got the time %s", time));
         logger.info(String.format("activity %s", actId));
         String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
+        Activity currActivity = activityService.findActivityById(actId);
         
+        if (time.isBlank()) {
+            bindingResult.addError(new FieldError(createEventFormString, "time", FIELD_CANNOT_BE_BLANK_MSG));
+        } else {
+            if (!activityService.checkTimeOfFactWithinActivity(currActivity, Integer.parseInt(time))) {
+                bindingResult.addError(new FieldError(createEventFormString, "time", GOAL_NOT_SCORED_WITHIN_DURATION));
+            }
+        }
+
+        // TODO : this probably isnt possible so im not sure if i need it
         List<User> playersInLineUp = getAllPlayersPlaying(actId);
         if (playersInLineUp.isEmpty()) {
             logger.error("There are no players in the lineup but a sub was made ");
         }
+        
+        Optional<User> optionalPlayerOn = userService.findUserById(subOnId);
 
+        
+        Optional<User> optionalPlayerOff = userService.findUserById(subOffId);
+        if (optionalPlayerOff.isEmpty()) {
+            bindingResult.addError(new FieldError(createEventFormString, "sub Off", PLAYER_IS_REQUIRED_MSG));
+        }
+        
+        if (optionalPlayerOn.isEmpty()) {
+            bindingResult.addError(new FieldError(createEventFormString, "sub On", PLAYER_IS_REQUIRED_MSG));
+        }
+        
+        List<Fact> factList = new ArrayList<>();
+        Substitution sub = new Substitution("", time, currActivity, optionalPlayerOff.get(), optionalPlayerOn.get());
+        factList.add(sub);
+        currActivity.addFactList(factList);
+        activityService.updateOrAddActivity(currActivity);
+        logger.info("added the activity");
 
 
         return viewActivityRedirectUrl;
