@@ -16,22 +16,25 @@
 <body class="view-competition-background">
 <div th:insert="~{fragments/navBar.html::navbar}"></div>
 
+<div class="navbar-buffer">
+    <!-- serves as a buffer between the navbar and the filter dropdowns -->
+</div>
 
 <div>
     <form th:action="@{view-all-competitions}">
-        <div class="page-filter">
-            <div class="filter-left">
+        <div class="filter-bar">
+            <div class="multipleSelection">
                 <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfTimes}, 'Filter by time', 'times')}"></div>
             </div>
 
-            <div class ="filter-right">
+            <div class ="multipleSelection">
                 <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sports', 'sports')}"
                      th:if="${not #lists.isEmpty(listOfSports)}"></div>
-                <button class="apply-filters-button" type="submit">Apply Filters</button>
             </div>
+
+            <button class="apply-filters-button" type="submit">Apply Filters</button>
         </div>
     </form>
-
 
     <div class="page-wrapper">
         <form th:action="@{view-competition}" method="get">

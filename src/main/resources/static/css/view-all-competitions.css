@@ -1,3 +1,4 @@
+
 .page-filter{
     width:100%;
     background: #aaaaaaaa;
@@ -88,10 +89,6 @@
     margin-left:-8px;
 }
 
-.apply-filters-button{
-    height:25px;
-    cursor:pointer;
-}
 
 .dropdown{
     min-width:240px;
@@ -167,8 +164,18 @@
 }
 
 
+.navbar-buffer {
+    padding-bottom: 20px;
+}
 
 
+.filter-bar-view-all {
+    display:flex;
+    flex-direction: row;
+    height:35px;
+    justify-content: center;
+    margin: auto;
+}
 
 
 /* For the sport filter */
