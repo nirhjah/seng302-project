@@ -322,11 +322,11 @@
             }
         });
 
-        function switchLineTypes() {
-            drawStyleButtonSolid.classList.toggle('active')
-            drawStyleButtonDashed.classList.toggle('active')
-            updateLineType()
-        }
+    function switchLineTypes() {
+      drawStyleButtonSolid.classList.toggle('active')
+      drawStyleButtonDashed.classList.toggle('active')
+      updateLineType()
+    }
 
         // Drawing Tool Colour
 
@@ -442,12 +442,16 @@
             handleShapeButtonClick('line');
         });
 
-        function handleShapeButtonClick(selectedShape) {
-            const buttons = document.querySelectorAll('.shape-section button');
-            buttons.forEach(button => button.classList.remove('active'));
-            document.querySelector('.shape-button-' + selectedShape).classList.add('active');
-            shape = selectedShape
-        }
+    const shapeButton = document.querySelector('.shape-button');
+
+    function handleShapeButtonClick(selectedShape) {
+      const buttons = document.querySelectorAll('.shape-section button');
+      buttons.forEach(button => button.classList.remove('active'));
+      document.querySelector('.shape-button-' + selectedShape).classList.add('active');
+      shapeButton.classList.remove(shapeButton.classList.item(1))
+      shapeButton.classList.add(selectedShape)
+      shape = selectedShape
+    }
 
         // Fill
 
@@ -522,24 +526,26 @@
         let mouseDown = false; // Track mouse button state
         let drawingShape = null;
 
-        canvas.on('mouse:down', function (options) {
-            if (options.e.button === 0) {
-                mouseDown = true;
-                if (activeMode === 'erase-button') {
-                    eraseObjects(options.e);
-                } else if (activeMode === 'shape-button') {
-                    drawingShape = new fabric.Circle({
-                        left: options.e.clientX - canvas._offset.left,
-                        top: options.e.clientY - canvas._offset.top,
-                        radius: 1, // Start with a small radius
-                        fill: 'red',
-                        originX: 'center',
-                        originY: 'center'
-                    });
-                    canvas.add(drawingShape);
-                }
-            }
-        });
+    canvas.on('mouse:down', function (options) {
+      if (options.e.button === 0) {
+        mouseDown = true;
+        if (activeMode === 'erase-button') {
+          eraseObjects(options.e);
+        } else if (activeMode === 'shape-button circle') {
+          drawingShape = new fabric.Circle({
+            left: options.e.clientX - canvas._offset.left,
+            top: options.e.clientY - canvas._offset.top,
+            radius: 1,
+            fill: innerColour,
+            stroke: outerColour,
+            strokeWidth: 5,
+            originX: 'center',
+            originY: 'center'
+          });
+          canvas.add(drawingShape);
+        }
+      }
+    });
 
         canvas.on('mouse:up', function () {
             if (drawingShape) {
