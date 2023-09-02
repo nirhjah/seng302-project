@@ -169,14 +169,6 @@
 }
 
 
-.filter-bar-view-all {
-    display:flex;
-    flex-direction: row;
-    height:35px;
-    justify-content: center;
-    margin: auto;
-}
-
 
 /* For the sport filter */
 .filter-right{
