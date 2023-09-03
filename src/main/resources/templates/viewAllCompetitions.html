@@ -23,14 +23,9 @@
 <div>
     <form th:action="@{view-all-competitions}">
         <div class="filter-bar">
-            <div class="multipleSelection">
-                <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfTimes}, 'Filter by time', 'times')}"></div>
-            </div>
-
-            <div class ="multipleSelection">
-                <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sports', 'sports')}"
-                     th:if="${not #lists.isEmpty(listOfSports)}"></div>
-            </div>
+            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfTimes}, 'Filter by time', 'times')}"></div>
+            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}"
+                 th:if="${not #lists.isEmpty(listOfSports)}"></div>
 
             <button class="apply-filters-button" type="submit">Apply Filters</button>
         </div>

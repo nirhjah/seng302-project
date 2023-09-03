@@ -165,21 +165,8 @@
 
 
 .navbar-buffer {
+    /* give a bit of buffering the the dropdowns */
     padding-bottom: 20px;
-}
-
-
-
-/* For the sport filter */
-.filter-right{
-    display:flex;
-    align-items:center;
-}
-
-/* For the time filter */
-.filter-left {
-    display: flex;
-    align-items: flex-start;
 }
 
 
