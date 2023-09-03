@@ -79,6 +79,10 @@ public class ViewActivityController {
 
     String addFactFormBindingResult = "addFactFormBindingResult";
 
+    String addSubFormBindingResult = "addSubFormBindingResult";
+
+    String addSubFormString = "addSubForm";
+
     String createEventFormString = "createEventForm";
 
     String overallScoreTeamString = "overallScoreTeam";
@@ -93,9 +97,13 @@ public class ViewActivityController {
 
     String scoreTabName = "score-tab";
 
+    String subTabName = "formations-tab";
+
     String viewActivityRedirect = "redirect:./view-activity?activityID=%s";
 
     int scoreTabIndex = 3;
+
+    int subTabIndex = 2;
 
     @Autowired
     public ViewActivityController(UserService userService, ActivityService activityService, TeamService teamService, FactService factService, LineUpService lineUpService, LineUpPositionService lineUpPositionService) {
@@ -165,6 +173,10 @@ public class ViewActivityController {
         if (model.asMap().containsKey(addFactFormBindingResult)) {
             model.addAttribute("org.springframework.validation.BindingResult.addFactForm",
                     model.asMap().get(addFactFormBindingResult));
+        }
+        if (model.asMap().containsKey(addSubFormBindingResult)) {
+            model.addAttribute("org.springframework.validation.BindingResult.addSubForm",
+                    model.asMap().get(addSubFormBindingResult));
         }
         Activity activity = activityService.findActivityById(activityID);
         if (activity == null) {
@@ -540,14 +552,22 @@ public class ViewActivityController {
             bindingResult.addError(new FieldError(createEventFormString, "time", FIELD_CANNOT_BE_BLANK_MSG));
         } else {
             if (!activityService.checkTimeOfFactWithinActivity(currActivity, Integer.parseInt(time))) {
+                logger.info("not within the time");
                 bindingResult.addError(new FieldError(createEventFormString, "time", GOAL_NOT_SCORED_WITHIN_DURATION));
             }
         }
 
-        // TODO : this probably isnt possible so im not sure if i need it
+        if (LocalDateTime.now().isBefore(currActivity.getActivityStart())) {
+            logger.info("should add an error ");
+            bindingResult.addError(new FieldError(createEventFormString, "time", "You can only add a sub once the activity starts"));
+        }
+        redirectAttributes.addFlashAttribute("stayOnTab_name", "formations-tab");
+        redirectAttributes.addFlashAttribute("stayOnTab_index", 2);
+
         List<User> playersInLineUp = getAllPlayersPlaying(actId);
         if (playersInLineUp.isEmpty()) {
             logger.error("There are no players in the lineup but a sub was made ");
+            // TODO  add binding error 
         }
         
         Optional<User> optionalPlayerOn = userService.findUserById(subOnId);
@@ -562,6 +582,16 @@ public class ViewActivityController {
             bindingResult.addError(new FieldError(createEventFormString, "sub On", PLAYER_IS_REQUIRED_MSG));
         }
         
+        if (bindingResult.hasErrors()) {
+            logger.info(bindingResult.getAllErrors().toString());
+            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            redirectAttributes.addFlashAttribute("subInvalid", leaveModalOpenString);
+            redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
+            redirectAttributes.addFlashAttribute(stayOnTabNameString, subTabName);
+            redirectAttributes.addFlashAttribute(stayOnTabIndexString, subTabIndex);
+            return viewActivityRedirectUrl;
+        }
+
         List<Fact> factList = new ArrayList<>();
         Substitution sub = new Substitution(description, time, currActivity, optionalPlayerOff.get(), optionalPlayerOn.get());
         factList.add(sub);
