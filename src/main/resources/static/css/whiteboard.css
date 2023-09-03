@@ -359,6 +359,10 @@ input[type="range"]::-moz-range-track {
     font-size:18px;
 }
 
+.whiteboard-dropdowns h3:focus {
+    outline: none;
+}
+
 
 
 

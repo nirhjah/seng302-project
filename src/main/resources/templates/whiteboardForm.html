@@ -14,7 +14,7 @@
 <div class="whiteboard-form">
     <div class="whiteboard-wrapper">
         <div class="whiteboard-dropdowns">
-            <h3>Team 1 Whiteboard</h3>
+            <h3 contenteditable="true">Untitled</h3>
 
             <div class="dropdown">
                 <label for="pitch">Pitch Type</label>
@@ -217,6 +217,18 @@
             canvasContainer.style.backgroundImage = `url(${imageUrl})`;
         }
     });
+    let isLabelFocused = false;
+    const whiteboardDropdowns = document.querySelector('.whiteboard-dropdowns');
+    const label = whiteboardDropdowns.querySelector('h3');
+    label.addEventListener('click', () => {
+        label.focus();
+        isLabelFocused=true;
+    });
+    label.addEventListener('blur', () => {
+        const editedText = label.textContent.trim();
+        label.textContent = editedText || 'Untitled';
+        isLabelFocused = false;
+    });
 
     document.addEventListener("DOMContentLoaded", function () {
         pitchSelect.value = "soccer";
@@ -360,6 +372,9 @@
         }
 
         document.addEventListener('keydown', function (event) {
+            if (isLabelFocused) {
+                return;
+            }
             if (event.key === 's') {
                 handleButtonClick('select-button', false, true);
             } else if (event.key === 'd') {
