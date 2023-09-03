@@ -83,12 +83,6 @@
 
 }
 
-.checkbox{
-    position:absolute;
-    width:144px;
-    margin-left:-8px;
-}
-
 
 .dropdown{
     min-width:240px;
@@ -155,12 +149,6 @@
 
 .active{
     background:#0b2239;
-}
-
-.menu-open{
-    display:block;
-    opacity:1;
-
 }
 
 

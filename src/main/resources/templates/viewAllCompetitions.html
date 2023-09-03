@@ -23,14 +23,15 @@
 
 <form th:action="@{view-all-competitions}">
     <div class="filter-bar">
-        <div style="display: flex">
-            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfTimes}, 'Filter by time', 'times')}"></div>
-            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>
-        </div>
-
+        <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfTimes}, 'Filter by time', 'times')}"></div>
+        <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>
         <button class="apply-filters-button" type="submit">Apply Filters</button>
     </div>
 </form>
+
+<div th:if="${listOfCompetitions.empty}" class="emptySearchResults">
+    No competitions found.
+</div>
 
 <div class="page-wrapper">
     <form th:action="@{view-competition}" method="get">
