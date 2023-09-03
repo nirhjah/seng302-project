@@ -13,11 +13,11 @@ Feature: U34 – Add activity statistics
     When the activity has begun
     Then I am able to record facts through a dedicated UI element.
 
-#  Scenario: AC3
-#    Given I am a manager or coach,
-#    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
-#    When the activity has ended,
-#    Then I am able to add an outcome for the overall activity through a dedicated UI element
+  Scenario: AC3
+    Given I am a manager or coach,
+    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
+    When the activity has ended,
+    Then I am able to add an outcome for the overall activity through a dedicated UI element
 
 #  Scenario: AC4
 #    Given I am a manager or coach,
