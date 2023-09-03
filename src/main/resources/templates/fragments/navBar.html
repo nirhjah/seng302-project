@@ -50,7 +50,7 @@
                 <div sec:authorize="isAuthenticated()" class="view-profile">
                     View Profile:
                     <select class="form-control" id="dropDownList" name="teamSelector"
-                            onchange="if(this.value != '-1') window.location.href = 'profile?teamID=' + this.value;">
+                            onchange="if(this.value != '-1') window.location.href = 'team-info?teamID=' + this.value;">
                         <option value="-1" selected>Select a Team</option>
                         <option th:each="team : ${G_navTeams}"
                                 th:value="${team.teamId}"
