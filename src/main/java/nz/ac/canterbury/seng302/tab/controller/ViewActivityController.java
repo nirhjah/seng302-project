@@ -519,6 +519,7 @@ public class ViewActivityController {
                             @RequestParam(name="actId", defaultValue="-1") long actId,
                             @RequestParam(name="playerOn", defaultValue="-1") int subOnId,
                             @RequestParam(name="playerOff", defaultValue="-1") int subOffId,
+                            @RequestParam(name="description", defaultValue="") String description,
                             @RequestParam(name = "time") String time,
                             @Validated CreateEventForm createEventForm,
                             BindingResult bindingResult,
@@ -531,6 +532,7 @@ public class ViewActivityController {
         logger.info(String.format("got the player off id: %s", subOffId));
         logger.info(String.format("got the time %s", time));
         logger.info(String.format("activity %s", actId));
+        logger.info(String.format("description %s", description));
         String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
         Activity currActivity = activityService.findActivityById(actId);
         
@@ -561,7 +563,7 @@ public class ViewActivityController {
         }
         
         List<Fact> factList = new ArrayList<>();
-        Substitution sub = new Substitution("", time, currActivity, optionalPlayerOff.get(), optionalPlayerOn.get());
+        Substitution sub = new Substitution(description, time, currActivity, optionalPlayerOff.get(), optionalPlayerOn.get());
         factList.add(sub);
         currActivity.addFactList(factList);
         activityService.updateOrAddActivity(currActivity);

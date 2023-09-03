@@ -218,6 +218,14 @@
                                                  th:text="${player.firstName + ' ' + player.lastName}"></option>
                                      </select>
                                 </div>
+
+                                <div class="description-box">
+                                    <label class="goal-form-labels" for="description">Description</label>
+                                    <textarea class="description-text" id="description" th:name="description" autofocus
+                                              placeholder=""
+                                              th:field="*{description}"></textarea>
+                                </div>
+
                                  <div style="margin-bottom: -10px" class="goalTime-input-div">
                                      <label class="goal-form-labels" for="time-of-goal">Time (minutes)<span class="required">*</span></label>
 
