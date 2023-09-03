@@ -164,7 +164,7 @@ header .header-left .hamburger div {
     align-items: center;
 }
 
-.triangle {
+.navbar-user-button .triangle {
     display: inline-block;
     width: 0;
     height: 0;
@@ -175,7 +175,7 @@ header .header-left .hamburger div {
     border-color: white transparent transparent transparent;
 }
 
-.triangle.up {
+.navbar-user-button .triangle.up {
     border-width: 0 8px 8px 8px;
     border-color: transparent transparent white transparent;
 }

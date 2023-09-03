@@ -5,7 +5,8 @@
   <link th:href="@{/css/whiteboard.css}" rel="stylesheet">
   <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="webjars/fabric.js"></script>
+<!--  <script src="webjars/fabric.js"></script>-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
 </head>
 <body class="view-teams-background">
   <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
@@ -319,6 +320,7 @@
         handleButtonClick('shape-button', false, false);
       } else if (event.key === 'Delete' || event.key === 'Backspace') {
         canvas.remove(...canvas.getActiveObjects());
+        canvas.renderAll();
       } else if (event.key === 'c') {
         canvas.clear();
       }
@@ -354,9 +356,8 @@
     function switchLineTypesShape() {
       shapeStyleButtonSolid.classList.toggle('active')
       shapeStyleButtonDashed.classList.toggle('active')
-      const canvasWidth = 5 * canvas.freeDrawingBrush.width
       if (shapeStyleButtonDashed.classList.contains('active')) {
-        shapeOutline = [canvasWidth, canvasWidth / 2];
+        shapeOutline = [10, 5];
       } else {
         shapeOutline = [];
       }
@@ -396,14 +397,20 @@
       const buttons = document.querySelectorAll('.shape-section button');
       buttons.forEach(button => button.classList.remove('active'));
       document.querySelector('.shape-button-' + selectedShape).classList.add('active');
-      shapeButton.classList.remove(shapeButton.classList.item(1))
+      const classesToKeep = ['shape-button', 'active'];
+      for (let i = shapeButton.classList.length - 1; i >= 0; i--) {
+        const className = shapeButton.classList.item(i);
+        if (!classesToKeep.includes(className)) {
+          shapeButton.classList.remove(className);
+        }
+      }
       shapeButton.classList.add(selectedShape)
       shape = selectedShape
     }
 
     // Fill
-
     let innerColour = '#FF0000'
+    let innerHidden = false;
 
     const colourPickerFill = document.querySelector('.colour-picker.fill');
     const colourValueInputFill = document.getElementById('colourValueFill');
@@ -413,6 +420,8 @@
       const newColour = this.value;
       colourValueInputFill.value = newColour.substr(1).toUpperCase();
       innerColour = this.value
+      visibilitySelectionFill.classList.add('active')
+      innerHidden = false;
     });
 
     // Event listener for the colour value input
@@ -421,6 +430,8 @@
       if (isValidHexcolour(newColour)) {
         colourPickerFill.value = '#' + newColour;
         innerColour = '#' + newColour;
+        visibilitySelectionFill.classList.add('active')
+        innerHidden = false;
       }
     });
 
@@ -433,10 +444,13 @@
 
     visibilitySelectionFill.addEventListener('click', function () {
       visibilitySelectionFill.classList.toggle('active')
+      innerHidden = !innerHidden;
     });
+
 
     // Outline
     let outerColour = '#FF0000'
+    let outerHidden = false;
 
     const colourPickerOutline = document.querySelector('.colour-picker.outline');
     const colourValueInputOutline = document.getElementById('colourValueOutline');
@@ -446,6 +460,8 @@
       const newColour = this.value;
       colourValueInputOutline.value = newColour.substr(1).toUpperCase();
       outerColour = this.value
+      visibilitySelectionOutline.classList.add('active')
+      outerHidden = false;
     });
 
     // Event listener for the colour value input
@@ -454,6 +470,8 @@
       if (isValidHexcolour(newColour)) {
         colourPickerOutline.value = '#' + newColour;
         outerColour = '#' + newColour;
+        visibilitySelectionOutline.classList.add('active')
+        outerHidden = false;
       }
     });
 
@@ -466,62 +484,164 @@
 
     visibilitySelectionOutline.addEventListener('click', function () {
       visibilitySelectionOutline.classList.toggle('active')
+      outerHidden = !outerHidden;
     });
+
 
     // Drawing Shapes
 
     // Event listener for canvas interactions
     let mouseDown = false; // Track mouse button state
     let drawingShape = null;
+    let startX;
+    let startY;
+    let maxWidth;
+    let maxHeight
 
     canvas.on('mouse:down', function (options) {
+      const { x, y } = canvas.getPointer(options.e);
+      if (canvas.getActiveObject()) {
+        handleButtonClick('select-button', false, true);
+      }
+      startX = x
+      startY = y
+      maxWidth = canvas.width - x;
+      maxHeight = canvas.height - y;
       if (options.e.button === 0) {
         mouseDown = true;
         if (activeMode === 'erase-button') {
           eraseObjects(options.e);
-        } else if (activeMode === 'shape-button circle') {
-          drawingShape = new fabric.Circle({
-            left: options.e.clientX - canvas._offset.left,
-            top: options.e.clientY - canvas._offset.top,
-            radius: 1,
-            fill: innerColour,
-            stroke: outerColour,
-            strokeWidth: 5,
-            originX: 'center',
-            originY: 'center'
-          });
+        } else if (activeMode === 'shape-button') {
+          if (shapeButton.classList.contains("circle")) {
+            drawingShape = new fabric.Circle({
+              left: options.e.clientX - canvas._offset.left,
+              top: options.e.clientY - canvas._offset.top,
+              radius: 1,
+              fill: !innerHidden ? innerColour : null,
+              stroke: !outerHidden ? outerColour : null,
+              strokeWidth: 5,
+              originX: 'center',
+              originY: 'center',
+              strokeDashArray: shapeOutline
+            });
+          } else if (shapeButton.classList.contains("ellipse")) {
+            drawingShape = new fabric.Ellipse({
+              left: options.e.clientX - canvas._offset.left,
+              top: options.e.clientY - canvas._offset.top,
+              radius: 1,
+              fill: !innerHidden ? innerColour : null,
+              stroke: !outerHidden ? outerColour : null,
+              strokeWidth: 5,
+              originX: 'center',
+              originY: 'center',
+              strokeDashArray: shapeOutline
+            });
+          } else if (shapeButton.classList.contains("triangle")) {
+            drawingShape = new fabric.Triangle({
+              left: options.e.clientX - canvas._offset.left,
+              top: options.e.clientY - canvas._offset.top,
+              radius: 1,
+              fill: !innerHidden ? innerColour : null,
+              stroke: !outerHidden ? outerColour : null,
+              strokeWidth: 5,
+              originX: 'center',
+              originY: 'center',
+              strokeDashArray: shapeOutline
+            });
+          } else if (shapeButton.classList.contains("square")) {
+            drawingShape = new fabric.Rect({
+              left: x,
+              top: y,
+              originX: 'left',
+              originY: 'top',
+              width: 0,
+              height: 0,
+              radius: 1,
+              fill: !innerHidden ? innerColour : null,
+              stroke: !outerHidden ? outerColour : null,
+              strokeWidth: 5,
+              strokeDashArray: shapeOutline
+            });
+          } else if (shapeButton.classList.contains("rectangle")) {
+            drawingShape = new fabric.Rect({
+              left: startX,
+              top: startY,
+              width: 0,
+              height: 0,
+              fill: !innerHidden ? innerColour : 'transparent',
+              stroke: !outerHidden ? outerColour : 'transparent',
+              strokeWidth: 5,
+              strokeDashArray: shapeOutline
+            });
+          } else if (shapeButton.classList.contains("line")) {
+            drawingShape = new fabric.Line({
+              left: options.e.clientX - canvas._offset.left,
+              top: options.e.clientY - canvas._offset.top,
+              radius: 1,
+              fill: !innerHidden ? innerColour : null,
+              stroke: !outerHidden ? outerColour : null,
+              strokeWidth: 5,
+              originX: 'center',
+              originY: 'center',
+              strokeDashArray: shapeOutline
+            });
+          }
           canvas.add(drawingShape);
         }
       }
     });
 
-    canvas.on('mouse:up', function () {
-      if (drawingShape) {
-        if (drawingShape.radius < 10) {
-          canvas.remove(drawingShape);
-        } else {
-          drawingShape.setCoords();
-        }
-        drawingShape = null;
-      }
-      mouseDown = false;
-    });
-
     canvas.on('mouse:move', function (options) {
       const pointer = canvas.getPointer(options.e);
-      if (mouseDown && activeMode === 'erase-button') {
-        eraseObjects(options.e);
-      } else if (mouseDown && activeMode === 'shape-button' && drawingShape) {
-        const dx = pointer.x - drawingShape.left;
-        const dy = pointer.y - drawingShape.top;
-        const newRadius = Math.sqrt(dx * dx + dy * dy);
+      const { x, y } = pointer;
+      if (mouseDown) {
+        if (activeMode === "erase-button") {
+          eraseObjects(options.e);
+        } else if (activeMode === "shape-button") {
+          switch (drawingShape.get("type")) {
+            case "circle":
+              const dx = pointer.x - drawingShape.left;
+              const dy = pointer.y - drawingShape.top;
+              const newRadius = Math.sqrt(dx * dx + dy * dy);
 
-        if (newRadius >= 10) { // Minimum radius to keep the circle visible
-          drawingShape.set({radius: newRadius});
-          canvas.renderAll();
+              if (newRadius >= 10) {
+                drawingShape.set({radius: newRadius});
+                canvas.renderAll();
+              }
+              break;
+            case "rect":
+              if (startX > x) {
+                if (x < 0) {
+                  drawingShape.set({ left: 0 });
+                } else {
+                  drawingShape.set({ left: Math.abs(x) });
+                }
+                drawingShape.set({ width: Math.abs(startX - Math.max(x, 0)) });
+              } else {
+                drawingShape.set({ width: Math.min( maxWidth, Math.abs(startX - Math.max(x, 0))) });
+              }
+              if (startY > y) {
+                if (y < 0) {
+                  drawingShape.set({ top: 0});
+                } else {
+                  drawingShape.set({ top: Math.abs(y) });
+                }
+                drawingShape.set({ height: Math.abs(startY - Math.max(y, 0)) });
+              } else {
+                drawingShape.set({ height: Math.min( maxHeight, Math.abs(startY - Math.max(y, 0))) });
+              }
+
+              canvas.renderAll();
+          }
         }
       }
     });
+
+    canvas.on('mouse:up', function () {
+      mouseDown = false;
+      drawingShape.setCoords();
+    });
+
   })
 
 </script>
