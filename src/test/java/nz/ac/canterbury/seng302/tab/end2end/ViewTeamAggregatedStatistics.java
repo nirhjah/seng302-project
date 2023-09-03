@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.end2end;
 
-import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.LoadState;
@@ -9,6 +8,9 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
@@ -52,9 +54,17 @@ public class ViewTeamAggregatedStatistics {
     }
 
 
-
     @Then("I will see a section that displays the trend of the matches outcomes i.e win, lost, drew of the last 5 matches")
-    public void i_will_see_a_section_that_displays_the_trend_of_the_matches_outcomes_i_e_win_lost_drew_of_the_last_matches(Integer int1) {
+    public void i_will_see_a_section_that_displays_the_trend_of_the_matches_outcomes_i_e_win_lost_drew_of_the_last_matches() {
+
+        for (int i = 1; i < 6; i++) {
+            PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/view-activity?activityID=" + i);
+            PlaywrightBrowser.page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add Outcome")).click();
+            PlaywrightBrowser.page.selectOption("#activityOutcomes", "Win");
+            PlaywrightBrowser.page.click(".registerLoginButton");
+        }
+
+
         PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/view-activity?activityID=1");
 
         PlaywrightBrowser.page.locator(".general-activity-right button").click();
@@ -66,9 +76,8 @@ public class ViewTeamAggregatedStatistics {
         PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=1");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("div.tab#stats-tab").click();
-        PlaywrightBrowser.page.locator(".last5Ul");
+        Assertions.assertTrue(PlaywrightBrowser.page.locator(".last5 li").count() == 5);
 
-        //check for all li in UL, check for win loss draw images
 
 
 
@@ -76,14 +85,35 @@ public class ViewTeamAggregatedStatistics {
 
     @Given("there are activities \\(game or friendly)  that have won, lost or drew overall,")
     public void there_are_activities_game_or_friendly_that_have_won_lost_or_drew_overall() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+
+        PlaywrightBrowser.page.waitForTimeout(120000); //waiting for activity to end
+
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/view-activity?activityID=1");
+        PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/view-activity?activityID=1");
+
+        PlaywrightBrowser.page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add Outcome")).click();
+        PlaywrightBrowser.page.selectOption("#activityOutcomes", "Win");
+        PlaywrightBrowser.page.click(".registerLoginButton");
+
     }
 
     @Then("I can see a total of how many games or friendlies the team has played, won, lost and drew overall")
     public void i_can_see_a_total_of_how_many_games_or_friendlies_the_team_has_played_won_lost_and_drew_overall() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+
+
+
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=1");
+        PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
+        PlaywrightBrowser.page.locator("div.tab#stats-tab").click();
+
+        Assertions.assertTrue(PlaywrightBrowser.page.locator("#cell-1 h4").innerText().equals("5"));
+        Assertions.assertTrue(PlaywrightBrowser.page.locator("#cell-2 h4").innerText().equals("1"));
+        Assertions.assertTrue(PlaywrightBrowser.page.locator("#cell-3 h4").innerText().equals("0"));
+        Assertions.assertTrue(PlaywrightBrowser.page.locator("#cell-4 h4").innerText().equals("0"));
+
+
+
     }
 
     @Given("I have at least 5 activities")
@@ -118,9 +148,7 @@ public class ViewTeamAggregatedStatistics {
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/view-activity?activityID=1");
 
-        PlaywrightBrowser.page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add Outcome")).click();
-        PlaywrightBrowser.page.selectOption("#activityOutcomes", "Win");
-        PlaywrightBrowser.page.click(".registerLoginButton");
+        PlaywrightBrowser.page.locator("div.tab#score-tab").click();
 
         PlaywrightBrowser.page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add Overall Score")).click();
         PlaywrightBrowser.page.fill("input#overall-score-team", String.valueOf(4));
@@ -133,48 +161,72 @@ public class ViewTeamAggregatedStatistics {
         PlaywrightBrowser.page.locator("div.tab#stats-tab").click();
 
         String winImg = "/image/icons/win.svg";
-        ElementHandle imgElement = (ElementHandle) PlaywrightBrowser.page.locator("img[src='" + winImg + "']").first();
-        Assertions.assertTrue(imgElement.isVisible());
+        Assertions.assertTrue( PlaywrightBrowser.page.locator("img[src='" + winImg + "']").first().isVisible());
     }
 
     @Then("I can see the date and score of the activity")
     public void i_can_see_the_date_and_score_of_the_activity() {
 
-        String dateText = "03 Sep 2023 - 03 Sep 2023";
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
+        String formattedDate = currentDate.format(dateFormatter);
+        String dateText = formattedDate + " - " + formattedDate;
         String scoreText = "Score: 4 : 5";
 
-        ElementHandle dateElement = (ElementHandle) PlaywrightBrowser.page.locator("h4:text('" + dateText + "')").first();
-        ElementHandle scoreElement = (ElementHandle) PlaywrightBrowser.page.locator("h4:text('" + scoreText + "')").first();
 
-        Assertions.assertTrue(dateElement.isVisible());
-        Assertions.assertTrue(scoreElement.isVisible());
+        Assertions.assertTrue(PlaywrightBrowser.page.locator("h4:text('" + dateText + "')").isVisible());
+        Assertions.assertTrue(PlaywrightBrowser.page.locator("h4:text('" + scoreText + "')").isVisible());
     }
 
     @Then("I can click on each activity to be taken to that activitys page")
     public void i_can_click_on_each_activity_to_be_taken_to_that_activitys_page() {
         PlaywrightBrowser.page.locator("ul.last5Ul li").first().click();
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
-        String activityTitleText = "Game: 03 September 2023";
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+        String formattedDate = currentDate.format(dateFormatter);
+        String activityTitleText = "Game: " + formattedDate;
+
         Assertions.assertTrue(PlaywrightBrowser.page.locator("h2:text('" + activityTitleText + "')").first().isVisible());
 
     }
 
-    @Given("There are at least {int} or more members of the team")
-    public void there_are_at_least_or_more_members_of_the_team(Integer int1) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+    @Given("There are at least 5 or more members of the team")
+    public void there_are_at_least_or_more_members_of_the_team() {
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/populate_database");
+
     }
 
     @Given("they all have scored in the activity")
     public void they_all_have_scored_in_the_activity() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/view-activity?activityID=1");
+        PlaywrightBrowser.page.locator("div.tab#score-tab").click();
+
+
+        for (int i = 0; i < 5; i++) {
+
+
+            PlaywrightBrowser.page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add Goal")).click();
+            PlaywrightBrowser.page.fill("input#time-of-goal", String.valueOf(1));
+            PlaywrightBrowser.page.fill("input#goal-value", String.valueOf(i+1));
+
+            PlaywrightBrowser.page.locator("#createGoal").click();
+
+
+
+        }
     }
 
-    @Then("I can see the top {int} scorers with how many goals they scored")
-    public void i_can_see_the_top_scorers_with_how_many_goals_they_scored(Integer int1) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+    @Then("I can see the top 5 scorers with how many goals they scored")
+    public void i_can_see_the_top_scorers_with_how_many_goals_they_scored() {
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=1");
+        PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
+
+        PlaywrightBrowser.page.locator("div.tab#stats-tab").click();
+
+        Assertions.assertTrue(PlaywrightBrowser.page.locator(".top5Players li").count() >= 5);
     }
 
     @When("I am viewing the team aggregated statistics")

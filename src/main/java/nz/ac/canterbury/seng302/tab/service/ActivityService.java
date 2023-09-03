@@ -11,6 +11,8 @@ import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.LineUpPositionRepository;
 import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,12 +31,7 @@ import java.util.stream.Collectors;
 @Service
 public class ActivityService {
 
-   /* @Autowired
-    LineUpService lineUpService;*/
-
-    /*@Autowired
-    LineUpPositionService lineUpPositionService;
-*/
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final LineUpRepository lineUpRepository;
 
@@ -386,7 +383,7 @@ public class ActivityService {
 
                 if (listSize == 0) {
                     //If user doesn't have any subfacts about them but are in starting lineup, their total time is duration of game
-                    System.out.println( user.getFirstName() + " dont have any sub facts about them but they're in lineup");
+                    logger.info(user.getFirstName() + " dont have any sub facts about them but they're in lineup");
                     totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes();
 
                 }
@@ -396,7 +393,6 @@ public class ActivityService {
                     for (int i = 1; i < subFactsUserIsIn(act, user).size() - 1; i += 2) {
                         Substitution sub1 = subFactsUserIsIn(act, user).get(i);
                         Substitution sub2 = subFactsUserIsIn(act, user).get(i + 1);
-                        System.out.println(user.getFirstName() + " got off at " + sub1.getTimeOfEvent() + " and " + sub2.getPlayerOff().getFirstName() + " got on at  " + sub2.getTimeOfEvent());
                         int timeBetweenPlayerOnAndOff = Integer.parseInt(sub2.getTimeOfEvent()) - Integer.parseInt(sub1.getTimeOfEvent());
                         totalTime += timeBetweenPlayerOnAndOff;
                     }
@@ -407,7 +403,6 @@ public class ActivityService {
                     for (int i = 0; i < subFactsUserIsIn(act, user).size() - 1; i += 2) {
                         Substitution sub1 = subFactsUserIsIn(act, user).get(i);
                         Substitution sub2 = subFactsUserIsIn(act, user).get(i + 1);
-                        System.out.println(user.getFirstName() + " got on at " + sub1.getTimeOfEvent() + " and " + sub2.getPlayerOff() + " got off at  " + sub2.getTimeOfEvent());
                         int timeBetweenPlayerOnAndOff = Integer.parseInt(sub2.getTimeOfEvent()) - Integer.parseInt(sub1.getTimeOfEvent());
                         totalTime += timeBetweenPlayerOnAndOff;
                     }
@@ -417,12 +412,12 @@ public class ActivityService {
             if (listSize != 0) { //If the last subfact for a user is playerOn == user that means they played for the remaining length of the game
                 Substitution lastSubFact = subFactsUserIsIn(act, user).get(listSize-1);
                 if (lastSubFact.getPlayerOn() == user) {
-                    System.out.println("Last sub fact is player on so calculating time from subbed on to end of game.");
+                    logger.info("Last sub fact is player on so calculating time from subbed on to end of game.");
                     totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes() - Integer.parseInt(subFactsUserIsIn(act, user).get(listSize - 1).getTimeOfEvent());
                 }
             }
         }
-        System.out.println("Total time overall for user  " + user.getFirstName() + ": " + totalTime);
+        logger.info("Total time overall for user  " + user.getFirstName() + ": " + totalTime);
         return totalTime;
 
 

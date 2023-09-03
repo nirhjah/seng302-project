@@ -79,7 +79,6 @@ public class DefaultFunctions {
 
     public static void pwCreateNewTeamWithFormationAnd5Activity() {
 
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/populate_database");
 
         String teamName = String.valueOf(0);
         //create team
@@ -114,7 +113,6 @@ public class DefaultFunctions {
            PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
             PlaywrightBrowser.page.locator("#activityType").selectOption("Game");
             PlaywrightBrowser.page.locator("#team").selectOption(teamName);
-//            PlaywrightBrowser.page.locator("#formation-dropdown").selectOption("1-4-4-2");
             PlaywrightBrowser.page.fill("#description", "desc");
             PlaywrightBrowser.page.fill("#startDateTime", currentDateTimeString);
             PlaywrightBrowser.page.fill("#endDateTime", endDateTimeString);
@@ -128,7 +126,6 @@ public class DefaultFunctions {
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("#activityType").selectOption("Game");
         PlaywrightBrowser.page.locator("#team").selectOption(teamName);
-//        PlaywrightBrowser.page.locator("#formation-dropdown").selectOption("1-4-4-2");
         PlaywrightBrowser.page.fill("#description", "desc");
         PlaywrightBrowser.page.fill("#startDateTime", currentDateTimeString);
         PlaywrightBrowser.page.fill("#endDateTime", endDateTimeString);
@@ -156,7 +153,6 @@ public class DefaultFunctions {
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("#activityType").selectOption("Game");
         PlaywrightBrowser.page.locator("#team").selectOption(teamName);
-//        PlaywrightBrowser.page.locator("#formation-dropdown").selectOption("1-4-4-2");
         PlaywrightBrowser.page.fill("#description", "desc");
         PlaywrightBrowser.page.fill("#startDateTime", currentDateTimeString);
         PlaywrightBrowser.page.fill("#endDateTime", endDateTimeString);
