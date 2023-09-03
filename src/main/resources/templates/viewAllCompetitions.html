@@ -16,38 +16,37 @@
 <body class="view-competition-background">
 <div th:insert="~{fragments/navBar.html::navbar}"></div>
 
+
 <div class="navbar-buffer">
     <!-- serves as a buffer between the navbar and the filter dropdowns -->
 </div>
 
-<div>
-    <form th:action="@{view-all-competitions}">
-        <div class="filter-bar">
+<form th:action="@{view-all-competitions}">
+    <div class="filter-bar">
+        <div style="display: flex">
             <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfTimes}, 'Filter by time', 'times')}"></div>
-            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}"
-                 th:if="${not #lists.isEmpty(listOfSports)}"></div>
-
-            <button class="apply-filters-button" type="submit">Apply Filters</button>
+            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>
         </div>
-    </form>
 
-    <div class="page-wrapper">
-        <form th:action="@{view-competition}" method="get">
-        </form>
-        <div class="card-wrap">
-            <div class="card-item" th:each="competition : ${listOfCompetitions}">
-                <div class="card-content"  th:onclick="|window.location.href='@{view-competition(competitionID=${competition.competitionId})}'|">
-                    <div class="competition-name" th:text="${competition.name}"></div>
-                    <div class="competition-content" th:text="${competition.grade.getDisplayString()}"></div>
-                    <div class="competition-content" th:text="${competition.sport}"></div>
-                    <div th:unless="${competition.location == null}">
-                        <div class="competition-content" th:text="${competition.location.toString()}"></div>
-                    </div>
+        <button class="apply-filters-button" type="submit">Apply Filters</button>
+    </div>
+</form>
+
+<div class="page-wrapper">
+    <form th:action="@{view-competition}" method="get">
+    </form>
+    <div class="card-wrap">
+        <div class="card-item" th:each="competition : ${listOfCompetitions}">
+            <div class="card-content"  th:onclick="|window.location.href='@{view-competition(competitionID=${competition.competitionId})}'|">
+                <div class="competition-name" th:text="${competition.name}"></div>
+                <div class="competition-content" th:text="${competition.grade.getDisplayString()}"></div>
+                <div class="competition-content" th:text="${competition.sport}"></div>
+                <div th:unless="${competition.location == null}">
+                    <div class="competition-content" th:text="${competition.location.toString()}"></div>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
 
 <div th:insert="~{fragments/pagination.html :: pagination(pageName='view-all-competitions')}"></div>
