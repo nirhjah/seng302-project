@@ -525,27 +525,28 @@
               strokeDashArray: shapeOutline
             });
           } else if (shapeButton.classList.contains("ellipse")) {
+            // IDK why it's 3 pixels off but it is
+            maxWidth = maxWidth/2 - 3
+            maxHeight = maxHeight/2 - 3
             drawingShape = new fabric.Ellipse({
-              left: options.e.clientX - canvas._offset.left,
-              top: options.e.clientY - canvas._offset.top,
-              radius: 1,
-              fill: !innerHidden ? innerColour : null,
-              stroke: !outerHidden ? outerColour : null,
+              left: startX,
+              top: startY,
+              rx: 0,
+              ry: 0,
+              fill: !innerHidden ? innerColour : 'transparent',
+              stroke: !outerHidden ? outerColour : 'transparent',
               strokeWidth: 5,
-              originX: 'center',
-              originY: 'center',
               strokeDashArray: shapeOutline
             });
           } else if (shapeButton.classList.contains("triangle")) {
             drawingShape = new fabric.Triangle({
-              left: options.e.clientX - canvas._offset.left,
-              top: options.e.clientY - canvas._offset.top,
-              radius: 1,
-              fill: !innerHidden ? innerColour : null,
-              stroke: !outerHidden ? outerColour : null,
+              left: startX,
+              top: startY,
+              width: 0,
+              height: 0,
+              fill: !innerHidden ? innerColour : 'transparent',
+              stroke: !outerHidden ? outerColour : 'transparent',
               strokeWidth: 5,
-              originX: 'center',
-              originY: 'center',
               strokeDashArray: shapeOutline
             });
           } else if (shapeButton.classList.contains("square")) {
@@ -610,6 +611,7 @@
               }
               break;
             case "rect":
+            case "triangle":
               if (startX > x) {
                 if (x < 0) {
                   drawingShape.set({ left: 0 });
@@ -630,8 +632,32 @@
               } else {
                 drawingShape.set({ height: Math.min( maxHeight, Math.abs(startY - Math.max(y, 0))) });
               }
-
               canvas.renderAll();
+              break;
+            case "ellipse":
+              if (startX > x) {
+                if (x < 0) {
+                  drawingShape.set({ left: 0 });
+                } else {
+                  drawingShape.set({ left: Math.abs(x) });
+                }
+                drawingShape.set({ rx: Math.abs(startX - Math.max(x, 0)) });
+              } else {
+                drawingShape.set({ rx: Math.min( maxWidth, Math.abs(startX - Math.max(x, 0)) / 2) });
+              }
+              if (startY > y) {
+                if (y < 0) {
+                  drawingShape.set({ top: 0});
+                } else {
+                  drawingShape.set({ top: Math.abs(y) });
+                }
+                drawingShape.set({ ry: Math.abs(startY - Math.max(y, 0)) });
+              } else {
+                drawingShape.set({ ry: Math.min( maxHeight, Math.abs(startY - Math.max(y, 0)) / 2) });
+              }
+              canvas.renderAll();
+              console.log(maxHeight, maxWidth, drawingShape.rx, drawingShape.ry)
+              break;
           }
         }
       }
