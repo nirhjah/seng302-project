@@ -77,15 +77,14 @@ public class DefaultFunctions {
 
     }
 
+    //For team aggregated stats e2e tests
     public static void pwCreateNewTeamWithFormationAnd5Activity() {
 
-
-        String teamName = String.valueOf(0);
         //create team
         PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createTeam");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
-        PlaywrightBrowser.page.locator("input#name").type(teamName);
+        PlaywrightBrowser.page.locator("input#name").type("team ag stats team");
         PlaywrightBrowser.page.locator("input#sport").type("football");
         PlaywrightBrowser.page.locator("input#city").type("Christchurch");
         PlaywrightBrowser.page.locator("input#country").type("New Zealand");
@@ -112,7 +111,7 @@ public class DefaultFunctions {
         PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createActivity");
            PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
             PlaywrightBrowser.page.locator("#activityType").selectOption("Game");
-            PlaywrightBrowser.page.locator("#team").selectOption(teamName);
+            PlaywrightBrowser.page.locator("#team").selectOption("team ag stats team");
             PlaywrightBrowser.page.fill("#description", "desc");
             PlaywrightBrowser.page.fill("#startDateTime", currentDateTimeString);
             PlaywrightBrowser.page.fill("#endDateTime", endDateTimeString);
@@ -125,7 +124,7 @@ public class DefaultFunctions {
         PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createActivity");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("#activityType").selectOption("Game");
-        PlaywrightBrowser.page.locator("#team").selectOption(teamName);
+        PlaywrightBrowser.page.locator("#team").selectOption("team ag stats team");
         PlaywrightBrowser.page.fill("#description", "desc");
         PlaywrightBrowser.page.fill("#startDateTime", currentDateTimeString);
         PlaywrightBrowser.page.fill("#endDateTime", endDateTimeString);
@@ -138,7 +137,7 @@ public class DefaultFunctions {
         PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createActivity");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("#activityType").selectOption("Game");
-        PlaywrightBrowser.page.locator("#team").selectOption(teamName);
+        PlaywrightBrowser.page.locator("#team").selectOption("team ag stats team");
 //        PlaywrightBrowser.page.locator("#formation-dropdown").selectOption("1-4-4-2");
         PlaywrightBrowser.page.fill("#description", "desc");
         PlaywrightBrowser.page.fill("#startDateTime", currentDateTimeString);
@@ -152,7 +151,7 @@ public class DefaultFunctions {
         PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createActivity");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("#activityType").selectOption("Game");
-        PlaywrightBrowser.page.locator("#team").selectOption(teamName);
+        PlaywrightBrowser.page.locator("#team").selectOption("team ag stats team");
         PlaywrightBrowser.page.fill("#description", "desc");
         PlaywrightBrowser.page.fill("#startDateTime", currentDateTimeString);
         PlaywrightBrowser.page.fill("#endDateTime", endDateTimeString);
@@ -165,7 +164,7 @@ public class DefaultFunctions {
         PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createActivity");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("#activityType").selectOption("Game");
-        PlaywrightBrowser.page.locator("#team").selectOption(teamName);
+        PlaywrightBrowser.page.locator("#team").selectOption("team ag stats team");
 //        PlaywrightBrowser.page.locator("#formation-dropdown").selectOption("1-4-4-2");
         PlaywrightBrowser.page.fill("#description", "desc");
         PlaywrightBrowser.page.fill("#startDateTime", currentDateTimeString);
