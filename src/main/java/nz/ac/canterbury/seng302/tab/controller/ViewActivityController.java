@@ -540,6 +540,9 @@ public class ViewActivityController {
                             HttpServletResponse httpServletResponse,
                             RedirectAttributes redirectAttributes) {
         
+        logger.info("POST /add-sub");
+
+        // TODO remove logging here 
         logger.info(String.format("got the player on id: %s", subOnId));
         logger.info(String.format("got the player off id: %s", subOffId));
         logger.info(String.format("got the time %s", time));
@@ -547,8 +550,6 @@ public class ViewActivityController {
         logger.info(String.format("description %s", description));
         String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
         Activity currActivity = activityService.findActivityById(actId);
-        // TODO : check that each player is not empty
-        // TODO parse the number
 
         // the user can only add the event if it is currently happening 
         if (LocalDateTime.now().isBefore(currActivity.getActivityStart())) {
@@ -652,7 +653,6 @@ public class ViewActivityController {
         return playersNotPlaying;
     }
 
-    // TODO probably remove below code since its unused
     /**
      * Handles creating an event and adding overall scores
      *

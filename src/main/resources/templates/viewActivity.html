@@ -205,7 +205,7 @@
                              <div class="select-container">
                                  <label class="goal-form-labels" for="playerOff" style="display: block">Player Off <span class="required">*</span> </label>
                                  <div class="select-box">
-                                     <select id="playerOff" name="playerOff">
+                                     <select id="playerOff" name="playerOff" required>
                                          <option th:each="player : ${playersInLineUp}"
                                                  th:value="${player.userId}"
                                                  th:text="${player.firstName + ' ' + player.lastName}"></option>
@@ -217,7 +217,7 @@
                                 </div>
                                  <label class="goal-form-labels" for="playerOn" style="display: block">Player On <span class="required">*</span> </label>
                                  <div class="select-box">
-                                     <select id="playerOn" name="playerOn">
+                                     <select id="playerOn" name="playerOn" required>
                                          <option th:each="player : ${playersNotInLineUp}"
                                                  th:value="${player.userId}"
                                                  th:text="${player.firstName + ' ' + player.lastName}"></option>
