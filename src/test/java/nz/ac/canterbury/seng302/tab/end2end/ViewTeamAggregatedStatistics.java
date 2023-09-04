@@ -102,10 +102,10 @@ public class ViewTeamAggregatedStatistics {
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("div.tab#stats-tab").click();
 
-        Assertions.assertTrue(PlaywrightBrowser.page.locator("#cell-1 h4").innerText().equals("10"));
-        Assertions.assertTrue(PlaywrightBrowser.page.locator("#cell-2 h4").innerText().equals("1"));
-        Assertions.assertTrue(PlaywrightBrowser.page.locator("#cell-3 h4").innerText().equals("0"));
-        Assertions.assertTrue(PlaywrightBrowser.page.locator("#cell-4 h4").innerText().equals("0"));
+        Assertions.assertEquals("10", PlaywrightBrowser.page.locator("#cell-1 h4").innerText());
+        Assertions.assertEquals("1", PlaywrightBrowser.page.locator("#cell-2 h4").innerText());
+        Assertions.assertEquals("0", PlaywrightBrowser.page.locator("#cell-3 h4").innerText());
+        Assertions.assertEquals("0", PlaywrightBrowser.page.locator("#cell-4 h4").innerText());
 
 
 

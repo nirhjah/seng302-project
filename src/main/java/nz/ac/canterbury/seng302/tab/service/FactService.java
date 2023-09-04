@@ -106,7 +106,7 @@ public class FactService {
         }
 
 
-        Map<User, Long> sortedScoreInformation = scoreInformation.entrySet()
+        return scoreInformation.entrySet()
                 .stream()
                 .sorted(Map.Entry.<User, Long>comparingByValue(Comparator.reverseOrder()))
                 .collect(Collectors.toMap(
@@ -115,8 +115,6 @@ public class FactService {
                         (score1, score2) -> score1,
                         LinkedHashMap::new
                 ));
-
-        return sortedScoreInformation;
     }
 
     public void addOrUpdate(Fact fact) {factRepository.save(fact);}

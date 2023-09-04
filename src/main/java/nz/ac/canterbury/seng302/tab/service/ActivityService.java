@@ -11,8 +11,6 @@ import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.LineUpPositionRepository;
 import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,8 +28,6 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ActivityService {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final LineUpRepository lineUpRepository;
 
@@ -254,11 +250,8 @@ public class ActivityService {
      * @return total time a player has played for a team
      */
     public long getTotalTimeAUserHasPlayedForATeam(User user, Team team) {
-        List<Activity> games = findActivitiesByTeamAndActivityType(team, ActivityType.Game);
-        List<Activity> friendlies = findActivitiesByTeamAndActivityType(team, ActivityType.Friendly);
-        games.addAll(friendlies);
         long totalTime = 0;
-        for (Activity act : games) {
+        for (Activity act : getAllGamesAndFriendliesForTeam(team)) {
             totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes();;
         }
         return totalTime;
@@ -282,13 +275,11 @@ public class ActivityService {
             lineup.sort(Comparator.comparingLong(LineUp::getLineUpId).reversed());
 
             LineUp lineUp =  lineup.get(0);
-            //LineUp lineup = activityLineups.get(1);
             Optional<List<LineUpPosition>> lineUpPos = lineUpPositionRepository.findLineUpPositionsByLineUpLineUpId(lineUp.getLineUpId());
             if (lineUpPos.isEmpty()) {
                 return List.of();
             }
-            List<User> playersInLineUp = lineUpPos.get().stream().map(x -> x.getPlayer()).collect(Collectors.toList());
-            return playersInLineUp;
+            return lineUpPos.get().stream().map(x -> x.getPlayer()).collect(Collectors.toList());
         }
 
     }
@@ -303,8 +294,8 @@ public class ActivityService {
         List<Substitution> activitySubstitutions = new ArrayList<>();
 
         for (Object fact : act.getFactList()) {
-            if(fact instanceof Substitution) {
-                if (((Substitution) fact).getPlayerOff() == user || ((Substitution) fact).getPlayerOn() == user) {
+            if(fact instanceof Substitution substitution) {
+                if ((substitution.getPlayerOff() == user || substitution.getPlayerOn() == user)) {
                     activitySubstitutions.add((Substitution) fact);
                 }
             }
@@ -332,7 +323,7 @@ public class ActivityService {
             topUsersWithPlayTimeAndAverage.put(teamMember, playTimeAndAverage);
         }
 
-        Map<User, List<Long>> sortedTop5 = topUsersWithPlayTimeAndAverage.entrySet()
+        return topUsersWithPlayTimeAndAverage.entrySet()
                 .stream()
                 .sorted((time1, time2) -> Long.compare(time2.getValue().get(0), time1.getValue().get(0)))
                 .limit(5)
@@ -342,8 +333,6 @@ public class ActivityService {
                         (playTimeAndAverage1, playTimeAndAverage2) -> playTimeAndAverage1,
                         LinkedHashMap::new
                 ));
-
-        return sortedTop5;
     }
 
     /**
@@ -371,11 +360,8 @@ public class ActivityService {
      * @return overall playtime for user
      */
         public long getOverallPlayTimeForUserBasedOnSubs(User user, Team team) {
-        List<Activity> games = findActivitiesByTeamAndActivityType(team, ActivityType.Game);
-        List<Activity> friendlies = findActivitiesByTeamAndActivityType(team, ActivityType.Friendly);
-        games.addAll(friendlies);
         long totalTime = 0;
-        for (Activity act : games) {
+        for (Activity act : getAllGamesAndFriendliesForTeam(team)) {
             int listSize = subFactsUserIsIn(act, user).size();
 
             if (playersInLineUpForActivity(act).contains(user)) {
@@ -383,7 +369,6 @@ public class ActivityService {
 
                 if (listSize == 0) {
                     //If user doesn't have any subfacts about them but are in starting lineup, their total time is duration of game
-                    logger.info(user.getFirstName() + " dont have any sub facts about them but they're in lineup");
                     totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes();
 
                 }
@@ -412,12 +397,10 @@ public class ActivityService {
             if (listSize != 0) { //If the last subfact for a user is playerOn == user that means they played for the remaining length of the game
                 Substitution lastSubFact = subFactsUserIsIn(act, user).get(listSize-1);
                 if (lastSubFact.getPlayerOn() == user) {
-                    logger.info("Last sub fact is player on so calculating time from subbed on to end of game.");
                     totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes() - Integer.parseInt(subFactsUserIsIn(act, user).get(listSize - 1).getTimeOfEvent());
                 }
             }
         }
-        logger.info("Total time overall for user  " + user.getFirstName() + ": " + totalTime);
         return totalTime;
 
 
@@ -431,20 +414,15 @@ public class ActivityService {
      * @return total number of games/friendlies user participated in
      */
     public long getTotalGamesUserPlayed(User user, Team team) {
-        List<Activity> games = findActivitiesByTeamAndActivityType(team, ActivityType.Game);
-        List<Activity> friendlies = findActivitiesByTeamAndActivityType(team, ActivityType.Friendly);
-        games.addAll(friendlies);
         List<Activity> activitiesUserPlayedIn = new ArrayList<>();
-        for (Activity act : games) {
+        for (Activity act : getAllGamesAndFriendliesForTeam(team)) {
             if (playersInLineUpForActivity(act).contains(user)) {
                 activitiesUserPlayedIn.add(act);
             } else {
                 for (Object fact : act.getFactList()) {
-                    if (fact instanceof Substitution) {
-                        if (((Substitution) fact).getPlayerOff() == user || ((Substitution) fact).getPlayerOn() == user) {
+                    if (fact instanceof Substitution && (((Substitution) fact).getPlayerOff() == user || ((Substitution) fact).getPlayerOn() == user)) {
                             activitiesUserPlayedIn.add(act);
                             break;
-                        }
                     }
                 }
             }
