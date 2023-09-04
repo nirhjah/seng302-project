@@ -221,12 +221,26 @@
     const whiteboardDropdowns = document.querySelector('.whiteboard-dropdowns');
     const label = whiteboardDropdowns.querySelector('h3');
     label.addEventListener('click', () => {
+        label.setAttribute('contenteditable', 'true');
         label.focus();
         isLabelFocused=true;
     });
+
+    label.addEventListener('input', () => {
+        const editedText = label.textContent;
+        isLabelFocused=true;
+        if (editedText.length >= 26) {
+            label.textContent = editedText.slice(0, 26);
+            label.setAttribute('contenteditable', 'false');
+        } else {
+            label.setAttribute('contenteditable', 'true');
+        }
+    });
+
     label.addEventListener('blur', () => {
-        const editedText = label.textContent.trim();
+        const editedText = label.textContent;
         label.textContent = editedText || 'Untitled';
+        label.setAttribute('contenteditable', 'false');
         isLabelFocused = false;
     });
 
