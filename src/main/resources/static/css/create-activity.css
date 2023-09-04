@@ -167,7 +167,7 @@
 }
 
 .subs-li .switch {
-    background-image: url('../image/icons/down-in-active-cropped.svg');
+    background-image: url('../image/icons/down-in-active.svg');
 }
 
 .reserves-li .switch {
@@ -175,7 +175,7 @@
 }
 
 .subs-li .switch.active {
-    background-image: url('../image/icons/down-active-cropped.svg');
+    background-image: url('../image/icons/down-active.svg');
 }
 
 .reserves-li .switch.active {
@@ -213,6 +213,9 @@
     cursor: pointer;
 }
 
+.cancel-link{
+    padding-top:10px;
+}
 
 
 

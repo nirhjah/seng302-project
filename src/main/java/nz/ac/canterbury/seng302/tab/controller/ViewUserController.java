@@ -55,7 +55,7 @@ public class ViewUserController {
         User user;
         if (userOptional.isEmpty()) { // If empty, throw a 404
             httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return "viewUserTemplate";
+            return "viewUserForm";
         } else {
             user = userOptional.get();
             model.addAttribute("userId", userId);
