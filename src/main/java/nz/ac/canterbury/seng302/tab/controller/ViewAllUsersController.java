@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -71,7 +72,9 @@ public class ViewAllUsersController {
         model.addAttribute("currentSearch", currentSearch);
         model.addAttribute("page", page);
         model.addAttribute("listOfUsers", userList);
-        model.addAttribute("listOfSports", userService.findSportBysearch(currentSearch).stream().map(Sport::getName).toList()); //nirhjah
+        ArrayList<String> ls = new ArrayList<>(List.of("soccer1", "rugby1", "golf1", "time1", "oter1"));
+        ls.addAll(userService.findSportBysearch(currentSearch).stream().map(Sport::getName).toList());
+        model.addAttribute("listOfSports", ls); //nirhjah
         model.addAttribute("listOfCities", listOfCities);
         model.addAttribute("totalPages", userPage.getTotalPages());
         model.addAttribute("httpServletRequest", request);
