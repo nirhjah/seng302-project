@@ -200,19 +200,14 @@ public class CreateActivityController {
 
 
         Map<Long, List<List<Object>>> formationAndPlayersAndPosition = new HashMap<>();
-
         for (Map.Entry<Formation, LineUp> entry : lineUpService.getLineUpsForTeam(activity.getTeam()).entrySet()) {
             Formation formation = entry.getKey();
             LineUp lineUp = entry.getValue();
 
-            //Map<Integer, Long> playersAndPosition = new HashMap<>();
+            System.out.println("This is a list of subs when we are on the getmapping: " +  lineUp.getSubs().toString());
+
             List<List<Object>> playersAndPosition = new ArrayList<>();
 
-/*
-            Map<Integer, String> playerNames = new HashMap<>();
-*/
-
-            System.out.println("test");
             Optional<List<LineUpPosition>> lineupPosition = (lineUpPositionService.findLineUpPositionsByLineUp(lineUp.getLineUpId()));
 
             if (lineupPosition.isPresent()) {
@@ -226,6 +221,13 @@ public class CreateActivityController {
 
                 }
             }
+
+            List<Object> subsInfo = new ArrayList<>();
+            for (User sub : lineUp.getSubs()) {
+                subsInfo.add(sub.getUserId());
+                subsInfo.add(sub.getFirstName());
+            }
+            playersAndPosition.add(subsInfo);
 
             formationAndPlayersAndPosition.put(formation.getFormationId(), playersAndPosition);
         }
@@ -254,6 +256,7 @@ public class CreateActivityController {
     public String createActivity(
             @RequestParam(name = "actId", defaultValue = "-1") Long actId,
             @RequestParam(name = "playerAndPositions", required = false) String playerAndPositions,
+            @RequestParam(name = "subs", required = false) String subs,
             @Validated CreateActivityForm createActivityForm,
             BindingResult bindingResult,
             HttpServletRequest httpServletRequest,
@@ -324,6 +327,19 @@ public class CreateActivityController {
         if (activity.getFormation().isPresent()) {
             activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
             lineUpService.updateOrAddLineUp(activityLineUp);
+        }
+
+
+        if (subs != null && !subs.isEmpty()) {
+            List<String> lineUpSubs = Arrays.stream(subs.split(", ")).toList();
+            System.out.println(lineUpSubs);
+            for (String playerId : lineUpSubs) {
+                if (userService.findUserById(Long.parseLong(playerId)).isPresent()) {
+                    User subPlayer = userService.findUserById(Long.parseLong(playerId)).get();
+                    System.out.println("This is a sub of lineup: " + subPlayer.getFirstName());
+                    activityLineUp.getSubs().add(subPlayer);
+                }
+            }
         }
 
         if (playerAndPositions != null && !playerAndPositions.isEmpty()) {

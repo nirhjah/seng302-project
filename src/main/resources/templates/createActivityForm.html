@@ -68,6 +68,8 @@
             <div th:style="${actId != null ? 'display:block' : 'display:none'}" class="formation-activity-display">
                 <div>
                     <input type="hidden" id="playerAndPositions" name="playerAndPositions">
+                    <input type="hidden" id="subs" name="subs">
+
                     <div class="subs-reserves-box">
                         <div class=subs-header>Subs</div>
                         <ul class="subs-ul">
@@ -164,7 +166,7 @@
             <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
             <div class="submit-button">
                 <a th:href="@{home}">
-                    <button onclick="getPlayersAndPositions()" type="submit" th:text="${actId != null ? 'Save' : 'Create'}"> </button>
+                    <button onclick="getPlayersAndPositionsAndSubs()" type="submit" th:text="${actId != null ? 'Save' : 'Create'}"> </button>
                 </a>
                 <div class="cancel-link">
                     <a th:if="${actId != null}" th:href="@{view-activity(activityID=${actId})}">Cancel</a>
@@ -378,8 +380,14 @@
                         addPositionFunctionality();
 
                         var playerInfo = playersAndPosition[positionIndex];
+                        var subsInfo = playersAndPosition[playersAndPosition.length - 1];
+
+                        const subId = subsInfo[0]
+                        const subName = subsInfo[1]
 
                         console.log('this is playerinfo' + playerInfo)
+                        console.log('this is subsInfo' + subsInfo)
+
 
                         const playerId = playerInfo[1];
                         const playerName = playerInfo[2];
@@ -768,6 +776,11 @@
         return playerLi;
     }
 
+    function getPlayersAndPositionsAndSubs() {
+        getPlayersAndPositions()
+        getSubs()
+    }
+
     function getPlayersAndPositions() {
                 let playersAndPositions = "";
                 for (let i = 0; i < positions.length; i++) {
@@ -782,6 +795,28 @@
                     }
                 document.getElementById("playerAndPositions").setAttribute("value", playersAndPositions)
             }
+
+
+    function getSubs() {
+        //we just need player id
+
+        var subsUl = document.querySelector('.subs-ul');
+
+        var liElements = subsUl.querySelectorAll('.subs-li');
+
+        var subsPlayerIds = '';
+
+        liElements.forEach(function(li) {
+            var playerIdInput = li.querySelector('.playerId');
+            var playerId = playerIdInput.value;
+            subsPlayerIds += playerId + ', ';
+        });
+
+        subsPlayerIds = subsPlayerIds.replace(/, $/, '');
+
+        document.getElementById("subs").setAttribute("value", subsPlayerIds)
+
+    }
 
 
 </script>
