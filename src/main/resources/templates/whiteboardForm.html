@@ -72,8 +72,34 @@
         </button>
         <button class="shape-button circle">
           <span class="tooltip">Shape (X)</span>
-          <img class="selected-svg" src="/image/icons/circle-selected.svg" />
-          <img class="default-svg" src="/image/icons/circle.svg" />
+          <span class="circle-img">
+            <img class="selected-svg" src="/image/icons/circle-selected.svg" />
+            <img class="default-svg" src="/image/icons/circle.svg" />
+          </span>
+          <span class="triangle-img">
+            <img class="selected-svg" src="/image/icons/triangle-selected.svg" />
+            <img class="default-svg" src="/image/icons/triangle.svg" />
+          </span>
+          <span class="square-img">
+            <img class="selected-svg" src="/image/icons/square-selected.svg" />
+            <img class="default-svg" src="/image/icons/square.svg" />
+          </span>
+          <span class="ellipse-img">
+            <img class="selected-svg" src="/image/icons/ellipse-selected.svg" />
+            <img class="default-svg" src="/image/icons/ellipse.svg" />
+          </span>
+          <span class="rectangle-img">
+            <img class="selected-svg" src="/image/icons/rectangle-selected.svg" />
+            <img class="default-svg" src="/image/icons/rectangle.svg" />
+          </span>
+          <span class="line-img">
+            <img class="selected-svg" src="/image/icons/straight-line-selected.svg" />
+            <img class="default-svg" src="/image/icons/straight-line.svg" />
+          </span>
+          <span class="arrow-img">
+            <img class="selected-svg" src="/image/icons/arrow-line-selected.svg" />
+            <img class="default-svg" src="/image/icons/arrow-line.svg" />
+          </span>
         </button>
         <div class="customisation-box shape-button">
           <div class="style-section">
@@ -119,6 +145,10 @@
               <button class="shape-button-line">
                 <img class="selected-svg" src="/image/icons/straight-line-selected.svg" />
                 <img class="default-svg" src="/image/icons/straight-line.svg" />
+              </button>
+              <button class="shape-button-arrow">
+                <img class="selected-svg" src="/image/icons/arrow-line-selected.svg" />
+                <img class="default-svg" src="/image/icons/arrow-line.svg" />
               </button>
             </div>
           </div>
@@ -172,7 +202,7 @@
     let canvas = new fabric.Canvas('canvas');
     let activeMode = null;
     canvas.freeDrawingBrush.width = 5;
-    canvas.freeDrawingBrush.colour = '#ff0000';
+    canvas.freeDrawingBrush.color = '#ff0000';
 
     const upperCanvas = document.querySelector(".upper-canvas")
 
@@ -286,7 +316,7 @@
     colourPicker.addEventListener('input', function () {
       const newColour = this.value;
       colourValueInput.value = newColour.substr(1).toUpperCase();
-      canvas.freeDrawingBrush.colour = this.value;
+      canvas.freeDrawingBrush.color = this.value;
     });
 
     // Event listener for the colour value input
@@ -294,7 +324,7 @@
       const newColour = this.value;
       if (isValidHexcolour(newColour)) {
         colourPicker.value = '#' + newColour;
-        canvas.freeDrawingBrush.colour = '#' + newColour;
+        canvas.freeDrawingBrush.color = '#' + newColour;
       }
     });
 
@@ -389,6 +419,10 @@
 
     document.querySelector('.shape-button-line').addEventListener('click', function () {
       handleShapeButtonClick('line');
+    });
+
+    document.querySelector('.shape-button-arrow').addEventListener('click', function () {
+      handleShapeButtonClick('arrow');
     });
 
     const shapeButton = document.querySelector('.shape-button');
@@ -496,7 +530,10 @@
     let startX;
     let startY;
     let maxWidth;
-    let maxHeight
+    let maxHeight;
+    let leftLine;
+    let rightLine;
+    const aw = 36;
 
     canvas.on('mouse:down', function (options) {
       const { x, y } = canvas.getPointer(options.e);
@@ -575,14 +612,37 @@
             drawingShape = new fabric.Line([startX, startY, startX, startY], {
               left: startX,
               top: startY,
-              fill: !innerHidden ? innerColour : null,
-              stroke: !outerHidden ? outerColour : null,
+              fill: !innerHidden ? innerColour : 'transparent',
+              stroke: !outerHidden ? outerColour : 'transparent',
               strokeWidth: 5,
-              originX: 'center',
-              originY: 'center',
               strokeDashArray: shapeOutline
             });
+          } else if (shapeButton.classList.contains("arrow")) {
+            drawingShape = new fabric.Line([startX, startY, startX, startY], {
+              left: startX,
+              top: startY,
+              fill: !innerHidden ? innerColour : null,
+              stroke: !outerHidden ? outerColour : null,
+              strokeWidth: 6,
+              strokeDashArray: shapeOutline
+            });
+            leftLine = new fabric.Line([startX + 1, startY, startX - aw, startY + aw], {
+              fill: !innerHidden ? innerColour : null,
+              stroke: !outerHidden ? outerColour : null,
+              strokeWidth: 6,
+              strokeDashArray: shapeOutline
+            });
+            rightLine = new fabric.Line([startX - 1, startY , startX + aw, startY + aw], {
+              fill: !innerHidden ? innerColour : null,
+              stroke: !outerHidden ? outerColour : null,
+              strokeWidth: 6,
+              strokeDashArray: shapeOutline
+            });
+
+            canvas.add(leftLine);
+            canvas.add(rightLine);
           }
+          // drawingShape.set({borderColor: '#257AFD', cornerColor: '#ffffff', cornerStrokeColor: '#257AFD'})
           canvas.add(drawingShape);
         }
       }
@@ -636,7 +696,7 @@
               } else {
                 drawingShape.set({left: Math.abs(x)});
               }
-              drawingShape.set({rx: Math.abs(startX - Math.max(x, 0))});
+              drawingShape.set({rx: Math.abs(startX - Math.max(x, 0)) / 2});
             } else {
               drawingShape.set({rx: Math.min(maxWidth, Math.abs(startX - Math.max(x, 0)) / 2)});
             }
@@ -646,13 +706,54 @@
               } else {
                 drawingShape.set({top: Math.abs(y)});
               }
-              drawingShape.set({ry: Math.abs(startY - Math.max(y, 0))});
+              drawingShape.set({ry: Math.abs(startY - Math.max(y, 0)) / 2});
             } else {
               drawingShape.set({ry: Math.min(maxHeight, Math.abs(startY - Math.max(y, 0)) / 2)});
             }
+            console.log(x, y)
             canvas.renderAll();
           } else if (shapeButton.classList.contains("line")) {
             drawingShape.set({x2: x, y2: y})
+            canvas.renderAll();
+          } else if (shapeButton.classList.contains("arrow")) {
+            const y11 = drawingShape.get('y1');
+            const y12 = drawingShape.get('y2');
+            const x11 = drawingShape.get('x1');
+            const x12 = drawingShape.get('x2');
+            let lineAngle = Math.atan2(y11 - y12, x11 - x12);
+            const xDis = x - startX;
+            const yDis = y - startY;
+            let h = Math.abs(y12 - y11);
+            let w = Math.abs(x12 - x11);
+            let newXLeft;
+            let newYLeft;
+            let newXRight;
+            let newYRight;
+            if (xDis < 0 && yDis < 0) {
+              newXLeft = -(aw * Math.sin(Math.atan(h / w) - Math.PI / 4));
+              newYLeft = aw * Math.cos(Math.atan(h / w) - Math.PI / 4);
+              newXRight = aw * Math.cos(Math.atan(h / w) - Math.PI / 4);
+              newYRight = aw * Math.sin(Math.atan(h / w) - Math.PI / 4);
+            } else if (xDis > 0 && yDis < 0) {
+              newXLeft = aw * Math.sin(Math.atan(h / -w) - Math.PI/4);
+              newYLeft = -(aw * Math.cos(Math.atan(h / -w) - Math.PI/4));
+              newXRight = -(aw * Math.cos(Math.atan(h / -w) - Math.PI/4));
+              newYRight = -(aw * Math.sin(Math.atan(h / -w) - Math.PI/4));
+            } else if (xDis > 0 && yDis > 0) {
+              newXLeft = aw * Math.sin(Math.atan(h / w) - Math.PI/4);
+              newYLeft = -(aw * Math.cos(Math.atan(h / w) - Math.PI/4));
+              newXRight = -(aw * Math.cos(Math.atan(h / w) - Math.PI/4));
+              newYRight = -(aw * Math.sin(Math.atan(h / w) - Math.PI/4));
+            } else {
+              newXLeft = -(aw * Math.sin(Math.atan(h / -w) - Math.PI/4));
+              newYLeft = aw * Math.cos(Math.atan(h / -w) - Math.PI/4);
+              newXRight = aw * Math.cos(Math.atan(h / -w) - Math.PI/4);
+              newYRight = aw * Math.sin(Math.atan(h / -w) - Math.PI/4);
+            }
+
+            drawingShape.set({x2: x, y2: y})
+            leftLine.set({x1: x + 1, y1: y + 1, x2: x + newXLeft, y2: y + newYLeft})
+            rightLine.set({x1: x + 1, y1: y + 1, x2: x + newXRight, y2: y + newYRight})
             canvas.renderAll();
           }
         }
@@ -661,7 +762,9 @@
 
     canvas.on('mouse:up', function () {
       mouseDown = false;
-      drawingShape.setCoords();
+      if (activeMode === "shape-button") {
+        drawingShape.setCoords();
+      }
     });
 
   })
