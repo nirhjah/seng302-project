@@ -210,6 +210,10 @@
                                                  th:value="${player.userId}"
                                                  th:text="${player.firstName + ' ' + player.lastName}"></option>
                                      </select>
+                                    <ul>
+                                        <li style="display: unset" th:each="err : ${#fields.errors('subOff')}"
+                                            th:text="${err}" class="error-message"/>
+                                    </ul>
                                 </div>
                                  <label class="goal-form-labels" for="playerOn" style="display: block">Player On <span class="required">*</span> </label>
                                  <div class="select-box">
@@ -218,8 +222,11 @@
                                                  th:value="${player.userId}"
                                                  th:text="${player.firstName + ' ' + player.lastName}"></option>
                                      </select>
+                                    <ul>
+                                        <li style="display: unset" th:each="err : ${#fields.errors('subOn')}"
+                                            th:text="${err}" class="error-message"/>
+                                    </ul>
                                 </div>
-
                                 <div class="description-box">
                                     <label class="goal-form-labels" for="description">Description</label>
                                     <textarea class="description-text" id="description" th:name="description" autofocus

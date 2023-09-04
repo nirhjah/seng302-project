@@ -24,6 +24,8 @@ public class CreateEventForm {
 
   private User subOn;
 
+  private User subOff;
+
 
 
   public User getSubOn() {
@@ -32,6 +34,14 @@ public class CreateEventForm {
 
   public void setSubOn(User subOn) {
     this.subOn = subOn;
+  }
+
+  public User getSubOff() {
+    return subOff;
+  }
+
+  public void setSubOff(User subOff) {
+    this.subOff = subOff;
   }
 
   public String getOverallScoreTeam() {

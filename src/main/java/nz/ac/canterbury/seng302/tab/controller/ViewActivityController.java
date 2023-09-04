@@ -547,27 +547,38 @@ public class ViewActivityController {
         logger.info(String.format("description %s", description));
         String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
         Activity currActivity = activityService.findActivityById(actId);
-        
-        if (time.isBlank()) {
-            bindingResult.addError(new FieldError(createEventFormString, "time", FIELD_CANNOT_BE_BLANK_MSG));
-        } else {
-            if (!activityService.checkTimeOfFactWithinActivity(currActivity, Integer.parseInt(time))) {
-                logger.info("not within the time");
-                bindingResult.addError(new FieldError(createEventFormString, "time", GOAL_NOT_SCORED_WITHIN_DURATION));
-            }
-        }
+        // TODO : check that each player is not empty
+        // TODO parse the number
 
+        // the user can only add the event if it is currently happening 
         if (LocalDateTime.now().isBefore(currActivity.getActivityStart())) {
-            logger.info("should add an error ");
             bindingResult.addError(new FieldError(createEventFormString, "time", "You can only add a sub once the activity starts"));
         }
+        
+        // error checking the time 
+        if (!time.isBlank()) {
+            try {
+                int parsedTime = Integer.parseInt(time);
+                // check if the time is within the activity
+                if (!activityService.checkTimeOfFactWithinActivity(currActivity, parsedTime)) {
+                    bindingResult.addError(new FieldError(createEventFormString, "time", GOAL_NOT_SCORED_WITHIN_DURATION));
+                }
+
+            } catch (NumberFormatException e) {
+                bindingResult.addError(new FieldError(createEventFormString, "time", "Must be a number"));
+            }
+        } else {
+            bindingResult.addError(new FieldError(createEventFormString, "time", FIELD_CANNOT_BE_BLANK_MSG));
+        }
+
         redirectAttributes.addFlashAttribute("stayOnTab_name", "formations-tab");
         redirectAttributes.addFlashAttribute("stayOnTab_index", 2);
 
+        // check that the lineup isnt empty 
         List<User> playersInLineUp = getAllPlayersPlaying(actId);
         if (playersInLineUp.isEmpty()) {
             logger.error("There are no players in the lineup but a sub was made ");
-            // TODO  add binding error 
+            // TODO  add binding error -- add 
         }
         
         Optional<User> optionalPlayerOn = userService.findUserById(subOnId);
@@ -575,11 +586,11 @@ public class ViewActivityController {
         
         Optional<User> optionalPlayerOff = userService.findUserById(subOffId);
         if (optionalPlayerOff.isEmpty()) {
-            bindingResult.addError(new FieldError(createEventFormString, "sub Off", PLAYER_IS_REQUIRED_MSG));
+            bindingResult.addError(new FieldError(createEventFormString, "subOff", PLAYER_IS_REQUIRED_MSG));
         }
         
         if (optionalPlayerOn.isEmpty()) {
-            bindingResult.addError(new FieldError(createEventFormString, "sub On", PLAYER_IS_REQUIRED_MSG));
+            bindingResult.addError(new FieldError(createEventFormString, "subOn", PLAYER_IS_REQUIRED_MSG));
         }
         
         if (bindingResult.hasErrors()) {
