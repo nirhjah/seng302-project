@@ -24,6 +24,6 @@ Feature: Edit Team Details
 
 
   Scenario: AC5
-    Given I am on the edit profile form,
+    Given I am on the edit team profile form,
     When I hit the cancel button, I come back to the team’s profile page,
     And no changes have been made to its profile
