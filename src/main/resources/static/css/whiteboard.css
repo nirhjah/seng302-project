@@ -223,6 +223,7 @@
 .width-section input {
     width: 38px;
     cursor: pointer;
+    text-align: center;
 }
 
 input[type="range"] {
