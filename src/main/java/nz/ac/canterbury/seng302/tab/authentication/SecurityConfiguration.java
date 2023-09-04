@@ -75,7 +75,7 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests(auth -> auth.requestMatchers(AntPathRequestMatcher.antMatcher("/geocode/autocomplete"),
                         AntPathRequestMatcher.antMatcher("/h2/**"), AntPathRequestMatcher.antMatcher("/resources/**"),
                         AntPathRequestMatcher.antMatcher("/static/**"), AntPathRequestMatcher.antMatcher("/css/**"),
-                        AntPathRequestMatcher.antMatcher("/js/**"), AntPathRequestMatcher.antMatcher("/image/**"), AntPathRequestMatcher.antMatcher("/mail/**")).permitAll())
+                        AntPathRequestMatcher.antMatcher("/js/**"), AntPathRequestMatcher.antMatcher("/image/**"), AntPathRequestMatcher.antMatcher("/webjars/axios/**"), AntPathRequestMatcher.antMatcher("/mail/**")).permitAll())
                 .headers(headers -> headers.frameOptions().disable())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2/**"),AntPathRequestMatcher.antMatcher("/geocode/autocomplete")))
                 .authorizeHttpRequests()
