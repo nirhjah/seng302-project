@@ -349,6 +349,12 @@
       } else if (event.key === 'x') {
         handleButtonClick('shape-button', false, false);
       } else if (event.key === 'Delete' || event.key === 'Backspace') {
+        const activeObject = canvas.getActiveObject()
+        if (activeObject instanceof fabric.Group) {
+          activeObject.getObjects().forEach( obj => {
+            canvas.remove(obj);
+          });
+        }
         canvas.remove(...canvas.getActiveObjects());
         canvas.renderAll();
       } else if (event.key === 'c') {
@@ -362,9 +368,15 @@
 
       for (let i = 0; i < objects.length; i++) {
         if (objects[i].containsPoint(pointer)) {
+          if (objects[i] instanceof fabric.Group) {
+            objects[i].getObjects().forEach( obj => {
+              canvas.remove(obj);
+            });
+          }
           canvas.remove(objects[i]);
         }
       }
+      canvas.renderAll();
     }
 
     /** Shapes **/
@@ -626,19 +638,22 @@
               strokeWidth: 6,
               strokeDashArray: shapeOutline
             });
-            leftLine = new fabric.Line([startX + 1, startY, startX - aw, startY + aw], {
+            leftLine = new fabric.Line([startX, startY, startX, startY], {
+              left: startX,
+              top: startY,
               fill: !innerHidden ? innerColour : null,
               stroke: !outerHidden ? outerColour : null,
               strokeWidth: 6,
               strokeDashArray: shapeOutline
             });
-            rightLine = new fabric.Line([startX - 1, startY , startX + aw, startY + aw], {
+            rightLine = new fabric.Line([startX, startY, startX, startY], {
+              left: startX,
+              top: startY,
               fill: !innerHidden ? innerColour : null,
               stroke: !outerHidden ? outerColour : null,
               strokeWidth: 6,
               strokeDashArray: shapeOutline
             });
-
             canvas.add(leftLine);
             canvas.add(rightLine);
           }
@@ -713,47 +728,63 @@
             console.log(x, y)
             canvas.renderAll();
           } else if (shapeButton.classList.contains("line")) {
-            drawingShape.set({x2: x, y2: y})
+            // Have to do ti separately as the line glitches if you set x/y to the value it already is
+            if (x !== startX) {
+              drawingShape.set({x2: x})
+            }
+            if (y !== startY) {
+              drawingShape.set({y2: y})
+            }
             canvas.renderAll();
           } else if (shapeButton.classList.contains("arrow")) {
             const y11 = drawingShape.get('y1');
             const y12 = drawingShape.get('y2');
             const x11 = drawingShape.get('x1');
             const x12 = drawingShape.get('x2');
-            let lineAngle = Math.atan2(y11 - y12, x11 - x12);
             const xDis = x - startX;
             const yDis = y - startY;
             let h = Math.abs(y12 - y11);
             let w = Math.abs(x12 - x11);
-            let newXLeft;
-            let newYLeft;
-            let newXRight;
-            let newYRight;
-            if (xDis < 0 && yDis < 0) {
-              newXLeft = -(aw * Math.sin(Math.atan(h / w) - Math.PI / 4));
-              newYLeft = aw * Math.cos(Math.atan(h / w) - Math.PI / 4);
-              newXRight = aw * Math.cos(Math.atan(h / w) - Math.PI / 4);
-              newYRight = aw * Math.sin(Math.atan(h / w) - Math.PI / 4);
-            } else if (xDis > 0 && yDis < 0) {
-              newXLeft = aw * Math.sin(Math.atan(h / -w) - Math.PI/4);
-              newYLeft = -(aw * Math.cos(Math.atan(h / -w) - Math.PI/4));
-              newXRight = -(aw * Math.cos(Math.atan(h / -w) - Math.PI/4));
-              newYRight = -(aw * Math.sin(Math.atan(h / -w) - Math.PI/4));
-            } else if (xDis > 0 && yDis > 0) {
-              newXLeft = aw * Math.sin(Math.atan(h / w) - Math.PI/4);
-              newYLeft = -(aw * Math.cos(Math.atan(h / w) - Math.PI/4));
-              newXRight = -(aw * Math.cos(Math.atan(h / w) - Math.PI/4));
-              newYRight = -(aw * Math.sin(Math.atan(h / w) - Math.PI/4));
-            } else {
-              newXLeft = -(aw * Math.sin(Math.atan(h / -w) - Math.PI/4));
-              newYLeft = aw * Math.cos(Math.atan(h / -w) - Math.PI/4);
-              newXRight = aw * Math.cos(Math.atan(h / -w) - Math.PI/4);
-              newYRight = aw * Math.sin(Math.atan(h / -w) - Math.PI/4);
+            let xLeft;
+            let yLeft;
+            let xRight;
+            let yRight;
+            const angle = Math.PI / 4
+            if (xDis <= 0 && yDis <= 0) {
+              xLeft = -(aw * Math.sin(Math.atan(h / w) - angle));
+              yLeft = aw * Math.cos(Math.atan(h / w) - angle);
+              xRight = aw * Math.cos(Math.atan(h / w) - angle);
+              yRight = aw * Math.sin(Math.atan(h / w) - angle);
+            } else if (xDis > 0 && yDis <= 0) {
+              xLeft = aw * Math.sin(Math.atan(h / -w) - angle);
+              yLeft = -(aw * Math.cos(Math.atan(h / -w) - angle));
+              xRight = -(aw * Math.cos(Math.atan(h / -w) - angle));
+              yRight = -(aw * Math.sin(Math.atan(h / -w) - angle));
+            } else if (xDis >= 0 && yDis >= 0) {
+              xLeft = aw * Math.sin(Math.atan(h / w) - angle);
+              yLeft = -(aw * Math.cos(Math.atan(h / w) - angle));
+              xRight = -(aw * Math.cos(Math.atan(h / w) - angle));
+              yRight = -(aw * Math.sin(Math.atan(h / w) - angle));
+            } else if (xDis < 0 && yDis > 0) {
+              xLeft = -(aw * Math.sin(Math.atan(h / -w) - angle));
+              yLeft = aw * Math.cos(Math.atan(h / -w) - angle);
+              xRight = aw * Math.cos(Math.atan(h / -w) - angle);
+              yRight = aw * Math.sin(Math.atan(h / -w) - angle);
             }
-
-            drawingShape.set({x2: x, y2: y})
-            leftLine.set({x1: x + 1, y1: y + 1, x2: x + newXLeft, y2: y + newYLeft})
-            rightLine.set({x1: x + 1, y1: y + 1, x2: x + newXRight, y2: y + newYRight})
+            if (x !== startX) {
+              drawingShape.set({x2: x})
+            }
+            if (y !== startY) {
+              drawingShape.set({y2: y})
+            }
+            canvas.renderAll();
+            const xLeftDis = x + Math.sin(Math.atan(h/w));
+            const yLeftDis = y + Math.cos(Math.atan(h/w));
+            const xRightDis = x + Math.cos(Math.PI - Math.atan(h/w));
+            const yRightDis = y + Math.sin(Math.PI - Math.atan(h/w));
+            leftLine.set({x1: xLeftDis, y1: yLeftDis, x2: x + xLeft, y2: y + yLeft})
+            canvas.renderAll();
+            rightLine.set({x1: xRightDis, y1: yRightDis, x2: x + xRight, y2: y + yRight})
             canvas.renderAll();
           }
         }
@@ -764,6 +795,26 @@
       mouseDown = false;
       if (activeMode === "shape-button") {
         drawingShape.setCoords();
+        if (shapeButton.classList.contains("arrow")) {
+          leftLine.setCoords();
+          rightLine.setCoords();
+          // Create a group to contain the lines
+          const lineGroup = new fabric.Group([], {
+            left: startX,
+            top: startY,
+            fill: !innerHidden ? innerColour : null,
+            stroke: !outerHidden ? outerColour : null,
+            strokeWidth: 6,
+            strokeDashArray: shapeOutline,
+          });
+
+          lineGroup.addWithUpdate(drawingShape);
+          lineGroup.addWithUpdate(leftLine);
+          lineGroup.addWithUpdate(rightLine);
+
+          canvas.add(lineGroup);
+          lineGroup.setCoords();
+        }
       }
     });
 

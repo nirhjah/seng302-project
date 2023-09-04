@@ -257,7 +257,7 @@ input[type="range"]::-moz-range-track {
 
 
 .visibility-selection .selected-svg {
-    height: 7px;
+    height: 6px;
 }
 
 .visibility-selection .default-svg {
