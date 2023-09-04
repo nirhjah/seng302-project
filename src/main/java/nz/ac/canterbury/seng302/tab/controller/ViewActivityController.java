@@ -627,7 +627,12 @@ public class ViewActivityController {
         }
         List<LineUp> activityLineups = optionalActivityLineups.get();
         
+        if (activityLineups.size() <= 0) { // there is no lineup for some activities
+            return List.of();
+        } 
+
         LineUp lineup = activityLineups.get(activityLineups.size() -1); // here we get the last one as that is the most recent one 
+
         Optional<List<LineUpPosition>> optionaLineupPositions = lineUpPositionService.findLineUpPositionsByLineUp(lineup.getLineUpId());
 
         if (optionaLineupPositions.isEmpty()) {
@@ -645,6 +650,10 @@ public class ViewActivityController {
      * @return a list of users who arent playing in the current activity (on the bench)
     */
     private List<User> getAllPlayersNotPlaying(long actId) {
+        Activity activity = activityService.findActivityById(actId);
+        if (activity == null  || activity.getTeam() == null) {
+            return List.of();
+        }
         List<User> playersPlaying = getAllPlayersPlaying(actId);
         List<User> playersInTeam = new ArrayList<>(activityService.findActivityById(actId).getTeam().getTeamMembers());
 
