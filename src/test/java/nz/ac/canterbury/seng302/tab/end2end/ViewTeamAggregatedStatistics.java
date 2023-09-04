@@ -76,7 +76,7 @@ public class ViewTeamAggregatedStatistics {
         PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=3");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("div.tab#stats-tab").click();
-        Assertions.assertTrue(PlaywrightBrowser.page.locator(".last5 li").count() == 5);
+        Assertions.assertEquals(5, PlaywrightBrowser.page.locator(".last5 li").count());
 
     }
 

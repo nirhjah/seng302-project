@@ -386,7 +386,7 @@ public class ActivityServiceTest {
 
 
     @Test
-    public void testingOverallTimeUserPlayedBasedOnSubs() throws Exception {
+    void testingOverallTimeUserPlayedBasedOnSubs() throws Exception {
         Location location = new Location(null, null, null, "Christchurch", null,
                 "New Zealand");
         Team team = new Team("Team 900", "Programming");
@@ -473,7 +473,7 @@ public class ActivityServiceTest {
 
 
     @Test
-    public void testGetTotalGamesUserPlayed() throws Exception {
+    void testGetTotalGamesUserPlayed() throws Exception {
         Location location = new Location(null, null, null, "Christchurch", null,
                 "New Zealand");
         Team team = new Team("Team 900", "Programming");
@@ -530,7 +530,7 @@ public class ActivityServiceTest {
     }
 
     @Test
-    public void testGettingSubFactsUserIsIn() throws Exception {
+    void testGettingSubFactsUserIsIn() throws Exception {
         Location location = new Location(null, null, null, "Christchurch", null,
                 "New Zealand");
         Team team = new Team("Team 900", "Programming");
@@ -585,7 +585,7 @@ public class ActivityServiceTest {
     }
 
     @Test
-    public void testGettingAveragePlaytimeForUser() throws Exception {
+    void testGettingAveragePlaytimeForUser() throws Exception {
         Location location = new Location(null, null, null, "Christchurch", null,
                 "New Zealand");
         Team team = new Team("Team 900", "Programming");
@@ -673,7 +673,7 @@ public class ActivityServiceTest {
 
 
     @Test
-    public void testGettingPlayersInLineupForActivity() throws Exception {
+    void testGettingPlayersInLineupForActivity() throws Exception {
 
         Location location = new Location(null, null, null, "Christchurch", null,
                 "New Zealand");
@@ -763,7 +763,7 @@ public class ActivityServiceTest {
 
 
     @Test
-    public void testGettingTop5UsersWithPlayTimeAndAverageInTeam() throws Exception {
+    void testGettingTop5UsersWithPlayTimeAndAverageInTeam() throws Exception {
 
         Location location = new Location(null, null, null, "Christchurch", null,
                 "New Zealand");

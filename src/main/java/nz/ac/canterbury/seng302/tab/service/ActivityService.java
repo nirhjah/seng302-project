@@ -264,12 +264,8 @@ public class ActivityService {
      * @return list of users in starting lineup
      */
     public List<User> playersInLineUpForActivity(Activity activity) {
-        List<LineUp> activityLineups = lineUpRepository.findLineUpByActivityId(activity.getId()).get();
 
-
-        if (activityLineups.isEmpty()) {
-            return List.of();
-        } else {
+        if (lineUpRepository.findLineUpByActivityId(activity.getId()).isPresent()) {
 
             List<LineUp> lineup = lineUpRepository.findLineUpsByActivityId(activity.getId());
             lineup.sort(Comparator.comparingLong(LineUp::getLineUpId).reversed());
@@ -279,7 +275,11 @@ public class ActivityService {
             if (lineUpPos.isEmpty()) {
                 return List.of();
             }
-            return lineUpPos.get().stream().map(x -> x.getPlayer()).collect(Collectors.toList());
+            return lineUpPos.get().stream().map(x -> x.getPlayer()).toList();
+        } else {
+
+            return List.of();
+
         }
 
     }
@@ -294,10 +294,9 @@ public class ActivityService {
         List<Substitution> activitySubstitutions = new ArrayList<>();
 
         for (Object fact : act.getFactList()) {
-            if(fact instanceof Substitution substitution) {
-                if ((substitution.getPlayerOff() == user || substitution.getPlayerOn() == user)) {
+            if(fact instanceof Substitution substitution && ((substitution.getPlayerOff() == user || substitution.getPlayerOn() == user))) {
                     activitySubstitutions.add((Substitution) fact);
-                }
+
             }
         }
         return activitySubstitutions;
@@ -420,7 +419,7 @@ public class ActivityService {
                 activitiesUserPlayedIn.add(act);
             } else {
                 for (Object fact : act.getFactList()) {
-                    if (fact instanceof Substitution && (((Substitution) fact).getPlayerOff() == user || ((Substitution) fact).getPlayerOn() == user)) {
+                    if (fact instanceof Substitution substitution && ((substitution.getPlayerOff() == user || (substitution.getPlayerOn() == user)))) {
                             activitiesUserPlayedIn.add(act);
                             break;
                     }
