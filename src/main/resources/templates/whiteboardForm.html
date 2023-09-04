@@ -11,235 +11,260 @@
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 <div class="whiteboard-form">
     <div class="whiteboard-wrapper">
-      <div class="whiteboard-dropdowns"></div>
-      <div class="whiteboard-buttons">
-        <button class="select-button active">
-          <span class="tooltip">Select (S)</span>
-          <img class="selected-svg" th:src="@{/image/icons/cursor-selected.svg}" />
-          <img class="default-svg" th:src="@{/image/icons/cursor.svg}" />
-        </button>
-        <button class="draw-button">
-          <span class="tooltip">Draw (D)</span>
-          <img class="selected-svg" th:src="@{/image/icons/pencil-selected.svg}" />
-          <img class="default-svg" th:src="@{/image/icons/pencil.svg}" />
-        </button>
-        <div class="customisation-box draw-button">
-          <div class="style-section">
-            <div class="header">
-              <h5>Style</h5>
-<!--              <label>Arrow-->
-<!--                <input class="arrow-checkbox" type="checkbox">-->
-<!--              </label>-->
-            </div>
-            <div class="content">
-              <button class="draw-style-button-solid active">
-                <img class="selected-svg" th:src="@{/image/icons/solid-line-selected.svg}" />
-                <img class="default-svg" th:src="@{/image/icons/solid-line.svg}" />
-              </button>
-              <button class="draw-style-button-dashed">
-                <img class="selected-svg" th:src="@{/image/icons/dashed-line-selected.svg}" />
-                <img class="default-svg" th:src="@{/image/icons/dashed-line.svg}" />
-              </button>
-            </div>
-          </div>
-          <div class="colour-section">
-            <div class="header">
-              <h5>Colour</h5>
-            </div>
-            <div class="content">
-              <input class="colour-picker" type="color" value="#ff0000">
-              <div>
-                <h5>#</h5>
-                <input class="colour-value" id="colourValue" value="FF0000">
-              </div>
-            </div>
-          </div>
-          <div class="width-section">
-            <div class="header">
-              <h5>Width</h5>
-            </div>
-            <div class="content">
-              <input id="rangeInput" type="range" min="1" max="50" value="5">
-              <input type="number" max="50" min="1" id="widthValue" value="5">
-            </div>
-          </div>
+      <div class="whiteboard-dropdowns">
+        <h3 contenteditable="true">Untitled</h3>
+        <div class="dropdown">
+          <label for="pitch">Pitch Type</label>
+          <select class="select" id="pitch"></select>
         </div>
-        <button class="erase-button">
-          <span class="tooltip">Erase (E)</span>
-          <img class="selected-svg" th:src="@{/image/icons/eraser-selected.svg}" />
-          <img class="default-svg" th:src="@{/image/icons/eraser.svg}" />
-        </button>
-        <button class="shape-button circle">
-          <span class="tooltip">Shape (X)</span>
-          <span class="circle-img">
-            <img class="selected-svg" th:src="@{/image/icons/circle-selected.svg}" />
-            <img class="default-svg" th:src="@{/image/icons/circle.svg}" />
-          </span>
-          <span class="triangle-img">
-            <img class="selected-svg" th:src="@{/image/icons/triangle-selected.svg}" />
-            <img class="default-svg" th:src="@{/image/icons/triangle.svg}" />
-          </span>
-          <span class="square-img">
-            <img class="selected-svg" th:src="@{/image/icons/square-selected.svg}" />
-            <img class="default-svg" th:src="@{/image/icons/square.svg}" />
-          </span>
-          <span class="ellipse-img">
-            <img class="selected-svg" th:src="@{/image/icons/ellipse-selected.svg}" />
-            <img class="default-svg" th:src="@{/image/icons/ellipse.svg}" />
-          </span>
-          <span class="rectangle-img">
-            <img class="selected-svg" th:src="@{/image/icons/rectangle-selected.svg}" />
-            <img class="default-svg" th:src="@{/image/icons/rectangle.svg}" />
-          </span>
-          <span class="line-img">
-            <img class="selected-svg" th:src="@{/image/icons/straight-line-selected.svg}" />
-            <img class="default-svg" th:src="@{/image/icons/straight-line.svg}" />
-          </span>
-          <span class="arrow-img">
-            <img class="selected-svg" th:src="@{/image/icons/arrow-line-selected.svg}" />
-            <img class="default-svg" th:src="@{/image/icons/arrow-line.svg}" />
-          </span>
-        </button>
-        <div class="customisation-box shape-button">
-          <div class="style-section">
-            <div class="header">
-              <h5>Style</h5>
-            </div>
-            <div class="content">
-              <button class="draw-style-button-solid active">
-                <img class="selected-svg" th:src="@{/image/icons/solid-line-selected.svg}" />
-                <img class="default-svg" th:src="@{/image/icons/solid-line.svg}" />
-              </button>
-              <button class="draw-style-button-dashed">
-                <img class="selected-svg" th:src="@{/image/icons/dashed-line-selected.svg}" />
-                <img class="default-svg" th:src="@{/image/icons/dashed-line.svg}" />
-              </button>
-            </div>
-          </div>
-          <div class="shape-section">
-            <div class="header">
-              <h5>Shape</h5>
-            </div>
-            <div class="content">
-              <button class="shape-button-circle active">
-                <img class="selected-svg" th:src="@{/image/icons/circle-selected.svg}" />
-                <img class="default-svg" th:src="@{/image/icons/circle.svg}" />
-              </button>
-              <button class="shape-button-triangle">
-                <img class="selected-svg" th:src="@{/image/icons/triangle-selected.svg}" />
-                <img class="default-svg" th:src="@{/image/icons/triangle.svg}" />
-              </button>
-              <button class="shape-button-square">
-                <img class="selected-svg" th:src="@{/image/icons/square-selected.svg}" />
-                <img class="default-svg" th:src="@{/image/icons/square.svg}" />
-              </button>
-              <button class="shape-button-ellipse">
-                <img class="selected-svg" th:src="@{/image/icons/ellipse-selected.svg}" />
-                <img class="default-svg" th:src="@{/image/icons/ellipse.svg}" />
-              </button>
-              <button class="shape-button-rectangle">
-                <img class="selected-svg" th:src="@{/image/icons/rectangle-selected.svg}" />
-                <img class="default-svg" th:src="@{/image/icons/rectangle.svg}" />
-              </button>
-              <button class="shape-button-line">
-                <img class="selected-svg" th:src="@{/image/icons/straight-line-selected.svg}" />
-                <img class="default-svg" th:src="@{/image/icons/straight-line.svg}" />
-              </button>
-              <button class="shape-button-arrow">
-                <img class="selected-svg" th:src="@{/image/icons/arrow-line-selected.svg}" />
-                <img class="default-svg" th:src="@{/image/icons/arrow-line.svg}" />
-              </button>
-            </div>
-          </div>
-          <div class="fill-section">
-            <div class="header">
-              <h5>Fill</h5>
-            </div>
-            <div class="content">
-              <input class="colour-picker fill" type="color" value="#ff0000">
-              <button class="visibility-selection active">
-                <img class="selected-svg" th:src="@{/image/icons/view.svg}" />
-                <img class="default-svg" th:src="@{/image/icons/hide.svg}" />
-              </button>
-              <div>
-                <h5>#</h5>
-                <input class="colour-value" id="colourValueFill" value="FF0000">
-              </div>
-            </div>
-          </div>
-          <div class="outline-section">
-            <div class="header">
-              <h5>Outline</h5>
-            </div>
-            <div class="content">
-              <input class="colour-picker outline" type="color" value="#ff0000">
-              <button class="visibility-selection active">
-                <img class="selected-svg" th:src="@{/image/icons/view.svg}" />
-                <img class="default-svg" th:src="@{/image/icons/hide.svg}" />
-              </button>
-              <div>
-                <h5>#</h5>
-                <input class="colour-value" id="colourValueOutline" value="FF0000">
-              </div>
-            </div>
-          </div>
+        <div class="dropdown">
+          <label for="formation">Formation</label>
+          <select class="select" id="formation" disabled>
+            <option value="disabled">disabled</option>
+          </select>
         </div>
-        <button class="delete-button">
-          <span class="tooltip">Clear (C)</span>
-          <img class="default-svg" th:src="@{/image/icons/clear.svg}" />
-        </button>
+        <div class="line">
+          <hr>
+          <span class="or-text">or</span>
+          <hr>
+        </div>
+        <div class="dropdown">
+          <label for="formation">Line-Up</label>
+          <select class="select" id="lineup" disabled>
+            <option value="disabled">disabled</option>
+          </select>
+        </div>
       </div>
-      <div class="whiteboard">
-        <canvas id="canvas" width="560" height="700"></canvas>
+      <div>
+        <div class="whiteboard-buttons">
+          <button class="select-button active">
+            <span class="tooltip">Select (S)</span>
+            <img class="selected-svg" th:src="@{/image/icons/cursor-selected.svg}" />
+            <img class="default-svg" th:src="@{/image/icons/cursor.svg}" />
+          </button>
+          <button class="draw-button">
+            <span class="tooltip">Draw (D)</span>
+            <img class="selected-svg" th:src="@{/image/icons/pencil-selected.svg}" />
+            <img class="default-svg" th:src="@{/image/icons/pencil.svg}" />
+          </button>
+          <div class="customisation-box draw-button">
+            <div class="style-section">
+              <div class="header">
+                <h5>Style</h5>
+  <!--              <label>Arrow-->
+  <!--                <input class="arrow-checkbox" type="checkbox">-->
+  <!--              </label>-->
+              </div>
+              <div class="content">
+                <button class="draw-style-button-solid active">
+                  <img class="selected-svg" th:src="@{/image/icons/solid-line-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/solid-line.svg}" />
+                </button>
+                <button class="draw-style-button-dashed">
+                  <img class="selected-svg" th:src="@{/image/icons/dashed-line-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/dashed-line.svg}" />
+                </button>
+              </div>
+            </div>
+            <div class="colour-section">
+              <div class="header">
+                <h5>Colour</h5>
+              </div>
+              <div class="content">
+                <input class="colour-picker" type="color" value="#ff0000">
+                <div>
+                  <h5>#</h5>
+                  <input class="colour-value" id="colourValue" value="FF0000">
+                </div>
+              </div>
+            </div>
+            <div class="width-section">
+              <div class="header">
+                <h5>Width</h5>
+              </div>
+              <div class="content">
+                <input id="rangeInput" type="range" min="1" max="50" value="5">
+                <input type="number" max="50" min="1" id="widthValue" value="5">
+              </div>
+            </div>
+          </div>
+          <button class="erase-button">
+            <span class="tooltip">Erase (E)</span>
+            <img class="selected-svg" th:src="@{/image/icons/eraser-selected.svg}" />
+            <img class="default-svg" th:src="@{/image/icons/eraser.svg}" />
+          </button>
+          <button class="shape-button circle">
+            <span class="tooltip">Shape (X)</span>
+            <span class="circle-img">
+              <img class="selected-svg" th:src="@{/image/icons/circle-selected.svg}" />
+              <img class="default-svg" th:src="@{/image/icons/circle.svg}" />
+            </span>
+            <span class="triangle-img">
+              <img class="selected-svg" th:src="@{/image/icons/triangle-selected.svg}" />
+              <img class="default-svg" th:src="@{/image/icons/triangle.svg}" />
+            </span>
+            <span class="square-img">
+              <img class="selected-svg" th:src="@{/image/icons/square-selected.svg}" />
+              <img class="default-svg" th:src="@{/image/icons/square.svg}" />
+            </span>
+            <span class="ellipse-img">
+              <img class="selected-svg" th:src="@{/image/icons/ellipse-selected.svg}" />
+              <img class="default-svg" th:src="@{/image/icons/ellipse.svg}" />
+            </span>
+            <span class="rectangle-img">
+              <img class="selected-svg" th:src="@{/image/icons/rectangle-selected.svg}" />
+              <img class="default-svg" th:src="@{/image/icons/rectangle.svg}" />
+            </span>
+            <span class="line-img">
+              <img class="selected-svg" th:src="@{/image/icons/straight-line-selected.svg}" />
+              <img class="default-svg" th:src="@{/image/icons/straight-line.svg}" />
+            </span>
+            <span class="arrow-img">
+              <img class="selected-svg" th:src="@{/image/icons/arrow-line-selected.svg}" />
+              <img class="default-svg" th:src="@{/image/icons/arrow-line.svg}" />
+            </span>
+          </button>
+          <div class="customisation-box shape-button">
+            <div class="style-section">
+              <div class="header">
+                <h5>Style</h5>
+              </div>
+              <div class="content">
+                <button class="draw-style-button-solid active">
+                  <img class="selected-svg" th:src="@{/image/icons/solid-line-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/solid-line.svg}" />
+                </button>
+                <button class="draw-style-button-dashed">
+                  <img class="selected-svg" th:src="@{/image/icons/dashed-line-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/dashed-line.svg}" />
+                </button>
+              </div>
+            </div>
+            <div class="shape-section">
+              <div class="header">
+                <h5>Shape</h5>
+              </div>
+              <div class="content">
+                <button class="shape-button-circle active">
+                  <img class="selected-svg" th:src="@{/image/icons/circle-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/circle.svg}" />
+                </button>
+                <button class="shape-button-triangle">
+                  <img class="selected-svg" th:src="@{/image/icons/triangle-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/triangle.svg}" />
+                </button>
+                <button class="shape-button-square">
+                  <img class="selected-svg" th:src="@{/image/icons/square-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/square.svg}" />
+                </button>
+                <button class="shape-button-ellipse">
+                  <img class="selected-svg" th:src="@{/image/icons/ellipse-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/ellipse.svg}" />
+                </button>
+                <button class="shape-button-rectangle">
+                  <img class="selected-svg" th:src="@{/image/icons/rectangle-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/rectangle.svg}" />
+                </button>
+                <button class="shape-button-line">
+                  <img class="selected-svg" th:src="@{/image/icons/straight-line-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/straight-line.svg}" />
+                </button>
+                <button class="shape-button-arrow">
+                  <img class="selected-svg" th:src="@{/image/icons/arrow-line-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/arrow-line.svg}" />
+                </button>
+              </div>
+            </div>
+            <div class="fill-section">
+              <div class="header">
+                <h5>Fill</h5>
+              </div>
+              <div class="content">
+                <input class="colour-picker fill" type="color" value="#ff0000">
+                <button class="visibility-selection active">
+                  <img class="selected-svg" th:src="@{/image/icons/view.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/hide.svg}" />
+                </button>
+                <div>
+                  <h5>#</h5>
+                  <input class="colour-value" id="colourValueFill" value="FF0000">
+                </div>
+              </div>
+            </div>
+            <div class="outline-section">
+              <div class="header">
+                <h5>Outline</h5>
+              </div>
+              <div class="content">
+                <input class="colour-picker outline" type="color" value="#ff0000">
+                <button class="visibility-selection active">
+                  <img class="selected-svg" th:src="@{/image/icons/view.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/hide.svg}" />
+                </button>
+                <div>
+                  <h5>#</h5>
+                  <input class="colour-value" id="colourValueOutline" value="FF0000">
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="delete-button">
+            <span class="tooltip">Clear (C)</span>
+            <img class="default-svg" th:src="@{/image/icons/clear.svg}" />
+          </button>
+        </div>
+        <div class="whiteboard">
+          <canvas id="canvas" width="560" height="700"></canvas>
+        </div>
       </div>
     </div>
   </div>
 </body>
 <script>
-    const pitchTypes = ["American Football", "Basketball", "Hockey", "Netball", "Rugby", "Soccer", "Tennis", "Volleyball"];
-    const pitchSelect = document.getElementById("pitch");
-    pitchTypes.forEach(pitchType => {
-        const option = document.createElement("option");
-        option.value = pitchType.toLowerCase().replace(" ", "-");
-        option.textContent = pitchType;
-        pitchSelect.appendChild(option);
-    });
+  const pitchTypes = ["American Football", "Basketball", "Hockey", "Netball", "Rugby", "Soccer", "Tennis", "Volleyball"];
+  const pitchSelect = document.getElementById("pitch");
+  pitchTypes.forEach(pitchType => {
+    const option = document.createElement("option");
+    option.value = pitchType.toLowerCase().replace(" ", "-");
+    option.textContent = pitchType;
+    pitchSelect.appendChild(option);
+  });
 
-    const imagePath = "image/pitches/";
-    pitchSelect.addEventListener("change", function () {
-        const selectedValue = this.value;
-        const imageUrl = `${imagePath}${selectedValue}.svg`;
-        if (document.querySelector(".canvas-container") !== null) {
-            const canvasContainer = document.querySelector(".canvas-container");
-            canvasContainer.style.backgroundImage = `url(${imageUrl})`;
-        }
-    });
-    let isLabelFocused = false;
-    const whiteboardDropdowns = document.querySelector('.whiteboard-dropdowns');
-    const label = whiteboardDropdowns.querySelector('h3');
-    label.addEventListener('click', () => {
-        label.setAttribute('contenteditable', 'true');
-        label.focus();
-        isLabelFocused=true;
-    });
+  const imagePath = "image/pitches/";
+  pitchSelect.addEventListener("change", function () {
+    const selectedValue = this.value;
+    const imageUrl = `${imagePath}${selectedValue}.svg`;
+    if (document.querySelector(".canvas-container") !== null) {
+      const canvasContainer = document.querySelector(".canvas-container");
+      canvasContainer.style.backgroundImage = `url(${imageUrl})`;
+    }
+  });
+  let isLabelFocused = false;
+  const whiteboardDropdowns = document.querySelector('.whiteboard-dropdowns');
+  const label = whiteboardDropdowns.querySelector('h3');
+  label.addEventListener('click', () => {
+    label.setAttribute('contenteditable', 'true');
+    label.focus();
+    isLabelFocused=true;
+  });
 
-    label.addEventListener('input', () => {
-        const editedText = label.textContent;
-        isLabelFocused=true;
-        if (editedText.length >= 26) {
-            label.textContent = editedText.slice(0, 26);
-            label.setAttribute('contenteditable', 'false');
-        } else {
-            label.setAttribute('contenteditable', 'true');
-        }
-    });
+  label.addEventListener('input', () => {
+    const editedText = label.textContent;
+    isLabelFocused=true;
+    if (editedText.length >= 26) {
+      label.textContent = editedText.slice(0, 26);
+      label.setAttribute('contenteditable', 'false');
+    } else {
+      label.setAttribute('contenteditable', 'true');
+    }
+  });
 
-    label.addEventListener('blur', () => {
-        const editedText = label.textContent;
-        label.textContent = editedText || 'Untitled';
-        label.setAttribute('contenteditable', 'false');
-        isLabelFocused = false;
-    });
+  label.addEventListener('blur', () => {
+    const editedText = label.textContent;
+    label.textContent = editedText || 'Untitled';
+    label.setAttribute('contenteditable', 'false');
+    isLabelFocused = false;
+  });
 
   document.addEventListener("DOMContentLoaded", function() {
     pitchSelect.value = "soccer";
