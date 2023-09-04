@@ -294,7 +294,7 @@ public class ActivityService {
         List<Substitution> activitySubstitutions = new ArrayList<>();
 
         for (Object fact : act.getFactList()) {
-            if(fact instanceof Substitution substitution && ((substitution.getPlayerOff() == user || substitution.getPlayerOn() == user))) {
+            if(fact instanceof Substitution substitution && (substitution.getPlayerOff() == user || substitution.getPlayerOn() == user)) {
                     activitySubstitutions.add((Substitution) fact);
 
             }
@@ -360,8 +360,11 @@ public class ActivityService {
      */
         public long getOverallPlayTimeForUserBasedOnSubs(User user, Team team) {
         long totalTime = 0;
-        for (Activity act : getAllGamesAndFriendliesForTeam(team)) {
-            int listSize = subFactsUserIsIn(act, user).size();
+
+            for (Activity act : getAllGamesAndFriendliesForTeam(team)) {
+                List<Substitution> userSubFacts = subFactsUserIsIn(act, user);
+
+                int listSize = userSubFacts.size();
 
             if (playersInLineUpForActivity(act).contains(user)) {
                 //user in starting lineup
@@ -372,11 +375,11 @@ public class ActivityService {
 
                 }
                 else {
-                    totalTime += Integer.parseInt( subFactsUserIsIn(act, user).get(0).getTimeOfEvent());
+                    totalTime += Integer.parseInt( userSubFacts.get(0).getTimeOfEvent());
                     //User not in starting lineup so check for player off subfact
-                    for (int i = 1; i < subFactsUserIsIn(act, user).size() - 1; i += 2) {
-                        Substitution sub1 = subFactsUserIsIn(act, user).get(i);
-                        Substitution sub2 = subFactsUserIsIn(act, user).get(i + 1);
+                    for (int i = 1; i < userSubFacts.size() - 1; i += 2) {
+                        Substitution sub1 = userSubFacts.get(i);
+                        Substitution sub2 = userSubFacts.get(i + 1);
                         int timeBetweenPlayerOnAndOff = Integer.parseInt(sub2.getTimeOfEvent()) - Integer.parseInt(sub1.getTimeOfEvent());
                         totalTime += timeBetweenPlayerOnAndOff;
                     }
@@ -384,9 +387,9 @@ public class ActivityService {
 
         } else {
                 //User not in starting lineup so check for player on subfact
-                    for (int i = 0; i < subFactsUserIsIn(act, user).size() - 1; i += 2) {
-                        Substitution sub1 = subFactsUserIsIn(act, user).get(i);
-                        Substitution sub2 = subFactsUserIsIn(act, user).get(i + 1);
+                    for (int i = 0; i < userSubFacts.size() - 1; i += 2) {
+                        Substitution sub1 = userSubFacts.get(i);
+                        Substitution sub2 = userSubFacts.get(i + 1);
                         int timeBetweenPlayerOnAndOff = Integer.parseInt(sub2.getTimeOfEvent()) - Integer.parseInt(sub1.getTimeOfEvent());
                         totalTime += timeBetweenPlayerOnAndOff;
                     }
@@ -394,9 +397,9 @@ public class ActivityService {
 
 
             if (listSize != 0) { //If the last subfact for a user is playerOn == user that means they played for the remaining length of the game
-                Substitution lastSubFact = subFactsUserIsIn(act, user).get(listSize-1);
+                Substitution lastSubFact = userSubFacts.get(listSize-1);
                 if (lastSubFact.getPlayerOn() == user) {
-                    totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes() - Integer.parseInt(subFactsUserIsIn(act, user).get(listSize - 1).getTimeOfEvent());
+                    totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes() - Integer.parseInt(userSubFacts.get(listSize - 1).getTimeOfEvent());
                 }
             }
         }
@@ -419,7 +422,7 @@ public class ActivityService {
                 activitiesUserPlayedIn.add(act);
             } else {
                 for (Object fact : act.getFactList()) {
-                    if (fact instanceof Substitution substitution && ((substitution.getPlayerOff() == user || (substitution.getPlayerOn() == user)))) {
+                    if (fact instanceof Substitution substitution && (substitution.getPlayerOff() == user || (substitution.getPlayerOn() == user))) {
                             activitiesUserPlayedIn.add(act);
                             break;
                     }
