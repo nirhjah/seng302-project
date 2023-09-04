@@ -15,7 +15,7 @@
  * The delay time (in milliseconds) for debouncing the search input.
  * @type {number}
  */
-const DEBOUNCE_DELAY = 450; // set the debounce delay to 450ms
+const DEBOUNCE_DELAY = 200; // set the debounce delay to 200ms
 
 const searchBox = document.querySelector('#address-line-1');
 const resultsContainer = document.querySelector('#autocomplete-container');

@@ -4,7 +4,6 @@
 <head>
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <link th:href="@{/css/create-team.css}" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
@@ -115,7 +114,7 @@
         on Freepik
     </p>
 </footer>
-</body>
+<script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
 <script type="text/javascript" th:inline="javascript">
     /**
      ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
@@ -129,7 +128,7 @@
      * The delay time (in milliseconds) for debouncing the search input.
      * @type {number}
      */
-    const DEBOUNCE_DELAY = 450; // set the debounce delay to 450ms
+    const DEBOUNCE_DELAY = 200; // set the debounce delay to 200ms
 
     const searchBox = document.querySelector('#address-line-1');
     const resultsContainer = document.querySelector('#autocomplete-container');
@@ -224,5 +223,5 @@
     });
 
 </script>
-
+</body>
 </html>
