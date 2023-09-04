@@ -5,8 +5,7 @@
   <link th:href="@{/css/whiteboard.css}" rel="stylesheet">
   <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-<!--  <script src="webjars/fabric.js"></script>-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+  <script type="text/javascript" th:src="@{/webjars/fabric/5.3.0/dist/fabric.min.js}"></script>
 </head>
 <body class="view-teams-background">
   <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
@@ -16,13 +15,13 @@
       <div class="whiteboard-buttons">
         <button class="select-button active">
           <span class="tooltip">Select (S)</span>
-          <img class="selected-svg" th:src="/image/icons/cursor-selected.svg" />
-          <img class="default-svg" th:src="/image/icons/cursor.svg" />
+          <img class="selected-svg" th:src="@{@{/image/icons/cursor-selected.svg}}" />
+          <img class="default-svg" th:src="@{/image/icons/cursor.svg}" />
         </button>
         <button class="draw-button">
           <span class="tooltip">Draw (D)</span>
-          <img class="selected-svg" th:src="/image/icons/pencil-selected.svg" />
-          <img class="default-svg" th:src="/image/icons/pencil.svg" />
+          <img class="selected-svg" th:src="@{/image/icons/pencil-selected.svg}" />
+          <img class="default-svg" th:src="@{/image/icons/pencil.svg}" />
         </button>
         <div class="customisation-box draw-button">
           <div class="style-section">
@@ -34,12 +33,12 @@
             </div>
             <div class="content">
               <button class="draw-style-button-solid active">
-                <img class="selected-svg" th:src="/image/icons/solid-line-selected.svg" />
-                <img class="default-svg" th:src="/image/icons/solid-line.svg" />
+                <img class="selected-svg" th:src="@{/image/icons/solid-line-selected.svg}" />
+                <img class="default-svg" th:src="@{/image/icons/solid-line.svg}" />
               </button>
               <button class="draw-style-button-dashed">
-                <img class="selected-svg" th:src="/image/icons/dashed-line-selected.svg" />
-                <img class="default-svg" th:src="/image/icons/dashed-line.svg" />
+                <img class="selected-svg" th:src="@{/image/icons/dashed-line-selected.svg}" />
+                <img class="default-svg" th:src="@{/image/icons/dashed-line.svg}" />
               </button>
             </div>
           </div>
@@ -67,38 +66,38 @@
         </div>
         <button class="erase-button">
           <span class="tooltip">Erase (E)</span>
-          <img class="selected-svg" th:src="/image/icons/eraser-selected.svg" />
-          <img class="default-svg" th:src="/image/icons/eraser.svg" />
+          <img class="selected-svg" th:src="@{/image/icons/eraser-selected.svg}" />
+          <img class="default-svg" th:src="@{/image/icons/eraser.svg}" />
         </button>
         <button class="shape-button circle">
           <span class="tooltip">Shape (X)</span>
           <span class="circle-img">
-            <img class="selected-svg" th:src="/image/icons/circle-selected.svg" />
-            <img class="default-svg" th:src="/image/icons/circle.svg" />
+            <img class="selected-svg" th:src="@{/image/icons/circle-selected.svg}" />
+            <img class="default-svg" th:src="@{/image/icons/circle.svg}" />
           </span>
           <span class="triangle-img">
-            <img class="selected-svg" th:src="/image/icons/triangle-selected.svg" />
-            <img class="default-svg" th:src="/image/icons/triangle.svg" />
+            <img class="selected-svg" th:src="@{/image/icons/triangle-selected.svg}" />
+            <img class="default-svg" th:src="@{/image/icons/triangle.svg}" />
           </span>
           <span class="square-img">
-            <img class="selected-svg" th:src="/image/icons/square-selected.svg" />
-            <img class="default-svg" th:src="/image/icons/square.svg" />
+            <img class="selected-svg" th:src="@{/image/icons/square-selected.svg}" />
+            <img class="default-svg" th:src="@{/image/icons/square.svg}" />
           </span>
           <span class="ellipse-img">
-            <img class="selected-svg" th:src="/image/icons/ellipse-selected.svg" />
-            <img class="default-svg" th:src="/image/icons/ellipse.svg" />
+            <img class="selected-svg" th:src="@{/image/icons/ellipse-selected.svg}" />
+            <img class="default-svg" th:src="@{/image/icons/ellipse.svg}" />
           </span>
           <span class="rectangle-img">
-            <img class="selected-svg" th:src="/image/icons/rectangle-selected.svg" />
-            <img class="default-svg" th:src="/image/icons/rectangle.svg" />
+            <img class="selected-svg" th:src="@{/image/icons/rectangle-selected.svg}" />
+            <img class="default-svg" th:src="@{/image/icons/rectangle.svg}" />
           </span>
           <span class="line-img">
-            <img class="selected-svg" th:src="/image/icons/straight-line-selected.svg" />
-            <img class="default-svg" th:src="/image/icons/straight-line.svg" />
+            <img class="selected-svg" th:src="@{/image/icons/straight-line-selected.svg}" />
+            <img class="default-svg" th:src="@{/image/icons/straight-line.svg}" />
           </span>
           <span class="arrow-img">
-            <img class="selected-svg" th:src="/image/icons/arrow-line-selected.svg" />
-            <img class="default-svg" th:src="/image/icons/arrow-line.svg" />
+            <img class="selected-svg" th:src="@{/image/icons/arrow-line-selected.svg}" />
+            <img class="default-svg" th:src="@{/image/icons/arrow-line.svg}" />
           </span>
         </button>
         <div class="customisation-box shape-button">
@@ -108,12 +107,12 @@
             </div>
             <div class="content">
               <button class="draw-style-button-solid active">
-                <img class="selected-svg" th:src="/image/icons/solid-line-selected.svg" />
-                <img class="default-svg" th:src="/image/icons/solid-line.svg" />
+                <img class="selected-svg" th:src="@{/image/icons/solid-line-selected.svg}" />
+                <img class="default-svg" th:src="@{/image/icons/solid-line.svg}" />
               </button>
               <button class="draw-style-button-dashed">
-                <img class="selected-svg" th:src="/image/icons/dashed-line-selected.svg" />
-                <img class="default-svg" th:src="/image/icons/dashed-line.svg" />
+                <img class="selected-svg" th:src="@{/image/icons/dashed-line-selected.svg}" />
+                <img class="default-svg" th:src="@{/image/icons/dashed-line.svg}" />
               </button>
             </div>
           </div>
@@ -123,32 +122,32 @@
             </div>
             <div class="content">
               <button class="shape-button-circle active">
-                <img class="selected-svg" th:src="/image/icons/circle-selected.svg" />
-                <img class="default-svg" th:src="/image/icons/circle.svg" />
+                <img class="selected-svg" th:src="@{/image/icons/circle-selected.svg}" />
+                <img class="default-svg" th:src="@{/image/icons/circle.svg}" />
               </button>
               <button class="shape-button-triangle">
-                <img class="selected-svg" th:src="/image/icons/triangle-selected.svg" />
-                <img class="default-svg" th:src="/image/icons/triangle.svg" />
+                <img class="selected-svg" th:src="@{/image/icons/triangle-selected.svg}" />
+                <img class="default-svg" th:src="@{/image/icons/triangle.svg}" />
               </button>
               <button class="shape-button-square">
-                <img class="selected-svg" th:src="/image/icons/square-selected.svg" />
-                <img class="default-svg" th:src="/image/icons/square.svg" />
+                <img class="selected-svg" th:src="@{/image/icons/square-selected.svg}" />
+                <img class="default-svg" th:src="@{/image/icons/square.svg}" />
               </button>
               <button class="shape-button-ellipse">
-                <img class="selected-svg" th:src="/image/icons/ellipse-selected.svg" />
-                <img class="default-svg" th:src="/image/icons/ellipse.svg" />
+                <img class="selected-svg" th:src="@{/image/icons/ellipse-selected.svg}" />
+                <img class="default-svg" th:src="@{/image/icons/ellipse.svg}" />
               </button>
               <button class="shape-button-rectangle">
-                <img class="selected-svg" th:src="/image/icons/rectangle-selected.svg" />
-                <img class="default-svg" th:src="/image/icons/rectangle.svg" />
+                <img class="selected-svg" th:src="@{/image/icons/rectangle-selected.svg}" />
+                <img class="default-svg" th:src="@{/image/icons/rectangle.svg}" />
               </button>
               <button class="shape-button-line">
-                <img class="selected-svg" th:src="/image/icons/straight-line-selected.svg" />
-                <img class="default-svg" th:src="/image/icons/straight-line.svg" />
+                <img class="selected-svg" th:src="@{/image/icons/straight-line-selected.svg}" />
+                <img class="default-svg" th:src="@{/image/icons/straight-line.svg}" />
               </button>
               <button class="shape-button-arrow">
-                <img class="selected-svg" th:src="/image/icons/arrow-line-selected.svg" />
-                <img class="default-svg" th:src="/image/icons/arrow-line.svg" />
+                <img class="selected-svg" th:src="@{/image/icons/arrow-line-selected.svg}" />
+                <img class="default-svg" th:src="@{/image/icons/arrow-line.svg}" />
               </button>
             </div>
           </div>
@@ -159,8 +158,8 @@
             <div class="content">
               <input class="colour-picker fill" type="color" value="#ff0000">
               <button class="visibility-selection active">
-                <img class="selected-svg" th:src="/image/icons/view.svg" />
-                <img class="default-svg" th:src="/image/icons/hide.svg" />
+                <img class="selected-svg" th:src="@{/image/icons/view.svg}" />
+                <img class="default-svg" th:src="@{/image/icons/hide.svg}" />
               </button>
               <div>
                 <h5>#</h5>
@@ -175,8 +174,8 @@
             <div class="content">
               <input class="colour-picker outline" type="color" value="#ff0000">
               <button class="visibility-selection active">
-                <img class="selected-svg" th:src="/image/icons/view.svg" />
-                <img class="default-svg" th:src="/image/icons/hide.svg" />
+                <img class="selected-svg" th:src="@{/image/icons/view.svg}" />
+                <img class="default-svg" th:src="@{/image/icons/hide.svg}" />
               </button>
               <div>
                 <h5>#</h5>
@@ -187,7 +186,7 @@
         </div>
         <button class="delete-button">
           <span class="tooltip">Clear (C)</span>
-          <img class="default-svg" th:src="/image/icons/clear.svg" />
+          <img class="default-svg" th:src="@{/image/icons/clear.svg}" />
         </button>
       </div>
       <div class="whiteboard">
@@ -692,7 +691,6 @@
           } else if (shapeButton.classList.contains("square")) {
             const width = Math.max(Math.abs(startX - x), Math.abs(startY - y)) * 2
             const height = Math.max(Math.abs(startX - x), Math.abs(startY - y)) * 2
-            console.log(x, y, startX, startY)
             drawingShape.set({width: width, height: height, left: startX - (width / 2), top: startY - (height / 2)});
             canvas.renderAll();
           } else if (shapeButton.classList.contains("rectangle") || shapeButton.classList.contains("triangle")) {
@@ -738,7 +736,6 @@
             } else {
               drawingShape.set({ry: Math.min(maxHeight, Math.abs(startY - Math.max(y, 0)) / 2)});
             }
-            console.log(x, y)
             canvas.renderAll();
           } else if (shapeButton.classList.contains("line")) {
             // Have to do ti separately as the line glitches if you set x/y to the value it already is
@@ -795,7 +792,6 @@
             const yLeftDis = y + 1.5 * Math.cos(angleRad);
             const xRightDis = x + 1.5 * Math.sin(angleRad);
             const yRightDis = y - 1.5 * Math.cos(angleRad);
-            console.log(-Math.sin(angleRad), Math.cos(angleRad), Math.sin(angleRad), -Math.cos(angleRad))
             leftLine.set({x1: xLeftDis, y1: yLeftDis, x2: x + xLeft, y2: y + yLeft})
             rightLine.set({x1: xRightDis, y1: yRightDis, x2: x + xRight, y2: y + yRight})
             canvas.renderAll();
@@ -824,6 +820,7 @@
           lineGroup.addWithUpdate(drawingShape);
           lineGroup.addWithUpdate(leftLine);
           lineGroup.addWithUpdate(rightLine);
+          // Old arrow elements get pushed to the top left corner for some reason so need to delete them
           canvas.remove(canvas.getObjects()[canvas.getObjects().length - 1])
           canvas.remove(canvas.getObjects()[canvas.getObjects().length - 2])
           canvas.remove(canvas.getObjects()[canvas.getObjects().length - 3])
