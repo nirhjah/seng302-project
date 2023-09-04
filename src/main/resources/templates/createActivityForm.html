@@ -366,13 +366,15 @@
         } else {
             document.querySelector(".formation-activity-display").classList.add("active");
             generatedOrCustom(formation, custom === "true", customPlayerPositions);
-            addPositionFunctionality();
+
             for (var formation_ in formationAndPlayersAndPositionJson) {
                 if (formation_ === formationId) {
                     var playersAndPosition = formationAndPlayersAndPositionJson[formation_];
                     console.log("formation: " + formation_);
 
                     for (const positionIndex in playersAndPosition) {
+
+                        addPositionFunctionality();
 
                         var playerInfo = playersAndPosition[positionIndex];
 
@@ -382,9 +384,12 @@
                         const playerName = playerInfo[2];
 
                         const position = positions[playerInfo[0]-1]
+                        const close = position.querySelector('.clear-position-button');
 
                         if (position) {
-                             const playerNameElement = position.querySelector('h3');
+                            const idObject = position.querySelector('input');
+
+                            const playerNameElement = position.querySelector('h3');
                              playerNameElement.textContent = playerName;
                              playerNameElement.style.display = 'inline-block';
                              playerNameElement.style.width = 'auto';
@@ -392,9 +397,15 @@
 
                             const playerImage = position.querySelector('.player-profile-img');
                             playerImage.src = "/user-profile-picture/" + playerId;
-                            playerImage.alt = "My Profile";
+                            //playerImage.alt = "My Profile";
 
                             position.style.backgroundImage = 'none';
+                            idObject.value = playerId;
+
+                            fillPosition(position);
+
+                            close.classList.add('active')
+
                         }
 
                     }
@@ -403,6 +414,7 @@
 
             }
 
+            addPositionFunctionality();
 
         }
     }
