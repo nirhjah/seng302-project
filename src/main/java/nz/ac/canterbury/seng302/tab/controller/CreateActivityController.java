@@ -228,8 +228,6 @@ public class CreateActivityController {
             }
 
             formationAndPlayersAndPosition.put(formation.getFormationId(), playersAndPosition);
-            System.out.println("formation: " + formation.getFormation());
-            System.out.println("linwup: " + lineUp.getLineUpId());
         }
 
 
@@ -415,9 +413,10 @@ public class CreateActivityController {
             if (Objects.equals(Arrays.stream(positionPlayer.split(" ")).toList().get(1), "X")) {
                 logger.info("No player was set at the position " + Arrays.stream(positionPlayer.split(" ")).toList().get(0));
                 error = true;
+                break;
 
             } else {
-                logger.info("Valid player so creating line up position object now..");
+                logger.info("Valid player so creating line up position object now.."); //should only create if all are valid not if just one is
                 if (userService.findUserById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).isPresent()) {
                     User player = userService.findUserById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).get();
                     int position = Integer.parseInt(Arrays.stream(positionPlayer.split(" ")).toList().get(0));
@@ -428,13 +427,8 @@ public class CreateActivityController {
         }
 
         if (error) {
-
-
-
             bindingResult.addError(new FieldError("createActivityForm", "lineup", "The line-up is not complete"));
-
         }
-
 
     }
 

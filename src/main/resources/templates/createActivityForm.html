@@ -366,6 +366,7 @@
         } else {
             document.querySelector(".formation-activity-display").classList.add("active");
             generatedOrCustom(formation, custom === "true", customPlayerPositions);
+            const reservesLi = document.querySelectorAll(".reserves-li");
 
             for (var formation_ in formationAndPlayersAndPositionJson) {
                 if (formation_ === formationId) {
@@ -405,6 +406,21 @@
                             fillPosition(position);
 
                             close.classList.add('active')
+                            activateSubs()
+
+                            reservesLi.forEach(li => {
+                                const inputElement = li.querySelector(".playerId");
+                                const inputValue = inputElement.value;
+                                console.log("input val of reserve" + inputValue)
+                                if (inputValue === playerId) {
+
+                                    li.classList.add("in-formation");
+
+                                }
+
+                            })
+
+
 
                         }
 
@@ -602,7 +618,9 @@
                         players.forEach(player => {
                             const playerId = player.querySelector("input").value;
                             if (playerId === positionPlayerId) {
+                                
                                 player.classList.remove("in-formation");
+
                                 position.classList.remove("filled");
                             }
                         });
