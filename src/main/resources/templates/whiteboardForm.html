@@ -100,10 +100,6 @@
                 <img class="selected-svg" src="/image/icons/circle-selected.svg" />
                 <img class="default-svg" src="/image/icons/circle.svg" />
               </button>
-              <button class="shape-button-ellipse">
-                <img class="selected-svg" src="/image/icons/ellipse-selected.svg" />
-                <img class="default-svg" src="/image/icons/ellipse.svg" />
-              </button>
               <button class="shape-button-triangle">
                 <img class="selected-svg" src="/image/icons/triangle-selected.svg" />
                 <img class="default-svg" src="/image/icons/triangle.svg" />
@@ -111,6 +107,10 @@
               <button class="shape-button-square">
                 <img class="selected-svg" src="/image/icons/square-selected.svg" />
                 <img class="default-svg" src="/image/icons/square.svg" />
+              </button>
+              <button class="shape-button-ellipse">
+                <img class="selected-svg" src="/image/icons/ellipse-selected.svg" />
+                <img class="default-svg" src="/image/icons/ellipse.svg" />
               </button>
               <button class="shape-button-rectangle">
                 <img class="selected-svg" src="/image/icons/rectangle-selected.svg" />
@@ -500,7 +500,7 @@
 
     canvas.on('mouse:down', function (options) {
       const { x, y } = canvas.getPointer(options.e);
-      if (canvas.getActiveObject()) {
+      if (canvas.getActiveObject() && activeMode !== "erase-button") {
         handleButtonClick('select-button', false, true);
       }
       startX = x
@@ -516,7 +516,7 @@
             drawingShape = new fabric.Circle({
               left: options.e.clientX - canvas._offset.left,
               top: options.e.clientY - canvas._offset.top,
-              radius: 1,
+              radius: 0,
               fill: !innerHidden ? innerColour : null,
               stroke: !outerHidden ? outerColour : null,
               strokeWidth: 5,
@@ -526,8 +526,8 @@
             });
           } else if (shapeButton.classList.contains("ellipse")) {
             // IDK why it's 3 pixels off but it is
-            maxWidth = maxWidth/2 - 3
-            maxHeight = maxHeight/2 - 3
+            maxWidth = maxWidth / 2 - 3
+            maxHeight = maxHeight / 2 - 3
             drawingShape = new fabric.Ellipse({
               left: startX,
               top: startY,
@@ -551,15 +551,12 @@
             });
           } else if (shapeButton.classList.contains("square")) {
             drawingShape = new fabric.Rect({
-              left: x,
-              top: y,
-              originX: 'left',
-              originY: 'top',
+              left: startX,
+              top: startY,
               width: 0,
               height: 0,
-              radius: 1,
-              fill: !innerHidden ? innerColour : null,
-              stroke: !outerHidden ? outerColour : null,
+              fill: !innerHidden ? innerColour : 'transparent',
+              stroke: !outerHidden ? outerColour : 'transparent',
               strokeWidth: 5,
               strokeDashArray: shapeOutline
             });
@@ -599,65 +596,62 @@
         if (activeMode === "erase-button") {
           eraseObjects(options.e);
         } else if (activeMode === "shape-button") {
-          switch (drawingShape.get("type")) {
-            case "circle":
-              const dx = pointer.x - drawingShape.left;
-              const dy = pointer.y - drawingShape.top;
-              const newRadius = Math.sqrt(dx * dx + dy * dy);
-
-              if (newRadius >= 10) {
-                drawingShape.set({radius: newRadius});
-                canvas.renderAll();
-              }
-              break;
-            case "rect":
-            case "triangle":
-              if (startX > x) {
-                if (x < 0) {
-                  drawingShape.set({ left: 0 });
-                } else {
-                  drawingShape.set({ left: Math.abs(x) });
-                }
-                drawingShape.set({ width: Math.abs(startX - Math.max(x, 0)) });
+          if (shapeButton.classList.contains("circle")) {
+            const dx = x - drawingShape.left;
+            const dy = y - drawingShape.top;
+            const newRadius = Math.sqrt(dx * dx + dy * dy);
+            drawingShape.set({radius: newRadius});
+            canvas.renderAll();
+          } else if (shapeButton.classList.contains("square")) {
+            const width = Math.max(Math.abs(startX - x), Math.abs(startY - y)) * 2
+            const height = Math.max(Math.abs(startX - x), Math.abs(startY - y)) * 2
+            console.log(x, y, startX, startY)
+            drawingShape.set({width: width, height: height, left: startX - (width / 2), top: startY - (height / 2)});
+            canvas.renderAll();
+          } else if (shapeButton.classList.contains("rectangle") || shapeButton.classList.contains("triangle")) {
+            if (startX > x) {
+              if (x < 0) {
+                drawingShape.set({left: 0});
               } else {
-                drawingShape.set({ width: Math.min( maxWidth, Math.abs(startX - Math.max(x, 0))) });
+                drawingShape.set({left: Math.abs(x)});
               }
-              if (startY > y) {
-                if (y < 0) {
-                  drawingShape.set({ top: 0});
-                } else {
-                  drawingShape.set({ top: Math.abs(y) });
-                }
-                drawingShape.set({ height: Math.abs(startY - Math.max(y, 0)) });
+              drawingShape.set({width: Math.abs(startX - Math.max(x, 0))});
+            } else {
+              drawingShape.set({width: Math.min(maxWidth, Math.abs(startX - Math.max(x, 0)))});
+            }
+            if (startY > y) {
+              if (y < 0) {
+                drawingShape.set({top: 0});
               } else {
-                drawingShape.set({ height: Math.min( maxHeight, Math.abs(startY - Math.max(y, 0))) });
+                drawingShape.set({top: Math.abs(y)});
               }
-              canvas.renderAll();
-              break;
-            case "ellipse":
-              if (startX > x) {
-                if (x < 0) {
-                  drawingShape.set({ left: 0 });
-                } else {
-                  drawingShape.set({ left: Math.abs(x) });
-                }
-                drawingShape.set({ rx: Math.abs(startX - Math.max(x, 0)) });
+              drawingShape.set({height: Math.abs(startY - Math.max(y, 0))});
+            } else {
+              drawingShape.set({height: Math.min(maxHeight, Math.abs(startY - Math.max(y, 0)))});
+            }
+            canvas.renderAll();
+          } else if (shapeButton.classList.contains("ellipse")) {
+            if (startX > x) {
+              if (x < 0) {
+                drawingShape.set({left: 0});
               } else {
-                drawingShape.set({ rx: Math.min( maxWidth, Math.abs(startX - Math.max(x, 0)) / 2) });
+                drawingShape.set({left: Math.abs(x)});
               }
-              if (startY > y) {
-                if (y < 0) {
-                  drawingShape.set({ top: 0});
-                } else {
-                  drawingShape.set({ top: Math.abs(y) });
-                }
-                drawingShape.set({ ry: Math.abs(startY - Math.max(y, 0)) });
+              drawingShape.set({rx: Math.abs(startX - Math.max(x, 0))});
+            } else {
+              drawingShape.set({rx: Math.min(maxWidth, Math.abs(startX - Math.max(x, 0)) / 2)});
+            }
+            if (startY > y) {
+              if (y < 0) {
+                drawingShape.set({top: 0});
               } else {
-                drawingShape.set({ ry: Math.min( maxHeight, Math.abs(startY - Math.max(y, 0)) / 2) });
+                drawingShape.set({top: Math.abs(y)});
               }
-              canvas.renderAll();
-              console.log(maxHeight, maxWidth, drawingShape.rx, drawingShape.ry)
-              break;
+              drawingShape.set({ry: Math.abs(startY - Math.max(y, 0))});
+            } else {
+              drawingShape.set({ry: Math.min(maxHeight, Math.abs(startY - Math.max(y, 0)) / 2)});
+            }
+            canvas.renderAll();
           }
         }
       }
