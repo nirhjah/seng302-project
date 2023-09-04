@@ -10,11 +10,13 @@
 }
 
 .canvas-container {
-    background-image: url('../image/icons/pitch.svg');
+    background-image: url('../image/pitches/soccer.svg');
     background-repeat: no-repeat;
 }
 
 .whiteboard-wrapper {
+    display:flex;
+    flex-direction:row;
     background-color: white;
     border-radius: 10px;
     padding: 20px;
@@ -319,6 +321,62 @@ input[type="range"]::-moz-range-track {
 
 
 
+
+
+
+
+
+.whiteboard-dropdowns{
+    width:300px;
+    margin-right:20px;
+}
+
+.whiteboard-dropdowns h3{
+    padding-top:11px;
+    color: #808080;
+    font-size:22px;
+}
+
+.whiteboard-dropdowns .dropdown{
+    display:flex;
+    flex-direction:column;
+    color: #1B263B;
+    font-size:18px;
+    margin: 30px 0;
+}
+.whiteboard-dropdowns .dropdown label{
+    margin-bottom: 8px;
+    color:#888888;
+}
+.whiteboard-dropdowns .dropdown select{
+    font-size:18px;
+    background:#ffffff;
+    cursor:pointer;
+    border-color:#0b2239;
+    color:#0b2239;
+    height:48px;
+    text-align:center;
+    border-radius:8px;
+}
+
+.whiteboard-dropdowns .line {
+    display: flex;
+    align-items: center;
+}
+
+.whiteboard-dropdowns .line hr {
+    flex-grow: 1;
+    border: 1px solid #888;
+}
+
+.whiteboard-dropdowns .line span{
+    padding: 0 10px;
+    font-size:18px;
+}
+
+.whiteboard-dropdowns h3:focus {
+    outline: none;
+}
 
 
 

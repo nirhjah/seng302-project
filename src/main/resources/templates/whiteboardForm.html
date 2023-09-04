@@ -8,8 +8,8 @@
   <script type="text/javascript" th:src="@{/webjars/fabric/5.3.0/dist/fabric.min.js}"></script>
 </head>
 <body class="view-teams-background">
-  <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
-  <div class="whiteboard-form">
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+<div class="whiteboard-form">
     <div class="whiteboard-wrapper">
       <div class="whiteboard-dropdowns"></div>
       <div class="whiteboard-buttons">
@@ -196,12 +196,58 @@
   </div>
 </body>
 <script>
+    const pitchTypes = ["American Football", "Basketball", "Hockey", "Netball", "Rugby", "Soccer", "Tennis", "Volleyball"];
+    const pitchSelect = document.getElementById("pitch");
+    pitchTypes.forEach(pitchType => {
+        const option = document.createElement("option");
+        option.value = pitchType.toLowerCase().replace(" ", "-");
+        option.textContent = pitchType;
+        pitchSelect.appendChild(option);
+    });
+
+    const imagePath = "image/pitches/";
+    pitchSelect.addEventListener("change", function () {
+        const selectedValue = this.value;
+        const imageUrl = `${imagePath}${selectedValue}.svg`;
+        if (document.querySelector(".canvas-container") !== null) {
+            const canvasContainer = document.querySelector(".canvas-container");
+            canvasContainer.style.backgroundImage = `url(${imageUrl})`;
+        }
+    });
+    let isLabelFocused = false;
+    const whiteboardDropdowns = document.querySelector('.whiteboard-dropdowns');
+    const label = whiteboardDropdowns.querySelector('h3');
+    label.addEventListener('click', () => {
+        label.setAttribute('contenteditable', 'true');
+        label.focus();
+        isLabelFocused=true;
+    });
+
+    label.addEventListener('input', () => {
+        const editedText = label.textContent;
+        isLabelFocused=true;
+        if (editedText.length >= 26) {
+            label.textContent = editedText.slice(0, 26);
+            label.setAttribute('contenteditable', 'false');
+        } else {
+            label.setAttribute('contenteditable', 'true');
+        }
+    });
+
+    label.addEventListener('blur', () => {
+        const editedText = label.textContent;
+        label.textContent = editedText || 'Untitled';
+        label.setAttribute('contenteditable', 'false');
+        isLabelFocused = false;
+    });
 
   document.addEventListener("DOMContentLoaded", function() {
+    pitchSelect.value = "soccer";
     let canvas = new fabric.Canvas('canvas');
     let activeMode = null;
     canvas.freeDrawingBrush.width = 5;
     canvas.freeDrawingBrush.color = '#ff0000';
+
 
     const upperCanvas = document.querySelector(".upper-canvas")
 

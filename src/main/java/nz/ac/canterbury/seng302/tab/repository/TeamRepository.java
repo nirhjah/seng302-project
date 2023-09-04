@@ -29,7 +29,7 @@ public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSor
             "WHERE LOWER(t.name) LIKE LOWER(CONCAT('%', :name, '%')) " +
             "OR (t.location.city) LIKE LOWER(CONCAT('%', :name, '%')) " +
             "ORDER BY LOWER(t.name) ASC, (t.location) ASC ")
-    public Page<Team> findTeamByName(@Param("name") String name, Pageable pageable);
+    Page<Team> findTeamByName(@Param("name") String name, Pageable pageable);
 
 
     @Query("SELECT t FROM Team t LEFT JOIN t.teamMembers tm " +
