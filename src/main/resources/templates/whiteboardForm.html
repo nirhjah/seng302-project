@@ -28,9 +28,9 @@
           <div class="style-section">
             <div class="header">
               <h5>Style</h5>
-              <label>Arrow
-                <input class="arrow-checkbox" type="checkbox">
-              </label>
+<!--              <label>Arrow-->
+<!--                <input class="arrow-checkbox" type="checkbox">-->
+<!--              </label>-->
             </div>
             <div class="content">
               <button class="draw-style-button-solid active">
@@ -572,10 +572,9 @@
               strokeDashArray: shapeOutline
             });
           } else if (shapeButton.classList.contains("line")) {
-            drawingShape = new fabric.Line({
-              left: options.e.clientX - canvas._offset.left,
-              top: options.e.clientY - canvas._offset.top,
-              radius: 1,
+            drawingShape = new fabric.Line([startX, startY, startX, startY], {
+              left: startX,
+              top: startY,
               fill: !innerHidden ? innerColour : null,
               stroke: !outerHidden ? outerColour : null,
               strokeWidth: 5,
@@ -651,6 +650,9 @@
             } else {
               drawingShape.set({ry: Math.min(maxHeight, Math.abs(startY - Math.max(y, 0)) / 2)});
             }
+            canvas.renderAll();
+          } else if (shapeButton.classList.contains("line")) {
+            drawingShape.set({x2: x, y2: y})
             canvas.renderAll();
           }
         }
