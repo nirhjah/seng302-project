@@ -199,13 +199,17 @@ public class U39CreateViewUpdateCompetition {
 
     @And("I input valid information for name, dates, sport and grade,")
     public void iInputValidInformationForNameSportAndGradeLevel() throws Exception {
-        Date startDate = Date.from(Instant.now().plusSeconds(2000));
-        Date endDate = Date.from(Instant.now().plusSeconds(3000));
+        ZoneOffset zero = ZoneOffset.ofHours(0);
+        LocalDateTime startDate = LocalDateTime.ofInstant(Instant.now().plusSeconds(2000), zero);
+        LocalDateTime endDate = LocalDateTime.ofInstant(Instant.now().plusSeconds(2000), zero);
+        String startFormatted = startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String endFormatted = endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
         mockMvc.perform(multipart("/create-competition", 42L)
                         .param("name", "Sample Competition")
                         .param("sport", "Soccer")
-                        .param("startDateTime", startDate.toString())
-                        .param("endDateTime", endDate.toString())
+                        .param("startDateTime", startFormatted)
+                        .param("endDateTime", endFormatted)
                         .param("age", String.valueOf(Grade.Age.ADULT))
                         .param("sex", String.valueOf(Grade.Sex.MENS))
                         .param("competitiveness", String.valueOf(Grade.Competitiveness.PROFESSIONAL))
