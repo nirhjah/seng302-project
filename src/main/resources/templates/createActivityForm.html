@@ -48,7 +48,7 @@
             </div>
 
             <!--/* Formation selection dropdown (Only active if the activity supports it) */-->
-            <div class="select-container">
+            <div th:style="${actId != null ? 'display:block' : 'display:none'}" class="select-container">
                 <div class="select-box">
                     <label for="team">Activity formation <em>(Team Game and Team Friendly only)</em></label>
                     <select name="formation" id="formation-dropdown" th:disabled="${#lists.isEmpty(teamFormations)}">
@@ -376,7 +376,7 @@
                 li.remove();
             });
 
-
+            console.log(formationAndPlayersAndPositionJson)
 
             for (var formation_ in formationAndPlayersAndPositionJson) {
                 if (formation_ === formationId) {
@@ -853,18 +853,6 @@
         const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex];
         if (selectedFormationId !== "-1") {
             loadFormation(selectedFormation);
-        }
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const errorMessages = document.querySelectorAll('.error-message');
-        if (errorMessages.length > 0) {
-            const formationDropdown = document.getElementById("formation-dropdown");
-            const selectedFormationId = formationDropdown.value;
-            const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex];
-            if (selectedFormationId !== "-1") {
-                loadFormation(selectedFormation);
-            }
         }
     });
 

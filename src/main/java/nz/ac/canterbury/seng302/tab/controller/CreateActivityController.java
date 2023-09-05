@@ -199,46 +199,9 @@ public class CreateActivityController {
 
 
 
-        Map<Long, List<List<Object>>> formationAndPlayersAndPosition = new HashMap<>();
-        for (Map.Entry<Formation, LineUp> entry : lineUpService.getLineUpsForTeam(activity.getTeam(), activity).entrySet()) {
-            Formation formation = entry.getKey();
-            LineUp lineUp = entry.getValue();
-
-            System.out.println("This is a list of subs when we are on the getmapping: " +  lineUp.getSubs().toString());
-
-            List<List<Object>> playersAndPosition = new ArrayList<>();
-
-            Optional<List<LineUpPosition>> lineupPosition = (lineUpPositionService.findLineUpPositionsByLineUp(lineUp.getLineUpId()));
-
-            if (lineupPosition.isPresent()) {
-                for (LineUpPosition position : lineupPosition.get()) {
-                    int positionId = position.getPosition();
-
-                    User player = position.getPlayer();
-
-                    List<Object> playerInfo = Arrays.asList((long) positionId, player.getId(), player.getFirstName());
-                        playersAndPosition.add(playerInfo);
-
-                }
-            }
-
-            List<Object> subsInfo = new ArrayList<>();
-            for (User sub : lineUp.getSubs()) {
-                List<Object> specificPlayerSubInfo = new ArrayList<>();
-
-                specificPlayerSubInfo.add(sub.getUserId());
-                specificPlayerSubInfo.add(sub.getFirstName());
-
-                subsInfo.add(specificPlayerSubInfo);
-            }
-            playersAndPosition.add(subsInfo);
-
-            formationAndPlayersAndPosition.put(formation.getFormationId(), playersAndPosition);
-        }
 
 
-
-        model.addAttribute("formationAndPlayersAndPositionJson", formationAndPlayersAndPosition);
+        model.addAttribute("formationAndPlayersAndPositionJson", getFormationAndPlayersAndPosition(activity));
         fillModelWithActivity(model, activity);
         createActivityForm.prepopulate(activity);
         return TEMPLATE_NAME;
@@ -281,6 +244,8 @@ public class CreateActivityController {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             if (activity != null) {
                 model.addAttribute("actId", actId);
+                model.addAttribute("formationAndPlayersAndPositionJson", getFormationAndPlayersAndPosition(activity));
+
                 fillModelWithActivity(model, activity);
             }
 
@@ -329,6 +294,7 @@ public class CreateActivityController {
         activity = activityService.updateOrAddActivity(activity);
 
         if (activity.getFormation().isPresent()) {
+            System.out.println("we are creating a new line up with id:" + activityLineUp.getLineUpId() );
             activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
             lineUpService.updateOrAddLineUp(activityLineUp);
         }
@@ -357,6 +323,7 @@ public class CreateActivityController {
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 if (activity != null) {
                     model.addAttribute("actId", actId);
+                    model.addAttribute("formationAndPlayersAndPositionJson", getFormationAndPlayersAndPosition(activity));
                     fillModelWithActivity(model, activity);
                 }
                 return TEMPLATE_NAME;
@@ -449,6 +416,48 @@ public class CreateActivityController {
             bindingResult.addError(new FieldError("createActivityForm", "lineup", "The line-up is not complete"));
         }
 
+    }
+
+
+    private Map<Long, List<List<Object>>> getFormationAndPlayersAndPosition(Activity activity) {
+
+        Map<Long, List<List<Object>>> formationAndPlayersAndPosition = new HashMap<>();
+        for (Map.Entry<Formation, LineUp> entry : lineUpService.getLineUpsForTeam(activity.getTeam(), activity).entrySet()) {
+            Formation formation = entry.getKey();
+            LineUp lineUp = entry.getValue();
+
+            System.out.println("This is a list of subs when we are on the getmapping: " +  lineUp.getSubs().toString());
+
+            List<List<Object>> playersAndPosition = new ArrayList<>();
+
+            Optional<List<LineUpPosition>> lineupPosition = (lineUpPositionService.findLineUpPositionsByLineUp(lineUp.getLineUpId()));
+
+            if (lineupPosition.isPresent()) {
+                for (LineUpPosition position : lineupPosition.get()) {
+                    int positionId = position.getPosition();
+
+                    User player = position.getPlayer();
+
+                    List<Object> playerInfo = Arrays.asList((long) positionId, player.getId(), player.getFirstName());
+                    playersAndPosition.add(playerInfo);
+
+                }
+            }
+
+            List<Object> subsInfo = new ArrayList<>();
+            for (User sub : lineUp.getSubs()) {
+                List<Object> specificPlayerSubInfo = new ArrayList<>();
+
+                specificPlayerSubInfo.add(sub.getUserId());
+                specificPlayerSubInfo.add(sub.getFirstName());
+
+                subsInfo.add(specificPlayerSubInfo);
+            }
+            playersAndPosition.add(subsInfo);
+
+            formationAndPlayersAndPosition.put(formation.getFormationId(), playersAndPosition);
+        }
+        return formationAndPlayersAndPosition;
     }
 
 }
