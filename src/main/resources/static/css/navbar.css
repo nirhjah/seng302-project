@@ -49,7 +49,8 @@ header .header-right li a, nav ul li a,.view-profile, .create-header li a{
 nav ul li a:hover,
 nav ul li a.active,
 .navbar-user-button:hover,
-.navbar-create-button:hover {
+.navbar-create-button:hover,
+.navbar-view-all-button:hover {
     background: #415a77;
     color: #fff;
     opacity: 1;
@@ -119,7 +120,7 @@ header .header-left .hamburger div {
     transition: 0.2s;
 }
 
-.navbar-create-button {
+.navbar-create-button, .navbar-view-all-button {
     margin-left: 20px;
 }
 
@@ -165,7 +166,7 @@ header .header-left .hamburger div {
     align-items: center;
 }
 
-.triangle-view-all, .triangle-create, .triangle-user {
+.triangle {
     display: inline-block;
     width: 0;
     height: 0;
@@ -176,11 +177,11 @@ header .header-left .hamburger div {
     border-color: white transparent transparent transparent;
 }
 
-.triangle-view-all.up, .triangle-create.up {
+.triangle.up {
     border-width: 0 8px 8px 8px;
     border-color: transparent transparent white transparent;
 }
 
-.navbar-user-button a:hover, .navbar-create-button a:hover {
+.navbar-user-button a:hover, .navbar-create-button a:hover, .navbar-view-all-button a:hover {
     cursor: pointer;
 }

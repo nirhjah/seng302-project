@@ -23,7 +23,7 @@
                         </div>
                         <a>
                             <span th:text="Create"></span>
-                            <i class="triangle-create"></i>
+                            <i class="triangle"></i>
                         </a>
                     </li>
                 </div>
@@ -36,8 +36,8 @@
                             <a th:href="@{view-all-competitions(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-all-competitions' ? 'active' : ''}">View All Competitions</a>
                         </div>
                         <a>
-                            <span th:text="View-All-Pages"></span>
-                            <i class="triangle-view-all"></i>
+                            <span th:text="'View All Pages'"></span>
+                            <i class="triangle"></i>
                         </a>
                     </li>
                 </div>
@@ -93,66 +93,61 @@
             navBar.classList.toggle("active");
         };
 
-        let navbarUserButton = document.querySelector(".navbar-user-button");
-        if (navbarUserButton !== null){
-            let triangle = navbarUserButton.querySelector(".triangle");
-            let navbarUserDropdown = navbarUserButton.querySelector(".navbar-user-dropdown");
-            navbarUserButton.addEventListener("click", function (event) {
-                event.stopPropagation();
-                navbarUserDropdown.classList.toggle("show");
-                triangle.classList.toggle("up");
-            });
-
-            document.addEventListener("click", function (event) {
-                if (!navbarUserButton.contains(event.target)) {
-                    navbarUserDropdown.classList.remove("show");
-                    triangle.classList.remove("up");
-                }
-            });
-        }
-
-        let navbarViewAllButton = document.querySelector(".navbar-view-all-button");
-        let viewAllTriangle = navbarViewAllButton.querySelector(".triangle-view-all");
-        let navbarViewAllDropdown = navbarViewAllButton.querySelector(".navbar-view-all-button");
-
-        let navbarCreateButton = document.querySelector(".navbar-create-button");
-        let createTriangle = navbarCreateButton.querySelector(".triangle-create");
-        let navbarCreateDropdown = navbarCreateButton.querySelector(".navbar-create-dropdown");
-
-        /*
-        Hides a dropdown
-         */
+        // Hides a dropdown
         function hide(event, button, dropdown, triangle) {
-            if (!button.contains(event.target)) {
+            if (button && !button.contains(event.target)) {
                 dropdown.classList.remove("show")
                 triangle.classList.remove("up")
             }
         }
 
-        /*
-        Toggles a dropdown
-         */
+        // Toggles a dropdown
         function toggle(event, button, dropdown, triangle) {
             event.stopPropagation();
             dropdown.classList.toggle("show")
             triangle.classList.toggle("up")
         }
 
-        navbarCreateButton.addEventListener("click", function (event) {
-            toggle(event, navbarCreateButton, navbarCreateDropdown, createTriangle)
-        });
+        let navbarViewAllButton = document.querySelector(".navbar-view-all-button");
+        let viewAllTriangle, navbarViewAllDropdown
+        if (navbarViewAllButton) {
+            viewAllTriangle = navbarViewAllButton.querySelector(".triangle");
+            navbarViewAllDropdown = navbarViewAllButton.querySelector(".navbar-view-all-dropdown");
 
-        navbarViewAllButton.addEventListener("click", function (event) {
-            toggle(event, navbarViewAllButton, navbarViewAllDropdown, viewAllTriangle)
-        });
+            navbarViewAllButton.addEventListener("click", function (event) {
+                toggle(event, navbarViewAllButton, navbarViewAllDropdown, viewAllTriangle)
+            });
+        }
+
+        let navbarCreateButton = document.querySelector(".navbar-create-button");
+        let createTriangle, navbarCreateDropdown
+        if (navbarCreateButton) {
+            createTriangle = navbarCreateButton.querySelector(".triangle");
+            navbarCreateDropdown = navbarCreateButton.querySelector(".navbar-create-dropdown");
+
+            navbarCreateButton.addEventListener("click", function (event) {
+                toggle(event, navbarCreateButton, navbarCreateDropdown, createTriangle)
+            });
+        }
+
+        let navbarUserButton = document.querySelector(".navbar-user-button");
+        let userTriangle, navbarUserDropdown
+        if (navbarUserButton) {
+            userTriangle = navbarUserButton.querySelector(".triangle");
+            navbarUserDropdown = navbarUserButton.querySelector(".navbar-user-dropdown");
+
+            navbarUserButton.addEventListener("click", function (event) {
+                toggle(event, navbarUserButton, navbarUserDropdown, userTriangle)
+            })
+        }
 
         document.addEventListener("click", function (event) {
             // Whenever there is a click that ISN'T on the dropdowns,
-            // hide both the dropdowns.
-            // This ensures that both dropdowns aren't open at once, so it doesnt look messy.
+            // hide all the dropdowns.
+            // This ensures that all dropdowns aren't open at once, so it doesnt get messy.
             hide(event, navbarCreateButton, navbarCreateDropdown, createTriangle)
             hide(event, navbarViewAllButton, navbarViewAllDropdown, viewAllTriangle)
-            hide(event, navbarUserButton, )
+            hide(event, navbarUserButton, navbarUserDropdown, userTriangle)
         });
     </script>
 </header>
