@@ -28,17 +28,17 @@
                     </li>
                 </div>
 
-                <div sec:authorize="isAuthenticated()">
-                    <div class="navbar-view-all-dropdown">
-                        <a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a>
-                        <a th:href="@{view-users(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
-                        <a th:href="@{view-all-competitions(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-all-competitions' ? 'active' : ''}">View All Competitions</a>
-                    </div>
-                    <a>
-                        <span>Create</span>
-                        <i class="triangle"></i>
-                    </a>
-                </div>
+<!--                <div class="navbar-view-all-button" sec:authorize="isAuthenticated()">-->
+<!--                    <div class="navbar-view-all-dropdown">-->
+<!--                        <a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a>-->
+<!--                        <a th:href="@{view-users(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>-->
+<!--                        <a th:href="@{view-all-competitions(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-all-competitions' ? 'active' : ''}">View All Competitions</a>-->
+<!--                    </div>-->
+<!--                    <a>-->
+<!--                        <span>Create</span>-->
+<!--                        <i class="triangle"></i>-->
+<!--                    </a>-->
+<!--                </div>-->
 
                 <li sec:authorize="isAnonymous()">
                     <a th:href="@{login}" th:classappend="${httpServletRequest.requestURI == '/login' ? 'active' : ''}">Login</a>

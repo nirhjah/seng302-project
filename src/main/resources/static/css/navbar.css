@@ -131,7 +131,7 @@ header .header-left .hamburger div {
     align-items: center !important;
 }
 
-.navbar-user-dropdown, .navbar-create-dropdown .navbar-view-all-dropdown {
+.navbar-user-dropdown, .navbar-create-dropdown, .navbar-view-all-dropdown {
     display: none;
     position: absolute;
     top: 104%;
