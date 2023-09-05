@@ -58,8 +58,7 @@ public class LineUpService {
 
     public Map<Formation, LineUp> getLineUpsForTeam(Team team, Activity activity) {
         List<Formation> teamFormations = formationRepository.findByTeamTeamId(team.getTeamId());
-        List<LineUp> allLineUps = (List<LineUp>) lineUpRepository.findAll(); // Fetch all LineUps from the repository
-
+        List<LineUp> allLineUps = (List<LineUp>) lineUpRepository.findAll();
 
         Map<Formation, LineUp> formationLineUpMap = new HashMap<>();
         for (Formation formation : teamFormations) {

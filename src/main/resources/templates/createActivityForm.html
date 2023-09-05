@@ -417,6 +417,15 @@
                         if (position) {
                             const idObject = position.querySelector('input');
 
+
+                            // const players = document.querySelectorAll(".reserves-li");
+                            // players.forEach(player => {
+                            //     const reserveId = player.querySelector("input").value;
+                            //     if (reserveId === playerId) {
+                            //         player.classList.add("in-formation");
+                            //     }
+                            // });
+
                             const playerNameElement = position.querySelector('h3');
                              playerNameElement.textContent = playerName;
                              playerNameElement.style.display = 'inline-block';
@@ -481,6 +490,9 @@
 
         const button = document.createElement("button");
         button.className = "switch";
+
+        button.classList.add("active");
+
         button.type = "button";
         playerLi.append(button);
         button.addEventListener("click", () => {
@@ -830,6 +842,32 @@
 
         return playerLi;
     }
+
+
+
+
+    //Reload formation after page reload
+    window.addEventListener('load', function () {
+        const formationDropdown = document.getElementById("formation-dropdown");
+        const selectedFormationId = formationDropdown.value;
+        const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex];
+        if (selectedFormationId !== "-1") {
+            loadFormation(selectedFormation);
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const errorMessages = document.querySelectorAll('.error-message');
+        if (errorMessages.length > 0) {
+            const formationDropdown = document.getElementById("formation-dropdown");
+            const selectedFormationId = formationDropdown.value;
+            const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex];
+            if (selectedFormationId !== "-1") {
+                loadFormation(selectedFormation);
+            }
+        }
+    });
+
 
     function getPlayersAndPositionsAndSubs() {
         getPlayersAndPositions()
