@@ -162,7 +162,7 @@ public class CreateCompetitionController {
             BindingResult bindingResult,
             HttpServletResponse httpServletResponse,
             Model model,
-            HttpServletRequest httpServletRequest) throws IOException {
+            HttpServletRequest httpServletRequest) {
         prefillModel(model, httpServletRequest);
 
         Optional<User> optUser = userService.getCurrentUser();
