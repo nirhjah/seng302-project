@@ -40,6 +40,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -198,12 +199,13 @@ public class U39CreateViewUpdateCompetition {
 
     @And("I input valid information for name, dates, sport and grade,")
     public void iInputValidInformationForNameSportAndGradeLevel() throws Exception {
-        Date date = Date.from(Instant.now().plusSeconds(1000));
+        Date startDate = Date.from(Instant.now().plusSeconds(2000));
+        Date endDate = Date.from(Instant.now().plusSeconds(3000));
         mockMvc.perform(multipart("/create-competition", 42L)
                         .param("name", "Sample Competition")
                         .param("sport", "Soccer")
-                        .param("startDate", date.toString())
-                        .param("endDate", date.toString())
+                        .param("startDateTime", startDate.toString())
+                        .param("endDateTime", endDate.toString())
                         .param("age", String.valueOf(Grade.Age.ADULT))
                         .param("sex", String.valueOf(Grade.Sex.MENS))
                         .param("competitiveness", String.valueOf(Grade.Competitiveness.PROFESSIONAL))
