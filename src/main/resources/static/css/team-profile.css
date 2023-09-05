@@ -544,6 +544,7 @@
     text-align: center;
     /* The text implicitly has a size (it's not 0x0 pixels), so account for it */
     transform: translate(-50%, -50%);
+    white-space: nowrap;    /* Prevents the text from getting scrunched up when the panel collapses */
 }
 
 .formation-description {
@@ -560,4 +561,8 @@ ul.formation-description > li {
 
 .drag-info {
     text-align: center;
+}
+
+.formation-RHS {
+    margin: auto;
 }
