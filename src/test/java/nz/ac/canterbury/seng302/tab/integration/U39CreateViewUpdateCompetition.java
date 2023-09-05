@@ -40,6 +40,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -195,11 +196,14 @@ public class U39CreateViewUpdateCompetition {
                 .andExpect(view().name("createCompetitionForm"));
     }
 
-    @And("I input valid information for name, sport and grade,")
+    @And("I input valid information for name, dates, sport and grade,")
     public void iInputValidInformationForNameSportAndGradeLevel() throws Exception {
+        Date date = Date.from(Instant.now().plusSeconds(1000));
         mockMvc.perform(multipart("/create-competition", 42L)
                         .param("name", "Sample Competition")
                         .param("sport", "Soccer")
+                        .param("startDate", date.toString())
+                        .param("endDate", date.toString())
                         .param("age", String.valueOf(Grade.Age.ADULT))
                         .param("sex", String.valueOf(Grade.Sex.MENS))
                         .param("competitiveness", String.valueOf(Grade.Competitiveness.PROFESSIONAL))
