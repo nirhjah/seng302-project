@@ -542,12 +542,6 @@ public class ViewActivityController {
         
         logger.info("POST /add-sub");
 
-        // TODO remove logging here 
-        logger.info(String.format("got the player on id: %s", subOnId));
-        logger.info(String.format("got the player off id: %s", subOffId));
-        logger.info(String.format("got the time %s", time));
-        logger.info(String.format("activity %s", actId));
-        logger.info(String.format("description %s", description));
         String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
         Activity currActivity = activityService.findActivityById(actId);
 
@@ -575,13 +569,6 @@ public class ViewActivityController {
         redirectAttributes.addFlashAttribute("stayOnTab_name", "formations-tab");
         redirectAttributes.addFlashAttribute("stayOnTab_index", 2);
 
-        // check that the lineup isnt empty 
-        List<User> playersInLineUp = getAllPlayersPlaying(actId);
-        if (playersInLineUp.isEmpty()) {
-            logger.error("There are no players in the lineup but a sub was made ");
-            // TODO  add binding error -- add 
-        }
-        
         Optional<User> optionalPlayerOn = userService.findUserById(subOnId);
 
         Optional<User> optionalPlayerOff = userService.findUserById(subOffId);
@@ -649,7 +636,6 @@ public class ViewActivityController {
     }
 
     /**
-     * TODO: this just has all the players who arent playing as available subs but right now there isnt any functionality for otherwise in the backend
      * @param actId the activity id 
      * @return a list of users who arent playing in the current activity (on the bench)
     */
