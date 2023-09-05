@@ -252,6 +252,7 @@ public class CreateCompetitionController {
 
         form.setStartDateTime(competition.getCompetitionStartDate());
         form.setEndDateTime(competition.getCompetitionEndDate());
+        System.out.println("Wot wot? " + competition.getCompetitionStartDate());
 
         Location location = competition.getLocation();
         if (location != null) {

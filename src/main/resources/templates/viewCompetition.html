@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <link th:href="@{/css/styles.css}" rel="stylesheet"/>
@@ -90,7 +90,7 @@
     <div class="profile-buttons">
       <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
       <div sec:authorize="hasAnyRole('ROLE_FEDERATION_MANAGER')" class="edit-button" style="float: right; padding: 10px">
-        <a>
+        <a th:href="@{/create-competition(edit=${competition.competitionId})}">
           <button type="button">Edit Competition</button>
         </a>
       </div>
