@@ -72,7 +72,7 @@ public class ViewTeamControllerTest {
     private static final String TEAM_SPORT = "Hockey";
 
     @BeforeEach
-    public void beforeAll() throws IOException {
+    void beforeAll() throws IOException {
         Location teamLocation = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
         team = new Team("test", "Hockey", teamLocation);
         Location userLocation = new Location("23 test street", "24 test street", "surburb", "city", "8782",
@@ -89,7 +89,7 @@ public class ViewTeamControllerTest {
     }
 
     @Test
-    public void testGettingTeamList() throws Exception {
+    void testGettingTeamList() throws Exception {
         Mockito.when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         Mockito.doReturn(TEAM_ID).when(team).getTeamId();
         Mockito.when(activityService.getNumberOfWins(team)).thenReturn(0);
@@ -108,7 +108,7 @@ public class ViewTeamControllerTest {
     }
 
     @Test
-    public void testGettingInvalidTeam() throws Exception {
+    void testGettingInvalidTeam() throws Exception {
         Mockito.when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         Mockito.doReturn(TEAM_ID).when(team).getTeamId();
 
@@ -118,7 +118,7 @@ public class ViewTeamControllerTest {
     }
 
     @Test
-    public void testUploadValidProfilePicture() throws Exception {
+    void testUploadValidProfilePicture() throws Exception {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
         try (FileInputStream input = new FileInputStream(file)) {
@@ -134,7 +134,7 @@ public class ViewTeamControllerTest {
     }
 
     @Test
-    public void testUploadInvalidProfilePictureType() throws Exception {
+    void testUploadInvalidProfilePictureType() throws Exception {
         Resource resource = new ClassPathResource("/testingfiles/invalidFileType.txt");
         File file = resource.getFile();
         byte[] fileBytes = Files.readAllBytes(file.toPath());
@@ -150,7 +150,7 @@ public class ViewTeamControllerTest {
     }
 
     @Test
-    public void testUploadInvalidProfilePictureSize() throws Exception {
+    void testUploadInvalidProfilePictureSize() throws Exception {
         Resource resource = new ClassPathResource("/testingfiles/maxFileSize.png");
         File file = resource.getFile();
         byte[] fileBytes = Files.readAllBytes(file.toPath());
@@ -167,7 +167,7 @@ public class ViewTeamControllerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"1", "1-2", "9-9", "1-4-4-2", "1-2-3-4-5-6-7-8", "9-9-9-9-9-9-9-9"})
-    public void createFormation_validFormation_succeeds(String formation) throws Exception {
+    void createFormation_validFormation_succeeds(String formation) throws Exception {
         when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         mockMvc.perform(post("/team-info/create-formation")
                         .param("formation", formation)
@@ -181,7 +181,7 @@ public class ViewTeamControllerTest {
 
     /** Extra test to ensure both managers AND coaches can do this */
     @Test
-    public void createFormation_validFormation_isCoach_succeeds() throws Exception {
+    void createFormation_validFormation_isCoach_succeeds() throws Exception {
         Mockito.doReturn(true).when(team).isCoach(user);
         Mockito.doReturn(false).when(team).isManager(user);
         when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
@@ -197,7 +197,7 @@ public class ViewTeamControllerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"", "hi", "0", "99", "H1-4", "0-1-2", "-5", "5-", "1-0", "1-1-1-1-1-1-1-1-1"})
-    public void createFormation_invalidFormation_fails(String formation) throws Exception {
+    void createFormation_invalidFormation_fails(String formation) throws Exception {
         when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         mockMvc.perform(post("/team-info/create-formation")
                         .param("formation", formation)
@@ -208,7 +208,7 @@ public class ViewTeamControllerTest {
     }
 
     @Test
-    public void createFormation_nonexistentTeam_fails() throws Exception {
+    void createFormation_nonexistentTeam_fails() throws Exception {
         when(mockTeamService.getTeam(TEAM_ID)).thenReturn(null);
         mockMvc.perform(post("/team-info/create-formation")
                         .param("formation", "1-4-4-2")
@@ -219,7 +219,7 @@ public class ViewTeamControllerTest {
     }
 
     @Test
-    public void createFormation_notManagerOrCoach_fails() throws Exception {
+    void createFormation_notManagerOrCoach_fails() throws Exception {
         Mockito.doReturn(false).when(team).isCoach(user);
         Mockito.doReturn(false).when(team).isManager(user);
         when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
