@@ -111,6 +111,7 @@ header .header-left .hamburger div {
     margin: 3px 10px 3px 3px;
 }
 
+.navbar-view-all-button,
 .navbar-user-button,
 .navbar-create-button {
     position: relative;
@@ -122,6 +123,7 @@ header .header-left .hamburger div {
     margin-left: 20px;
 }
 
+.navbar-view-all-button a,
 .navbar-user-button a,
 .navbar-create-button a{
     padding: 0 !important;
@@ -129,7 +131,7 @@ header .header-left .hamburger div {
     align-items: center !important;
 }
 
-.navbar-user-dropdown, .navbar-create-dropdown {
+.navbar-user-dropdown, .navbar-create-dropdown .navbar-view-all-dropdown {
     display: none;
     position: absolute;
     top: 104%;
@@ -141,11 +143,11 @@ header .header-left .hamburger div {
     white-space: nowrap;
 }
 
-.navbar-user-dropdown.show, .navbar-create-dropdown.show {
+.navbar-user-dropdown.show, .navbar-create-dropdown.show, .navbar-view-all-dropdown.show {
     display: block;
 }
 
-.navbar-user-dropdown a, .navbar-create-dropdown a {
+.navbar-user-dropdown a, .navbar-create-dropdown a, .navbar-view-all-dropdown.show a {
     display: block !important;
     text-decoration: none;
     text-align: left;
@@ -153,7 +155,7 @@ header .header-left .hamburger div {
     border-radius: 4px !important;
 }
 
-.navbar-user-dropdown a:hover, .navbar-create-dropdown a:hover {
+.navbar-user-dropdown a:hover, .navbar-create-dropdown a:hover, .navbar-view-all-dropdown.show a:hover {
     background-color: #0b2239;
 }
 
