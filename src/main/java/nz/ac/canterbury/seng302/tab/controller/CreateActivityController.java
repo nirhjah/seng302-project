@@ -200,7 +200,7 @@ public class CreateActivityController {
 
 
         Map<Long, List<List<Object>>> formationAndPlayersAndPosition = new HashMap<>();
-        for (Map.Entry<Formation, LineUp> entry : lineUpService.getLineUpsForTeam(activity.getTeam()).entrySet()) {
+        for (Map.Entry<Formation, LineUp> entry : lineUpService.getLineUpsForTeam(activity.getTeam(), activity).entrySet()) {
             Formation formation = entry.getKey();
             LineUp lineUp = entry.getValue();
 
@@ -224,8 +224,12 @@ public class CreateActivityController {
 
             List<Object> subsInfo = new ArrayList<>();
             for (User sub : lineUp.getSubs()) {
-                subsInfo.add(sub.getUserId());
-                subsInfo.add(sub.getFirstName());
+                List<Object> specificPlayerSubInfo = new ArrayList<>();
+
+                specificPlayerSubInfo.add(sub.getUserId());
+                specificPlayerSubInfo.add(sub.getFirstName());
+
+                subsInfo.add(specificPlayerSubInfo);
             }
             playersAndPosition.add(subsInfo);
 

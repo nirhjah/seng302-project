@@ -369,25 +369,44 @@
             document.querySelector(".formation-activity-display").classList.add("active");
             generatedOrCustom(formation, custom === "true", customPlayerPositions);
             const reservesLi = document.querySelectorAll(".reserves-li");
+            const subsUL = document.querySelector('.subs-ul');
+
+            const liElements = subsUL.querySelectorAll('li');
+            liElements.forEach((li) => {
+                li.remove();
+            });
+
+
 
             for (var formation_ in formationAndPlayersAndPositionJson) {
                 if (formation_ === formationId) {
                     var playersAndPosition = formationAndPlayersAndPositionJson[formation_];
+                    console.log(playersAndPosition)
+
                     console.log("formation: " + formation_);
+
+                    var subsInfo = playersAndPosition[playersAndPosition.length - 1];
+
+                    if (subsInfo.length === 0) {
+                        deactivateSubs()
+                    }
+                    else {
+                        activateSubs()
+                    }
+
+
+                    for (const sublist of subsInfo) {
+                        console.log("Sublist: " + sublist)
+                        const subId = sublist[0];
+                        const subName = sublist[1];
+                        subsUL.appendChild(createSub(subId, subName))
+                    }
 
                     for (const positionIndex in playersAndPosition) {
 
                         addPositionFunctionality();
 
                         var playerInfo = playersAndPosition[positionIndex];
-                        var subsInfo = playersAndPosition[playersAndPosition.length - 1];
-
-                        const subId = subsInfo[0]
-                        const subName = subsInfo[1]
-
-                        console.log('this is playerinfo' + playerInfo)
-                        console.log('this is subsInfo' + subsInfo)
-
 
                         const playerId = playerInfo[1];
                         const playerName = playerInfo[2];
@@ -414,12 +433,10 @@
                             fillPosition(position);
 
                             close.classList.add('active')
-                            activateSubs()
 
                             reservesLi.forEach(li => {
                                 const inputElement = li.querySelector(".playerId");
                                 const inputValue = inputElement.value;
-                                console.log("input val of reserve" + inputValue)
                                 if (inputValue === playerId) {
 
                                     li.classList.add("in-formation");
@@ -441,6 +458,43 @@
             addPositionFunctionality();
 
         }
+    }
+
+    function createSub(subId, subName) {
+        const playerId = subId
+        const pictureString = "/user-profile-picture/" + playerId
+        const firstName = subName
+
+        const playerLi = document.createElement("li");
+        playerLi.className = "subs-li";
+
+        const liPlayerImage = document.createElement("img");
+        liPlayerImage.className = "li-player-image";
+        liPlayerImage.src = pictureString;
+        liPlayerImage.alt = "My Profile";
+        playerLi.append(liPlayerImage);
+
+        const liPlayerName = document.createElement("span");
+        liPlayerName.className = "li-player-name";
+        liPlayerName.textContent = firstName;
+        playerLi.append(liPlayerName);
+
+        const button = document.createElement("button");
+        button.className = "switch";
+        button.type = "button";
+        playerLi.append(button);
+        button.addEventListener("click", () => {
+            switchOnClick(button);
+        });
+
+        const playerIdInput = document.createElement("input");
+        playerIdInput.className = "playerId"
+        playerIdInput.type = "hidden";
+        playerIdInput.value = playerId;
+        playerLi.append(playerIdInput);
+        playerOnClick(playerLi)
+
+        return playerLi;
     }
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -738,6 +792,7 @@
         }
         checkSubsActive();
     }
+
 
     function clonePlayer(player) {
         const pictureString = player.querySelector("img").src

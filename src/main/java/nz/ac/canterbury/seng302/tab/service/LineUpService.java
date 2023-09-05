@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.service;
 
+import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Formation;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
@@ -55,7 +56,7 @@ public class LineUpService {
     }
 
 
-    public Map<Formation, LineUp> getLineUpsForTeam(Team team) {
+    public Map<Formation, LineUp> getLineUpsForTeam(Team team, Activity activity) {
         List<Formation> teamFormations = formationRepository.findByTeamTeamId(team.getTeamId());
         List<LineUp> allLineUps = (List<LineUp>) lineUpRepository.findAll(); // Fetch all LineUps from the repository
 
@@ -65,7 +66,7 @@ public class LineUpService {
 
             for (LineUp lineUp : allLineUps) {
 
-                if (lineUp.getTeam() == team && lineUp.getFormation().getFormationId() == formation.getFormationId()) {
+                if (lineUp.getTeam() == team && lineUp.getFormation().getFormationId() == formation.getFormationId() && lineUp.getActivity() == activity) {
                     formationLineUpMap.put(formation, lineUp);
                 }
             }
