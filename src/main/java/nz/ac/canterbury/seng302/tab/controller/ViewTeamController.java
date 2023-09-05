@@ -9,6 +9,7 @@ import nz.ac.canterbury.seng302.tab.service.image.TeamImageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +25,7 @@ import nz.ac.canterbury.seng302.tab.entity.Formation;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
+import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 /**
  * Spring Boot Controller class for the ProfileForm
  */
@@ -86,6 +88,7 @@ public class ViewTeamController {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
 
+        // Basic info about this team
         model.addAttribute("teamID", teamID);
         model.addAttribute("displayName", team.getName());
         model.addAttribute("displaySport", team.getSport());
@@ -120,12 +123,14 @@ public class ViewTeamController {
         model.addAttribute("totalDraws", totalDraws);
         model.addAttribute("totalGOrF", totalGamesAndFriendlies);
 
-        // Rambling that's required for navBar.html
         List<Formation> formationsList = formationService.getTeamsFormations(teamID);
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("isUserManager", team.isManager(user));
         model.addAttribute("isUserManagerOrCoach", team.isManager(user) || team.isCoach(user));
         model.addAttribute("formations", formationsList);
+
+        // Regex info
+        model.addAttribute("formationRegex", TeamFormValidators.VALID_FORMATION_REGEX);
 
         return "viewTeamForm";
     }
@@ -149,7 +154,15 @@ public class ViewTeamController {
     }
 
     /**
+     * <p>
      * Saves formation into the system or updates formation.
+     * </p>
+     * Restrictions:
+     * <ul>
+     *   <li> Invalid formation format: <code>400 BAD REQUEST</code> </li>
+     *   <li> Team doesn't exist: <code>404 NOT FOUND</code> </li>
+     *   <li> User isn't a coach/manager: <code>403 FORBIDDEN</code> </li>
+     * </ul>
      *
      * @param newFormation formation string
      * @param teamID id of the team to add the formation to
@@ -159,7 +172,7 @@ public class ViewTeamController {
      *                              "20px30px;40px20px"
      * @param custom boolean to represent whether a formation has been manually changed by dragging and dropping the
      *               players rather than simply being from a generated formation string
-     * @return reloads the page
+     * @return reloads the page on success, brings you to an error page on failure.
      */
     @PostMapping("/team-info/create-formation")
     public String createAndUpdateFormation(
@@ -168,8 +181,28 @@ public class ViewTeamController {
             @RequestParam(name="formationID", defaultValue = "-1") long formationID,
             @RequestParam("customPlayerPositions") String customPlayerPositions,
             @RequestParam("custom") Boolean custom) {
-        logger.info("POST /team-info");
+        logger.info("POST /team-info/create-formation");
+
+        User currentUser = userService.getCurrentUser().orElseThrow();
+
+        /*
+         * Note: This endpoint throws exceptions that will bring the user to an error page.
+         * Because there should be no way for this endpoint to fail through the website's normal flow,
+         * this is alright to do.
+         */
+        // Is the formation valid?
+        if (!newFormation.matches(TeamFormValidators.VALID_FORMATION_REGEX)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, TeamFormValidators.INVALID_FORMATION_MSG);
+        }
         Team team = teamService.getTeam(teamID);
+        // Does the team exist?
+        if (team == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No team with this ID exists");
+        }
+        // Are you allowed to modify this team?
+        if (!team.isCoach(currentUser) && !team.isManager(currentUser)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Insufficient permissions to modify this team's formations");
+        }
         Optional<Formation> formationOptional = formationService.getFormation(formationID);
         Formation formation;
         if (formationOptional.isPresent()) {
