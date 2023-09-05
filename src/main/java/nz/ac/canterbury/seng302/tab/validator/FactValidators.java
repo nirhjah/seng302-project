@@ -4,6 +4,7 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -18,11 +19,14 @@ public class FactValidators {
 
     public static final String descriptionErrorMessage = "Error: Description is a required field";
 
+    public static final String descriptionLengthMessage = "Error: Description cannot exceed 150 characters";
+
     /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
     /**/@Retention(RUNTIME)
     /**/@Constraint(validatedBy = {})
     /**/@Documented
     @NotBlank(message = descriptionErrorMessage)
+    @Size(max = 150, message = descriptionLengthMessage)
     public @interface descriptionValidator {
         String message() default descriptionErrorMessage;
 
