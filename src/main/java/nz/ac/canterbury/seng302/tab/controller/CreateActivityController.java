@@ -445,7 +445,6 @@ public class CreateActivityController {
                 }
             }
         }
-
         if (error) {
             bindingResult.addError(new FieldError("createActivityForm", "lineup", "The line-up is not complete"));
         }

@@ -1,12 +1,14 @@
 package nz.ac.canterbury.seng302.tab.integration;
 
 import io.cucumber.java.Before;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import nz.ac.canterbury.seng302.tab.controller.*;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.repository.*;
 import nz.ac.canterbury.seng302.tab.service.*;
@@ -311,8 +313,20 @@ public class AddActivityStatisticsIntegrationTests {
     }
 
 
+    @And("I am viewing an activity of the type ‘Game’ or ‘Friendly’")
+    public void iAmViewingAnActivityOfTheTypeGameOrFriendly() {
+        Assertions.assertTrue((activity.getActivityType() == ActivityType.Game) || activity.getActivityType() == ActivityType.Friendly);
+    }
 
+    @When("the activity has ended,")
+    public void theActivityHasEnded() {
+        Assertions.assertTrue(LocalDateTime.now().isAfter(activity.getActivityEnd()));
+    }
 
-
-
+    @Then("I am able to add an outcome for the overall activity through a dedicated UI element")
+    public void iAmAbleToAddAnOutcomeForTheOverallActivityThroughADedicatedUIElement() throws Exception {
+        mockMvc.perform(post("/add-outcome")
+                .param("actId", String.valueOf(activity.getId()))
+                .param("activityOutcomes", String.valueOf(ActivityOutcome.Win))).andExpect(status().isFound());
+    }
 }
