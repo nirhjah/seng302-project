@@ -584,7 +584,6 @@ public class ViewActivityController {
         
         Optional<User> optionalPlayerOn = userService.findUserById(subOnId);
 
-        
         Optional<User> optionalPlayerOff = userService.findUserById(subOffId);
         if (optionalPlayerOff.isEmpty()) {
             bindingResult.addError(new FieldError(createEventFormString, "subOff", PLAYER_IS_REQUIRED_MSG));
@@ -592,6 +591,11 @@ public class ViewActivityController {
         
         if (optionalPlayerOn.isEmpty()) {
             bindingResult.addError(new FieldError(createEventFormString, "subOn", PLAYER_IS_REQUIRED_MSG));
+        }
+
+        // check if the description is greater than 150 chars 
+        if (description.length() > 150) {
+            bindingResult.addError(new FieldError(createEventFormString, "description", "The description must be less than 150 characters"));
         }
         
         if (bindingResult.hasErrors()) {

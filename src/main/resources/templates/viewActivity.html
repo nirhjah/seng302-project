@@ -232,6 +232,10 @@
                                     <textarea class="description-text" id="description" th:name="description" autofocus
                                               placeholder=""
                                               th:field="*{description}"></textarea>
+                                    <ul>
+                                        <li style="display: unset" th:each="err : ${#fields.errors('description')}"
+                                            th:text="${err}" class="error-message"/>
+                                    </ul>
                                 </div>
 
                                  <div style="margin-bottom: -10px" class="goalTime-input-div">
