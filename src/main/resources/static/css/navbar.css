@@ -159,13 +159,13 @@ header .header-left .hamburger div {
     background-color: #0b2239;
 }
 
-.view-profile, .create-buttons {
+.view-profile, .create-buttons, .view-all-buttons {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.triangle {
+.triangle-view-all, .triangle-create, .triangle-user {
     display: inline-block;
     width: 0;
     height: 0;
@@ -176,7 +176,7 @@ header .header-left .hamburger div {
     border-color: white transparent transparent transparent;
 }
 
-.triangle.up {
+.triangle-view-all.up, .triangle-create.up {
     border-width: 0 8px 8px 8px;
     border-color: transparent transparent white transparent;
 }
