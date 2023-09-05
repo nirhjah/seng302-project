@@ -41,6 +41,12 @@ public class Team implements Identifiable, HasImage {
     @Column()
     private LocalDateTime creationDate;
 
+    /**
+     * Screenshots are "owned"
+     */
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Screenshot> screenshots = new HashSet<>();
+
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<TeamRole> teamRoles = new HashSet<>();
 
@@ -177,6 +183,18 @@ public class Team implements Identifiable, HasImage {
     private static String generateToken(){
         final int TEAM_TOKEN_SIZE = 12;
         return UUID.randomUUID().toString().replaceAll("\\-*", "").substring(0, TEAM_TOKEN_SIZE);
+    }
+
+    public void addScreenshot(Screenshot screenshot) {
+        screenshots.add(screenshot);
+    }
+
+    public void removeScreenshot(Screenshot screenshot) {
+        screenshots.remove(screenshot);
+    }
+
+    public Set<Screenshot> getScreenshots() {
+        return screenshots;
     }
 
     /**

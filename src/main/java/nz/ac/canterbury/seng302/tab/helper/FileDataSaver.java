@@ -305,6 +305,21 @@ public abstract class FileDataSaver {
     }
 
     /**
+     * Deletes a file specified by `id`
+     * @param id The id in question
+     * @return true if success, false otherwise
+     */
+    protected boolean deleteFile(Long id) {
+        Path fullPath = getPath(id);
+        try {
+            Files.deleteIfExists(fullPath);
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Saves bytes directly to a file, and returns true on success, false on failure.
      * @param id A unique ID for the context (e.g. user entity primary key)
      * @param data Bytes of data to save

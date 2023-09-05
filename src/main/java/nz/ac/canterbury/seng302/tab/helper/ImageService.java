@@ -135,4 +135,11 @@ public abstract class ImageService<Entity extends Identifiable & HasImage> exten
             logger.error("Image file had no extension, couldn't save");
         }
     }
+
+    protected void deleteImage(Entity entity) {
+        boolean ok = deleteFile(entity.getId());
+        if (!ok) {
+            logger.error("Couldn't delete file with id: {}", entity.getId());
+        }
+    }
 }
