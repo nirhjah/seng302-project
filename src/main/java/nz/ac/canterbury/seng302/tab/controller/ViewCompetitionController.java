@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -63,6 +64,9 @@ public class ViewCompetitionController {
         } else {
             throw new IllegalArgumentException("Competition of unknown type: " + competition);
         }
+
+        String displayDate = competition.getCompetitionStartDate().format(DateTimeFormatter.BASIC_ISO_DATE);
+        model.addAttribute("displayDate", displayDate);
 
         // Rambling that's required for navBar.html
         model.addAttribute("httpServletRequest", request);

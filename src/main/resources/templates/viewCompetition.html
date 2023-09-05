@@ -61,7 +61,7 @@
 
           <div>
             <h4>Date</h4>
-            <h3 th:text="*{getCompetitionStartDate()}">DATE HERE.</h3>
+            <h3 th:text="*{#dates.format(getCompetitionStartDate(), 'dd-MM-yyyy')}">DATE HERE.</h3>
           </div>
         </div>
 
