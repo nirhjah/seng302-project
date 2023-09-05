@@ -25,6 +25,7 @@ public class LineUpPositionService {
         return lineUpPositionRepository.findLineUpPositionsByLineUpLineUpId(id);
     }
 
+
     public LineUpPosition addLineUpPosition(LineUpPosition lineUpPosition) {
         return lineUpPositionRepository.save(lineUpPosition);
     }
