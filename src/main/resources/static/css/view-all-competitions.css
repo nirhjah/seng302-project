@@ -1,3 +1,4 @@
+
 .page-filter{
     width:100%;
     background: #aaaaaaaa;
@@ -82,16 +83,6 @@
 
 }
 
-.checkbox{
-    position:absolute;
-    width:144px;
-    margin-left:-8px;
-}
-
-.apply-filters-button{
-    height:25px;
-    cursor:pointer;
-}
 
 .dropdown{
     min-width:240px;
@@ -160,27 +151,10 @@
     background:#0b2239;
 }
 
-.menu-open{
-    display:block;
-    opacity:1;
 
-}
-
-
-
-
-
-
-/* For the sport filter */
-.filter-right{
-    display:flex;
-    align-items:center;
-}
-
-/* For the time filter */
-.filter-left {
-    display: flex;
-    align-items: flex-start;
+.navbar-buffer {
+    /* give a bit of buffering the the dropdowns */
+    padding-bottom: 20px;
 }
 
 
