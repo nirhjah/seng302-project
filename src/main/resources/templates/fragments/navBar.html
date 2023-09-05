@@ -29,15 +29,15 @@
                 </div>
 
                 <div sec:authorize="isAuthenticated()">
-                    <li sec:authorize="isAuthenticated()">
+                    <div class="navbar-view-all-dropdown">
                         <a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a>
-                    </li>
-                    <li sec:authorize="isAuthenticated()">
                         <a th:href="@{view-users(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
-                    </li>
-                    <li sec:authorize="isAuthenticated()">
                         <a th:href="@{view-all-competitions(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-all-competitions' ? 'active' : ''}">View All Competitions</a>
-                    </li>
+                    </div>
+                    <a>
+                        <span>Create</span>
+                        <i class="triangle"></i>
+                    </a>
                 </div>
 
                 <li sec:authorize="isAnonymous()">

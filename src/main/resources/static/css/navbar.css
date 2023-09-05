@@ -155,7 +155,7 @@ header .header-left .hamburger div {
     border-radius: 4px !important;
 }
 
-.navbar-user-dropdown a:hover, .navbar-create-dropdown a:hover, .navbar-view-all-dropdown.show a:hover {
+.navbar-user-dropdown a:hover, .navbar-create-dropdown a:hover, .navbar-view-all-dropdown a:hover {
     background-color: #0b2239;
 }
 
