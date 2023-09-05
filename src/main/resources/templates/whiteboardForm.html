@@ -11,7 +11,7 @@
 <div class="whiteboard-form">
     <div class="whiteboard-wrapper">
       <div class="whiteboard-dropdowns">
-        <h3 contenteditable="true">Untitled</h3>
+        <h3 class="whiteboard-title" contenteditable="true">Untitled</h3>
         <div class="dropdown">
           <label for="pitch">Pitch Type</label>
           <select class="select" id="pitch"></select>
@@ -42,7 +42,7 @@
             <img class="default-svg" th:src="@{/image/icons/cursor.svg}" />
           </button>
           <button class="draw-button">
-            <span class="tooltip">Draw (D)</span>
+            <span class="tooltip">Free Draw (D)</span>
             <img class="selected-svg" th:src="@{/image/icons/pencil-selected.svg}" />
             <img class="default-svg" th:src="@{/image/icons/pencil.svg}" />
           </button>
@@ -403,6 +403,8 @@
       event.stopPropagation();
     });
 
+
+
     // Checks if a given string is a valid hex colour
     function isValidHexcolour(hex) {
       return /^([0-9A-F]{3}){1,2}$/i.test(hex);
@@ -598,8 +600,14 @@
       }
     });
 
+    const whiteboardTitle = document.querySelector(".whiteboard-title")
+
     // Prevents shortcuts from activating while typing into colour input
     colourValueInputOutline.addEventListener('keydown', function (event) {
+      event.stopPropagation();
+    });
+
+    whiteboardTitle.addEventListener('keydown', function (event) {
       event.stopPropagation();
     });
 
