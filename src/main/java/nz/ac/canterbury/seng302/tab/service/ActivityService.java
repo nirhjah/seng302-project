@@ -281,17 +281,6 @@ public class ActivityService {
     }
 
     /**
-     * Sorts given list of goals by time
-     * @param factList list of goals
-     * @return list of goals sorted in ascending time order
-     */
-    public List<Fact> sortFactTimesAscending(List<Fact> factList) {
-        return factList.stream()
-                .sorted(new TimeOfFactComparator())
-                .toList();
-    }
-
-    /**
      * Checks if given time of fact is within the duration of an activity
      * @param activity activity to get duration
      * @param timeOfFact time of fact to be checked

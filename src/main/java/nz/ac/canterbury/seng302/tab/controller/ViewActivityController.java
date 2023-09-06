@@ -190,21 +190,8 @@ public class ViewActivityController {
 
 
         List<Fact> activityFacts = factService.getAllFactsForActivity(activity);
-        if (!activityFacts.isEmpty()) {
-            List<Substitution> activitySubstitutions = new ArrayList<>();
-            List<Goal> activityGoals = new ArrayList<>();
-
-            for (Object fact : activityFacts) {
-                if (fact instanceof Substitution) {
-                    activitySubstitutions.add((Substitution) fact);
-
-                } else if (fact instanceof Goal) {
-                    activityGoals.add((Goal) fact);
-                }
-            }
-            model.addAttribute("activitySubstitutions", activitySubstitutions);
-            model.addAttribute("activityGoals", activityService.sortGoalTimesAscending(activityGoals));
-        }
+        model.addAttribute("activitySubstitutions", factService.getAllFactsOfGivenTypeForActivity(FactType.SUBSTITUTION.ordinal(), activity));
+        model.addAttribute("activityGoals", factService.getAllFactsOfGivenTypeForActivity(FactType.GOAL.ordinal(), activity));
 
         logger.info("activityFacts: {}", activityFacts);
         model.addAttribute("activity", activity);
@@ -222,10 +209,8 @@ public class ViewActivityController {
         }
 
         model.addAttribute("activityFacts", activityFacts);
-        List<Fact> factList = factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity);
 
-
-        model.addAttribute("factList", activityService.sortFactTimesAscending(factList));
+        model.addAttribute("factList", factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity));
 
         // Rambling that's required for navBar.html
         model.addAttribute(httpServletRequestString, request);
