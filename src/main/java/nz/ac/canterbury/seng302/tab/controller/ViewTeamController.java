@@ -27,7 +27,7 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 /**
- * Spring Boot Controller class for the ProfileForm
+ * Spring Boot Controller class for the ViewTeamForm
  */
 @Controller
 public class ViewTeamController {
