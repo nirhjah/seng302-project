@@ -3,9 +3,9 @@ package nz.ac.canterbury.seng302.tab.unit.controller;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.image.UserImageService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -42,9 +42,6 @@ public class ViewUserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private TeamService teamService;
-
     @MockBean
     private UserService mockUserService;
 
@@ -68,6 +65,12 @@ public class ViewUserControllerTest {
         userRepository.save(user);
 
         Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
+        Mockito.when(mockUserService.findUserById(user.getUserId())).thenReturn(Optional.ofNullable(user));
+    }
+
+    @AfterEach
+    public void afterEach() {
+        userRepository.deleteAll();
     }
 
     @Test
@@ -121,5 +124,21 @@ public class ViewUserControllerTest {
         mockMvc.perform(multipart(URL).file(okImg))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(String.format("/user-info?name=%s", user.getUserId())));
+    }
+
+    @Test
+    @WithMockUser
+    public void getUserProfile() throws Exception {
+        mockMvc.perform(get("/user-info", 42L).queryParam("name", String.valueOf(user.getUserId())))
+                .andExpect(status().isOk())
+                .andExpect(view().name("viewUserForm"));
+    }
+
+    @Test
+    @WithMockUser
+    public void getUserProfileDoesNotExist() throws Exception {
+        mockMvc.perform(get("/user-info", 42L).queryParam("name", "-1"))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/home"));
     }
 }
