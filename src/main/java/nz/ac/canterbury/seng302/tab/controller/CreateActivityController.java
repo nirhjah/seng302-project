@@ -1,7 +1,5 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.api.response.FormationInfo;
@@ -45,8 +43,6 @@ public class CreateActivityController {
     private LineUpService lineUpService;
 
     private LineUpPositionService lineUpPositionService;
-
-    LineUp activityLineUp;
     private Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
     private static final String TEMPLATE_NAME = "createActivityForm";
@@ -238,6 +234,8 @@ public class CreateActivityController {
         Team team = teamService.getTeam(createActivityForm.getTeam());
         Activity activity = activityService.findActivityById(actId);
 
+
+
         postCreateActivityErrorChecking(bindingResult, createActivityForm, team, currentUser);
 
         if (bindingResult.hasErrors()) {
@@ -293,12 +291,33 @@ public class CreateActivityController {
 
         activity = activityService.updateOrAddActivity(activity);
 
-        if (activity.getFormation().isPresent()) {
-            System.out.println("we are creating a new line up with id:" + activityLineUp.getLineUpId() );
-            activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
-            lineUpService.updateOrAddLineUp(activityLineUp);
+
+        LineUp lineup;
+        if (activity != null && activity.getFormation().isPresent()) {
+            lineup = lineUpService.findLineUpByActivityAndFormation(actId, activity.getFormation().get());
+        }
+        else {
+            lineup = null;
         }
 
+
+        if (activity.getFormation().isPresent()) {
+            if (lineup == null) {
+                lineup = new LineUp();
+                logger.info("Creating new lineup");
+
+            } else {
+                logger.info("Updating existing lineup");
+                lineup = lineUpService.findLineUpByActivityAndFormation(actId, activity.getFormation().get());
+                if (lineup == null) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Specified lineup does not exist");
+                }
+            }
+            lineup.setActivity(activity);
+            lineup.setFormation(activity.getFormation().get());
+            lineup.setTeam(activity.getTeam());
+            lineUpService.updateOrAddLineUp(lineup);
+        }
 
         if (subs != null && !subs.isEmpty()) {
             List<String> lineUpSubs = Arrays.stream(subs.split(", ")).toList();
@@ -307,16 +326,22 @@ public class CreateActivityController {
                 if (userService.findUserById(Long.parseLong(playerId)).isPresent()) {
                     User subPlayer = userService.findUserById(Long.parseLong(playerId)).get();
                     System.out.println("This is a sub of lineup: " + subPlayer.getFirstName());
-                    activityLineUp.getSubs().add(subPlayer);
+                    lineup.getSubs().add(subPlayer);
                 }
             }
+
         }
+
+        if (lineup != null) {
+            lineUpService.updateOrAddLineUp(lineup);
+        }
+
 
         if (playerAndPositions != null && !playerAndPositions.isEmpty()) {
             List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
 
             if (createActivityForm.getFormation() != -1) {
-                saveLineUp(positionsAndPlayers, bindingResult);
+                saveLineUp(positionsAndPlayers, bindingResult, lineup);
 
             }
             if (bindingResult.hasErrors() && actId != -1) { //only throw error if we are on edit act page
@@ -394,7 +419,7 @@ public class CreateActivityController {
      * Takes list of positions and players fron the selected line up then creates LineUpPositions for each and saves them with the lineup
      * @param positionsAndPlayers list of positions and players
      */
-    private void saveLineUp(List<String> positionsAndPlayers, BindingResult bindingResult){
+    private void saveLineUp(List<String> positionsAndPlayers, BindingResult bindingResult, LineUp lineUp){
         boolean error = false;
         for (String positionPlayer : positionsAndPlayers) {
             if (Objects.equals(Arrays.stream(positionPlayer.split(" ")).toList().get(1), "X")) {
@@ -407,7 +432,7 @@ public class CreateActivityController {
                 if (userService.findUserById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).isPresent()) {
                     User player = userService.findUserById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).get();
                     int position = Integer.parseInt(Arrays.stream(positionPlayer.split(" ")).toList().get(0));
-                    LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, player, position);
+                    LineUpPosition lineUpPosition = new LineUpPosition(lineUp, player, position);
                     lineUpPositionService.addLineUpPosition(lineUpPosition);
                 }
             }

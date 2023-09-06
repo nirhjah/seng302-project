@@ -48,6 +48,9 @@ public class LineUp {
     private List<User> subs;
 
     public List<User> getSubs() {
+        if (subs == null) {
+            subs = new ArrayList<>();
+        }
         return subs;
     }
 
@@ -59,7 +62,7 @@ public class LineUp {
      * Default constructor for Line-up.
      * Required by JPA.
      */
-    protected LineUp() {}
+    public LineUp() {}
 
     /**
      * Constructs a LineUp with the specified formation, players and team.

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class LineUpService {
@@ -45,6 +46,29 @@ public class LineUpService {
             lineup.sort(Comparator.comparingLong(LineUp::getLineUpId).reversed());
         }
         return lineup.get(0);
+    }
+
+
+    /**
+     * Gets most current lineup that matches activity and formation
+     * @param id activity id
+     * @param formation formation of activity
+     * @return current lineup that matches both activity and formation
+     */
+    public LineUp findLineUpByActivityAndFormation(long id, Formation formation) {
+        List<LineUp> activityLineups = lineUpRepository.findLineUpsByActivityId(id);
+        if (activityLineups.isEmpty()) {
+            return null;
+        } else {
+            List<LineUp> lineUpsWithMatchingFormation = activityLineups.stream()
+                    .filter(lineUp -> lineUp.getFormation().equals(formation))
+                    .sorted(Comparator.comparingLong(LineUp::getLineUpId).reversed()).toList();
+            if (!lineUpsWithMatchingFormation.isEmpty()) {
+                return lineUpsWithMatchingFormation.get(0);
+            } else {
+                return null;
+            }
+        }
     }
 
     public Optional<Formation> findFormationByLineUpId(long id){
