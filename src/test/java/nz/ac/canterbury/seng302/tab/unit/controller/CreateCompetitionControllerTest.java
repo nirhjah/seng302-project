@@ -183,11 +183,14 @@ class CreateCompetitionControllerTest {
     void testBasicEditCompetition() throws Exception {
         Competition competition = createAndTestUserCompetition();
         int nComp = competitionService.getAllUserCompetitions().size();
+        String id = String.valueOf(competition.getCompetitionId());
 
         MockHttpServletRequestBuilder builder = post(VIEW)
-                .param("edit", String.valueOf(competition.getCompetitionId()));
+                .param("competitionID", id);
 
-        var b = mockMvc.perform(builder);
+        mockMvc.perform(builder)
+            .andExpect(status().is3xxRedirection())
+            .andExpect(view().name("redirect:/view-competition?competitionID=" + id));
 
         int nCompAfter = competitionService.getAllUserCompetitions().size();
         // Ensure that we don't have duplicate competitions
@@ -202,7 +205,7 @@ class CreateCompetitionControllerTest {
         String id = String.valueOf(competition.getCompetitionId());
 
         MockHttpServletRequestBuilder builder = post(VIEW)
-                .param("edit", id);
+                .param("competitionID", id);
 
         String name = "edited name 1";
         String sport = "Hockey";
@@ -214,7 +217,7 @@ class CreateCompetitionControllerTest {
 
         mockMvc.perform(builder)
             .andExpect(status().is3xxRedirection())
-            .andExpect(view().name("redirect:./view-competition?competitionID=" + id));
+            .andExpect(view().name("redirect:/view-competition?competitionID=" + id));
 
         int nCompAfter = competitionService.getAllUserCompetitions().size();
         // Ensure that we don't have duplicate competitions

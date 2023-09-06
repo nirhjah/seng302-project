@@ -188,6 +188,7 @@ public class CreateCompetitionController {
 
         Optional<Competition> optionalCompetition = competitionService.findCompetitionById(competitionID);
         if (optionalCompetition.isPresent()) {
+            // Then we are editing:
             Competition editCompetition = optionalCompetition.get();
 
             editExistingCompetition(editCompetition, form);
@@ -197,6 +198,7 @@ public class CreateCompetitionController {
             return "redirect:/view-competition?competitionID=" + editCompetition.getCompetitionId();
 
         } else {
+            // Else, create a new competition:
             Competition competition;
 
             if (isTeamCompetition) {
