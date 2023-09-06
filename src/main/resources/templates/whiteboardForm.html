@@ -10,38 +10,38 @@
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 <div class="whiteboard-form">
     <div class="whiteboard-wrapper">
-        <div class="whiteboard-dropdowns">
-            <h3 class="whiteboard-title" contenteditable="true">Untitled</h3>
-            <div class="dropdown">
-                <label for="pitch">Pitch Type</label>
-                <select class="select" id="pitch"></select>
-            </div>
-            <div class="dropdown">
-                <label for="formation-dropdown">Formation</label>
-                <select name="formation" id="formation-dropdown">
-                    <option value="-1">disabled</option>
-                    <option th:each="forma : ${teamFormations}"
-                            th:value="${forma.formationId}"
-                            th:text="${forma.formation}"
-                            th:selected="${forma == selectedFormation}"
-                            th:data-custom="${forma.custom}"
-                            th:data-custom-positions="${forma.customPlayerPositions}">
-                    </option>
-                    <option th:text="'1-4-4-2'" th:value="1" th:data-custom="false"
-                            th:data-custom-positions="''"></option>
-                </select>
-            </div>
-            <div class="line">
-                <hr>
-                <span class="or-text">or</span>
-                <hr>
-            </div>
-            <div class="dropdown">
-                <label for="lineup">Line-Up</label>
-                <select class="select" id="lineup" disabled>
-                    <option value="disabled">disabled</option>
-                </select>
-            </div>
+      <div class="whiteboard-dropdowns">
+        <h3 class="whiteboard-title" contenteditable="true">Untitled</h3>
+        <div class="dropdown">
+          <label for="pitch">Pitch Type</label>
+          <select class="select" id="pitch"></select>
+        </div>
+        <div class="dropdown">
+          <label for="formation-dropdown">Formation</label>
+          <select name="formation" id="formation-dropdown">
+            <option value="-1">disabled</option>
+            <option th:each="forma : ${teamFormations}"
+                    th:value="${forma.formationId}"
+                    th:text="${forma.formation}"
+                    th:selected="${forma == selectedFormation}"
+                    th:data-custom="${forma.custom}"
+                    th:data-custom-positions="${forma.customPlayerPositions}">
+            </option>
+            <option th:text="'1-4-4-2'" th:value="1" th:data-custom="false" th:data-custom-positions="''"></option>
+            <option th:text="'1-4-4-2'" th:value="1" th:data-custom="true" th:data-custom-positions="'183px,35px;45px,66px;73px,26px;112px,99px;241px,162px;99px,206px;65px,137px;186px,159px;213px,263px;59px,284px;139px,308px'"></option>
+          </select>
+        </div>
+        <div class="line">
+          <hr>
+          <span class="or-text">or</span>
+          <hr>
+        </div>
+        <div class="dropdown">
+          <label for="lineup">Line-Up</label>
+          <select class="select" id="lineup" disabled>
+            <option value="disabled">disabled</option>
+          </select>
+        </div>
 
             <div class="player-table">
                 <div class="player-header">
@@ -61,7 +61,6 @@
                             <img class="player-image" th:src="@{/image/default-profile.png}" draggable ="false">
                             <span class="player-name">Player Name</span>
                         </li>
-
                     </ul>
                 </div>
             </div>
@@ -1032,56 +1031,78 @@
             loadFormation(selectedOption);
         });
 
-        function loadFormation(target) {
-            const formationId = target.value;
-            const formation = target.textContent;
-            const custom = target.getAttribute("data-custom")
-            const customPlayerPositions = target.getAttribute("data-custom-positions");
-            canvas.clear();
-            if (formationId !== "-1") {
-                console.log(formationId, formation, custom, customPlayerPositions)
-                if (custom === true) {
-                    console.log("here")
-                    renderPlayersCustom(customPlayerPositions)
-                } else {
-                    renderPlayers(formation)
-                }
-            }
+    function loadFormation(target) {
+      const formationId = target.value;
+      const formation = target.textContent;
+      const custom = target.getAttribute("data-custom")
+      const customPlayerPositions = target.getAttribute("data-custom-positions");
+      canvas.clear();
+      if (formationId !== "-1") {
+        console.log(formationId, formation, custom, customPlayerPositions)
+        if (custom === true || custom === "true") {
+          console.log("here")
+          renderPlayersCustom(customPlayerPositions)
+        } else {
+          renderPlayers(formation)
         }
+      }
+    }
 
-        // Adapted from formations page
-        function renderPlayers(formationString) {
-            const formation = formationString.split("-").map(num => parseInt(num));
-            const radius = 25;
-            // Builds formation
-            let j = 0;
-            for (let i = 0; i < formation.length; i++) {
-                let playersInRow = formation[i]
-                while (formation[i] !== 0) {
-                    const top = canvas.height - ((i + 1) / (formation.length + 1)) * canvas.height - radius / 2;
-                    const left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * canvas.width - radius / 2;
-                    console.log(top, left)
-                    const player = new fabric.Circle({
-                        left: left,
-                        top: top,
-                        radius: radius,
-                        fill: "red",
-                        originX: 'left',
-                        originY: 'top',
-                        hasControls: false
-                    });
-                    canvas.add(player)
-                    formation[i] -= 1;
-                    j++;
-                }
-            }
+    const radius = 25;
+
+    // Adapted from formations page
+    function renderPlayers(formationString) {
+      const formation = formationString.split("-").map(num => parseInt(num));
+      // Builds formation
+      let j = 0;
+      for (let i = 0; i < formation.length; i++) {
+        let playersInRow = formation[i]
+        while (formation[i] !== 0) {
+          const top = canvas.height - ((i + 1) / (formation.length + 1)) * canvas.height - radius;
+          const left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * canvas.width - radius;
+          console.log(top, left)
+          const player = new fabric.Circle({
+            left: left,
+            top: top,
+            radius: radius,
+            fill: "red",
+            originX: 'left',
+            originY: 'top',
+            hasControls: false
+          });
+          canvas.add(player)
+          formation[i] -= 1;
+          j++;
         }
+      }
+    }
 
-        function renderPlayersCustom(customPlayerPositions) {
+    function renderPlayersCustom(positions) {
+      // Due to a lack of foresight the displacement is saved as a static px value rather than a percentage, hence
+      // it is prudent to turn the value into a percentage
+      const pitchHeightOriginal = 360;
+      const pitchWidthOriginal = 288;
 
-        }
-
-    })
+      const positionsList = positions.split(';')
+      let numPlayers = positionsList.length;
+      for (let i = 0; i < numPlayers; i++) {
+        let coordinates = positionsList[i].split(",")
+        const left = parseInt(coordinates[0]) * canvas.width / pitchWidthOriginal;
+        let top = canvas.width - parseInt(coordinates[1]) * canvas.width / pitchHeightOriginal;
+        const player = new fabric.Circle({
+          left: left,
+          top: top,
+          radius: radius,
+          fill: "red",
+          originX: 'left',
+          originY: 'top',
+          hasControls: false
+        });
+        console.log(top, left)
+        canvas.add(player)
+      }
+    }
+  })
 
 
 </script>
