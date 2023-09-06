@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -275,6 +276,17 @@ public class ActivityService {
     public List<Goal> sortGoalTimesAscending(List<Goal> goalsList) {
         return goalsList.stream()
                 .sorted(Comparator.comparingInt(goal -> Integer.parseInt(goal.getTimeOfEvent())))
+                .toList();
+    }
+
+    /**
+     * Sorts given list of goals by time
+     * @param factList list of goals
+     * @return list of goals sorted in ascending time order
+     */
+    public List<Fact> sortFactTimesAscending(List<Fact> factList) {
+        return factList.stream()
+                .sorted(Comparator.comparingInt(fact -> Integer.parseInt(fact.getTimeOfEvent())))
                 .toList();
     }
 

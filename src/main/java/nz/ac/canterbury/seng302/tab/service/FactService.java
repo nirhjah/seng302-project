@@ -73,7 +73,6 @@ public class FactService {
 
     /**
      * Get the total time a player participated in an activity
-     * TODO implement in combination with subbing and starting line up
      * @param activity the activity the player took part in
      * @return the length of the activity in minutes
      */
