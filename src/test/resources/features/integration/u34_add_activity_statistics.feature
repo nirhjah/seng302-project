@@ -93,4 +93,10 @@ Feature: U34 – Add activity statistics
     When the activity has begun
     And I am adding a fact about the activity
     Then I must fill out the required field of description and optionally the time it occurred.
-#
+
+  Scenario: AC15
+    Given I am a manager or coach,
+    And I am adding a description to the fact type ‘Fact’ or ‘Substitution’ or ‘Goal’,
+    And I enter a description longer than 150 characters,
+    When I click the ‘Add Fact’ or ‘Add Substitution’ or ‘Add Goal’ button,
+    Then an error message tells me that the description must be 150 characters or less
