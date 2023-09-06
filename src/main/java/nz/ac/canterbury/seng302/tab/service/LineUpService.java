@@ -48,6 +48,15 @@ public class LineUpService {
         return lineup.get(0);
     }
 
+    /**
+     * Gets lineup for an activity and given formation
+     * @param activity activity to get lineup of
+     * @param formation formation that matches both lineup and activity
+     * @return lineup for activity and given activity formation
+     */
+    public LineUp findLineUpByActivityAndFormation(Long activity, Formation formation) {
+        return lineUpRepository.findLineUpByActivityIdAndFormation(activity, formation);
+    }
 
     /**
      * Gets most current lineup that matches activity and formation
