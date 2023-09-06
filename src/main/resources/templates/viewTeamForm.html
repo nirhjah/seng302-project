@@ -24,7 +24,7 @@
                 <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
                 <button class="tab-button" >Formations &nbsp;</button>
             </div>
-            <div class="tab">
+            <div class="tab" id="stats-tab">
 <!--                this is a temporary icon for statistic, which is probably going to be replaced when working-->
 <!--                on the team aggregated statistic task-->
                 <img class ="tab-icon" th:src="@{/image/icons/statistics.png}"/>
@@ -210,17 +210,12 @@
         </div>
         <div class="content-box" id="statistics-tab" style="margin-bottom: 300px">
             <div class="content">
-                <form th:action="@{team-info}" class="profile-buttons" method="post">
-                    <a class="edit-button" th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
-                        <button type="button">View Team Activities</button>
-                    </a>
-                </form>
                 <div class="col-wrapper">
                     <div class="third-col" style="padding-bottom: 20px">
 
-                        <h3>Last 5 Matches: </h3>
-                   <div class="last5">
-                       <ul>
+                        <h3 style="margin-top: 12px">Last 5 Matches: </h3>
+                   <div class="last5" style="margin-top: 57px">
+                       <ul class="last5Ul">
                            <li th:each="act : ${last5GOrF}" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|">
                                <div>
                                    <h3 th:text="${act.activityType.name()}"> </h3>
@@ -239,24 +234,110 @@
 
 
                     </div>
-                    <div class="third-col">
-                    </div>
-                    <div class="third-col">
-                        <h3>Outcome of Games and Friendlies:</h3>
-                        <h4 th:text="|Wins: ${totalWins}|"></h4>
-                        <h4 th:text="|Losses: ${totalLosses}|"></h4>
-                        <h4 th:text="|Draws: ${totalDraws}|"></h4>
-                        <h4 th:text="|Total (incl future): ${totalGOrF}|"></h4>
-                        </br>
-                        </br>
-                        <h3>Top Scorers:</h3>
-                        <h4 th:each="score : ${top5Scorers}" th:text="|${score.keySet().toArray()[0].firstName} ${score.keySet().toArray()[0].lastName} ${score.values().toArray()[0]}|"></h4>
+                    <div style="margin-left: 9px; margin-bottom: 10px" class="third-col">
 
-                        </br>
+                        <div class="select-container">
+                            <div class="select-box">
+                                <select style="color: #1B263B; font-weight: bold;" id="dropdown" name="dropdown">
+                                    <option value="topScorersDiv">Top 5 Scorers</option>
+                                    <option value="topOverallPlaytimeDiv">Top 5 Playtimes</option>
+                                </select>
 
-                        <h3>Substitutions:</h3>
-                        <h4>n/a</h4>
+                            </div>
+                        </div>
+
+
+                        <div id="topScorersDiv" class="hidden" >
+
+                        <div class="top5Players">
+                            <ul>
+                                <li th:each="player : ${top5Scorers}">
+                                    <div>
+                                        <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
+                                    </div>
+                                    <div style="width: 100%; margin-top: 16px">
+                                        <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"> </h3>
+
+                                        <h4 th:text="${player.value == 1 ? player.value.toString() + ' pt' : player.value.toString() + ' pts'}"></h4>
+                                    </div>
+
+                                </li>
+                            </ul>
+
+                        </div>
+
+</div>
+
+                        <div id="topOverallPlaytimeDiv" class="hidden" style="display: none;">
+
+                        <div class="top5Players">
+                            <ul>
+                                <li th:each="player : ${overallPlayersPlaytime}">
+                                    <div>
+                                        <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
+                                    </div>
+                                    <div class="player-name-div" style="width: 100%; margin-top: 16px">
+                                        <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"> </h3>
+                                    </div>
+
+                                    <div class="player-time-div">
+
+                                        <h4 th:text="'Total: ' + ${player.value[0].toString()} + 'm'"></h4>
+                                        <h4 th:text="'Avg: ' + ${player.value[1].toString()} + 'm'"></h4>
+
+                                    </div>
+
+                                </li>
+                            </ul>
+
+                        </div>
+
+</div>
+
+
+
+
                     </div>
+                    <div style="margin-bottom: 10px; width: 32%" class="third-col">
+
+                        <h3 style="margin-top: 12px">Outcome of Games and Friendlies:</h3>
+                        <div class="outcome-container">
+                            <div class="outcome-grid">
+                                <div class="cell" id="cell-1">
+                                    <h3> Total </h3>
+                                    <h4 th:text="${totalGOrF}"></h4>
+
+                                </div>
+                                <div style="background-color: #96D099" class="cell" id="cell-2">
+                                    <h3> Wins </h3>
+                                    <h4 th:text="${totalWins}"></h4>
+
+                                </div>
+                                <div style="background-color: #FB5C5C" class="cell" id="cell-3">
+                                    <h3> Losses </h3>
+                                    <h4 th:text="${totalLosses}"></h4>
+
+                                </div>
+                                <div style="background-color: lightgray" class="cell" id="cell-4">
+                                    <h3> Draws </h3>
+                                    <h4 th:text="${totalDraws}"></h4>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <form th:action="@{team-info}" class="profile-buttons" method="post">
+                            <a class="edit-button" th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
+                                <button style="margin-left: -27px; width: max-content" type="button">View Team Activities</button>
+                            </a>
+                        </form>
+
+                    </div>
+
+
+
                 </div>
             </div>
         </div>
@@ -290,10 +371,26 @@
     </footer>
 
     <script th:inline="javascript">
+        const dropdown = document.getElementById('dropdown');
+        const topScorersDiv = document.getElementById('topScorersDiv');
+        const topOverallPlaytimeDiv = document.getElementById('topOverallPlaytimeDiv');
+
+        dropdown.addEventListener('change', function() {
+            if (dropdown.value === 'topScorersDiv') {
+                topScorersDiv.style.display = 'block';
+                topOverallPlaytimeDiv.style.display = 'none';
+            } else if (dropdown.value === 'topOverallPlaytimeDiv') {
+                topScorersDiv.style.display = 'none';
+                topOverallPlaytimeDiv.style.display = 'block';
+            }
+        });
+
+        const input = document.getElementById('file');
+
 
         const VALID_FORMATION_REGEX = new RegExp(/*[[ ${formationRegex} ]]*/ "");
         const fileInput = document.getElementById('file');
-        
+
         if (fileInput !== null) {
             fileInput.addEventListener('change', () => {
                 const file = fileInput.files[0];
@@ -309,7 +406,7 @@
             document.getElementById('upload-picture').submit();
         });
     }
-        
+
     const copyButton = document.querySelector('.copy-token');
     const tokenValue = document.querySelector('.token-value');
     if (tokenValue !== null) {
@@ -420,7 +517,7 @@
             }
             return valid
         }
-        
+
         function validateFormation(formation) {
             return VALID_FORMATION_REGEX.test(formation);
         }
