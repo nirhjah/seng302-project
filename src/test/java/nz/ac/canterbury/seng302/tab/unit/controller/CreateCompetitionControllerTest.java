@@ -22,19 +22,22 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import java.io.IOException;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -77,7 +80,7 @@ class CreateCompetitionControllerTest {
     }
 
     MockHttpServletRequestBuilder addUserValues(MockHttpServletRequestBuilder builder) {
-        return builder.param("userOrTeams", USERS_ENUM)
+        return builder.param("usersOrTeams", USERS_ENUM)
                 .param("userTeamID", String.valueOf(user.getUserId()));
                 // ^^^ The "list" of users who are participating.
                 // For now, we just do the user
@@ -85,7 +88,7 @@ class CreateCompetitionControllerTest {
 
     MockHttpServletRequestBuilder addTeamValues(MockHttpServletRequestBuilder builder, Collection<Team> teams) {
         String teamList = String.join(",", teams.stream().map(team -> team.getTeamId().toString()).toList());
-        return builder.param("userOrTeams", TEAMS_ENUM)
+        return builder.param("usersOrTeams", TEAMS_ENUM)
                 .param("userTeamID", teamList);
         // ^^^ The "list" of users who are participating
     }
@@ -190,5 +193,33 @@ class CreateCompetitionControllerTest {
         // Ensure that we don't have duplicate competitions
         assertEquals(nCompAfter, nComp);
     }
+
+    @Test
+    @WithMockUser
+    void testEditCompetitionValues() throws Exception {
+        Competition competition = createAndTestUserCompetition();
+        int nComp = competitionService.getAllUserCompetitions().size();
+        String id = String.valueOf(competition.getCompetitionId());
+
+        MockHttpServletRequestBuilder builder = post(VIEW)
+                .param("edit", id);
+
+        String name = "edited name 1";
+        String sport = "Hockey";
+        LocalDateTime time = LocalDateTime.now();
+        Grade grade = Grade.randomGrade();
+        addValues(builder, name, sport, time);
+        addGrade(builder, grade);
+        addUserValues(builder);
+
+        mockMvc.perform(builder)
+            .andExpect(status().is3xxRedirection())
+            .andExpect(view().name("redirect:./view-competition?competitionID=" + id));
+
+        int nCompAfter = competitionService.getAllUserCompetitions().size();
+        // Ensure that we don't have duplicate competitions
+        assertEquals(nCompAfter, nComp);
+    }
+
 }
 

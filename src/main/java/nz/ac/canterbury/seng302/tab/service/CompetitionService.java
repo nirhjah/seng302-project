@@ -78,7 +78,12 @@ public class CompetitionService {
      * @return the saved competition
      */
     public Competition updateOrAddCompetition(Competition competition) {
-        return competitionRepository.save(competition);
+        long id = competition.getCompetitionId();
+        if (id != 0 && findCompetitionById(id).isPresent()) {
+            return competitionRepository.save(competition);
+        }
+        //????
+        competitionRepository.save(competition);
     }
 
     /**
