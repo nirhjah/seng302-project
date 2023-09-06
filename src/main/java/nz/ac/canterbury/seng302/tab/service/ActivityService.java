@@ -6,6 +6,7 @@ import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.helper.TimeOfFactComparator;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -286,7 +287,7 @@ public class ActivityService {
      */
     public List<Fact> sortFactTimesAscending(List<Fact> factList) {
         return factList.stream()
-                .sorted(Comparator.comparingInt(fact -> Integer.parseInt(fact.getTimeOfEvent())))
+                .sorted(new TimeOfFactComparator())
                 .toList();
     }
 
