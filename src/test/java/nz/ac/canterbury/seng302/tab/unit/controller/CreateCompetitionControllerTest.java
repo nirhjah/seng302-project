@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-public class CreateCompetitionControllerTest {
+class CreateCompetitionControllerTest {
 
     @Autowired
     MockMvc mockMvc;

@@ -47,6 +47,9 @@ public class CreateCompetitionController {
 
     private final TeamService teamService;
 
+    private static final String TEAM_ATTR = "teams";
+    private static final String USER_ATTR = "users";
+
     public CreateCompetitionController(CompetitionService competitionService, UserService userService, TeamService teamService) {
         this.competitionService = competitionService;
         this.userService = userService;
@@ -98,7 +101,7 @@ public class CreateCompetitionController {
             userCompetition.setPlayers(users);
         } else {
             // should never happen
-            throw new RuntimeException("Wot wot??");
+            logger.error("Unknown competition type: {}", competition.toString());
         }
     }
 
@@ -132,11 +135,11 @@ public class CreateCompetitionController {
     private void addIdsToModel(Model model, List<Long> IDs, boolean isTeamCompetition) {
         if (isTeamCompetition) {
             Set<Team> teams = getTeamsFromIds(IDs);
-            model.addAttribute("teams", teams);
+            model.addAttribute(TEAM_ATTR, teams);
         } else {
             // else, its a user competition
             Set<User> users = getUsersFromIds(IDs);
-            model.addAttribute("users", users);
+            model.addAttribute(USER_ATTR, users);
         }
     }
 
@@ -252,7 +255,6 @@ public class CreateCompetitionController {
 
         form.setStartDateTime(competition.getCompetitionStartDate());
         form.setEndDateTime(competition.getCompetitionEndDate());
-        System.out.println("Wot wot? " + competition.getCompetitionStartDate());
 
         Location location = competition.getLocation();
         if (location != null) {
@@ -264,9 +266,9 @@ public class CreateCompetitionController {
             form.setCountry(location.getCountry());
         }
         if (competition instanceof TeamCompetition) {
-            model.addAttribute("teams", ((TeamCompetition) competition).getTeams());
+            model.addAttribute(TEAM_ATTR, ((TeamCompetition) competition).getTeams());
         } else {
-            model.addAttribute("users", ((UserCompetition) competition).getPlayers());
+            model.addAttribute(USER_ATTR, ((UserCompetition) competition).getPlayers());
         }
     }
 

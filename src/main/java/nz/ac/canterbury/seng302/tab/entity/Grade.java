@@ -185,6 +185,11 @@ public class Grade {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        return sex.hashCode()/3 + age.hashCode()/3 + competitiveness.hashCode()/3;
+    }
+
     private static Random random = new Random();
 
     public static Grade randomGrade() {
