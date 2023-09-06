@@ -17,9 +17,17 @@
           <select class="select" id="pitch"></select>
         </div>
         <div class="dropdown">
-          <label for="formation">Formation</label>
-          <select class="select" id="formation" disabled>
-            <option value="disabled">disabled</option>
+          <label for="formation-dropdown">Formation</label>
+          <select name="formation" id="formation-dropdown">
+            <option value="-1">disabled</option>
+            <option th:each="forma : ${teamFormations}"
+                    th:value="${forma.formationId}"
+                    th:text="${forma.formation}"
+                    th:selected="${forma == selectedFormation}"
+                    th:data-custom="${forma.custom}"
+                    th:data-custom-positions="${forma.customPlayerPositions}">
+            </option>
+            <option th:text="'1-4-4-2'" th:value="1" th:data-custom="false" th:data-custom-positions="''"></option>
           </select>
         </div>
         <div class="line">
@@ -28,7 +36,7 @@
           <hr>
         </div>
         <div class="dropdown">
-          <label for="formation">Line-Up</label>
+          <label for="lineup">Line-Up</label>
           <select class="select" id="lineup" disabled>
             <option value="disabled">disabled</option>
           </select>
@@ -343,6 +351,7 @@
 
     document.querySelector('.delete-button').addEventListener('click', function () {
       canvas.clear();
+      formationDropdown.selectedIndex = 0;
     });
 
     const drawStyleButtonSolid = document.querySelector('.customisation-box.draw-button .draw-style-button-solid');
@@ -453,6 +462,7 @@
         canvas.renderAll();
       } else if (event.key === 'c') {
         canvas.clear();
+        formationDropdown.selectedIndex = 0;
       }
     });
 
@@ -925,7 +935,65 @@
       }
     });
 
+
+    /** Formation **/
+
+    document.getElementById("formation-dropdown").addEventListener("change", function(event) {
+      const selectedOption = event.target.options[event.target.selectedIndex];
+      loadFormation(selectedOption);
+    });
+
+    function loadFormation(target) {
+      const formationId = target.value;
+      const formation = target.textContent;
+      const custom = target.getAttribute("data-custom")
+      const customPlayerPositions = target.getAttribute("data-custom-positions");
+      canvas.clear();
+      if (formationId !== "-1") {
+        console.log(formationId, formation, custom, customPlayerPositions)
+        if (custom === true) {
+          console.log("here")
+          renderPlayersCustom(customPlayerPositions)
+        } else {
+          renderPlayers(formation)
+        }
+      }
+    }
+
+    // Adapted from formations page
+    function renderPlayers(formationString) {
+      const formation = formationString.split("-").map(num => parseInt(num));
+      const radius = 25;
+      // Builds formation
+      let j = 0;
+      for (let i = 0; i < formation.length; i++) {
+        let playersInRow = formation[i]
+        while (formation[i] !== 0) {
+          const top = canvas.height - ((i + 1) / (formation.length + 1)) * canvas.height - radius / 2;
+          const left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * canvas.width - radius / 2;
+          console.log(top, left)
+          const player = new fabric.Circle({
+            left: left,
+            top: top,
+            radius: radius,
+            fill: "red",
+            originX: 'left',
+            originY: 'top',
+            hasControls: false
+          });
+          canvas.add(player)
+          formation[i] -= 1;
+          j++;
+        }
+      }
+    }
+
+    function renderPlayersCustom(customPlayerPositions) {
+
+    }
+
   })
+
 
 </script>
 </html>
