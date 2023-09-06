@@ -417,6 +417,7 @@ input[type="range"]::-moz-range-track {
     padding:0 5px;
     background:white;
     cursor:grab;
+    margin:5px 0;
 }
 
 .whiteboard-dropdowns .player-container{
@@ -445,11 +446,25 @@ input[type="range"]::-moz-range-track {
 
 }
 
-.whiteboard-dropdowns .player-card.active{
+.whiteboard-dropdowns .player-card.active {
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    user-select:none;
+}
+.whiteboard-dropdowns .player-card.active img{
     height:60px;
-    width:60px;
-    border-radius:50%;
-    flex-direction:column;
+    margin-top:18px;
+}
+
+.whiteboard-dropdowns .player-card.active span{
+    width:100px;
+    font-size:16px;
 }
 
 
