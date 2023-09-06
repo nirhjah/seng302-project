@@ -29,6 +29,8 @@ import nz.ac.canterbury.seng302.tab.service.LineUpPositionService;
 import nz.ac.canterbury.seng302.tab.service.LineUpService;
 
 import nz.ac.canterbury.seng302.tab.validator.FactValidators;
+
+import java.util.Comparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -248,11 +250,11 @@ public class ViewActivityController {
 
         // attributes for the subs
         // all players who are currently playing - for the sub off
-        List<User> playersInLineUp = getAllPlayersPlaying(activity.getId());
-        model.addAttribute("playersInLineUp", playersInLineUp);
+        List<User> playersPlaying = getAllPlayersCurrentlyPlaying(activity.getId());
+        model.addAttribute("playersInLineUp", playersPlaying);
         // all players who arent playing - for the sub on
-        List<User> playersNotInLineUp = getAllPlayersNotPlaying(activity.getId());
-        model.addAttribute("playersNotInLineUp", playersNotInLineUp);
+        List<User> playersNotPlaying = getAllPlayersNotCurrentlyPlaying(activity.getId());
+        model.addAttribute("playersNotInLineUp", playersNotPlaying);
 
         // Rambling that's required for navBar.html
         model.addAttribute(httpServletRequestString, request);
@@ -607,7 +609,44 @@ public class ViewActivityController {
     }
 
     /**
-     * returns a list of the users that are currently in the lineup 
+     * returns the current players who are playing in the activity -- takes into account substitutions 
+     * @param actId the activity id 
+     * @return a list of the users that are currrently playing in the activity
+    */
+    private List<User> getAllPlayersCurrentlyPlaying(long actId) {
+        List<User> playersPlaying = getAllPlayersPlaying(actId);
+        List<Fact> allSubs = factService.getAllFactsOfGivenTypeForActivity(2, activityService.findActivityById(actId)); // list of all made subs in the game 
+        allSubs.sort(Comparator.comparingInt(sub -> Integer.parseInt(sub.getTimeOfEvent()))); // all the subs sorted by time 
+        
+        for (Fact fact : allSubs) {
+            Substitution sub = (Substitution) fact;
+            User playerOn = sub.getPlayerOn();
+            User playerOff = sub.getPlayerOff();
+            playersPlaying = playersPlaying.stream().map(player -> player.getUserId() == playerOff.getUserId() ? playerOn : player).collect(Collectors.toList());
+        }
+
+        return playersPlaying;
+    }
+
+    /**
+     * @param actId the activity id 
+     * @return a list of users who are not in the lineup
+    */
+    private List<User> getAllPlayersNotCurrentlyPlaying(long actId) {
+        Activity activity = activityService.findActivityById(actId);
+        if (activity == null  || activity.getTeam() == null) {
+            return List.of();
+        }
+        List<User> playersPlaying = getAllPlayersCurrentlyPlaying(actId);
+        List<User> playersInTeam = new ArrayList<>(activityService.findActivityById(actId).getTeam().getTeamMembers());
+
+        List<User> playersNotPlaying = playersInTeam.stream().filter(player -> !playersPlaying.contains(player)).collect(Collectors.toList());
+        
+        return playersNotPlaying;
+    }
+
+    /**
+     * returns a list of the users that are in the lineup 
      * @param actId the activity id 
      * @return a list of the users that are currently in the lineup for the activity, if there are no players the returns an empty list 
     */
@@ -635,22 +674,6 @@ public class ViewActivityController {
         return playersInLineUp;
     }
 
-    /**
-     * @param actId the activity id 
-     * @return a list of users who arent playing in the current activity (on the bench)
-    */
-    private List<User> getAllPlayersNotPlaying(long actId) {
-        Activity activity = activityService.findActivityById(actId);
-        if (activity == null  || activity.getTeam() == null) {
-            return List.of();
-        }
-        List<User> playersPlaying = getAllPlayersPlaying(actId);
-        List<User> playersInTeam = new ArrayList<>(activityService.findActivityById(actId).getTeam().getTeamMembers());
-
-        List<User> playersNotPlaying = playersInTeam.stream().filter(player -> !playersPlaying.contains(player)).collect(Collectors.toList());
-        
-        return playersNotPlaying;
-    }
 
     /**
      * Handles creating an event and adding overall scores
