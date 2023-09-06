@@ -194,7 +194,7 @@
         </div>
 
         <div class="content-box" id="formation-tab">
-            <div class="content">
+            <div class="content" style="overflow=none">
                  <div id="addSubModal" class="modal"
                          th:style="${subInvalid != null ? 'display:block' : 'display:none'}">
                      <div class="add-goal-modal-content event" style="bottom: unset">
@@ -265,54 +265,55 @@
                      th:data-formation="${formation.formation}"
                      th:data-custom="${formation.custom}"
                      th:data-customPlayers="${formation.customPlayerPositions}"></div>
-                <div class="sub-table">
-                    <div class="sub-header">
-                        <h4 class="sub-title">Substitutions</h4>
-                    </div>
-                    <div class="sub-list">
-                        <ul>
-                            <li class="sub-container" th:each="subsitution : ${activitySubstitutions}">
-                                <div class="sub-card">
-                                    <div class="player-container">
-                                        <img class="player-image"
-                                             th:src="@{/user-profile-picture/{id}(id = ${subsitution.playerOn.userId})}">
-                                        <div class="player-in-container">
-                                            <span>IN</span>
-                                            <span class="player-in"
-                                                  th:text="${subsitution.playerOn.firstName + ' ' + subsitution.playerOn.lastName}"></span>
+                <div>
+                    <div class="sub-table">
+                        <div class="sub-header">
+                            <h4 class="sub-title">Substitutions</h4>
+                        </div>
+                        <div class="sub-list">
+                            <ul>
+                                <li class="sub-container" th:each="subsitution : ${activitySubstitutions}">
+                                    <div class="sub-card">
+                                        <div class="player-container">
+                                            <img class="player-image"
+                                                 th:src="@{/user-profile-picture/{id}(id = ${subsitution.playerOn.userId})}">
+                                            <div class="player-in-container">
+                                                <span>IN</span>
+                                                <span class="player-in"
+                                                      th:text="${subsitution.playerOn.firstName + ' ' + subsitution.playerOn.lastName}"></span>
+                                            </div>
+                                        </div>
+                                        <img class="swap-icon" th:src="@{/image/icons/swap.svg}"/>
+                                        <div class="player-container">
+                                            <img class="player-image"
+                                                 th:src="@{/user-profile-picture/{id}(id = ${subsitution.playerOn.userId})}">
+                                            <div class="player-out-container">
+                                                <span>OUT</span>
+                                                <span class="player-out"
+                                                      th:text="${subsitution.playerOff.firstName + ' ' + subsitution.playerOff.lastName}"></span>
+                                            </div>
+                                        </div>
+                                        <div th:if="${subsitution.description != null}" class="dropdown-container">
+                                            <img class="dropdown-icon" th:src="@{/image/icons/dropdown.svg}"
+                                                 onclick="toggleDropdown(this)"/>
+                                        </div>
+                                        <div class="time-container">
+                                            <h4 th:text="${subsitution.timeOfEvent} + '\''"></h4>
                                         </div>
                                     </div>
-                                    <img class="swap-icon" th:src="@{/image/icons/swap.svg}"/>
-                                    <div class="player-container">
-                                        <img class="player-image"
-                                             th:src="@{/user-profile-picture/{id}(id = ${subsitution.playerOn.userId})}">
-                                        <div class="player-out-container">
-                                            <span>OUT</span>
-                                            <span class="player-out"
-                                                  th:text="${subsitution.playerOff.firstName + ' ' + subsitution.playerOff.lastName}"></span>
-                                        </div>
+                                    <div class="sub-desc">
+                                        <hr>
+                                        <p th:text="${subsitution.description}"></p>
                                     </div>
-                                    <div th:if="${subsitution.description != null}" class="dropdown-container">
-                                        <img class="dropdown-icon" th:src="@{/image/icons/dropdown.svg}"
-                                             onclick="toggleDropdown(this)"/>
-                                    </div>
-                                    <div class="time-container">
-                                        <h4 th:text="${subsitution.timeOfEvent} + '\''"></h4>
-                                    </div>
-                                </div>
-                                <div class="sub-desc">
-                                    <hr>
-                                    <p th:text="${subsitution.description}"></p>
-                                </div>
-                            </li>
-                        </ul>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="submit-button">
                         <button onclick="addSubModal.style.display = 'block'" type="button"
                          th:style="${(playersInLineUp.size() > 0) ? null : 'display:none'}">Add Substitution</button>
                     </div>
                 </div>
-
             </div>
         </div>
 
