@@ -48,7 +48,7 @@
                 </div>
                 <div class="player-list">
                     <ul>
-                        <li class="player-card" draggable="true">
+                        <li class="player-card" >
                             <div class="player-container">
                                 <img class="player-image"
                                      th:src="@{/image/default-profile.png}">
@@ -261,7 +261,6 @@
 
             initialClickX = e.pageX;
             initialClickY = e.pageY
-
             playerCard.style.left = `${initialClickX}px`;
             playerCard.style.top = `${initialClickY}px`;
         }
