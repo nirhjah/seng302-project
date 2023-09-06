@@ -358,55 +358,69 @@ public class ActivityService {
      * @param team team the user is in to calculate playtime of
      * @return overall playtime for user
      */
-        public long getOverallPlayTimeForUserBasedOnSubs(User user, Team team) {
+    public long getOverallPlayTimeForUserBasedOnSubs(User user, Team team) {
         long totalTime = 0;
-
-            for (Activity act : getAllGamesAndFriendliesForTeam(team)) {
-                List<Substitution> userSubFacts = subFactsUserIsIn(act, user);
-
-                int listSize = userSubFacts.size();
-
+        List<Activity> allGamesAndFriendlies = getAllGamesAndFriendliesForTeam(team);
+        for (Activity act : allGamesAndFriendlies) {
+            List<Substitution> userSubFacts = subFactsUserIsIn(act, user);
+            int listSize = userSubFacts.size();
             if (playersInLineUpForActivity(act).contains(user)) {
-                //user in starting lineup
-
-                if (listSize == 0) {
-                    //If user doesn't have any subfacts about them but are in starting lineup, their total time is duration of game
-                    totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes();
-
-                }
-                else {
-                    totalTime += Integer.parseInt( userSubFacts.get(0).getTimeOfEvent());
-                    //User not in starting lineup so check for player off subfact
-                    for (int i = 1; i < userSubFacts.size() - 1; i += 2) {
-                        Substitution sub1 = userSubFacts.get(i);
-                        Substitution sub2 = userSubFacts.get(i + 1);
-                        int timeBetweenPlayerOnAndOff = Integer.parseInt(sub2.getTimeOfEvent()) - Integer.parseInt(sub1.getTimeOfEvent());
-                        totalTime += timeBetweenPlayerOnAndOff;
-                    }
-                }
-
-        } else {
-                //User not in starting lineup so check for player on subfact
-                    for (int i = 0; i < userSubFacts.size() - 1; i += 2) {
-                        Substitution sub1 = userSubFacts.get(i);
-                        Substitution sub2 = userSubFacts.get(i + 1);
-                        int timeBetweenPlayerOnAndOff = Integer.parseInt(sub2.getTimeOfEvent()) - Integer.parseInt(sub1.getTimeOfEvent());
-                        totalTime += timeBetweenPlayerOnAndOff;
-                    }
-            }
-
-
-            if (listSize != 0) { //If the last subfact for a user is playerOn == user that means they played for the remaining length of the game
-                Substitution lastSubFact = userSubFacts.get(listSize-1);
-                if (lastSubFact.getPlayerOn() == user) {
-                    totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes() - Integer.parseInt(userSubFacts.get(listSize - 1).getTimeOfEvent());
-                }
+                totalTime += getPlayTimeForStartingLineupUser(act, userSubFacts, listSize, user);
+            } else {
+                totalTime += getPlayTimeForNonStartingLineupUser(userSubFacts);
             }
         }
         return totalTime;
-
-
     }
+
+
+    /**
+     * Gets playtime for a given user who is in the starting lineup of an activity
+     * @param act activity we are calculating user playtime of
+     * @param userSubFacts sub facts a given user is in
+     * @param listSize size of userSubFacts list
+     * @return play time for a given user who is in the starting lineup
+     */
+    private long getPlayTimeForStartingLineupUser(Activity act, List<Substitution> userSubFacts, int listSize, User user) {
+        long totalTime = 0;
+        if (listSize == 0) {
+            //If user doesn't have any subfacts about them but are in starting lineup, their total time is duration of game
+            totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes();
+        } else {
+            totalTime += Integer.parseInt(userSubFacts.get(0).getTimeOfEvent());
+            for (int i = 1; i < userSubFacts.size() - 1; i += 2) {
+                Substitution sub1 = userSubFacts.get(i);
+                Substitution sub2 = userSubFacts.get(i + 1);
+                int timeBetweenPlayerOnAndOff = Integer.parseInt(sub2.getTimeOfEvent()) - Integer.parseInt(sub1.getTimeOfEvent());
+                totalTime += timeBetweenPlayerOnAndOff;
+            }
+        }
+        if (listSize != 0) {
+            Substitution lastSubFact = userSubFacts.get(listSize - 1);
+            if (lastSubFact.getPlayerOn() == user) {
+                totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes() - Integer.parseInt(userSubFacts.get(listSize - 1).getTimeOfEvent());
+            }
+        }
+        return totalTime;
+    }
+
+    /**
+     * Gets playtime for a user who is not in the starting lineup of an activity
+     * @param userSubFacts sub facts a given user is in
+     * @return play time for a given user who is in the starting lineup
+     */
+    private long getPlayTimeForNonStartingLineupUser(List<Substitution> userSubFacts) {
+        long totalTime = 0;
+        //User not in starting lineup so check for playerOn subfact
+        for (int i = 0; i < userSubFacts.size() - 1; i += 2) {
+            Substitution sub1 = userSubFacts.get(i);
+            Substitution sub2 = userSubFacts.get(i + 1);
+            int timeBetweenPlayerOnAndOff = Integer.parseInt(sub2.getTimeOfEvent()) - Integer.parseInt(sub1.getTimeOfEvent());
+            totalTime += timeBetweenPlayerOnAndOff;
+        }
+        return totalTime;
+    }
+
 
 
     /**
