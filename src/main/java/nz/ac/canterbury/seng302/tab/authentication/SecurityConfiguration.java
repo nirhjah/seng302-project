@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.authentication;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -9,8 +8,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
@@ -19,20 +16,13 @@ import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
 
 /**
  * Custom Security Configuration
- * Adapted from Morgan English's Security Handout
- * <a href="https://eng-git.canterbury.ac.nz/men63/spring-security-example-2023/">...</a>
+ * Adapted from 
+ * <a href="https://eng-git.canterbury.ac.nz/men63/spring-security-example-2023/">Morgan English's Security Handout</a>
  */
 @Configuration
 @EnableWebSecurity
 @ComponentScan(basePackages = "com.baeldung.security")
 public class SecurityConfiguration {
-
-    /**
-     * Custom Authentication Manager
-     * {@Link CustomAuthenticationProvider}
-     */
-    @Autowired
-    private CustomAuthenticationProvider authProvider;
 
     /**
      * Create an Authentication Manager
@@ -41,7 +31,7 @@ public class SecurityConfiguration {
      * @throws Exception when unable to create auth manager
      */
     @Bean
-    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+    public AuthenticationManager authManager(HttpSecurity http, CustomAuthenticationProvider authProvider) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.authenticationProvider(authProvider);
         return authenticationManagerBuilder.build();
@@ -80,7 +70,7 @@ public class SecurityConfiguration {
                 .authenticated()
                 .and()
                 // Define logging in, a POST "/login" endpoint now exists under the hood, after login redirect to user page
-                .formLogin().loginPage("/login").loginProcessingUrl("/login").failureUrl("/login?error=true")
+                .formLogin().loginPage("/login").loginProcessingUrl("/login").successForwardUrl("/user-info/self").failureUrl("/login?error=true")
                 .and()
                 // Define logging out, a POST "/logout" endpoint now exists under the hood, redirect to "/login", invalidate session and remove cookie
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/login").invalidateHttpSession(true).deleteCookies("JSESSIONID");
