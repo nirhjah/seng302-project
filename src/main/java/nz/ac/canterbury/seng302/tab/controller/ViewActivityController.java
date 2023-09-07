@@ -627,6 +627,9 @@ public class ViewActivityController {
     private List<User> getAllPlayersCurrentlyPlaying(long actId) {
         List<User> playersPlaying = getAllPlayersPlaying(actId);
         Activity currActivity = activityService.findActivityById(actId);
+        if (currActivity == null  || currActivity.getTeam() == null) {
+            return List.of();
+        }
         List<Fact> allSubs = factService.getAllFactsOfGivenTypeForActivity(2, currActivity); // list of all made subs in the game 
         
         allSubs.sort(Comparator.comparingInt(sub -> Integer.parseInt(sub.getTimeOfEvent()))); // all the subs sorted by time 
