@@ -38,7 +38,7 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @WithMockUser
-public class ViewTeamControllerTest {
+class ViewTeamControllerTest {
 
     @Autowired
     private TeamImageService teamImageService;
@@ -69,7 +69,7 @@ public class ViewTeamControllerTest {
     private static final String TEAM_SPORT = "Hockey";
 
     @BeforeEach
-    public void beforeAll() throws IOException {
+    void beforeAll() throws IOException {
         Location teamLocation = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
         team = new Team("test", "Hockey", teamLocation);
         Location userLocation = new Location("23 test street", "24 test street", "surburb", "city", "8782",
@@ -84,7 +84,7 @@ public class ViewTeamControllerTest {
     }
 
     @Test
-    public void testGettingTeamList() throws Exception {
+    void testGettingTeamList() throws Exception {
         Mockito.when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         Mockito.doReturn(TEAM_ID).when(team).getTeamId();
         Mockito.when(activityService.getNumberOfWins(team)).thenReturn(0);
@@ -103,7 +103,7 @@ public class ViewTeamControllerTest {
     }
 
     @Test
-    public void testGettingInvalidTeam() throws Exception {
+    void testGettingInvalidTeam() throws Exception {
         Mockito.when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         Mockito.doReturn(TEAM_ID).when(team).getTeamId();
 
@@ -113,7 +113,7 @@ public class ViewTeamControllerTest {
     }
 
     @Test
-    public void testUploadValidProfilePicture() throws Exception {
+    void testUploadValidProfilePicture() throws Exception {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
         try (FileInputStream input = new FileInputStream(file)) {
@@ -129,7 +129,7 @@ public class ViewTeamControllerTest {
     }
 
     @Test
-    public void testUploadInvalidProfilePictureType() throws Exception {
+    void testUploadInvalidProfilePictureType() throws Exception {
         Resource resource = new ClassPathResource("/testingfiles/invalidFileType.txt");
         File file = resource.getFile();
         byte[] fileBytes = Files.readAllBytes(file.toPath());
@@ -145,7 +145,7 @@ public class ViewTeamControllerTest {
     }
 
     @Test
-    public void testUploadInvalidProfilePictureSize() throws Exception {
+    void testUploadInvalidProfilePictureSize() throws Exception {
         Resource resource = new ClassPathResource("/testingfiles/maxFileSize.png");
         File file = resource.getFile();
         byte[] fileBytes = Files.readAllBytes(file.toPath());
@@ -161,7 +161,7 @@ public class ViewTeamControllerTest {
     }
 
     @Test
-    public void testCreatingAValidFormation() throws Exception {
+    void testCreatingAValidFormation() throws Exception {
         mockMvc.perform(post("/team-info/create-formation", 42L)
                         .param("formation", "1-4-4-2")
                         .param("customPlayerPositions", "")
@@ -171,5 +171,4 @@ public class ViewTeamControllerTest {
                 .andExpect(view().name("redirect:/team-info?teamID=" + TEAM_ID));
         verify(mockFormationService, times(1)).addOrUpdateFormation(any());
     }
-
 }

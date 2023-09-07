@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -48,8 +47,8 @@ public class CreateCompetitionController {
 
     private final TeamService teamService;
 
-    private static final String TEAM_ATTR = "teams";
-    private static final String USER_ATTR = "users";
+    private static final String TEAMS = "teams";
+    private static final String USERS = "users";
 
     @Autowired
     public CreateCompetitionController(CompetitionService competitionService, UserService userService, TeamService teamService) {
@@ -103,7 +102,7 @@ public class CreateCompetitionController {
             userCompetition.setPlayers(users);
         } else {
             // should never happen
-            logger.error("Unknown competition type: {}", competition.toString());
+            logger.error("Unknown competition type: {}", competition);
         }
     }
 
@@ -137,11 +136,11 @@ public class CreateCompetitionController {
     private void addIdsToModel(Model model, List<Long> IDs, boolean isTeamCompetition) {
         if (isTeamCompetition) {
             Set<Team> teams = getTeamsFromIds(IDs);
-            model.addAttribute(TEAM_ATTR, teams);
+            model.addAttribute(TEAMS, teams);
         } else {
             // else, its a user competition
             Set<User> users = getUsersFromIds(IDs);
-            model.addAttribute(USER_ATTR, users);
+            model.addAttribute(USERS, users);
         }
     }
 
@@ -175,7 +174,7 @@ public class CreateCompetitionController {
         }
 
         postCreateActivityErrorChecking(bindingResult, form, IDs);
-        boolean isTeamCompetition = usersOrTeams.equals("teams");
+        boolean isTeamCompetition = usersOrTeams.equals(TEAMS);
 
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -270,10 +269,10 @@ public class CreateCompetitionController {
             form.setCity(location.getCity());
             form.setCountry(location.getCountry());
         }
-        if (competition instanceof TeamCompetition) {
-            model.addAttribute(TEAM_ATTR, ((TeamCompetition) competition).getTeams());
+        if (competition instanceof TeamCompetition teamCompetition) {
+            model.addAttribute(TEAMS, (teamCompetition).getTeams());
         } else {
-            model.addAttribute(USER_ATTR, ((UserCompetition) competition).getPlayers());
+            model.addAttribute(USERS, ((UserCompetition) competition).getPlayers());
         }
     }
 
