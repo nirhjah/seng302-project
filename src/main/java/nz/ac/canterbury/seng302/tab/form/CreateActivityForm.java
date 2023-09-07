@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import jakarta.validation.constraints.NotBlank;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
 import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
@@ -179,7 +180,11 @@ public class CreateActivityForm {
         this.city = location.getCity();
         this.suburb = location.getSuburb();
         this.activityType = activity.getActivityType();
-        this.team = activity.getTeam().getTeamId();
+        
+        Team teamOrNull = activity.getTeam();
+        if (teamOrNull != null) {
+            this.team = teamOrNull.getTeamId();
+        }
     }
 
 
