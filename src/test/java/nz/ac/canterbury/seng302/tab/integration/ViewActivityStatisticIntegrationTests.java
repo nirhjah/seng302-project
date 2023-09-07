@@ -88,6 +88,7 @@ public class ViewActivityStatisticIntegrationTests {
 
 
 
+
     @Before("@ViewActivityStatistics")
     public void setup() throws IOException {
         userRepository = applicationContext.getBean(UserRepository.class);
@@ -106,7 +107,7 @@ public class ViewActivityStatisticIntegrationTests {
 
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
-        activityService = Mockito.spy(new ActivityService(activityRepository));
+        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository));
         factService= Mockito.spy(new FactService(factRespository));
         lineUpService=Mockito.spy(new LineUpService(lineUpRepository));
         lineUpPositionService = Mockito.spy(new LineUpPositionService(lineUpPositionRepository));

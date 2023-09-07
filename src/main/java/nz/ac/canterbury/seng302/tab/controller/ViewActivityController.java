@@ -41,6 +41,7 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import static nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators.*;
+import static nz.ac.canterbury.seng302.tab.validator.FactValidators.descriptionLengthMessage;
 
 /**
  * Spring Boot Controller class for the View Activity Page
@@ -370,7 +371,9 @@ public class ViewActivityController {
         Activity activity = activityService.findActivityById(actId);
         String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
 
-
+        if (description.length() > 150) {
+            bindingResult.addError(new FieldError(createEventFormString, "description", descriptionLengthMessage));
+        }
         Optional<User> potentialScorer = userService.findUserById(scorerId);
         if (potentialScorer.isEmpty()) {
             bindingResult.addError(new FieldError(createEventFormString, "scorer", PLAYER_IS_REQUIRED_MSG));
