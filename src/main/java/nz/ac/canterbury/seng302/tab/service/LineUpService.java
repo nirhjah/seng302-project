@@ -48,4 +48,11 @@ public class LineUpService {
     public void updateOrAddLineUp(LineUp lineUp) {
         lineUpRepository.save(lineUp);
     }
+
+
+    public Optional<List<LineUp>> findLineUpByActivity(long actId) {
+        return lineUpRepository.findLineUpByActivityId(actId);
+    }
+
+
 }

@@ -2,10 +2,15 @@ package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
+import nz.ac.canterbury.seng302.tab.repository.LineUpPositionRepository;
+import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +20,8 @@ import org.springframework.data.domain.PageRequest;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service class for Activity
@@ -26,11 +29,17 @@ import java.util.Optional;
 @Service
 public class ActivityService {
 
+    private final LineUpRepository lineUpRepository;
+
+    private final LineUpPositionRepository lineUpPositionRepository;
     private final ActivityRepository activityRepository;
 
+
     @Autowired
-    public ActivityService(ActivityRepository activityRepository) {
+    public ActivityService(ActivityRepository activityRepository, LineUpRepository lineUpRepository, LineUpPositionRepository lineUpPositionRepository) {
         this.activityRepository = activityRepository;
+        this.lineUpRepository = lineUpRepository;
+        this.lineUpPositionRepository = lineUpPositionRepository;
     }
 
     public static final String activityScoreHyphenRegex = "^(\\p{N}+-(\\p{N}+))+$";
@@ -241,19 +250,212 @@ public class ActivityService {
      * @return total time a player has played for a team
      */
     public long getTotalTimeAUserHasPlayedForATeam(User user, Team team) {
-        List<Activity> games = findActivitiesByTeamAndActivityType(team, ActivityType.Game);
-        List<Activity> friendlies = findActivitiesByTeamAndActivityType(team, ActivityType.Friendly);
-        games.addAll(friendlies);
         long totalTime = 0;
-        for (Activity act : games) {
+        for (Activity act : getAllGamesAndFriendliesForTeam(team)) {
             totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes();;
         }
         return totalTime;
     }
 
+
+    /**
+     * Gets a list of users in the starting lineup for a given activity
+     * @param activity activity to get starting lineup of
+     * @return list of users in starting lineup
+     */
+    public List<User> playersInLineUpForActivity(Activity activity) {
+
+        if (lineUpRepository.findLineUpByActivityId(activity.getId()).isPresent()) {
+
+            List<LineUp> lineup = lineUpRepository.findLineUpsByActivityId(activity.getId());
+            lineup.sort(Comparator.comparingLong(LineUp::getLineUpId).reversed());
+
+            LineUp lineUp =  lineup.get(0);
+            Optional<List<LineUpPosition>> lineUpPos = lineUpPositionRepository.findLineUpPositionsByLineUpLineUpId(lineUp.getLineUpId());
+            if (lineUpPos.isEmpty()) {
+                return List.of();
+            }
+            return lineUpPos.get().stream().map(x -> x.getPlayer()).toList();
+        } else {
+
+            return List.of();
+
+        }
+
+    }
+
+    /**
+     * Gets all substitution facts that the given user is a part of (either player on or player off)
+     * @param act activity to get substitution facts of
+     * @param user user to check if in sub facts
+     * @return list of sub facts user is in
+     */
+    public List<Substitution> subFactsUserIsIn(Activity act, User user) {
+        List<Substitution> activitySubstitutions = new ArrayList<>();
+
+        for (Object fact : act.getFactList()) {
+            if(fact instanceof Substitution substitution && (substitution.getPlayerOff() == user || substitution.getPlayerOn() == user)) {
+                    activitySubstitutions.add((Substitution) fact);
+
+            }
+        }
+        return activitySubstitutions;
+    }
+
+
+    /**
+     * Gets a Map of the top 5 users in a team sorted by overall playtime, also gets average playtime
+     * @param team team to get top 5 users of
+     * @return Map of top 5 users along with their overall playtime and average playtime
+     */
+    public Map<User, List<Long>> top5UsersWithPlayTimeAndAverageInTeam(Team team) {
+        Map<User, List<Long>> topUsersWithPlayTimeAndAverage = new HashMap<>();
+
+        for (User teamMember : team.getTeamMembers()) {
+            long teamMembersPlayTime = getOverallPlayTimeForUserBasedOnSubs(teamMember, team);
+            long averagePlayTime = getAveragePlayTime(teamMember, team);
+
+            List<Long> playTimeAndAverage = new ArrayList<>();
+            playTimeAndAverage.add(teamMembersPlayTime);
+            playTimeAndAverage.add(averagePlayTime);
+
+            topUsersWithPlayTimeAndAverage.put(teamMember, playTimeAndAverage);
+        }
+
+        return topUsersWithPlayTimeAndAverage.entrySet()
+                .stream()
+                .sorted((time1, time2) -> Long.compare(time2.getValue().get(0), time1.getValue().get(0)))
+                .limit(5)
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (playTimeAndAverage1, playTimeAndAverage2) -> playTimeAndAverage1,
+                        LinkedHashMap::new
+                ));
+    }
+
+    /**
+     * Calculates average playtime for user in team based on overall playtime and number of games participated in
+     * @param user user to get average playtime
+     * @param team team user is in
+     * @return average playtime for user in team
+     */
+    public long getAveragePlayTime(User user, Team team) {
+        long totalPlayTime = getOverallPlayTimeForUserBasedOnSubs(user, team);
+        long totalGames = getTotalGamesUserPlayed(user, team);
+        long averageTime = 0;
+        if(totalPlayTime != 0 && totalGames != 0) {
+             averageTime = totalPlayTime/totalGames;
+        }
+        return averageTime;
+    }
+
+    /**
+     * Gets play time for user who is in starting lineup of activity
+     * @param listSize size of subfacts list
+     * @param act activity to check playtime of
+     * @param userSubFacts subfacts user is in
+     * @return total playtime for user who is in starting lineup of activity
+     */
+    public long getPlayTimeForStartingLineupUser(int listSize, Activity act,List<Substitution> userSubFacts) {
+        long totalTime = 0;
+        if (listSize == 0) {
+            //If user doesn't have any subfacts about them but are in starting lineup, their total time is duration of game
+            totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes();
+
+        }
+        else {
+            totalTime += Integer.parseInt( userSubFacts.get(0).getTimeOfEvent());
+            //User not in starting lineup so check for player off subfact
+            for (int i = 1; i < userSubFacts.size() - 1; i += 2) {
+                Substitution sub1 = userSubFacts.get(i);
+                Substitution sub2 = userSubFacts.get(i + 1);
+                int timeBetweenPlayerOnAndOff = Integer.parseInt(sub2.getTimeOfEvent()) - Integer.parseInt(sub1.getTimeOfEvent());
+                totalTime += timeBetweenPlayerOnAndOff;
+            }
+        }
+        return totalTime;
+    }
+
+
+    /**
+     * Gets play time for user who is not in starting lineup of activity
+     * @param userSubFacts sub facts user is in
+     * @return total playtime for user not in starting lineup of activity
+     */
+    public long getPlayTimeForNonStartingLineupUser(List<Substitution> userSubFacts) {
+        long totalTime = 0;
+        for (int i = 0; i < userSubFacts.size() - 1; i += 2) {
+            Substitution sub1 = userSubFacts.get(i);
+            Substitution sub2 = userSubFacts.get(i + 1);
+            int timeBetweenPlayerOnAndOff = Integer.parseInt(sub2.getTimeOfEvent()) - Integer.parseInt(sub1.getTimeOfEvent());
+            totalTime += timeBetweenPlayerOnAndOff;
+        }
+        return totalTime;
+    }
+    /**
+     * Gets total time a user has played for a team spanning across multiple activities. This is found by taking into account if the user was in the
+     * starting lineup for an activity or not, and also takes into account all the substitution facts the user was a part of either as playeroff or playeron
+     * and calculates the time between them.
+     * @param user user to get overall playtime of
+     * @param team team the user is in to calculate playtime of
+     * @return overall playtime for user
+     */
+    public long getOverallPlayTimeForUserBasedOnSubs(User user, Team team) {
+        long totalTime = 0;
+
+        for (Activity act : getAllGamesAndFriendliesForTeam(team)) {
+            List<Substitution> userSubFacts = subFactsUserIsIn(act, user);
+            int listSize = userSubFacts.size();
+            if (playersInLineUpForActivity(act).contains(user)) {
+                //user in starting lineup
+                totalTime +=  getPlayTimeForStartingLineupUser(listSize, act,userSubFacts);
+            } else {
+                //User not in starting lineup so check for player on subfact
+                totalTime += getPlayTimeForNonStartingLineupUser(userSubFacts);
+            }
+            if (listSize != 0) {
+                //If the last subfact for a user is playerOn == user that means they played for the remaining length of the game
+                Substitution lastSubFact = userSubFacts.get(listSize-1);
+                if (lastSubFact.getPlayerOn() == user) {
+                    totalTime += Duration.between(act.getActivityStart(), act.getActivityEnd()).toMinutes() - Integer.parseInt(userSubFacts.get(listSize - 1).getTimeOfEvent());
+                }
+            }
+        }
+        return totalTime;
+
+
+    }
+
+
+
+
+    /**
+     * Gets total number of games/friendlies a user has participated in based on starting lineup and sub facts
+     * @param user user to get total number of games/friendlies
+     * @param team team the user is in to get stats of
+     * @return total number of games/friendlies user participated in
+     */
+    public long getTotalGamesUserPlayed(User user, Team team) {
+        List<Activity> activitiesUserPlayedIn = new ArrayList<>();
+        for (Activity act : getAllGamesAndFriendliesForTeam(team)) {
+            if (playersInLineUpForActivity(act).contains(user)) {
+                activitiesUserPlayedIn.add(act);
+            } else {
+                for (Object fact : act.getFactList()) {
+                    if (fact instanceof Substitution substitution && (substitution.getPlayerOff() == user || (substitution.getPlayerOn() == user))) {
+                            activitiesUserPlayedIn.add(act);
+                            break;
+                    }
+                }
+            }
+        }
+        return activitiesUserPlayedIn.size();
+    }
+
+
     /**
      * Get total matches
-     * TODO Make this dependant on the played matches once formation is complete
      * @param team the teams matches wanted
      * @return the total number of played matches.
      */
