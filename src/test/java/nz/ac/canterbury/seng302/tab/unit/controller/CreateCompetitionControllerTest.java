@@ -22,6 +22,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -34,8 +35,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 
@@ -106,7 +105,7 @@ class CreateCompetitionControllerTest {
         Optional<User> optUser = Optional.of(user);
         Mockito.when(userService.getCurrentUser()).thenReturn(optUser);
         competitionRepository.deleteAll();
-        Team team = new Team("test1", "Hockey", location);
+        team = new Team("test1", "Hockey", location);
         teamService.addTeam(team);
     }
 
@@ -155,7 +154,7 @@ class CreateCompetitionControllerTest {
         try {
             mockMvc.perform(builder);
         } catch (Exception e) {
-            return null;
+            fail("error thrown");
         }
 
         Optional<Competition> optionalCompetition = competitionService.findCompetitionById(1L);
