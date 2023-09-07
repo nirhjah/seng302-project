@@ -108,6 +108,12 @@ class CreateCompetitionControllerTest {
     }
 
 
+    private Competition findOne() {
+        List<Competition> competitions = competitionRepository.findAll();
+        assertEquals(1, competitions.size());
+        return competitions.get(0);
+    }
+
     @Test
     @WithMockUser
     void testCreateTeamCompetition() throws Exception {
@@ -124,7 +130,7 @@ class CreateCompetitionControllerTest {
 
         mockMvc.perform(builder);
 
-        Competition competition = competitionRepository.findAll().get(0);
+        Competition competition = findOne();
 
         assertEquals(competition.getClass(), TeamCompetition.class);
 
@@ -153,7 +159,7 @@ class CreateCompetitionControllerTest {
             fail("error thrown");
         }
 
-        Competition competition = competitionRepository.findAll().get(0);
+        Competition competition = findOne();
 
         assertEquals(competition.getClass(), UserCompetition.class);
 

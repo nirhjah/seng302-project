@@ -45,6 +45,7 @@
                 <div th:unless="${competition.location == null}">
                     <div class="competition-content" th:text="${competition.location.toString()}"></div>
                 </div>
+                <div class="competition-content" th:text="${competition.getCompetitionStartDate()}"></div>
             </div>
         </div>
     </div>
