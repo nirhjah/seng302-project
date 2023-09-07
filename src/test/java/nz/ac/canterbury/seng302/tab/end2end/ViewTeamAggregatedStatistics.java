@@ -27,7 +27,7 @@ public class ViewTeamAggregatedStatistics {
 
     @Given("I am on the team profile page")
     public void i_am_on_the_team_profile_page() {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=3");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=4");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
     }
 
@@ -39,7 +39,7 @@ public class ViewTeamAggregatedStatistics {
 
     @Then("I will see the team statistics")
     public void i_will_see_the_team_statistics() {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=3");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=4");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator(".statistics-tab");
 
@@ -47,7 +47,7 @@ public class ViewTeamAggregatedStatistics {
 
     @Given("I see the aggregated team statistics")
     public void i_see_the_aggregated_team_statistics() {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=3");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=4");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("div.tab#stats-tab").click();
 
@@ -73,7 +73,7 @@ public class ViewTeamAggregatedStatistics {
 
         PlaywrightBrowser.page.click(".registerLoginButton");
 
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=3");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=4");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("div.tab#stats-tab").click();
         Assertions.assertEquals(5, PlaywrightBrowser.page.locator(".last5 li").count());
@@ -98,7 +98,7 @@ public class ViewTeamAggregatedStatistics {
     @Then("I can see a total of how many games or friendlies the team has played, won, lost and drew overall")
     public void i_can_see_a_total_of_how_many_games_or_friendlies_the_team_has_played_won_lost_and_drew_overall() {
 
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=3");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=4");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("div.tab#stats-tab").click();
 
@@ -113,14 +113,14 @@ public class ViewTeamAggregatedStatistics {
 
     @Given("I have at least 5 activities")
     public void i_have_at_least_activities() {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/viewTeamActivities?page=1&teamID=3");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/viewTeamActivities?page=1&teamID=4");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
     }
 
     @Given("they are of either type Game or Friendly")
     public void they_are_of_either_type_game_or_friendly() {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/viewTeamActivities?page=1&teamID=3");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/viewTeamActivities?page=1&teamID=4");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         String liText = PlaywrightBrowser.page.locator(".activities-table li").first().textContent();
         Assertions.assertTrue(liText.contains("Game") || liText.contains("Friendly"));
@@ -129,7 +129,7 @@ public class ViewTeamAggregatedStatistics {
 
     @When("I am viewing team aggregated statistics")
     public void i_am_viewing_team_aggregated_statistics() {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=3");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=4");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator(".statistics-tab");
         PlaywrightBrowser.page.waitForTimeout(110000); //waiting for activity to end
@@ -150,7 +150,7 @@ public class ViewTeamAggregatedStatistics {
         PlaywrightBrowser.page.locator("div.overall-score-modal-content button").first().click();
 
 
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=3");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=4");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("div.tab#stats-tab").click();
 
@@ -215,7 +215,7 @@ public class ViewTeamAggregatedStatistics {
 
     @Then("I can see the top 5 scorers with how many goals they scored")
     public void i_can_see_the_top_scorers_with_how_many_goals_they_scored() {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=3");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=4");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
         PlaywrightBrowser.page.locator("div.tab#stats-tab").click();
