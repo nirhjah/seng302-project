@@ -10,38 +10,40 @@
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 <div class="whiteboard-form">
     <div class="whiteboard-wrapper">
-      <div class="whiteboard-dropdowns">
-        <h3 class="whiteboard-title" contenteditable="true">Untitled</h3>
-        <div class="dropdown">
-          <label for="pitch">Pitch Type</label>
-          <select class="select" id="pitch"></select>
-        </div>
-        <div class="dropdown">
-          <label for="formation-dropdown">Formation</label>
-          <select name="formation" id="formation-dropdown">
-            <option value="-1">disabled</option>
-            <option th:each="forma : ${teamFormations}"
-                    th:value="${forma.formationId}"
-                    th:text="${forma.formation}"
-                    th:selected="${forma == selectedFormation}"
-                    th:data-custom="${forma.custom}"
-                    th:data-custom-positions="${forma.customPlayerPositions}">
-            </option>
-            <option th:text="'1-4-4-2'" th:value="1" th:data-custom="false" th:data-custom-positions="''"></option>
-            <option th:text="'1-4-4-2'" th:value="1" th:data-custom="true" th:data-custom-positions="'183px,35px;45px,66px;73px,26px;112px,99px;241px,162px;99px,206px;65px,137px;186px,159px;213px,263px;59px,284px;139px,308px'"></option>
-          </select>
-        </div>
-        <div class="line">
-          <hr>
-          <span class="or-text">or</span>
-          <hr>
-        </div>
-        <div class="dropdown">
-          <label for="lineup">Line-Up</label>
-          <select class="select" id="lineup" disabled>
-            <option value="disabled">disabled</option>
-          </select>
-        </div>
+        <div class="whiteboard-dropdowns">
+            <h3 class="whiteboard-title" contenteditable="true">Untitled</h3>
+            <div class="dropdown">
+                <label for="pitch">Pitch Type</label>
+                <select class="select" id="pitch"></select>
+            </div>
+            <div class="dropdown">
+                <label for="formation-dropdown">Formation</label>
+                <select name="formation" id="formation-dropdown">
+                    <option value="-1">disabled</option>
+                    <option th:each="forma : ${teamFormations}"
+                            th:value="${forma.formationId}"
+                            th:text="${forma.formation}"
+                            th:selected="${forma == selectedFormation}"
+                            th:data-custom="${forma.custom}"
+                            th:data-custom-positions="${forma.customPlayerPositions}">
+                    </option>
+                    <option th:text="'1-4-4-2'" th:value="1" th:data-custom="false"
+                            th:data-custom-positions="''"></option>
+                    <option th:text="'1-4-4-2'" th:value="1" th:data-custom="true"
+                            th:data-custom-positions="'183px,35px;45px,66px;73px,26px;112px,99px;241px,162px;99px,206px;65px,137px;186px,159px;213px,263px;59px,284px;139px,308px'"></option>
+                </select>
+            </div>
+            <div class="line">
+                <hr>
+                <span class="or-text">or</span>
+                <hr>
+            </div>
+            <div class="dropdown">
+                <label for="lineup">Line-Up</label>
+                <select class="select" id="lineup" disabled>
+                    <option value="disabled">disabled</option>
+                </select>
+            </div>
 
             <div class="player-table">
                 <div class="player-header">
@@ -50,15 +52,15 @@
                 <div class="player-list">
                     <ul>
                         <li class="player-card">
-                            <img class="player-image" th:src="@{/image/default-profile.png}" draggable ="false">
+                            <img class="player-image" th:src="@{/image/default-profile.png}" draggable="false">
                             <span class="player-name">Player Name</span>
                         </li>
                         <li class="player-card">
-                            <img class="player-image" th:src="@{/image/default-profile.png}" draggable ="false">
+                            <img class="player-image" th:src="@{/image/default-profile.png}" draggable="false">
                             <span class="player-name">Player Name</span>
                         </li>
                         <li class="player-card">
-                            <img class="player-image" th:src="@{/image/default-profile.png}" draggable ="false">
+                            <img class="player-image" th:src="@{/image/default-profile.png}" draggable="false">
                             <span class="player-name">Player Name</span>
                         </li>
                     </ul>
@@ -252,81 +254,7 @@
 </div>
 <script type="text/javascript" th:src="@{/webjars/fabric/5.3.0/dist/fabric.min.js}"></script>
 </body>
-<script>
-
-    const playerCards = document.querySelectorAll('.player-card');
-    const whiteboard = document.querySelector('.whiteboard');
-
-    playerCards.forEach((playerCard) => {
-        let isDragging, inWhiteboard = false;
-        let initialClickX, initialClickY;
-        let initialCardX, initialCardY;
-
-        playerCard.addEventListener("mousedown", (e) => {
-            if (!playerCard.classList.contains('active')) {
-                playerCard.classList.add("active");
-            }
-            isDragging = true;
-            playerCard.style.position = "absolute";
-
-            initialClickX = e.clientX - playerCard.getBoundingClientRect().left;
-            initialClickY = e.clientY - playerCard.getBoundingClientRect().top;
-
-            initialCardX = playerCard.getBoundingClientRect().left;
-            initialCardY = playerCard.getBoundingClientRect().top;
-
-            playerCard.style.cursor = 'grabbing';
-            playerCard.style.zIndex = '1';
-        });
-
-        document.addEventListener("mousemove", (e) => {
-            if (isDragging) {
-                const newX = e.clientX - initialClickX;
-                const newY = e.clientY - initialClickY;
-
-                if (inWhiteboard) {
-                    const whiteboardRect = whiteboard.getBoundingClientRect();
-
-                    const boundaryX = Math.min(Math.max(newX, whiteboardRect.left), whiteboardRect.right - playerCard.offsetWidth);
-                    const boundaryY = Math.min(Math.max(newY, whiteboardRect.top), whiteboardRect.bottom - playerCard.offsetHeight);
-
-                    playerCard.style.left = `${boundaryX}px`;
-                    playerCard.style.top = `${boundaryY}px`;
-                } else {
-                    playerCard.style.left = `${newX}px`;
-                    playerCard.style.top = `${newY}px`;
-                }
-            }
-        });
-
-        document.addEventListener("mouseup", () => {
-            if (isDragging) {
-                isDragging = false;
-
-                playerCard.style.cursor = 'grab';
-                playerCard.style.zIndex = '';
-
-                const whiteboardRect = whiteboard.getBoundingClientRect();
-                const cardRect = playerCard.getBoundingClientRect();
-
-                if (
-                    cardRect.left >= whiteboardRect.left &&
-                    cardRect.right <= whiteboardRect.right &&
-                    cardRect.top >= whiteboardRect.top &&
-                    cardRect.bottom <= whiteboardRect.bottom
-                ) {
-                    console.log("Dropped on whiteboard");
-                    playerCard.style.zIndex = '100';
-                    inWhiteboard = true;
-                } else {
-                    playerCard.style.left = `${initialCardX}px`;
-                    playerCard.style.top = `${initialCardY}px`;
-                    playerCard.style.borderRadius = '';
-                    playerCard.classList.remove("active");
-                }
-            }
-        });
-    });
+<script th:inline="javascript">
 
     const pitchTypes = ["American Football", "Basketball", "Hockey", "Netball", "Rugby", "Soccer", "Tennis", "Volleyball"];
     const pitchSelect = document.getElementById("pitch");
@@ -380,6 +308,104 @@
         canvas.freeDrawingBrush.width = 5;
         canvas.freeDrawingBrush.color = '#ff0000';
 
+        const playerCards = document.querySelectorAll('.player-card');
+        const whiteboard = document.querySelector('.whiteboard');
+
+        playerCards.forEach((playerCard) => {
+            let isDragging, inWhiteboard = false;
+            let initialClickX, initialClickY;
+            let initialCardX, initialCardY;
+
+            playerCard.addEventListener("mousedown", (e) => {
+                if (!playerCard.classList.contains('active')) {
+                    playerCard.classList.add("active");
+                }
+                isDragging = true;
+                playerCard.style.position = "absolute";
+
+                initialClickX = e.clientX - playerCard.getBoundingClientRect().left;
+                initialClickY = e.clientY - playerCard.getBoundingClientRect().top;
+
+                initialCardX = playerCard.getBoundingClientRect().left;
+                initialCardY = playerCard.getBoundingClientRect().top;
+
+                playerCard.style.cursor = 'grabbing';
+                playerCard.style.zIndex = '1';
+            });
+
+            document.addEventListener("mousemove", (e) => {
+                if (isDragging) {
+                    const newX = e.clientX - initialClickX;
+                    const newY = e.clientY - initialClickY;
+
+                    playerCard.style.left = `${newX}px`;
+                    playerCard.style.top = `${newY}px`;
+
+                }
+            });
+
+            document.addEventListener("mouseup", (e) => {
+                if (isDragging) {
+                    isDragging = false;
+
+                    playerCard.style.cursor = 'grab';
+                    playerCard.style.zIndex = '';
+
+                    const whiteboardRect = whiteboard.getBoundingClientRect();
+                    const cardRect = playerCard.getBoundingClientRect();
+
+                    if (
+                        cardRect.left >= whiteboardRect.left &&
+                        cardRect.right <= whiteboardRect.right &&
+                        cardRect.top >= whiteboardRect.top &&
+                        cardRect.bottom <= whiteboardRect.bottom
+                    ) {
+                        console.log("Dropped on whiteboard");
+                        inWhiteboard = true;
+
+                        console.log("cardRec left", cardRect.left);
+                        console.log("cardRec top", cardRect.top)
+
+                        console.log("whiteboardRec left", whiteboardRect.left);
+                        console.log("whiteboardRec top", whiteboardRect.top);
+                        console.log("width", cardRect.width / 14);
+
+                        const canvasX = cardRect.left - canvas.upperCanvasEl.getBoundingClientRect().left + cardRect.width / 18;
+                        const canvasY = cardRect.top - canvas.upperCanvasEl.getBoundingClientRect().top + cardRect.height / 18;
+
+                        const circle = new fabric.Circle({
+                            left: canvasX,
+                            top: canvasY,
+                            radius: 30,
+                            fill: 'white',
+                        });
+
+                        canvas.add(circle);
+                        // const imageUrl = '/image/default-profile.png';
+                        // fabric.Image.fromURL(imageUrl, function(img) {
+                        //     img.scaleToWidth(circle.radius * 2);
+                        //     img.scaleToHeight(circle.radius * 2);
+                        //
+                        //     circle.addWithUpdate(img);
+                        //
+                        //     canvas.add(circle);
+                        // });
+
+                        playerCard.style.display = 'none';
+
+                        playerCard.removeEventListener("mousedown", handleMouseDown);
+                        document.removeEventListener("mousemove", handleMouseMove);
+                        document.removeEventListener("mouseup", handleMouseUp);
+
+                    } else {
+                        playerCard.style.left = `${initialCardX}px`;
+                        playerCard.style.top = `${initialCardY}px`;
+                        playerCard.style.borderRadius = '';
+                        playerCard.classList.remove("active");
+                    }
+                }
+            });
+        });
 
         const upperCanvas = document.querySelector(".upper-canvas")
 
@@ -1031,78 +1057,78 @@
             loadFormation(selectedOption);
         });
 
-    function loadFormation(target) {
-      const formationId = target.value;
-      const formation = target.textContent;
-      const custom = target.getAttribute("data-custom")
-      const customPlayerPositions = target.getAttribute("data-custom-positions");
-      canvas.clear();
-      if (formationId !== "-1") {
-        console.log(formationId, formation, custom, customPlayerPositions)
-        if (custom === true || custom === "true") {
-          console.log("here")
-          renderPlayersCustom(customPlayerPositions)
-        } else {
-          renderPlayers(formation)
+        function loadFormation(target) {
+            const formationId = target.value;
+            const formation = target.textContent;
+            const custom = target.getAttribute("data-custom")
+            const customPlayerPositions = target.getAttribute("data-custom-positions");
+            canvas.clear();
+            if (formationId !== "-1") {
+                console.log(formationId, formation, custom, customPlayerPositions)
+                if (custom === true || custom === "true") {
+                    console.log("here")
+                    renderPlayersCustom(customPlayerPositions)
+                } else {
+                    renderPlayers(formation)
+                }
+            }
         }
-      }
-    }
 
-    const radius = 25;
+        const radius = 25;
 
-    // Adapted from formations page
-    function renderPlayers(formationString) {
-      const formation = formationString.split("-").map(num => parseInt(num));
-      // Builds formation
-      let j = 0;
-      for (let i = 0; i < formation.length; i++) {
-        let playersInRow = formation[i]
-        while (formation[i] !== 0) {
-          const top = canvas.height - ((i + 1) / (formation.length + 1)) * canvas.height - radius;
-          const left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * canvas.width - radius;
-          console.log(top, left)
-          const player = new fabric.Circle({
-            left: left,
-            top: top,
-            radius: radius,
-            fill: "red",
-            originX: 'left',
-            originY: 'top',
-            hasControls: false
-          });
-          canvas.add(player)
-          formation[i] -= 1;
-          j++;
+        // Adapted from formations page
+        function renderPlayers(formationString) {
+            const formation = formationString.split("-").map(num => parseInt(num));
+            // Builds formation
+            let j = 0;
+            for (let i = 0; i < formation.length; i++) {
+                let playersInRow = formation[i]
+                while (formation[i] !== 0) {
+                    const top = canvas.height - ((i + 1) / (formation.length + 1)) * canvas.height - radius;
+                    const left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * canvas.width - radius;
+                    console.log(top, left)
+                    const player = new fabric.Circle({
+                        left: left,
+                        top: top,
+                        radius: radius,
+                        fill: "red",
+                        originX: 'left',
+                        originY: 'top',
+                        hasControls: false
+                    });
+                    canvas.add(player)
+                    formation[i] -= 1;
+                    j++;
+                }
+            }
         }
-      }
-    }
 
-    function renderPlayersCustom(positions) {
-      // Due to a lack of foresight the displacement is saved as a static px value rather than a percentage, hence
-      // it is prudent to turn the value into a percentage
-      const pitchHeightOriginal = 360;
-      const pitchWidthOriginal = 288;
+        function renderPlayersCustom(positions) {
+            // Due to a lack of foresight the displacement is saved as a static px value rather than a percentage, hence
+            // it is prudent to turn the value into a percentage
+            const pitchHeightOriginal = 360;
+            const pitchWidthOriginal = 288;
 
-      const positionsList = positions.split(';')
-      let numPlayers = positionsList.length;
-      for (let i = 0; i < numPlayers; i++) {
-        let coordinates = positionsList[i].split(",")
-        const left = parseInt(coordinates[0]) * canvas.width / pitchWidthOriginal;
-        let top = canvas.width - parseInt(coordinates[1]) * canvas.width / pitchHeightOriginal;
-        const player = new fabric.Circle({
-          left: left,
-          top: top,
-          radius: radius,
-          fill: "red",
-          originX: 'left',
-          originY: 'top',
-          hasControls: false
-        });
-        console.log(top, left)
-        canvas.add(player)
-      }
-    }
-  })
+            const positionsList = positions.split(';')
+            let numPlayers = positionsList.length;
+            for (let i = 0; i < numPlayers; i++) {
+                let coordinates = positionsList[i].split(",")
+                const left = parseInt(coordinates[0]) * canvas.width / pitchWidthOriginal;
+                let top = canvas.width - parseInt(coordinates[1]) * canvas.width / pitchHeightOriginal;
+                const player = new fabric.Circle({
+                    left: left,
+                    top: top,
+                    radius: radius,
+                    fill: "red",
+                    originX: 'left',
+                    originY: 'top',
+                    hasControls: false
+                });
+                console.log(top, left)
+                canvas.add(player)
+            }
+        }
+    })
 
 
 </script>
