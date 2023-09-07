@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * <p>Handles redirecting to login if you're not signed in.</p> 
  * 
- * Code copied from https://stackoverflow.com/a/34091221
+ * Code adapted from https://stackoverflow.com/a/34091221
  * @author Rob Winch
  */
 public class ContinueEntryPoint extends LoginUrlAuthenticationEntryPoint {
