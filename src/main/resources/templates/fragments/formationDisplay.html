@@ -7,8 +7,8 @@ Required variables: formationEditable, true if you want the formation to be edit
   <input type="hidden" name="custom" class="custom" value="false">
   <input type="hidden" name="customPlayerPositions" class="custom-player-positions">
   <div id="pitch" class="pitch"></div>
-  <script>
-    const formationEditable = [[${formationEditable}]];
+  <script th:inline="javascript">
+    const formationEditable = /*[[${formationEditable}]]*/ false;
 
     const pitch = document.getElementById("pitch");
     const custom = document.querySelector(".custom");
