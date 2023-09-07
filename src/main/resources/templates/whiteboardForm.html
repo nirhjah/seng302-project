@@ -37,8 +37,12 @@
         </div>
         <div class="dropdown">
           <label for="formation">Line-Up</label>
-          <select class="select" id="lineup" disabled>
-            <option value="disabled">disabled</option>
+          <select class="select" id="lineup">
+            <option value="-1">(No Lineup)</option>
+            <option th:each="lineup : ${teamLineUps}"
+                    th:value="${lineup.lineUpId}"
+                    th:text="${lineup.lineUpId.toString()}"
+            ></option>
           </select>
         </div>
       </div>
