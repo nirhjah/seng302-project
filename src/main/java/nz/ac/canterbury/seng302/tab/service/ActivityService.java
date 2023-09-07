@@ -265,9 +265,9 @@ public class ActivityService {
      */
     public List<User> playersInLineUpForActivity(Activity activity) {
 
-        List<LineUp> lineup = lineUpRepository.findLineUpsByActivityId(activity.getId());
-        if (!lineup.isEmpty()) {
+        if (lineUpRepository.findLineUpByActivityId(activity.getId()).isPresent()) {
 
+            List<LineUp> lineup = lineUpRepository.findLineUpsByActivityId(activity.getId());
             lineup.sort(Comparator.comparingLong(LineUp::getLineUpId).reversed());
 
             LineUp lineUp =  lineup.get(0);
