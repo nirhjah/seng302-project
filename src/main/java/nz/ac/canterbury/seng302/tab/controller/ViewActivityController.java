@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 import java.time.LocalDateTime;
 import java.time.Duration;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
 import java.util.*;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,6 +12,7 @@ import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.entity.Formation;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
@@ -21,7 +23,11 @@ import nz.ac.canterbury.seng302.tab.form.CreateEventForm;
 import nz.ac.canterbury.seng302.tab.service.*;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import nz.ac.canterbury.seng302.tab.service.FactService;
+import nz.ac.canterbury.seng302.tab.service.LineUpPositionService;
+import nz.ac.canterbury.seng302.tab.service.LineUpService;
+
 import nz.ac.canterbury.seng302.tab.validator.FactValidators;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,15 +68,20 @@ public class ViewActivityController {
 
     @Autowired
     private FactService factService;
+
     @Autowired
     private LineUpService lineUpService;
+
     @Autowired
     private LineUpPositionService lineUpPositionService;
-
 
     String createEventFormBindingResult = "createEventFormBindingResult";
 
     String addFactFormBindingResult = "addFactFormBindingResult";
+
+    String addSubFormBindingResult = "addSubFormBindingResult";
+
+    String addSubFormString = "addSubForm";
 
     String createEventFormString = "createEventForm";
 
@@ -86,9 +97,13 @@ public class ViewActivityController {
 
     String scoreTabName = "score-tab";
 
+    String subTabName = "formations-tab";
+
     String viewActivityRedirect = "redirect:./view-activity?activityID=%s";
 
     int scoreTabIndex = 3;
+
+    int subTabIndex = 2;
 
     @Autowired
     public ViewActivityController(UserService userService, ActivityService activityService, TeamService teamService, FactService factService, LineUpService lineUpService, LineUpPositionService lineUpPositionService) {
@@ -159,6 +174,10 @@ public class ViewActivityController {
             model.addAttribute("org.springframework.validation.BindingResult.addFactForm",
                     model.asMap().get(addFactFormBindingResult));
         }
+        if (model.asMap().containsKey(addSubFormBindingResult)) {
+            model.addAttribute("org.springframework.validation.BindingResult.addSubForm",
+                    model.asMap().get(addSubFormBindingResult));
+        }
         Activity activity = activityService.findActivityById(activityID);
         if (activity == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
@@ -226,6 +245,14 @@ public class ViewActivityController {
         List<Fact> factList = factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity);
 
         model.addAttribute("factList", factList);
+
+        // attributes for the subs
+        // all players who are currently playing - for the sub off
+        List<User> playersPlaying = getAllPlayersCurrentlyPlaying(activity.getId());
+        model.addAttribute("playersInLineUp", playersPlaying);
+        // all players who arent playing - for the sub on
+        List<User> playersNotPlaying = getAllPlayersNotCurrentlyPlaying(activity.getId());
+        model.addAttribute("playersNotInLineUp", playersNotPlaying);
 
         // Rambling that's required for navBar.html
         model.addAttribute(httpServletRequestString, request);
@@ -303,8 +330,8 @@ public class ViewActivityController {
         if (LocalDateTime.now().isBefore(activity.getActivityStart())) {
             result.addError(new FieldError("addFactForm", "timeOfFact", "You can only add a fact once the activity starts"));
         }
-        redirectAttributes.addFlashAttribute("stayOnTab_name", "facts-tab");
-        redirectAttributes.addFlashAttribute("stayOnTab_index", 1);
+        redirectAttributes.addFlashAttribute(stayOnTabNameString, "facts-tab");
+        redirectAttributes.addFlashAttribute(stayOnTabIndexString, 1);
 
         if (result.hasErrors()) {
             logger.info(result.getAllErrors().toString());
@@ -317,8 +344,8 @@ public class ViewActivityController {
 
         Fact fact = new Fact(description, timeOfFact, activity);
         factService.addOrUpdate(fact);
-        redirectAttributes.addFlashAttribute("stayOnTab_Name", "facts-tab");
-        redirectAttributes.addFlashAttribute("stayOnTab_index", 1);
+        redirectAttributes.addFlashAttribute(stayOnTabNameString, "facts-tab");
+        redirectAttributes.addFlashAttribute(stayOnTabIndexString, 1);
         return viewActivityRedirectUrl;
 
     }
@@ -501,6 +528,167 @@ public class ViewActivityController {
 
     }
 
+    @PostMapping("/add-sub")
+    public String createSub(
+                            @RequestParam(name="actId", defaultValue="-1") long actId,
+                            @RequestParam(name="playerOn", defaultValue="-1") int subOnId,
+                            @RequestParam(name="playerOff", defaultValue="-1") int subOffId,
+                            @RequestParam(name="description", defaultValue="") String description,
+                            @RequestParam(name = "time") String time,
+                            @Validated CreateEventForm createEventForm,
+                            BindingResult bindingResult,
+                            HttpServletRequest request,
+                            Model model,
+                            HttpServletResponse httpServletResponse,
+                            RedirectAttributes redirectAttributes) {
+        
+        logger.info("POST /add-sub");
+
+        String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
+        Activity currActivity = activityService.findActivityById(actId);
+
+        // the user can only add the event if it is currently happening 
+        if (LocalDateTime.now().isBefore(currActivity.getActivityStart())) {
+            bindingResult.addError(new FieldError(createEventFormString, "time", "You can only add a sub once the activity starts"));
+        }
+        
+        // error checking the time 
+        if (!time.isBlank()) {
+            try {
+                int parsedTime = Integer.parseInt(time);
+                // check if the time is within the activity
+                if (!activityService.checkTimeOfFactWithinActivity(currActivity, parsedTime)) {
+                    bindingResult.addError(new FieldError(createEventFormString, "time", GOAL_NOT_SCORED_WITHIN_DURATION));
+                }
+
+            } catch (NumberFormatException e) {
+                bindingResult.addError(new FieldError(createEventFormString, "time", "Must be a number"));
+            }
+        } else {
+            bindingResult.addError(new FieldError(createEventFormString, "time", FIELD_CANNOT_BE_BLANK_MSG));
+        }
+
+        redirectAttributes.addFlashAttribute(stayOnTabNameString, "formations-tab");
+        redirectAttributes.addFlashAttribute(stayOnTabIndexString, 2);
+
+        Optional<User> optionalPlayerOn = userService.findUserById(subOnId);
+
+        Optional<User> optionalPlayerOff = userService.findUserById(subOffId);
+        if (optionalPlayerOff.isEmpty()) {
+            bindingResult.addError(new FieldError(createEventFormString, "subOff", PLAYER_IS_REQUIRED_MSG));
+        }
+        
+        if (optionalPlayerOn.isEmpty()) {
+            bindingResult.addError(new FieldError(createEventFormString, "subOn", PLAYER_IS_REQUIRED_MSG));
+        }
+
+        // check if the description is greater than 150 chars 
+        if (description.length() > 150) {
+            bindingResult.addError(new FieldError(createEventFormString, "description", "The description must be less than 150 characters"));
+        }
+        
+        if (bindingResult.hasErrors()) {
+            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            redirectAttributes.addFlashAttribute("subInvalid", leaveModalOpenString);
+            redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
+            redirectAttributes.addFlashAttribute(stayOnTabNameString, subTabName);
+            redirectAttributes.addFlashAttribute(stayOnTabIndexString, subTabIndex);
+            return viewActivityRedirectUrl;
+        }
+
+        List<Fact> factList = new ArrayList<>();
+        Substitution sub = new Substitution(description, time, currActivity, optionalPlayerOff.get(), optionalPlayerOn.get());
+        factList.add(sub);
+        currActivity.addFactList(factList);
+        activityService.updateOrAddActivity(currActivity);
+        logger.info("added the activity");
+
+
+        return viewActivityRedirectUrl;
+    }
+
+    /**
+     * returns the list of players without coaches and manageers
+     * @param team the team the players are in 
+     * @return a list of the users that arent a coach or manager for that team 
+    */
+    private List<User> removeCoachesAndManager(Team team, List<User> players) {
+        Set<User> coachesAndMangers = team.getTeamCoaches();
+        coachesAndMangers.addAll(team.getTeamManagers());
+        List<User> teamCoachesAndManagersList = coachesAndMangers.stream().toList();
+
+        return players.stream().filter(player -> !teamCoachesAndManagersList.contains(player)).toList();
+    }
+
+    /**
+     * returns the current players who are playing in the activity -- takes into account substitutions 
+     * @param actId the activity id 
+     * @return a list of the users that are currrently playing in the activity
+    */
+    private List<User> getAllPlayersCurrentlyPlaying(long actId) {
+        List<User> playersPlaying = getAllPlayersPlaying(actId);
+        Activity currActivity = activityService.findActivityById(actId);
+        if (currActivity == null  || currActivity.getTeam() == null) {
+            return List.of();
+        }
+        List<Fact> allSubs = factService.getAllFactsOfGivenTypeForActivity(2, currActivity); // list of all made subs in the game 
+        
+        allSubs.sort(Comparator.comparingInt(sub -> Integer.parseInt(sub.getTimeOfEvent()))); // all the subs sorted by time 
+        
+        for (Fact fact : allSubs) {
+            Substitution sub = (Substitution) fact;
+            User playerOn = sub.getPlayerOn();
+            User playerOff = sub.getPlayerOff();
+            playersPlaying = playersPlaying.stream().map(player -> player.getUserId() == playerOff.getUserId() ? playerOn : player).toList();
+        }
+
+        return removeCoachesAndManager(currActivity.getTeam(), playersPlaying);
+    }
+
+    /**
+     * @param actId the activity id 
+     * @return a list of users who are not in the lineup
+    */
+    private List<User> getAllPlayersNotCurrentlyPlaying(long actId) {
+        Activity activity = activityService.findActivityById(actId);
+        if (activity == null  || activity.getTeam() == null) {
+            return List.of();
+        }
+        List<User> playersPlaying = getAllPlayersCurrentlyPlaying(actId);
+        List<User> playersInTeam = new ArrayList<>(activityService.findActivityById(actId).getTeam().getTeamMembers());
+
+        List<User> playersNotPlaying = playersInTeam.stream().filter(player -> !playersPlaying.contains(player)).toList();
+
+        return removeCoachesAndManager(activity.getTeam(), playersNotPlaying);
+    }
+
+    /**
+     * returns a list of the users that are in the lineup 
+     * @param actId the activity id 
+     * @return a list of the users that are currently in the lineup for the activity, if there are no players the returns an empty list 
+    */
+    private List<User> getAllPlayersPlaying(long actId) {
+        Optional<List<LineUp>> optionalActivityLineups = lineUpService.findLineUpByActivity(actId);
+        if (optionalActivityLineups.isEmpty()) {
+            return List.of(); 
+        }
+        List<LineUp> activityLineups = optionalActivityLineups.get();
+        
+        if (activityLineups.isEmpty()) { // there is no lineup for some activities
+            return List.of();
+        } 
+
+        LineUp lineup = activityLineups.get(activityLineups.size() -1); // here we get the last one as that is the most recent one 
+
+        Optional<List<LineUpPosition>> optionaLineupPositions = lineUpPositionService.findLineUpPositionsByLineUp(lineup.getLineUpId());
+
+        if (optionaLineupPositions.isEmpty()) {
+            return List.of();
+        }
+
+        return optionaLineupPositions.get().stream().map(x -> x.getPlayer()).toList();
+    }
+
 
     /**
      * Handles creating an event and adding overall scores
@@ -616,5 +804,7 @@ public class ViewActivityController {
 
         return viewActivityRedirectUrl;
     }
+
+
 
 }

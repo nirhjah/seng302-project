@@ -49,10 +49,8 @@ public class LineUpService {
         lineUpRepository.save(lineUp);
     }
 
-
     public Optional<List<LineUp>> findLineUpByActivity(long actId) {
         return lineUpRepository.findLineUpByActivityId(actId);
     }
-
 
 }
