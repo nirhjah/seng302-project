@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
@@ -168,7 +169,12 @@ public class FactServiceTest {
         activity.addFactList(factList);
         activityRepository.save(activity);
 
-        Assertions.assertEquals(List.of(Map.of(player, 1L)), (factService.getTop5Scorers(team)));
+        Map<User, Long> scoreInformation = new HashMap<>();
+        scoreInformation.put(player, 1L);
+
+
+        Assertions.assertEquals(scoreInformation, (factService.getTop5Scorers(team)));
+
     }
 
 
@@ -202,7 +208,14 @@ public class FactServiceTest {
         activity.addFactList(factList);
         activityRepository.save(activity);
 
-        Assertions.assertEquals(List.of(Map.of(creator, 2L), Map.of(player, 1L)), (factService.getTop5Scorers(team)));
+
+        Map<User, Long> scoreInformation = new HashMap<>();
+        scoreInformation.put(creator, 2L);
+        scoreInformation.put(player, 1L);
+
+
+        Assertions.assertEquals(scoreInformation, (factService.getTop5Scorers(team)));
+
     }
 
     @Test
@@ -281,6 +294,15 @@ public class FactServiceTest {
         activity.addFactList(factList);
         activityRepository.save(activity);
 
-        Assertions.assertEquals(List.of(Map.of(player4, 6L), Map.of(player3, 5L), Map.of(player2, 4L), Map.of(player1, 3L), Map.of(creator, 2L)), (factService.getTop5Scorers(team)));
+        Map<User, Long> scoreInformation = new HashMap<>();
+        scoreInformation.put(player4, 6L);
+        scoreInformation.put(player3, 5L);
+        scoreInformation.put(player2, 4L);
+        scoreInformation.put(player1, 3L);
+        scoreInformation.put(creator, 2L);
+
+
+
+        Assertions.assertEquals(scoreInformation, (factService.getTop5Scorers(team)));
     }
 }

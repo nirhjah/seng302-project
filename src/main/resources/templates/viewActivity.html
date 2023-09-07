@@ -156,9 +156,10 @@
                                     </div>
                                 </div>
                                 <div class="fact-desc">
-                                    <label class="fact-input" for="desc-of-fact">Description*:</label>
-                                    <textarea class="fact-input" name="description" id="desc-of-fact" type="text-area"
+                                    <label class="fact-input" for="description">Description*:</label>
+                                    <textarea class="fact-input" name="description" id="description" type="text-area"
                                               rows="5" th:field="*{description}" th:value="${description}"></textarea>
+                                    <p id="charCount" class="charCount"></p>
                                 </div>
                                 <div style="display: unset" th:each="err : ${#fields.errors('description')}"
                                      th:text="${err}" class="error-message"></div>
@@ -427,8 +428,6 @@
                                   th:object="${createEventForm}" class="view-activity-form">
                                 <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
                                 <h3>Add Goal</h3>
-
-
                                 <div class="select-container">
                                     <label class="goal-form-labels" for="scorer" style="display: block">Scorer <span
                                             class="required">*</span> </label>
@@ -447,11 +446,14 @@
                                 </div>
 
                                 <div class="description-box">
-                                    <label class="goal-form-labels" for="description">Description</label>
-                                    <textarea class="description-text" id="description" th:name="description" autofocus
+                                    <label class="goal-form-labels" for="description-goal">Description</label>
+                                    <textarea class="description-text" id="description-goal" th:name="description" autofocus
                                               placeholder=""
                                               th:field="*{description}"></textarea>
+                                    <p id="charCountGoal" class="charCountGoal"></p>
                                 </div>
+                                <div style="display: unset" th:each="err : ${#fields.errors('description')}" th:text="${err}"
+                                     class="error-message"></div>
 
                                 <div class="time-goal-value-div">
 
@@ -787,6 +789,41 @@
             });
             displayContent[index].classList.add('active');
         });
+    });
+
+    //Description Char Limit For Fact
+    const textareaFact = document.getElementById('description');
+    const charCountFact = document.getElementById('charCount');
+    const textareaGoal = document.getElementById('description-goal');
+    const charCountGoal = document.getElementById('charCountGoal');
+    const limit = 150;
+
+    textareaFact.addEventListener('input', function() {
+        const value = textareaFact.value;
+        const remainingChars = limit - value.length;
+        charCountFact.textContent = `Characters remaining: ${remainingChars}`;
+
+        if (remainingChars <= 0) {
+            textareaFact.style.borderColor = 'red';
+            charCountFact.style.color='red';
+        } else {
+            textareaFact.style.borderColor = '#415a77';
+            charCountFact.style.color='#888888';
+        }
+    });
+
+    textareaGoal.addEventListener('input', function() {
+        const value = textareaGoal.value;
+        const remainingChars = limit - value.length;
+        charCountGoal.textContent = `Characters remaining: ${remainingChars}`;
+
+        if (remainingChars <= 0) {
+            textareaGoal.style.borderColor = 'red';
+            charCountGoal.style.color='red';
+        } else {
+            textareaGoal.style.borderColor = '#415a77';
+            charCountGoal.style.color='#888888';
+        }
     });
 </script>
 </div>
