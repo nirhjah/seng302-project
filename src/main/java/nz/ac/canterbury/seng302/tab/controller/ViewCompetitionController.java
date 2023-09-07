@@ -35,7 +35,6 @@ public class ViewCompetitionController {
         this.competitionService = competitionService;
     }
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMM yyyy");
 
     /**
      *
@@ -66,7 +65,7 @@ public class ViewCompetitionController {
             throw new IllegalArgumentException("Competition of unknown type: " + competition);
         }
 
-        String displayDate = competition.getCompetitionStartDate().format(DATE_FORMATTER);
+        String displayDate = competition.getCompetitionStartDate().format(CompetitionService.DATE_FORMATTER);
         model.addAttribute("displayDate", displayDate);
 
         // Rambling that's required for navBar.html

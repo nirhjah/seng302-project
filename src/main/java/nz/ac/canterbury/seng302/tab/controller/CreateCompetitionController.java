@@ -18,6 +18,7 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.validator.CompetitionFormValidators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -50,6 +51,7 @@ public class CreateCompetitionController {
     private static final String TEAM_ATTR = "teams";
     private static final String USER_ATTR = "users";
 
+    @Autowired
     public CreateCompetitionController(CompetitionService competitionService, UserService userService, TeamService teamService) {
         this.competitionService = competitionService;
         this.userService = userService;

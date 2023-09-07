@@ -84,6 +84,7 @@ public class ViewAllCompetitionsController {
 
         model.addAttribute("page", page);
         model.addAttribute("totalPages", pageResult.getTotalPages());
+        model.addAttribute("dateFormatter", CompetitionService.DATE_FORMATTER);
 
         return "viewAllCompetitions";
     }
