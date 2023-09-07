@@ -118,7 +118,7 @@ public class AddActivityStatisticsIntegrationTests {
 
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
-        activityService = Mockito.spy(new ActivityService(activityRepository));
+        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository));
         factService= Mockito.spy(new FactService(factRespository));
         lineUpService=Mockito.spy(new LineUpService(lineUpRepository));
         lineUpPositionService = Mockito.spy(new LineUpPositionService(lineUpPositionRepository));
