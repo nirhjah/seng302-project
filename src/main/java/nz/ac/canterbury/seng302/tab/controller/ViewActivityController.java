@@ -330,7 +330,7 @@ public class ViewActivityController {
             result.addError(new FieldError("addFactForm", "timeOfFact", "You can only add a fact once the activity starts"));
         }
         redirectAttributes.addFlashAttribute(stayOnTabNameString, "facts-tab");
-        redirectAttributes.addFlashAttribute("stayOnTab_index", 1);
+        redirectAttributes.addFlashAttribute(stayOnTabIndexString, 1);
 
         if (result.hasErrors()) {
             logger.info(result.getAllErrors().toString());
@@ -343,8 +343,8 @@ public class ViewActivityController {
 
         Fact fact = new Fact(description, timeOfFact, activity);
         factService.addOrUpdate(fact);
-        redirectAttributes.addFlashAttribute("stayOnTab_Name", "facts-tab");
-        redirectAttributes.addFlashAttribute("stayOnTab_index", 1);
+        redirectAttributes.addFlashAttribute(stayOnTabNameString, "facts-tab");
+        redirectAttributes.addFlashAttribute(stayOnTabIndexString, 1);
         return viewActivityRedirectUrl;
 
     }
@@ -566,7 +566,7 @@ public class ViewActivityController {
         }
 
         redirectAttributes.addFlashAttribute(stayOnTabNameString, "formations-tab");
-        redirectAttributes.addFlashAttribute("stayOnTab_index", 2);
+        redirectAttributes.addFlashAttribute(stayOnTabIndexString, 2);
 
         Optional<User> optionalPlayerOn = userService.findUserById(subOnId);
 
@@ -612,7 +612,7 @@ public class ViewActivityController {
     private List<User> removeCoachesAndManager(Team team, List<User> players) {
         Set<User> coachesAndMangers = team.getTeamCoaches();
         coachesAndMangers.addAll(team.getTeamManagers());
-        List<User> teamCoachesAndManagersList = coachesAndMangers.stream().collect(Collectors.toList());
+        List<User> teamCoachesAndManagersList = coachesAndMangers.stream().toList();
 
         return players.stream().filter(player -> !teamCoachesAndManagersList.contains(player)).toList();
     }
