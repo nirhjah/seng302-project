@@ -24,8 +24,6 @@ import java.util.Optional;
  */
 @Service
 public class CompetitionService {
-    Logger logger = LoggerFactory.getLogger(getClass());
-
     private final CompetitionRepository competitionRepository;
 
     private static final List<String> EMPTY_LIST = List.of();

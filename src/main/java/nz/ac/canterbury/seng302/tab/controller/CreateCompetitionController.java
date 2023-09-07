@@ -156,7 +156,6 @@ public class CreateCompetitionController {
      * @param model                 The model object to hold attributes for the view.
      * @param httpServletRequest    The request object to get additional information about the HTTP request.
      * @return The view name to be displayed after the competition creation/edit process.
-     * @throws IOException If an I/O error occurs during file handling.
      */
     @PostMapping("/create-competition")
     public String createCompetition(

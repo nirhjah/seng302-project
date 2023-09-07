@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 /**
@@ -28,7 +27,7 @@ public class ViewCompetitionController {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    private CompetitionService competitionService;
+    private final CompetitionService competitionService;
 
     @Autowired
     public ViewCompetitionController(CompetitionService competitionService) {
