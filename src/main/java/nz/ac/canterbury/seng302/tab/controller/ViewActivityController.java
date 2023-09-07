@@ -329,7 +329,7 @@ public class ViewActivityController {
         if (LocalDateTime.now().isBefore(activity.getActivityStart())) {
             result.addError(new FieldError("addFactForm", "timeOfFact", "You can only add a fact once the activity starts"));
         }
-        redirectAttributes.addFlashAttribute("stayOnTab_name", "facts-tab");
+        redirectAttributes.addFlashAttribute(stayOnTabNameString, "facts-tab");
         redirectAttributes.addFlashAttribute("stayOnTab_index", 1);
 
         if (result.hasErrors()) {
@@ -565,7 +565,7 @@ public class ViewActivityController {
             bindingResult.addError(new FieldError(createEventFormString, "time", FIELD_CANNOT_BE_BLANK_MSG));
         }
 
-        redirectAttributes.addFlashAttribute("stayOnTab_name", "formations-tab");
+        redirectAttributes.addFlashAttribute(stayOnTabNameString, "formations-tab");
         redirectAttributes.addFlashAttribute("stayOnTab_index", 2);
 
         Optional<User> optionalPlayerOn = userService.findUserById(subOnId);
@@ -585,7 +585,6 @@ public class ViewActivityController {
         }
         
         if (bindingResult.hasErrors()) {
-            logger.info(bindingResult.getAllErrors().toString());
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             redirectAttributes.addFlashAttribute("subInvalid", leaveModalOpenString);
             redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
@@ -614,9 +613,8 @@ public class ViewActivityController {
         Set<User> coachesAndMangers = team.getTeamCoaches();
         coachesAndMangers.addAll(team.getTeamManagers());
         List<User> teamCoachesAndManagersList = coachesAndMangers.stream().collect(Collectors.toList());
-        List<User> playersNotCoachesOrMangers = players.stream().filter(player -> !teamCoachesAndManagersList.contains(player)).collect(Collectors.toList());
 
-        return playersNotCoachesOrMangers;
+        return players.stream().filter(player -> !teamCoachesAndManagersList.contains(player)).toList();
     }
 
     /**
@@ -638,13 +636,10 @@ public class ViewActivityController {
             Substitution sub = (Substitution) fact;
             User playerOn = sub.getPlayerOn();
             User playerOff = sub.getPlayerOff();
-            playersPlaying = playersPlaying.stream().map(player -> player.getUserId() == playerOff.getUserId() ? playerOn : player).collect(Collectors.toList());
+            playersPlaying = playersPlaying.stream().map(player -> player.getUserId() == playerOff.getUserId() ? playerOn : player).toList();
         }
 
-        // remove coaches and managers
-        List<User> playersWithoutCoachesOrMangers = removeCoachesAndManager(currActivity.getTeam(), playersPlaying);
-
-        return playersWithoutCoachesOrMangers;
+        return removeCoachesAndManager(currActivity.getTeam(), playersPlaying);
     }
 
     /**
@@ -659,10 +654,9 @@ public class ViewActivityController {
         List<User> playersPlaying = getAllPlayersCurrentlyPlaying(actId);
         List<User> playersInTeam = new ArrayList<>(activityService.findActivityById(actId).getTeam().getTeamMembers());
 
-        List<User> playersNotPlaying = playersInTeam.stream().filter(player -> !playersPlaying.contains(player)).collect(Collectors.toList());
-        List<User> playersWithoutCoachesOrMangers = removeCoachesAndManager(activity.getTeam(), playersNotPlaying);
-        
-        return playersWithoutCoachesOrMangers;
+        List<User> playersNotPlaying = playersInTeam.stream().filter(player -> !playersPlaying.contains(player)).toList();
+
+        return removeCoachesAndManager(activity.getTeam(), playersNotPlaying);
     }
 
     /**
@@ -677,7 +671,7 @@ public class ViewActivityController {
         }
         List<LineUp> activityLineups = optionalActivityLineups.get();
         
-        if (activityLineups.size() <= 0) { // there is no lineup for some activities
+        if (activityLineups.isEmpty()) { // there is no lineup for some activities
             return List.of();
         } 
 
@@ -689,9 +683,7 @@ public class ViewActivityController {
             return List.of();
         }
 
-        List<User> playersInLineUp = optionaLineupPositions.get().stream().map(x -> x.getPlayer()).collect(Collectors.toList());
-
-        return playersInLineUp;
+        return optionaLineupPositions.get().stream().map(x -> x.getPlayer()).toList();
     }
 
 
