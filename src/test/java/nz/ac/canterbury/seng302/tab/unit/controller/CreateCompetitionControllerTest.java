@@ -22,11 +22,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -35,7 +30,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 
 @SpringBootTest
@@ -113,8 +111,8 @@ class CreateCompetitionControllerTest {
     @Test
     @WithMockUser
     void testCreateTeamCompetition() throws Exception {
-        MockHttpServletRequestBuilder builder = post(VIEW)
-                        .param("usersOrTeams", TEAMS_ENUM);
+        MockHttpServletRequestBuilder builder = post(VIEW);
+
         String name = "Le Epic Competition";
         String sport = "Running";
         Grade grade = Grade.randomGrade();
@@ -126,10 +124,8 @@ class CreateCompetitionControllerTest {
 
         mockMvc.perform(builder);
 
-        Optional<Competition> optionalCompetition = competitionService.findCompetitionById(1L);
+        Competition competition = competitionRepository.findAll().get(0);
 
-        assertTrue(optionalCompetition.isPresent());
-        Competition competition = optionalCompetition.get();
         assertEquals(competition.getClass(), TeamCompetition.class);
 
         assertEquals(competition.getCompetitionEndDate(), time);
@@ -140,8 +136,8 @@ class CreateCompetitionControllerTest {
     }
 
     Competition createAndTestUserCompetition() {
-        MockHttpServletRequestBuilder builder = post(VIEW)
-                .param("usersOrTeams", USERS_ENUM);
+        MockHttpServletRequestBuilder builder = post(VIEW);
+
         String name = "Comp2";
         String sport = "Running";
         Grade grade = Grade.randomGrade();
@@ -157,10 +153,8 @@ class CreateCompetitionControllerTest {
             fail("error thrown");
         }
 
-        Optional<Competition> optionalCompetition = competitionService.findCompetitionById(1L);
+        Competition competition = competitionRepository.findAll().get(0);
 
-        assertTrue(optionalCompetition.isPresent());
-        Competition competition = optionalCompetition.get();
         assertEquals(competition.getClass(), UserCompetition.class);
 
         assertEquals(competition.getCompetitionEndDate(), time);
@@ -186,6 +180,10 @@ class CreateCompetitionControllerTest {
 
         MockHttpServletRequestBuilder builder = post(VIEW)
                 .param("competitionID", id);
+
+        addUserValues(builder);
+        addGrade(builder, Grade.randomGrade());
+        addValues(builder, "basicComp", "soccer", LocalDateTime.now());
 
         mockMvc.perform(builder)
             .andExpect(status().is3xxRedirection())

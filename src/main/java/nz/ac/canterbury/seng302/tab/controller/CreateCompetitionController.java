@@ -188,6 +188,7 @@ public class CreateCompetitionController {
 
         Optional<Competition> optionalCompetition = competitionService.findCompetitionById(competitionID);
         if (optionalCompetition.isPresent()) {
+            logger.info("IS PRESENT");
             // Then we are editing:
             Competition editCompetition = optionalCompetition.get();
 
@@ -200,6 +201,7 @@ public class CreateCompetitionController {
         } else {
             // Else, create a new competition:
             Competition competition;
+            logger.info("IS NOT PRESENT");
 
             if (isTeamCompetition) {
                 Set<Team> teams = getTeamsFromIds(IDs);
