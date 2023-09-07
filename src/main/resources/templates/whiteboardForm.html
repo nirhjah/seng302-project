@@ -373,23 +373,36 @@
                         const canvasX = cardRect.left - canvas.upperCanvasEl.getBoundingClientRect().left + cardRect.width / 18;
                         const canvasY = cardRect.top - canvas.upperCanvasEl.getBoundingClientRect().top + cardRect.height / 18;
 
-                        const circle = new fabric.Circle({
+                        const whiteCircle = new fabric.Circle({
                             left: canvasX,
                             top: canvasY,
                             radius: 30,
                             fill: 'white',
                         });
+                        const playerName = new fabric.Text('Player Name', {
+                            fill: 'black',
+                            left: canvasX-10,
+                            top: canvasY + 60,
+                            fontFamily: '"Noto Sans", sans-serif',
+                            fontSize:16,
+                            fontWeight: 510,
+                        });
+                        fabric.Image.fromURL('image/default-profile.png', function(img) {
+                            img.set({
+                                left: canvasX,
+                                top: canvasY,
+                                scaleX: 60 / img.width,
+                                scaleY: 60 / img.height,
+                            });
 
-                        canvas.add(circle);
-                        // const imageUrl = '/image/default-profile.png';
-                        // fabric.Image.fromURL(imageUrl, function(img) {
-                        //     img.scaleToWidth(circle.radius * 2);
-                        //     img.scaleToHeight(circle.radius * 2);
-                        //
-                        //     circle.addWithUpdate(img);
-                        //
-                        //     canvas.add(circle);
-                        // });
+                            const group = new fabric.Group([whiteCircle, img,playerName], {
+                                left: canvasX,
+                                top: canvasY,
+                            });
+
+                            canvas.add(group);
+                            canvas.renderAll();
+
 
                         playerCard.style.display = 'none';
 
@@ -397,7 +410,9 @@
                         document.removeEventListener("mousemove", handleMouseMove);
                         document.removeEventListener("mouseup", handleMouseUp);
 
-                    } else {
+                    });
+                    }
+                    else {
                         playerCard.style.left = `${initialCardX}px`;
                         playerCard.style.top = `${initialCardY}px`;
                         playerCard.style.borderRadius = '';
