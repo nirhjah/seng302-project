@@ -3,9 +3,6 @@ package nz.ac.canterbury.seng302.tab.controller;
 import java.time.LocalDateTime;
 import java.time.Duration;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.*;
 
@@ -15,6 +12,7 @@ import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.entity.Formation;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
@@ -30,7 +28,6 @@ import nz.ac.canterbury.seng302.tab.service.LineUpService;
 
 import nz.ac.canterbury.seng302.tab.validator.FactValidators;
 
-import java.util.Comparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -609,13 +606,29 @@ public class ViewActivityController {
     }
 
     /**
+     * returns the list of players without coaches and manageers
+     * @param team the team the players are in 
+     * @return a list of the users that arent a coach or manager for that team 
+    */
+    private List<User> removeCoachesAndManager(Team team, List<User> players) {
+        Set<User> coachesAndMangers = team.getTeamCoaches();
+        coachesAndMangers.addAll(team.getTeamManagers());
+        List<User> teamCoachesAndManagersList = coachesAndMangers.stream().collect(Collectors.toList());
+        List<User> playersNotCoachesOrMangers = players.stream().filter(player -> !teamCoachesAndManagersList.contains(player)).collect(Collectors.toList());
+
+        return playersNotCoachesOrMangers;
+    }
+
+    /**
      * returns the current players who are playing in the activity -- takes into account substitutions 
      * @param actId the activity id 
      * @return a list of the users that are currrently playing in the activity
     */
     private List<User> getAllPlayersCurrentlyPlaying(long actId) {
         List<User> playersPlaying = getAllPlayersPlaying(actId);
-        List<Fact> allSubs = factService.getAllFactsOfGivenTypeForActivity(2, activityService.findActivityById(actId)); // list of all made subs in the game 
+        Activity currActivity = activityService.findActivityById(actId);
+        List<Fact> allSubs = factService.getAllFactsOfGivenTypeForActivity(2, currActivity); // list of all made subs in the game 
+        
         allSubs.sort(Comparator.comparingInt(sub -> Integer.parseInt(sub.getTimeOfEvent()))); // all the subs sorted by time 
         
         for (Fact fact : allSubs) {
@@ -625,7 +638,10 @@ public class ViewActivityController {
             playersPlaying = playersPlaying.stream().map(player -> player.getUserId() == playerOff.getUserId() ? playerOn : player).collect(Collectors.toList());
         }
 
-        return playersPlaying;
+        // remove coaches and managers
+        List<User> playersWithoutCoachesOrMangers = removeCoachesAndManager(currActivity.getTeam(), playersPlaying);
+
+        return playersWithoutCoachesOrMangers;
     }
 
     /**
@@ -641,8 +657,9 @@ public class ViewActivityController {
         List<User> playersInTeam = new ArrayList<>(activityService.findActivityById(actId).getTeam().getTeamMembers());
 
         List<User> playersNotPlaying = playersInTeam.stream().filter(player -> !playersPlaying.contains(player)).collect(Collectors.toList());
+        List<User> playersWithoutCoachesOrMangers = removeCoachesAndManager(activity.getTeam(), playersNotPlaying);
         
-        return playersNotPlaying;
+        return playersWithoutCoachesOrMangers;
     }
 
     /**
