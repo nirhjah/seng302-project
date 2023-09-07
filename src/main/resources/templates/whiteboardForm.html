@@ -18,9 +18,17 @@
         </div>
         <div class="dropdown">
           <label for="formation">Formation</label>
-          <select class="select" id="formation" disabled>
-            <option value="disabled">disabled</option>
+          <select class="select" id="formation">
+            <option value="-1">(No Formation)</option>
+            <option th:each="forma : ${teamFormations}"
+                    th:value="${forma.formationId}"
+                    th:text="${forma.formation}"
+                    th:data-custom="${forma.custom}"
+                    th:data-custom-positions="${forma.customPlayerPositions}"
+            ></option>
           </select>
+
+
         </div>
         <div class="line">
           <hr>
