@@ -50,12 +50,16 @@ public class WhiteboardController {
             Model model, HttpServletRequest request) {
         logger.info("GET /whiteboard");
         logger.info("team id" + teamID);
+        model.addAttribute("httpServletRequest", request);
 
         Optional<List<LineUp>> teamLineUpsOpt = lineUpService.findLineUpsByTeam(teamID);
         List<LineUp> teamLineUps = teamLineUpsOpt.orElse(Collections.emptyList());
 
         if (teamService.findTeamById(teamID).isPresent()) {
             team = teamService.findTeamById(teamID).get();
+        }
+        else {
+            return "homeForm";
         }
 
         model.addAttribute("teamFormations", formationService.getTeamsFormations(teamID));
@@ -64,7 +68,6 @@ public class WhiteboardController {
 
         model.addAttribute("teamLineUps", teamLineUps);
 
-        model.addAttribute("httpServletRequest", request);
         return "whiteboardForm";
     }
 
