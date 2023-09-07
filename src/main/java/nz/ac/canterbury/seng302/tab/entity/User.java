@@ -145,8 +145,9 @@ public class User implements Identifiable, HasImage {
         return userId;
     }
 
+    @Override
     public long getId() {
-        return userId;
+        return getUserId();
     }
 
     public String getFirstName() {

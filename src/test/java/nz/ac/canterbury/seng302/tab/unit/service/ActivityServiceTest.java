@@ -1,13 +1,16 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
+import nz.ac.canterbury.seng302.tab.entity.*;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.enums.*;
-import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.repository.*;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
+import nz.ac.canterbury.seng302.tab.service.LineUpPositionService;
+import nz.ac.canterbury.seng302.tab.service.LineUpService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +19,10 @@ import org.springframework.context.annotation.Import;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @DataJpaTest
 @Import(ActivityService.class)
@@ -29,8 +35,19 @@ public class ActivityServiceTest {
     ActivityRepository activityRepository;
 
     @Autowired
+    LineUpRepository lineUpRepository;
+
+    @Autowired
+    LineUpPositionRepository lineUpPositionRepository;
+
+    @Autowired
     TeamRepository teamRepository;
 
+    @Autowired
+    FormationRepository formationRepository;
+
+    @Autowired
+    FactRepository factRepository;
     /**
      * Tests validator for if a start date is before the end
      */
@@ -287,6 +304,535 @@ public class ActivityServiceTest {
         activityRepository.save(game);
         Assertions.assertEquals(120, activityService.getTotalTimeAUserHasPlayedForATeam(u, team));
     }
-    
+
+    @Test
+    public void testSortGoalTimesAscending() throws Exception {
+
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        User player = new User("Another", "Test", "test1234@test.com", "Password1!",
+                new Location(null, null, null, "CHCH", null, "NZ"));
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+        activityRepository.save(activity);
+
+        List<Fact> factList = new ArrayList<>();
+        List<Goal> goalsList = new ArrayList<>();
+
+        Goal goal1 = new Goal("Goal was scored", "40", activity, player, 1);
+        Goal goal2 = new Goal("Goal was scored again", "25", activity, player, 1);
+        Goal goal3 = new Goal("Goal was scored yet again", "27", activity, player, 1);
+
+        factRepository.save(goal1);
+        factRepository.save(goal2);
+        factRepository.save(goal3);
+
+        factList.add(goal1);
+        factList.add(goal2);
+        factList.add(goal3);
+
+        activity.addFactList(factList);
+
+        activityRepository.save(activity);
+
+        for (Object fact : activity.getFactList()) {
+            if(fact instanceof Goal) {
+                goalsList.add((Goal) fact);
+            }
+        }
+
+        List<Goal> expectedGoalList = List.of(goal2, goal3, goal1);
+        Assertions.assertEquals(expectedGoalList, activityService.sortGoalTimesAscending(goalsList));
+
+    }
+
+
+    @Test
+    public void testcheckTimeOfFactWithinActivity_FactTimeOutOfDuration() throws Exception {
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+        activityRepository.save(activity);
+        Assertions.assertFalse(activityService.checkTimeOfFactWithinActivity(activity, 130));
+
+    }
+
+    @Test
+    public void testcheckTimeOfFactWithinActivity_FactTimeWithinDuration() throws Exception {
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+        activityRepository.save(activity);
+
+        Assertions.assertTrue(activityService.checkTimeOfFactWithinActivity(activity, 20));
+    }
+
+
+    @Test
+    void testingOverallTimeUserPlayedBasedOnSubs() throws Exception {
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        User player = new User("sam", "Account", "sam@test.com", "Password1!", location);
+        User player2 = new User("bob", "Account", "bob@test.com", "Password1!", location);
+
+        player.joinTeam(team);
+        player2.joinTeam(team);
+
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+
+        List<Fact> factList1 = new ArrayList<>();
+        Substitution sub = new Substitution("Player was taken off, player2 on", "10", activity, player, player2); //
+        Substitution sub2 = new Substitution("second fact: Player2 was taken off, player on", "30", activity, player2, player); // +20
+        Substitution sub3 = new Substitution("third fact: Player was taken off, player2 on", "40", activity, player, player2);
+        Substitution sub4 = new Substitution("fourth fact: Player2 was taken off, player on", "80", activity, player2, player); // +40 = 60
+
+        Substitution sub5 = new Substitution("fourth fact: Player was taken off, player2 on", "100", activity, player, player2); // +20 ? = 80
+
+        factRepository.save(sub);
+        factRepository.save(sub2);
+        factRepository.save(sub3);
+        factRepository.save(sub4);
+        factRepository.save(sub5);
+
+        factList1.add(sub);
+        factList1.add(sub2);
+        factList1.add(sub3);
+        factList1.add(sub4);
+        factList1.add(sub5);
+
+
+        Activity activity2 = new Activity(ActivityType.Friendly, team, "FRIENDLY with Team",
+                LocalDateTime.of(2024, 1,1,6,30),
+                LocalDateTime.of(2024, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "dunedin", null, "New Zealand"));
+
+        List<Fact> factList2 = new ArrayList<>();
+        Substitution subf = new Substitution("Player2 was taken off 10 mins in, player on", "10", activity, player2, player); // +10 = 70 = 90
+        Substitution subf2 = new Substitution("second fact: Player was taken off, player2 on 30 mins in", "30", activity, player, player2);
+        Substitution subf3 = new Substitution("third fact: Player2 was taken off after 40 mins, player on", "40", activity, player2, player); // +10 = 80 100
+        Substitution subf4 = new Substitution("fourth fact: Player was taken off 50 mins in, player2 on", "50", activity, player, player2); // + 70 (120-50) = 150
+
+        factRepository.save(subf);
+        factRepository.save(subf2);
+        factRepository.save(subf3);
+           factRepository.save(subf4);
+
+        factList2.add(subf);
+        factList2.add(subf2);
+        factList2.add(subf3);
+        factList2.add(subf4);
+        activity2.addFactList(factList2);
+
+        Formation formation = new Formation("1", team);
+        formationRepository.save(formation);
+        activity.setFormation(formation);
+        activity2.setFormation(formation);
+        activity.addFactList(factList1);
+        activityRepository.save(activity);
+        activityRepository.save(activity2);
+
+
+        LineUp activityLineUp = new LineUp(activity.getFormation().get(), team, activity);
+        LineUp activity2LineUp = new LineUp(activity2.getFormation().get(), team, activity2);
+
+        lineUpRepository.save(activityLineUp);
+        lineUpRepository.save(activity2LineUp);
+
+        LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, player, 1);
+        LineUpPosition lineUpPosition2 = new LineUpPosition(activity2LineUp, player2, 1);
+
+        lineUpPositionRepository.save(lineUpPosition);
+        lineUpPositionRepository.save(lineUpPosition2);
+
+        Assertions.assertEquals(170, activityService.getOverallPlayTimeForUserBasedOnSubs(player2, team));
+    }
+
+
+    @Test
+    void testGetTotalGamesUserPlayed() throws Exception {
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        User player = new User("sam", "Account", "sam@test.com", "Password1!", location);
+        player.joinTeam(team);
+        Activity game = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+        Activity friendly = new Activity(ActivityType.Friendly, team, "Friendly with Team",
+                LocalDateTime.of(2023, 1,2,6,30),
+                LocalDateTime.of(2023, 1,2,7,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+
+        List<Fact> factList1 = new ArrayList<>();
+        Substitution sub = new Substitution("Player was taken off, player2 on", "10", game, player, creator);
+        Substitution sub2 = new Substitution("second fact: Player2 was taken off, player on", "30", game, creator, player);
+        factRepository.save(sub);
+        factRepository.save(sub2);
+        factList1.add(sub);
+        factList1.add(sub2);
+        game.addFactList(factList1);
+
+        List<Fact> factList2 = new ArrayList<>();
+        Substitution subf1 = new Substitution("Player was taken off, player2 on", "10", friendly, player, creator);
+        Substitution subf2 = new Substitution("second fact: Player2 was taken off, player on", "30", friendly, creator, player);
+        factRepository.save(subf1);
+        factRepository.save(subf2);
+        factList2.add(subf1);
+        factList2.add(subf2);
+        friendly.addFactList(factList2);
+
+        Formation formation = new Formation("1", team);
+        formationRepository.save(formation);
+        game.setFormation(formation);
+        friendly.setFormation(formation);
+        activityRepository.save(game);
+        activityRepository.save(friendly);
+
+        LineUp activityLineUp = new LineUp(game.getFormation().get(), team, game);
+        lineUpRepository.save(activityLineUp);
+        LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, player, 1);
+        lineUpPositionRepository.save(lineUpPosition);
+
+        LineUp activityLineUp2 = new LineUp(friendly.getFormation().get(), team, friendly);
+        lineUpRepository.save(activityLineUp2);
+        LineUpPosition lineUpPosition2 = new LineUpPosition(activityLineUp2, player, 1);
+        lineUpPositionRepository.save(lineUpPosition2);
+
+        Assertions.assertEquals(2, activityService.getTotalGamesUserPlayed(player, team));
+    }
+
+    @Test
+    void testGettingSubFactsUserIsIn() throws Exception {
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        User player = new User("sam", "Account", "sam@test.com", "Password1!", location);
+        User player2 = new User("bob", "Account", "bob@test.com", "Password1!", location);
+        User player3 = new User("john", "Account", "john@test.com", "Password1!", location);
+
+        player.joinTeam(team);
+        player2.joinTeam(team);
+        player3.joinTeam(team);
+
+        Activity game = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+        Activity friendly = new Activity(ActivityType.Friendly, team, "Friendly with Team",
+                LocalDateTime.of(2023, 1,2,6,30),
+                LocalDateTime.of(2023, 1,2,7,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+
+        List<Fact> factList1 = new ArrayList<>();
+        Substitution sub = new Substitution("test", "10", game, player, creator);
+        Substitution sub2 = new Substitution("test", "30", game, player2, player);
+        Substitution sub3 = new Substitution("test", "40", game, creator, player3);
+        Substitution sub4 = new Substitution("test", "50", game, player, player2);
+
+        factRepository.save(sub);
+        factRepository.save(sub2);
+        factRepository.save(sub3);
+        factRepository.save(sub4);
+
+        factList1.add(sub);
+        factList1.add(sub2);
+        factList1.add(sub3);
+        factList1.add(sub4);
+
+        game.addFactList(factList1);
+
+        activityRepository.save(game);
+
+        List<Fact> expectedSubList = new ArrayList<>();
+        expectedSubList.add(sub);
+        expectedSubList.add(sub2);
+        expectedSubList.add(sub4);
+
+
+        Assertions.assertEquals(expectedSubList, activityService.subFactsUserIsIn(game, player));
+
+    }
+
+    @Test
+    void testGettingAveragePlaytimeForUser() throws Exception {
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        User player = new User("sam", "Account", "sam@test.com", "Password1!", location);
+        User player2 = new User("bob", "Account", "bob@test.com", "Password1!", location);
+
+        player.joinTeam(team);
+        player2.joinTeam(team);
+
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+
+        List<Fact> factList1 = new ArrayList<>();
+        Substitution sub = new Substitution("Player was taken off, player2 on", "10", activity, player, player2);
+        Substitution sub2 = new Substitution("second fact: Player2 was taken off, player on", "30", activity, player2, player);
+        Substitution sub3 = new Substitution("third fact: Player was taken off, player2 on", "40", activity, player, player2);
+        Substitution sub4 = new Substitution("fourth fact: Player2 was taken off, player on", "80", activity, player2, player);
+
+        Substitution sub5 = new Substitution("fourth fact: Player was taken off, player2 on", "100", activity, player, player2);
+
+        factRepository.save(sub);
+        factRepository.save(sub2);
+        factRepository.save(sub3);
+        factRepository.save(sub4);
+        factRepository.save(sub5);
+
+        factList1.add(sub);
+        factList1.add(sub2);
+        factList1.add(sub3);
+        factList1.add(sub4);
+        factList1.add(sub5);
+
+
+        Activity activity2 = new Activity(ActivityType.Friendly, team, "FRIENDLY with Team",
+                LocalDateTime.of(2024, 1,1,6,30),
+                LocalDateTime.of(2024, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "dunedin", null, "New Zealand"));
+
+        List<Fact> factList2 = new ArrayList<>();
+        Substitution subf = new Substitution("Player2 was taken off 10 mins in, player on", "10", activity, player2, player);
+        Substitution subf2 = new Substitution("second fact: Player was taken off, player2 on 30 mins in", "30", activity, player, player2);
+        Substitution subf3 = new Substitution("third fact: Player2 was taken off after 40 mins, player on", "40", activity, player2, player);
+        Substitution subf4 = new Substitution("fourth fact: Player was taken off 50 mins in, player2 on", "50", activity, player, player2);
+
+        factRepository.save(subf);
+        factRepository.save(subf2);
+        factRepository.save(subf3);
+        factRepository.save(subf4);
+
+        factList2.add(subf);
+        factList2.add(subf2);
+        factList2.add(subf3);
+        factList2.add(subf4);
+        activity2.addFactList(factList2);
+
+        Formation formation = new Formation("1", team);
+        formationRepository.save(formation);
+        activity.setFormation(formation);
+        activity2.setFormation(formation);
+        activity.addFactList(factList1);
+        activityRepository.save(activity);
+        activityRepository.save(activity2);
+
+
+        LineUp activityLineUp = new LineUp(activity.getFormation().get(), team, activity);
+        LineUp activity2LineUp = new LineUp(activity2.getFormation().get(), team, activity2);
+
+        lineUpRepository.save(activityLineUp);
+        lineUpRepository.save(activity2LineUp);
+
+        LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, player, 1);
+        LineUpPosition lineUpPosition2 = new LineUpPosition(activity2LineUp, player2, 1);
+
+        lineUpPositionRepository.save(lineUpPosition);
+        lineUpPositionRepository.save(lineUpPosition2);
+
+        Assertions.assertEquals(85, activityService.getAveragePlayTime(player2, team));
+
+    }
+
+
+    @Test
+    void testGettingPlayersInLineupForActivity() throws Exception {
+
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        User player = new User("sam", "Account", "sam@test.com", "Password1!", location);
+        User player2 = new User("bob", "Account", "bob@test.com", "Password1!", location);
+
+        player.joinTeam(team);
+        player2.joinTeam(team);
+
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+
+        List<Fact> factList1 = new ArrayList<>();
+        Substitution sub = new Substitution("Player was taken off, player2 on", "10", activity, player, player2); //
+        Substitution sub2 = new Substitution("second fact: Player2 was taken off, player on", "30", activity, player2, player); // +20
+        Substitution sub3 = new Substitution("third fact: Player was taken off, player2 on", "40", activity, player, player2);
+        Substitution sub4 = new Substitution("fourth fact: Player2 was taken off, player on", "80", activity, player2, player); // +40
+
+        Substitution sub5 = new Substitution("fourth fact: Player was taken off, player2 on", "100", activity, player, player2); // +20 ?
+
+        factRepository.save(sub);
+        factRepository.save(sub2);
+        factRepository.save(sub3);
+        factRepository.save(sub4);
+        factRepository.save(sub5);
+
+        factList1.add(sub);
+        factList1.add(sub2);
+        factList1.add(sub3);
+        factList1.add(sub4);
+        factList1.add(sub5);
+
+
+        Activity activity2 = new Activity(ActivityType.Friendly, team, "FRIENDLY with Team",
+                LocalDateTime.of(2024, 1,1,6,30),
+                LocalDateTime.of(2024, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "dunedin", null, "New Zealand"));
+
+        List<Fact> factList2 = new ArrayList<>();
+        Substitution subf = new Substitution("Player2 was taken off 10 mins in, player on", "10", activity, player2, player); // +10 = 70
+        Substitution subf2 = new Substitution("second fact: Player was taken off, player2 on 30 mins in", "30", activity, player, player2);
+        Substitution subf3 = new Substitution("third fact: Player2 was taken off after 40 mins, player on", "40", activity, player2, player); // +10 = 80
+        Substitution subf4 = new Substitution("fourth fact: Player was taken off 50 mins in, player2 on", "50", activity, player, player2); // + 70 (120-50) = 150
+
+        factRepository.save(subf);
+        factRepository.save(subf2);
+        factRepository.save(subf3);
+        factRepository.save(subf4);
+
+        factList2.add(subf);
+        factList2.add(subf2);
+        factList2.add(subf3);
+        factList2.add(subf4);
+        activity2.addFactList(factList2);
+
+        Formation formation = new Formation("1", team);
+        formationRepository.save(formation);
+        activity.setFormation(formation);
+        activity2.setFormation(formation);
+        activity.addFactList(factList1);
+        activityRepository.save(activity);
+        activityRepository.save(activity2);
+
+
+        LineUp activityLineUp = new LineUp(activity.getFormation().get(), team, activity);
+
+        lineUpRepository.save(activityLineUp);
+
+        LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, player, 1);
+        LineUpPosition lineUpPosition2 = new LineUpPosition(activityLineUp, player2, 1);
+
+        lineUpPositionRepository.save(lineUpPosition);
+        lineUpPositionRepository.save(lineUpPosition2);
+
+        List<User> expectedUserList = new ArrayList<>();
+        expectedUserList.add(player);
+        expectedUserList.add(player2);
+
+        Assertions.assertEquals(expectedUserList, activityService.playersInLineUpForActivity(activity));
+    }
+
+
+    @Test
+    void testGettingTop5UsersWithPlayTimeAndAverageInTeam() throws Exception {
+
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        User player = new User("sam", "Account", "sam@test.com", "Password1!", location);
+        User player2 = new User("bob", "Account", "bob@test.com", "Password1!", location);
+        User playerNoFacts = new User("john", "Account", "john@test.com", "Password1!", location);
+
+        player.joinTeam(team);
+        player2.joinTeam(team);
+        playerNoFacts.joinTeam(team);
+
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+
+        List<Fact> factList1 = new ArrayList<>();
+        Substitution sub = new Substitution("Player was taken off, player2 on", "10", activity, player, player2); //
+        Substitution sub2 = new Substitution("second fact: Player2 was taken off, player on", "30", activity, player2, player); // +20
+        Substitution sub3 = new Substitution("third fact: Player was taken off, player2 on", "40", activity, player, player2);
+        Substitution sub4 = new Substitution("fourth fact: Player2 was taken off, player on", "80", activity, player2, player); // +40
+
+        Substitution sub5 = new Substitution("fourth fact: Player was taken off, player2 on", "100", activity, player, player2); // +20 ?
+
+        factRepository.save(sub);
+        factRepository.save(sub2);
+        factRepository.save(sub3);
+        factRepository.save(sub4);
+        factRepository.save(sub5);
+
+        factList1.add(sub);
+        factList1.add(sub2);
+        factList1.add(sub3);
+        factList1.add(sub4);
+        factList1.add(sub5);
+
+
+
+        Formation formation = new Formation("2", team);
+        formationRepository.save(formation);
+        activity.setFormation(formation);
+        activity.addFactList(factList1);
+        activityRepository.save(activity);
+
+
+        LineUp activityLineUp = new LineUp(activity.getFormation().get(), team, activity);
+
+        lineUpRepository.save(activityLineUp);
+
+        LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, player, 1);
+
+        lineUpPositionRepository.save(lineUpPosition);
+
+        Map<User, List<Long>> playtimeAndAvgPlaytimeTop5Expected = new HashMap<>();
+
+        List<Long> playtimeAndAvgPlaytimePlayerExpected = new ArrayList<>();
+
+        playtimeAndAvgPlaytimePlayerExpected.add(40L);
+        playtimeAndAvgPlaytimePlayerExpected.add(40L);
+
+        playtimeAndAvgPlaytimeTop5Expected.put(player, playtimeAndAvgPlaytimePlayerExpected);
+
+        Assertions.assertEquals(playtimeAndAvgPlaytimeTop5Expected, activityService.top5UsersWithPlayTimeAndAverageInTeam(team));
+
+
+    }
+
 
 }

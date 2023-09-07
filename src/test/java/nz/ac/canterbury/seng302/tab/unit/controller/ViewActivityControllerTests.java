@@ -3,8 +3,7 @@ package nz.ac.canterbury.seng302.tab.unit.controller;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -21,6 +20,7 @@ import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.FactService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -80,6 +80,9 @@ public class ViewActivityControllerTests {
     @Autowired
     private ActivityRepository activityRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private Team team;
 
     @Autowired
@@ -87,9 +90,16 @@ public class ViewActivityControllerTests {
 
     private Activity activity;
 
+    private User activityPlayer;
+
+    private Activity otherActivity;
+
+
 
     @BeforeEach
     void beforeEach() throws IOException {
+        userRepository.deleteAll();
+        activityRepository.deleteAll();
         Date userDOB;
         try {
             userDOB = new SimpleDateFormat("YYYY-mm-dd").parse(USER_DOB);
@@ -98,14 +108,24 @@ public class ViewActivityControllerTests {
         }
         Location testLocation = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY,
                 USER_POSTCODE, USER_COUNTRY);
+        Location testLocation2 = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY,
+                USER_POSTCODE, USER_COUNTRY);
         User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD, testLocation);
+        activityPlayer = new User("Bob", "Smith", userDOB, "bob@gmail.com", USER_PWORD, testLocation2);
+        userRepository.save(activityPlayer);
+
         team = new Team("test", "Hockey", testLocation, testUser);
         LocalDateTime start =   LocalDateTime.of(2023, 6,1,6,30);
-        LocalDateTime end = LocalDateTime.of(2023, 7,1,8,30);
+        LocalDateTime end = LocalDateTime.of(2025, 7,1,8,30);
         Location activityLocation = new Location(ACTVITY_ADDRESS_LINE_1, ACTVITY_ADDRESS_LINE_2, ACTVITY_SUBURB,
                 ACTVITY_CITY, ACTVITY_POSTCODE, ACTVITY_COUNTRY);
+        Location activityLocation1 = new Location(ACTVITY_ADDRESS_LINE_1, ACTVITY_ADDRESS_LINE_2, ACTVITY_SUBURB,
+                ACTVITY_CITY, ACTVITY_POSTCODE, ACTVITY_COUNTRY);
         activity= new Activity(ActivityType.Game, team, "description",start, end, testUser, activityLocation);
+        otherActivity= new Activity(ActivityType.Other, null, "description",start, end, null, activityLocation1);
+
         activityRepository.save(activity);
+        activityRepository.save(otherActivity);
 
         List<Fact> factList = new ArrayList<>();
         factList.add(new Fact("Someone fell over", "1h 25m", activity));
@@ -114,6 +134,8 @@ public class ViewActivityControllerTests {
         factList.add(new Fact("Testing scrollable feature", "1h 25m", activity));
 
         teamRepository.save(team);
+        activityPlayer.joinTeam(team);
+
         when(mockActivityService.findActivityById(Long.parseLong("1"))).thenReturn(activity);
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
         when(mockTeamService.findTeamsWithUser(testUser)).thenReturn(List.of(team));
@@ -122,19 +144,19 @@ public class ViewActivityControllerTests {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         activityRepository.deleteAll();
     }
     @Test
-    public void testGettingViewActivityPageOfValidActivity() throws Exception {
+    void testGettingViewActivityPageOfValidActivity() throws Exception {
         mockMvc.perform(get("/view-activity?activityID={id}","1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("viewActivity"))
-                .andExpect(MockMvcResultMatchers.model().attribute("activity", activity));
+                .andExpect(model().attribute("activity", activity));
     }
 
     @Test
-    public void testGettingViewActivityPageOfInvalidActivity() throws Exception {
+    void testGettingViewActivityPageOfInvalidActivity() throws Exception {
         mockMvc.perform(get("/view-activity?activityID={id}",4))
                 .andExpect(status().isNotFound());
     }
@@ -143,7 +165,7 @@ public class ViewActivityControllerTests {
     //Add Activity Stats tests
 
     @Test
-    public void testAddingActivityFactWithNoDescription() throws Exception {
+    void testAddingActivityFactWithNoDescription() throws Exception {
         mockMvc.perform(post("/view-activity", 42L)
                         .param("actId", "1")
                         .param("factType", String.valueOf(FactType.FACT))
@@ -163,7 +185,7 @@ public class ViewActivityControllerTests {
     }
 
     @Test
-    public void testAddingActivityFactWithDescription() throws Exception {
+    void testAddingActivityFactWithDescription() throws Exception {
         when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
 
         mockMvc.perform(post("/view-activity", 42L)
@@ -185,28 +207,19 @@ public class ViewActivityControllerTests {
     }
 
     @Test
-    public void testAddingActivityTeamGoalUseDefault() throws Exception {
-        mockMvc.perform(post("/view-activity", 42L)
+    void testAddingActivityTeamGoalUseDefault() throws Exception {
+        mockMvc.perform(post("/overall-score", 42L)
                         .param("actId", "1")
-                        .param("factType", String.valueOf(FactType.GOAL))
                         .param("overallScoreTeam", "1")
                         .param("overallScoreOpponent", "1")
-                        .param("activityOutcomes", String.valueOf(ActivityOutcome.None))
-                        .param("time", "1")
-                        .param("goalValue", "")
-                        .param("scorer", "-1")
-                        .param("playerOn", "1")
-                        .param("playerOff", "1" )
-                        .param("description", "")
                 )
                 .andExpect(view().name("redirect:./view-activity?activityID=1"));
         verify(mockActivityService, times(2)).validateActivityScore(any(), any());
     }
 
+
     @Test
-    public void testAddingSubstitutionFactWithSamePlayerOnPlayerOff() throws Exception {
-        System.out.println(activity.getId());
-        System.out.println("nirhja");
+    void testAddingSubstitutionFactWithSamePlayerOnPlayerOff() throws Exception {
         mockMvc.perform(post("/view-activity", 42L)
                         .param("actId", "1")
                         .param("factType", String.valueOf(FactType.SUBSTITUTION))
@@ -225,4 +238,232 @@ public class ViewActivityControllerTests {
 
     }
 
+    @Test
+    void testAddingOverallScoreOneScoreEmpty() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        when(mockActivityService.validateActivityScore("", "5-6")).thenReturn(2);
+
+
+        mockMvc.perform(post("/overall-score", 42L)
+                        .param("actId", "1")
+                        .param("overallScoreTeam", "")
+                        .param("overallScoreOpponent", "5-6")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID=1")).andExpect(MockMvcResultMatchers.flash().attribute("scoreInvalid", "Leave Modal Open"));
+
+    }
+
+    @Test
+    void testAddingOverallScoreBothDontMatch() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        when(mockActivityService.validateActivityScore("3", "5-6")).thenReturn(1);
+
+
+        mockMvc.perform(post("/overall-score", 42L)
+                        .param("actId", "1")
+                        .param("overallScoreTeam", "3")
+                        .param("overallScoreOpponent", "5-6")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID=1")).andExpect(MockMvcResultMatchers.flash().attribute("scoreInvalid", "Leave Modal Open"));
+
+    }
+
+    @Test
+    void testAddingOverallScoreBeforeActivityStart() throws Exception {
+        LocalDateTime startLate =   LocalDateTime.of(2024, 6,1,6,30);
+
+        activity.setActivityStart(startLate);
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        
+        mockMvc.perform(post("/overall-score", 42L)
+                        .param("actId", "1")
+                        .param("overallScoreTeam", "3")
+                        .param("overallScoreOpponent", "4")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID=1")).andExpect(MockMvcResultMatchers.flash().attribute("scoreInvalid", "Leave Modal Open"));
+
+    }
+
+    @Test
+    void testAddingOverallScoreBothValid() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        when(mockActivityService.validateActivityScore("3", "4")).thenReturn(0);
+
+        mockMvc.perform(post("/overall-score", 42L)
+                        .param("actId", "1")
+                        .param("overallScoreTeam", "3")
+                        .param("overallScoreOpponent", "4")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID=1"));
+
+    }
+
+    @Test
+    void testAddingGoalValidFields() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        when(mockActivityService.checkTimeOfFactWithinActivity(activity, 2)).thenReturn(true);
+        when(mockUserService.findUserById(Long.parseLong("2"))).thenReturn(Optional.of(activityPlayer));
+
+        mockMvc.perform(post("/add-goal", 42L)
+                        .param("actId", "1")
+                        .param("scorer", "2")
+                        .param("goalValue", "1")
+                        .param("description", "goal scored")
+                        .param("time", "2")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID=1")).andExpect(status().isFound());
+
+        verify(mockActivityService, times(1)).updateOrAddActivity(any());
+
+    }
+
+
+    @Test
+    void testAddingGoal_timeBlank() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        when(mockActivityService.checkTimeOfFactWithinActivity(activity, 2)).thenReturn(true);
+        when(mockUserService.findUserById(Long.parseLong("2"))).thenReturn(Optional.of(activityPlayer));
+
+        mockMvc.perform(post("/add-goal", 42L)
+                        .param("actId", "1")
+                        .param("scorer", "2")
+                        .param("goalValue", "1")
+                        .param("description", "goal scored")
+                        .param("time", "")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID=1"));
+
+        verify(mockActivityService, times(0)).updateOrAddActivity(any());
+
+    }
+
+    @Test
+    void testAddingGoal_scorerBlank() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        when(mockActivityService.checkTimeOfFactWithinActivity(activity, 2)).thenReturn(true);
+        when(mockUserService.findUserById(Long.parseLong("2"))).thenReturn(Optional.of(activityPlayer));
+
+        mockMvc.perform(post("/add-goal", 42L)
+                        .param("actId", "1")
+                        .param("scorer", "1")
+                        .param("goalValue", "1")
+                        .param("description", "goal scored")
+                        .param("time", "")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID=1"));
+
+        verify(mockActivityService, times(0)).updateOrAddActivity(any());
+
+    }
+
+    @Test
+    void testAddFactDescriptionAndTime() throws Exception {
+        when(mockActivityService.findActivityById(otherActivity.getId())).thenReturn(otherActivity);
+
+        mockMvc.perform(post("/add-fact", 42L)
+                        .param("actId", String.valueOf(otherActivity.getId()))
+                        .param("timeOfFact", "3")
+                        .param("description", "4")
+                )
+                .andExpect(view().name("redirect:./view-activity?activityID="+otherActivity.getId()));
+    }
+
+    @Test
+    void testAddFactNoDescriptionAndTime() throws Exception {
+        when(mockActivityService.findActivityById(otherActivity.getId())).thenReturn(otherActivity);
+
+        mockMvc.perform(post("/add-fact", 42L)
+                        .param("actId", String.valueOf(otherActivity.getId()))
+                        .param("timeOfFact", "3")
+                )
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testAddFactDescriptionAndStringForTime() throws Exception {
+        when(mockActivityService.findActivityById(otherActivity.getId())).thenReturn(otherActivity);
+
+        mockMvc.perform(post("/add-fact", 42L)
+                        .param("actId", String.valueOf(otherActivity.getId()))
+                        .param("timeOfFact", "favour")
+                        .param("description", "chchc")
+                )
+                .andExpect(status().isFound());
+    }
+
+    @Test
+    void testAddFactDescriptionAndToolongTime() throws Exception {
+        when(mockActivityService.findActivityById(otherActivity.getId())).thenReturn(otherActivity);
+
+        mockMvc.perform(post("/add-fact", 42L)
+                        .param("actId", String.valueOf(otherActivity.getId()))
+                        .param("timeOfFact", "99999999999999")
+                        .param("description", "chchc")
+                )
+                .andExpect(status().isFound());
+    }
+
+    @Test
+    void testAddOutcomeSetAsWin() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        mockMvc.perform(post("/add-outcome", 42L)
+                        .param("actId", String.valueOf(activity.getId()))
+                        .param("activityOutcomes", String.valueOf(ActivityOutcome.Win))
+                )
+                .andExpect(status().isFound());
+    }
+
+    @Test
+    void testAddOutcomeSetNothing() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        mockMvc.perform(post("/add-outcome", 42L)
+                        .param("actId", String.valueOf(activity.getId()))
+                        .param("activityOutcomes", String.valueOf(ActivityOutcome.None))
+                )
+                .andExpect(status().isFound());
+    }
+
+    @Test
+    void testAddOutcomeSetAsDraw() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        mockMvc.perform(post("/add-outcome", 42L)
+                        .param("actId", String.valueOf(activity.getId()))
+                        .param("activityOutcomes", String.valueOf(ActivityOutcome.Draw))
+                )
+                .andExpect(status().isFound());
+    }
+
+    @Test
+    void testAddOutcomeSetAsLoss() throws Exception {
+        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
+        mockMvc.perform(post("/add-outcome", 42L)
+                        .param("actId", String.valueOf(activity.getId()))
+                        .param("activityOutcomes", String.valueOf(ActivityOutcome.Loss))
+                )
+                .andExpect(status().isFound());
+    }
+
+    @Test
+    void testDescriptionLengthFact() throws Exception {
+        String description = "a".repeat(151);
+        mockMvc.perform(post("/add-fact", 42L)
+                        .param("actId", "1")
+                        .param("timeOfFact", "5")
+                        .param("description", description))
+                .andExpect(MockMvcResultMatchers.status().isFound());
+    }
+
+    @Test
+    void testDescriptionLengthGoal() throws Exception {
+        String description = "a".repeat(151);
+        mockMvc.perform(post("/add-goal", 42L)
+                        .param("actId", "1")
+                        .param("scorer", "1")
+                        .param("goalValue", "1")
+                        .param("description", description)
+                        .param("time", "")
+                )
+                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andReturn();
+    }
 }

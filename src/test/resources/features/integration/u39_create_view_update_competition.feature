@@ -1,5 +1,5 @@
 @create_view_update_competition
- Feature: U39 – Create / view / update competition
+Feature: U39 – Create / view / update competition
 Scenario: AC1: Federation administrators are a special type of users and are the only one allowed to create or update competitions
   Given I am a user of account type federation administrator
   When I attempt to access the create a competition page,
@@ -98,8 +98,41 @@ Scenario: AC1: Federation administrators are a special type of users and are the
 #    When I apply a filter for that sport and I select an option to display only past competitions,
 #    Then I am shown only past competitions for the selected sport.
 
+  Scenario Outline: AC13
+    Given I am on a page dedicated to displaying competitions
+    And there exist past and current competitions for a <sport>
+    When I apply a filter for that <sport> and select an option to display all competitions
+    Then I am shown all competitions, past and current for the selected <sport>
+    Examples:
+      | sport    |
+      | "soccer" |
+      | "hockey" |
+      | "rugby"  |
 
-Scenario: AC16
+  Scenario Outline: AC14
+    Given I am on a page dedicated to displaying competitions
+    And there exist past and current competitions for a <sport>
+    When I apply a filter for that <sport> and I select an option to display only current competitions
+    Then I am shown only current competitions for the selected <sport>
+    Examples:
+      | sport    |
+      | "soccer" |
+      | "hockey" |
+      | "rugby"  |
+
+  Scenario Outline: AC15
+    Given I am on a page dedicated to displaying competitions
+    And there exist past and current competitions for a <sport>
+    When I apply a filter for that <sport> and I select an option to display only past competitions
+    Then I am shown only past competitions for the selected <sport>
+    Examples:
+      | sport    |
+      | "soccer" |
+      | "hockey" |
+      | "rugby"  |
+
+
+  Scenario: AC16
   Given I am a federation manager
   When I click on the ‘Invite to Federation Managers’ UI element,
   Then I’m taken to a page where I can see all users who aren’t federation managers.
@@ -117,6 +150,7 @@ Scenario: AC18
   And I’m on the “Invite to Federation Managers” page,
   When I enter a string into the search bar,
   Then only user profiles whose first name, last name or email matches that string are shown
+
 
 #Scenario: AC19
 #  Given I am a general user of TAB, And I’ve been invited to become a federation manager (received the email)

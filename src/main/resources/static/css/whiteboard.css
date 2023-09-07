@@ -1,0 +1,389 @@
+.whiteboard-form {
+    justify-content: center;
+    align-items: center;
+    display:flex;
+    flex-direction:column;
+    height: 100%;
+}
+
+.upper-canvas.erase {
+    cursor: url('../image/icons/eraser-cursor.png') 10 15, auto !important;
+}
+
+.canvas-container {
+    background-image: url('../image/pitches/soccer.svg');
+    background-repeat: no-repeat;
+}
+
+.whiteboard-wrapper {
+    display:flex;
+    flex-direction:row;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.whiteboard-buttons {
+    background: #0b2239;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    border-radius: 5px 5px 0 0;
+}
+
+.whiteboard-buttons button {
+    height: 35px;
+    width: 35px;
+    border: none;
+    background: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.whiteboard-buttons button .tooltip {
+    visibility: hidden;
+    width: 120px;
+    background-color: white;
+    color: #0b2239;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    margin-top: -80px;
+    position: absolute;
+    z-index: 1;
+    border: #0b2239 2px solid;
+}
+
+.whiteboard-buttons button:hover .tooltip {
+    visibility: visible;
+}
+
+
+.whiteboard-buttons button img {
+    height: 23px;
+    width: 23px;
+}
+
+.whiteboard-buttons button.active {
+    background: #0b2239;
+    border: 3px white solid;
+}
+
+.whiteboard-buttons .delete-button {
+    background: #EA3B52;
+}
+
+.whiteboard-buttons .delete-button img {
+    height: 30px;
+}
+
+.selected-svg {
+    display: none;
+}
+
+.active .selected-svg {
+    display: inline-block;
+}
+
+.default-svg {
+    display: inline-block;
+}
+
+.active .default-svg {
+    display: none;
+}
+
+.customisation-box {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    position: absolute;
+    background: #0b2239;
+    z-index: 1;
+    border-radius: 5px;
+    padding: 7px;
+    color: white;
+    width: 162px;
+}
+
+.customisation-box.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.customisation-box::before {
+    content: '';
+    position: absolute;
+    top: -7px;
+    left: 9px;
+    transform: rotate(180deg);
+    border-style: solid;
+    border-width: 10px 10px 0;
+    border-color: #0b2239 transparent transparent transparent;
+}
+
+.customisation-box.draw-button {
+    margin-top: 255px;
+    margin-left: 55px;
+}
+
+.customisation-box.shape-button {
+    margin-left: 146px;
+    margin-top: 342px;
+}
+
+.customisation-box .header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.customisation-box .content {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.customisation-box button {
+    background: white;
+    height: 40px;
+    width: 70px;
+    border-radius: 5px;
+    margin-left: 0;
+}
+
+.customisation-box button .selected-svg {
+    display: none;
+}
+
+.customisation-box button.active .selected-svg {
+    display: inline-block;
+}
+
+.customisation-box button .default-svg {
+    display: inline-block;
+}
+
+.customisation-box button.active .default-svg {
+    display: none;
+}
+
+.draw-style-button-solid img {
+    height: 20px !important;
+    width: 70px !important;
+}
+
+.draw-style-button-dashed img {
+    height: 20px !important;
+    width: 50px !important;
+}
+
+.style-section label {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.colour-picker {
+    border: white 3px solid;
+    min-width: 70px;
+    height: 40px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.colour-section div, .fill-section div, .outline-section div {
+    display: flex;
+    align-items: center;
+}
+
+.colour-section .content h5, .fill-section .content h5, .outline-section .content h5 {
+    background: white;
+    color: #0b2239;
+    border-radius: 5px 0 0 5px;
+    padding: 5px;
+    height: 25px;
+    border-right: #0b2239 2px solid;
+    cursor: default;
+}
+
+.colour-value {
+    min-width: unset;
+    height: 25px;
+    width: 51px;
+    border-radius: 0 5px 5px 0;
+    border: none;
+    font-size: 12px;
+    color: #0b2239;
+    padding-left: 3px;
+}
+
+.width-section input {
+    width: 38px;
+    cursor: pointer;
+    text-align: center;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    background: transparent;
+    width: 100px !important;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+    background: white;
+    height: 0.3rem;
+    border-radius: 5px;
+}
+
+/******** Firefox ********/
+input[type="range"]::-moz-range-track {
+    background: white;
+    height: 0.3rem;
+    border-radius: 5px;
+}
+
+.visibility-selection {
+    height: 15px !important;
+    width: 15px !important;
+    border: none !important;
+    border-radius: 30px !important;
+    background: white !important;
+    position: absolute !important;
+    margin-left: 59px !important;
+    margin-top: 33px !important;
+}
+
+
+.visibility-selection .selected-svg {
+    height: 6px;
+}
+
+.visibility-selection .default-svg {
+    height: 7px;
+}
+
+.visibility-selection.active .default-svg, .visibility-selection .selected-svg {
+    display: none;
+}
+
+.visibility-selection.active .selected-svg, .visibility-selection .default-svg {
+    display: block;
+}
+
+.shape-section {
+    overflow: hidden;
+}
+
+.shape-section button {
+    height: 30px;
+    margin-right: 4px;
+    min-width: 30px;
+}
+
+.shape-section .content {
+    overflow: auto;
+}
+
+.shape-section .content {
+    overflow: auto;
+    scrollbar-color: white #0b2239;
+    scrollbar-width: thin;
+    padding-bottom: 5px;
+}
+
+.shape-button-arrow {
+    margin-right: unset !important;
+}
+
+.shape-section .content img {
+    height: 18px !important;
+    width: 18px !important;
+}
+
+.circle-img, .triangle-img, .square-img, .ellipse-img, .rectangle-img, .line-img, .arrow-img {
+    display: none;
+}
+
+.shape-button.circle .circle-img, .shape-button.triangle .triangle-img, .shape-button.square .square-img,
+.shape-button.ellipse .ellipse-img, .shape-button.rectangle .rectangle-img, .shape-button.line .line-img,
+.shape-button.arrow .arrow-img {
+    display: flex;
+}
+
+.circle-img img, .triangle-img img, .square-img img, .ellipse-img img, .rectangle-img img, .line-img img, .arrow-img img {
+    height: 20px !important;
+    width: 20px !important;
+}
+
+
+
+
+
+
+
+
+.whiteboard-dropdowns{
+    width:300px;
+    margin-right:20px;
+}
+
+.whiteboard-dropdowns h3{
+    padding-top:11px;
+    color: #808080;
+    font-size:22px;
+}
+
+.whiteboard-dropdowns .dropdown{
+    display:flex;
+    flex-direction:column;
+    color: #1B263B;
+    font-size:18px;
+    margin: 30px 0;
+}
+.whiteboard-dropdowns .dropdown label{
+    margin-bottom: 8px;
+    color:#888888;
+}
+.whiteboard-dropdowns .dropdown select{
+    font-size:18px;
+    background:#ffffff;
+    cursor:pointer;
+    border-color:#0b2239;
+    color:#0b2239;
+    height:48px;
+    text-align:center;
+    border-radius:8px;
+}
+
+.whiteboard-dropdowns .line {
+    display: flex;
+    align-items: center;
+}
+
+.whiteboard-dropdowns .line hr {
+    flex-grow: 1;
+    border: 1px solid #888;
+}
+
+.whiteboard-dropdowns .line span{
+    padding: 0 10px;
+    font-size:18px;
+}
+
+.whiteboard-dropdowns h3:focus {
+    outline: none;
+}
+
+
+
+
+
+
+
+

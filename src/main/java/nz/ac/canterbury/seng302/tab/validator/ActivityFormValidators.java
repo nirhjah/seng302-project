@@ -41,8 +41,20 @@ public class ActivityFormValidators {
     // U27 AC7 - An invalid description is "...made of numbers or non-alphabetical characters only"
     // This means an *invalid* description contains no letters
     // Therefore, a *valid* description contains a letter anywhere
-    // Other than that, we're not picky about what they type.
+    // Other than that, we're not picky about what they type; emoji, numbers, etc.
     public static final String DESCRIPTION_REGEX = "(.*)\\p{L}(.*)";
+    public static final String SCORE_FORMATS_DONT_MATCH_MSG = "The score formats do not match";
+
+    public static final String OTHER_SCORE_CANNOT_BE_EMPTY_MSG = "Other score field cannot be empty";
+
+    public static final String ADDING_GOAL_BEFORE_ACTIVITY_START_MSG = "You can only add a goal once the activity starts";
+    public static final String ADDING_STAT_BEFORE_START_TIME_MSG = "You can only add an overall score once the activity starts";
+
+    public static final String FIELD_CANNOT_BE_BLANK_MSG = "Field cannot be blank";
+
+    public static final String PLAYER_IS_REQUIRED_MSG = "Player is required";
+
+    public static final String GOAL_NOT_SCORED_WITHIN_DURATION = "Goal must be scored within duration of activity";
 
     /**
      * Checks start time is valid

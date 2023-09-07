@@ -297,6 +297,7 @@
 }
 
 .formation-list {
+    position: relative;
     width: 0;
     box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.19);
     border-radius: 0 0 0 20px;
@@ -373,7 +374,7 @@
 
 .formation-display.active {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     width: 100%;
 }
 
@@ -445,7 +446,7 @@
     border-radius: 0 10px 10px 0;
     width: 30px;
     background: white;
-    box-shadow: 2px 0 4px -1px rgba(0, 0, 0, 0.19);
+    box-shadow: 4px 0 4px -1px rgba(0, 0, 0, 0.19);
     font-weight: bold;
     font-size: 20px;
     font-family: revert;
@@ -464,14 +465,104 @@
     justify-content: center;
 }
 
-
-
-
-
-
-
-
 .club-link >span{
     color:#415a77;
 }
 
+.float-container {
+    border: 3px solid #fff;
+    padding: 20px;
+}
+
+.float-child {
+    width: 50%;
+    float: left;
+}
+
+.club-link {
+    display: flex;
+    align-items: center;
+    color: black;
+    text-decoration: none;
+}
+
+.logo img{
+    margin-right: 10px;
+    width: 85%;
+    height: auto;
+}
+
+.logo {
+    width: 60px;
+    text-align: center;
+}
+
+.club-header {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 15ch;
+}
+
+@media (max-width: 500px) {
+    .float-child {
+        width: 100vw;
+        float: none;
+    }
+    
+    .club-link {
+        display: flex;
+        align-items: center;
+        color: black;
+        text-decoration: none;
+        justify-content: flex-start;
+    }
+
+    .logo {
+        width: 60px;
+        margin: 0 auto 10px; 
+    }
+
+    .logo img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+    
+    .club-header {
+        max-width: 10ch;
+    }
+}
+
+.no-formation {
+    color: darkgray;
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    left: 50%;
+    display: block;
+    text-align: center;
+    /* The text implicitly has a size (it's not 0x0 pixels), so account for it */
+    transform: translate(-50%, -50%);
+    white-space: nowrap;    /* Prevents the text from getting scrunched up when the panel collapses */
+}
+
+.formation-description {
+    font-style: italic;
+    font-size: small;
+    line-height: 1.1rem;
+}
+
+/* Other CSS files disable the icon before a <li>, this adds it back for specific children */
+ul.formation-description > li {
+    list-style: disc;
+    margin-left: 1rem;
+}
+
+.drag-info {
+    text-align: center;
+}
+
+.formation-RHS {
+    margin: auto;
+}

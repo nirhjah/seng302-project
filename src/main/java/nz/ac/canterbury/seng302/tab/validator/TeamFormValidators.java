@@ -29,6 +29,10 @@ public class TeamFormValidators {
     public static final String VALID_ADDRESS_REGEX = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
 
     public static final String VALID_POSTCODE_REGEX = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
+    
+    /** A valid formation contains between [0, 8] dash separated single digit numbers*/
+    public static final String VALID_FORMATION_REGEX = "^[1-9](\\-[1-9]){0,7}$";
+    public static final String INVALID_FORMATION_MSG = "Formations must have 1-9 players per row, separated by dashes, and upto 8 rows";
 
     /**
      * Checks the team sport is not blank and matches

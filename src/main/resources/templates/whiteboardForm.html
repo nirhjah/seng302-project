@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+  <link th:href="@{/css/whiteboard.css}" rel="stylesheet">
+  <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body class="view-teams-background">
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+<div class="whiteboard-form">
+    <div class="whiteboard-wrapper">
+      <div class="whiteboard-dropdowns">
+        <h3 class="whiteboard-title" contenteditable="true">Untitled</h3>
+        <div class="dropdown">
+          <label for="pitch">Pitch Type</label>
+          <select class="select" id="pitch"></select>
+        </div>
+        <div class="dropdown">
+          <label for="formation">Formation</label>
+          <select class="select" id="formation" disabled>
+            <option value="disabled">disabled</option>
+          </select>
+        </div>
+        <div class="line">
+          <hr>
+          <span class="or-text">or</span>
+          <hr>
+        </div>
+        <div class="dropdown">
+          <label for="formation">Line-Up</label>
+          <select class="select" id="lineup" disabled>
+            <option value="disabled">disabled</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <div class="whiteboard-buttons">
+          <button class="select-button active">
+            <span class="tooltip">Select (S)</span>
+            <img class="selected-svg" th:src="@{/image/icons/cursor-selected.svg}" />
+            <img class="default-svg" th:src="@{/image/icons/cursor.svg}" />
+          </button>
+          <button class="draw-button">
+            <span class="tooltip">Free Draw (D)</span>
+            <img class="selected-svg" th:src="@{/image/icons/pencil-selected.svg}" />
+            <img class="default-svg" th:src="@{/image/icons/pencil.svg}" />
+          </button>
+          <div class="customisation-box draw-button">
+            <div class="style-section">
+              <div class="header">
+                <h5>Style</h5>
+  <!--              <label>Arrow-->
+  <!--                <input class="arrow-checkbox" type="checkbox">-->
+  <!--              </label>-->
+              </div>
+              <div class="content">
+                <button class="draw-style-button-solid active">
+                  <img class="selected-svg" th:src="@{/image/icons/solid-line-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/solid-line.svg}" />
+                </button>
+                <button class="draw-style-button-dashed">
+                  <img class="selected-svg" th:src="@{/image/icons/dashed-line-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/dashed-line.svg}" />
+                </button>
+              </div>
+            </div>
+            <div class="colour-section">
+              <div class="header">
+                <h5>Colour</h5>
+              </div>
+              <div class="content">
+                <input class="colour-picker" type="color" value="#ff0000">
+                <div>
+                  <h5>#</h5>
+                  <input class="colour-value" id="colourValue" value="FF0000">
+                </div>
+              </div>
+            </div>
+            <div class="width-section">
+              <div class="header">
+                <h5>Width</h5>
+              </div>
+              <div class="content">
+                <input id="rangeInput" type="range" min="1" max="50" value="5">
+                <input type="number" max="50" min="1" id="widthValue" value="5">
+              </div>
+            </div>
+          </div>
+          <button class="erase-button">
+            <span class="tooltip">Erase (E)</span>
+            <img class="selected-svg" th:src="@{/image/icons/eraser-selected.svg}" />
+            <img class="default-svg" th:src="@{/image/icons/eraser.svg}" />
+          </button>
+          <button class="shape-button circle">
+            <span class="tooltip">Shape (X)</span>
+            <span class="circle-img">
+              <img class="selected-svg" th:src="@{/image/icons/circle-selected.svg}" />
+              <img class="default-svg" th:src="@{/image/icons/circle.svg}" />
+            </span>
+            <span class="triangle-img">
+              <img class="selected-svg" th:src="@{/image/icons/triangle-selected.svg}" />
+              <img class="default-svg" th:src="@{/image/icons/triangle.svg}" />
+            </span>
+            <span class="square-img">
+              <img class="selected-svg" th:src="@{/image/icons/square-selected.svg}" />
+              <img class="default-svg" th:src="@{/image/icons/square.svg}" />
+            </span>
+            <span class="ellipse-img">
+              <img class="selected-svg" th:src="@{/image/icons/ellipse-selected.svg}" />
+              <img class="default-svg" th:src="@{/image/icons/ellipse.svg}" />
+            </span>
+            <span class="rectangle-img">
+              <img class="selected-svg" th:src="@{/image/icons/rectangle-selected.svg}" />
+              <img class="default-svg" th:src="@{/image/icons/rectangle.svg}" />
+            </span>
+            <span class="line-img">
+              <img class="selected-svg" th:src="@{/image/icons/straight-line-selected.svg}" />
+              <img class="default-svg" th:src="@{/image/icons/straight-line.svg}" />
+            </span>
+            <span class="arrow-img">
+              <img class="selected-svg" th:src="@{/image/icons/arrow-line-selected.svg}" />
+              <img class="default-svg" th:src="@{/image/icons/arrow-line.svg}" />
+            </span>
+          </button>
+          <div class="customisation-box shape-button">
+            <div class="style-section">
+              <div class="header">
+                <h5>Style</h5>
+              </div>
+              <div class="content">
+                <button class="draw-style-button-solid active">
+                  <img class="selected-svg" th:src="@{/image/icons/solid-line-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/solid-line.svg}" />
+                </button>
+                <button class="draw-style-button-dashed">
+                  <img class="selected-svg" th:src="@{/image/icons/dashed-line-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/dashed-line.svg}" />
+                </button>
+              </div>
+            </div>
+            <div class="shape-section">
+              <div class="header">
+                <h5>Shape</h5>
+              </div>
+              <div class="content">
+                <button class="shape-button-circle active">
+                  <img class="selected-svg" th:src="@{/image/icons/circle-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/circle.svg}" />
+                </button>
+                <button class="shape-button-triangle">
+                  <img class="selected-svg" th:src="@{/image/icons/triangle-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/triangle.svg}" />
+                </button>
+                <button class="shape-button-square">
+                  <img class="selected-svg" th:src="@{/image/icons/square-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/square.svg}" />
+                </button>
+                <button class="shape-button-ellipse">
+                  <img class="selected-svg" th:src="@{/image/icons/ellipse-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/ellipse.svg}" />
+                </button>
+                <button class="shape-button-rectangle">
+                  <img class="selected-svg" th:src="@{/image/icons/rectangle-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/rectangle.svg}" />
+                </button>
+                <button class="shape-button-line">
+                  <img class="selected-svg" th:src="@{/image/icons/straight-line-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/straight-line.svg}" />
+                </button>
+                <button class="shape-button-arrow">
+                  <img class="selected-svg" th:src="@{/image/icons/arrow-line-selected.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/arrow-line.svg}" />
+                </button>
+              </div>
+            </div>
+            <div class="fill-section">
+              <div class="header">
+                <h5>Fill</h5>
+              </div>
+              <div class="content">
+                <input class="colour-picker fill" type="color" value="#ff0000">
+                <button class="visibility-selection active">
+                  <img class="selected-svg" th:src="@{/image/icons/view.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/hide.svg}" />
+                </button>
+                <div>
+                  <h5>#</h5>
+                  <input class="colour-value" id="colourValueFill" value="FF0000">
+                </div>
+              </div>
+            </div>
+            <div class="outline-section">
+              <div class="header">
+                <h5>Outline</h5>
+              </div>
+              <div class="content">
+                <input class="colour-picker outline" type="color" value="#ff0000">
+                <button class="visibility-selection active">
+                  <img class="selected-svg" th:src="@{/image/icons/view.svg}" />
+                  <img class="default-svg" th:src="@{/image/icons/hide.svg}" />
+                </button>
+                <div>
+                  <h5>#</h5>
+                  <input class="colour-value" id="colourValueOutline" value="FF0000">
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="delete-button">
+            <span class="tooltip">Clear (C)</span>
+            <img class="default-svg" th:src="@{/image/icons/clear.svg}" />
+          </button>
+        </div>
+        <div class="whiteboard">
+          <canvas id="canvas" width="560" height="700"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+<script type="text/javascript" th:src="@{/webjars/fabric/5.3.0/dist/fabric.min.js}"></script>
+</body>
+<script>
+  const pitchTypes = ["American Football", "Basketball", "Hockey", "Netball", "Rugby", "Soccer", "Tennis", "Volleyball"];
+  const pitchSelect = document.getElementById("pitch");
+  pitchTypes.forEach(pitchType => {
+    const option = document.createElement("option");
+    option.value = pitchType.toLowerCase().replace(" ", "-");
+    option.textContent = pitchType;
+    pitchSelect.appendChild(option);
+  });
+
+  const imagePath = "image/pitches/";
+  pitchSelect.addEventListener("change", function () {
+    const selectedValue = this.value;
+    const imageUrl = `${imagePath}${selectedValue}.svg`;
+    if (document.querySelector(".canvas-container") !== null) {
+      const canvasContainer = document.querySelector(".canvas-container");
+      canvasContainer.style.backgroundImage = `url(${imageUrl})`;
+    }
+  });
+  let isLabelFocused = false;
+  const whiteboardDropdowns = document.querySelector('.whiteboard-dropdowns');
+  const label = whiteboardDropdowns.querySelector('h3');
+  label.addEventListener('click', () => {
+    label.setAttribute('contenteditable', 'true');
+    label.focus();
+    isLabelFocused=true;
+  });
+
+  label.addEventListener('input', () => {
+    const editedText = label.textContent;
+    isLabelFocused=true;
+    if (editedText.length >= 26) {
+      label.textContent = editedText.slice(0, 26);
+      label.setAttribute('contenteditable', 'false');
+    } else {
+      label.setAttribute('contenteditable', 'true');
+    }
+  });
+
+  label.addEventListener('blur', () => {
+    const editedText = label.textContent;
+    label.textContent = editedText || 'Untitled';
+    label.setAttribute('contenteditable', 'false');
+    isLabelFocused = false;
+  });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    pitchSelect.value = "soccer";
+    let canvas = new fabric.Canvas('canvas');
+    let activeMode = null;
+    canvas.freeDrawingBrush.width = 5;
+    canvas.freeDrawingBrush.color = '#ff0000';
+
+
+    const upperCanvas = document.querySelector(".upper-canvas")
+
+    function handleButtonClick(buttonClass, drawMode, selectMode) {
+      const buttons = document.querySelectorAll('.whiteboard-buttons button');
+      buttons.forEach(button => {
+        if (!button.parentElement.classList.contains("content")) {
+          button.classList.remove('active')
+        }
+      });
+      document.querySelector('.' + buttonClass).classList.add('active');
+
+      const customisationBoxes = document.querySelectorAll('.customisation-box');
+      customisationBoxes.forEach(box => {
+        if (box.classList.contains(buttonClass)) {
+          box.classList.toggle("active")
+        } else {
+          box.classList.remove("active")
+        }
+      })
+
+      activeMode = buttonClass;
+      canvas.isDrawingMode = drawMode;
+      canvas.selection = selectMode;
+      upperCanvas.classList.remove("erase");
+    }
+
+    document.addEventListener('mousedown', function (event) {
+      const buttonBox = document.querySelector(".whiteboard-buttons")
+      // Check if the clicked element is not the box
+      if (!buttonBox.contains(event.target)) {
+        const customisationBoxes = document.querySelectorAll('.customisation-box');
+        customisationBoxes.forEach(box => box.classList.remove('active'));
+      }
+    });
+
+    document.querySelector('.draw-button').addEventListener('click', function () {
+      handleButtonClick('draw-button', true, false);
+    });
+
+    document.querySelector('.erase-button').addEventListener('click', function () {
+      handleButtonClick('erase-button', false, false);
+      upperCanvas.classList.add("erase");
+    });
+
+    document.querySelector('.shape-button').addEventListener('click', function () {
+      handleButtonClick('shape-button', false, false);
+    });
+
+    document.querySelector('.select-button').addEventListener('click', function () {
+      handleButtonClick('select-button', false, true);
+    });
+
+    document.querySelector('.delete-button').addEventListener('click', function () {
+      canvas.clear();
+    });
+
+    const drawStyleButtonSolid = document.querySelector('.customisation-box.draw-button .draw-style-button-solid');
+    const drawStyleButtonDashed = document.querySelector('.customisation-box.draw-button .draw-style-button-dashed');
+
+    drawStyleButtonSolid.addEventListener('click', function () {
+      switchLineTypes()
+    });
+
+    drawStyleButtonDashed.addEventListener('click', function () {
+      switchLineTypes()
+    });
+
+    function updateLineType() {
+      const canvasWidth = 5 * canvas.freeDrawingBrush.width
+      if (drawStyleButtonDashed.classList.contains('active')) {
+        canvas.freeDrawingBrush.lineDashOffset = 0;
+        canvas.freeDrawingBrush.strokeDashArray = [canvasWidth, canvasWidth / 2];
+      } else {
+        canvas.freeDrawingBrush.lineDashOffset = 0;
+        canvas.freeDrawingBrush.strokeDashArray = [];
+      }
+    }
+
+    const rangeInput = document.getElementById('rangeInput');
+    const widthValueInput = document.getElementById('widthValue');
+
+    rangeInput.addEventListener('input', function () {
+      widthValueInput.value = this.value;
+      canvas.freeDrawingBrush.width = parseInt(this.value, 10);
+      updateLineType()
+
+    });
+
+    widthValueInput.addEventListener('input', function () {
+      const newValue = this.value;
+      if (newValue >= 1 && newValue <= 50) {
+        rangeInput.value = newValue;
+        canvas.freeDrawingBrush.width = parseInt(this.value, 10);
+        updateLineType()
+      }
+    });
+
+    function switchLineTypes() {
+      drawStyleButtonSolid.classList.toggle('active')
+      drawStyleButtonDashed.classList.toggle('active')
+      updateLineType()
+    }
+
+    // Drawing Tool Colour
+
+    const colourPicker = document.querySelector('.colour-picker');
+    const colourValueInput = document.getElementById('colourValue');
+
+    // Event listener for the colour picker
+    colourPicker.addEventListener('input', function () {
+      const newColour = this.value;
+      colourValueInput.value = newColour.substr(1).toUpperCase();
+      canvas.freeDrawingBrush.color = this.value;
+    });
+
+    // Event listener for the colour value input
+    colourValueInput.addEventListener('input', function () {
+      const newColour = this.value;
+      if (isValidHexcolour(newColour)) {
+        colourPicker.value = '#' + newColour;
+        canvas.freeDrawingBrush.color = '#' + newColour;
+      }
+    });
+
+    // Prevents shortcuts from activating while typing into colour input
+    colourValueInput.addEventListener('keydown', function (event) {
+      event.stopPropagation();
+    });
+
+
+
+    // Checks if a given string is a valid hex colour
+    function isValidHexcolour(hex) {
+      return /^([0-9A-F]{3}){1,2}$/i.test(hex);
+    }
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 's') {
+        handleButtonClick('select-button', false, true);
+      } else if (event.key === 'd') {
+        handleButtonClick('draw-button', true, false);
+      } else if (event.key === 'e') {
+        handleButtonClick('erase-button', false, false);
+        upperCanvas.classList.add("erase");
+      } else if (event.key === 'x') {
+        handleButtonClick('shape-button', false, false);
+      } else if (event.key === 'Delete' || event.key === 'Backspace') {
+        const activeObject = canvas.getActiveObject()
+        if (activeObject instanceof fabric.Group) {
+          activeObject.getObjects().forEach( obj => {
+            // For arrows, as groups of objects and selection groups are the same thing
+            if (obj instanceof fabric.Group) {
+              obj.getObjects().forEach( child => {
+                canvas.remove(child);
+              })
+            }
+            canvas.remove(obj);
+          });
+        }
+        canvas.remove(...canvas.getActiveObjects());
+        canvas.remove(canvas.getActiveObject())
+        canvas.renderAll();
+      } else if (event.key === 'c') {
+        canvas.clear();
+      }
+    });
+
+    function eraseObjects(event) {
+      let pointer = canvas.getPointer(event);
+      let objects = canvas.getObjects();
+
+      for (let i = 0; i < objects.length; i++) {
+        if (objects[i].containsPoint(pointer)) {
+          if (objects[i] instanceof fabric.Group) {
+            objects[i].getObjects().forEach( obj => {
+              canvas.remove(obj);
+            });
+          }
+          canvas.remove(objects[i]);
+        }
+      }
+      canvas.renderAll();
+    }
+
+    /** Shapes **/
+
+    // Border Style
+    let shapeOutline = [];
+
+    const shapeStyleButtonSolid = document.querySelector('.customisation-box.shape-button .draw-style-button-solid');
+    const shapeStyleButtonDashed = document.querySelector('.customisation-box.shape-button .draw-style-button-dashed');
+
+    shapeStyleButtonSolid.addEventListener('click', function () {
+      switchLineTypesShape()
+    });
+
+    shapeStyleButtonDashed.addEventListener('click', function () {
+      switchLineTypesShape()
+    });
+
+    function switchLineTypesShape() {
+      shapeStyleButtonSolid.classList.toggle('active')
+      shapeStyleButtonDashed.classList.toggle('active')
+      if (shapeStyleButtonDashed.classList.contains('active')) {
+        shapeOutline = [10, 5];
+      } else {
+        shapeOutline = [];
+      }
+    }
+
+    // Shape
+
+    let shape = 'circle'
+
+    document.querySelector('.shape-button-circle').addEventListener('click', function () {
+      handleShapeButtonClick('circle');
+    });
+
+    document.querySelector('.shape-button-ellipse').addEventListener('click', function () {
+      handleShapeButtonClick('ellipse');
+    });
+
+    document.querySelector('.shape-button-triangle').addEventListener('click', function () {
+      handleShapeButtonClick('triangle');
+    });
+
+    document.querySelector('.shape-button-square').addEventListener('click', function () {
+      handleShapeButtonClick('square');
+    });
+
+    document.querySelector('.shape-button-rectangle').addEventListener('click', function () {
+      handleShapeButtonClick('rectangle');
+    });
+
+    document.querySelector('.shape-button-line').addEventListener('click', function () {
+      handleShapeButtonClick('line');
+    });
+
+    document.querySelector('.shape-button-arrow').addEventListener('click', function () {
+      handleShapeButtonClick('arrow');
+    });
+
+    const shapeButton = document.querySelector('.shape-button');
+
+    function handleShapeButtonClick(selectedShape) {
+      const buttons = document.querySelectorAll('.shape-section button');
+      buttons.forEach(button => button.classList.remove('active'));
+      document.querySelector('.shape-button-' + selectedShape).classList.add('active');
+      const classesToKeep = ['shape-button', 'active'];
+      for (let i = shapeButton.classList.length - 1; i >= 0; i--) {
+        const className = shapeButton.classList.item(i);
+        if (!classesToKeep.includes(className)) {
+          shapeButton.classList.remove(className);
+        }
+      }
+      shapeButton.classList.add(selectedShape)
+      shape = selectedShape
+    }
+
+    // Fill
+    let innerColour = '#FF0000'
+    let innerHidden = false;
+
+    const colourPickerFill = document.querySelector('.colour-picker.fill');
+    const colourValueInputFill = document.getElementById('colourValueFill');
+
+    // Event listener for the colour picker
+    colourPickerFill.addEventListener('input', function () {
+      const newColour = this.value;
+      colourValueInputFill.value = newColour.substr(1).toUpperCase();
+      innerColour = this.value
+      visibilitySelectionFill.classList.add('active')
+      innerHidden = false;
+    });
+
+    // Event listener for the colour value input
+    colourValueInputFill.addEventListener('input', function () {
+      const newColour = this.value;
+      if (isValidHexcolour(newColour)) {
+        colourPickerFill.value = '#' + newColour;
+        innerColour = '#' + newColour;
+        visibilitySelectionFill.classList.add('active')
+        innerHidden = false;
+      }
+    });
+
+    // Prevents shortcuts from activating while typing into colour input
+    colourValueInputFill.addEventListener('keydown', function (event) {
+      event.stopPropagation();
+    });
+
+    const visibilitySelectionFill = document.querySelector('.fill-section .visibility-selection');
+
+    visibilitySelectionFill.addEventListener('click', function () {
+      visibilitySelectionFill.classList.toggle('active')
+      innerHidden = !innerHidden;
+    });
+
+
+    // Outline
+    let outerColour = '#FF0000'
+    let outerHidden = false;
+
+    const colourPickerOutline = document.querySelector('.colour-picker.outline');
+    const colourValueInputOutline = document.getElementById('colourValueOutline');
+
+    // Event listener for the colour picker
+    colourPickerOutline.addEventListener('input', function () {
+      const newColour = this.value;
+      colourValueInputOutline.value = newColour.substr(1).toUpperCase();
+      outerColour = this.value
+      visibilitySelectionOutline.classList.add('active')
+      outerHidden = false;
+    });
+
+    // Event listener for the colour value input
+    colourValueInputOutline.addEventListener('input', function () {
+      const newColour = this.value;
+      if (isValidHexcolour(newColour)) {
+        colourPickerOutline.value = '#' + newColour;
+        outerColour = '#' + newColour;
+        visibilitySelectionOutline.classList.add('active')
+        outerHidden = false;
+      }
+    });
+
+    const whiteboardTitle = document.querySelector(".whiteboard-title")
+
+    // Prevents shortcuts from activating while typing into colour input
+    colourValueInputOutline.addEventListener('keydown', function (event) {
+      event.stopPropagation();
+    });
+
+    whiteboardTitle.addEventListener('keydown', function (event) {
+      event.stopPropagation();
+    });
+
+    const visibilitySelectionOutline = document.querySelector('.outline-section .visibility-selection');
+
+    visibilitySelectionOutline.addEventListener('click', function () {
+      visibilitySelectionOutline.classList.toggle('active')
+      outerHidden = !outerHidden;
+    });
+
+
+    // Drawing Shapes
+
+    // Event listener for canvas interactions
+    let mouseDown = false; // Track mouse button state
+    let drawingShape = null;
+    let startX;
+    let startY;
+    let maxWidth;
+    let maxHeight;
+    let leftLine;
+    let rightLine;
+    const aw = 36;
+
+    canvas.on('mouse:down', function (options) {
+      const { x, y } = canvas.getPointer(options.e);
+      if (canvas.getActiveObject() && activeMode !== "erase-button") {
+        handleButtonClick('select-button', false, true);
+      }
+      startX = x
+      startY = y
+      maxWidth = canvas.width - x;
+      maxHeight = canvas.height - y;
+      if (options.e.button === 0) {
+        mouseDown = true;
+        if (activeMode === 'erase-button') {
+          eraseObjects(options.e);
+        } else if (activeMode === 'shape-button') {
+          if (shapeButton.classList.contains("circle")) {
+            drawingShape = new fabric.Circle({
+              left: options.e.clientX - canvas._offset.left,
+              top: options.e.clientY - canvas._offset.top,
+              radius: 0,
+              fill: !innerHidden ? innerColour : null,
+              stroke: !outerHidden ? outerColour : null,
+              strokeWidth: 5,
+              originX: 'center',
+              originY: 'center',
+              strokeDashArray: shapeOutline
+            });
+          } else if (shapeButton.classList.contains("ellipse")) {
+            // IDK why it's 3 pixels off but it is
+            maxWidth = maxWidth / 2 - 3
+            maxHeight = maxHeight / 2 - 3
+            drawingShape = new fabric.Ellipse({
+              left: startX,
+              top: startY,
+              rx: 0,
+              ry: 0,
+              fill: !innerHidden ? innerColour : 'transparent',
+              stroke: !outerHidden ? outerColour : 'transparent',
+              strokeWidth: 5,
+              strokeDashArray: shapeOutline
+            });
+          } else if (shapeButton.classList.contains("triangle")) {
+            drawingShape = new fabric.Triangle({
+              left: startX,
+              top: startY,
+              width: 0,
+              height: 0,
+              fill: !innerHidden ? innerColour : 'transparent',
+              stroke: !outerHidden ? outerColour : 'transparent',
+              strokeWidth: 5,
+              strokeDashArray: shapeOutline
+            });
+          } else if (shapeButton.classList.contains("square")) {
+            drawingShape = new fabric.Rect({
+              left: startX,
+              top: startY,
+              width: 0,
+              height: 0,
+              fill: !innerHidden ? innerColour : 'transparent',
+              stroke: !outerHidden ? outerColour : 'transparent',
+              strokeWidth: 5,
+              strokeDashArray: shapeOutline
+            });
+          } else if (shapeButton.classList.contains("rectangle")) {
+            drawingShape = new fabric.Rect({
+              left: startX,
+              top: startY,
+              width: 0,
+              height: 0,
+              fill: !innerHidden ? innerColour : 'transparent',
+              stroke: !outerHidden ? outerColour : 'transparent',
+              strokeWidth: 5,
+              strokeDashArray: shapeOutline
+            });
+          } else if (shapeButton.classList.contains("line")) {
+            drawingShape = new fabric.Line([startX, startY, startX, startY], {
+              left: startX,
+              top: startY,
+              fill: !innerHidden ? innerColour : 'transparent',
+              stroke: !outerHidden ? outerColour : 'transparent',
+              strokeWidth: 5,
+              strokeDashArray: shapeOutline
+            });
+          } else if (shapeButton.classList.contains("arrow")) {
+            drawingShape = new fabric.Line([startX, startY, startX, startY], {
+              left: startX,
+              top: startY,
+              fill: !innerHidden ? innerColour : null,
+              stroke: !outerHidden ? outerColour : null,
+              strokeWidth: 6,
+              strokeDashArray: shapeOutline,
+              evented: false,
+              selectable: false
+            });
+            leftLine = new fabric.Line([startX, startY, startX, startY], {
+              left: startX,
+              top: startY,
+              fill: !innerHidden ? innerColour : null,
+              stroke: !outerHidden ? outerColour : null,
+              strokeWidth: 6,
+              strokeDashArray: shapeOutline,
+              evented: false,
+              selectable: false
+            });
+            rightLine = new fabric.Line([startX, startY, startX, startY], {
+              left: startX,
+              top: startY,
+              fill: !innerHidden ? innerColour : null,
+              stroke: !outerHidden ? outerColour : null,
+              strokeWidth: 6,
+              strokeDashArray: shapeOutline,
+              evented: false,
+              selectable: false
+            });
+            canvas.add(leftLine);
+            canvas.add(rightLine);
+          }
+          // drawingShape.set({borderColor: '#257AFD', cornerColor: '#ffffff', cornerStrokeColor: '#257AFD'})
+          canvas.add(drawingShape);
+        }
+      }
+    });
+
+    canvas.on('mouse:move', function (options) {
+      const pointer = canvas.getPointer(options.e);
+      const { x, y } = pointer;
+      if (mouseDown) {
+        if (activeMode === "erase-button") {
+          eraseObjects(options.e);
+        } else if (activeMode === "shape-button") {
+          if (shapeButton.classList.contains("circle")) {
+            const dx = x - drawingShape.left;
+            const dy = y - drawingShape.top;
+            const newRadius = Math.sqrt(dx * dx + dy * dy);
+            drawingShape.set({radius: newRadius});
+            canvas.renderAll();
+          } else if (shapeButton.classList.contains("square")) {
+            const width = Math.max(Math.abs(startX - x), Math.abs(startY - y)) * 2
+            const height = Math.max(Math.abs(startX - x), Math.abs(startY - y)) * 2
+            drawingShape.set({width: width, height: height, left: startX - (width / 2), top: startY - (height / 2)});
+            canvas.renderAll();
+          } else if (shapeButton.classList.contains("rectangle") || shapeButton.classList.contains("triangle")) {
+            if (startX > x) {
+              if (x < 0) {
+                drawingShape.set({left: 0});
+              } else {
+                drawingShape.set({left: Math.abs(x)});
+              }
+              drawingShape.set({width: Math.abs(startX - Math.max(x, 0))});
+            } else {
+              drawingShape.set({width: Math.min(maxWidth, Math.abs(startX - Math.max(x, 0)))});
+            }
+            if (startY > y) {
+              if (y < 0) {
+                drawingShape.set({top: 0});
+              } else {
+                drawingShape.set({top: Math.abs(y)});
+              }
+              drawingShape.set({height: Math.abs(startY - Math.max(y, 0))});
+            } else {
+              drawingShape.set({height: Math.min(maxHeight, Math.abs(startY - Math.max(y, 0)))});
+            }
+            canvas.renderAll();
+          } else if (shapeButton.classList.contains("ellipse")) {
+            if (startX > x) {
+              if (x < 0) {
+                drawingShape.set({left: 0});
+              } else {
+                drawingShape.set({left: Math.abs(x)});
+              }
+              drawingShape.set({rx: Math.abs(startX - Math.max(x, 0)) / 2});
+            } else {
+              drawingShape.set({rx: Math.min(maxWidth, Math.abs(startX - Math.max(x, 0)) / 2)});
+            }
+            if (startY > y) {
+              if (y < 0) {
+                drawingShape.set({top: 0});
+              } else {
+                drawingShape.set({top: Math.abs(y)});
+              }
+              drawingShape.set({ry: Math.abs(startY - Math.max(y, 0)) / 2});
+            } else {
+              drawingShape.set({ry: Math.min(maxHeight, Math.abs(startY - Math.max(y, 0)) / 2)});
+            }
+            canvas.renderAll();
+          } else if (shapeButton.classList.contains("line")) {
+            // Have to do ti separately as the line glitches if you set x/y to the value it already is
+            if (x !== startX) {
+              drawingShape.set({x2: x})
+            }
+            if (y !== startY) {
+              drawingShape.set({y2: y})
+            }
+            canvas.renderAll();
+          } else if (shapeButton.classList.contains("arrow")) {
+            const y11 = drawingShape.get('y1');
+            const y12 = drawingShape.get('y2');
+            const x11 = drawingShape.get('x1');
+            const x12 = drawingShape.get('x2');
+            const angleRad = Math.atan2(y12 - y11, x12 - x11);
+            const xDis = x - startX;
+            const yDis = y - startY;
+            let h = Math.abs(y12 - y11);
+            let w = Math.abs(x12 - x11);
+            let xLeft;
+            let yLeft;
+            let xRight;
+            let yRight;
+            const angle = Math.PI / 4
+            if (xDis <= 0 && yDis <= 0) {
+              xLeft = -(aw * Math.sin(Math.atan(h / w) - angle));
+              yLeft = aw * Math.cos(Math.atan(h / w) - angle);
+              xRight = aw * Math.cos(Math.atan(h / w) - angle);
+              yRight = aw * Math.sin(Math.atan(h / w) - angle);
+            } else if (xDis > 0 && yDis <= 0) {
+              xLeft = aw * Math.sin(Math.atan(h / -w) - angle);
+              yLeft = -(aw * Math.cos(Math.atan(h / -w) - angle));
+              xRight = -(aw * Math.cos(Math.atan(h / -w) - angle));
+              yRight = -(aw * Math.sin(Math.atan(h / -w) - angle));
+            } else if (xDis >= 0 && yDis >= 0) {
+              xLeft = aw * Math.sin(Math.atan(h / w) - angle);
+              yLeft = -(aw * Math.cos(Math.atan(h / w) - angle));
+              xRight = -(aw * Math.cos(Math.atan(h / w) - angle));
+              yRight = -(aw * Math.sin(Math.atan(h / w) - angle));
+            } else if (xDis < 0 && yDis > 0) {
+              xLeft = -(aw * Math.sin(Math.atan(h / -w) - angle));
+              yLeft = aw * Math.cos(Math.atan(h / -w) - angle);
+              xRight = aw * Math.cos(Math.atan(h / -w) - angle);
+              yRight = aw * Math.sin(Math.atan(h / -w) - angle);
+            }
+            if (x !== startX) {
+              drawingShape.set({x2: x})
+            }
+            if (y !== startY) {
+              drawingShape.set({y2: y})
+            }
+            const xLeftDis = x - 1.5 * Math.sin(angleRad);
+            const yLeftDis = y + 1.5 * Math.cos(angleRad);
+            const xRightDis = x + 1.5 * Math.sin(angleRad);
+            const yRightDis = y - 1.5 * Math.cos(angleRad);
+            leftLine.set({x1: xLeftDis, y1: yLeftDis, x2: x + xLeft, y2: y + yLeft})
+            rightLine.set({x1: xRightDis, y1: yRightDis, x2: x + xRight, y2: y + yRight})
+            canvas.renderAll();
+          }
+        }
+      }
+    });
+
+    canvas.on('mouse:up', function () {
+      mouseDown = false;
+      if (activeMode === "shape-button") {
+        drawingShape.setCoords();
+        if (shapeButton.classList.contains("arrow")) {
+          leftLine.setCoords();
+          rightLine.setCoords();
+          // Create a group to contain the lines
+          const lineGroup = new fabric.Group([], {
+            left: startX,
+            top: startY,
+            fill: !innerHidden ? innerColour : null,
+            stroke: !outerHidden ? outerColour : null,
+            strokeWidth: 6,
+            strokeDashArray: shapeOutline,
+          });
+
+          lineGroup.addWithUpdate(drawingShape);
+          lineGroup.addWithUpdate(leftLine);
+          lineGroup.addWithUpdate(rightLine);
+          // Old arrow elements get pushed to the top left corner for some reason so need to delete them
+          canvas.remove(canvas.getObjects()[canvas.getObjects().length - 1])
+          canvas.remove(canvas.getObjects()[canvas.getObjects().length - 2])
+          canvas.remove(canvas.getObjects()[canvas.getObjects().length - 3])
+          canvas.add(lineGroup);
+          lineGroup.setCoords();
+        }
+        canvas.renderAll();
+      }
+    });
+
+  })
+
+</script>
+</html>
