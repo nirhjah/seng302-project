@@ -8,6 +8,7 @@ import io.cucumber.java.en.When;
 import nz.ac.canterbury.seng302.tab.controller.*;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.repository.*;
@@ -100,6 +101,7 @@ public class AddActivityStatisticsIntegrationTests {
 
     private Fact fact;
 
+    private String description;
 
 
     @Before("@add_activity_stats")
@@ -109,8 +111,8 @@ public class AddActivityStatisticsIntegrationTests {
         userRepository = applicationContext.getBean(UserRepository.class);
         activityRepository = applicationContext.getBean(ActivityRepository.class);
         factRespository = applicationContext.getBean(FactRepository.class);
-        lineUpRepository= applicationContext.getBean(LineUpRepository.class);
-        lineUpPositionRepository= applicationContext.getBean(LineUpPositionRepository.class);
+        lineUpPositionRepository = applicationContext.getBean(LineUpPositionRepository.class);
+        lineUpRepository = applicationContext.getBean(LineUpRepository.class);
         formationRepository = applicationContext.getBean(FormationRepository.class);
 
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
@@ -118,7 +120,7 @@ public class AddActivityStatisticsIntegrationTests {
 
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
-        activityService = Mockito.spy(new ActivityService(activityRepository));
+        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository));
         factService= Mockito.spy(new FactService(factRespository));
         lineUpService=Mockito.spy(new LineUpService(lineUpRepository, formationRepository));
         lineUpPositionService = Mockito.spy(new LineUpPositionService(lineUpPositionRepository));
@@ -328,5 +330,34 @@ public class AddActivityStatisticsIntegrationTests {
         mockMvc.perform(post("/add-outcome")
                 .param("actId", String.valueOf(activity.getId()))
                 .param("activityOutcomes", String.valueOf(ActivityOutcome.Win))).andExpect(status().isFound());
+    }
+
+    @And("I am adding a description to the fact type ‘Fact’ or ‘Substitution’ or ‘Goal’,")
+    public void iAmAddingADescriptionToTheFactTypeFactOrSubstitutionOrGoal() throws Exception {
+        mockMvc.perform(get("/view-activity").param("activityID", String.valueOf(otherActivity.getId())))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+    }
+
+    @And("I enter a description longer than {int} characters,")
+    public void iEnterADescriptionLongerThanCharacters(int arg0) {
+        description = "aa".repeat(arg0);
+    }
+
+    @When("I click the ‘Add Fact’ or ‘Add Substitution’ or ‘Add Goal’ button,")
+    public void iClickTheAddFactOrAddSubstitutionOrAddGoalButton() throws Exception {
+        mockMvc.perform(get("/view-activity").param("activityID", String.valueOf(otherActivity.getId())))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+    }
+
+    @Then("an error message tells me that the description must be {int} characters or less")
+    public void anErrorMessageTellsMeThatTheDescriptionMustBeCharactersOrLess(int arg0) throws Exception {
+        mockMvc.perform(post("/add-fact")
+                        .param("actId", String.valueOf(activity.getId()))
+                        .param("timeOfFact", "5")
+                        .param("description", description))
+                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andReturn();
     }
 }

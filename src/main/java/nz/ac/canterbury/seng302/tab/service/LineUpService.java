@@ -108,4 +108,9 @@ public class LineUpService {
     }
 
 
+
+    public Optional<List<LineUp>> findLineUpByActivity(long actId) {
+        return lineUpRepository.findLineUpByActivityId(actId);
+    }
+
 }
