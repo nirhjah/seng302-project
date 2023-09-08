@@ -9,6 +9,7 @@ import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -171,5 +172,26 @@ public class TeamTest {
         Team t = new Team("abc", "soccer");
         t.generateToken(teamService);
         assertTrue(t.getToken().matches("^[a-zA-Z0-9]*$"));
+    }
+
+
+    @Test
+    void testGettingNonManagersAndCoachesOfTeam() throws IOException {
+        Team team = new Team("abc", "soccer");
+        teamRepository.save(team);
+        User user1 = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", new Location(null, null, null, "dunedin", null, "nz"));
+        User user2 = new User("Alice", "Smith", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "alice@example.com", "Password123!", new Location(null, null, null, "auckland", null, "nz"));
+
+        team.setManager(user1);
+        user1.joinTeam(team);
+        user2.joinTeam(team);
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        Assertions.assertEquals(1, team.getNonManagersAndCoaches().size());
+
+
+
+
     }
 }
