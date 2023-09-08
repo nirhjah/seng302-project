@@ -351,4 +351,30 @@ public class FactServiceTest {
         List<Goal> expectedGoalList = List.of(goal2, goal3, goal1);
         Assertions.assertEquals(expectedGoalList, factService.getAllFactsOfGivenTypeForActivity(FactType.GOAL.ordinal(), activity));
     }
+
+    @Test
+    void factTimeOrdering() throws Exception {
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+        activityRepository.save(activity);
+
+        Goal goal1 = new Goal("Goal was scored", "1", activity, creator, 1);
+        Goal goal2 = new Goal("Goal was scored again", null, activity, creator, 1);
+        Goal goal3 = new Goal("Goal was scored yet again", "2", activity, creator, 1);
+
+        factRepository.save(goal1);
+        factRepository.save(goal2);
+        factRepository.save(goal3);
+        activityRepository.save(activity);
+
+        List<Goal> expectedGoalList = List.of(goal2, goal1, goal3);
+        Assertions.assertEquals(expectedGoalList, factService.getAllFactsOfGivenTypeForActivity(FactType.GOAL.ordinal(), activity));
+    }
 }
