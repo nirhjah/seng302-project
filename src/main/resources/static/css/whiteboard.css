@@ -31,7 +31,7 @@
     border-radius: 5px 5px 0 0;
 }
 
-.select-button, .draw-button, .erase-button, .shape-button, .delete-button {
+.select-button, .draw-button, .erase-button, .shape-button, .delete-button, .customisation-box button {
     height: 35px;
     width: 35px;
     border: none;
@@ -68,7 +68,7 @@
     width: 23px;
 }
 
-.whiteboard-buttons button.active {
+.select-button.active, .draw-button.active, .erase-button.active, .shape-button.active, .delete-button.active, .customisation-box button.active {
     background: #0b2239;
     border: 3px white solid;
 }
@@ -126,12 +126,12 @@
     border-color: #0b2239 transparent transparent transparent;
 }
 
-.customisation-box.draw-button {
+.customisation-box.draw {
     margin-top: 255px;
     margin-left: 55px;
 }
 
-.customisation-box.shape-button {
+.customisation-box.shape {
     margin-left: 146px;
     margin-top: 342px;
 }
@@ -321,13 +321,6 @@ input[type="range"]::-moz-range-track {
     width: 20px !important;
 }
 
-
-
-
-
-
-
-
 .whiteboard-dropdowns{
     width:300px;
     margin-right:20px;
@@ -473,6 +466,14 @@ input[type="range"]::-moz-range-track {
     border-radius: 40px;
     margin-left: 3px;
     cursor: pointer;
+    border: #1d1d1d 2px solid;
+    box-shadow: inset 0 0 0 3px white;
+}
+
+.player-icon.active {
+    position: absolute;
+    cursor: grabbing;
+    z-index: 1;
 }
 
 .add-player-icon {
@@ -480,10 +481,18 @@ input[type="range"]::-moz-range-track {
     height: 23px;
     background: #9C9C9C;
     border-radius: 40px;
-    margin: 0 5px;
+    margin: 0 6px 0 7px !important;
     cursor: pointer;
     padding: 4px;
     display: none;
+    justify-content: center;
+    align-items: center;
+    border: none;
+}
+
+.add-player-icon img {
+    height: 17px !important;
+    width: 17px !important;
 }
 
 .add-player-icon.active {
@@ -499,6 +508,8 @@ input[type="range"]::-moz-range-track {
     align-items: center;
     padding: 3px 0 3px 0;
 }
+
+
 
 
 

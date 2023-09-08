@@ -80,7 +80,7 @@
                     <img class="selected-svg" th:src="@{/image/icons/pencil-selected.svg}"/>
                     <img class="default-svg" th:src="@{/image/icons/pencil.svg}"/>
                 </button>
-                <div class="customisation-box draw-button">
+                <div class="customisation-box draw">
                     <div class="style-section">
                         <div class="header">
                             <h5>Style</h5>
@@ -157,7 +157,7 @@
               <img class="default-svg" th:src="@{/image/icons/arrow-line.svg}"/>
             </span>
                 </button>
-                <div class="customisation-box shape-button">
+                <div class="customisation-box shape">
                     <div class="style-section">
                         <div class="header">
                             <h5>Style</h5>
@@ -246,8 +246,8 @@
                     <img class="default-svg" th:src="@{/image/icons/clear.svg}"/>
                 </button>
                 <div class="player-icon-container">
-                    <div class="player-icon"></div>
-                    <div class="player-icon"></div>
+                    <div class="player-icon" draggable="false"></div>
+                    <div class="player-icon" draggable="false"></div>
                     <button class="add-player-icon active">
                         <img th:src="@{/image/icons/add-white.svg}"/>
                     </button>
@@ -434,7 +434,7 @@
         function handleButtonClick(buttonClass, drawMode, selectMode) {
             const buttons = document.querySelectorAll('.whiteboard-buttons button');
             buttons.forEach(button => {
-                if (!button.parentElement.classList.contains("content")) {
+                if (!button.parentElement.classList.contains("content") && !button.classList.contains("add-player-icon")) {
                     button.classList.remove('active')
                 }
             });
@@ -442,7 +442,7 @@
 
             const customisationBoxes = document.querySelectorAll('.customisation-box');
             customisationBoxes.forEach(box => {
-                if (box.classList.contains(buttonClass)) {
+                if (box.classList.contains(buttonClass.split('-')[0])) {
                     box.classList.toggle("active")
                 } else {
                     box.classList.remove("active")
@@ -481,13 +481,15 @@
             handleButtonClick('select-button', false, true);
         });
 
+        const formationDropdown = document.getElementById("formation-dropdown");
+
         document.querySelector('.delete-button').addEventListener('click', function () {
             canvas.clear();
             formationDropdown.selectedIndex = 0;
         });
 
-        const drawStyleButtonSolid = document.querySelector('.customisation-box.draw-button .draw-style-button-solid');
-        const drawStyleButtonDashed = document.querySelector('.customisation-box.draw-button .draw-style-button-dashed');
+        const drawStyleButtonSolid = document.querySelector('.customisation-box.draw .draw-style-button-solid');
+        const drawStyleButtonDashed = document.querySelector('.customisation-box.draw .draw-style-button-dashed');
 
         drawStyleButtonSolid.addEventListener('click', function () {
             switchLineTypes()
@@ -619,8 +621,8 @@
             // Border Style
         let shapeOutline = [];
 
-        const shapeStyleButtonSolid = document.querySelector('.customisation-box.shape-button .draw-style-button-solid');
-        const shapeStyleButtonDashed = document.querySelector('.customisation-box.shape-button .draw-style-button-dashed');
+        const shapeStyleButtonSolid = document.querySelector('.customisation-box.shape .draw-style-button-solid');
+        const shapeStyleButtonDashed = document.querySelector('.customisation-box.shape .draw-style-button-dashed');
 
         shapeStyleButtonSolid.addEventListener('click', function () {
             switchLineTypesShape()
@@ -1152,24 +1154,88 @@
         }
 
         const playerIconsContainer = document.querySelector(".player-icon-container");
-        const playerIcons = document.querySelectorAll(".player-icon");
+        let playerIcons = document.querySelectorAll(".player-icon");
         const playerAdd = document.querySelector(".add-player-icon");
-        const colours = ['#FC9659', '#6bbb6b', '#f1f150', '#EA3B52', '#415A77']
+        const colours = ['#ff762b', '#5dbb63', '#ffef05', '#EA3B52', '#415A77']
         for (let i = 0; i < playerIcons.length; i++) {
             const icon = playerIcons[i];
             icon.style.background = colours.pop();
+            addPlayerIconMovement(icon);
         }
 
         playerAdd.addEventListener('click', function () {
+            playerIcons = document.querySelectorAll(".player-icon");
             if (playerIcons.length < 5) {
-                const newCircle = playerIcons[0].cloneNode(true);
-                newCircle.style.background = colours.pop();
-                playerIconsContainer.insertBefore(newCircle, playerAdd);
-                if (playerIcons.length === 5) {
+                const playerIcon = playerIcons[0].cloneNode(true);
+                playerIcon.style.background = colours.pop();
+                playerIconsContainer.insertBefore(playerIcon, playerAdd);
+                if (playerIcons.length === 4) {
                     playerAdd.classList.remove("active")
+                    playerIcon.style.marginRight = "3px";
                 }
+                addPlayerIconMovement(playerIcon);
             }
         });
+
+        function addPlayerIconMovement(playerIcon) {
+            let iconIsDragging = false;
+            const copyIcon = playerIcon.cloneNode(true);
+            let newX;
+            let newY;
+
+            playerIcon.addEventListener("mousedown", (e) => {
+                iconIsDragging = true;
+                copyIcon.classList.add("active")
+                playerIconsContainer.appendChild(copyIcon);
+            });
+
+            document.addEventListener("mousemove", (e) => {
+                if (iconIsDragging) {
+                    newX = e.clientX - 17;
+                    newY = e.clientY - 17;
+
+                    copyIcon.style.left = `${newX}px`;
+                    copyIcon.style.top = `${newY}px`;
+                }
+            })
+
+            document.addEventListener("mouseup", (e) => {
+                const {x, y} = canvas.getPointer(e);
+
+                if (iconIsDragging) {
+                    iconIsDragging = false;
+                    const playerIconOuter = new fabric.Circle({
+                        left: x,
+                        top: y,
+                        radius: 14,
+                        fill: "white",
+                        stroke: "black",
+                        strokeWidth: 2,
+                        originX: 'center',
+                        originY: 'center'
+                    });
+                    const playerIconInner = new fabric.Circle({
+                        left: x,
+                        top: y,
+                        radius: 10,
+                        fill: copyIcon.style.background,
+                        strokeWidth: 2,
+                        originX: 'center',
+                        originY: 'center'
+                    });
+                    const group = new fabric.Group([playerIconOuter, playerIconInner], {
+                        left: x,
+                        top: y,
+                        originX: 'center',
+                        originY: 'center',
+                        hasControls: false
+                    });
+                    canvas.add(group)
+                    playerIconsContainer.removeChild(copyIcon)
+                    copyIcon.remove();
+                }
+            })
+        }
     })
 
 
