@@ -64,7 +64,7 @@ public class WhiteboardController {
 
         model.addAttribute("teamFormations", formationService.getTeamsFormations(teamID));
 
-        model.addAttribute("teamMembers", team.getTeamMembers());
+        model.addAttribute("teamMembers", team.getNonManagersAndCoaches());
 
         model.addAttribute("teamLineUps", teamLineUps);
 
