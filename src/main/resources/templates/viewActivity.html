@@ -63,9 +63,11 @@
                         </div>
                     </div>
                     <div class="general-activity-right">
-                        <h3 th:if="${activity.team != null}" class="attribute-type">Team</h3>
-                        <h3 th:if="${activity.team != null}" th:text="${activity.team.name}"></h3>
-                        <br th:if="${activity.team != null}">
+                        <th:block th:if="${activity.team != null}">
+                            <h3 class="attribute-type">Team</h3>
+                            <h3 th:text="${activity.team.name}"></h3>
+                            <br>
+                        </th:block>
 
                         <h3 class="attribute-type">Description</h3>
                         <div class="description-box">
