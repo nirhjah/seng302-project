@@ -1,7 +1,5 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.api.response.FormationInfo;
@@ -199,9 +197,6 @@ public class CreateActivityController {
         }
 
 
-
-
-
         model.addAttribute("formationAndPlayersAndPositionJson", getFormationAndPlayersAndPosition(activity));
         fillModelWithActivity(model, activity);
         createActivityForm.prepopulate(activity);
@@ -217,6 +212,7 @@ public class CreateActivityController {
      * @param model model mapping of information
      * @param httpServletRequest the request
      * @param httpServletResponse the response to send
+     * @param subs subs added to the lineup
      * @return returns my activity page iff the details are valid, returns to activity page otherwise
      * @throws MalformedURLException thrown in some cases
      */
@@ -300,29 +296,17 @@ public class CreateActivityController {
             if (activity.getFormation().isPresent()) {
                 activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
                 lineUpService.updateOrAddLineUp(activityLineUp);
-                System.out.println("creating a new lineup with id: " + activityLineUp.getLineUpId());
+                logger.info("creating a new lineup with id: " + activityLineUp.getLineUpId());
 
             }
         } else {
             if (activity.getFormation().isPresent()) {
-                System.out.println("updating existing lineup with id: " + activityLineUp.getLineUpId());
+                logger.info("updating existing lineup with id: " + activityLineUp.getLineUpId());
                 activityLineUp.setFormation(activity.getFormation().get());
                 lineUpService.updateOrAddLineUp(activityLineUp);
             }
         }
-
-
-        if (subs != null && !subs.isEmpty()) {
-            List<String> lineUpSubs = Arrays.stream(subs.split(", ")).toList();
-            System.out.println(lineUpSubs);
-            for (String playerId : lineUpSubs) {
-                if (userService.findUserById(Long.parseLong(playerId)).isPresent()) {
-                    User subPlayer = userService.findUserById(Long.parseLong(playerId)).get();
-                    System.out.println("This is a sub of lineup: " + subPlayer.getFirstName());
-                    activityLineUp.getSubs().add(subPlayer);
-                }
-            }
-        }
+        saveSubs(subs);
 
         if (playerAndPositions != null && !playerAndPositions.isEmpty()) {
             List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
@@ -331,7 +315,7 @@ public class CreateActivityController {
                 saveLineUp(positionsAndPlayers, bindingResult);
 
             }
-            if (bindingResult.hasErrors() && actId != -1) { //only throw error if we are on edit act page
+            if (bindingResult.hasErrors() && actId != -1) {
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 if (activity != null) {
                     model.addAttribute("actId", actId);
@@ -403,6 +387,23 @@ public class CreateActivityController {
     }
 
     /**
+     * Saves subs to activity lineup
+     * @param subs subs to save
+     */
+    private void saveSubs(String subs) {
+        if (subs != null && !subs.isEmpty()) {
+            List<String> lineUpSubs = Arrays.stream(subs.split(", ")).toList();
+            System.out.println(lineUpSubs);
+            for (String playerId : lineUpSubs) {
+                if (userService.findUserById(Long.parseLong(playerId)).isPresent()) {
+                    User subPlayer = userService.findUserById(Long.parseLong(playerId)).get();
+                    activityLineUp.getSubs().add(subPlayer);
+                }
+            }
+        }
+    }
+
+    /**
      * Takes list of positions and players fron the selected line up then creates LineUpPositions for each and saves them with the lineup
      * @param positionsAndPlayers list of positions and players
      */
@@ -431,14 +432,17 @@ public class CreateActivityController {
     }
 
 
+    /**
+     * Gets a map of the formation and lineup for an activity
+     * @param activity activity to get lineups with formation of
+     * @return map of formation and lineups
+     */
     private Map<Long, List<List<Object>>> getFormationAndPlayersAndPosition(Activity activity) {
 
         Map<Long, List<List<Object>>> formationAndPlayersAndPosition = new HashMap<>();
         for (Map.Entry<Formation, LineUp> entry : lineUpService.getLineUpsForTeam(activity.getTeam(), activity).entrySet()) {
             Formation formation = entry.getKey();
             LineUp lineUp = entry.getValue();
-
-            System.out.println("This is a list of subs when we are on the getmapping: " +  lineUp.getSubs().toString());
 
             List<List<Object>> playersAndPosition = new ArrayList<>();
 
