@@ -45,7 +45,7 @@ public class LoginController {
      */
     @GetMapping("/login")
     public String form(
-            @RequestParam(name="error", defaultValue="false") String error,
+            @RequestParam(name="error", required=false) String error,
             @RequestParam(name=DEFAULT_REDIRECT, required=false) String redirectUrl,
             Model model,
             HttpServletRequest request,
@@ -61,6 +61,7 @@ public class LoginController {
         
         // If the redirect URL isn't local (Open Redirect Vulnerability), trash it.
         if (redirectUrl != null && !LOCAL_URL_PATTERN.matcher(redirectUrl).matches()) {
+            session.removeAttribute(DEFAULT_REDIRECT);
             return "redirect:login";
         }
 
@@ -69,7 +70,7 @@ public class LoginController {
             return "redirect:" + SecurityConfiguration.DEFAULT_LOGIN_REDIRECT_URL;
         }
 
-        if (error.equals("true")) {
+        if (error != null) {
             String errorMessage;
             Exception exception = (Exception)request.getSession().getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
 
