@@ -57,28 +57,6 @@ public class LineUpService {
         return lineUpRepository.findLineUpByActivityIdAndFormation(activity, formation);
     }
 
-    /**
-     * Gets most current lineup that matches activity and formation
-     * @param id activity id
-     * @param formation formation of activity
-     * @return current lineup that matches both activity and formation
-     */
-    public LineUp findLineUpByActivityAndFormation(long id, Formation formation) {
-        List<LineUp> activityLineups = lineUpRepository.findLineUpsByActivityId(id);
-        if (activityLineups.isEmpty()) {
-            return null;
-        } else {
-            List<LineUp> lineUpsWithMatchingFormation = activityLineups.stream()
-                    .filter(lineUp -> lineUp.getFormation().equals(formation))
-                    .sorted(Comparator.comparingLong(LineUp::getLineUpId).reversed()).toList();
-            if (!lineUpsWithMatchingFormation.isEmpty()) {
-                return lineUpsWithMatchingFormation.get(0);
-            } else {
-                return null;
-            }
-        }
-    }
-
     public Optional<Formation> findFormationByLineUpId(long id){
         return lineUpRepository.findFormationByLineUpId(id);
     }
@@ -88,6 +66,12 @@ public class LineUpService {
     }
 
 
+    /**
+     * Gets lineup for each formation for a team's activity
+     * @param team team to get lineup and formation of
+     * @param activity activity to get formations of
+     * @return lineup for each formation for a team's activity as a map
+     */
     public Map<Formation, LineUp> getLineUpsForTeam(Team team, Activity activity) {
         List<Formation> teamFormations = formationRepository.findByTeamTeamId(team.getTeamId());
         List<LineUp> allLineUps = (List<LineUp>) lineUpRepository.findAll();
