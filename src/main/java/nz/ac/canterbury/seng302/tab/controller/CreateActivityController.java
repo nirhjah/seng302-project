@@ -319,11 +319,9 @@ public class CreateActivityController {
             }
             if (bindingResult.hasErrors() && actId != -1) {
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                if (activity != null) {
-                    model.addAttribute("actId", actId);
-                    model.addAttribute(FORMATION_PLAYER_POSITIONS, getFormationAndPlayersAndPosition(activity));
-                    fillModelWithActivity(model, activity);
-                }
+                model.addAttribute("actId", actId);
+                model.addAttribute(FORMATION_PLAYER_POSITIONS, getFormationAndPlayersAndPosition(activity));
+                fillModelWithActivity(model, activity);
                 return TEMPLATE_NAME;
             }
 

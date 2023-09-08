@@ -37,7 +37,7 @@ public class LineUpServiceTest {
     private ActivityRepository activityRepository;
 
     @Test
-    public void testFindLineUpByActivityAndFormation() throws Exception {
+    void testFindLineUpByActivityAndFormation() throws Exception {
         Team team = new Team("adfds", "hello");
         formation = new Formation("4-5-6", team);
 
@@ -56,7 +56,7 @@ public class LineUpServiceTest {
 
 
     @Test
-    public void testGettingLineupsForTeamPerFormation() throws Exception {
+    void testGettingLineupsForTeamPerFormation() throws Exception {
         Team team = new Team("adfds", "hello");
         formation = new Formation("4-5-6", team);
         formation2 = new Formation("1-2-3", team);
