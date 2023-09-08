@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-public class WhiteboardControllerTest {
+class WhiteboardControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -77,7 +77,7 @@ public class WhiteboardControllerTest {
 
     @Test
     @WithMockUser
-    public void testGettingWhiteboardWithValidTeam() throws Exception {
+    void testGettingWhiteboardWithValidTeam() throws Exception {
         mockMvc.perform(get("/whiteboard").param("teamID", TEAM_ID.toString())
         ).andExpect(status().isOk()).andExpect(model().attributeExists("teamFormations"))
                 .andExpect(model().attributeExists("teamLineUps"))
@@ -88,7 +88,7 @@ public class WhiteboardControllerTest {
 
     @Test
     @WithMockUser
-    public void testGettingWhiteboardWithInvalidTeam() throws Exception {
+    void testGettingWhiteboardWithInvalidTeam() throws Exception {
 
         mockMvc.perform(get("/whiteboard").param("teamID", String.valueOf(2))
         ).andExpect(view().name("homeForm"));

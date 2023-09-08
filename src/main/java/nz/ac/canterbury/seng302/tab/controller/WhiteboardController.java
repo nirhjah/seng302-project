@@ -49,14 +49,15 @@ public class WhiteboardController {
     public String getTemplate(@RequestParam(value = "teamID") Long teamID,
             Model model, HttpServletRequest request) {
         logger.info("GET /whiteboard");
-        logger.info("team id" + teamID);
         model.addAttribute("httpServletRequest", request);
 
         Optional<List<LineUp>> teamLineUpsOpt = lineUpService.findLineUpsByTeam(teamID);
         List<LineUp> teamLineUps = teamLineUpsOpt.orElse(Collections.emptyList());
 
-        if (teamService.findTeamById(teamID).isPresent()) {
-            team = teamService.findTeamById(teamID).get();
+        Optional<Team> teamOpt = teamService.findTeamById(teamID);
+
+        if (teamOpt.isPresent()) {
+            team = teamOpt.get();
         }
         else {
             return "homeForm";
