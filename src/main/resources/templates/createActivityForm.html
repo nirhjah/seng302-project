@@ -400,6 +400,15 @@
                         const subId = sublist[0];
                         const subName = sublist[1];
                         subsUL.appendChild(createSub(subId, subName))
+
+                        const players = document.querySelectorAll(".reserves-li");
+                        players.forEach(player => {
+                            const reserveId = player.querySelector("input").value;
+                            if (reserveId === subId.toString()) {
+                                player.classList.add("in-formation");
+                            }
+                        });
+
                     }
 
                     for (const positionIndex in playersAndPosition) {
@@ -418,13 +427,16 @@
                             const idObject = position.querySelector('input');
 
 
-                            // const players = document.querySelectorAll(".reserves-li");
-                            // players.forEach(player => {
-                            //     const reserveId = player.querySelector("input").value;
-                            //     if (reserveId === playerId) {
-                            //         player.classList.add("in-formation");
-                            //     }
-                            // });
+                            const players = document.querySelectorAll(".reserves-li");
+                            players.forEach(player => {
+                                const reserveId = player.querySelector("input").value;
+                                if (reserveId === playerId.toString()) {
+                                    player.classList.add("in-formation");
+                                }
+                            });
+
+
+
 
                             const playerNameElement = position.querySelector('h3');
                              playerNameElement.textContent = playerName;
@@ -443,16 +455,6 @@
 
                             close.classList.add('active')
 
-                            reservesLi.forEach(li => {
-                                const inputElement = li.querySelector(".playerId");
-                                const inputValue = inputElement.value;
-                                if (inputValue === playerId) {
-
-                                    li.classList.add("in-formation");
-
-                                }
-
-                            })
 
 
 

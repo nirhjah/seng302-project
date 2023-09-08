@@ -17,6 +17,7 @@ public class U33EditLineUpE2E {
     int counter = 0;
     @Before("@edit_line_up_e2e")
     public void setup() {
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/populate_database");
         DefaultFunctions.pwLogin();
         if (!isSetupExecuted) {
             DefaultFunctions.pwCreateNewTeamWithFormationAndActivity();
@@ -38,6 +39,8 @@ public class U33EditLineUpE2E {
         PlaywrightBrowser.page.locator("#activities").click();
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("#editActivityBtn").first().click();
+        PlaywrightBrowser.page.locator("#formation-dropdown").selectOption("1-4-4-2");
+
     }
 
     @When("I select a player")

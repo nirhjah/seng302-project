@@ -60,7 +60,7 @@ public class DefaultFunctions {
 
             PlaywrightBrowser.page.locator("#activityType").selectOption("Game");
             PlaywrightBrowser.page.locator("#team").selectOption(teamName);
-            PlaywrightBrowser.page.locator("#formation-dropdown").selectOption("1-4-4-2");
+            //PlaywrightBrowser.page.locator("#formation-dropdown").selectOption("1-4-4-2");
             PlaywrightBrowser.page.fill("#description", "desc");
             PlaywrightBrowser.page.fill("#startDateTime", "2025-04-02T05:15");
             PlaywrightBrowser.page.fill("#endDateTime", "2026-04-02T05:15");

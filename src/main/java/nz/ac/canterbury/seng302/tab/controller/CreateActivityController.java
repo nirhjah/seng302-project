@@ -52,7 +52,7 @@ public class CreateActivityController {
     private static final String TEMPLATE_NAME = "createActivityForm";
 
     public CreateActivityController(TeamService teamService, UserService userService,
-            ActivityService activityService, FormationService formationService, LineUpService lineUpService, LineUpPositionService lineUpPositionService) {
+                                    ActivityService activityService, FormationService formationService, LineUpService lineUpService, LineUpPositionService lineUpPositionService) {
         this.teamService = teamService;
         this.userService = userService;
         this.activityService = activityService;
@@ -91,7 +91,8 @@ public class CreateActivityController {
             model.addAttribute("teamName", activity.getTeam().getName());
             model.addAttribute("teamFormations", formationService.getTeamsFormations(activity.getTeam().getTeamId()));
             model.addAttribute("selectedFormation", activity.getFormation().orElse(null));
-            model.addAttribute("players", activity.getTeam().getTeamMembers());
+            model.addAttribute("players", activity.getInvolvedMembersNoManagerAndCoaches());
+
         }
         model.addAttribute("actId", activity.getId());
         model.addAttribute("startDateTime",formattedStartDateTime);
@@ -121,14 +122,14 @@ public class CreateActivityController {
         if (!activityService.validateStartAndEnd(createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
             bindingResult.addError(new FieldError("CreateActivityForm", "startDateTime", ActivityFormValidators.END_BEFORE_START_MSG));
         }
-        
+
         if (team != null) {
             // The dates are after the team's creation date
 
             if (createActivityForm.getStartDateTime() != null && createActivityForm.getEndDateTime() != null && !activityService.validateActivityDateTime(team.getCreationDate(), createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-                    bindingResult.addError(new FieldError("CreateActivityForm", "endDateTime",
-                            ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + team.getCreationDate().format(formatter)));
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                bindingResult.addError(new FieldError("CreateActivityForm", "endDateTime",
+                        ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + team.getCreationDate().format(formatter)));
 
             }
             // This user needs the authority to create/update activities
@@ -149,7 +150,7 @@ public class CreateActivityController {
         // so the value may be set but it's invalid.
         long formationId = createActivityForm.getFormation();
         if (formationId != -1 && formationId != 0 && (Activity.canContainFormation(createActivityForm.getActivityType(), team)) && formationService.findFormationById(formationId).map(form -> form.getTeam().equals(team)).isEmpty() ) {
-                bindingResult.addError(new FieldError("CreateActivityForm", "formation",
+            bindingResult.addError(new FieldError("CreateActivityForm", "formation",
                     ActivityFormValidators.FORMATION_DOES_NOT_EXIST_MSG));
         }
     }
@@ -177,7 +178,7 @@ public class CreateActivityController {
         if (actId == null) {
             return TEMPLATE_NAME;
         }
-            
+
         User currentUser = userService.getCurrentUser().get();
         Activity activity = activityService.findActivityById(actId);
 
@@ -253,12 +254,12 @@ public class CreateActivityController {
         }
 
         Location location = new Location(
-            createActivityForm.getAddressLine1(),
-            createActivityForm.getAddressLine2(),
-            createActivityForm.getSuburb(),
-            createActivityForm.getCity(),
-            createActivityForm.getPostcode(),
-            createActivityForm.getCountry()
+                createActivityForm.getAddressLine1(),
+                createActivityForm.getAddressLine2(),
+                createActivityForm.getSuburb(),
+                createActivityForm.getCity(),
+                createActivityForm.getPostcode(),
+                createActivityForm.getCountry()
         );
 
         if (actId == -1) {  // Creating a new activity
@@ -293,9 +294,21 @@ public class CreateActivityController {
 
         activity = activityService.updateOrAddActivity(activity);
 
-        if (activity.getFormation().isPresent()) {
-            activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
-            lineUpService.updateOrAddLineUp(activityLineUp);
+        activityLineUp = lineUpService.findLineUpByActivityAndFormation(activity.getId(), activity.getFormation().orElse(null));
+
+        if (activityLineUp == null) {
+            if (activity.getFormation().isPresent()) {
+                activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
+                lineUpService.updateOrAddLineUp(activityLineUp);
+                System.out.println("creating a new lineup with id: " + activityLineUp.getLineUpId());
+
+            }
+        } else {
+            if (activity.getFormation().isPresent()) {
+                System.out.println("updating existing lineup with id: " + activityLineUp.getLineUpId());
+                activityLineUp.setFormation(activity.getFormation().get());
+                lineUpService.updateOrAddLineUp(activityLineUp);
+            }
         }
 
 
