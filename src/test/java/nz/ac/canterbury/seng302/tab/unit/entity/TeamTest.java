@@ -37,6 +37,7 @@ public class TeamTest {
     @BeforeEach
     public void beforeEach() {
         teamRepository.deleteAll();
+        userRepository.deleteAll();
         location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
     }
 
