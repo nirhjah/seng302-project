@@ -49,6 +49,8 @@ public class CreateActivityController {
 
     private static final String TEMPLATE_NAME = "createActivityForm";
 
+    private static final String FORMATION_PLAYER_POSITIONS = "formationAndPlayersAndPositionJson";
+
     public CreateActivityController(TeamService teamService, UserService userService,
                                     ActivityService activityService, FormationService formationService, LineUpService lineUpService, LineUpPositionService lineUpPositionService) {
         this.teamService = teamService;
@@ -197,7 +199,7 @@ public class CreateActivityController {
         }
 
 
-        model.addAttribute("formationAndPlayersAndPositionJson", getFormationAndPlayersAndPosition(activity));
+        model.addAttribute(FORMATION_PLAYER_POSITIONS, getFormationAndPlayersAndPosition(activity));
         fillModelWithActivity(model, activity);
         createActivityForm.prepopulate(activity);
         return TEMPLATE_NAME;
@@ -241,7 +243,7 @@ public class CreateActivityController {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             if (activity != null) {
                 model.addAttribute("actId", actId);
-                model.addAttribute("formationAndPlayersAndPositionJson", getFormationAndPlayersAndPosition(activity));
+                model.addAttribute(FORMATION_PLAYER_POSITIONS, getFormationAndPlayersAndPosition(activity));
 
                 fillModelWithActivity(model, activity);
             }
@@ -296,12 +298,10 @@ public class CreateActivityController {
             if (activity.getFormation().isPresent()) {
                 activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
                 lineUpService.updateOrAddLineUp(activityLineUp);
-                logger.info("creating a new lineup with id: " + activityLineUp.getLineUpId());
 
             }
         } else {
             if (activity.getFormation().isPresent()) {
-                logger.info("updating existing lineup with id: " + activityLineUp.getLineUpId());
                 activityLineUp.setFormation(activity.getFormation().get());
                 lineUpService.updateOrAddLineUp(activityLineUp);
             }
@@ -319,7 +319,7 @@ public class CreateActivityController {
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 if (activity != null) {
                     model.addAttribute("actId", actId);
-                    model.addAttribute("formationAndPlayersAndPositionJson", getFormationAndPlayersAndPosition(activity));
+                    model.addAttribute(FORMATION_PLAYER_POSITIONS, getFormationAndPlayersAndPosition(activity));
                     fillModelWithActivity(model, activity);
                 }
                 return TEMPLATE_NAME;
@@ -393,7 +393,6 @@ public class CreateActivityController {
     private void saveSubs(String subs) {
         if (subs != null && !subs.isEmpty()) {
             List<String> lineUpSubs = Arrays.stream(subs.split(", ")).toList();
-            System.out.println(lineUpSubs);
             for (String playerId : lineUpSubs) {
                 if (userService.findUserById(Long.parseLong(playerId)).isPresent()) {
                     User subPlayer = userService.findUserById(Long.parseLong(playerId)).get();
