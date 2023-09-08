@@ -295,14 +295,16 @@ public class CreateActivityController {
         activityLineUp = lineUpService.findLineUpByActivityAndFormation(activity.getId(), activity.getFormation().orElse(null));
 
         if (activityLineUp == null) {
-            if (activity.getFormation().isPresent()) {
-                activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
+            Optional<Formation> formationOptional = activity.getFormation();
+            if (formationOptional.isPresent()) {
+                activityLineUp = new LineUp(formationOptional.get(), activity.getTeam(), activity);
                 lineUpService.updateOrAddLineUp(activityLineUp);
-
             }
         } else {
-            if (activity.getFormation().isPresent()) {
-                activityLineUp.setFormation(activity.getFormation().get());
+            Optional<Formation> formationOptional = activity.getFormation();
+
+            if (formationOptional.isPresent()) {
+                activityLineUp.setFormation(formationOptional.get());
                 lineUpService.updateOrAddLineUp(activityLineUp);
             }
         }
