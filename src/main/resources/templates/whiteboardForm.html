@@ -245,6 +245,13 @@
                     <span class="tooltip">Clear (C)</span>
                     <img class="default-svg" th:src="@{/image/icons/clear.svg}"/>
                 </button>
+                <div class="player-icon-container">
+                    <div class="player-icon"></div>
+                    <div class="player-icon"></div>
+                    <button class="add-player-icon active">
+                        <img th:src="@{/image/icons/add-white.svg}"/>
+                    </button>
+                </div>
             </div>
             <div class="whiteboard">
                 <canvas id="canvas" width="560" height="700"></canvas>
@@ -1143,6 +1150,26 @@
                 canvas.add(player)
             }
         }
+
+        const playerIconsContainer = document.querySelector(".player-icon-container");
+        const playerIcons = document.querySelectorAll(".player-icon");
+        const playerAdd = document.querySelector(".add-player-icon");
+        const colours = ['#FC9659', '#6bbb6b', '#f1f150', '#EA3B52', '#415A77']
+        for (let i = 0; i < playerIcons.length; i++) {
+            const icon = playerIcons[i];
+            icon.style.background = colours.pop();
+        }
+
+        playerAdd.addEventListener('click', function () {
+            if (playerIcons.length < 5) {
+                const newCircle = playerIcons[0].cloneNode(true);
+                newCircle.style.background = colours.pop();
+                playerIconsContainer.insertBefore(newCircle, playerAdd);
+                if (playerIcons.length === 5) {
+                    playerAdd.classList.remove("active")
+                }
+            }
+        });
     })
 
 
