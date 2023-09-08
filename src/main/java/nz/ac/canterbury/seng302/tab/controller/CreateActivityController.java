@@ -294,7 +294,6 @@ public class CreateActivityController {
         activity = activityService.updateOrAddActivity(activity);
 
         if (activity.getFormation().isPresent()) {
-            System.out.println("we are creating a new line up with id:" + activityLineUp.getLineUpId() );
             activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
             lineUpService.updateOrAddLineUp(activityLineUp);
         }

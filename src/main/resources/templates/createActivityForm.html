@@ -525,6 +525,7 @@
         reservesLi.forEach(li => {
             li.classList.remove("in-formation");
         })
+        deactivateSubs();
         const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex]
         const formation = selectedFormation.textContent;
         const custom = selectedFormation.getAttribute("data-custom")
@@ -685,16 +686,14 @@
                     }
                 });
 
-            // Action to carry out when use clicks button to remove player from formation
+                // Action to carry out when use clicks button to remove player from formation
                 clearPositionButton.addEventListener('click', () => {
                         const positionPlayerId = position.querySelector("input").value;
                         const players = document.querySelectorAll(".reserves-li");
                         players.forEach(player => {
                             const playerId = player.querySelector("input").value;
                             if (playerId === positionPlayerId) {
-                                
                                 player.classList.remove("in-formation");
-
                                 position.classList.remove("filled");
                             }
                         });
@@ -759,6 +758,9 @@
     function deactivateSubs() {
         subsUl.classList.remove("active");
         subsHeader.classList.remove("active");
+        while (subsUl.firstChild) {
+            subsUl.removeChild(subsUl.firstChild);
+        }
         const switches = document.querySelectorAll(".switch");
         switches.forEach(sw => {
             sw.classList.remove("active");
