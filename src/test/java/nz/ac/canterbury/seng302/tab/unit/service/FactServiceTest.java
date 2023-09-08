@@ -309,7 +309,7 @@ public class FactServiceTest {
     }
 
     @Test
-    public void testGoalsInCorrectOrder() throws Exception {
+    void testGoalsInCorrectOrder() throws Exception {
         Location location = new Location(null, null, null, "Christchurch", null,
                 "New Zealand");
         Team team = new Team("Team 900", "Programming");
