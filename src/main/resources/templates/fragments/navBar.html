@@ -23,7 +23,21 @@
                         </div>
                         <a>
                             <span th:text="Create"></span>
-                            <i class="triangle"></i>
+                            <i class="navbar-dropdown-triangle"></i>
+                        </a>
+                    </li>
+                </div>
+
+                <div class="view-all-buttons">
+                    <li class="navbar-view-all-button" sec:authorize="isAuthenticated()">
+                        <div class="navbar-view-all-dropdown">
+                            <a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a>
+                            <a th:href="@{view-users(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
+                            <a th:href="@{view-all-competitions(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-all-competitions' ? 'active' : ''}">View All Competitions</a>
+                        </div>
+                        <a>
+                            <span th:text="'View All'"></span>
+                            <i class="navbar-dropdown-triangle"></i>
                         </a>
                     </li>
                 </div>
@@ -33,15 +47,6 @@
                 </li>
                 <li sec:authorize="isAnonymous()">
                     <a th:href="@{register}" th:classappend="${httpServletRequest.requestURI == '/register' ? 'active' : ''}">Register</a>
-                </li>
-                <li sec:authorize="isAuthenticated()">
-                    <a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a>
-                </li>
-                <li sec:authorize="isAuthenticated()">
-                    <a th:href="@{view-users(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
-                </li>
-                <li sec:authorize="isAuthenticated()">
-                    <a th:href="@{view-all-competitions(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-all-competitions' ? 'active' : ''}">View All Competitions</a>
                 </li>
                 <li sec:authorize="hasAnyRole('ROLE_FEDERATION_MANAGER')">
                     <a th:href="@{inviteToFederationManager}" th:classappend="${httpServletRequest.requestURI == '/inviteToFederationManager' ? 'active' : ''}">Invite</a>
@@ -76,7 +81,7 @@
                      alt="My Profile">
                 <span th:if="${#strings.length(user.firstName + ' ' + user.lastName)} &lt;= 24" th:text="${user.firstName + ' ' + user.lastName}"></span>
                 <span th:unless="${#strings.length(user.firstName + ' ' + user.lastName)} &lt;= 24" th:text="${#strings.substring(user.firstName + ' ' + user.lastName, 0, 21) + '...'}"></span>
-                <i class="triangle" aria-hidden="true"></i>
+                <i class="navbar-dropdown-triangle" aria-hidden="true"></i>
             </a>
         </li>
         <form id="logoutForm" th:action="@{logout}" method="POST"></form>
@@ -88,42 +93,61 @@
             navBar.classList.toggle("active");
         };
 
-        let navbarUserButton = document.querySelector(".navbar-user-button");
-        if (navbarUserButton !== null){
-            let triangle = navbarUserButton.querySelector(".triangle");
-            let navbarUserDropdown = navbarUserButton.querySelector(".navbar-user-dropdown");
-            navbarUserButton.addEventListener("click", function (event) {
-                event.stopPropagation();
-                navbarUserDropdown.classList.toggle("show");
-                triangle.classList.toggle("up");
-            });
-
-            document.addEventListener("click", function (event) {
-                if (!navbarUserButton.contains(event.target)) {
-                    navbarUserDropdown.classList.remove("show");
-                    triangle.classList.remove("up");
-                }
-            });
+        // Hides a dropdown
+        function hide(event, button, dropdown, triangle) {
+            if (button && !button.contains(event.target)) {
+                dropdown.classList.remove("show")
+                triangle.classList.remove("up")
+            }
         }
 
+        // Toggles a dropdown
+        function toggle(event, button, dropdown, triangle) {
+            event.stopPropagation();
+            dropdown.classList.toggle("show")
+            triangle.classList.toggle("up")
+        }
+
+        let navbarViewAllButton = document.querySelector(".navbar-view-all-button");
+        let viewAllTriangle, navbarViewAllDropdown
+        if (navbarViewAllButton) {
+            viewAllTriangle = navbarViewAllButton.querySelector(".navbar-dropdown-triangle");
+            navbarViewAllDropdown = navbarViewAllButton.querySelector(".navbar-view-all-dropdown");
+
+            navbarViewAllButton.addEventListener("click", function (event) {
+                toggle(event, navbarViewAllButton, navbarViewAllDropdown, viewAllTriangle)
+            });
+        }
 
         let navbarCreateButton = document.querySelector(".navbar-create-button");
-        if (navbarCreateButton !== null){
-            let triangle = navbarCreateButton.querySelector(".triangle");
-            let navbarCreateDropdown = navbarCreateButton.querySelector(".navbar-create-dropdown");
-            navbarCreateButton.addEventListener("click", function (event_create) {
-                event_create.stopPropagation();
-                navbarCreateDropdown.classList.toggle("show");
-                triangle.classList.toggle("up");
-            });
+        let createTriangle, navbarCreateDropdown
+        if (navbarCreateButton) {
+            createTriangle = navbarCreateButton.querySelector(".navbar-dropdown-triangle");
+            navbarCreateDropdown = navbarCreateButton.querySelector(".navbar-create-dropdown");
 
-             document.addEventListener("click", function (event) {
-                 if (!navbarCreateButton.contains(event.target)) {
-                     navbarCreateDropdown.classList.remove("show");
-                     triangle.classList.remove("up");
-                 }
-             });
+            navbarCreateButton.addEventListener("click", function (event) {
+                toggle(event, navbarCreateButton, navbarCreateDropdown, createTriangle)
+            });
         }
 
+        let navbarUserButton = document.querySelector(".navbar-user-button");
+        let userTriangle, navbarUserDropdown
+        if (navbarUserButton) {
+            userTriangle = navbarUserButton.querySelector(".navbar-dropdown-triangle");
+            navbarUserDropdown = navbarUserButton.querySelector(".navbar-user-dropdown");
+
+            navbarUserButton.addEventListener("click", function (event) {
+                toggle(event, navbarUserButton, navbarUserDropdown, userTriangle)
+            })
+        }
+
+        document.addEventListener("click", function (event) {
+            // Whenever there is a click that ISN'T on the dropdowns,
+            // hide all the dropdowns.
+            // This ensures that all dropdowns aren't open at once, so it doesnt get messy.
+            hide(event, navbarCreateButton, navbarCreateDropdown, createTriangle)
+            hide(event, navbarViewAllButton, navbarViewAllDropdown, viewAllTriangle)
+            hide(event, navbarUserButton, navbarUserDropdown, userTriangle)
+        });
     </script>
 </header>
