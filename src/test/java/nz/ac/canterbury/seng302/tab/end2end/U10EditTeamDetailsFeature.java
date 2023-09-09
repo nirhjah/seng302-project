@@ -88,20 +88,11 @@ public class U10EditTeamDetailsFeature {
         Assertions.assertTrue(locationValue.contains("city"));
         Assertions.assertTrue(locationValue.contains("country"));
 
-
-
     }
     @When("I hit the save button,")
     public void i_hit_the_save_button() {
         PlaywrightBrowser.page.locator(".submit-button button").click();
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
-    }
-
-    @Then("an error message tells me the name contains invalid characters.")
-    public void an_error_message_tells_me_the_name_contains_invalid_characters() {
-        String errorMessage = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('.error-message').textContent"));
-        System.out.println(errorMessage);
-
     }
 
     @And("I enter invalid values \\(i.e. empty strings or non-alphabetical characters) for the location or sport,")
@@ -117,16 +108,17 @@ public class U10EditTeamDetailsFeature {
         PlaywrightBrowser.page.locator("input#sport").type(",>,");
     }
 
-    @Then("an error message tells me these fields contain invalid values.")
-    public void an_error_message_tells_me_these_fields_contain_invalid_values() {
-        String errorMessage = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('.error-message').textContent"));
-        System.out.println(errorMessage);
-
-    }
-
     @When("no changes have been made to its profile")
     public void no_changes_have_been_made_to_its_profile() {
+        String nameValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('h3[data-cy=\"name\"]').textContent"));
+        String sportValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('h3[data-cy=\"sport\"]').textContent"));
+        String locationValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('h3[data-cy=\"location\"]').textContent"));
 
+        Assertions.assertEquals(TEAM_NAME, nameValue);
+        Assertions.assertEquals(SPORT, sportValue);
+
+        Assertions.assertTrue(locationValue.contains(CITY));
+        Assertions.assertTrue(locationValue.contains(COUNTRY));
     }
 
     @And("I enter an invalid value for the team’s name \\(e.g., non-alphanumeric other than dots or curly brackets, name made of only acceptable non-alphanumeric),")
@@ -140,4 +132,17 @@ public class U10EditTeamDetailsFeature {
         PlaywrightBrowser.page.locator(".cancel-link a").click();
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
     }
+
+    @Then("an error message tells me be that {string}.")
+    public void anErrorMessageTellsMeBeThatMessage(String message) {
+        String errorMessage = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('.error-message').textContent"));
+        Assertions.assertEquals(errorMessage, message);
+    }
+
+    @Then("an error message {string}, tells me these fields contain invalid values.")
+    public void anErrorMessageMessageTellsMeTheseFieldsContainInvalidValues(String message) {
+        String errorMessage = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('.error-message').textContent"));
+        Assertions.assertEquals(errorMessage, message);
+    }
+
 }
