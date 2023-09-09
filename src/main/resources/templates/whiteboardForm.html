@@ -246,8 +246,8 @@
                     <img class="default-svg" th:src="@{/image/icons/clear.svg}"/>
                 </button>
                 <div class="player-icon-container">
-                    <div class="player-icon" draggable="false"></div>
-                    <div class="player-icon" draggable="false"></div>
+                    <div class="player-icon" ondragstart="return false;" ondrop="return false;"></div>
+                    <div class="player-icon" ondragstart="return false;" ondrop="return false;"></div>
                     <button class="add-player-icon active">
                         <img th:src="@{/image/icons/add-white.svg}"/>
                     </button>
@@ -1088,9 +1088,7 @@
             const customPlayerPositions = target.getAttribute("data-custom-positions");
             canvas.clear();
             if (formationId !== "-1") {
-                console.log(formationId, formation, custom, customPlayerPositions)
                 if (custom === true || custom === "true") {
-                    console.log("here")
                     renderPlayersCustom(customPlayerPositions)
                 } else {
                     renderPlayers(formation)
@@ -1098,7 +1096,7 @@
             }
         }
 
-        const radius = 25;
+        const radius = 14;
 
         // Adapted from formations page
         function renderPlayers(formationString) {
@@ -1110,17 +1108,7 @@
                 while (formation[i] !== 0) {
                     const top = canvas.height - ((i + 1) / (formation.length + 1)) * canvas.height - radius;
                     const left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * canvas.width - radius;
-                    console.log(top, left)
-                    const player = new fabric.Circle({
-                        left: left,
-                        top: top,
-                        radius: radius,
-                        fill: "red",
-                        originX: 'left',
-                        originY: 'top',
-                        hasControls: false
-                    });
-                    canvas.add(player)
+                    createPlayerIcon(left, top, '#EA3B52')
                     formation[i] -= 1;
                     j++;
                 }
@@ -1139,17 +1127,7 @@
                 let coordinates = positionsList[i].split(",")
                 const left = parseInt(coordinates[0]) * canvas.width / pitchWidthOriginal;
                 let top = canvas.width - parseInt(coordinates[1]) * canvas.width / pitchHeightOriginal;
-                const player = new fabric.Circle({
-                    left: left,
-                    top: top,
-                    radius: radius,
-                    fill: "red",
-                    originX: 'left',
-                    originY: 'top',
-                    hasControls: false
-                });
-                console.log(top, left)
-                canvas.add(player)
+                createPlayerIcon(left, top, '#EA3B52')
             }
         }
 
@@ -1179,21 +1157,28 @@
 
         function addPlayerIconMovement(playerIcon) {
             let iconIsDragging = false;
-            const copyIcon = playerIcon.cloneNode(true);
+            const yOffset = 15;
+            const xOffset = 18;
+            let copyIcon;
             let newX;
             let newY;
 
             playerIcon.addEventListener("mousedown", (e) => {
                 iconIsDragging = true;
+                copyIcon = playerIcon.cloneNode(false)
                 copyIcon.classList.add("active")
                 playerIconsContainer.appendChild(copyIcon);
+
+                newX = e.clientX - xOffset;
+                newY = e.clientY - yOffset;
+                copyIcon.style.left = `${newX}px`;
+                copyIcon.style.top = `${newY}px`;
             });
 
             document.addEventListener("mousemove", (e) => {
                 if (iconIsDragging) {
-                    newX = e.clientX - 17;
-                    newY = e.clientY - 17;
-
+                    newX = e.clientX - xOffset;
+                    newY = e.clientY - yOffset;
                     copyIcon.style.left = `${newX}px`;
                     copyIcon.style.top = `${newY}px`;
                 }
@@ -1204,37 +1189,41 @@
 
                 if (iconIsDragging) {
                     iconIsDragging = false;
-                    const playerIconOuter = new fabric.Circle({
-                        left: x,
-                        top: y,
-                        radius: 14,
-                        fill: "white",
-                        stroke: "black",
-                        strokeWidth: 2,
-                        originX: 'center',
-                        originY: 'center'
-                    });
-                    const playerIconInner = new fabric.Circle({
-                        left: x,
-                        top: y,
-                        radius: 10,
-                        fill: copyIcon.style.background,
-                        strokeWidth: 2,
-                        originX: 'center',
-                        originY: 'center'
-                    });
-                    const group = new fabric.Group([playerIconOuter, playerIconInner], {
-                        left: x,
-                        top: y,
-                        originX: 'center',
-                        originY: 'center',
-                        hasControls: false
-                    });
-                    canvas.add(group)
+                    createPlayerIcon(x, y, copyIcon.style.background)
                     playerIconsContainer.removeChild(copyIcon)
                     copyIcon.remove();
                 }
             })
+        }
+
+        function createPlayerIcon(x, y, fill) {
+            const playerIconOuter = new fabric.Circle({
+                left: x,
+                top: y,
+                radius: radius,
+                fill: "white",
+                stroke: "black",
+                strokeWidth: 2,
+                originX: 'center',
+                originY: 'center'
+            });
+            const playerIconInner = new fabric.Circle({
+                left: x,
+                top: y,
+                radius: radius - 4,
+                fill: fill,
+                strokeWidth: 2,
+                originX: 'center',
+                originY: 'center'
+            });
+            const group = new fabric.Group([playerIconOuter, playerIconInner], {
+                left: x,
+                top: y,
+                originX: 'center',
+                originY: 'center',
+                hasControls: false
+            });
+            canvas.add(group)
         }
     })
 
