@@ -19,6 +19,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
+/**
+ * Spring Boot Controller class for the ViewUserForm
+ */
 @Controller
 public class ViewUserController {
     Logger logger = LoggerFactory.getLogger(ViewUserController.class);
@@ -55,7 +58,7 @@ public class ViewUserController {
         User user;
         if (userOptional.isEmpty()) { // If empty, throw a 404
             httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return "viewUserTemplate";
+            return "viewUserForm";
         } else {
             user = userOptional.get();
             model.addAttribute("userId", userId);

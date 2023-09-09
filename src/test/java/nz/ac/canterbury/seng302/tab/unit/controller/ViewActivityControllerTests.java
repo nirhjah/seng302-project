@@ -442,4 +442,28 @@ public class ViewActivityControllerTests {
                 )
                 .andExpect(status().isFound());
     }
+
+    @Test
+    void testDescriptionLengthFact() throws Exception {
+        String description = "a".repeat(151);
+        mockMvc.perform(post("/add-fact", 42L)
+                        .param("actId", "1")
+                        .param("timeOfFact", "5")
+                        .param("description", description))
+                .andExpect(MockMvcResultMatchers.status().isFound());
+    }
+
+    @Test
+    void testDescriptionLengthGoal() throws Exception {
+        String description = "a".repeat(151);
+        mockMvc.perform(post("/add-goal", 42L)
+                        .param("actId", "1")
+                        .param("scorer", "1")
+                        .param("goalValue", "1")
+                        .param("description", description)
+                        .param("time", "")
+                )
+                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andReturn();
+    }
 }
