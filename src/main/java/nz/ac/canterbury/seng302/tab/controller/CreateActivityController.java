@@ -295,14 +295,16 @@ public class CreateActivityController {
         activityLineUp = lineUpService.findLineUpByActivityAndFormation(activity.getId(), activity.getFormation().orElse(null));
 
         if (activityLineUp == null) {
-            if (activity.getFormation().isPresent()) {
-                activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
+            Optional<Formation> formationOptional = activity.getFormation();
+            if (formationOptional.isPresent()) {
+                activityLineUp = new LineUp(formationOptional.get(), activity.getTeam(), activity);
                 lineUpService.updateOrAddLineUp(activityLineUp);
-
             }
         } else {
-            if (activity.getFormation().isPresent()) {
-                activityLineUp.setFormation(activity.getFormation().get());
+            Optional<Formation> formationOptional = activity.getFormation();
+
+            if (formationOptional.isPresent()) {
+                activityLineUp.setFormation(formationOptional.get());
                 lineUpService.updateOrAddLineUp(activityLineUp);
             }
         }
@@ -317,9 +319,11 @@ public class CreateActivityController {
             }
             if (bindingResult.hasErrors() && actId != -1) {
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                model.addAttribute("actId", actId);
-                model.addAttribute(FORMATION_PLAYER_POSITIONS, getFormationAndPlayersAndPosition(activity));
-                fillModelWithActivity(model, activity);
+                if (activity != null) {
+                    model.addAttribute("actId", actId);
+                    model.addAttribute(FORMATION_PLAYER_POSITIONS, getFormationAndPlayersAndPosition(activity));
+                    fillModelWithActivity(model, activity);
+                }
                 return TEMPLATE_NAME;
             }
 
@@ -392,9 +396,8 @@ public class CreateActivityController {
         if (subs != null && !subs.isEmpty()) {
             List<String> lineUpSubs = Arrays.stream(subs.split(", ")).toList();
             for (String playerId : lineUpSubs) {
-                Optional<User> userOptional = userService.findUserById(Long.parseLong(playerId));
-                if (userOptional.isPresent()) {
-                    User subPlayer = userOptional.get();
+                if (userService.findUserById(Long.parseLong(playerId)).isPresent()) {
+                    User subPlayer = userService.findUserById(Long.parseLong(playerId)).get();
                     activityLineUp.getSubs().add(subPlayer);
                 }
             }
