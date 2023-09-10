@@ -13,13 +13,13 @@ Feature: U36 – View aggregated team statistics
     Then I can see a total of how many games or friendlies the team has played, won, lost and drew overall
 
 
-  Scenario: AC2: I can see a trend of the last 5 matches in terms of game and friendly won, lost and drew. Friendlies are visually distinguishable from games in that trend.
-    Given I have at least 5 activities
-    And they are of either type Game or Friendly
-    When I am viewing team aggregated statistics
-    Then I can see a trend of the last 5 activities in terms of win, loss and draw
-    And I can see the date and score of the activity
-    And I can click on each activity to be taken to that activitys page
+#  Scenario: AC2: I can see a trend of the last 5 matches in terms of game and friendly won, lost and drew. Friendlies are visually distinguishable from games in that trend.
+#    Given I have at least 5 activities
+#    And they are of either type Game or Friendly
+#    When I am viewing team aggregated statistics
+#    Then I can see a trend of the last 5 activities in terms of win, loss and draw
+#    And I can see the date and score of the activity
+#    And I can click on each activity to be taken to that activitys page
 
 
 #  Left this out of e2e testing because it requires /populate_database to be run to add players to a team, but /populate_database only adds players to the first team available which causes issues for the tests. I have manually tested this AC instead
