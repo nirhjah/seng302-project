@@ -11,6 +11,7 @@ import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.repository.*;
 import nz.ac.canterbury.seng302.tab.service.*;
+import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,8 +26,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.validation.FieldError;
 
+import javax.xml.xpath.XPathExpressionException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -89,9 +93,11 @@ public class U27CreateActivityFeature {
 
     private final LocalDateTime endDateTime = LocalDateTime.now().plus(2, ChronoUnit.DAYS);
 
-    private final long USER_ID = 1;
+    private final LocalDateTime invalidStartDateTime = LocalDateTime.now().minus(50, ChronoUnit.DAYS);
 
-    private final long TEAM_ID = 1;
+    private final LocalDateTime invalidEndDateTime = LocalDateTime.now().minus(49, ChronoUnit.DAYS);
+
+    private final String DEFAULT_DESCRIPTION = "Description 123";
 
     private final String DEFAULT_ADDR_LINE_1 = "20 Kirkwood Ave";
 
@@ -100,6 +106,16 @@ public class U27CreateActivityFeature {
     private final String DEFAULT_CITY = "Christchurch";
 
     private final String DEFAULT_COUNTRY = "New Zealand";
+
+    private final Location DEFAULT_LOCATION = new Location(DEFAULT_ADDR_LINE_1, null, null, DEFAULT_CITY, DEFAULT_POSTCODE, DEFAULT_COUNTRY);
+
+    private ActivityType chosenActivityType;
+
+    private String teamCreationDateTime;
+
+    private int maxDescLength;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
 
     private void setupMocking() {
@@ -157,6 +173,7 @@ public class U27CreateActivityFeature {
         team.setRole(user, Role.MANAGER);
         teamService.updateTeam(team);
         team = teamService.getTeam(team.getTeamId());
+        teamCreationDateTime = team.getCreationDate().format(formatter);
 
         System.out.println(user);
         System.out.println(team);
@@ -180,7 +197,7 @@ public class U27CreateActivityFeature {
     public void iSeeAFormToCreateAnActivity() throws Exception {
         mockMvc.perform(get("/create-activity"))
                 .andExpect(status().isOk()) // Accepted 200
-                .andExpect(view().name("createActivityForm"));
+                .andExpect(view().name("create-activity"));
     }
 
     @Given("I am on the create activity page")
@@ -193,7 +210,7 @@ public class U27CreateActivityFeature {
         mockMvc.perform(multipart("/create-activity")
                         .param("team", String.valueOf(team.getTeamId()))
                         .param("activityType", String.valueOf(defaultActivityType))
-                        .param("description", String.valueOf(Grade.Age.ADULT))
+                        .param("description", DEFAULT_DESCRIPTION)
                         .param("startDateTime", String.valueOf(startDateTime))
                         .param("endDateTime", String.valueOf(endDateTime))
                         .param("country", DEFAULT_COUNTRY)
@@ -210,8 +227,25 @@ public class U27CreateActivityFeature {
     }
 
     @And("I see the details of the activity")
-    public void iSeeTheDetailsOfTheActivity() {
-        // Covered in iEnterValidValuesForTheTeamItRelatesToTheActivityTypeAShortDescriptionAndTheActivityStartAndEndTimeAndLocationAndCreateTheActivity()
+    public void iSeeTheDetailsOfTheActivity() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("team", String.valueOf(team.getTeamId()))
+                        .param("activityType", String.valueOf(defaultActivityType))
+                        .param("description", DEFAULT_DESCRIPTION)
+                        .param("startDateTime", String.valueOf(startDateTime))
+                        .param("endDateTime", String.valueOf(endDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:./view-activity?activityID=2"))
+                .andExpect(xpath("//h3[@text='" + team.getName() + "']").exists())
+                .andExpect(xpath("//h2[@text='" + defaultActivityType.name() + "']").exists())
+                .andExpect(xpath("//h3[@text='" + DEFAULT_DESCRIPTION + "']").exists())
+                .andExpect(xpath("//h3[@text='" + startDateTime.format(formatter).concat(" - ")
+                        .concat(endDateTime.format(formatter)) + "']").exists())
+                .andExpect(xpath("//h3[@text='" + DEFAULT_LOCATION + "']").exists());
     }
 
     @Then("I can select any of the teams I am managing or coaching")
@@ -224,7 +258,7 @@ public class U27CreateActivityFeature {
     public void iCanSelectNoTeamIfTheActivityDoesNotInvolveATeam() throws Exception {
         mockMvc.perform(multipart("/create-activity")
                         .param("activityType", String.valueOf(ActivityType.Other))
-                        .param("description", String.valueOf(Grade.Age.ADULT))
+                        .param("description", DEFAULT_DESCRIPTION)
                         .param("startDateTime", String.valueOf(startDateTime))
                         .param("endDateTime", String.valueOf(endDateTime))
                         .param("country", DEFAULT_COUNTRY)
@@ -235,81 +269,278 @@ public class U27CreateActivityFeature {
                 .andExpect(view().name("redirect:./view-activity?activityID=1"));
     }
 
-    @When("I am asked to select the activity type")
-    public void iAmAskedToSelectTheActivityType() {
+
+    @Then("I can select from game, friendly, training, competition and other")
+    public void iCanSelectFromGameFriendlyTrainingCompetitionAndOther() throws Exception {
+        mockMvc.perform(get("/create-activity"))
+                .andExpect(xpath("//option[@value='" + ActivityType.Game + "']").exists())
+                .andExpect(xpath("//option[@value='" + ActivityType.Friendly + "']").exists())
+                .andExpect(xpath("//option[@value='" + ActivityType.Training + "']").exists())
+                .andExpect(xpath("//option[@value='" + ActivityType.Competition + "']").exists())
+                .andExpect(xpath("//option[@value='" + ActivityType.Other + "']").exists());
     }
 
-    @Then("I can select from: {string}, {string}, {string}, {string}, {string}")
-    public void iCanSelectFrom(String arg0, String arg1, String arg2, String arg3, String arg4) {
-    }
-
-    @And("I select {string} or {string} as the activity type")
-    public void iSelectOrAsTheActivityType(String arg0, String arg1) {
+    @And("I select {string} as the activity type")
+    public void iSelectActivityTypeAsTheActivityType(String activityType) {
+        chosenActivityType = ActivityType.valueOf(activityType);
     }
 
     @And("I do not select a team")
-    public void iDoNotSelectATeam() {
+    public void iDoNotSelectATeam() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("activityType", String.valueOf(chosenActivityType))
+                        .param("description", DEFAULT_DESCRIPTION)
+                        .param("startDateTime", String.valueOf(startDateTime))
+                        .param("endDateTime", String.valueOf(endDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("redirect:./create-activity"));
     }
 
     @Then("an error message tells me I must select a team for that activity type")
-    public void anErrorMessageTellsMeIMustSelectATeamForThatActivityType() {
+    public void anErrorMessageTellsMeIMustSelectATeamForThatActivityType() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("activityType", String.valueOf(chosenActivityType))
+                        .param("description", DEFAULT_DESCRIPTION)
+                        .param("startDateTime", String.valueOf(startDateTime))
+                        .param("endDateTime", String.valueOf(endDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("redirect:./create-activity"))
+                .andExpect(xpath("//div[@text='" + ActivityFormValidators.TEAM_REQUIRED_MSG + "']").exists());;
     }
 
     @When("I do not select the activity type")
-    public void iDoNotSelectTheActivityType() {
+    public void iDoNotSelectTheActivityType() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("description", DEFAULT_DESCRIPTION)
+                        .param("startDateTime", String.valueOf(startDateTime))
+                        .param("endDateTime", String.valueOf(endDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("redirect:./create-activity"));
     }
 
     @Then("an error message tells me I must select an activity type")
-    public void anErrorMessageTellsMeIMustSelectAnActivityType() {
+    public void anErrorMessageTellsMeIMustSelectAnActivityType() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("description", DEFAULT_DESCRIPTION)
+                        .param("startDateTime", String.valueOf(startDateTime))
+                        .param("endDateTime", String.valueOf(endDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("redirect:./create-activity"))
+                .andExpect(xpath("//div[@text='" + ActivityFormValidators.ACTIVITY_TYPE_MSG + "']").exists());
     }
 
     @And("I enter an empty description")
-    public void iEnterAnEmptyDescription() {
+    public void iEnterAnEmptyDescription() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("team", String.valueOf(team.getTeamId()))
+                        .param("activityType", String.valueOf(defaultActivityType))
+                        .param("description", "")
+                        .param("startDateTime", String.valueOf(startDateTime))
+                        .param("endDateTime", String.valueOf(endDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("redirect:./create-activity"));
     }
 
     @Then("an error message tells me the description is invalid")
-    public void anErrorMessageTellsMeTheDescriptionIsInvalid() {
+    public void anErrorMessageTellsMeTheDescriptionIsInvalid() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("team", String.valueOf(team.getTeamId()))
+                        .param("activityType", String.valueOf(defaultActivityType))
+                        .param("description", "123456789!@#$%^&*()")
+                        .param("startDateTime", String.valueOf(startDateTime))
+                        .param("endDateTime", String.valueOf(endDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("redirect:./create-activity"))
+                .andExpect(xpath("//div[@text='" + ActivityFormValidators.DESC_CONTAINS_INVALID_CHAR_MSG + "']").exists());
     }
 
     @And("I enter a description made of numbers or non-alphabetical characters only")
-    public void iEnterADescriptionMadeOfNumbersOrNonAlphabeticalCharactersOnly() {
+    public void iEnterADescriptionMadeOfNumbersOrNonAlphabeticalCharactersOnly() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("team", String.valueOf(team.getTeamId()))
+                        .param("activityType", String.valueOf(defaultActivityType))
+                        .param("description", "123456789!@#$%^&*()")
+                        .param("startDateTime", String.valueOf(startDateTime))
+                        .param("endDateTime", String.valueOf(endDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("redirect:./create-activity"));
     }
 
     @And("I enter a description longer than {int} characters")
-    public void iEnterADescriptionLongerThanCharacters(int arg0) {
+    public void iEnterADescriptionLongerThanCharacters(int chars) throws Exception {
+        maxDescLength = chars;
+        mockMvc.perform(multipart("/create-activity")
+                        .param("team", String.valueOf(team.getTeamId()))
+                        .param("activityType", String.valueOf(defaultActivityType))
+                        .param("description", "1".repeat(chars + 1))
+                        .param("startDateTime", String.valueOf(startDateTime))
+                        .param("endDateTime", String.valueOf(endDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("redirect:./create-activity"));
     }
 
     @And("I do not provide both a start and an end time")
-    public void iDoNotProvideBothAStartAndAnEndTime() {
+    public void iDoNotProvideBothAStartAndAnEndTime() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("team", String.valueOf(team.getTeamId()))
+                        .param("activityType", String.valueOf(defaultActivityType))
+                        .param("description", DEFAULT_DESCRIPTION)
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("redirect:./create-activity"));
     }
 
     @Then("an error message tells me the start and end time are compulsory")
-    public void anErrorMessageTellsMeTheStartAndEndTimeAreCompulsory() {
+    public void anErrorMessageTellsMeTheStartAndEndTimeAreCompulsory() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("team", String.valueOf(team.getTeamId()))
+                        .param("activityType", String.valueOf(defaultActivityType))
+                        .param("description", DEFAULT_DESCRIPTION)
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("redirect:./create-activity"))
+                .andExpect(xpath("//div[@text='" + ActivityFormValidators.START_DATE_REQUIRED_MSG + "']").exists())
+                .andExpect(xpath("//div[@text='" + ActivityFormValidators.END_DATE_REQUIRED_MSG + "']").exists());
     }
 
-    @And("I enter the activity start and end time")
-    public void iEnterTheActivityStartAndEndTime() {
-    }
-
-    @And("I enter an end time before the start time")
-    public void iEnterAnEndTimeBeforeTheStartTime() {
-    }
 
     @Then("an error message tells me the end date is before the start date")
-    public void anErrorMessageTellsMeTheEndDateIsBeforeTheStartDate() {
+    public void anErrorMessageTellsMeTheEndDateIsBeforeTheStartDate() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("team", String.valueOf(team.getTeamId()))
+                        .param("activityType", String.valueOf(defaultActivityType))
+                        .param("description", DEFAULT_DESCRIPTION)
+                        .param("startDateTime", String.valueOf(endDateTime))
+                        .param("endDateTime", String.valueOf(startDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("redirect:./create-activity"))
+                .andExpect(xpath("//div[@text='" + ActivityFormValidators.END_BEFORE_START_MSG + "']").exists());
     }
 
     @And("I enter either a start or an end time before the team creation date")
-    public void iEnterEitherAStartOrAnEndTimeBeforeTheTeamCreationDate() {
+    public void iEnterEitherAStartOrAnEndTimeBeforeTheTeamCreationDate() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("team", String.valueOf(team.getTeamId()))
+                        .param("activityType", String.valueOf(defaultActivityType))
+                        .param("description", DEFAULT_DESCRIPTION)
+                        .param("startDateTime", String.valueOf(invalidStartDateTime))
+                        .param("endDateTime", String.valueOf(invalidEndDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("redirect:./create-activity"));
     }
 
-    @Then("an error message tells me the dates are prior to the team’s creation date")
-    public void anErrorMessageTellsMeTheDatesArePriorToTheTeamSCreationDate() {
+
+
+    @Then("an error message tells me the description is too short")
+    public void anErrorMessageTellsMeTheDescriptionIsTooShort() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("team", String.valueOf(team.getTeamId()))
+                        .param("activityType", String.valueOf(defaultActivityType))
+                        .param("description", "")
+                        .param("startDateTime", String.valueOf(startDateTime))
+                        .param("endDateTime", String.valueOf(endDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("redirect:./create-activity"))
+                .andExpect(xpath("//div[@text='" + ActivityFormValidators.NO_DESC_MSG + "']").exists());
     }
 
-    @And("the team’s creation date is shown")
-    public void theTeamSCreationDateIsShown() {
+    @Then("an error message tells me the description is too long")
+    public void anErrorMessageTellsMeTheDescriptionIsTooLong() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("team", String.valueOf(team.getTeamId()))
+                        .param("activityType", String.valueOf(defaultActivityType))
+                        .param("description", "1".repeat(maxDescLength + 1))
+                        .param("startDateTime", String.valueOf(startDateTime))
+                        .param("endDateTime", String.valueOf(endDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("redirect:./create-activity"))
+                .andExpect(xpath("//div[@text='" + ActivityFormValidators.DESC_TOO_LONG_MSG + "']").exists());
     }
 
+    @When("I enter the activity start and end time with the end time before the start time")
+    public void iEnterTheActivityStartAndEndTimeWithTheEndTimeBeforeTheStartTime() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("team", String.valueOf(team.getTeamId()))
+                        .param("activityType", String.valueOf(defaultActivityType))
+                        .param("description", DEFAULT_DESCRIPTION)
+                        .param("startDateTime", String.valueOf(endDateTime))
+                        .param("endDateTime", String.valueOf(startDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("redirect:./create-activity"));
+    }
 
+    @Then("an error message that includes the team's creation date tells me the dates are prior to the team’s creation date")
+    public void anErrorMessageThatIncludesTheTeamSCreationDateTellsMeTheDatesArePriorToTheTeamSCreationDate() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("team", String.valueOf(team.getTeamId()))
+                        .param("activityType", String.valueOf(defaultActivityType))
+                        .param("description", DEFAULT_DESCRIPTION)
+                        .param("startDateTime", String.valueOf(invalidStartDateTime))
+                        .param("endDateTime", String.valueOf(invalidEndDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("redirect:./create-activity"))
+                .andExpect(xpath("//div[@text='" + ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + teamCreationDateTime + "']").exists());
+    }
 }

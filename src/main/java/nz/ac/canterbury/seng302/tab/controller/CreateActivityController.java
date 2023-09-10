@@ -50,7 +50,7 @@ public class CreateActivityController {
     LineUp activityLineUp;
     private Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
-    private static final String TEMPLATE_NAME = "createActivityForm";
+    private static final String TEMPLATE_NAME = "create-activity";
 
     public CreateActivityController(TeamService teamService, UserService userService,
             ActivityService activityService, FormationService formationService, LineUpService lineUpService, LineUpPositionService lineUpPositionService) {

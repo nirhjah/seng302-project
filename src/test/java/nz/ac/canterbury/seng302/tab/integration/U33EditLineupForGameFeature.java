@@ -158,7 +158,7 @@ public class U33EditLineupForGameFeature {
         when(activityService.findActivityById(activity.getId())).thenReturn(activity);
         mockMvc.perform(get("/create-activity?edit={id}", activity.getId()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("createActivityForm"));
+                .andExpect(view().name("create-activity"));
     }
 
     @Given("the activity has type game or friendly")

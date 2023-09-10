@@ -18,14 +18,18 @@ Feature: Activity Creation
 
   Scenario: Selecting the activity type
     Given I am on the create activity page
-    When I am asked to select the activity type
-    Then I can select from: "game", "friendly", "training", "competition", "other"
+    Then I can select from game, friendly, training, competition and other
 
-  Scenario: Creating a "game" or "friendly" activity without selecting a team
+  Scenario Outline: Creating a "game" or "friendly" activity without selecting a team
     Given I am on the create activity page
-    And I select "game" or "friendly" as the activity type
+    And I select <activityType> as the activity type
     When I do not select a team
     Then an error message tells me I must select a team for that activity type
+    Examples:
+      | activityType   |
+      | "Game"         |
+      | "Friendly"     |
+
 
   Scenario: Creating an activity without selecting an activity type
     Given I am on the create activity page
@@ -35,7 +39,7 @@ Feature: Activity Creation
   Scenario: Invalid activity description
     Given I am on the create activity page
     When I enter an empty description
-    Then an error message tells me the description is invalid
+    Then an error message tells me the description is too short
 
     Given I am on the create activity page
     When I enter a description made of numbers or non-alphabetical characters only
@@ -43,7 +47,7 @@ Feature: Activity Creation
 
     Given I am on the create activity page
     When I enter a description longer than 150 characters
-    Then an error message tells me the description is invalid
+    Then an error message tells me the description is too long
 
   Scenario: Missing start and/or end time
     Given I am on the create activity page
@@ -52,13 +56,10 @@ Feature: Activity Creation
 
   Scenario: End time before start time
     Given I am on the create activity page
-    When I enter the activity start and end time
-    And I enter an end time before the start time
+    When I enter the activity start and end time with the end time before the start time
     Then an error message tells me the end date is before the start date
 
   Scenario: Activity dates prior to team creation date
     Given I am on the create activity page
-    When I enter the activity start and end time
-    And I enter either a start or an end time before the team creation date
-    Then an error message tells me the dates are prior to the team’s creation date
-    And the team’s creation date is shown
+    When I enter either a start or an end time before the team creation date
+    Then an error message that includes the team's creation date tells me the dates are prior to the team’s creation date
