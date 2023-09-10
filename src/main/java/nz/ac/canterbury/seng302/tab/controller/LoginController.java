@@ -1,9 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.util.regex.Pattern;
-
-import javax.naming.AuthenticationException;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,29 +12,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import nz.ac.canterbury.seng302.tab.authentication.ContinueEntryPoint;
-import nz.ac.canterbury.seng302.tab.authentication.SecurityConfiguration;
-import nz.ac.canterbury.seng302.tab.service.UserService;
+import javax.naming.AuthenticationException;
 
 @Controller
 public class LoginController {
-
-    Logger logger = LoggerFactory.getLogger(getClass());
-    
-    private UserService userService;
-
-    /** <p>To protect against Open Redirect Vulnerabilities, the URL must start with a single slash.</p>
-     * Pattern created by <a href="https://stackoverflow.com/a/34091221">Rob Winch</a>
-     */
-    private static final Pattern LOCAL_URL_PATTERN = Pattern.compile("^/([^/].*)?$");
-
-    private static final String DEFAULT_REDIRECT = ContinueEntryPoint.LOGIN_REDIRECT_URL_PARAM;
-
-    public LoginController(UserService userService) {
-        this.userService = userService;
-    }
+    Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     /**
      * Gets form to be displayed
@@ -44,40 +24,19 @@ public class LoginController {
      * @throws AuthenticationException If logging in failed with an unknown error
      */
     @GetMapping("/login")
-    public String form(
-            @RequestParam(name="error", required=false) String error,
-            @RequestParam(name=DEFAULT_REDIRECT, required=false) String redirectUrl,
-            Model model,
-            HttpServletRequest request,
-            HttpSession session) {
+    public String form(@RequestParam(name="error", required = false, defaultValue = "false") String error,
+                       Model model, HttpServletRequest request, HttpSession session) {
         model.addAttribute("httpServletRequest", request);
         logger.info("GET /login");
-        
-        // We have to store the "Success URL" in the session variables, because Spring forces
-        // a redirect to a constant URL on login failure (/login?error), so normal parameters are forgotten.
-        if (redirectUrl == null) {
-            redirectUrl = (String) session.getAttribute(DEFAULT_REDIRECT);
-        }
-        
-        // If the redirect URL isn't local (Open Redirect Vulnerability), trash it.
-        if (redirectUrl != null && !LOCAL_URL_PATTERN.matcher(redirectUrl).matches()) {
-            session.removeAttribute(DEFAULT_REDIRECT);
-            return "redirect:login";
-        }
 
-        // If you're already logged in, just redirect
-        if (userService.getCurrentUser().isPresent()) {
-            return "redirect:" + SecurityConfiguration.DEFAULT_LOGIN_REDIRECT_URL;
-        }
-
-        if (error != null) {
-            String errorMessage;
+        if (error.equals("true")) {
+            String errorMessage = "";
             Exception exception = (Exception)request.getSession().getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
 
             if (exception instanceof BadCredentialsException) {
                 errorMessage = "Invalid Email or Password";
             } else if (exception instanceof DisabledException) {
-                errorMessage = "Please verify your email before trying to log in";
+                errorMessage = "Account is not confirmed.";
             } else {
                 // We don't know what type of error this is.
                 // So make a fuss and throw it.
@@ -88,12 +47,8 @@ public class LoginController {
             model.addAttribute("errorMessage", errorMessage);
         }
 
-        model.addAttribute("passwordUpdatedMessage", model.asMap().get("passwordUpdatedMessage"));
-        model.addAttribute("invalidTokenMessage", model.asMap().get("invalidTokenMessage"));
-        
-        model.addAttribute(DEFAULT_REDIRECT, redirectUrl);
-        // Maintain the redirect URL in case of error
-        session.setAttribute(DEFAULT_REDIRECT, redirectUrl);
+        model.addAttribute("passwordUpdatedMessage", (String)model.asMap().get("passwordUpdatedMessage"));
+        model.addAttribute("invalidTokenMessage", (String)model.asMap().get("invalidTokenMessage"));
 
         if (!model.containsAttribute("message")) {
             model.addAttribute("message", session.getAttribute("message"));

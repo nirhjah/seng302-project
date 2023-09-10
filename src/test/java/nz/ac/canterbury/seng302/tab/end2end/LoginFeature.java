@@ -55,7 +55,7 @@ public class LoginFeature {
     @Then("I see an error message on the login page telling me the email or password is invalid")
     public void iSeeAnErrorMessageOnTheLoginPageTellingMeTheEmailIsInvalid() {
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
-        Assertions.assertEquals("Invalid Email or Password", PlaywrightBrowser.page.locator(".error-message").textContent());
+        Assertions.assertEquals(PlaywrightBrowser.page.locator(".error-message").textContent(), "Invalid Email or Password");
     }
 
     @When("I enter a email not known to the system")
