@@ -54,6 +54,7 @@ public class DefaultFunctions {
             PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
             PlaywrightBrowser.page.locator("div.tab#formations-tab").click();
             PlaywrightBrowser.page.locator("li#create-formation-li").click();
+            PlaywrightBrowser.page.evaluate("() => { document.querySelector('#formation-string').value = '2'; }");
             PlaywrightBrowser.page.locator("button#create-formation-button").click();
 
             //create activity
