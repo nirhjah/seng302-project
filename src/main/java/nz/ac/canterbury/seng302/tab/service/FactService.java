@@ -4,6 +4,7 @@ import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.helper.TimeOfFactComparator;
 import nz.ac.canterbury.seng302.tab.repository.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,18 @@ public class FactService {
      * @return list of activities with the wanted fact type.
      */
     public List<Fact> getAllFactsOfGivenTypeForActivity(int factType, Activity activity) {
-        return factRepository.getFactByFactTypeAndActivity(factType, activity);
+        return sortFactTimesAscending(factRepository.getFactByFactTypeAndActivity(factType, activity));
+    }
+
+    /**
+     * Sorts given list of goals by time
+     * @param factList list of goals
+     * @return list of goals sorted in ascending time order
+     */
+    public List<Fact> sortFactTimesAscending(List<Fact> factList) {
+        return factList.stream()
+                .sorted(new TimeOfFactComparator())
+                .toList();
     }
 
     /**
@@ -72,7 +84,6 @@ public class FactService {
 
     /**
      * Get the total time a player participated in an activity
-     * TODO implement in combination with subbing and starting line up
      * @param activity the activity the player took part in
      * @return the length of the activity in minutes
      */

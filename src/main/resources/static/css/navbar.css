@@ -49,7 +49,8 @@ header .header-right li a, nav ul li a,.view-profile, .create-header li a{
 nav ul li a:hover,
 nav ul li a.active,
 .navbar-user-button:hover,
-.navbar-create-button:hover {
+.navbar-create-button:hover,
+.navbar-view-all-button:hover {
     background: #415a77;
     color: #fff;
     opacity: 1;
@@ -111,6 +112,7 @@ header .header-left .hamburger div {
     margin: 3px 10px 3px 3px;
 }
 
+.navbar-view-all-button,
 .navbar-user-button,
 .navbar-create-button {
     position: relative;
@@ -118,10 +120,11 @@ header .header-left .hamburger div {
     transition: 0.2s;
 }
 
-.navbar-create-button {
+.navbar-create-button, .navbar-view-all-button {
     margin-left: 20px;
 }
 
+.navbar-view-all-button a,
 .navbar-user-button a,
 .navbar-create-button a{
     padding: 0 !important;
@@ -129,7 +132,7 @@ header .header-left .hamburger div {
     align-items: center !important;
 }
 
-.navbar-user-dropdown, .navbar-create-dropdown {
+.navbar-user-dropdown, .navbar-create-dropdown, .navbar-view-all-dropdown {
     display: none;
     position: absolute;
     top: 104%;
@@ -141,11 +144,11 @@ header .header-left .hamburger div {
     white-space: nowrap;
 }
 
-.navbar-user-dropdown.show, .navbar-create-dropdown.show {
+.navbar-user-dropdown.show, .navbar-create-dropdown.show, .navbar-view-all-dropdown.show {
     display: block;
 }
 
-.navbar-user-dropdown a, .navbar-create-dropdown a {
+.navbar-user-dropdown a, .navbar-create-dropdown a, .navbar-view-all-dropdown.show a {
     display: block !important;
     text-decoration: none;
     text-align: left;
@@ -153,17 +156,17 @@ header .header-left .hamburger div {
     border-radius: 4px !important;
 }
 
-.navbar-user-dropdown a:hover, .navbar-create-dropdown a:hover {
+.navbar-user-dropdown a:hover, .navbar-create-dropdown a:hover, .navbar-view-all-dropdown a:hover {
     background-color: #0b2239;
 }
 
-.view-profile, .create-buttons {
+.view-profile, .create-buttons, .view-all-buttons {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.navbar-user-button .triangle {
+.navbar-dropdown-triangle {
     display: inline-block;
     width: 0;
     height: 0;
@@ -174,11 +177,11 @@ header .header-left .hamburger div {
     border-color: white transparent transparent transparent;
 }
 
-.navbar-user-button .triangle.up {
+.navbar-dropdown-triangle.up {
     border-width: 0 8px 8px 8px;
     border-color: transparent transparent white transparent;
 }
 
-.navbar-user-button a:hover, .navbar-create-button a:hover {
+.navbar-user-button a:hover, .navbar-create-button a:hover, .navbar-view-all-button a:hover {
     cursor: pointer;
 }

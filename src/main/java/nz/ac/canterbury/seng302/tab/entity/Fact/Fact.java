@@ -56,4 +56,6 @@ public class Fact {
     public String getTimeOfEvent() {
         return timeOfEvent;
     }
+
+    public void setTimeOfEvent(String timeOfEvent) {this.timeOfEvent = timeOfEvent;}
 }

@@ -179,6 +179,16 @@ public class DefaultFunctions {
 
     }
 
+    public static void pwCreateTeamForWhiteboard() {
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createTeam");
+        PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
+        PlaywrightBrowser.page.locator("input#name").type("whiteboardteam");
+        PlaywrightBrowser.page.locator("input#sport").type("hockey");
+        PlaywrightBrowser.page.locator("input#city").type("Christchurch");
+        PlaywrightBrowser.page.locator("input#country").type("New Zealand");
+        PlaywrightBrowser.page.locator("div.submit-button button[type='submit']").click();
+    }
+
 
     }
 

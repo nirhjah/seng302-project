@@ -12,6 +12,7 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
 import nz.ac.canterbury.seng302.tab.repository.*;
 import nz.ac.canterbury.seng302.tab.service.*;
@@ -82,6 +83,10 @@ public class ViewActivityStatisticIntegrationTests {
     private Activity game;
 
     private Date date;
+
+    private Fact fact;
+    private Fact fact1;
+    private Fact fact2;
 
 
 
@@ -241,5 +246,17 @@ public class ViewActivityStatisticIntegrationTests {
     @Then("they are listed and sorted by their time in ascending order")
     public void they_are_listed_and_sorted_by_their_time_in_ascending_order() {
 
+    }
+
+    @When("that activity has facts recorded")
+    public void thatActivityHasFactsRecorded() {
+        fact = new Fact("CCH", "1", game);
+        fact1 = new Fact("CHC", null, game);
+        fact2 = new Fact("CHC", "6", game);
+    }
+
+    @Then("they are listed and sorted by their time in ascending order, with the facts with no time associated appearing first.")
+    public void theyAreListedAndSortedByTheirTimeInAscendingOrderWithTheFactsWithNoTimeAssociatedAppearingFirst() {
+        Assertions.assertEquals(List.of(fact1, fact, fact2), factService.sortFactTimesAscending(List.of(fact, fact1, fact2)));
     }
 }
