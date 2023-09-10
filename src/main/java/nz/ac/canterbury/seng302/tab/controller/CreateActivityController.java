@@ -118,6 +118,7 @@ public class CreateActivityController {
             CreateActivityForm createActivityForm,
             Team team,
             User currentUser) {
+        System.out.println(team + " " + currentUser);
         // The startDate is before endDate
         if (!activityService.validateStartAndEnd(createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
             bindingResult.addError(new FieldError("CreateActivityForm", "startDateTime", ActivityFormValidators.END_BEFORE_START_MSG));
@@ -233,7 +234,6 @@ public class CreateActivityController {
         Activity activity = activityService.findActivityById(actId);
 
         postCreateActivityErrorChecking(bindingResult, createActivityForm, team, currentUser);
-
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             if (activity != null) {
@@ -281,7 +281,9 @@ public class CreateActivityController {
 
         }
 
-
+        System.out.println(currentUser);
+        System.out.println(team);
+        System.out.println(activity);
         activity = activityService.updateOrAddActivity(activity);
 
         if (activity.getFormation().isPresent()) {

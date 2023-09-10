@@ -8,6 +8,7 @@ import io.cucumber.java.en.When;
 import nz.ac.canterbury.seng302.tab.controller.CreateActivityController;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.repository.*;
 import nz.ac.canterbury.seng302.tab.service.*;
 import org.mockito.Mockito;
@@ -89,6 +90,10 @@ public class U27CreateActivityFeature {
 
     private final LocalDateTime endDateTime = LocalDateTime.now().plus(2, ChronoUnit.DAYS);
 
+    private final long USER_ID = 1;
+
+    private final long TEAM_ID = 1;
+
     private final String DEFAULT_ADDR_LINE_1 = "20 Kirkwood Ave";
 
     private final String DEFAULT_POSTCODE = "8041";
@@ -138,31 +143,28 @@ public class U27CreateActivityFeature {
 
     @Before("@create_activity")
     public void setup() throws Exception {
+
         setupMocking();
-        Location location = new Location("adminAddr1", "adminAddr2", "adminSuburb", "adminCity", "4dm1n", "adminLand");
-        user = new User("Admin", "Admin", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
-                "test@test.com", "plaintextPassword", location);
-        Location location2 = new Location("adminAddr1", "adminAddr2", "adminSuburb", "adminCity", "4dm1n", "adminLand");
-        team = new Team("test1", "Hockey", location2);
-//        teamRepository.save(team);
-      /*  User userActual = userService.getUser(user.getUserId());
-        Team teamActual = teamService.getTeam(team.getTeamId());
-        System.out.println(teamService.getTeam(team.getTeamId()).getTeamManagers());*/
+        Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
+        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
+                "johndoe@example.com", "Password123!", testLocation);
+        team = new Team("team900", "programming");
 
-        //Mock User
+        userRepository.save(user);
+        user = userService.getUser(user.getUserId());
+
+        teamRepository.save(team);
+        team = teamService.getTeam(team.getTeamId());
+        team.setRole(user, Role.MANAGER);
+        teamService.updateTeam(team);
+        team = teamService.getTeam(team.getTeamId());
+
+        System.out.println(user);
+        System.out.println(team);
+
         when(userService.getCurrentUser()).thenReturn(Optional.of(user));
-
-
-        when(teamService.findTeamsWithUser(any())).thenReturn(Arrays.asList(team));
-//        team = spy(team);
-//        doReturn(true).when(team).isManager(any());
-        when(team.isManager(any())).thenReturn(Boolean.TRUE);
-        when(teamService.getTeam(anyLong())).thenReturn(team);
-
-        // Generic Team for testing
-      /*  teamActual = spy(teamActual);
-        when(teamActual.isManager(user)).thenReturn(Boolean.TRUE);
-        when(teamService.getTeam(anyLong())).thenReturn(teamActual);*/
+        when(teamService.findTeamsWithUser(any())).thenReturn(Collections.singletonList(team));
+        when(teamService.getTeam(team.getTeamId())).thenReturn(team);
     }
 
     @Given("I am anywhere on the system,")
@@ -201,7 +203,7 @@ public class U27CreateActivityFeature {
                         .param("postcode", DEFAULT_POSTCODE)
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().isFound())
-                .andExpect(view().name("viewActivityForm"));
+                .andExpect(view().name("redirect:./view-activity?activityID=1"));
     }
 
     @When("I hit the create activity button")

@@ -27,7 +27,7 @@ public class Activity {
     @Enumerated(EnumType.ORDINAL)
     private ActivityType activityType;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "fk_teamID", referencedColumnName = "teamId")
     private Team team;
 
@@ -48,7 +48,7 @@ public class Activity {
     @Column(nullable = false)
     private LocalDateTime activityEnd;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = true)
+    @ManyToOne(cascade = CascadeType.MERGE, optional = true)
     @JoinColumn(name = "fk_userID", referencedColumnName = "Id")
     private User activityOwner;
 
