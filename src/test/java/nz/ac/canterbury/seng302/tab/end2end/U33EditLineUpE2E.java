@@ -91,7 +91,7 @@ public class U33EditLineUpE2E {
 
     @Then("the formation is not saved and an error message is shown telling me the line-up is not complete")
     public void theFormationIsNotSavedAndAnErrorMessageIsShownTellingMeTheLineUpIsNotComplete() {
-        Assertions.assertEquals(PlaywrightBrowser.page.locator(".error-message").textContent(), "The line-up is not complete");    }
+        Assertions.assertEquals("The line-up is not complete", PlaywrightBrowser.page.locator(".error-message").textContent());    }
 
     @And("all starting positions on the formation a filled with players")
     public void all_starting_positions_on_the_formation_a_filled_with_players() {

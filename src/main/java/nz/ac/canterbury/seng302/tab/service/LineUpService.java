@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.service;
 
-import nz.ac.canterbury.seng302.tab.controller.CreateActivityController;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Formation;
 import nz.ac.canterbury.seng302.tab.entity.Team;
@@ -166,7 +165,7 @@ public class LineUpService {
 
         for (String positionPlayer : positionsAndPlayers) {
             if (Objects.equals(Arrays.stream(positionPlayer.split(" ")).toList().get(1), "X")) {
-                logger.info("No player was set at the position " + Arrays.stream(positionPlayer.split(" ")).toList().get(0));
+                logger.info("No player was set at the position {} ", Arrays.stream(positionPlayer.split(" ")).toList().get(0));
                 error = true;
                 break;
             }
@@ -175,8 +174,10 @@ public class LineUpService {
         if (!error) {
             for (String positionPlayer : positionsAndPlayers) {
                 logger.info("Valid player so creating line up position object now..");
-                if (userRepository.findById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).isPresent()) {
-                    User player = userRepository.findById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).get();
+
+                Optional<User> optUser = userRepository.findById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1)));
+                if (optUser.isPresent()) {
+                    User player = optUser.get();
                     int position = Integer.parseInt(Arrays.stream(positionPlayer.split(" ")).toList().get(0));
                     LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, player, position);
                     lineUpPositionRepository.save(lineUpPosition);
@@ -199,8 +200,9 @@ public class LineUpService {
         if (subs != null && !subs.isEmpty()) {
             List<String> lineUpSubs = Arrays.stream(subs.split(", ")).toList();
             for (String playerId : lineUpSubs) {
-                if (userRepository.findById(Long.parseLong(playerId)).isPresent()) {
-                    User subPlayer = userRepository.findById(Long.parseLong(playerId)).get();
+                Optional<User> optSub = userRepository.findById(Long.parseLong(playerId));
+                if (optSub.isPresent()) {
+                    User subPlayer = optSub.get();
                     activityLineUp.getSubs().add(subPlayer);
                 }
             }

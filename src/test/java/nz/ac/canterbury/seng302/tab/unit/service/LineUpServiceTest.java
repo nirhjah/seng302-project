@@ -173,7 +173,7 @@ public class LineUpServiceTest {
     }
 
     @Test
-    public void testSaveLineUp_ValidPlayersAndPositions() throws Exception {
+    void testSaveLineUp_ValidPlayersAndPositions() throws Exception {
         List<String> validPositionsAndPlayers = Arrays.asList("1 1", "2 2");
         BindingResult bindingResult = new BeanPropertyBindingResult(new Object(), "createActivityForm");
 
@@ -199,7 +199,7 @@ public class LineUpServiceTest {
     }
 
     @Test
-    public void testSaveLineUp_InvalidPlayersAndPositions() throws Exception {
+    void testSaveLineUp_InvalidPlayersAndPositions() throws Exception {
         List<String> invalidPositionsAndPlayers = Arrays.asList("1 X", "2 2");
         BindingResult bindingResult = new BeanPropertyBindingResult(new Object(), "createActivityForm");
 
