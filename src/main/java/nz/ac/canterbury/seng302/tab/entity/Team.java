@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
@@ -287,6 +288,16 @@ public class Team implements Identifiable, HasImage {
 
     public Set<User> getTeamMembers() {
         return teamMembers;
+    }
+
+    /**
+     * Gets all members of team excluding managers and coaches
+     * @return set of users who are not managers or coaches of team
+     */
+    public Set<User> getNonManagersAndCoaches() {
+        return teamMembers.stream()
+                .filter(user -> !isCoach(user) && !isManager(user))
+                .collect(Collectors.toSet());
     }
 
     public Club getTeamClub() {
