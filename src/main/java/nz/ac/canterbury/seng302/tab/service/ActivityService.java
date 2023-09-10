@@ -11,12 +11,15 @@ import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.LineUpPositionRepository;
 import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.PageRequest;
+
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -28,11 +31,12 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ActivityService {
-
+    
     private final LineUpRepository lineUpRepository;
 
     private final LineUpPositionRepository lineUpPositionRepository;
     private final ActivityRepository activityRepository;
+
 
 
     @Autowired
@@ -268,6 +272,9 @@ public class ActivityService {
         if (lineUpRepository.findLineUpByActivityId(activity.getId()).isPresent()) {
 
             List<LineUp> lineup = lineUpRepository.findLineUpsByActivityId(activity.getId());
+            if (lineup.isEmpty()) {
+                return List.of();
+            }
             lineup.sort(Comparator.comparingLong(LineUp::getLineUpId).reversed());
 
             LineUp lineUp =  lineup.get(0);
@@ -489,5 +496,7 @@ public class ActivityService {
     public boolean checkTimeOfFactWithinActivity(Activity activity, int timeOfFact) {
         return timeOfFact <= Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
     }
+
+
 
 }

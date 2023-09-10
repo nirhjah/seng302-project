@@ -6,7 +6,6 @@ import nz.ac.canterbury.seng302.tab.api.response.FormationInfo;
 import nz.ac.canterbury.seng302.tab.api.response.PlayerFormationInfo;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
-import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.form.CreateActivityForm;
 import nz.ac.canterbury.seng302.tab.service.*;
@@ -199,7 +198,7 @@ public class CreateActivityController {
         }
 
 
-        model.addAttribute(FORMATION_PLAYER_POSITIONS, getFormationAndPlayersAndPosition(activity));
+        model.addAttribute(FORMATION_PLAYER_POSITIONS, lineUpService.getFormationAndPlayersAndPosition(activity));
         fillModelWithActivity(model, activity);
         createActivityForm.prepopulate(activity);
         return TEMPLATE_NAME;
@@ -243,7 +242,7 @@ public class CreateActivityController {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             if (activity != null) {
                 model.addAttribute("actId", actId);
-                model.addAttribute(FORMATION_PLAYER_POSITIONS, getFormationAndPlayersAndPosition(activity));
+                model.addAttribute(FORMATION_PLAYER_POSITIONS, lineUpService.getFormationAndPlayersAndPosition(activity));
 
                 fillModelWithActivity(model, activity);
             }
@@ -308,20 +307,22 @@ public class CreateActivityController {
                 lineUpService.updateOrAddLineUp(activityLineUp);
             }
         }
-        saveSubs(subs);
+
+      lineUpService.saveSubs(subs, activityLineUp);
 
         if (playerAndPositions != null && !playerAndPositions.isEmpty()) {
             List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
-
             if (createActivityForm.getFormation() != -1) {
-                saveLineUp(positionsAndPlayers, bindingResult);
+
+                lineUpService.saveLineUp(positionsAndPlayers, bindingResult, activityLineUp);
 
             }
             if (bindingResult.hasErrors() && actId != -1) {
+
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 if (activity != null) {
                     model.addAttribute("actId", actId);
-                    model.addAttribute(FORMATION_PLAYER_POSITIONS, getFormationAndPlayersAndPosition(activity));
+                    model.addAttribute(FORMATION_PLAYER_POSITIONS, lineUpService.getFormationAndPlayersAndPosition(activity));
                     fillModelWithActivity(model, activity);
                 }
                 return TEMPLATE_NAME;
@@ -388,93 +389,6 @@ public class CreateActivityController {
 
     }
 
-    /**
-     * Saves subs to activity lineup
-     * @param subs subs to save
-     */
-    private void saveSubs(String subs) {
-        if (subs != null && !subs.isEmpty()) {
-            List<String> lineUpSubs = Arrays.stream(subs.split(", ")).toList();
-            for (String playerId : lineUpSubs) {
-                if (userService.findUserById(Long.parseLong(playerId)).isPresent()) {
-                    User subPlayer = userService.findUserById(Long.parseLong(playerId)).get();
-                    activityLineUp.getSubs().add(subPlayer);
-                }
-            }
-        }
-    }
 
-    /**
-     * Takes list of positions and players fron the selected line up then creates LineUpPositions for each and saves them with the lineup
-     * @param positionsAndPlayers list of positions and players
-     */
-    private void saveLineUp(List<String> positionsAndPlayers, BindingResult bindingResult){
-        boolean error = false;
-        for (String positionPlayer : positionsAndPlayers) {
-            if (Objects.equals(Arrays.stream(positionPlayer.split(" ")).toList().get(1), "X")) {
-                logger.info("No player was set at the position " + Arrays.stream(positionPlayer.split(" ")).toList().get(0));
-                error = true;
-                break;
-
-            } else {
-                logger.info("Valid player so creating line up position object now.."); //should only create if all are valid not if just one is
-                if (userService.findUserById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).isPresent()) {
-                    User player = userService.findUserById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).get();
-                    int position = Integer.parseInt(Arrays.stream(positionPlayer.split(" ")).toList().get(0));
-                    LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, player, position);
-                    lineUpPositionService.addLineUpPosition(lineUpPosition);
-                }
-            }
-        }
-        if (error) {
-            bindingResult.addError(new FieldError("createActivityForm", "lineup", "The line-up is not complete"));
-        }
-
-    }
-
-
-    /**
-     * Gets a map of the formation and lineup for an activity
-     * @param activity activity to get lineups with formation of
-     * @return map of formation and lineups
-     */
-    private Map<Long, List<List<Object>>> getFormationAndPlayersAndPosition(Activity activity) {
-
-        Map<Long, List<List<Object>>> formationAndPlayersAndPosition = new HashMap<>();
-        for (Map.Entry<Formation, LineUp> entry : lineUpService.getLineUpsForTeam(activity.getTeam(), activity).entrySet()) {
-            Formation formation = entry.getKey();
-            LineUp lineUp = entry.getValue();
-
-            List<List<Object>> playersAndPosition = new ArrayList<>();
-
-            Optional<List<LineUpPosition>> lineupPosition = (lineUpPositionService.findLineUpPositionsByLineUp(lineUp.getLineUpId()));
-
-            if (lineupPosition.isPresent()) {
-                for (LineUpPosition position : lineupPosition.get()) {
-                    int positionId = position.getPosition();
-
-                    User player = position.getPlayer();
-
-                    List<Object> playerInfo = Arrays.asList((long) positionId, player.getId(), player.getFirstName());
-                    playersAndPosition.add(playerInfo);
-
-                }
-            }
-
-            List<Object> subsInfo = new ArrayList<>();
-            for (User sub : lineUp.getSubs()) {
-                List<Object> specificPlayerSubInfo = new ArrayList<>();
-
-                specificPlayerSubInfo.add(sub.getUserId());
-                specificPlayerSubInfo.add(sub.getFirstName());
-
-                subsInfo.add(specificPlayerSubInfo);
-            }
-            playersAndPosition.add(subsInfo);
-
-            formationAndPlayersAndPosition.put(formation.getFormationId(), playersAndPosition);
-        }
-        return formationAndPlayersAndPosition;
-    }
 
 }
