@@ -16,10 +16,6 @@ public class LineUpService {
 
     @Autowired
     private LineUpRepository lineUpRepository;
-    @Autowired
-    public LineUpService(LineUpRepository lineUpRepository) {
-        this.lineUpRepository = lineUpRepository;
-    }
 
     @Autowired
     public LineUpService(LineUpRepository lineUpRepository) {

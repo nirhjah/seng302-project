@@ -285,9 +285,6 @@ public class CreateActivityController {
 
         }
 
-        System.out.println(currentUser);
-        System.out.println(team);
-        System.out.println(activity);
         activity = activityService.updateOrAddActivity(activity);
 
         if (activity.getFormation().isPresent()) {

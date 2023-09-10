@@ -35,8 +35,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
@@ -118,7 +117,7 @@ public class U27CreateActivityFeature {
 
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
-        activityService = Mockito.spy(new ActivityService(activityRepository));
+        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository));
         formationService = Mockito.spy(new FormationService(formationRepository));
         lineUpService = Mockito.spy(new LineUpService(lineUpRepository));
         lineUpPositionService = Mockito.spy(new LineUpPositionService(lineUpPositionRepository));
@@ -191,7 +190,6 @@ public class U27CreateActivityFeature {
 
     @When("I enter valid values for the team it relates to, the activity type, a short description, and the activity start and end time and location and create the activity")
     public void iEnterValidValuesForTheTeamItRelatesToTheActivityTypeAShortDescriptionAndTheActivityStartAndEndTimeAndLocationAndCreateTheActivity() throws Exception {
-
         mockMvc.perform(multipart("/create-activity")
                         .param("team", String.valueOf(team.getTeamId()))
                         .param("activityType", String.valueOf(defaultActivityType))
@@ -206,10 +204,6 @@ public class U27CreateActivityFeature {
                 .andExpect(view().name("redirect:./view-activity?activityID=1"));
     }
 
-    @When("I hit the create activity button")
-    public void iHitTheCreateActivityButton() {
-    }
-
     @Then("an activity is created into the system")
     public void anActivityIsCreatedIntoTheSystem() {
         verify(activityService, times(1)).updateOrAddActivity(any());
@@ -217,18 +211,28 @@ public class U27CreateActivityFeature {
 
     @And("I see the details of the activity")
     public void iSeeTheDetailsOfTheActivity() {
-    }
-
-    @When("I am asked to select the team the activity relates to")
-    public void iAmAskedToSelectTheTeamTheActivityRelatesTo() {
+        // Covered in iEnterValidValuesForTheTeamItRelatesToTheActivityTypeAShortDescriptionAndTheActivityStartAndEndTimeAndLocationAndCreateTheActivity()
     }
 
     @Then("I can select any of the teams I am managing or coaching")
-    public void iCanSelectAnyOfTheTeamsIAmManagingOrCoaching() {
+    public void iCanSelectAnyOfTheTeamsIAmManagingOrCoaching() throws Exception {
+        mockMvc.perform(get("/create-activity"))
+                .andExpect(xpath("//option[@value='" + team.getTeamId() + "']").exists());
     }
 
     @And("I can select no team if the activity does not involve a team")
-    public void iCanSelectNoTeamIfTheActivityDoesNotInvolveATeam() {
+    public void iCanSelectNoTeamIfTheActivityDoesNotInvolveATeam() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("activityType", String.valueOf(ActivityType.Other))
+                        .param("description", String.valueOf(Grade.Age.ADULT))
+                        .param("startDateTime", String.valueOf(startDateTime))
+                        .param("endDateTime", String.valueOf(endDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:./view-activity?activityID=1"));
     }
 
     @When("I am asked to select the activity type")
