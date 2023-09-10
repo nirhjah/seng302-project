@@ -137,6 +137,11 @@
                                     <button id="activities" type="button">Activities</button>
                                 </a>
                             </div>
+                            <div class="edit-button">
+                                <a th:href="@{whiteboard(teamID=${teamID})}" th:if="${isUserManagerOrCoach}">
+                                    <button id="whiteboard" type="button">Whiteboard</button>
+                                </a>
+                            </div>
                         </div>
                     </form>
                 </div>
