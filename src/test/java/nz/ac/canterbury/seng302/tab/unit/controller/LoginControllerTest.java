@@ -11,8 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@AutoConfigureMockMvc(addFilters = false)
-@ExtendWith(SpringExtension.class)
+@AutoConfigureMockMvc(addFilters = true)
 @SpringBootTest
 public class LoginControllerTest {
 
@@ -27,5 +26,12 @@ public class LoginControllerTest {
     public void getControllerTest() throws Exception {
         mockMvc.perform(get("/login", 42L)).andExpect(status().isOk())
                 .andExpect(view().name("login"));
+    }
+
+    @Test
+    public void redirectIfNotAuthenticated() throws Exception {
+        mockMvc.perform(get("/this-url-does-not-exist"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login?continue=/this-url-does-not-exist"));
     }
 }
