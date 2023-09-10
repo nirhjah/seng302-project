@@ -66,7 +66,6 @@ public class ViewActivitiesController {
         logger.info("GET /view-teams");
         pageable = PageRequest.of(pageNo-1, maxPageSize);
         Page<Activity> page = activityService.getPaginatedActivities(pageable,currentUser);
-        System.out.println(page.getContent());
         List<Activity> listActivities = page.getContent();
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("page", pageNo);

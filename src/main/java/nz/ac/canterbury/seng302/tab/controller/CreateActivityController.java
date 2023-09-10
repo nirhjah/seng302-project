@@ -126,10 +126,12 @@ public class CreateActivityController {
         
         if (team != null) {
             // The dates are after the team's creation date
-            if (!activityService.validateActivityDateTime(team.getCreationDate(), createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-                bindingResult.addError(new FieldError("CreateActivityForm", "endDateTime",
-                        ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + team.getCreationDate().format(formatter)));
+
+            if (createActivityForm.getStartDateTime() != null && createActivityForm.getEndDateTime() != null && !activityService.validateActivityDateTime(team.getCreationDate(), createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                    bindingResult.addError(new FieldError("CreateActivityForm", "endDateTime",
+                            ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + team.getCreationDate().format(formatter)));
+
             }
             // This user needs the authority to create/update activities
             System.out.println(team.getTeamManagers());
@@ -200,6 +202,7 @@ public class CreateActivityController {
         }
 
         fillModelWithActivity(model, activity);
+        createActivityForm.prepopulate(activity);
         return TEMPLATE_NAME;
     }
 
@@ -240,6 +243,7 @@ public class CreateActivityController {
                 model.addAttribute("actId", actId);
                 fillModelWithActivity(model, activity);
             }
+
             return TEMPLATE_NAME;
         }
 
@@ -293,7 +297,11 @@ public class CreateActivityController {
 
         if (playerAndPositions != null && !playerAndPositions.isEmpty()) {
             List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
-            saveLineUp(positionsAndPlayers, bindingResult);
+
+            if (createActivityForm.getFormation() != -1) {
+                saveLineUp(positionsAndPlayers, bindingResult);
+
+            }
             if (bindingResult.hasErrors() && actId != -1) { //only throw error if we are on edit act page
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 if (activity != null) {
@@ -334,6 +342,7 @@ public class CreateActivityController {
         }
 
         List<FormationInfo> formations = createFormationsJSON(team);
+
 
         return ResponseEntity.ok().body(formations);
     }
@@ -384,13 +393,9 @@ public class CreateActivityController {
                 }
             }
         }
-
         if (error) {
             bindingResult.addError(new FieldError("createActivityForm", "lineup", "The line-up is not complete"));
-
         }
-
-
     }
 
 }

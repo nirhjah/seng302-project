@@ -22,7 +22,7 @@
             <!--/* Activity Type dropdown */-->
             <div class="select-container">
                 <label for="activityType">Activity Type <span class="required">*</span> </label>
-                <select name="activityType" id="activityType" onchange="updateFormationList()">
+                <select th:field="*{activityType}" name="activityType" id="activityType" onchange="updateFormationList()">
                     <option th:each="type : ${activityTypes}"
                             th:value="${type}"
                             th:text="${type}"
@@ -36,7 +36,7 @@
             <div class="select-container">
                 <div class="select-box">
                     <label for="team">Activity Team <span class="required">*</span></label>
-                    <select name="team" id="team" onchange="updateFormationList()">
+                    <select th:field="*{team}" name="team" id="team" onchange="updateFormationList()">
                         <option value="-1">(No Team)</option>
                         <option th:each="team : ${teamList}"
                                 th:value="${team.getTeamId()}"
@@ -52,12 +52,11 @@
                 <div class="select-box">
                     <label for="team">Activity formation <em>(Team Game and Team Friendly only)</em></label>
                     <select name="formation" id="formation-dropdown" th:disabled="${#lists.isEmpty(teamFormations)}">
-                        <option value="-1" onclick="onFormationOptionClick(event)">(No Formation)</option>
+                        <option value="-1">(No Formation)</option>
                         <option th:each="forma : ${teamFormations}"
                                 th:value="${forma.formationId}"
                                 th:text="${forma.formation}"
                                 th:selected="${forma == selectedFormation}"
-                                onclick="onFormationOptionClick(event)"
                                 th:data-custom="${forma.custom}"
                                 th:data-custom-positions="${forma.customPlayerPositions}"
                         ></option>
@@ -66,7 +65,7 @@
                 <div th:each="err : ${#fields.errors('formation')}" th:text="${err}" class="error-message"></div>
             </div>
 
-            <div class="formation-activity-display">
+            <div th:style="${actId != null ? 'display:block' : 'display:none'}" class="formation-activity-display">
                 <div>
                     <input type="hidden" id="playerAndPositions" name="playerAndPositions">
                     <div class="subs-reserves-box">
@@ -95,7 +94,7 @@
             <div class="description-box">
                 <label for="description">Description: <span class="required">*</span></label>
                 <textarea class="description-text" id="description" th:name="description" autofocus placeholder=""
-                          th:text="${description}"></textarea>
+                          th:text="*{description}"></textarea>
                 <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
                 <p id="charCount" class="charCount"></p>
             </div>
@@ -104,7 +103,7 @@
                 <!--/* Start Date */-->
                 <div class="input-box">
                     <input type="datetime-local" class="datetime-input" id="startDateTime" name="startDateTime"
-                           th:value="${startDateTime}">
+                           th:value="*{startDateTime}">
                     <label for="startDateTime">Start date & time of activity<span class="required">*</span> </label>
                     <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}" class="error-message"></div>
                 </div>
@@ -112,7 +111,7 @@
                 <!--/* End Date */-->
                 <div class="input-box">
                     <input type="datetime-local" class="datetime-input" id="endDateTime" name="endDateTime"
-                           th:value="${endDateTime}">
+                           th:value="*{endDateTime}">
                     <label for="endDateTime">End date & time of activity<span class="required">*</span> </label>
                     <div th:each="err : ${#fields.errors('endDateTime')}" th:text="${err}" class="error-message"></div>
                 </div>
@@ -122,7 +121,7 @@
             <div class="input-boxes">
                 <div class="input-box">
                     <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
-                           data-cy="location" autofocus placeholder="" autocomplete="off" th:value="${addressLine1}"
+                           data-cy="location" autofocus placeholder="" autocomplete="off" th:value="*{addressLine1}"
                            title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
                     <label for="address-line-1">Address Line 1<span class="required">*</span></label>
                     <div class="autocomplete-container" id="autocomplete-container"></div>
@@ -131,7 +130,7 @@
 
                 <div class="input-box">
                     <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
-                           data-cy="location" autofocus placeholder="" th:value="${addressLine2}"
+                           data-cy="location" autofocus placeholder="" th:value="*{addressLine2}"
                            title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
                     <label for="address-line-2">Address Line 2</label>
                 </div>
@@ -139,27 +138,27 @@
             </div>
             <div class="input-box">
                 <input type="text" class="form-control" id="suburb" th:name="suburb"
-                       data-cy="location" autofocus placeholder="" th:value="${suburb}">
+                       data-cy="location" autofocus placeholder="" th:value="*{suburb}">
                 <label for="suburb">Suburb</label>
             </div>
             <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
             <div class="input-box">
                 <input type="text" class="form-control" id="postcode" th:name="postcode"
-                       data-cy="location" autofocus placeholder="" th:value="${postcode}">
+                       data-cy="location" autofocus placeholder="" th:value="*{postcode}">
                 <label for="postcode">Postcode<span class="required">*</span></label>
             </div>
             <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
 
             <div class="input-box">
                 <input type="text" class="form-control" id="city" th:name="city"
-                       data-cy="location" autofocus placeholder="" th:value="${city}">
+                       data-cy="location" autofocus placeholder="" th:value="*{city}">
                 <label for="city">City <span class="required">*</span></label>
             </div>
             <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
 
             <div class="input-box">
                 <input type="text" class="form-control" id="country" th:name="country"
-                       data-cy="location" autofocus placeholder="" th:value="${country}">
+                       data-cy="location" autofocus placeholder="" th:value="*{country}">
                 <label for="country">Country <span class="required">*</span></label>
             </div>
             <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
@@ -340,9 +339,14 @@
             });
     }
 
-    function onFormationOptionClick(event) {
-        loadFormation(event.target);
-    }
+    document.getElementById("formation-dropdown").addEventListener("change", function(event) {
+        const selectedOption = event.target.options[event.target.selectedIndex];
+
+        loadFormation(selectedOption);
+    });
+
+
+
 
     function loadFormation(target) {
         const reservesLi = document.querySelectorAll(".reserves-li");
@@ -363,9 +367,10 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() {
-        const selectedFormationId  = formationDropdown.value;
-        const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex]
-        if (selectedFormationId != -1) {
+        const formationDropdown = document.getElementById("formation-dropdown");
+        const selectedFormationId = formationDropdown.value;
+        const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex];
+        if (selectedFormationId !== "-1") {
             loadFormation(selectedFormation);
         }
     });
@@ -396,7 +401,9 @@
         let item = document.createElement("option");
             item.value = -1;
             item.innerText = emptyValueName;
+/*
             item.addEventListener("click", onFormationOptionClick);
+*/
             formationDropdown.appendChild(item);
         // Add the remaining fields
         for (let i = 0; i < formationList.length; i++) {
@@ -406,7 +413,9 @@
             option.value = formation.formationID;
             option.setAttribute("data-custom-positions", formation.customPlayerPositions);
             option.setAttribute("data-custom", formation.custom);
+/*
             option.addEventListener("click", onFormationOptionClick);
+*/
             formationDropdown.appendChild(option);
             if (i==0) {
                 populateReserves(formation.players);
@@ -692,7 +701,6 @@
                 let playersAndPositions = "";
                 for (let i = 0; i < positions.length; i++) {
                         const position = positions.item(i);
-                       // console.log(position.querySelector("input").value);
 
                         if (position.querySelector("input").value != "") {
                                 playersAndPositions = playersAndPositions + position.id.replace("player", "") + " " + position.querySelector("input").value  + ", "

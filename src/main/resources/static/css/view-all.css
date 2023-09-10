@@ -199,9 +199,11 @@ table {
 /*    font-size: 18px;*/
 /*}*/
 .card-container {
-    margin:0 250px;
     display: flex;
     flex-wrap:wrap;
+    justify-content: center;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 
 .card-image{
@@ -308,6 +310,8 @@ Join team modal styling
     float: right;
     font-size: 28px;
     font-weight: bold;
+    margin-top: -15px;
+    margin-right: -6px;
 }
 
 .close:hover,

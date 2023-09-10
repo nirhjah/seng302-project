@@ -7,29 +7,29 @@ Feature: U34 – Add activity statistics
 #    When the activity has begun
 #    Then I am able to add an overall score, and record any substitutions or goals through a dedicated UI element for each.
 #
-#  Scenario: AC2
-#    Given I am a manager or coach,
-#    And I am viewing an activity of any type
-#    When the activity has begun
-#    Then I am able to record facts through a dedicated UI element.
+  Scenario: AC2
+    Given I am a manager or coach,
+    And I am viewing an activity of any type
+    When the activity has begun
+    Then I am able to record facts through a dedicated UI element.
 
-#  Scenario: AC3
-#    Given I am a manager or coach,
-#    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
-#    When the activity has ended,
-#    Then I am able to add an outcome for the overall activity through a dedicated UI element
+  Scenario: AC3
+    Given I am a manager or coach,
+    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
+    When the activity has ended,
+    Then I am able to add an outcome for the overall activity through a dedicated UI element
 
-#  Scenario: AC4
-#    Given I am a manager or coach,
-#    And I am viewing an activity of the type “Game” or “Friendly”
-#    When the activity has begun
-#    And I am adding a goal, substitution or fact
-#    And I specify a time
-#    Then the time must fall within the bounds of the activity (ie cannot be before the beginning or after the end)
+  Scenario: AC4
+    Given I am a manager or coach,
+    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
+    When the activity has begun
+    And I am adding a goal, substitution or fact
+    And I specify a time
+    Then the time must fall within the bounds of the activity (ie cannot be before the beginning or after the end)
 #
 #  Scenario: AC5
-#    Given I am a manager or coach
-#    And I am viewing an activity of the type “Game” or “Friendly”
+#    Given I am a manager or coach,
+#    And I am viewing an activity of the type Game or Friendly
 #    When the activity has begun
 #    And I am adding a goal, substitution or fact
 #    And I am specifying a team member to be associated with the statistics
@@ -59,35 +59,27 @@ Feature: U34 – Add activity statistics
 
 #  Scenario: AC9
 #    Given I am a manager or coach,
-#    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
+#    And I am viewing an activity of the type Game or Friendly
 #    And the activity has begun
 #    When I click the UI element to add a goal
 #    Then there is a form with the required field of scorer and time it occurred and the optional fields description and value.
-#
-#  Scenario: AC10
-#    Given I am a manager or coach,
-#    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
-#    And the activity has begun
-#    And I am adding a score
-#    When I don’t enter a value into the goal value field (and rest of form is right)
-#    Then the system accepts and uses a default value of 1
-#
-#  Scenario: AC11
-#    Given I am a manager or coach,
-#    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
-#    And the activity has begun
-#    And I am adding a score
-#    When I enter a positive integer (given rest of form is valid)
-#    Then the system accepts
-#
-#  Scenario: AC12
-#    Given I am a manager or coach,
-#    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
-#    And the activity has begun
-#    And I am adding a score
-#    When I enter a value that is not a positive integer
-#    Then the system doesn’t accept and an error message displays telling the user to enter a positive integer.
-#
+
+  Scenario: AC10
+    Given I am a manager or coach,
+    And I am viewing an activity of the type Game or Friendly
+    And the activity has begun
+    And I am adding a score
+    When I do not enter a value into the goal value field (and rest of form is right)
+    Then the system accepts and uses a default value of 1
+
+  Scenario: AC11
+    Given I am a manager or coach,
+    And I am viewing an activity of the type Game or Friendly
+    And the activity has begun
+    And I am adding a score
+    When I enter a positive integer (given rest of form is valid)
+    Then the system accepts
+
 #  Scenario: AC13
 #    Given I am a manager or coach,
 #    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
@@ -95,10 +87,16 @@ Feature: U34 – Add activity statistics
 #    And I am adding a substitution
 #    Then I must fill out the required fields of time, player on and player off, and optionally fill out the description field
 #
-#  Scenario: AC14
-#    Given I am a manager or coach,
-#    And I am viewing an activity of any type
-#    When the activity has begun
-#    And I am adding a fact about the activity
-#    Then I must fill out the required field of description and optionally the time it occurred.
-#
+  Scenario: AC14
+    Given I am a manager or coach,
+    And I am viewing an activity of any type
+    When the activity has begun
+    And I am adding a fact about the activity
+    Then I must fill out the required field of description and optionally the time it occurred.
+
+  Scenario: AC15
+    Given I am a manager or coach,
+    And I am adding a description to the fact type ‘Fact’ or ‘Substitution’ or ‘Goal’,
+    And I enter a description longer than 150 characters,
+    When I click the ‘Add Fact’ or ‘Add Substitution’ or ‘Add Goal’ button,
+    Then an error message tells me that the description must be 150 characters or less

@@ -3,7 +3,7 @@ package nz.ac.canterbury.seng302.tab.entity;
 import jakarta.persistence.*;
 import org.thymeleaf.util.StringUtils;
 
-import java.util.Set;
+import java.util.*;
 
 /**
  * Grade level for sports.
@@ -170,6 +170,21 @@ public class Grade {
         this.sex = sex;
         this.age = DEFAULT_AGE;
         this.competitiveness = DEFAULT_COMPETITIVENESS;
+    }
+
+    private static Random random = new Random();
+
+    public static Grade randomGrade() {
+        List<Sex> array = Arrays.stream(Sex.values()).toList();
+        Sex sex = array.get(random.nextInt(array.size()));
+
+        List<Age> array2 = Arrays.stream(Age.values()).toList();
+        Age age = array2.get(random.nextInt(array2.size()));
+
+        List<Competitiveness> array3 = Arrays.stream(Competitiveness.values()).toList();
+        Competitiveness comp = array3.get(random.nextInt(array3.size()));
+
+        return new Grade(age, sex, comp);
     }
 
     public static final Age DEFAULT_AGE = Age.ADULT;

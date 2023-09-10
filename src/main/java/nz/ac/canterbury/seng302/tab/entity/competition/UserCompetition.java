@@ -1,6 +1,9 @@
 package nz.ac.canterbury.seng302.tab.entity.competition;
 
-import jakarta.persistence.*;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToMany;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -27,11 +30,6 @@ public class UserCompetition extends Competition {
 
     public UserCompetition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd) {
         super(name, grade, sport, location, competitionStart, competitionEnd);
-    }
-
-    public UserCompetition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd, User player) {
-        super(name, grade, sport, location, competitionStart, competitionEnd);
-        addPlayer(player);
     }
 
     public UserCompetition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd, Set<User> players) {

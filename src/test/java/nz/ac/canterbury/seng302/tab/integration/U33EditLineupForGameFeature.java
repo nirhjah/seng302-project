@@ -83,7 +83,8 @@ public class U33EditLineupForGameFeature {
 
     private Map<String, Formation> formationMap = new HashMap<>();
     private long formationId = 0;
-
+    private LineUpPositionRepository lineUpPositionRepository;
+    private LineUpRepository lineUpRepository;
 
     @Before("@edit_lineup_for_game_integration")
     public void setup() throws IOException {
@@ -91,6 +92,8 @@ public class U33EditLineupForGameFeature {
         teamRepository = applicationContext.getBean(TeamRepository.class);
         userRepository = applicationContext.getBean(UserRepository.class);
         activityRepository = applicationContext.getBean(ActivityRepository.class);
+        lineUpPositionRepository = applicationContext.getBean(LineUpPositionRepository.class);
+        lineUpRepository = applicationContext.getBean(LineUpRepository.class);
 
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
         EmailService emailService = applicationContext.getBean(EmailService.class);
@@ -99,7 +102,7 @@ public class U33EditLineupForGameFeature {
 
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
-        activityService = Mockito.spy(new ActivityService(activityRepository));
+        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository));
 
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateActivityController(
