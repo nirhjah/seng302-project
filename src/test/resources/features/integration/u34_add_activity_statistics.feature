@@ -80,13 +80,13 @@ Feature: U34 – Add activity statistics
     When I enter a positive integer (given rest of form is valid)
     Then the system accepts
 
-#  Scenario: AC13
-#    Given I am a manager or coach,
-#    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
-#    When the activity has begun
-#    And I am adding a substitution
-#    Then I must fill out the required fields of time, player on and player off, and optionally fill out the description field
-#
+ Scenario: AC13
+   Given I am a manager or coach,
+   And I am viewing an activity of the type ‘Game’ or ‘Friendly’
+   When the activity has begun
+   And I am adding a substitution
+   Then I must fill out the required fields of time, player on and player off, and optionally fill out the description field
+
   Scenario: AC14
     Given I am a manager or coach,
     And I am viewing an activity of any type

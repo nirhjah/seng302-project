@@ -9,6 +9,7 @@ import nz.ac.canterbury.seng302.tab.controller.*;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.repository.*;
@@ -99,6 +100,8 @@ public class AddActivityStatisticsIntegrationTests {
     LocalDateTime startTime;
 
     private Fact fact;
+
+    private Substitution sub;
 
     private String description;
 
@@ -355,6 +358,23 @@ public class AddActivityStatisticsIntegrationTests {
                         .param("actId", String.valueOf(activity.getId()))
                         .param("timeOfFact", "5")
                         .param("description", description))
+                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andReturn();
+    }
+
+    @When("I am adding a substitution")
+    public void iAmAddingASubstitution() {
+        sub = new Substitution("", "1", activity, user, user2);
+    }
+
+    @Then("I must fill out the required fields of time, player on and player off, and optionally fill out the description field")
+    public void iMustFillOutTheRequiredFieldsOfTimePlayerOnAndPlayerOffAndOptionallyFillOutTheDescriptionField() throws Exception{
+        mockMvc.perform(post("/add-sub")
+                .param("actId", String.valueOf(activity.getId()))
+                .param("playerOn", "3")
+                .param("playerOff", "2")
+                .param("description", "")
+                .param("time", "1"))
                 .andExpect(MockMvcResultMatchers.status().isFound())
                 .andReturn();
     }
