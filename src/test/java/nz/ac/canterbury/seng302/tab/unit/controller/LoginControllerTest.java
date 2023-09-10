@@ -41,6 +41,6 @@ class LoginControllerTest {
     void discardRedirectsContainingOpenRedirectVulnerability(String url) throws Exception {
         mockMvc.perform(get("/login?continue="+url))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));
+                .andExpect(redirectedUrl("login"));
     }
 }
