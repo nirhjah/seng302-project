@@ -161,15 +161,19 @@ public class LineUpService {
      * @param bindingResult binding result for errors
      * @param activityLineUp lineup for the activity
      */
-    public void saveLineUp(List<String> positionsAndPlayers, BindingResult bindingResult, LineUp activityLineUp){
+    public void saveLineUp(List<String> positionsAndPlayers, BindingResult bindingResult, LineUp activityLineUp) {
         boolean error = false;
+
         for (String positionPlayer : positionsAndPlayers) {
             if (Objects.equals(Arrays.stream(positionPlayer.split(" ")).toList().get(1), "X")) {
                 logger.info("No player was set at the position " + Arrays.stream(positionPlayer.split(" ")).toList().get(0));
                 error = true;
                 break;
+            }
+        }
 
-            } else {
+        if (!error) {
+            for (String positionPlayer : positionsAndPlayers) {
                 logger.info("Valid player so creating line up position object now..");
                 if (userRepository.findById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).isPresent()) {
                     User player = userRepository.findById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).get();
@@ -179,10 +183,10 @@ public class LineUpService {
                 }
             }
         }
+
         if (error) {
             bindingResult.addError(new FieldError("createActivityForm", "lineup", "The line-up is not complete"));
         }
-
     }
 
 
