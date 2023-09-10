@@ -332,7 +332,7 @@
         const whiteboard = document.querySelector('.whiteboard');
         const playerUl = document.querySelector('.player-ul');
 
-        playerCards.forEach((playerCard) => {
+        playerCards.forEach((playerCard,index) => {
             let isDragging, inWhiteboard = false;
             let initialClickX, initialClickY;
             let initialCardX, initialCardY;
@@ -342,7 +342,6 @@
                     playerCard.classList.add("active");
                 }
                 isDragging = true;
-                draggedPlayerCard = playerCard;
                 playerCard.style.position = "absolute";
 
                 initialClickX = e.clientX - playerCard.getBoundingClientRect().left;
@@ -437,7 +436,7 @@
                     else {
                         playerCard.style.position = "static";
                         playerCard.classList.remove("active");
-                        playerUl.appendChild(playerCard);
+                        playerUl.insertBefore(playerCard, playerUl.children[index]);
                         console.log(playerUl.className)
                     }
                 }
