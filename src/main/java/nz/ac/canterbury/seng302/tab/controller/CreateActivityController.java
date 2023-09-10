@@ -319,11 +319,9 @@ public class CreateActivityController {
             }
             if (bindingResult.hasErrors() && actId != -1) {
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                if (activity != null) {
-                    model.addAttribute("actId", actId);
-                    model.addAttribute(FORMATION_PLAYER_POSITIONS, getFormationAndPlayersAndPosition(activity));
-                    fillModelWithActivity(model, activity);
-                }
+                model.addAttribute("actId", actId);
+                model.addAttribute(FORMATION_PLAYER_POSITIONS, getFormationAndPlayersAndPosition(activity));
+                fillModelWithActivity(model, activity);
                 return TEMPLATE_NAME;
             }
 
@@ -396,8 +394,9 @@ public class CreateActivityController {
         if (subs != null && !subs.isEmpty()) {
             List<String> lineUpSubs = Arrays.stream(subs.split(", ")).toList();
             for (String playerId : lineUpSubs) {
-                if (userService.findUserById(Long.parseLong(playerId)).isPresent()) {
-                    User subPlayer = userService.findUserById(Long.parseLong(playerId)).get();
+                Optional<User> userOptional = userService.findUserById(Long.parseLong(playerId));
+                if (userOptional.isPresent()) {
+                    User subPlayer = userOptional.get();
                     activityLineUp.getSubs().add(subPlayer);
                 }
             }

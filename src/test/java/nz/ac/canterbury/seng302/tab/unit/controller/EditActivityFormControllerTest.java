@@ -932,4 +932,35 @@ public class EditActivityFormControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(content().string(""));
     }
+
+    @Test
+    void editingLineUpWithValidLineUpAndSubs() throws Exception {
+        when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
+        when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+        when(mockActivityService.validateTeamSelection(any(), any())).thenReturn(true);
+        Activity localActivity = spy(activity);
+        Mockito.doReturn(ACT_ID).when(localActivity).getId();
+        when(mockActivityService.updateOrAddActivity(any())).thenReturn(localActivity);
+        when(mockActivityService.findActivityById(ACT_ID)).thenReturn(localActivity);
+        mockMvc.perform(post("/createActivity")
+                        .param("actId", String.valueOf(ACT_ID))
+                        .param("activityType", String.valueOf(ActivityType.Game))
+                        .param("formation", "-1")
+                        .param("team", String.valueOf(TEAM_ID))
+                        .param("description", "testing edit description")
+                        .param("startDateTime", "2023-07-01T10:00:00")
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "1 Change address")
+                        .param("addressLine2", "B")
+                        .param("city", "Greymouth")
+                        .param("country", "New Zealand")
+                        .param("postcode", "8888")
+                        .param("suburb", "A Place")
+                        .param("subs", "1")
+                        .param("playerAndPositions", String.valueOf(List.of("1 1"))))
+
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("./view-activity?activityID=" + localActivity.getId()));
+
+    }
 }
