@@ -2,8 +2,6 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nz.ac.canterbury.seng302.tab.entity.Grade;
-import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
@@ -30,6 +28,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -183,7 +182,7 @@ public class CreateCompetitionController {
             return "redirect:/home";
         }
 
-        postCreateActivityErrorChecking(bindingResult, form, IDs);
+        postCreateCompetitionErrorCheck(bindingResult, form, IDs);
         boolean isTeamCompetition = usersOrTeams.equals(TEAMS);
 
         if (bindingResult.hasErrors()) {
@@ -231,7 +230,7 @@ public class CreateCompetitionController {
      * @param bindingResult Any found errors are added to this
      * @param form The form containing the data we're validating
      */
-    private void postCreateActivityErrorChecking(
+    private void postCreateCompetitionErrorCheck(
             BindingResult bindingResult,
             CreateAndEditCompetitionForm form,
             List<Long> IDs) {
@@ -242,14 +241,18 @@ public class CreateCompetitionController {
                     CompetitionFormValidators.NO_COMPETITORS_MSG));
         }
 
+        LocalDateTime start = form.getStartDateTime();
+        LocalDateTime end = form.getEndDateTime();
+        if (start.isBefore(end)) {
+            bindingResult.addError(new FieldError("CreateAndEditCompetitionForm", "startDateTime",
+                    CompetitionFormValidators.TIME_TRAVEL_MSG));
+        }
+
        // All the grade attributes must be selected
         if (form.getAge() == null || form.getSex() == null || form.getCompetitiveness() == null) {
             bindingResult.addError(new FieldError("CreateAndEditCompetitionForm", "grade",
                     CompetitionFormValidators.NO_GRADE_MSG));
         }
-    }
-
-    public void prefillFormWithCompetition(Model model, CreateAndEditCompetitionForm form, Competition competition) {
     }
 
     /**

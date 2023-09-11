@@ -19,6 +19,8 @@ public class CompetitionFormValidators {
 
     public static final String NO_DATE_MSG = "Date and time is required";
 
+    public static final String TIME_TRAVEL_MSG = "Start date must be before the end date";
+
     /**
      * Checks that a grade value has been selected
      */
