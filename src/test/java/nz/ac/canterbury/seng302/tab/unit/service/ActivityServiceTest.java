@@ -930,6 +930,7 @@ public class ActivityServiceTest {
     }
     
     
+    // TODO figure out why the players arent being added to the team in this tests
     // @Test
     // void testGettingAllPlayersThatAreNotCurrentlyPlayingWithNoSubs() throws Exception {
     //     Activity activity = setUpSubTests();
@@ -953,5 +954,6 @@ public class ActivityServiceTest {
     //     Assertions.assertEquals(2, currNotPlaying.size());
     //     Assertions.assertEquals(currNotPlaying, expectedUsers);
     // }
+    // TODO: write test for checking a starting lineup after subs are made 
 
 }
