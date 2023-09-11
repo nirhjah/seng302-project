@@ -957,6 +957,7 @@ hr.rounded {
     margin:0 30px;
     border-radius:20px;
     border:4px solid #415a77;
+    overflow: hidden;
 }
 
 .sub-header{
