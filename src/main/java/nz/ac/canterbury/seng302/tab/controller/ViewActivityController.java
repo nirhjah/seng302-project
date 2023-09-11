@@ -248,10 +248,10 @@ public class ViewActivityController {
 
         // attributes for the subs
         // all players who are currently playing - for the sub off
-        List<User> playersPlaying = getAllPlayersCurrentlyPlaying(activity.getId());
+        List<User> playersPlaying = activityService.getAllPlayersCurrentlyPlaying(activity.getId());
         model.addAttribute("playersInLineUp", playersPlaying);
         // all players who arent playing - for the sub on
-        List<User> playersNotPlaying = getAllPlayersNotCurrentlyPlaying(activity.getId());
+        List<User> playersNotPlaying = activityService.getAllPlayersNotCurrentlyPlaying(activity.getId());
         model.addAttribute("playersNotInLineUp", playersNotPlaying);
 
         // Rambling that's required for navBar.html
@@ -606,89 +606,6 @@ public class ViewActivityController {
 
         return viewActivityRedirectUrl;
     }
-
-    /**
-     * returns the list of players without coaches and manageers
-     * @param team the team the players are in 
-     * @return a list of the users that arent a coach or manager for that team 
-    */
-    private List<User> removeCoachesAndManager(Team team, List<User> players) {
-        Set<User> coachesAndMangers = team.getTeamCoaches();
-        coachesAndMangers.addAll(team.getTeamManagers());
-        List<User> teamCoachesAndManagersList = coachesAndMangers.stream().toList();
-
-        return players.stream().filter(player -> !teamCoachesAndManagersList.contains(player)).toList();
-    }
-
-    /**
-     * returns the current players who are playing in the activity -- takes into account substitutions 
-     * @param actId the activity id 
-     * @return a list of the users that are currrently playing in the activity
-    */
-    private List<User> getAllPlayersCurrentlyPlaying(long actId) {
-        List<User> playersPlaying = getAllPlayersPlaying(actId);
-        Activity currActivity = activityService.findActivityById(actId);
-        if (currActivity == null  || currActivity.getTeam() == null) {
-            return List.of();
-        }
-        List<Fact> allSubs = factService.getAllFactsOfGivenTypeForActivity(2, currActivity); // list of all made subs in the game 
-        
-        allSubs.sort(Comparator.comparingInt(sub -> Integer.parseInt(sub.getTimeOfEvent()))); // all the subs sorted by time 
-        
-        for (Fact fact : allSubs) {
-            Substitution sub = (Substitution) fact;
-            User playerOn = sub.getPlayerOn();
-            User playerOff = sub.getPlayerOff();
-            playersPlaying = playersPlaying.stream().map(player -> player.getUserId() == playerOff.getUserId() ? playerOn : player).toList();
-        }
-
-        return removeCoachesAndManager(currActivity.getTeam(), playersPlaying);
-    }
-
-    /**
-     * @param actId the activity id 
-     * @return a list of users who are not in the lineup
-    */
-    private List<User> getAllPlayersNotCurrentlyPlaying(long actId) {
-        Activity activity = activityService.findActivityById(actId);
-        if (activity == null  || activity.getTeam() == null) {
-            return List.of();
-        }
-        List<User> playersPlaying = getAllPlayersCurrentlyPlaying(actId);
-        List<User> playersInTeam = new ArrayList<>(activityService.findActivityById(actId).getTeam().getTeamMembers());
-
-        List<User> playersNotPlaying = playersInTeam.stream().filter(player -> !playersPlaying.contains(player)).toList();
-
-        return removeCoachesAndManager(activity.getTeam(), playersNotPlaying);
-    }
-
-    /**
-     * returns a list of the users that are in the lineup 
-     * @param actId the activity id 
-     * @return a list of the users that are currently in the lineup for the activity, if there are no players the returns an empty list 
-    */
-    private List<User> getAllPlayersPlaying(long actId) {
-        Optional<List<LineUp>> optionalActivityLineups = lineUpService.findLineUpByActivity(actId);
-        if (optionalActivityLineups.isEmpty()) {
-            return List.of(); 
-        }
-        List<LineUp> activityLineups = optionalActivityLineups.get();
-        
-        if (activityLineups.isEmpty()) { // there is no lineup for some activities
-            return List.of();
-        } 
-
-        LineUp lineup = activityLineups.get(activityLineups.size() -1); // here we get the last one as that is the most recent one 
-
-        Optional<List<LineUpPosition>> optionaLineupPositions = lineUpPositionService.findLineUpPositionsByLineUp(lineup.getLineUpId());
-
-        if (optionaLineupPositions.isEmpty()) {
-            return List.of();
-        }
-
-        return optionaLineupPositions.get().stream().map(x -> x.getPlayer()).toList();
-    }
-
 
     /**
      * Handles creating an event and adding overall scores
