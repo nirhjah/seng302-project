@@ -243,7 +243,7 @@ public class CreateCompetitionController {
 
         LocalDateTime start = form.getStartDateTime();
         LocalDateTime end = form.getEndDateTime();
-        if (start.isBefore(end)) {
+        if (!start.isBefore(end)) {
             bindingResult.addError(new FieldError("CreateAndEditCompetitionForm", "startDateTime",
                     CompetitionFormValidators.TIME_TRAVEL_MSG));
         }

@@ -41,9 +41,9 @@
             <div class="card-content"  th:onclick="|window.location.href='@{view-competition(competitionID=${competition.competitionId})}'|">
                 <div class="competition-name" th:text="${competition.name}"></div>
                 <div class="competition-content" th:text="${competition.grade.getDisplayString()}"></div>
-                <div class="competition-content" th:text="${competition.sport}"></div>
+                <div class="competition-content" th:text="'Sport: ' + ${competition.sport}"></div>
                 <div th:unless="${competition.location == null}">
-                    <div class="competition-content" th:text="${competition.location.toString()}"></div>
+                    <div class="competition-content" th:text="'Location: ' + ${competition.location.toString()}"></div>
                 </div>
                 <div class="competition-content" th:text="'Start: ' + ${competition.getCompetitionStartDate().format(dateFormatter)}"></div>
                 <div class="competition-content" th:text="'End:   ' + ${competition.getCompetitionEndDate().format(dateFormatter)}"></div>
