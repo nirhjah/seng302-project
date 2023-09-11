@@ -50,7 +50,7 @@
                     <h4 class="player-title">Players</h4>
                 </div>
                 <div class="player-list">
-                    <ul class ="player-ul">
+                    <ul class="player-ul">
                         <li class="player-card">
                             <img class="player-image" th:src="@{/image/default-profile.png}" draggable="false">
                             <span class="player-name">Player One</span>
@@ -331,10 +331,9 @@
         const playerCards = document.querySelectorAll('.player-card');
         const whiteboard = document.querySelector('.whiteboard');
         const playerUl = document.querySelector('.player-ul');
-        const playerList = [];
+        const playerArray = [];
 
-
-        playerCards.forEach((playerCard,index) => {
+        playerCards.forEach((playerCard, index) => {
             let isDragging;
             let initialCardX, initialCardY;
             const yOffset = 10;
@@ -386,59 +385,20 @@
                         cardRect.top >= whiteboardRect.top &&
                         cardRect.bottom <= whiteboardRect.bottom
                     ) {
-
-                        playerList.push({ index: index, node: playerCard });
+                        playerArray.push({index: index, node: playerCard});
 
                         const canvasX = cardRect.left - canvas.upperCanvasEl.getBoundingClientRect().left;
-                        const canvasY = cardRect.top - canvas.upperCanvasEl.getBoundingClientRect().top ;
+                        const canvasY = cardRect.top - canvas.upperCanvasEl.getBoundingClientRect().top;
+                        createTeamPlayerIcon(playerCard, canvasX, canvasY)
 
-                        const whiteCircle = new fabric.Circle({
-                            left: canvasX,
-                            top: canvasY,
-                            radius: 15,
-                            fill: 'white',
-                        });
-
-                        const playerCardSpan = playerCard.querySelector('.player-name').textContent;
-                        const playerName = new fabric.Text(playerCardSpan, {
-                            fill: 'black',
-                            left: canvasX-23,
-                            top: canvasY + 31,
-                            fontFamily: '"Noto Sans", sans-serif',
-                            fontSize:16,
-                            fontWeight: 500,
-                        });
-                        fabric.Image.fromURL('image/default-profile.png', function(img) {
-                            img.set({
-                                left: canvasX,
-                                top: canvasY,
-                                scaleX: 30 / img.width,
-                                scaleY: 30 / img.height,
-                                clipPath: new fabric.Ellipse({
-                                    rx: 190,
-                                    ry: 190,
-                                    originX: 'center',
-                                    originY: 'center',
-                                }),
-                            });
-
-                            const group = new fabric.Group([whiteCircle,img,playerName], {
-                                left: canvasX,
-                                top: canvasY,
-                                hasControls: false,
-                            });
-                            canvas.add(group);
-                            canvas.renderAll();
+                        console.log(playerArray);
 
                         playerCard.style.display = 'none';
                         // might need to add a flag, instead of removing the event listener for the delete task
-                        playerCard.removeEventListener("mousedown", handleMouseDown);
-                        document.removeEventListener("mousemove", handleMouseMove);
-                        document.removeEventListener("mouseup", handleMouseUp);
-
-                    });
-                    }
-                    else {
+                        // playerCard.removeEventListener("mousedown", handleMouseDown);
+                        // document.removeEventListener("mousemove", handleMouseMove);
+                        // document.removeEventListener("mouseup", handleMouseUp);
+                    } else {
                         playerCard.style.position = "static";
                         playerCard.classList.remove("active");
                         playerUl.insertBefore(playerCard, playerUl.children[index]);
@@ -447,6 +407,48 @@
                 }
             });
         });
+
+        function createTeamPlayerIcon(playerCard, canvasX, canvasY) {
+            const whiteCircle = new fabric.Circle({
+                left: canvasX,
+                top: canvasY,
+                radius: 15,
+                fill: 'white',
+            });
+
+            const playerCardSpan = playerCard.querySelector('.player-name').textContent;
+            const playerName = new fabric.Text(playerCardSpan, {
+                fill: 'black',
+                left: canvasX - 23,
+                top: canvasY + 31,
+                fontFamily: '"Noto Sans", sans-serif',
+                fontSize: 16,
+                fontWeight: 500,
+            });
+            fabric.Image.fromURL('image/default-profile.png', function (img) {
+                img.set({
+                    left: canvasX,
+                    top: canvasY,
+                    scaleX: 30 / img.width,
+                    scaleY: 30 / img.height,
+                    clipPath: new fabric.Ellipse({
+                        rx: 190,
+                        ry: 190,
+                        originX: 'center',
+                        originY: 'center',
+                    }),
+                });
+
+                const group = new fabric.Group([whiteCircle, img, playerName], {
+                    left: canvasX,
+                    top: canvasY,
+                    hasControls: false,
+                });
+                canvas.add(group);
+                canvas.renderAll();
+            });
+        }
+
 
         const upperCanvas = document.querySelector(".upper-canvas")
 
@@ -505,7 +507,28 @@
         document.querySelector('.delete-button').addEventListener('click', function () {
             canvas.clear();
             formationDropdown.selectedIndex = 0;
+            if (playerArray.length !== 0) {
+                console.log("reached here");
+                addTeamPlayers();
+            }
         });
+        function addTeamPlayers() {
+            const playerList = document.querySelector('.player-ul');
+            playerArray.forEach(({index, node}) => {
+                node.style.display = 'block'
+                node.classList.remove("active");
+                node.style.position = "static";
+                if (index === 0) {
+                    if (playerList.firstChild) {
+                        playerList.insertBefore(node, playerList.firstChild);
+                    } else {
+                        playerList.appendChild(node);
+                    }
+                } else {
+                    playerList.insertBefore(node, playerList.children[index - 1].nextSibling);
+                }
+            })
+        }
 
         const drawStyleButtonSolid = document.querySelector('.customisation-box.draw .draw-style-button-solid');
         const drawStyleButtonDashed = document.querySelector('.customisation-box.draw .draw-style-button-dashed');

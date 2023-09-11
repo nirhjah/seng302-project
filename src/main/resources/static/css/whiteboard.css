@@ -393,7 +393,7 @@ input[type="range"]::-moz-range-track {
 
 .whiteboard-dropdowns .player-list{
     height:80%;
-    padding:5px;
+    padding:0 5px 5px 5px;
     overflow:auto;
     scrollbar-width:none;
 }
