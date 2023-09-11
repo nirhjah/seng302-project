@@ -340,19 +340,12 @@
             const xOffset = 20;
 
             playerCard.addEventListener("mousedown", (e) => {
-                const buttons = document.querySelectorAll('.whiteboard-buttons button');
-                buttons.forEach(button => {
-                    button.classList.remove('active')
-                });
-                const selectButton = document.querySelector('.select-button');
-                selectButton.classList.add('active');
+                handleButtonClick("select-button", false, true);
 
-                activeMode="select-button"
-                document.querySelector(".select-button").classList.add('active');
                 if (!playerCard.classList.contains('active')) {
                     playerCard.classList.add("active");
                 }
-                console.log(activeMode);
+
                 isDragging = true;
                 playerCard.style.position = "absolute";
 
@@ -400,8 +393,6 @@
                         const canvasX = cardRect.left - canvas.upperCanvasEl.getBoundingClientRect().left;
                         const canvasY = cardRect.top - canvas.upperCanvasEl.getBoundingClientRect().top;
                         createTeamPlayerIcon(playerCard, canvasX, canvasY, index)
-
-                        console.log(playerArray);
 
                         playerCard.style.display = 'none';
                     } else {
@@ -513,7 +504,6 @@
             canvas.clear();
             formationDropdown.selectedIndex = 0;
             if (playerArray.length !== 0) {
-                console.log("reached here");
                 addTeamPlayers();
             }
         });
@@ -639,12 +629,10 @@
                         objects[i].getObjects().forEach(obj => {
                             canvas.remove(obj);
                         });
-                        console.log("where is the id", objects[i].id);
-                        console.log(objects[i].id);
+
                         if (objects[i].id.includes("teamPlayer")) {
                             const number = objects[i].id.match(/\d+/);
                             const index = parseInt(number[0], 10);
-                            console.log(index);
                             addTeamPlayer(index);
                         }
                     }
@@ -655,40 +643,32 @@
         }
 
         function addTeamPlayers() {
-            const playerList = document.querySelector('.player-ul');
             playerArray.forEach(({index, node}) => {
-                node.style.display = 'block'
-                node.classList.remove("active");
-                node.style.position = "static";
-                if (index === 0) {
-                    if (playerList.firstChild) {
-                        playerList.insertBefore(node, playerList.firstChild);
-                    } else {
-                        playerList.appendChild(node);
-                    }
-                } else {
-                    playerList.insertBefore(node, playerList.children[index - 1].nextSibling);
-                }
+                insertPlayerInTable(index,node)
             })
         }
 
         function addTeamPlayer(index) {
-            const playerList = document.querySelector('.player-ul');
             const teamPlayer = playerArray.find(item => item.index === index);
-            console.log(teamPlayer);
-            teamPlayer.node.style.display = 'block'
-            teamPlayer.node.classList.remove("active");
-            teamPlayer.node.style.position = "static";
+            insertPlayerInTable(index,teamPlayer.node);
+        }
+
+        function insertPlayerInTable(index, node){
+            const playerList = document.querySelector('.player-ul');
+            node.style.display = 'block'
+            node.classList.remove("active");
+            node.style.position = "static";
             if (index === 0) {
                 if (playerList.firstChild) {
-                    playerList.insertBefore(teamPlayer.node, playerList.firstChild);
+                    playerList.insertBefore(node, playerList.firstChild);
                 } else {
-                    playerList.appendChild(teamPlayer.node);
+                    playerList.appendChild(node);
                 }
             } else {
-                playerList.insertBefore(teamPlayer.node, playerList.children[index - 1].nextSibling);
+                playerList.insertBefore(node, playerList.children[index - 1].nextSibling);
             }
         }
+
 
         /** Shapes **/
 
