@@ -266,6 +266,8 @@
                      th:data-formation="${formation.formation}"
                      th:data-custom="${formation.custom}"
                      th:data-customPlayers="${formation.customPlayerPositions}"></div>
+                <h3 style="margin: auto" th:if="${formation == null}">No formation information available</h3>
+
                 <div>
                     <div class="sub-table">
                         <div class="sub-header">
