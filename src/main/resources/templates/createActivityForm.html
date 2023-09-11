@@ -320,7 +320,11 @@
         }
         // Can't select formations if your activity isn't a "friendly" or "game"
         if (!typeCanHaveFormation(currentActivity)) {
-            formationDropdown.disabled = true;
+            formationDropdown.style.display = "none";
+            return;
+        }
+        if (typeCanHaveFormation(currentActivity)) {
+            formationDropdown.style.display = "block";
             return;
         }
 
