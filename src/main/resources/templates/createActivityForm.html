@@ -6,7 +6,6 @@
     <link th:href="@{/css/formation.css}" rel="stylesheet"/>
 
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>[[${actId != null ? 'Edit' : 'Create'}]] Activity</title>
 </head>
 <body class="create-activity-background">
@@ -69,7 +68,6 @@
                 <div>
                     <input type="hidden" id="playerAndPositions" name="playerAndPositions">
                     <input type="hidden" id="subs" name="subs">
-
                     <div class="subs-reserves-box">
                         <div class=subs-header>Subs</div>
                         <ul class="subs-ul">
@@ -175,8 +173,7 @@
         </form>
     </div>
 </div>
-</body>
-
+<script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
 <script type="text/javascript" th:inline="javascript">
     /**
      ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
@@ -190,7 +187,7 @@
      * The delay time (in milliseconds) for debouncing the search input.
      * @type {number}
      */
-    const DEBOUNCE_DELAY = 450; // set the debounce delay to 450ms
+    const DEBOUNCE_DELAY = 100; // set the debounce delay to 200ms
     const searchBox = document.querySelector('#address-line-1');
     const resultsContainer = document.querySelector('#autocomplete-container');
     const countryInput = document.querySelector('#country');
@@ -546,12 +543,12 @@
         formationDropdown.innerHTML = "";
         // Create the default "no value" field
         let item = document.createElement("option");
-            item.value = -1;
-            item.innerText = emptyValueName;
-/*
-            item.addEventListener("click", onFormationOptionClick);
-*/
-            formationDropdown.appendChild(item);
+        item.value = -1;
+        item.innerText = emptyValueName;
+        /*
+                    item.addEventListener("click", onFormationOptionClick);
+        */
+        formationDropdown.appendChild(item);
         // Add the remaining fields
         for (let i = 0; i < formationList.length; i++) {
             const formation = formationList[i];
@@ -560,9 +557,9 @@
             option.value = formation.formationID;
             option.setAttribute("data-custom-positions", formation.customPlayerPositions);
             option.setAttribute("data-custom", formation.custom);
-/*
-            option.addEventListener("click", onFormationOptionClick);
-*/
+            /*
+                        option.addEventListener("click", onFormationOptionClick);
+            */
             formationDropdown.appendChild(option);
             if (i==0) {
                 populateReserves(formation.players);
@@ -670,24 +667,24 @@
             position.classList.remove("unfilled");
             const clearPositionButton = position.querySelector(".clear-position-button");
 
-                // Action to carry out when a user selects a position with a player selected
-                position.addEventListener('click', () => {
-                    if (!position.classList.contains("filled")) {
-                        const selectedPlayer = document.querySelector(".subs-li.active, .reserves-li.active");
-                        if (selectedPlayer) {
-                            const firstName = selectedPlayer.querySelector(".li-player-name").textContent;
-                            const picture = selectedPlayer.querySelector(".li-player-image").getAttribute("src");
-                            const id = selectedPlayer.querySelector("input").value;
-                            addPlayer(position, firstName, picture, id)
+            // Action to carry out when a user selects a position with a player selected
+            position.addEventListener('click', () => {
+                if (!position.classList.contains("filled")) {
+                    const selectedPlayer = document.querySelector(".subs-li.active, .reserves-li.active");
+                    if (selectedPlayer) {
+                        const firstName = selectedPlayer.querySelector(".li-player-name").textContent;
+                        const picture = selectedPlayer.querySelector(".li-player-image").getAttribute("src");
+                        const id = selectedPlayer.querySelector("input").value;
+                        addPlayer(position, firstName, picture, id)
 
-                            fillPosition(position);
-                            selectedPlayer.classList.remove("active");
-                            selectedPlayer.classList.add("in-formation");
-                        }
-                        checkSubsActive();
-                        getPlayersAndPositions();
+                        fillPosition(position);
+                        selectedPlayer.classList.remove("active");
+                        selectedPlayer.classList.add("in-formation");
                     }
-                });
+                    checkSubsActive();
+                    getPlayersAndPositions();
+                }
+            });
 
                 // Action to carry out when use clicks button to remove player from formation
                 clearPositionButton.addEventListener('click', () => {
@@ -705,7 +702,7 @@
                             deactivateSubs();
                         }
 
-                });
+            });
         }
     }
 
@@ -868,19 +865,19 @@
     }
 
     function getPlayersAndPositions() {
-                let playersAndPositions = "";
-                for (let i = 0; i < positions.length; i++) {
-                        const position = positions.item(i);
+        let playersAndPositions = "";
+        for (let i = 0; i < positions.length; i++) {
+            const position = positions.item(i);
 
-                        if (position.querySelector("input").value != "") {
-                                playersAndPositions = playersAndPositions + position.id.replace("player", "") + " " + position.querySelector("input").value  + ", "
-                                }
-                        else { //if position isn't filled by player, use an X in its place so we know to call an error
-                                playersAndPositions = playersAndPositions + position.id.replace("player", "") + " " + "X"  + ", "
-                                }
-                    }
-                document.getElementById("playerAndPositions").setAttribute("value", playersAndPositions)
+            if (position.querySelector("input").value != "") {
+                playersAndPositions = playersAndPositions + position.id.replace("player", "") + " " + position.querySelector("input").value  + ", "
             }
+            else { //if position isn't filled by player, use an X in its place so we know to call an error
+                playersAndPositions = playersAndPositions + position.id.replace("player", "") + " " + "X"  + ", "
+            }
+        }
+        document.getElementById("playerAndPositions").setAttribute("value", playersAndPositions)
+    }
 
 
     function getSubs() {
@@ -906,4 +903,5 @@
 
 
 </script>
+</body>
 </html>

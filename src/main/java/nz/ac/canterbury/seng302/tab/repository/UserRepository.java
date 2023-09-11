@@ -128,17 +128,16 @@ public interface UserRepository extends CrudRepository<User, Long> {
         Page<User> findUsersThatArentFedMansByEmail(Pageable pageable, @Param("email") String email);
 
 
-        @Query(nativeQuery = true, value =
-            "SELECT * FROM user_entity u " +
-            "WHERE u.ID NOT IN (" +
-            "    SELECT DISTINCT a.user_Id FROM Authority a WHERE a.role = 'ROLE_FEDERATION_MANAGER'" +
+        @Query("SELECT u FROM UserEntity u " +
+            "WHERE u.userId NOT IN (" +
+            "    SELECT DISTINCT a.user FROM Authority a WHERE a.role = 'ROLE_FEDERATION_MANAGER'" +
             ") " +
             "AND ( " +
-            "    lower(:search) like lower(concat('%', u.FIRST_NAME, '%')) " +
-            "    OR lower(:search) like lower(concat('%', u.LAST_NAME, '%')) " +
-            "    OR lower(u.FIRST_NAME) like lower(concat('%', :search, '%')) " +
-            "    OR lower(u.LAST_NAME) like lower(concat('%', :search, '%')) " +
-            "    OR lower(:search) = lower(u.EMAIL) " +
+            "    lower(:search) like lower(concat('%', u.firstName, '%')) " +
+            "    OR lower(:search) like lower(concat('%', u.lastName, '%')) " +
+            "    OR lower(u.lastName) like lower(concat('%', :search, '%')) " +
+            "    OR lower(u.lastName) like lower(concat('%', :search, '%')) " +
+            "    OR lower(:search) = lower(u.email) " +
             ")")
         Page<User> findUsersThatArentFedMansByNameOrEmail(Pageable pageable, @Param("search") String search);
 
