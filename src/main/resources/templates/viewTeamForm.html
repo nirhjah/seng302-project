@@ -14,6 +14,8 @@
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 <div class="team-profile-form">
 
+    <span id="stayOnTab_Name" style="display: none;" th:text="${stayOnTab_name}"></span>
+    <span id="stayOnTab_index" style="display: none;" th:text="${stayOnTab_index}"></span>
     <div class="wrapper-profile" id="wrapper-profile">
         <div class="tab-box">
             <div class="tab active">
@@ -439,7 +441,36 @@
         const tabLine = document.querySelector('.tab-line');
         const displayBox = document.querySelectorAll('.content-box');
         const displayContent = document.querySelectorAll('.content');
-        const wrapperProfile = document.getElementById("wrapper-profile")
+
+
+        var stayOnTab_Name =  document.getElementById("stayOnTab_Name").innerHTML;
+        var stayOnTab_Index =  document.getElementById("stayOnTab_index").innerHTML;
+
+        console.log("tabname" + stayOnTab_Name);
+        console.log("tabindex" + stayOnTab_Index);
+
+        if (stayOnTab_Name === "formations-tab") {
+            var tabToBeActive = document.getElementById(stayOnTab_Name)
+
+            console.log(tabToBeActive)
+            console.log(stayOnTab_Name)
+            tabs.forEach(otherTab => {
+                otherTab.classList.remove('active');
+            });
+            tabToBeActive.classList.add('active')
+
+            displayBox.forEach(box => {
+                box.classList.remove('active')
+            });
+            displayBox[stayOnTab_Index].classList.add('active');
+            displayContent.forEach(content => {
+                content.classList.remove('active')
+            });
+            displayContent[stayOnTab_Index].classList.add('active');
+
+        }
+
+
 
         tabs.forEach((tab, index) => {
             tab.addEventListener('click', (e) => {
@@ -467,6 +498,7 @@
                 displayContent[index].classList.add('active');
             });
         });
+
 
         const formationListItems = document.querySelectorAll('.formation-list li')
         const createFormation = document.querySelector('.create-formation')
