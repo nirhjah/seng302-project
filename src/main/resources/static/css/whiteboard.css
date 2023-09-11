@@ -429,6 +429,7 @@ input[type="range"]::-moz-range-track {
     background-color:white;
     margin:0 5px;
     height:35px;
+    width:35px;
 }
 
 .whiteboard-dropdowns .player-card span{

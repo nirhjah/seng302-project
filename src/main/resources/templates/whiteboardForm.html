@@ -52,7 +52,7 @@
                 <div class="player-list">
                     <ul class="player-ul">
                         <li class="player-card">
-                            <img class="player-image" th:src="@{/image/default-profile.png}" draggable="false">
+                            <img class="player-image" th:src="@{/image/landscape.jpeg}" draggable="false">
                             <span class="player-name">Player One</span>
                         </li>
                         <li class="player-card">
@@ -655,7 +655,7 @@
 
         function insertPlayerInTable(index, node){
             const playerList = document.querySelector('.player-ul');
-            node.style.display = 'block'
+            node.style.display = '';
             node.classList.remove("active");
             node.style.position = "static";
             if (index === 0) {
