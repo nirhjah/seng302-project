@@ -102,10 +102,10 @@ public class ViewActivityStatisticIntegrationTests {
 
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
-        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository, factService, lineUpService, lineUpPositionService));
         factService= Mockito.spy(new FactService(factRespository));
         lineUpService=Mockito.spy(new LineUpService(lineUpRepository));
         lineUpPositionService = Mockito.spy(new LineUpPositionService(lineUpPositionRepository));
+        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository, factService, lineUpService, lineUpPositionService));
         this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ViewActivityController(userService,activityService,teamService,factService, lineUpService,lineUpPositionService)).build();
 
         Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
