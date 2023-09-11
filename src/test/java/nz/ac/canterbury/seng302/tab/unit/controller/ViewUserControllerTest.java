@@ -3,9 +3,9 @@ package nz.ac.canterbury.seng302.tab.unit.controller;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.image.UserImageService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -42,9 +42,6 @@ public class ViewUserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private TeamService teamService;
-
     @MockBean
     private UserService mockUserService;
 
@@ -68,18 +65,24 @@ public class ViewUserControllerTest {
         userRepository.save(user);
 
         Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
+        Mockito.when(mockUserService.findUserById(user.getUserId())).thenReturn(Optional.ofNullable(user));
+    }
+
+    @AfterEach
+    void afterEach() {
+        userRepository.deleteAll();
     }
 
     @Test
     @WithMockUser
-    public void testHome() throws Exception {
+    void testHome() throws Exception {
         mockMvc.perform(get("/home")
         ).andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser
-    public void whenLoggedIn_redirectToViewUserInfo() throws Exception {
+    void whenLoggedIn_redirectToViewUserInfo() throws Exception {
         mockMvc.perform(get("/user-info/self"))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/user-info?name=" + user.getUserId()));
@@ -87,7 +90,7 @@ public class ViewUserControllerTest {
 
     @Test
     @WithMockUser
-    public void whenLoggedIn_checkUserFieldsAreCorrect() throws Exception {
+    void whenLoggedIn_checkUserFieldsAreCorrect() throws Exception {
         mockMvc.perform(get("/user-info/self"))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/user-info?name=" + user.getUserId()));
@@ -96,7 +99,7 @@ public class ViewUserControllerTest {
 
     @Test
     @WithMockUser
-    public void whenLoggedIn_whenUploadTooBigFile_expectTypeError() throws Exception {
+    void whenLoggedIn_whenUploadTooBigFile_expectTypeError() throws Exception {
         var URL = "/user-info/upload-pfp";
         Resource resource = new ClassPathResource("/testingfiles/maxFileSize.png");
         File file = resource.getFile();
@@ -111,7 +114,7 @@ public class ViewUserControllerTest {
 
     @Test
     @WithMockUser
-    public void whenLoggedIn_whenUploadGoodFile_expectNoErrors() throws Exception {
+    void whenLoggedIn_whenUploadGoodFile_expectNoErrors() throws Exception {
         var URL = "/user-info/upload-pfp";
         Resource resource = new ClassPathResource("/testingfiles/pfp.png");
         File file = resource.getFile();
@@ -121,5 +124,21 @@ public class ViewUserControllerTest {
         mockMvc.perform(multipart(URL).file(okImg))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(String.format("/user-info?name=%s", user.getUserId())));
+    }
+
+    @Test
+    @WithMockUser
+    void getUserProfile() throws Exception {
+        mockMvc.perform(get("/user-info", 42L).queryParam("name", String.valueOf(user.getUserId())))
+                .andExpect(status().isOk())
+                .andExpect(view().name("viewUserForm"));
+    }
+
+    @Test
+    @WithMockUser
+    void getUserProfileDoesNotExist() throws Exception {
+        mockMvc.perform(get("/user-info", 42L).queryParam("name", "-1"))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/home"));
     }
 }

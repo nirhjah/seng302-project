@@ -199,9 +199,11 @@ table {
 /*    font-size: 18px;*/
 /*}*/
 .card-container {
-    margin:0 250px;
     display: flex;
     flex-wrap:wrap;
+    justify-content: center;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 
 .card-image{
