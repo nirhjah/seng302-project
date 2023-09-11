@@ -615,6 +615,9 @@
                 canvas.renderAll();
             } else if (event.key === 'c') {
                 canvas.clear();
+                if (playerArray.length !== 0) {
+                    addTeamPlayers();
+                }
                 formationDropdown.selectedIndex = 0;
             }
         });
@@ -1141,6 +1144,9 @@
             const custom = target.getAttribute("data-custom")
             const customPlayerPositions = target.getAttribute("data-custom-positions");
             canvas.clear();
+            if (playerArray.length !== 0) {
+                addTeamPlayers();
+            }
             if (formationId !== "-1") {
                 if (custom === true || custom === "true") {
                     renderPlayersCustom(customPlayerPositions)

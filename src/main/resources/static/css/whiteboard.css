@@ -411,6 +411,7 @@ input[type="range"]::-moz-range-track {
     background:white;
     cursor:grab;
     margin:5px 0;
+    user-select: none;
 }
 
 .whiteboard-dropdowns .player-container{
