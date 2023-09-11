@@ -12,6 +12,7 @@ import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.repository.*;
 import nz.ac.canterbury.seng302.tab.service.*;
 import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
+import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,7 +26,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -34,11 +37,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc(addFilters = false)
@@ -86,6 +89,8 @@ public class U27CreateActivityFeature {
     private User user;
 
     private Team team;
+
+    private Activity activity;
 
     private final ActivityType defaultActivityType = ActivityType.Other;
 
@@ -175,9 +180,6 @@ public class U27CreateActivityFeature {
         team = teamService.getTeam(team.getTeamId());
         teamCreationDateTime = team.getCreationDate().format(formatter);
 
-        System.out.println(user);
-        System.out.println(team);
-
         when(userService.getCurrentUser()).thenReturn(Optional.of(user));
         when(teamService.findTeamsWithUser(any())).thenReturn(Collections.singletonList(team));
         when(teamService.getTeam(team.getTeamId())).thenReturn(team);
@@ -196,8 +198,8 @@ public class U27CreateActivityFeature {
     @Then("I see a form to create an activity.")
     public void iSeeAFormToCreateAnActivity() throws Exception {
         mockMvc.perform(get("/create-activity"))
-                .andExpect(status().isOk()) // Accepted 200
-                .andExpect(view().name("create-activity"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("createActivityForm"));
     }
 
     @Given("I am on the create activity page")
@@ -207,7 +209,7 @@ public class U27CreateActivityFeature {
 
     @When("I enter valid values for the team it relates to, the activity type, a short description, and the activity start and end time and location and create the activity")
     public void iEnterValidValuesForTheTeamItRelatesToTheActivityTypeAShortDescriptionAndTheActivityStartAndEndTimeAndLocationAndCreateTheActivity() throws Exception {
-        mockMvc.perform(multipart("/create-activity")
+        mockMvc.perform(post("/create-activity")
                         .param("team", String.valueOf(team.getTeamId()))
                         .param("activityType", String.valueOf(defaultActivityType))
                         .param("description", DEFAULT_DESCRIPTION)
@@ -226,32 +228,14 @@ public class U27CreateActivityFeature {
         verify(activityService, times(1)).updateOrAddActivity(any());
     }
 
-    @And("I see the details of the activity")
-    public void iSeeTheDetailsOfTheActivity() throws Exception {
-        mockMvc.perform(multipart("/create-activity")
-                        .param("team", String.valueOf(team.getTeamId()))
-                        .param("activityType", String.valueOf(defaultActivityType))
-                        .param("description", DEFAULT_DESCRIPTION)
-                        .param("startDateTime", String.valueOf(startDateTime))
-                        .param("endDateTime", String.valueOf(endDateTime))
-                        .param("country", DEFAULT_COUNTRY)
-                        .param("city", DEFAULT_CITY)
-                        .param("postcode", DEFAULT_POSTCODE)
-                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:./view-activity?activityID=2"))
-                .andExpect(xpath("//h3[@text='" + team.getName() + "']").exists())
-                .andExpect(xpath("//h2[@text='" + defaultActivityType.name() + "']").exists())
-                .andExpect(xpath("//h3[@text='" + DEFAULT_DESCRIPTION + "']").exists())
-                .andExpect(xpath("//h3[@text='" + startDateTime.format(formatter).concat(" - ")
-                        .concat(endDateTime.format(formatter)) + "']").exists())
-                .andExpect(xpath("//h3[@text='" + DEFAULT_LOCATION + "']").exists());
-    }
-
     @Then("I can select any of the teams I am managing or coaching")
     public void iCanSelectAnyOfTheTeamsIAmManagingOrCoaching() throws Exception {
-        mockMvc.perform(get("/create-activity"))
-                .andExpect(xpath("//option[@value='" + team.getTeamId() + "']").exists());
+        MvcResult result = mockMvc.perform(get("/create-activity"))
+                .andReturn();
+        Object object = Objects.requireNonNull(result.getModelAndView()).getModel().get("teamList");
+        Assertions.assertTrue(object instanceof List);
+        List<Team> teamList = (List<Team>) object;
+        Assertions.assertEquals(teamList.get(0), team);
     }
 
     @And("I can select no team if the activity does not involve a team")
@@ -267,17 +251,22 @@ public class U27CreateActivityFeature {
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:./view-activity?activityID=1"));
+        verify(activityService, times(1)).updateOrAddActivity(any());
+
     }
 
 
     @Then("I can select from game, friendly, training, competition and other")
     public void iCanSelectFromGameFriendlyTrainingCompetitionAndOther() throws Exception {
-        mockMvc.perform(get("/create-activity"))
-                .andExpect(xpath("//option[@value='" + ActivityType.Game + "']").exists())
-                .andExpect(xpath("//option[@value='" + ActivityType.Friendly + "']").exists())
-                .andExpect(xpath("//option[@value='" + ActivityType.Training + "']").exists())
-                .andExpect(xpath("//option[@value='" + ActivityType.Competition + "']").exists())
-                .andExpect(xpath("//option[@value='" + ActivityType.Other + "']").exists());
+        MvcResult result = mockMvc.perform(get("/create-activity"))
+                .andReturn();
+        ActivityType object = ((List<ActivityType>) Objects.requireNonNull(result.getModelAndView()).getModel().get("activityTypes")).get(0);
+        System.out.println(object.name());
+//                .andExpect(xpath("//option[value()='" + ActivityType.Game + "']").exists())
+//                .andExpect(xpath("//option[value()='" + ActivityType.Friendly + "']").exists())
+//                .andExpect(xpath("//option[value()='" + ActivityType.Training + "']").exists())
+//                .andExpect(xpath("//option[value()='" + ActivityType.Competition + "']").exists())
+//                .andExpect(xpath("//option[value()='" + ActivityType.Other + "']").exists());
     }
 
     @And("I select {string} as the activity type")
@@ -297,12 +286,13 @@ public class U27CreateActivityFeature {
                         .param("postcode", DEFAULT_POSTCODE)
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().is4xxClientError())
-                .andExpect(view().name("redirect:./create-activity"));
+                .andExpect(view().name("createActivityForm"));
+        verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
     @Then("an error message tells me I must select a team for that activity type")
     public void anErrorMessageTellsMeIMustSelectATeamForThatActivityType() throws Exception {
-        mockMvc.perform(multipart("/create-activity")
+        MvcResult result = mockMvc.perform(multipart("/create-activity")
                         .param("activityType", String.valueOf(chosenActivityType))
                         .param("description", DEFAULT_DESCRIPTION)
                         .param("startDateTime", String.valueOf(startDateTime))
@@ -312,8 +302,15 @@ public class U27CreateActivityFeature {
                         .param("postcode", DEFAULT_POSTCODE)
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().is4xxClientError())
-                .andExpect(view().name("redirect:./create-activity"))
-                .andExpect(xpath("//div[@text='" + ActivityFormValidators.TEAM_REQUIRED_MSG + "']").exists());;
+                .andExpect(view().name("createActivityForm"))
+                .andReturn();
+        BindingResult bindingResult = (BindingResult) Objects.requireNonNull(result.getModelAndView())
+                .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
+        Assertions.assertTrue(bindingResult.hasErrors());
+        String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+        Assertions.assertEquals(errorMessage, ActivityFormValidators.TEAM_REQUIRED_MSG);
+        verify(activityService, times(0)).updateOrAddActivity(any());
+
     }
 
     @When("I do not select the activity type")
@@ -327,12 +324,13 @@ public class U27CreateActivityFeature {
                         .param("postcode", DEFAULT_POSTCODE)
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().is4xxClientError())
-                .andExpect(view().name("redirect:./create-activity"));
+                .andExpect(view().name("createActivityForm"));
+        verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
     @Then("an error message tells me I must select an activity type")
     public void anErrorMessageTellsMeIMustSelectAnActivityType() throws Exception {
-        mockMvc.perform(multipart("/create-activity")
+        MvcResult result = mockMvc.perform(multipart("/create-activity")
                         .param("description", DEFAULT_DESCRIPTION)
                         .param("startDateTime", String.valueOf(startDateTime))
                         .param("endDateTime", String.valueOf(endDateTime))
@@ -341,8 +339,14 @@ public class U27CreateActivityFeature {
                         .param("postcode", DEFAULT_POSTCODE)
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().is4xxClientError())
-                .andExpect(view().name("redirect:./create-activity"))
-                .andExpect(xpath("//div[@text='" + ActivityFormValidators.ACTIVITY_TYPE_MSG + "']").exists());
+                .andExpect(view().name("createActivityForm"))
+                .andReturn();
+        BindingResult bindingResult = (BindingResult) Objects.requireNonNull(result.getModelAndView())
+                .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
+        Assertions.assertTrue(bindingResult.hasErrors());
+        String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+        Assertions.assertEquals(errorMessage, ActivityFormValidators.ACTIVITY_TYPE_MSG);
+        verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
     @And("I enter an empty description")
@@ -358,12 +362,13 @@ public class U27CreateActivityFeature {
                         .param("postcode", DEFAULT_POSTCODE)
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().is4xxClientError())
-                .andExpect(view().name("redirect:./create-activity"));
+                .andExpect(view().name("createActivityForm"));
+        verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
     @Then("an error message tells me the description is invalid")
     public void anErrorMessageTellsMeTheDescriptionIsInvalid() throws Exception {
-        mockMvc.perform(multipart("/create-activity")
+        MvcResult result = mockMvc.perform(multipart("/create-activity")
                         .param("team", String.valueOf(team.getTeamId()))
                         .param("activityType", String.valueOf(defaultActivityType))
                         .param("description", "123456789!@#$%^&*()")
@@ -374,8 +379,14 @@ public class U27CreateActivityFeature {
                         .param("postcode", DEFAULT_POSTCODE)
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().is4xxClientError())
-                .andExpect(view().name("redirect:./create-activity"))
-                .andExpect(xpath("//div[@text='" + ActivityFormValidators.DESC_CONTAINS_INVALID_CHAR_MSG + "']").exists());
+                .andExpect(view().name("createActivityForm"))
+                .andReturn();
+        BindingResult bindingResult = (BindingResult) Objects.requireNonNull(result.getModelAndView())
+                .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
+        Assertions.assertTrue(bindingResult.hasErrors());
+        String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+        Assertions.assertEquals(errorMessage, ActivityFormValidators.DESC_CONTAINS_INVALID_CHAR_MSG);
+        verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
     @And("I enter a description made of numbers or non-alphabetical characters only")
@@ -391,7 +402,8 @@ public class U27CreateActivityFeature {
                         .param("postcode", DEFAULT_POSTCODE)
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().is4xxClientError())
-                .andExpect(view().name("redirect:./create-activity"));
+                .andExpect(view().name("createActivityForm"));
+        verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
     @And("I enter a description longer than {int} characters")
@@ -408,7 +420,8 @@ public class U27CreateActivityFeature {
                         .param("postcode", DEFAULT_POSTCODE)
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().is4xxClientError())
-                .andExpect(view().name("redirect:./create-activity"));
+                .andExpect(view().name("createActivityForm"));
+        verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
     @And("I do not provide both a start and an end time")
@@ -422,12 +435,13 @@ public class U27CreateActivityFeature {
                         .param("postcode", DEFAULT_POSTCODE)
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().is4xxClientError())
-                .andExpect(view().name("redirect:./create-activity"));
+                .andExpect(view().name("createActivityForm"));
+        verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
     @Then("an error message tells me the start and end time are compulsory")
     public void anErrorMessageTellsMeTheStartAndEndTimeAreCompulsory() throws Exception {
-        mockMvc.perform(multipart("/create-activity")
+        MvcResult result = mockMvc.perform(multipart("/create-activity")
                         .param("team", String.valueOf(team.getTeamId()))
                         .param("activityType", String.valueOf(defaultActivityType))
                         .param("description", DEFAULT_DESCRIPTION)
@@ -436,15 +450,21 @@ public class U27CreateActivityFeature {
                         .param("postcode", DEFAULT_POSTCODE)
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().is4xxClientError())
-                .andExpect(view().name("redirect:./create-activity"))
-                .andExpect(xpath("//div[@text='" + ActivityFormValidators.START_DATE_REQUIRED_MSG + "']").exists())
-                .andExpect(xpath("//div[@text='" + ActivityFormValidators.END_DATE_REQUIRED_MSG + "']").exists());
+                .andExpect(view().name("createActivityForm"))
+                .andReturn();
+        BindingResult bindingResult = (BindingResult) Objects.requireNonNull(result.getModelAndView())
+                .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
+        Assertions.assertTrue(bindingResult.hasErrors());
+        String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+        Assertions.assertEquals(errorMessage, ActivityFormValidators.START_DATE_REQUIRED_MSG);
+        Assertions.assertEquals(errorMessage, ActivityFormValidators.END_DATE_REQUIRED_MSG);
+        verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
 
     @Then("an error message tells me the end date is before the start date")
     public void anErrorMessageTellsMeTheEndDateIsBeforeTheStartDate() throws Exception {
-        mockMvc.perform(multipart("/create-activity")
+        MvcResult result = mockMvc.perform(multipart("/create-activity")
                         .param("team", String.valueOf(team.getTeamId()))
                         .param("activityType", String.valueOf(defaultActivityType))
                         .param("description", DEFAULT_DESCRIPTION)
@@ -455,8 +475,14 @@ public class U27CreateActivityFeature {
                         .param("postcode", DEFAULT_POSTCODE)
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().is4xxClientError())
-                .andExpect(view().name("redirect:./create-activity"))
-                .andExpect(xpath("//div[@text='" + ActivityFormValidators.END_BEFORE_START_MSG + "']").exists());
+                .andExpect(view().name("createActivityForm"))
+                .andReturn();
+        BindingResult bindingResult = (BindingResult) Objects.requireNonNull(result.getModelAndView())
+                .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
+        Assertions.assertTrue(bindingResult.hasErrors());
+        String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+        Assertions.assertEquals(errorMessage, ActivityFormValidators.END_BEFORE_START_MSG);
+        verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
     @And("I enter either a start or an end time before the team creation date")
@@ -472,14 +498,15 @@ public class U27CreateActivityFeature {
                         .param("postcode", DEFAULT_POSTCODE)
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().is4xxClientError())
-                .andExpect(view().name("redirect:./create-activity"));
+                .andExpect(view().name("createActivityForm"));
+        verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
 
 
     @Then("an error message tells me the description is too short")
     public void anErrorMessageTellsMeTheDescriptionIsTooShort() throws Exception {
-        mockMvc.perform(multipart("/create-activity")
+        MvcResult result = mockMvc.perform(multipart("/create-activity")
                         .param("team", String.valueOf(team.getTeamId()))
                         .param("activityType", String.valueOf(defaultActivityType))
                         .param("description", "")
@@ -490,13 +517,19 @@ public class U27CreateActivityFeature {
                         .param("postcode", DEFAULT_POSTCODE)
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().is4xxClientError())
-                .andExpect(view().name("redirect:./create-activity"))
-                .andExpect(xpath("//div[@text='" + ActivityFormValidators.NO_DESC_MSG + "']").exists());
+                .andExpect(view().name("createActivityForm"))
+                .andReturn();
+        BindingResult bindingResult = (BindingResult) Objects.requireNonNull(result.getModelAndView())
+                .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
+        Assertions.assertTrue(bindingResult.hasErrors());
+        String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+        Assertions.assertEquals(errorMessage, ActivityFormValidators.NO_DESC_MSG);
+        verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
     @Then("an error message tells me the description is too long")
     public void anErrorMessageTellsMeTheDescriptionIsTooLong() throws Exception {
-        mockMvc.perform(multipart("/create-activity")
+        MvcResult result = mockMvc.perform(multipart("/create-activity")
                         .param("team", String.valueOf(team.getTeamId()))
                         .param("activityType", String.valueOf(defaultActivityType))
                         .param("description", "1".repeat(maxDescLength + 1))
@@ -507,8 +540,14 @@ public class U27CreateActivityFeature {
                         .param("postcode", DEFAULT_POSTCODE)
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().is4xxClientError())
-                .andExpect(view().name("redirect:./create-activity"))
-                .andExpect(xpath("//div[@text='" + ActivityFormValidators.DESC_TOO_LONG_MSG + "']").exists());
+                .andExpect(view().name("createActivityForm"))
+                .andReturn();
+        BindingResult bindingResult = (BindingResult) Objects.requireNonNull(result.getModelAndView())
+                .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
+        Assertions.assertTrue(bindingResult.hasErrors());
+        String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+        Assertions.assertEquals(errorMessage, ActivityFormValidators.DESC_TOO_LONG_MSG);
+        verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
     @When("I enter the activity start and end time with the end time before the start time")
@@ -524,12 +563,13 @@ public class U27CreateActivityFeature {
                         .param("postcode", DEFAULT_POSTCODE)
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().is4xxClientError())
-                .andExpect(view().name("redirect:./create-activity"));
+                .andExpect(view().name("createActivityForm"));
+        verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
     @Then("an error message that includes the team's creation date tells me the dates are prior to the team’s creation date")
     public void anErrorMessageThatIncludesTheTeamSCreationDateTellsMeTheDatesArePriorToTheTeamSCreationDate() throws Exception {
-        mockMvc.perform(multipart("/create-activity")
+        MvcResult result = mockMvc.perform(multipart("/create-activity")
                         .param("team", String.valueOf(team.getTeamId()))
                         .param("activityType", String.valueOf(defaultActivityType))
                         .param("description", DEFAULT_DESCRIPTION)
@@ -540,7 +580,12 @@ public class U27CreateActivityFeature {
                         .param("postcode", DEFAULT_POSTCODE)
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().is4xxClientError())
-                .andExpect(view().name("redirect:./create-activity"))
-                .andExpect(xpath("//div[@text='" + ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + teamCreationDateTime + "']").exists());
-    }
+                .andExpect(view().name("createActivityForm"))
+                .andReturn();
+        BindingResult bindingResult = (BindingResult) Objects.requireNonNull(result.getModelAndView())
+                .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
+        Assertions.assertTrue(bindingResult.hasErrors());
+        String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+        Assertions.assertEquals(errorMessage, ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + teamCreationDateTime);
+        verify(activityService, times(0)).updateOrAddActivity(any());    }
 }

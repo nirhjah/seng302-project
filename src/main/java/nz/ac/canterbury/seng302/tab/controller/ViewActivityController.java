@@ -162,6 +162,8 @@ public class ViewActivityController {
             HttpServletRequest request,
             CreateEventForm createEventForm) {
 
+        System.out.println(activityID);
+
         model.addAttribute(createEventFormString, createEventForm);
         model.addAttribute("addFactForm", new AddFactForm());
 
@@ -179,6 +181,7 @@ public class ViewActivityController {
                     model.asMap().get(addSubFormBindingResult));
         }
         Activity activity = activityService.findActivityById(activityID);
+        System.out.println(activity);
         if (activity == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
@@ -251,7 +254,8 @@ public class ViewActivityController {
             model.addAttribute("completed", "idk");
         }
         populateOther(model, activity);
-
+        System.out.println(model.asMap());
+        System.out.println("here");
         return "viewActivity";
     }
 

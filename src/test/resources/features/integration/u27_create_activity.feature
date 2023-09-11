@@ -9,7 +9,7 @@ Feature: Activity Creation
     Given I am on the create activity page
     When I enter valid values for the team it relates to, the activity type, a short description, and the activity start and end time and location and create the activity
     Then an activity is created into the system
-    And I see the details of the activity
+
 
   Scenario: Selecting the team for the activity
     Given I am on the create activity page

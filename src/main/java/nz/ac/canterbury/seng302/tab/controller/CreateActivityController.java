@@ -50,7 +50,7 @@ public class CreateActivityController {
     LineUp activityLineUp;
     private Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
-    private static final String TEMPLATE_NAME = "create-activity";
+    private static final String TEMPLATE_NAME = "createActivityForm";
 
     public CreateActivityController(TeamService teamService, UserService userService,
             ActivityService activityService, FormationService formationService, LineUpService lineUpService, LineUpPositionService lineUpPositionService) {
@@ -118,7 +118,6 @@ public class CreateActivityController {
             CreateActivityForm createActivityForm,
             Team team,
             User currentUser) {
-        System.out.println(team + " " + currentUser);
         // The startDate is before endDate
         if (!activityService.validateStartAndEnd(createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
             bindingResult.addError(new FieldError("CreateActivityForm", "startDateTime", ActivityFormValidators.END_BEFORE_START_MSG));
@@ -134,7 +133,6 @@ public class CreateActivityController {
 
             }
             // This user needs the authority to create/update activities
-            System.out.println(team.getTeamManagers());
             boolean hasCreateAuth = team.isCoach(currentUser) || team.isManager(currentUser);
             if (!hasCreateAuth) {
                 bindingResult.addError(new FieldError("CreateActivityForm", "team", ActivityFormValidators.NOT_A_COACH_OR_MANAGER));
@@ -155,7 +153,6 @@ public class CreateActivityController {
                 bindingResult.addError(new FieldError("CreateActivityForm", "formation",
                     ActivityFormValidators.FORMATION_DOES_NOT_EXIST_MSG));
         }
-        System.out.println(bindingResult.getAllErrors());
     }
 
     /**
