@@ -331,11 +331,11 @@
         const playerCards = document.querySelectorAll('.player-card');
         const whiteboard = document.querySelector('.whiteboard');
         const playerUl = document.querySelector('.player-ul');
-        const playerMap = {};
+        const playerList = [];
 
 
         playerCards.forEach((playerCard,index) => {
-            let isDragging, inWhiteboard = false;
+            let isDragging;
             let initialCardX, initialCardY;
             const yOffset = 10;
             const xOffset = 20;
@@ -386,8 +386,8 @@
                         cardRect.top >= whiteboardRect.top &&
                         cardRect.bottom <= whiteboardRect.bottom
                     ) {
-                        console.log("Dropped on whiteboard");
-                        inWhiteboard = true;
+
+                        playerList.push({ index: index, node: playerCard });
 
                         const canvasX = cardRect.left - canvas.upperCanvasEl.getBoundingClientRect().left;
                         const canvasY = cardRect.top - canvas.upperCanvasEl.getBoundingClientRect().top ;
@@ -415,8 +415,8 @@
                                 scaleX: 30 / img.width,
                                 scaleY: 30 / img.height,
                                 clipPath: new fabric.Ellipse({
-                                    rx: 200,
-                                    ry: 200,
+                                    rx: 190,
+                                    ry: 190,
                                     originX: 'center',
                                     originY: 'center',
                                 }),
