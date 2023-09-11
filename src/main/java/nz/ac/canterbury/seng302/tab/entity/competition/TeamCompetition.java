@@ -55,7 +55,7 @@ public class TeamCompetition extends Competition {
       return Set.copyOf(this.teams);
     }
 
-    public void setTeams(Collection<Team> teams) {
-      this.teams = Set.copyOf(teams);
+    public void setTeams(Set<Team> teams) {
+      this.teams = teams;
     }
 }
