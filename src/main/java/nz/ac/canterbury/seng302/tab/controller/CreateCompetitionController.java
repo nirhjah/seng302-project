@@ -73,7 +73,17 @@ public class CreateCompetitionController {
         prefillModel(model, request);
         if (competitionID != null) {
             Optional<Competition> optionalCompetition = competitionService.findCompetitionById(competitionID);
-            optionalCompetition.ifPresent(competition -> prefillFormWithCompetition(model, form, competition));
+            if (optionalCompetition.isPresent()) {
+                Competition competition = optionalCompetition.get();
+                model.addAttribute("competitionID", competition.getCompetitionId());
+                form.prefillWithCompetition(competition);
+
+                if (competition instanceof TeamCompetition teamCompetition) {
+                    model.addAttribute(TEAMS, (teamCompetition).getTeams());
+                } else {
+                    model.addAttribute(USERS, ((UserCompetition) competition).getPlayers());
+                }
+            }
         }
         return "createCompetitionForm";
     }
@@ -239,41 +249,7 @@ public class CreateCompetitionController {
         }
     }
 
-    /**
-     * Prefills form with competition fields
-     *
-     * @param model to be populated
-     * @param form form to be populated
-     * @param competition  competition to get info from
-     */
     public void prefillFormWithCompetition(Model model, CreateAndEditCompetitionForm form, Competition competition) {
-        model.addAttribute("competitionID", competition.getCompetitionId());
-
-        form.setName(competition.getName());
-        form.setSport(competition.getSport());
-
-        Grade grade = competition.getGrade();
-        form.setAge(grade.getAge());
-        form.setSex(grade.getSex());
-        form.setCompetitiveness(grade.getCompetitiveness());
-
-        form.setStartDateTime(competition.getCompetitionStartDate());
-        form.setEndDateTime(competition.getCompetitionEndDate());
-
-        Location location = competition.getLocation();
-        if (location != null) {
-            form.setAddressLine1(location.getAddressLine1());
-            form.setAddressLine2(location.getAddressLine2());
-            form.setSuburb(location.getSuburb());
-            form.setPostcode(location.getPostcode());
-            form.setCity(location.getCity());
-            form.setCountry(location.getCountry());
-        }
-        if (competition instanceof TeamCompetition teamCompetition) {
-            model.addAttribute(TEAMS, (teamCompetition).getTeams());
-        } else {
-            model.addAttribute(USERS, ((UserCompetition) competition).getPlayers());
-        }
     }
 
     /**

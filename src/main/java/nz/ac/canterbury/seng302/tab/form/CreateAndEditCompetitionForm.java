@@ -4,6 +4,7 @@ import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
 import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
 import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
@@ -213,6 +214,34 @@ public class CreateAndEditCompetitionForm {
                         location.getCountry()
                 )
                 .allMatch(value -> value == null || value.isEmpty());
+    }
+
+    /**
+     * Prefills form with competition fields
+     *
+     * @param competition  competition to get info from
+     */
+    public void prefillWithCompetition(Competition competition) {
+        setName(competition.getName());
+        setSport(competition.getSport());
+
+        Grade grade = competition.getGrade();
+        setAge(grade.getAge());
+        setSex(grade.getSex());
+        setCompetitiveness(grade.getCompetitiveness());
+
+        setStartDateTime(competition.getCompetitionStartDate());
+        setEndDateTime(competition.getCompetitionEndDate());
+
+        Location location = competition.getLocation();
+        if (location != null) {
+            setAddressLine1(location.getAddressLine1());
+            setAddressLine2(location.getAddressLine2());
+            setSuburb(location.getSuburb());
+            setPostcode(location.getPostcode());
+            setCity(location.getCity());
+            setCountry(location.getCountry());
+        }
     }
 
 }
