@@ -1,15 +1,14 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
+import nz.ac.canterbury.seng302.tab.helper.ImageType;
 import nz.ac.canterbury.seng302.tab.helper.interfaces.HasImage;
 import nz.ac.canterbury.seng302.tab.helper.interfaces.Identifiable;
-import nz.ac.canterbury.seng302.tab.helper.ImageType;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Base64;
 
 /**
  * Class for Club object which is annotated as a JPA entity.
@@ -59,8 +58,9 @@ public class Club implements Identifiable, HasImage {
         return clubId;
     }
 
+    @Override
     public long getId() {
-        return clubId;
+        return getClubId();
     }
 
     public String getName() {

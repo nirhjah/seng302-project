@@ -31,7 +31,7 @@ public class PlaywrightBrowser {
     static String baseUrl = "localhost:8080";
 
 
-    @BeforeAll
+    @BeforeAll(order=1)
     public static void openResources() {
         playwright = Playwright.create();
         browser = playwright.chromium().launch();
@@ -41,19 +41,19 @@ public class PlaywrightBrowser {
         baseUrl = Objects.equals(System.getenv("USER"), "gitlab-runner") ? "localhost:9500/test" : "localhost:8080";
     }
 
-    @Before
+    @Before(order=1)        // Fix suggested by Matthew: Ensure this is ALWAYS run first
     public void openContext() {
         browserContext = browser.newContext();
         page = browserContext.newPage();
         page.navigate(baseUrl);
     }
 
-    @After
+    @After(order=99999)
     public void closeContext() {
         browserContext.close();
     }
 
-    @AfterAll
+    @AfterAll(order=99999)
     public static void closeResources() {
         playwright.close();
     }

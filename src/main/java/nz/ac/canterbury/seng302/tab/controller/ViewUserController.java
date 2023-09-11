@@ -19,6 +19,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
+/**
+ * Spring Boot Controller class for the ViewUserForm
+ */
 @Controller
 public class ViewUserController {
     Logger logger = LoggerFactory.getLogger(ViewUserController.class);
@@ -48,14 +51,14 @@ public class ViewUserController {
             Model model,
             HttpServletResponse httpServletResponse, HttpServletRequest request) {
         logger.info("GET /user-info");
-
+        model.addAttribute("httpServletRequest",request);
         Optional<User> userOptional = userService.findUserById(userId);
         model.addAttribute("thisUser", userOptional);
 
         User user;
         if (userOptional.isEmpty()) { // If empty, throw a 404
             httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return "viewUserTemplate";
+            return "redirect:/home";
         } else {
             user = userOptional.get();
             model.addAttribute("userId", userId);
@@ -69,7 +72,6 @@ public class ViewUserController {
         model.addAttribute("dateOfBirth", user.getDateOfBirth());
         model.addAttribute("location", user.getLocation());
         model.addAttribute("navTeams", teamService.getTeamList());
-        model.addAttribute("httpServletRequest",request);
         model.addAttribute("fedmanTokenMessage", (String)model.asMap().get("fedmanTokenMessage"));
 
 

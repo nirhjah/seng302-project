@@ -13,9 +13,9 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <link th:href="@{/css/edit-user.css}" rel="stylesheet"/>
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1
+">
     <title th:inline="text">Edit User</title>
 <body class="edit-user-background">
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
@@ -157,7 +157,7 @@
         </p>
     </footer>
 </div>
-
+<script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
 <script th:inline="javascript">
     const ul = document.querySelector(".content ul"),
         sportDisplay = document.querySelector(".sport-box"),

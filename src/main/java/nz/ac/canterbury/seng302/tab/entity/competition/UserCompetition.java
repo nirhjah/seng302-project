@@ -1,10 +1,14 @@
 package nz.ac.canterbury.seng302.tab.entity.competition;
 
-import jakarta.persistence.*;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToMany;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,17 +28,12 @@ public class UserCompetition extends Competition {
         super(name, grade, sport);
     }
 
-    public UserCompetition(String name, Grade grade, String sport, Location location) {
-        super(name, grade, sport, location);
+    public UserCompetition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd) {
+        super(name, grade, sport, location, competitionStart, competitionEnd);
     }
 
-    public UserCompetition(String name, Grade grade, String sport, Location location, User player) {
-        super(name, grade, sport, location);
-        addPlayer(player);
-    }
-
-    public UserCompetition(String name, Grade grade, String sport, Location location, Set<User> players) {
-        super(name, grade, sport, location);
+    public UserCompetition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd, Set<User> players) {
+        super(name, grade, sport, location, competitionStart, competitionEnd);
         this.players = players;
     }
 

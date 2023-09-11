@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Objects;
 
 /**
@@ -16,20 +18,34 @@ public abstract class Competition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CompetitionId")
-    private long competitionId;
+    protected long competitionId;
   
     @Column(nullable = false)
     private String name;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
-    private Grade grade;
+    protected Grade grade;
 
     @Column(nullable = false)
-    private String sport;
+    protected String sport;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
+
+    /*
+     * The reason we must have longs here, is because JPA REFUSES to allow for
+     * date comparison in custom queries, for some reason.
+     * So instead, we represent dates as a long; time in seconds since the 1970 UNIX epoch.
+     */
+    @Column(nullable = true)
+    private long competitionStart;
+    @Column(nullable = true)
+    private long competitionEnd;
+
+    // Timezone of where the app is running.
+    // This should be set to 0, since in our application, we have no timezones.
+    private static final ZoneOffset DEFAULT_ZONE = ZoneOffset.ofHours(0);
 
     protected Competition() {}
     
@@ -40,15 +56,27 @@ public abstract class Competition {
      * @param sport competition sport
      * @param location competition location 
     */
-    protected Competition(String name, Grade grade, String sport, Location location) {
+
+    /**
+     * main constructor
+     * @param name
+     * @param grade
+     * @param sport
+     * @param location
+     * @param competitionStart
+     * @param competitionEnd
+     * */
+    protected Competition(String name, Grade grade, String sport, Location location, LocalDateTime competitionStart, LocalDateTime competitionEnd) {
         this.name = name;
         this.grade = grade;
         this.sport = sport;
         this.location = location;
+        this.competitionStart = competitionStart.toEpochSecond(DEFAULT_ZONE);
+        this.competitionEnd = competitionEnd.toEpochSecond(DEFAULT_ZONE);
     }
     
     /**
-     * constructor without setting location -- for testing purposes 
+     * constructor without setting location and time -- for testing purposes
      * @param name competition name
      * @param grade competition grade
      * @param sport competition sport
@@ -59,6 +87,12 @@ public abstract class Competition {
         this.sport = sport;
     }
 
+    /**
+     * Compares this Competition instance with another object for equality. Two instances are considered equal if they have the same competition ID.
+     *
+     * @param o The object to compare against.
+     * @return true if the objects are equal, false otherwise.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -67,6 +101,11 @@ public abstract class Competition {
         return Objects.equals(competitionId, competition.getCompetitionId());
     }
 
+    /**
+     * Computes a hash code value for a competition. The hash code is calculated based on the competition ID, grade, and sport of the instance.
+     *
+     * @return A hash code value for this object.
+     */
     @Override
     public int hashCode() {
         return 31 + Objects.hash(competitionId, grade, sport);
@@ -78,6 +117,22 @@ public abstract class Competition {
 
     public String getName() {
         return this.name;
+    }
+
+    /**
+     * Sets the start/end dates of a competition, given Local date-times.
+     * @param startDate The start time of the competition
+     * @param endDate The end time for the competition
+     */
+    public void setDate(LocalDateTime startDate, LocalDateTime endDate) {
+        long start = startDate.toEpochSecond(DEFAULT_ZONE);
+        long end = endDate.toEpochSecond(DEFAULT_ZONE);
+        setDateAsEpochSecond(start, end);
+    }
+
+    public void setDateAsEpochSecond(long competitionStart, long competitionEnd) {
+        this.competitionStart = competitionStart;
+        this.competitionEnd = competitionEnd;
     }
 
     public void setName(String name) {
@@ -106,5 +161,25 @@ public abstract class Competition {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    /**
+     * The reason we must have longs here, is because JPA REFUSES to allow for
+     * date comparison in custom queries, for some reason.
+     * So instead, we represent dates as a long; time in seconds since the 1970 UNIX epoch.
+     * @return long the competition end date
+     */
+    public long getCompetitionEnd() {
+        return competitionEnd;
+    }
+    public long getCompetitionStart() {
+        return competitionStart;
+    }
+
+    public LocalDateTime getCompetitionEndDate() {
+        return LocalDateTime.ofEpochSecond(competitionEnd, 0, DEFAULT_ZONE);
+    }
+    public LocalDateTime getCompetitionStartDate() {
+        return LocalDateTime.ofEpochSecond(competitionStart, 0, DEFAULT_ZONE);
     }
 }

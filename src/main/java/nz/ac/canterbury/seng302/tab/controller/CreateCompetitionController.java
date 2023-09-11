@@ -1,26 +1,5 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.Grade;
@@ -37,6 +16,23 @@ import nz.ac.canterbury.seng302.tab.service.CompetitionService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.validator.CompetitionFormValidators;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Spring Boot Controller class for the Create Competition Form
@@ -166,13 +162,15 @@ public class CreateCompetitionController {
                         .map(teamService::getTeam)
                         .filter(Objects::nonNull)
                         .collect(Collectors.toSet());
-                competition = new TeamCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), teams);
+                LocalDateTime now = LocalDateTime.now();
+                competition = new TeamCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), now, now, teams);
             } else {
                 Set<User> users = IDs.stream()
                         .map(userService::getUser)
                         .filter(Objects::nonNull)
                         .collect(Collectors.toSet());
-                competition = new UserCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), users);
+                LocalDateTime now = LocalDateTime.now();
+                competition = new UserCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), now, now, users);
             }
 
             competitionService.updateOrAddCompetition(competition);

@@ -223,18 +223,18 @@ public class Activity {
 
 
     /**
-     * Gets all team members minus the manager, used to populate the subs dropdown of activity stats
-     * @return list of team members without manager
+     * Gets all team members minus the manager and coaches, used to populate the subs dropdown of activity stats
+     * @return list of team members without manager and coach
      */
-    public List<User> getInvoledMembersNoManager() {
-        List<User> teamMembersWithoutManagers = new ArrayList<>();
+    public List<User> getInvolvedMembersNoManagerAndCoaches() {
+        List<User> teamMembersWithoutManagersAndCoaches = new ArrayList<>();
         if (team != null) {
             for (User member : team.getTeamMembers()) {
-                if (!team.isManager(member)) {
-                    teamMembersWithoutManagers.add(member);
+                if (!team.isManager(member) && !team.isCoach(member)) {
+                    teamMembersWithoutManagersAndCoaches.add(member);
                 }
             }
-            return teamMembersWithoutManagers;
+            return teamMembersWithoutManagersAndCoaches;
         }
         return List.of();
     }

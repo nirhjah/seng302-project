@@ -9,7 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.controller.CreateCompetitionController;
 import nz.ac.canterbury.seng302.tab.controller.FederationManagerInviteController;
 import nz.ac.canterbury.seng302.tab.controller.InviteToFederationManagerController;
+import nz.ac.canterbury.seng302.tab.controller.ViewAllCompetitionsController;
 import nz.ac.canterbury.seng302.tab.entity.*;
+import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
 import nz.ac.canterbury.seng302.tab.entity.competition.UserCompetition;
 import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
@@ -25,6 +27,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,6 +37,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -72,6 +78,7 @@ public class U39CreateViewUpdateCompetition {
     private CompetitionRepository competitionRepository;
 
     private MockMvc mockMvc;
+    private MockMvc viewAllMockMvc;
 
     private User user;
 
@@ -87,12 +94,27 @@ public class U39CreateViewUpdateCompetition {
 
     private final List<Team> teams = new ArrayList<>();
 
+
+    /*
+      The number of competitions to generate for each time frame
+     */
+    private static final int NUM_PAST = 1;
+    private static final int NUM_FUTURE = 1;
+    private static final int NUM_CURRENT = 1;
+
+    // The filter arguments to pass into the viewAllCompetitions request:
+    private ViewAllCompetitionsController.Timing timing = null;
+    private List<String> filterSports = new ArrayList<>();
+
+    private String VIEW_ALL = "/view-all-competitions";
+
+
     private void setupMocking() {
         // get all the necessary beans
-
         userRepository = applicationContext.getBean(UserRepository.class);
         teamRepository = applicationContext.getBean(TeamRepository.class);
         competitionRepository = applicationContext.getBean(CompetitionRepository.class);
+        SportService sportService = applicationContext.getBean(SportService.class);
 
         // Delete leftover data
         userRepository.deleteAll();
@@ -112,9 +134,10 @@ public class U39CreateViewUpdateCompetition {
         );
 
         CreateCompetitionController createCompetitionController = new CreateCompetitionController(competitionService, userService, teamService);
+        ViewAllCompetitionsController viewAllCompetitionsController = new ViewAllCompetitionsController(competitionService, sportService);
 
         FederationManagerInviteController fedManInvite = new FederationManagerInviteController(userService, federationService);
-        this.mockMvc = MockMvcBuilders.standaloneSetup(inviteController, fedManInvite, createCompetitionController).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(inviteController, fedManInvite, createCompetitionController, viewAllCompetitionsController).build();
     }
 
     @Before("@create_view_update_competition")
@@ -125,8 +148,9 @@ public class U39CreateViewUpdateCompetition {
                 "test@test.com", "plaintextPassword", location);
         Location location2 = new Location("adminAddr1", "adminAddr2", "adminSuburb", "adminCity", "4dm1n", "adminLand");
         team = new Team("test1", "Hockey", location2);
-        competition = new UserCompetition("comp", new Grade(Grade.DEFAULT_AGE, Grade.Sex.MENS, Grade.DEFAULT_COMPETITIVENESS), "sport",
-                new Location(null, null, null, null, null, null));
+        Location compLoc = new Location(null, null, null, null, null, null);
+        LocalDateTime now = LocalDateTime.now();
+        competition = new UserCompetition("comp", new Grade(Grade.DEFAULT_AGE, Grade.Sex.MENS, Grade.DEFAULT_COMPETITIVENESS), "sport", compLoc, now, now, Collections.<User>emptySet());
         Sport sport = new Sport("soccer");
         user.setFavoriteSports(List.of(sport));
         user.confirmEmail();
@@ -145,6 +169,8 @@ public class U39CreateViewUpdateCompetition {
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
+
+        filterSports = new ArrayList<>();
 
         when(userService.getCurrentUser()).thenReturn(Optional.of(user));
     }
@@ -473,5 +499,105 @@ public class U39CreateViewUpdateCompetition {
             mockMvc.perform(get(url)).andExpect(status().isFound()).andExpect(view().name("federationManagerInvite"));
 
         }
+    }
+
+    @Given("I am on a page dedicated to displaying competitions")
+    public void iAmOnAPageDedicatedToDisplayingCompetitions() throws Exception {
+        mockMvc.perform(get(VIEW_ALL))
+                .andExpect(status().isOk()) // Accepted 200
+                .andExpect(view().name("viewAllCompetitions"));
+    }
+
+    private static Date addSeconds(Date date, long seconds) {
+        Date ret = (Date) date.clone();
+        ret.setTime(date.getTime() + seconds);
+        return ret;
+    }
+
+    private void setDateTo(Competition competition, long start, long end) {
+        long now = Instant.now().getEpochSecond();
+        long startDate = now + start;
+        long endDate = now + end;
+        competition.setDateAsEpochSecond(startDate, endDate);
+    }
+
+    private void generateCompetitionsForSport(String sport) {
+        long smallTimeStep = 5000;
+        long bigTimeStep = 10000;
+        Date now = Date.from(Instant.now());
+
+        for (int i=0; i<NUM_PAST; i++) {
+            Competition comp = new UserCompetition("myCompetition", Grade.randomGrade(), sport);
+            setDateTo(competition, -bigTimeStep, -smallTimeStep);
+            competitionService.updateOrAddCompetition(comp);
+        }
+
+        for (int i=0; i<NUM_FUTURE; i++) {
+            Competition comp = new UserCompetition("myCompetition", Grade.randomGrade(), sport);
+            setDateTo(competition, smallTimeStep, bigTimeStep);
+            competitionService.updateOrAddCompetition(comp);
+        }
+
+        for (int i=0; i<NUM_CURRENT; i++) {
+            Competition comp = new UserCompetition("myCompetition", Grade.randomGrade(), sport);
+            setDateTo(competition, -bigTimeStep, bigTimeStep);
+            competitionService.updateOrAddCompetition(comp);
+        }
+    }
+
+    @And("there exist past and current competitions for a {string}")
+    public void thereExistPastAndCurrentCompetitionsForASport(String sport) {
+        generateCompetitionsForSport(sport);
+    }
+
+    @When("I apply a filter for that {string} and select an option to display all competitions")
+    public void iApplyAFilterForThatSportAndSelectAnOptionToDisplayAllCompetitions(String sport) {
+        timing = null;
+        filterSports.add(sport);
+    }
+
+    @When("I apply a filter for that {string} and I select an option to display only current competitions")
+    public void iApplyAFilterForThatSportAndISelectAnOptionToDisplayOnlyCurrentCompetitions(String sport) {
+        timing = ViewAllCompetitionsController.Timing.CURRENT;
+        filterSports.add(sport);
+    }
+
+    @When("I apply a filter for that {string} and I select an option to display only past competitions")
+    public void iApplyAFilterForThatSportAndISelectAnOptionToDisplayOnlyPastCompetitions(String sport) {
+        timing = ViewAllCompetitionsController.Timing.PAST;
+        filterSports.add(sport);
+    }
+
+    @Then("I am shown all competitions, past and current for the selected {string}")
+    public void iAmShownAllCompetitionsPastAndCurrentForTheSelectedSport(String sport) throws Exception {
+        String[] sports = new String[] {sport};
+        // We dont pass in the timing here, because `null` timing implies
+        // that ALL competitions should be shown.
+        mockMvc.perform(get(VIEW_ALL)
+                .param("page", "1")
+                .param("sports", sports));
+        Mockito.verify(competitionService).findAllCompetitionsBySports(any(), eq(List.of(sport)));
+    }
+
+    @Then("I am shown only current competitions for the selected {string}")
+    public void iAmShownOnlyCurrentCompetitionsForTheSelectedSport(String sport) throws Exception {
+        String[] param = new String[] {"CURRENT"};
+        String[] sports = new String[] {sport};
+        mockMvc.perform(get(VIEW_ALL)
+                .param("page", "1")
+                .param("times", param)
+                .param("sports", sports));
+        Mockito.verify(competitionService).findCurrentCompetitionsBySports(any(), eq(List.of(sport)));
+    }
+
+    @Then("I am shown only past competitions for the selected {string}")
+    public void iAmShownOnlyPastCompetitionsForTheSelectedSport(String sport) throws Exception {
+        String[] param = new String[] {"PAST"};
+        String[] sports = new String[] {sport};
+        mockMvc.perform(get(VIEW_ALL)
+                .param("page", "1")
+                .param("times", param)
+                .param("sports", sports));
+        Mockito.verify(competitionService).findPastCompetitionsBySports(any(), eq(List.of(sport)));
     }
 }

@@ -4,30 +4,29 @@
 <head>
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <link th:href="@{/css/create-team.css}" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
-    <title th:inline="text">
-        [[${teamID != -1 ? 'Edit' : 'Create'}]] Team</title>
+    <title th:if="${isEditing}">Edit Team</title>
+    <title th:unless="${isEditing}">Create Team</title>
 </head>
 
 <body class="team-form-background">
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 <div class="team-form">
     <div class="create-team">
-        <h1 th:inline="text">[[${teamID != -1 ? 'Edit ' : 'Create '}]]Team</h1>
+        <h1 data-cy="header" th:if="${isEditing}">Edit Team</h1>
+        <h1 data-cy="header" th:unless="${isEditing}">Create Team</h1>
     </div>
     <div class="wrapper">
         <form th:action="@{createTeam}" th:object="${createAndEditTeamForm}" id="createAndEditTeamForm" method="post">
             <div th:if="${invalid_team != null}" th:text="${invalid_team}" class="invalid-team error-message"></div>
-            <input type="hidden" th:if="${teamID != -1}" th:name="teamID" th:value="${teamID}"/>
+            <input type="hidden" th:if="${isEditing}" th:name="teamID" th:value="${teamID}"/>
             <div class="input-boxes">
                 <div class="input-box">
                     <input type="text" class="form-control" id="name" name="name" th:value="*{name}"
                            data-cy="name" autofocus placeholder=""
-                           th:pattern="${teamNameUnicodeRegex}"
-                           th:title="${teamNameMsg}">
+                          >
                     <label for="name">Name <span class="required">*</span></label>
                     <div th:each="err : ${#fields.errors('name')}" th:text="${err}" class="error-message"></div>
                 </div>
@@ -35,8 +34,7 @@
                 <div class="input-box">
                     <input type="text" class="form-control" id="sport" name="sport" th:value="*{sport}"
                            data-cy="sport" autofocus placeholder=""
-                           th:pattern="${sportUnicodeRegex}"
-                           th:title="${sportUnicodeMsg}">
+                          >
                     <label for="sport">Sport <span class="required">*</span></label>
                     <div th:each="err : ${#fields.errors('sport')}" th:text="${err}" class="error-message"></div>
 
@@ -66,12 +64,12 @@
                 <div class="input-box">
                     <input type="text" class="form-control" id="suburb" th:name="suburb" th:value="*{suburb}"
                            data-cy="location" autofocus placeholder=""
-                           th:pattern="${countryCitySuburbNameRegex}" th:title="${countryCitySuburbNameRegexMsg}">
+                           >
                     <label for="suburb">Suburb</label>
                     <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
                 </div>
                 <div class="input-box">
-                    <input type="text" class="form-control" th:field="*{postcode}"
+                    <input type="text" class="form-control" id="postcode" th:field="*{postcode}"
                             data-cy="location" autofocus placeholder="">
                             <!--/* Lacks pattern/title, as the Java regex doesn't work in the browser */-->
                     <label for="postcode">Postcode</label>
@@ -83,27 +81,28 @@
                 <div class="input-box">
                     <input type="text" class="form-control" id="city" th:name="city" th:value="*{city}"
                            data-cy="location" autofocus placeholder=""
-                           th:pattern="${countryCitySuburbNameRegex}" th:title="${countryCitySuburbNameRegexMsg}">
+                          >
                     <label for="city">City <span class="required">*</span></label>
                     <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="country" th:name="country" th:value="*{country}"
                            data-cy="location" autofocus placeholder=""
-                           th:pattern="${countryCitySuburbNameRegex}" th:title="${countryCitySuburbNameRegexMsg}">
+                    >
                     <label for="country">Country <span class="required">*</span></label>
                     <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
                 </div>
             </div>
             <div class="submit-button">
-                <a th:href="@{home}">
-                    <button type="submit" th:text="${teamID != null ? 'Save' : 'Create'}"></button>
+                <a data-cy="submit" th:href="@{home}">
+                    <button type="submit" th:if="${isEditing}">Save</button>
+                    <button type="submit" th:unless="${isEditing}">Create</button>
                 </a>
             </div>
             <div th:if="${invalid_input != null}" th:text="${invalid_input}" class="error-message"></div>
-            <div class="cancel-link">
-                <a th:if="${teamID != null}" th:href="@{profile(teamID=${teamID})}">Cancel</a>
-                <a th:unless="${teamID != null}" th:href="@{home}">Cancel</a>
+            <div data-cy="cancel" class="cancel-link">
+                <a th:if="${isEditing}" th:href="@{team-info(teamID=${teamID})}">Cancel</a>
+                <a th:unless="${isEditing}" th:href="@{home}">Cancel</a>
             </div>
         </form>
     </div>
@@ -115,7 +114,7 @@
         on Freepik
     </p>
 </footer>
-</body>
+<script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
 <script type="text/javascript" th:inline="javascript">
     /**
      ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
@@ -129,7 +128,7 @@
      * The delay time (in milliseconds) for debouncing the search input.
      * @type {number}
      */
-    const DEBOUNCE_DELAY = 450; // set the debounce delay to 450ms
+    const DEBOUNCE_DELAY = 100; // set the debounce delay to 200ms
 
     const searchBox = document.querySelector('#address-line-1');
     const resultsContainer = document.querySelector('#autocomplete-container');
@@ -224,5 +223,5 @@
     });
 
 </script>
-
+</body>
 </html>

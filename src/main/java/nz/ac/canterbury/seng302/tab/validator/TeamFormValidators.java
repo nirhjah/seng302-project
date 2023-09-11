@@ -21,7 +21,7 @@ public class TeamFormValidators {
     public static final String NOT_BLANK_MSG = "Field cannot be empty";
     public static final String INVALID_CHARACTERS_MSG = "Field contains invalid values";
     public static final String INVALID_CHARACTERS_MSG_TEAM_NAME = "Must contain alphanumeric values. It may also contain dots, spaces, & curly brackets";
-    public static final String VALID_TEAM_NAME_REGEX = "^(?=.*[a-zA-Z0-9])[a-zA-Z0-9.\\s{}]+$";
+    public static final String VALID_TEAM_NAME_REGEX = "^(?=.*[\\p{L}\\p{N}])[\\p{L}\\p{N}\\-{}. ]+$";
     public static final String VALID_COUNTRY_SUBURB_CITY_REGEX = "[\\- '\\p{L}]*$";
     public static final String VALID_TEAM_SPORT_REGEX = "[\\- '\\p{L}]*$";
     public static final String INVALID_SPORT_MSG = "Can contain letters, spaces, dashes, or apostrophes";
@@ -29,6 +29,10 @@ public class TeamFormValidators {
     public static final String VALID_ADDRESS_REGEX = "^(?=.*[\\p{L}\\p{N}])(?:[\\- ,./#'\\p{L}\\p{N}])*$";
 
     public static final String VALID_POSTCODE_REGEX = "^[\\p{L}\\p{N}]+[\\-/\\p{L}\\p{N}]*$";
+    
+    /** A valid formation contains between [0, 8] dash separated single digit numbers*/
+    public static final String VALID_FORMATION_REGEX = "^[1-9](\\-[1-9]){0,7}$";
+    public static final String INVALID_FORMATION_MSG = "Formations must have 1-9 players per row, separated by dashes, and upto 8 rows";
 
     /**
      * Checks the team sport is not blank and matches

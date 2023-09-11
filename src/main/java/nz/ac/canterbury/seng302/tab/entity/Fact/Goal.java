@@ -35,4 +35,12 @@ public class Goal extends Fact{
     public User getScorer() {
         return this.scorer;
     }
+
+    public int getGoalValue() {
+        return goalValue;
+    }
+
+    public void setGoalValue(int goalValue) {
+        this.goalValue = goalValue;
+    }
 }

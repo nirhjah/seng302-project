@@ -27,7 +27,7 @@ public class U33EditLineUpE2E {
 
     @Given("I am the manager of a team")
     public void i_am_the_manager_of_a_team() {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/profile?teamID=2");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=2");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
     }
@@ -35,7 +35,7 @@ public class U33EditLineUpE2E {
     @Given("viewing the edit page for a team activity for that team")
     public void viewing_the_edit_page_for_a_team_activity_for_that_team() {
         //first click view team activities
-        PlaywrightBrowser.page.locator("#viewTeamActivitiesBtn").click();
+        PlaywrightBrowser.page.locator("#activities").click();
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("#editActivityBtn").first().click();
     }

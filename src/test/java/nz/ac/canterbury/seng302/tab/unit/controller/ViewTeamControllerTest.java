@@ -1,10 +1,10 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,6 +20,8 @@ import nz.ac.canterbury.seng302.tab.service.*;
 import nz.ac.canterbury.seng302.tab.service.image.TeamImageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -39,7 +41,7 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @WithMockUser
-public class ProfileFormControllerTest {
+public class ViewTeamControllerTest {
 
     @Autowired
     private TeamImageService teamImageService;
@@ -70,14 +72,16 @@ public class ProfileFormControllerTest {
     private static final String TEAM_SPORT = "Hockey";
 
     @BeforeEach
-    public void beforeAll() throws IOException {
+    void beforeAll() throws IOException {
         Location teamLocation = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
         team = new Team("test", "Hockey", teamLocation);
         Location userLocation = new Location("23 test street", "24 test street", "surburb", "city", "8782",
                 "New Zealand");
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "johndoe@example.com", "Password123!", userLocation);
-                
+        
+        team.setCoach(user);
+
         team = Mockito.spy(team);
         user = Mockito.spy(user);
 
@@ -85,7 +89,7 @@ public class ProfileFormControllerTest {
     }
 
     @Test
-    public void testGettingTeamList() throws Exception {
+    void testGettingTeamList() throws Exception {
         Mockito.when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         Mockito.doReturn(TEAM_ID).when(team).getTeamId();
         Mockito.when(activityService.getNumberOfWins(team)).thenReturn(0);
@@ -94,7 +98,7 @@ public class ProfileFormControllerTest {
         Mockito.when(activityService.numberOfTotalGamesAndFriendlies(team)).thenReturn(0);
         Mockito.when(activityService.getLast5GamesOrFriendliesForTeamWithOutcome(team)).thenReturn(null);
         Mockito.when(factService.getTop5Scorers(team)).thenReturn(null);
-        mockMvc.perform(get("/profile")
+        mockMvc.perform(get("/team-info")
                 .param("teamID", TEAM_ID.toString()))
             .andExpect(status().isOk())
             .andExpect(view().name("viewTeamForm"))
@@ -104,40 +108,40 @@ public class ProfileFormControllerTest {
     }
 
     @Test
-    public void testGettingInvalidTeam() throws Exception {
+    void testGettingInvalidTeam() throws Exception {
         Mockito.when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         Mockito.doReturn(TEAM_ID).when(team).getTeamId();
 
-        mockMvc.perform(get("/profile")
+        mockMvc.perform(get("/team-info")
                         .param("teamID", "2"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void testUploadValidProfilePicture() throws Exception {
+    void testUploadValidProfilePicture() throws Exception {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         File file = resource.getFile();
         try (FileInputStream input = new FileInputStream(file)) {
             MockMultipartFile multipartFile = new MockMultipartFile("file",
                     file.getName(), "image/png", input.readAllBytes());
-            mockMvc.perform(multipart("/profile")
+            mockMvc.perform(multipart("/team-info")
                         .file(multipartFile)
                         .param("teamID", TEAM_ID.toString()))
                     .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl(String.format("/profile?teamID=%s", TEAM_ID)));
+                    .andExpect(redirectedUrl(String.format("/team-info?teamID=%s", TEAM_ID)));
         }
 
     }
 
     @Test
-    public void testUploadInvalidProfilePictureType() throws Exception {
+    void testUploadInvalidProfilePictureType() throws Exception {
         Resource resource = new ClassPathResource("/testingfiles/invalidFileType.txt");
         File file = resource.getFile();
         byte[] fileBytes = Files.readAllBytes(file.toPath());
         try (FileInputStream input = new FileInputStream(file)) {
             MockMultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain",
                     input.readAllBytes());
-            mockMvc.perform(multipart("/profile?teamID={id}", TEAM_ID).file(multipartFile))
+            mockMvc.perform(multipart("/team-info?teamID={id}", TEAM_ID).file(multipartFile))
                     .andExpect(status().is3xxRedirection());
         }
 
@@ -146,14 +150,14 @@ public class ProfileFormControllerTest {
     }
 
     @Test
-    public void testUploadInvalidProfilePictureSize() throws Exception {
+    void testUploadInvalidProfilePictureSize() throws Exception {
         Resource resource = new ClassPathResource("/testingfiles/maxFileSize.png");
         File file = resource.getFile();
         byte[] fileBytes = Files.readAllBytes(file.toPath());
         try (FileInputStream input = new FileInputStream(file)) {
             MockMultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "image/png",
                     input.readAllBytes());
-            mockMvc.perform(multipart("/profile?teamID={id}", TEAM_ID).file(multipartFile))
+            mockMvc.perform(multipart("/team-info?teamID={id}", TEAM_ID).file(multipartFile))
                     .andExpect(status().is3xxRedirection());
         }
 
@@ -161,16 +165,70 @@ public class ProfileFormControllerTest {
         assertFalse(Arrays.equals(savedBytes, fileBytes));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"1", "1-2", "9-9", "1-4-4-2", "1-2-3-4-5-6-7-8", "9-9-9-9-9-9-9-9"})
+    void createFormation_validFormation_succeeds(String formation) throws Exception {
+        when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
+        mockMvc.perform(post("/team-info/create-formation")
+                        .param("formation", formation)
+                        .param("customPlayerPositions", "")
+                        .param("custom", String.valueOf(false))
+                        .param("teamID", String.valueOf(TEAM_ID)))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/team-info?teamID=" + TEAM_ID));
+        verify(mockFormationService, times(1)).addOrUpdateFormation(any());
+    }
+
+    /** Extra test to ensure both managers AND coaches can do this */
     @Test
-    public void testCreatingAValidFormation() throws Exception {
-        mockMvc.perform(post("/profile/create-formation", 42L)
+    void createFormation_validFormation_isCoach_succeeds() throws Exception {
+        Mockito.doReturn(true).when(team).isCoach(user);
+        Mockito.doReturn(false).when(team).isManager(user);
+        when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
+        mockMvc.perform(post("/team-info/create-formation")
                         .param("formation", "1-4-4-2")
                         .param("customPlayerPositions", "")
                         .param("custom", String.valueOf(false))
                         .param("teamID", String.valueOf(TEAM_ID)))
                 .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/profile?teamID=" + TEAM_ID));
+                .andExpect(view().name("redirect:/team-info?teamID=" + TEAM_ID));
         verify(mockFormationService, times(1)).addOrUpdateFormation(any());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "hi", "0", "99", "H1-4", "0-1-2", "-5", "5-", "1-0", "1-1-1-1-1-1-1-1-1"})
+    void createFormation_invalidFormation_fails(String formation) throws Exception {
+        when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
+        mockMvc.perform(post("/team-info/create-formation")
+                        .param("formation", formation)
+                        .param("customPlayerPositions", "")
+                        .param("custom", String.valueOf(false))
+                        .param("teamID", String.valueOf(TEAM_ID)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createFormation_nonexistentTeam_fails() throws Exception {
+        when(mockTeamService.getTeam(TEAM_ID)).thenReturn(null);
+        mockMvc.perform(post("/team-info/create-formation")
+                        .param("formation", "1-4-4-2")
+                        .param("customPlayerPositions", "")
+                        .param("custom", String.valueOf(false))
+                        .param("teamID", String.valueOf(TEAM_ID)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void createFormation_notManagerOrCoach_fails() throws Exception {
+        Mockito.doReturn(false).when(team).isCoach(user);
+        Mockito.doReturn(false).when(team).isManager(user);
+        when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
+        mockMvc.perform(post("/team-info/create-formation")
+                        .param("formation", "1-4-4-2")
+                        .param("customPlayerPositions", "")
+                        .param("custom", String.valueOf(false))
+                        .param("teamID", String.valueOf(TEAM_ID)))
+                .andExpect(status().isForbidden());
     }
 
 }

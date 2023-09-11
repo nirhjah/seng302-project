@@ -5,14 +5,13 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import nz.ac.canterbury.seng302.tab.controller.CreateClubController;
-import nz.ac.canterbury.seng302.tab.controller.ProfileFormController;
+import nz.ac.canterbury.seng302.tab.controller.ViewAllTeamsController;
+import nz.ac.canterbury.seng302.tab.controller.ViewTeamController;
 import nz.ac.canterbury.seng302.tab.controller.ViewClubController;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.enums.Role;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
-import nz.ac.canterbury.seng302.tab.repository.ClubRepository;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
-import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import nz.ac.canterbury.seng302.tab.repository.*;
 import nz.ac.canterbury.seng302.tab.service.*;
 import nz.ac.canterbury.seng302.tab.service.image.ClubImageService;
 import org.junit.jupiter.api.Assertions;
@@ -66,6 +65,10 @@ public class CreateViewUpdateClubIntegrationTests {
 
     private UserRepository userRepository;
 
+    private LocationRepository locationRepository;
+
+    private SportRepository sportRepository;
+
     @Autowired
     private TeamRepository teamRepository;
 
@@ -79,6 +82,11 @@ public class CreateViewUpdateClubIntegrationTests {
     private FactService factService;
 
     @Autowired
+    private LocationService locationService;
+    @Autowired
+    private SportService sportService;
+
+    @Autowired
     private CompetitionService competitionService;
     @Autowired
     private FormationService formationService;
@@ -86,6 +94,8 @@ public class CreateViewUpdateClubIntegrationTests {
     private ClubRepository clubRepository;
 
     private ClubImageService clubImageService;
+
+    private CompetitionRepository competitionRepository;
 
     private User user;
 
@@ -111,6 +121,10 @@ public class CreateViewUpdateClubIntegrationTests {
         teamRepository = applicationContext.getBean(TeamRepository.class);
         userRepository = applicationContext.getBean(UserRepository.class);
         clubImageService = applicationContext.getBean(ClubImageService.class);
+        locationRepository = applicationContext.getBean(LocationRepository.class);
+        sportRepository= applicationContext.getBean(SportRepository.class);
+        competitionRepository= applicationContext.getBean(CompetitionRepository.class);
+
 
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
         EmailService emailService = applicationContext.getBean(EmailService.class);
@@ -119,8 +133,12 @@ public class CreateViewUpdateClubIntegrationTests {
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         clubService = Mockito.spy(new ClubService(clubRepository));
         teamService = Mockito.spy(new TeamService(teamRepository));
+        locationService= Mockito.spy(new LocationService(locationRepository));
+        sportService= Mockito.spy(new SportService(sportRepository));
+        competitionService= Mockito.spy(new CompetitionService(competitionRepository));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService, clubImageService), new ProfileFormController(userService, teamService, activityService, factService, formationService, competitionService), new ViewClubController(userService, teamService, clubService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService, clubImageService), new ViewTeamController(userService, teamService, activityService, factService, formationService,competitionService), new ViewClubController(userService, teamService, clubService)
+        , new ViewAllTeamsController(teamService, userService, locationService,sportService)).build();
 
         Authentication authentication = Mockito.mock(Authentication.class);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
@@ -372,7 +390,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @Given("I am on the team’s profile page and the team belongs to a club,")
     public void i_am_on_the_team_s_profile_page_and_the_team_belongs_to_a_club() throws Exception {
-        mockMvc.perform(get("/profile")
+        mockMvc.perform(get("/team-info")
                         .param("teamID", team.getTeamId().toString()))
                 .andExpect(status().isOk());
     }

@@ -24,7 +24,6 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.client.ExpectedCount.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -41,13 +40,14 @@ public class EditTeamRoleControllerTest {
 
     @MockBean UserService mockUserService;
 
-    static User user;
+    User user;
 
-    private static long TEAM_ID = 1;
+    private static Long TEAM_ID = 1L;
+    private static Long NEWTEAM_ID = 2L;
+    private static Long USER_ID = 3L;
 
-    private static long NEWTEAM_ID = 2;
+    private static final String MANAGER = Role.MANAGER.toString();
 
-    private static long USER_ID = 3;
     @BeforeEach
     public void setUp() throws IOException {
         Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
@@ -92,29 +92,32 @@ public class EditTeamRoleControllerTest {
     @Test
     public void getRequest_whenNotManagerOfTeam() throws Exception {
         mockMvc.perform(get("/editTeamRole")
-                        .param("edit", String.valueOf(NEWTEAM_ID))).andExpect(status().isFound())
+                        .param("edit", NEWTEAM_ID.toString())).andExpect(status().isFound())
                 .andExpect((redirectedUrl("/home")));
     }
 
     @Test
     public void getRequest_badRequestNoTeamIDProvided() throws Exception {
-        mockMvc.perform(get("/editTeamRole")).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/editTeamRole"))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
     public void getRequest_invalidAsNoUserProvided() throws Exception {
         Mockito.when(mockUserService.getCurrentUser()).thenReturn(Optional.empty());
         mockMvc.perform(get("/editTeamRole")
-                        .param("edit", String.valueOf(NEWTEAM_ID))).andExpect(status().isFound())
-                .andExpect((redirectedUrl("/home")));
+                        .param("edit", NEWTEAM_ID.toString()))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/home"));
     }
 
     @Test
     public void postRequest_ValidDetails() throws Exception {
-        Mockito.when(mockTeamService.userRolesAreValid(List.of(String.valueOf(Role.MANAGER)))).thenReturn(true);
-        mockMvc.perform(post("/editTeamRole").param("teamID", String.valueOf(TEAM_ID))
-                .param("userRoles", Role.MANAGER.toString())
-                .param("userIds", String.valueOf(List.of(USER_ID))))
+        Mockito.when(mockTeamService.userRolesAreValid(List.of(MANAGER))).thenReturn(true);
+        mockMvc.perform(post("/editTeamRole")
+                        .param("teamID", TEAM_ID.toString())
+                        .param("userRoles", MANAGER)
+                        .param("userIds", USER_ID.toString()))
                 .andExpect(status().isOk());
 
         verify(mockTeamService, Mockito.times(1)).updateTeam(any());
@@ -123,9 +126,10 @@ public class EditTeamRoleControllerTest {
     @Test
     public void postRequest_TooFewManagers() throws Exception {
         Mockito.when(mockTeamService.userRolesAreValid(List.of())).thenReturn(false);
-        mockMvc.perform(post("/editTeamRole").param("teamID", String.valueOf(TEAM_ID))
-                        .param("userRoles", Role.MANAGER.toString())
-                        .param("userIds", String.valueOf(List.of(USER_ID))))
+        mockMvc.perform(post("/editTeamRole")
+                        .param("teamID", TEAM_ID.toString())
+                        .param("userRoles", MANAGER)
+                        .param("userIds", USER_ID.toString()))
                 .andExpect(status().isOk());
 
         verify(mockTeamService, Mockito.times(0)).updateTeam(any());
@@ -133,12 +137,11 @@ public class EditTeamRoleControllerTest {
 
     @Test
     public void postRequest_TooManyManagers() throws Exception {
-        Mockito.when(mockTeamService.userRolesAreValid(List.of(Role.MANAGER.toString(), Role.MANAGER.toString(),
-                Role.MANAGER.toString(), Role.MANAGER.toString()))).thenReturn(false);
-        mockMvc.perform(post("/editTeamRole").param("teamID", String.valueOf(TEAM_ID))
-                        .param("userRoles", String.valueOf(List.of(Role.MANAGER.toString(), Role.MANAGER.toString(),
-                                Role.MANAGER.toString(), Role.MANAGER.toString())))
-                        .param("userIds", String.valueOf(List.of(USER_ID, 4,5,6))))
+        Mockito.when(mockTeamService.userRolesAreValid(any())).thenReturn(false);
+        mockMvc.perform(post("/editTeamRole")
+                        .param("teamID", TEAM_ID.toString())
+                        .param("userRoles", MANAGER, MANAGER, MANAGER, MANAGER)
+                        .param("userIds", USER_ID.toString(), "4","5","6"))
                 .andExpect(status().isOk());
 
         verify(mockTeamService, Mockito.times(0)).updateTeam(any());
@@ -146,18 +149,20 @@ public class EditTeamRoleControllerTest {
 
     @Test
     public void postRequest_withInValidTeamID() throws Exception {
-        mockMvc.perform(post("/editTeamRole").param("teamID", String.valueOf(-1))
-                        .param("userRoles", String.valueOf(Role.MANAGER.toString()))
-                        .param("userIds", String.valueOf(List.of(USER_ID))))
+        mockMvc.perform(post("/editTeamRole")
+                        .param("teamID", "-1")
+                        .param("userRoles", MANAGER)
+                        .param("userIds", String.valueOf(USER_ID.toString())))
                 .andExpect(status().isFound());
     }
 
 
     @Test
     public void postRequest_whenNotManagerOfTeam() throws Exception {
-        mockMvc.perform(post("/editTeamRole").param("teamID", String.valueOf(NEWTEAM_ID))
-                        .param("userRoles", String.valueOf(Role.MANAGER.toString()))
-                        .param("userIds", String.valueOf(List.of(USER_ID))))
+        mockMvc.perform(post("/editTeamRole")
+                        .param("teamID", NEWTEAM_ID.toString())
+                        .param("userRoles", MANAGER)
+                        .param("userIds", USER_ID.toString()))
                 .andExpect(status().isFound());
     }
 }

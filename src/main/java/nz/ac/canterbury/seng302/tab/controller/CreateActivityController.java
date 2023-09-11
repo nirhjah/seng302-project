@@ -1,18 +1,16 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.List;
-import java.util.Optional;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.api.response.FormationInfo;
 import nz.ac.canterbury.seng302.tab.api.response.PlayerFormationInfo;
+import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.form.CreateActivityForm;
 import nz.ac.canterbury.seng302.tab.service.*;
+import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -28,16 +26,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.Formation;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.enums.ActivityType;
-import nz.ac.canterbury.seng302.tab.form.CreateActivityForm;
-import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Controller
 public class CreateActivityController {
@@ -129,10 +125,12 @@ public class CreateActivityController {
         
         if (team != null) {
             // The dates are after the team's creation date
-            if (!activityService.validateActivityDateTime(team.getCreationDate(), createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-                bindingResult.addError(new FieldError("CreateActivityForm", "endDateTime",
-                        ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + team.getCreationDate().format(formatter)));
+
+            if (createActivityForm.getStartDateTime() != null && createActivityForm.getEndDateTime() != null && !activityService.validateActivityDateTime(team.getCreationDate(), createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                    bindingResult.addError(new FieldError("CreateActivityForm", "endDateTime",
+                            ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + team.getCreationDate().format(formatter)));
+
             }
             // This user needs the authority to create/update activities
             boolean hasCreateAuth = team.isCoach(currentUser) || team.isManager(currentUser);
@@ -151,12 +149,9 @@ public class CreateActivityController {
         // This is because the front-end greys out the Formation dropdown if the conditions aren't met,
         // so the value may be set but it's invalid.
         long formationId = createActivityForm.getFormation();
-        if (formationId != -1 && (Activity.canContainFormation(createActivityForm.getActivityType(), team))) {
-            // Check that your team has this formation
-            if (formationService.findFormationById(formationId).map(form -> form.getTeam().equals(team)).isEmpty()) {
+        if (formationId != -1 && formationId != 0 && (Activity.canContainFormation(createActivityForm.getActivityType(), team)) && formationService.findFormationById(formationId).map(form -> form.getTeam().equals(team)).isEmpty() ) {
                 bindingResult.addError(new FieldError("CreateActivityForm", "formation",
                     ActivityFormValidators.FORMATION_DOES_NOT_EXIST_MSG));
-            }
         }
     }
 
@@ -204,6 +199,7 @@ public class CreateActivityController {
         }
 
         fillModelWithActivity(model, activity);
+        createActivityForm.prepopulate(activity);
         return TEMPLATE_NAME;
     }
 
@@ -245,6 +241,7 @@ public class CreateActivityController {
                 model.addAttribute("actId", actId);
                 fillModelWithActivity(model, activity);
             }
+
             return TEMPLATE_NAME;
         }
 
@@ -280,7 +277,10 @@ public class CreateActivityController {
         } else {
             Optional<Formation> formation = formationService.findFormationById(createActivityForm.getFormation());
             // The error checking function checks if this exists, so this should always pass
-            activity.setFormation(formation.get());
+            if(formation.isPresent()) {
+                activity.setFormation(formation.get());
+            }
+
         }
 
 
@@ -293,7 +293,11 @@ public class CreateActivityController {
 
         if (playerAndPositions != null && !playerAndPositions.isEmpty()) {
             List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
-            saveLineUp(positionsAndPlayers, bindingResult);
+
+            if (createActivityForm.getFormation() != -1) {
+                saveLineUp(positionsAndPlayers, bindingResult);
+
+            }
             if (bindingResult.hasErrors() && actId != -1) { //only throw error if we are on edit act page
                 httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 if (activity != null) {
@@ -334,6 +338,7 @@ public class CreateActivityController {
         }
 
         List<FormationInfo> formations = createFormationsJSON(team);
+
 
         return ResponseEntity.ok().body(formations);
     }
@@ -384,13 +389,9 @@ public class CreateActivityController {
                 }
             }
         }
-
         if (error) {
             bindingResult.addError(new FieldError("createActivityForm", "lineup", "The line-up is not complete"));
-
         }
-
-
     }
 
 }
