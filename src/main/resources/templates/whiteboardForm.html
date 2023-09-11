@@ -334,8 +334,9 @@
 
         playerCards.forEach((playerCard,index) => {
             let isDragging, inWhiteboard = false;
-            let initialClickX, initialClickY;
             let initialCardX, initialCardY;
+            const yOffset = 10;
+            const xOffset = 20;
 
             playerCard.addEventListener("mousedown", (e) => {
                 if (!playerCard.classList.contains('active')) {
@@ -344,23 +345,23 @@
                 isDragging = true;
                 playerCard.style.position = "absolute";
 
-                initialClickX = e.clientX - playerCard.getBoundingClientRect().left;
-                initialClickY = e.clientY - playerCard.getBoundingClientRect().top;
-
                 initialCardX = playerCard.getBoundingClientRect().left;
                 initialCardY = playerCard.getBoundingClientRect().top;
 
-                console.log('initialCardX', initialCardX);
-                console.log('initialCardY', initialCardY);
 
                 playerCard.style.cursor = 'grabbing';
                 playerCard.style.zIndex = '1';
+
+                const newX = e.clientX - xOffset;
+                const newY = e.clientY - yOffset;
+                playerCard.style.left = `${newX}px`;
+                playerCard.style.top = `${newY}px`;
             });
 
             document.addEventListener("mousemove", (e) => {
                 if (isDragging) {
-                    const newX = e.clientX - initialClickX;
-                    const newY = e.clientY - initialClickY;
+                    const newX = e.clientX - xOffset;
+                    const newY = e.clientY - yOffset;
 
                     playerCard.style.left = `${newX}px`;
                     playerCard.style.top = `${newY}px`;
