@@ -440,8 +440,8 @@ input[type="range"]::-moz-range-track {
 }
 
 .whiteboard-dropdowns .player-card.active {
-    height: 60px;
-    width: 60px;
+    height: 30px;
+    width: 30px;
     border-radius: 50%;
     display: flex;
     flex-direction: column;
@@ -451,7 +451,7 @@ input[type="range"]::-moz-range-track {
     user-select:none;
 }
 .whiteboard-dropdowns .player-card.active img{
-    height:60px;
+    height:30px;
     margin-top:18px;
 }
 

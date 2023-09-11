@@ -331,6 +331,8 @@
         const playerCards = document.querySelectorAll('.player-card');
         const whiteboard = document.querySelector('.whiteboard');
         const playerUl = document.querySelector('.player-ul');
+        const playerMap = {};
+
 
         playerCards.forEach((playerCard,index) => {
             let isDragging, inWhiteboard = false;
@@ -365,7 +367,6 @@
 
                     playerCard.style.left = `${newX}px`;
                     playerCard.style.top = `${newY}px`;
-
                 }
             });
 
@@ -388,22 +389,21 @@
                         console.log("Dropped on whiteboard");
                         inWhiteboard = true;
 
-                        const canvasX = cardRect.left - canvas.upperCanvasEl.getBoundingClientRect().left + cardRect.width / 18;
-                        const canvasY = cardRect.top - canvas.upperCanvasEl.getBoundingClientRect().top + cardRect.height / 18;
+                        const canvasX = cardRect.left - canvas.upperCanvasEl.getBoundingClientRect().left;
+                        const canvasY = cardRect.top - canvas.upperCanvasEl.getBoundingClientRect().top ;
 
                         const whiteCircle = new fabric.Circle({
                             left: canvasX,
                             top: canvasY,
-                            radius: 30,
+                            radius: 15,
                             fill: 'white',
                         });
 
-                        const playerCardSpan = playerCard.querySelector('.player-name').textContent;;
-
+                        const playerCardSpan = playerCard.querySelector('.player-name').textContent;
                         const playerName = new fabric.Text(playerCardSpan, {
                             fill: 'black',
-                            left: canvasX-10,
-                            top: canvasY + 60,
+                            left: canvasX-23,
+                            top: canvasY + 31,
                             fontFamily: '"Noto Sans", sans-serif',
                             fontSize:16,
                             fontWeight: 500,
@@ -412,21 +412,25 @@
                             img.set({
                                 left: canvasX,
                                 top: canvasY,
-                                scaleX: 60 / img.width,
-                                scaleY: 60 / img.height,
+                                scaleX: 30 / img.width,
+                                scaleY: 30 / img.height,
+                                clipPath: new fabric.Ellipse({
+                                    rx: 200,
+                                    ry: 200,
+                                    originX: 'center',
+                                    originY: 'center',
+                                }),
                             });
 
-                            const group = new fabric.Group([whiteCircle, img,playerName], {
+                            const group = new fabric.Group([whiteCircle,img,playerName], {
                                 left: canvasX,
                                 top: canvasY,
+                                hasControls: false,
                             });
-
                             canvas.add(group);
                             canvas.renderAll();
 
-
                         playerCard.style.display = 'none';
-
                         // might need to add a flag, instead of removing the event listener for the delete task
                         playerCard.removeEventListener("mousedown", handleMouseDown);
                         document.removeEventListener("mousemove", handleMouseMove);
