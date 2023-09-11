@@ -30,7 +30,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -64,16 +65,19 @@ class CreateCompetitionControllerTest {
     String TEAMS_ENUM = "teams";
     String USERS_ENUM = "users";
 
+    static int PLUS_SECONDS = 1000;
+
     MockHttpServletRequestBuilder addValues(MockHttpServletRequestBuilder builder, String name, String sport, LocalDateTime time) {
         if (time == null) {
             time = LocalDateTime.now();
         }
+        LocalDateTime end = time.plusSeconds(PLUS_SECONDS);
 
         return builder
                 .param("name", name)
                 .param("sport", sport)
                 .param("startDateTime", time.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
-                .param("endDateTime", time.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                .param("endDateTime", end.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     }
 
     MockHttpServletRequestBuilder addUserValues(MockHttpServletRequestBuilder builder) {
@@ -87,7 +91,7 @@ class CreateCompetitionControllerTest {
         String teamList = String.join(",", teams.stream().map(team -> team.getTeamId().toString()).toList());
         return builder.param("usersOrTeams", TEAMS_ENUM)
                 .param("userTeamID", teamList);
-        // ^^^ The "list" of users who are participating
+        // ^^^ The "list" of teams who are participating
     }
 
     MockHttpServletRequestBuilder addGrade(MockHttpServletRequestBuilder builder, Grade grade) {
@@ -116,29 +120,8 @@ class CreateCompetitionControllerTest {
 
     @Test
     @WithMockUser
-    void testCreateTeamCompetition() throws Exception {
-        MockHttpServletRequestBuilder builder = post(VIEW);
-
-        String name = "Le Epic Competition";
-        String sport = "Running";
-        Grade grade = Grade.randomGrade();
-
-        LocalDateTime time = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
-        builder = addValues(builder, name, sport, time);
-        builder = addGrade(builder, grade);
-        builder = addTeamValues(builder, List.of(team));
-
-        mockMvc.perform(builder);
-
-        Competition competition = findOne();
-
-        assertEquals(competition.getClass(), TeamCompetition.class);
-
-        assertEquals(competition.getCompetitionEndDate(), time);
-        assertEquals(competition.getCompetitionStartDate(), time);
-        assertEquals(competition.getName(), name);
-        assertEquals(competition.getSport(), sport);
-        assertEquals(competition.getGrade(), grade);
+    void testCreateTeamCompetition() {
+        createAndTestTeamCompetition();
     }
 
     Competition createAndTestUserCompetition() {
@@ -163,12 +146,43 @@ class CreateCompetitionControllerTest {
 
         assertEquals(competition.getClass(), UserCompetition.class);
 
-        assertEquals(competition.getCompetitionEndDate(), time);
         assertEquals(competition.getCompetitionStartDate(), time);
+        assertEquals(competition.getCompetitionEndDate(), time.plusSeconds(PLUS_SECONDS));
         assertEquals(competition.getName(), name);
         assertEquals(competition.getSport(), sport);
         assertEquals(competition.getGrade(), grade);
         return competition;
+    }
+
+    TeamCompetition createAndTestTeamCompetition() {
+        MockHttpServletRequestBuilder builder = post(VIEW);
+        String name = "MyTeamCompetition";
+        String sport = "Soccer";
+        Grade grade = Grade.randomGrade();
+
+        LocalDateTime time = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
+        builder = addValues(builder, name, sport, time);
+        builder = addGrade(builder, grade);
+        builder = addTeamValues(builder, List.of(team));
+
+        try {
+            mockMvc.perform(builder);
+        } catch (Exception e) {
+            fail("error thrown");
+        }
+
+        Competition competition = findOne();
+        if (competition instanceof TeamCompetition teamCompetition) {
+            assertEquals(competition.getCompetitionStartDate(), time);
+            assertEquals(competition.getCompetitionEndDate(), time.plusSeconds(PLUS_SECONDS));
+            assertEquals(competition.getName(), name);
+            assertEquals(competition.getSport(), sport);
+            assertEquals(competition.getGrade(), grade);
+            return teamCompetition;
+        }
+
+        fail("Was not a team competition");
+        return null;
     }
 
     @Test
@@ -221,6 +235,34 @@ class CreateCompetitionControllerTest {
         mockMvc.perform(builder)
             .andExpect(status().is3xxRedirection())
             .andExpect(view().name("redirect:/view-competition?competitionID=" + id));
+
+        int nCompAfter = competitionService.getAllUserCompetitions().size();
+        // Ensure that we don't have duplicate competitions
+        assertEquals(nCompAfter, nComp);
+    }
+
+    @Test
+    @WithMockUser
+    void testEditTeamCompetition() throws Exception {
+        TeamCompetition teamCompetition = createAndTestTeamCompetition();
+
+        // now, we try edit the competition:
+        int nComp = competitionService.getAllUserCompetitions().size();
+        String id = String.valueOf(teamCompetition.getCompetitionId());
+
+        MockHttpServletRequestBuilder builder = post(VIEW)
+                .param("competitionID", id);
+
+        String name = "EditedTeamCompetition";
+        LocalDateTime time = LocalDateTime.now();
+        Grade grade = Grade.randomGrade();
+        addValues(builder, name, teamCompetition.getSport(), time);
+        addGrade(builder, grade);
+        addTeamValues(builder, teamCompetition.getTeams());
+
+        mockMvc.perform(builder)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/view-competition?competitionID=" + id));
 
         int nCompAfter = competitionService.getAllUserCompetitions().size();
         // Ensure that we don't have duplicate competitions

@@ -204,6 +204,7 @@ public class CreateCompetitionController {
             editExistingCompetition(editCompetition, form);
             editCompetitionParticipants(editCompetition, IDs);
 
+            System.out.println("COMPETITION: " + editCompetition);
             editCompetition = competitionService.updateOrAddCompetition(editCompetition);
             return "redirect:/view-competition?competitionID=" + editCompetition.getCompetitionId();
 

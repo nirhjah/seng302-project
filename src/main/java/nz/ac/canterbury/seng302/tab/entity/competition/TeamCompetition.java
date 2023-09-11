@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * Class for Team Competition - competition composed of teams only
  */
-@Entity(name ="TeamCompetition") 
+@Entity
 @DiscriminatorValue("TEAM")
 public class TeamCompetition extends Competition {
     @ManyToMany(fetch = FetchType.LAZY)
@@ -52,7 +52,7 @@ public class TeamCompetition extends Competition {
     }
 
     public Set<Team> getTeams() {
-      return Collections.unmodifiableSet(this.teams);
+      return Set.copyOf(this.teams);
     }
 
     public void setTeams(Collection<Team> teams) {
