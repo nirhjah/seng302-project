@@ -258,7 +258,7 @@ public class AddActivityStatisticsIntegrationTests {
     @Then("I must fill out the required field of description and optionally the time it occurred.")
     public void i_must_fill_out_the_required_field_of_description_and_optionally_the_time_it_occurred() throws Exception {
         mockMvc.perform(post("/add-fact")
-                        .param("activityID", String.valueOf(otherActivity.getId()))
+                        .param("actId", String.valueOf(otherActivity.getId()))
                         .param("timeOfFact", fact.getTimeOfEvent())
                         .param("description", fact.getDescription()))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -328,6 +328,27 @@ public class AddActivityStatisticsIntegrationTests {
         mockMvc.perform(post("/add-outcome")
                 .param("actId", String.valueOf(activity.getId()))
                 .param("activityOutcomes", String.valueOf(ActivityOutcome.Win))).andExpect(status().isFound());
+    }
+
+    @And("I am adding a goal, substitution or fact")
+    public void iAmAddingAGoalSubstitutionOrFact() {
+        fact = new Fact("1", "abc", activity);
+    }
+
+    @And("I specify a time")
+    public void iSpecifyATime() {
+        fact.setTimeOfEvent("999999999999999999999999");
+    }
+
+
+    @Then("the time must fall within the bounds of the activity \\(ie cannot be before the beginning or after the end)")
+    public void theTimeMustFallWithinTheBoundsOfTheActivityIeCannotBeBeforeTheBeginningOrAfterTheEnd() throws Exception {
+        mockMvc.perform(post("/add-fact")
+                        .param("actId", String.valueOf(otherActivity.getId()))
+                        .param("timeOfFact", fact.getTimeOfEvent())
+                        .param("description", fact.getDescription()))
+                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andReturn();
     }
 
     @And("I am adding a description to the fact type ‘Fact’ or ‘Substitution’ or ‘Goal’,")

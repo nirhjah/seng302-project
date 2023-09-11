@@ -8,6 +8,7 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.FactRepository;
 import nz.ac.canterbury.seng302.tab.service.FactService;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -304,5 +306,75 @@ public class FactServiceTest {
 
 
         Assertions.assertEquals(scoreInformation, (factService.getTop5Scorers(team)));
+    }
+
+    @Test
+    void testGoalsInCorrectOrder() throws Exception {
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        User player = new User("Another", "Test", "test1234@test.com", "Password1!",
+                new Location(null, null, null, "CHCH", null, "NZ"));
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+        activityRepository.save(activity);
+
+        List<Fact> factList = new ArrayList<>();
+        List<Goal> goalsList = new ArrayList<>();
+
+        Goal goal1 = new Goal("Goal was scored", "40", activity, player, 1);
+        Goal goal2 = new Goal("Goal was scored again", "25", activity, player, 1);
+        Goal goal3 = new Goal("Goal was scored yet again", "27", activity, player, 1);
+
+        factRepository.save(goal1);
+        factRepository.save(goal2);
+        factRepository.save(goal3);
+
+        factList.add(goal1);
+        factList.add(goal2);
+        factList.add(goal3);
+
+        activity.addFactList(factList);
+
+        activityRepository.save(activity);
+
+        for (Object fact : activity.getFactList()) {
+            if(fact instanceof Goal) {
+                goalsList.add((Goal) fact);
+            }
+        }
+
+        List<Goal> expectedGoalList = List.of(goal2, goal3, goal1);
+        Assertions.assertEquals(expectedGoalList, factService.getAllFactsOfGivenTypeForActivity(FactType.GOAL.ordinal(), activity));
+    }
+
+    @Test
+    void factTimeOrdering() throws Exception {
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+        activityRepository.save(activity);
+
+        Goal goal1 = new Goal("Goal was scored", "1", activity, creator, 1);
+        Goal goal2 = new Goal("Goal was scored again", null, activity, creator, 1);
+        Goal goal3 = new Goal("Goal was scored yet again", "2", activity, creator, 1);
+
+        factRepository.save(goal1);
+        factRepository.save(goal2);
+        factRepository.save(goal3);
+        activityRepository.save(activity);
+
+        List<Goal> expectedGoalList = List.of(goal2, goal1, goal3);
+        Assertions.assertEquals(expectedGoalList, factService.getAllFactsOfGivenTypeForActivity(FactType.GOAL.ordinal(), activity));
     }
 }

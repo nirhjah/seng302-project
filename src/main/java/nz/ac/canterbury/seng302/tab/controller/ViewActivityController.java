@@ -210,21 +210,8 @@ public class ViewActivityController {
 
 
         List<Fact> activityFacts = factService.getAllFactsForActivity(activity);
-        if (!activityFacts.isEmpty()) {
-            List<Substitution> activitySubstitutions = new ArrayList<>();
-            List<Goal> activityGoals = new ArrayList<>();
-
-            for (Object fact : activityFacts) {
-                if (fact instanceof Substitution) {
-                    activitySubstitutions.add((Substitution) fact);
-
-                } else if (fact instanceof Goal) {
-                    activityGoals.add((Goal) fact);
-                }
-            }
-            model.addAttribute("activitySubstitutions", activitySubstitutions);
-            model.addAttribute("activityGoals", activityService.sortGoalTimesAscending(activityGoals));
-        }
+        model.addAttribute("activitySubstitutions", factService.getAllFactsOfGivenTypeForActivity(FactType.SUBSTITUTION.ordinal(), activity));
+        model.addAttribute("activityGoals", factService.getAllFactsOfGivenTypeForActivity(FactType.GOAL.ordinal(), activity));
 
         logger.info("activityFacts: {}", activityFacts);
         model.addAttribute("activity", activity);
@@ -242,9 +229,8 @@ public class ViewActivityController {
         }
 
         model.addAttribute("activityFacts", activityFacts);
-        List<Fact> factList = factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity);
 
-        model.addAttribute("factList", factList);
+        model.addAttribute("factList", factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity));
 
         // attributes for the subs
         // all players who are currently playing - for the sub off
@@ -628,12 +614,13 @@ public class ViewActivityController {
     private List<User> getAllPlayersCurrentlyPlaying(long actId) {
         List<User> playersPlaying = getAllPlayersPlaying(actId);
         Activity currActivity = activityService.findActivityById(actId);
-        if (currActivity == null  || currActivity.getTeam() == null) {
+        if (currActivity == null || currActivity.getTeam() == null) {
             return List.of();
         }
-        List<Fact> allSubs = factService.getAllFactsOfGivenTypeForActivity(2, currActivity); // list of all made subs in the game 
-        
-        allSubs.sort(Comparator.comparingInt(sub -> Integer.parseInt(sub.getTimeOfEvent()))); // all the subs sorted by time 
+        List<Fact> allSubs = factService.getAllFactsOfGivenTypeForActivity(2, currActivity) // list of all made subs in the game 
+                .stream()   // We have to make a stream, because its actual type is UnmodifiableList, which you can't .sort()
+                .sorted(Comparator.comparingInt(sub -> Integer.parseInt(sub.getTimeOfEvent())))  // all the subs sorted by time 
+                .toList();
         
         for (Fact fact : allSubs) {
             Substitution sub = (Substitution) fact;
