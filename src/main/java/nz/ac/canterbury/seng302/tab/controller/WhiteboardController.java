@@ -1,13 +1,14 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FormationService;
-import nz.ac.canterbury.seng302.tab.service.LineUpService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,17 +32,14 @@ public class WhiteboardController {
 
     private LineUpService lineUpService;
 
-    private final ActivityService activityService;
-
     Team team;
     private final Logger logger = LoggerFactory.getLogger(WhiteboardController.class);
 
 
-    public WhiteboardController(FormationService formationService, TeamService teamService, LineUpService lineUpService, ActivityService activityService) {
+    public WhiteboardController(FormationService formationService, TeamService teamService, LineUpService lineUpService) {
         this.teamService = teamService;
         this.formationService = formationService;
         this.lineUpService = lineUpService;
-        this.activityService = activityService;
     }
 
 
@@ -65,7 +64,7 @@ public class WhiteboardController {
 
         //Index of list of players equals the associated lineup
         List<List<User>> playersPerLineup = teamLineUps.stream().map(
-                lineUp -> activityService.getAllPlayersPlaying(lineUp)
+                lineUp -> lineUpService.getAllPlayersPlaying(lineUp)
         ).toList();
 
         if (teamOpt.isPresent()) {
