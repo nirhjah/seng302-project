@@ -36,15 +36,14 @@
                 <hr>
             </div>
             <div class="dropdown">
-                <label for="lineup">Line-Up</label>
-                <select class="select" id="lineup">
+                <label for="lineup-dropdown" >Line-Up</label>
+                <select class="select" id="lineup-dropdown">
                     <option value="-1">(No Lineup)</option>
                     <option th:each="lineup : ${teamLineUps}"
                             th:value="${lineup.lineUpId}"
                             th:text="${lineup.lineUpId.toString()}"
                     ></option>
                 </select>
-
             </div>
 
             <div class="player-table">
@@ -485,10 +484,12 @@
         });
 
         const formationDropdown = document.getElementById("formation-dropdown");
+        const lineupDropdown = document.getElementById("lineup-dropdown");
 
         document.querySelector('.delete-button').addEventListener('click', function () {
             canvas.clear();
             formationDropdown.selectedIndex = 0;
+            lineupDropdown.selectedIndex = 0;
             if (playerArray.length !== 0) {
                 addTeamPlayers();
             }
@@ -608,6 +609,7 @@
                     addTeamPlayers();
                 }
                 formationDropdown.selectedIndex = 0;
+                lineupDropdown.selectedIndex = 0;
             }
         });
 
@@ -1118,6 +1120,22 @@
                 canvas.renderAll();
             }
         });
+
+        /**Lineup Loading**/
+        document.getElementById("lineup-dropdown").addEventListener("change", function (event) {
+            const selectedOption = event.target.options[event.target.selectedIndex];
+            loadLineUp(selectedOption);
+        });
+
+        function loadLineUp(target) {
+            const lineupId = target.value;
+            const lineup = target.textContent;
+            canvas.clear();
+            if (lineupId !== "-1") {
+                playerCard = {}
+                createTeamPlayerIcon()
+            }
+        }
 
 
         /** Formation **/
