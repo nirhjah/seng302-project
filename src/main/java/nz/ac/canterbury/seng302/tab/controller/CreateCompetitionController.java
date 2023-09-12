@@ -56,6 +56,10 @@ public class CreateCompetitionController {
         this.teamService = teamService;
     }
 
+    private void addIdsToModel(Model model) {
+
+    }
+
     /**
      * Gets Competition form
      * @param competitionID  if editing, get competition through competitionID
@@ -232,8 +236,8 @@ public class CreateCompetitionController {
     private boolean postCreateCompetitionErrorCheck(
             BindingResult bindingResult,
             CreateAndEditCompetitionForm form,
-            List<Long> IDs) {
-
+            List<Long> IDs
+    ) {
         boolean bad = false;
         // The competition requires a team or a user to be selected
         if (IDs == null || IDs.isEmpty()) {
