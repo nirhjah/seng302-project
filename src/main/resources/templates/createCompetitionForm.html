@@ -160,10 +160,6 @@
             </div>
 
             <div class="member-selection-box">
-                <div class="inactive-cover" th:classappend="*{sport} == null ? '' : 'active'"
-                     th:styleappend="*{sport} != null ? 'display: none;' : ''">
-                    <h3>You must type in a sport before you may add competitors</h3>
-                </div>
                 <div class="competitors-box">
                     <div class="competitors-header">
                         <h4>Competitors</h4>
@@ -306,6 +302,12 @@
     function getCompetitors() {
         if (!inactiveCover.classList.contains("active")) {
             const type = typeCheckbox.checked ? "users" : "teams"
+            if (!sportsInput.value) {
+                // return early, we can't query for users or teams because we don't know the sport.
+                return
+            }
+
+            console.log("getCompetitors(")
             axios.get("create-competition/get_" + type, {params: {sport: sportsInput.value, search: searchQuery.value}})
                 .then(response => {
                     generateUsersTeams(response.data);
