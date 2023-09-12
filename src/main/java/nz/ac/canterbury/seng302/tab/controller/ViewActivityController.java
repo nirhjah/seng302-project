@@ -181,7 +181,13 @@ public class ViewActivityController {
         if (activity == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
-        LineUp lineUp = lineUpService.findLineUpsByActivity(activityID);
+
+        Optional<Formation> optActFormation = activity.getFormation();
+        LineUp lineUp = null;
+        if (optActFormation.isPresent()) {
+            lineUp = lineUpService.findLineUpByActivityAndFormation(activityID, optActFormation.get());
+        }
+
 
         if (lineUp != null) {
             Map<Integer, Long> playersAndPosition = new HashMap<>();
