@@ -236,6 +236,17 @@ public class CreateTeamFormController {
             sportService.addSport(new Sport(trimmedSport));
         }
 
+        // TODO: Debug ONLY: Generate users for this team:
+        for (int i=0; i<30; i++) {
+            try {
+                var u = User.defaultDummyUser();
+                u = userService.updateOrAddUser(u);
+                userService.userJoinTeam(u, team);
+            } catch (Exception e) {
+                logger.error("exception caught: " + e.getMessage());
+            }
+        }
+
         return String.format("redirect:./team-info?teamID=%s", team.getTeamId());
     }
 }

@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import nz.ac.canterbury.seng302.tab.service.FormationService;
 import nz.ac.canterbury.seng302.tab.service.LineUpService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -24,19 +25,22 @@ import java.util.Optional;
 @Controller
 public class WhiteboardController {
 
-    private FormationService formationService;
-    private TeamService teamService;
+    private final FormationService formationService;
+    private final TeamService teamService;
 
-    private LineUpService lineUpService;
+    private final LineUpService lineUpService;
+
+    private final ActivityService activityService;
 
     Team team;
     private final Logger logger = LoggerFactory.getLogger(WhiteboardController.class);
 
 
-    public WhiteboardController(FormationService formationService, TeamService teamService, LineUpService lineUpService) {
+    public WhiteboardController(FormationService formationService, TeamService teamService, LineUpService lineUpService, ActivityService activityService) {
         this.teamService = teamService;
         this.formationService = formationService;
         this.lineUpService = lineUpService;
+        this.activityService = activityService;
     }
 
 
@@ -62,7 +66,10 @@ public class WhiteboardController {
         //Index of list of players equals the associated lineup
         List<List<User>> playersPerLineup = teamLineUps.stream().map(
                 // TODO: convert to proper
-                lineUp -> List.<User>of()
+                lineUp -> {
+                    long id = lineUp.getActivity().getId();
+                    return activityService.getAllPlayersPlaying(id);
+                }
         ).toList();
 
 
