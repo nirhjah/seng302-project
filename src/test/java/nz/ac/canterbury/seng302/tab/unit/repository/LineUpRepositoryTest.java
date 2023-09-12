@@ -71,7 +71,7 @@ public class LineUpRepositoryTest {
     }
 
     @Test
-    public void getLineUpsByTeam() throws IOException {
+    public void getLineUpsByTeam() {
         List<LineUp> retrievedLineups = lineUpRepository.findLineUpByTeamTeamId(team.getTeamId()).get();
         Assertions.assertEquals(lineUp, retrievedLineups.get(0));
     }
