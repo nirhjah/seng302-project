@@ -681,7 +681,7 @@ public class ViewActivityController {
                 User playerOff = potentialSubOff.get();
 
                 Optional<User> potentialSubOn = userService.findUserById(subOnId);
-                if (potentialSubOff.isEmpty()) {
+                if (potentialSubOn.isEmpty()) {
                     logger.error("subbed on player Id not found");
                     return viewActivityRedirectUrl;
                 }
