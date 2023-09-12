@@ -10,11 +10,10 @@ import org.junit.jupiter.api.Assertions;
 
 public class U10EditTeamDetailsFeature {
     private static boolean isSetupExecuted = false;
-
-    private final String TEAM_NAME = "team";
-    private final String SPORT= "football";
-    private final String CITY ="Christchurch";
-    private final String COUNTRY ="New Zealand";
+    private String DEFAULT_TEAM_NAME = "team";
+    private String DEFAULT_SPORT= "football";
+    private String DEFAULT_CITY ="Christchurch";
+    private String DEFAULT_COUNTRY ="New Zealand";
     @Before("@edit_team")
     public void create_team_init() {
         DefaultFunctions.pwLogin();
@@ -43,16 +42,25 @@ public class U10EditTeamDetailsFeature {
         String cityValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('input#city').value"));
         String countryValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('input#country').value"));
 
-        Assertions.assertEquals(TEAM_NAME, nameValue);
-        Assertions.assertEquals(SPORT, sportValue);
-        Assertions.assertEquals(CITY, cityValue);
-        Assertions.assertEquals(COUNTRY, countryValue);
+        Assertions.assertEquals(DEFAULT_TEAM_NAME, nameValue);
+        Assertions.assertEquals(DEFAULT_SPORT, sportValue);
+        Assertions.assertEquals(DEFAULT_CITY, cityValue);
+        Assertions.assertEquals(DEFAULT_COUNTRY, countryValue);
 
     }
 
     @Given("I am on the edit team profile form,")
     public void i_am_on_the_edit_team_profile_form() {
         PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=1");
+        String nameValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('h3[data-cy=\"name\"]').textContent"));
+        String sportValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('h3[data-cy=\"sport\"]').textContent"));
+        String locationValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('h3[data-cy=\"location\"]').textContent"));
+        System.out.println(locationValue);
+        DEFAULT_TEAM_NAME= nameValue;
+        DEFAULT_SPORT= sportValue;
+
+//        addressline1 city, country
+
         PlaywrightBrowser.page.locator("#edit-profile").click();
 
     }
@@ -114,11 +122,11 @@ public class U10EditTeamDetailsFeature {
         String sportValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('h3[data-cy=\"sport\"]').textContent"));
         String locationValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('h3[data-cy=\"location\"]').textContent"));
 
-        Assertions.assertEquals(TEAM_NAME, nameValue);
-        Assertions.assertEquals(SPORT, sportValue);
+        Assertions.assertEquals(DEFAULT_TEAM_NAME, nameValue);
+        Assertions.assertEquals(DEFAULT_SPORT, sportValue);
 
-        Assertions.assertTrue(locationValue.contains(CITY));
-        Assertions.assertTrue(locationValue.contains(COUNTRY));
+        Assertions.assertTrue(locationValue.contains(DEFAULT_CITY));
+        Assertions.assertTrue(locationValue.contains(DEFAULT_COUNTRY));
     }
 
     @And("I enter an invalid value for the team’s name \\(e.g., non-alphanumeric other than dots or curly brackets, name made of only acceptable non-alphanumeric),")
