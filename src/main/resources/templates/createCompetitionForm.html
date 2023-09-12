@@ -160,6 +160,11 @@
             </div>
 
             <div class="member-selection-box">
+                <div class="inactive-cover" th:classappend="${users != null || teams != null} ? '' : 'active'"
+                     th:styleappend="${users != null || teams != null} ? 'display: none;' : ''">
+                    <h3>You must type in a sport before you may add competitors</h3>
+                </div>
+
                 <div class="competitors-box">
                     <div class="competitors-header">
                         <h4>Competitors</h4>

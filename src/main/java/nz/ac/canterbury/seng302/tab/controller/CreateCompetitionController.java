@@ -183,20 +183,13 @@ public class CreateCompetitionController {
         }
 
         boolean isTeamCompetition = usersOrTeams.equals(TEAMS);
-
-        if (bindingResult.hasErrors()) {
-            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            if (IDs != null) {
-                // We still add IDs, even though there was an error,
-                // because we don't want the client to lose their work.
-                addIdsToModel(model, IDs, isTeamCompetition);
-            }
-            return "createCompetitionForm";
-        }
-
-        boolean notOk = postCreateCompetitionErrorCheck(bindingResult, form, IDs);
+        boolean notOk = bindingResult.hasErrors() || postCreateCompetitionErrorCheck(bindingResult, form, IDs);
 
         if (notOk) {
+            if (IDs != null) {
+                // We still add IDs, so the page is still editable.
+                addIdsToModel(model, IDs, isTeamCompetition);
+            }
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "createCompetitionForm";
         }
