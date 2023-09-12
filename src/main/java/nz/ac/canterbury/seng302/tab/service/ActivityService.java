@@ -493,43 +493,4 @@ public class ActivityService {
         return timeOfFact <= Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
     }
 
-
-    public List<User> getAllPlayersPlaying(LineUp lineUp) {
-        long actId = lineUp.getActivity().getId();
-
-        Optional<List<LineUp>> optionalActivityLineups = findLineUpByActivity(actId);
-        if (optionalActivityLineups.isEmpty()) {
-            return List.of();
-        }
-        List<LineUp> activityLineups = optionalActivityLineups.get();
-
-        if (activityLineups.isEmpty()) { // there is no lineup for some activities
-            return List.of();
-        }
-
-        LineUp lineup = activityLineups.get(activityLineups.size() -1); // here we get the last one as that is the most recent one
-
-        Optional<List<LineUpPosition>> optionaLineupPositions = lineUpPositionService.findLineUpPositionsByLineUp(lineup.getLineUpId());
-
-        return optionaLineupPositions.map(lineUpPositions -> lineUpPositions.stream().map(LineUpPosition::getPlayer).toList()).orElseGet(List::of);
-    }
-
-
-    /**
-     * @param actId the activity id
-     * @return a list of users who are not in the lineup
-     */
-    public List<User> getAllSubstitutions(LineUp lineUp) {
-        long actId = lineUp.getActivity().getId();
-        Activity activity = activityService.findActivityById(actId);
-        if (activity == null  || activity.getTeam() == null) {
-            return List.of();
-        }
-        List<User> playersPlaying = getAllPlayersCurrentlyPlaying(actId);
-        List<User> playersInTeam = new ArrayList<>(activityService.findActivityById(actId).getTeam().getTeamMembers());
-
-        List<User> playersNotPlaying = playersInTeam.stream().filter(player -> !playersPlaying.contains(player)).toList();
-
-        return removeCoachesAndManager(activity.getTeam(), playersNotPlaying);
-    }
 }

@@ -1,15 +1,11 @@
 package nz.ac.canterbury.seng302.tab.service;
 
-import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Formation;
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
-import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -17,17 +13,11 @@ import java.util.Optional;
 @Service
 public class LineUpService {
 
-    private final LineUpRepository lineUpRepository;
-
-    private final LineUpPositionService lineUpPositionService;
-
-    private final ActivityService activityService;
-
     @Autowired
-    public LineUpService(LineUpRepository lineUpRepository, LineUpPositionService lineUpPositionService, ActivityService activityService) {
+    private LineUpRepository lineUpRepository;
+    @Autowired
+    public LineUpService(LineUpRepository lineUpRepository) {
         this.lineUpRepository = lineUpRepository;
-        this.lineUpPositionService = lineUpPositionService;
-        this.activityService = activityService;
     }
 
     public Optional<List<LineUp>> findLineUpsByTeam(long id) {
