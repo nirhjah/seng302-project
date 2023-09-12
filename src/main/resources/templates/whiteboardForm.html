@@ -1203,11 +1203,118 @@
         function loadLineUp(target) {
             const lineupId = target.value;
             const lineup = target.textContent;
+            console.log(lineup)
+            const custom = target.getAttribute("data-custom")
+            const customPlayerPositions = target.getAttribute("data-custom-positions");
             canvas.clear();
-            if (lineupId !== "-1") {
-                playerCard = {}
-                createTeamPlayerIcon()
+            if (playerArray.length !== 0) {
+                addTeamPlayers();
             }
+            if (lineupId !== "-1") {
+                if (custom === true || custom === "true") {
+                    renderTeamPlayersCustom(customPlayerPositions)
+                } else {
+                    renderTeamPlayers(lineup)
+                }
+            }
+        }
+
+        /**
+         * Renders formation on the canvas from the provided string.
+         *
+         * @param formationString formation in string form, e.g. '1-4-4-2'
+         */
+        function renderTeamPlayers(formationString) {
+            const formation = formationString.split("-").map(num => parseInt(num));
+            // Builds formation
+            let j = 0;
+            for (let i = 0; i < formation.length; i++) {
+                let playersInRow = formation[i]
+                while (formation[i] !== 0) {
+                    const top = canvas.height - ((i + 1) / (formation.length + 1)) * canvas.height - radius;
+                    const left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * canvas.width - radius;
+                    createLineupTeamPlayerIcon(player, left, top)
+                    formation[i] -= 1;
+                    j++;
+                }
+            }
+        }
+
+        /**
+         * Renders formation on the canvas from provided lineup
+         *
+         * @param positions positions of the icons on the pitch, in form e.g.'20px,30px;40px,60px;'
+         */
+        function renderTeamPlayersCustom(positions) {
+            // Due to a lack of foresight the displacement is saved as a static px value rather than a percentage, hence
+            // it is prudent to turn the value into a percentage
+            const pitchHeightOriginal = 360;
+            const pitchWidthOriginal = 288;
+
+            const positionsList = positions.split(';')
+            console.log(positionsList)
+            let numPlayers = positionsList.length;
+            for (let i = 0; i < numPlayers; i++) {
+                let coordinates = positionsList[i].split(",")
+                const left = parseInt(coordinates[0]) * canvas.width / pitchWidthOriginal;
+                let top = canvas.width - parseInt(coordinates[1]) * canvas.width / pitchHeightOriginal;
+                createLineupTeamPlayerIcon(player, left, top)
+            }
+        }
+
+
+        /**
+         * Takes the playerCard node, index of the node in the player list,
+         * and canvas X and Y coordinates to place a fabric js player icon on the canvas.
+         * @param {Element} playerCard playerCard <li> element that has been dropped on the canvas
+         * @param {number} canvasX X coordinate of the mouse
+         * @param {number} canvasY Y coordinates of the mouse
+         * @param {number} index The index in the player list
+         */
+        function createLineupTeamPlayerIcon(player, canvasX, canvasY) {
+
+            const whiteCircle = new fabric.Circle({
+                left: canvasX,
+                top: canvasY,
+                radius: 15,
+                fill: 'white',
+            });
+
+            const playerCardSpan = playerCard.querySelector('.player-name').textContent;
+            const playerCardImage= playerCard.querySelector('.player-image').src
+            const playerName = new fabric.Text(playerCardSpan, {
+                fill: 'black',
+                left: canvasX - 23,
+                top: canvasY + 31,
+                fontFamily: '"Noto Sans", sans-serif',
+                fontSize: 16,
+                fontWeight: 500,
+            });
+            fabric.Image.fromURL(playerCardImage, function (img) {
+
+                img.set({
+                    left: canvasX,
+                    top: canvasY,
+                    scaleX: 30 / img.width,
+                    scaleY: 30 / img.height,
+                    clipPath: new fabric.Ellipse({
+                        rx: img.width/2,
+                        ry: img.height/2,
+                        originX: 'center',
+                        originY: 'center',
+                        fill: 'transparent',
+                    }),
+                });
+
+                const group = new fabric.Group([whiteCircle, img, playerName], {
+                    id: `teamPlayer`,
+                    left: canvasX-xPlayerOffset-2,
+                    top: canvasY-yPlayerOffset+10,
+                    hasControls: false,
+                });
+                canvas.add(group);
+                canvas.renderAll();
+            });
         }
 
 
