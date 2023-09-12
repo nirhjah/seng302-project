@@ -195,7 +195,7 @@
         </div>
 
         <div class="content-box" id="formation-tab">
-            <div class="content" style="overflow: hidden">
+            <div class="content" style="overflow: unset">
                  <div id="addSubModal" class="modal"
                          th:style="${subInvalid != null ? 'display:block' : 'display:none'}">
                      <div class="add-goal-modal-content event" style="bottom: unset">
@@ -267,6 +267,8 @@
                      th:data-formation="${formation.formation}"
                      th:data-custom="${formation.custom}"
                      th:data-customPlayers="${formation.customPlayerPositions}"></div>
+                <h3 style="margin: auto" th:if="${formation == null}">No formation information available</h3>
+
                 <div>
                     <div class="sub-table">
                         <div class="sub-header">
