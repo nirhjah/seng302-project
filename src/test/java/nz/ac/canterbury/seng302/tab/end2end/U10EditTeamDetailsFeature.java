@@ -30,13 +30,11 @@ public class U10EditTeamDetailsFeature {
 
     @When("I hit the edit button,")
     public void i_hit_the_edit_button() {
-        PlaywrightBrowser.page.waitForTimeout(2000);
         PlaywrightBrowser.page.locator("#edit-profile").click();
     }
 
     @Then("I see the edit team details form with all its details prepopulated.")
     public void i_see_the_edit_team_details_form_with_all_its_details_prepopulated() {
-        PlaywrightBrowser.page.waitForTimeout(2000);
         String nameValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('input#name').value"));
         String sportValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('input#sport').value"));
         String cityValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('input#city').value"));
