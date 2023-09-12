@@ -454,7 +454,9 @@ input[type="range"]::-moz-range-track {
 }
 .whiteboard-dropdowns .player-card.active img{
     height:30px;
+    width:30px;
     margin-top:18px;
+    border-radius: 50%;
 }
 
 .whiteboard-dropdowns .player-card.active span{

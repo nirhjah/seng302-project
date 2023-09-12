@@ -332,12 +332,12 @@
         const whiteboard = document.querySelector('.whiteboard');
         const playerUl = document.querySelector('.player-ul');
         const playerArray = [];
+        const yPlayerOffset = 10;
+        const xPlayerOffset = 20;
 
         playerCards.forEach((playerCard, index) => {
             let isDragging;
             let initialCardX, initialCardY;
-            const yOffset = 10;
-            const xOffset = 20;
 
             playerCard.addEventListener("mousedown", (e) => {
                 handleButtonClick("select-button", false, true);
@@ -356,16 +356,16 @@
                 playerCard.style.cursor = 'grabbing';
                 playerCard.style.zIndex = '1';
 
-                const newX = e.clientX - xOffset;
-                const newY = e.clientY - yOffset;
+                const newX = e.clientX - xPlayerOffset;
+                const newY = e.clientY - yPlayerOffset;
                 playerCard.style.left = `${newX}px`;
                 playerCard.style.top = `${newY}px`;
             });
 
             document.addEventListener("mousemove", (e) => {
                 if (isDragging) {
-                    const newX = e.clientX - xOffset;
-                    const newY = e.clientY - yOffset;
+                    const newX = e.clientX - xPlayerOffset;
+                    const newY = e.clientY - yPlayerOffset;
 
                     playerCard.style.left = `${newX}px`;
                     playerCard.style.top = `${newY}px`;
@@ -405,6 +405,7 @@
         });
 
         function createTeamPlayerIcon(playerCard, canvasX, canvasY, index) {
+
             const whiteCircle = new fabric.Circle({
                 left: canvasX,
                 top: canvasY,
@@ -413,6 +414,7 @@
             });
 
             const playerCardSpan = playerCard.querySelector('.player-name').textContent;
+            const playerCardImage= playerCard.querySelector('.player-image').src
             const playerName = new fabric.Text(playerCardSpan, {
                 fill: 'black',
                 left: canvasX - 23,
@@ -421,24 +423,26 @@
                 fontSize: 16,
                 fontWeight: 500,
             });
-            fabric.Image.fromURL('image/default-profile.png', function (img) {
+            fabric.Image.fromURL(playerCardImage, function (img) {
+
                 img.set({
                     left: canvasX,
                     top: canvasY,
                     scaleX: 30 / img.width,
                     scaleY: 30 / img.height,
                     clipPath: new fabric.Ellipse({
-                        rx: 190,
-                        ry: 190,
+                        rx: img.width/2,
+                        ry: img.height/2,
                         originX: 'center',
                         originY: 'center',
+                        fill: 'transparent',
                     }),
                 });
 
                 const group = new fabric.Group([whiteCircle, img, playerName], {
                     id: `teamPlayer:${index}`,
-                    left: canvasX,
-                    top: canvasY,
+                    left: canvasX-xPlayerOffset-2,
+                    top: canvasY-yPlayerOffset+10,
                     hasControls: false,
                 });
                 canvas.add(group);
