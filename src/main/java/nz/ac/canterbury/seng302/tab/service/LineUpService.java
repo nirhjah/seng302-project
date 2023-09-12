@@ -20,6 +20,8 @@ public class LineUpService {
         this.lineUpRepository = lineUpRepository;
     }
 
+    public Optional<LineUp> findLineUpByLineUpId(long id) { return lineUpRepository.findById(id); }
+
     public Optional<List<LineUp>> findLineUpsByTeam(long id) {
         return lineUpRepository.findLineUpByTeamTeamId(id);
     }

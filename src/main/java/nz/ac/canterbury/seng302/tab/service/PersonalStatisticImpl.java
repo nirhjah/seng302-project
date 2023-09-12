@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
-import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
+import nz.ac.canterbury.seng302.tab.entity.fact.Fact;
+import nz.ac.canterbury.seng302.tab.entity.fact.Goal;
 
 @Service
 public class PersonalStatisticImpl implements PersonalStatistics {

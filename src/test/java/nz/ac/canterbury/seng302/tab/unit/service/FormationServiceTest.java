@@ -51,7 +51,7 @@ public class FormationServiceTest {
 
     @Test
     public void testFindFormationById(){
-        Optional<Formation> expectedFormation= formationService.findFormationById(formation.getFormationId());
+        Optional<Formation> expectedFormation = formationService.findFormationById(formation.getFormationId());
         Assertions.assertEquals(formation.getFormation(),expectedFormation.get().getFormation() );
         Assertions.assertEquals(formation.getFormationId(),expectedFormation.get().getFormationId());
     }

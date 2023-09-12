@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.tab.entity.Fact;
+package nz.ac.canterbury.seng302.tab.entity.fact;
 
 import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
@@ -12,8 +12,8 @@ import nz.ac.canterbury.seng302.tab.entity.User;
  */
 
 @Entity
-@DiscriminatorValue("1")
-public class Goal extends Fact{
+@DiscriminatorValue("3")
+public class OppositionGoal extends Fact{
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_userID", referencedColumnName = "Id")
@@ -24,23 +24,10 @@ public class Goal extends Fact{
     /**
      * Empty Constructor for JPA
      **/
-    public Goal() {}
+    public OppositionGoal() {}
 
-    public Goal(String description, String timeOfEvent, Activity activity, User scorer, int goalValue) {
+    public OppositionGoal(String description, String timeOfEvent, Activity activity, int goalValue) {
         super(description, timeOfEvent, activity);
-        this.scorer = scorer;
-        this.goalValue = goalValue;
-    }
-
-    public User getScorer() {
-        return this.scorer;
-    }
-
-    public int getGoalValue() {
-        return goalValue;
-    }
-
-    public void setGoalValue(int goalValue) {
         this.goalValue = goalValue;
     }
 }
