@@ -71,6 +71,9 @@ public class U33EditLineupForGameFeature {
     @Autowired
     private LineUpPositionService lineUpPositionService;
 
+    @Autowired
+    private FactService factService;
+
 
     private User user;
 
@@ -102,7 +105,7 @@ public class U33EditLineupForGameFeature {
 
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
-        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository));
+        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository, factService, lineUpService, lineUpPositionService));
 
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateActivityController(

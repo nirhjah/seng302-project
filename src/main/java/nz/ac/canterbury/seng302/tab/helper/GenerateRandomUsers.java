@@ -74,8 +74,9 @@ public class GenerateRandomUsers {
      * @return A randomly generated user.
      */
     public User createRandomUserWithSports() {
-        Team teamToJoin = teamRepository.findAll().get(0);
         User user = createRandomUser();
+
+
         // Generate random sports
         if (sportRepository.count() == 0) {
             for (String sportName: RANDOM_SPORTS) {
@@ -90,7 +91,15 @@ public class GenerateRandomUsers {
         List<Sport> ourSports = allSports.subList(0, random.nextInt(allSports.size()));
 
         user.setFavoriteSports(ourSports);
-        user.joinTeam(teamToJoin);
+        List<Team> allTeams = teamRepository.findAll();
+
+        if(allTeams.isEmpty()) {
+            return user;
+        }
+
+        for (Team team : allTeams) {
+            user.joinTeam(team);
+        }
 
         return user;
 

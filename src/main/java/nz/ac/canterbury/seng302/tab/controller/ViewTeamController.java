@@ -26,6 +26,8 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 /**
  * Spring Boot Controller class for the ViewTeamForm
  */
@@ -180,7 +182,8 @@ public class ViewTeamController {
             @RequestParam("teamID") long teamID,
             @RequestParam(name="formationID", defaultValue = "-1") long formationID,
             @RequestParam("customPlayerPositions") String customPlayerPositions,
-            @RequestParam("custom") Boolean custom) {
+            @RequestParam("custom") Boolean custom,
+            RedirectAttributes redirectAttributes) {
         logger.info("POST /team-info/create-formation");
 
         User currentUser = userService.getCurrentUser().orElseThrow();
@@ -214,6 +217,9 @@ public class ViewTeamController {
         formation.setCustomPlayerPositions(customPlayerPositions);
         formation.setCustom(custom);
         formationService.addOrUpdateFormation(formation);
+        redirectAttributes.addFlashAttribute("stayOnTab_name", "formations-tab");
+        redirectAttributes.addFlashAttribute("stayOnTab_index", 1);
+
         return "redirect:/team-info?teamID=" + teamID;
     }
 
