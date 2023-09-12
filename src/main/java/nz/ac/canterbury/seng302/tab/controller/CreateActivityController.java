@@ -282,7 +282,7 @@ public class CreateActivityController {
         } else {
             Optional<Formation> formation = formationService.findFormationById(createActivityForm.getFormation());
             // The error checking function checks if this exists, so this should always pass
-            if(formation.isPresent()) {
+            if (formation.isPresent()) {
                 activity.setFormation(formation.get());
             }
 
@@ -290,6 +290,8 @@ public class CreateActivityController {
 
 
         activity = activityService.updateOrAddActivity(activity);
+
+        if (activity.getActivityType() == ActivityType.Game || activity.getActivityType() == ActivityType.Friendly) {
 
         activityLineUp = lineUpService.findLineUpByActivityAndFormation(activity.getId(), activity.getFormation().orElse(null));
 
@@ -308,7 +310,7 @@ public class CreateActivityController {
             }
         }
 
-      lineUpService.saveSubs(subs, activityLineUp);
+        lineUpService.saveSubs(subs, activityLineUp);
 
         if (playerAndPositions != null && !playerAndPositions.isEmpty()) {
             List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
@@ -328,6 +330,8 @@ public class CreateActivityController {
             }
 
         }
+
+    }
 
 
         return String.format("redirect:./view-activity?activityID=%s", activity.getId());

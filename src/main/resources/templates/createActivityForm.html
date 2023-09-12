@@ -64,7 +64,7 @@
                 <div th:each="err : ${#fields.errors('formation')}" th:text="${err}" class="error-message"></div>
             </div>
 
-            <div th:style="${actId != null ? 'display:block' : 'display:none'}" class="formation-activity-display">
+            <div id="formationDisplay" th:style="${actId != null ? 'display:block' : 'display:none'}" class="formation-activity-display">
                 <div>
                     <input type="hidden" id="playerAndPositions" name="playerAndPositions">
                     <input type="hidden" id="subs" name="subs">
@@ -337,10 +337,27 @@
         // Can't select formations if your activity isn't a "friendly" or "game"
         if (!typeCanHaveFormation(currentActivity)) {
             formationDropdown.style.display = "none";
+            const reservesLi = document.querySelectorAll(".reserves-li");
+            reservesLi.forEach(li => {
+                li.classList.remove("in-formation");
+            })
+            deactivateSubs();
+            const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex]
+            const formation = selectedFormation.textContent;
+            const custom = selectedFormation.getAttribute("data-custom")
+            const customPlayerPositions = selectedFormation.getAttribute("data-custom-positions");
+            generatedOrCustom(formation, custom === "true", customPlayerPositions);
+            addPositionFunctionality();
+
+            document.getElementById("formationDisplay").style.display = "none";
+
+
             return;
         }
         if (typeCanHaveFormation(currentActivity)) {
             formationDropdown.style.display = "block";
+            document.getElementById("formationDisplay").style.display = "block";
+
             return;
         }
 
