@@ -929,31 +929,4 @@ public class ActivityServiceTest {
         Assertions.assertEquals(currPlaying.get(0), player);
     }
     
-    
-    // TODO figure out why the players arent being added to the team in this tests
-    // @Test
-    // void testGettingAllPlayersThatAreNotCurrentlyPlayingWithNoSubs() throws Exception {
-    //     Activity activity = setUpSubTests();
-    //     List<User> expectedUsers = List.of(player2, player3);
-    //     List<User> currNotPlaying = activityService.getAllPlayersNotCurrentlyPlaying(activity.getId());
-    //
-    //     Assertions.assertEquals(activity.getTeam().getTeamMembers().size(), 3);
-    //     
-    //     Assertions.assertEquals(2, currNotPlaying.size());
-    //     Assertions.assertEquals(currNotPlaying, expectedUsers);
-    // }
-    
-    // @Test
-    // void testGettingAllPlayersThatAreNotCurrentlyPlayingWithSubs() throws Exception {
-    //     Activity activity = setUpSubTests();
-    //     Substitution sub = new Substitution("subbing player off", "1", activity, player, player2);
-    //     factRepository.save(sub);
-    //     List<User> currNotPlaying = activityService.getAllPlayersNotCurrentlyPlaying(activity.getId());
-    //     List<User> expectedUsers = List.of(player, player3);
-    //
-    //     Assertions.assertEquals(2, currNotPlaying.size());
-    //     Assertions.assertEquals(currNotPlaying, expectedUsers);
-    // }
-    // TODO: write test for checking a starting lineup after subs are made 
-
 }
