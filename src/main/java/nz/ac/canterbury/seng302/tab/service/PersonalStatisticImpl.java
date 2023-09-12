@@ -13,7 +13,6 @@ import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 
 @Service
 public class PersonalStatisticImpl implements PersonalStatistics {
-   // TODO would it be better to have a user set in the constructor and then each object controls that users stats?
 
     @Autowired
      ActivityService activityService;
@@ -21,12 +20,11 @@ public class PersonalStatisticImpl implements PersonalStatistics {
     @Autowired
     FactService factService;
 
-    // TODO implement
     @Override
     public int getMinutesPlayed(User player, Team team) {
         return 0;
     }
-  
+
     @Override
     public int getGoalsScored(User player, Team team) {
         List<Activity> teamActivities = activityService.getAllTeamActivities(team);
@@ -39,7 +37,6 @@ public class PersonalStatisticImpl implements PersonalStatistics {
         return goals.size();
     }
 
-    // TODO implement
     @Override
     public int getMatchesAppearedIn(User player, Team team){
         return 0;

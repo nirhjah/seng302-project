@@ -864,8 +864,6 @@ public class EditActivityFormControllerTest {
                         .param("suburb", "A Place"))
                 .andExpect(status().isBadRequest());
     }
-
-    // TODO: ADD TESTS FOR THE API ENDPOINT
     @Test
     public void whenAskingForTeamFormation_isManager_succeed() throws Exception {
         Formation formation1 = Mockito.spy(new Formation("1-2-3", team));
