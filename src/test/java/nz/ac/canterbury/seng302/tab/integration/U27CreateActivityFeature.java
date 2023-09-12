@@ -69,6 +69,9 @@ public class U27CreateActivityFeature {
     @SpyBean
     private LineUpPositionService lineUpPositionService;
 
+    @SpyBean
+    private FactService factService;
+
     private UserRepository userRepository;
 
     private TeamRepository teamRepository;
@@ -81,13 +84,13 @@ public class U27CreateActivityFeature {
 
     private LineUpPositionRepository lineUpPositionRepository;
 
+    private FactRepository factRepository;
+
     private MockMvc mockMvc;
 
     private User user;
 
     private Team team;
-
-    private Activity activity;
 
     private final ActivityType defaultActivityType = ActivityType.Other;
 
@@ -126,6 +129,7 @@ public class U27CreateActivityFeature {
         formationRepository = applicationContext.getBean(FormationRepository.class);
         lineUpRepository = applicationContext.getBean(LineUpRepository.class);
         lineUpPositionRepository = applicationContext.getBean(LineUpPositionRepository.class);
+        factRepository = applicationContext.getBean(FactRepository.class);
 
         // Spy
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
@@ -133,10 +137,11 @@ public class U27CreateActivityFeature {
 
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
-        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository));
         formationService = Mockito.spy(new FormationService(formationRepository));
-        lineUpService = Mockito.spy(new LineUpService(lineUpRepository));
+        lineUpService = Mockito.spy(new LineUpService(lineUpRepository, formationRepository, lineUpPositionRepository, userRepository));
         lineUpPositionService = Mockito.spy(new LineUpPositionService(lineUpPositionRepository));
+        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository, factService, lineUpService, lineUpPositionService));
+        factService = Mockito.spy(new FactService(factRepository));
 
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateActivityController(teamService, userService, activityService, formationService, lineUpService, lineUpPositionService)).build();
@@ -161,12 +166,10 @@ public class U27CreateActivityFeature {
 
         setupMocking();
         Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
-        Location testLocation2 = new Location(null, null, null, "CHCH", null, "NZ");
 
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "johndoe@example.com", "Password123!", testLocation);
         team = new Team("team900", "programming");
-        activity = new Activity(ActivityType.Other, team, DEFAULT_DESCRIPTION, startDateTime, endDateTime, user, testLocation);
 
         userRepository.save(user);
         user = userService.getUser(user.getUserId());
