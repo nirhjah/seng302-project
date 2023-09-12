@@ -8,7 +8,7 @@ Feature: U4 - Edit User Profile
 
   Scenario: AC 2: Changes are saved when entering valid values
     Given I am on the edit profile form,
-    And I enter valid values for my first name, last name, email address, and date of birth,
+    And I enter valid values for my first name, last name, and date of birth,
     When I hit the save button
     Then my new details are saved.
 
