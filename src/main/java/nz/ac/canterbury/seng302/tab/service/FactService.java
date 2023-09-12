@@ -53,16 +53,6 @@ public class FactService {
     }
 
     /**
-     * Gets a user's total goals for a team they are apart of
-     * @param user the user's whose goals are being found
-     * @param team the team the user is apart of
-     * @return the total number of goals they've scored for a team
-     */
-    public int getTotalGoalsForTeamPerUser(User user, Team team) {
-        return factRepository.getTotalGoalsScoredPerTeam(user, team);
-    }
-
-    /**
      * Get list of substitution (off) times for a user for a specific activity
      * @param user the user whose sub offs are being requested
      * @param activity the activity which the user participated in
@@ -90,17 +80,7 @@ public class FactService {
     public long getTimePlayed(Activity activity) {
         return Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
     }
-
-    /**
-     * Get total goals for a player for a given activity
-     * @param activity the activity being played
-     * @param user the user whose goals are wanted
-     * @return the number of goals the user scored during that activity
-     */
-    public long getGoalsForActivityForPlayer(Activity activity, User user) {
-        return factRepository.getGoalsForActivityForPlayer(activity, user);
-    }
-
+    
     /**
      * Code for handling return of multiple entities adapted from
      * https://www.baeldung.com/jpa-return-multiple-entities#:~:text=In%20order%20to%20create%20a,primary%20and%20corresponding%20foreign%20keys.

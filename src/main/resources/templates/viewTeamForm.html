@@ -14,6 +14,8 @@
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 <div class="team-profile-form">
 
+    <span id="stayOnTab_Name" class="tabNameAndIndex" th:text="${stayOnTab_name}"></span>
+    <span id="stayOnTab_index" class="tabNameAndIndex" th:text="${stayOnTab_index}"></span>
     <div class="wrapper-profile" id="wrapper-profile">
         <div class="tab-box">
             <div class="tab active">
@@ -221,7 +223,7 @@
                         <h3 style="margin-top: 12px">Last 5 Matches: </h3>
                    <div class="last5" style="margin-top: 57px">
                        <ul class="last5Ul">
-                           <li th:each="act : ${last5GOrF}" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|">
+                           <li th:each="act : ${last5GOrF}" th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
                                <div>
                                    <h3 th:text="${act.activityType.name()}"> </h3>
                                    <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
@@ -439,7 +441,30 @@
         const tabLine = document.querySelector('.tab-line');
         const displayBox = document.querySelectorAll('.content-box');
         const displayContent = document.querySelectorAll('.content');
-        const wrapperProfile = document.getElementById("wrapper-profile")
+
+
+        var stayOnTab_Name =  document.getElementById("stayOnTab_Name").innerHTML;
+        var stayOnTab_Index =  document.getElementById("stayOnTab_index").innerHTML;
+
+        if (stayOnTab_Name === "formations-tab") {
+            var tabToBeActive = document.getElementById(stayOnTab_Name)
+            tabs.forEach(otherTab => {
+                otherTab.classList.remove('active');
+            });
+            tabToBeActive.classList.add('active')
+
+            displayBox.forEach(box => {
+                box.classList.remove('active')
+            });
+            displayBox[stayOnTab_Index].classList.add('active');
+            displayContent.forEach(content => {
+                content.classList.remove('active')
+            });
+            displayContent[stayOnTab_Index].classList.add('active');
+
+        }
+
+
 
         tabs.forEach((tab, index) => {
             tab.addEventListener('click', (e) => {
@@ -467,6 +492,7 @@
                 displayContent[index].classList.add('active');
             });
         });
+
 
         const formationListItems = document.querySelectorAll('.formation-list li')
         const createFormation = document.querySelector('.create-formation')

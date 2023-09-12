@@ -9,13 +9,13 @@
     margin-bottom: 10px;
 }
 
-
-.decreaseGoal, .decreaseTime {
-    margin-right: 5px;
+.increment {
+    margin-left: 5px;
 }
 
-.increaseGoal, .increaseTime {
-    margin-left: 5px;
+
+.decrement {
+    margin-right: 5px;
 }
 
 .number-spinner button {

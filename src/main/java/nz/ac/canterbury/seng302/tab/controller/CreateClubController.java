@@ -24,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
 import static nz.ac.canterbury.seng302.tab.validator.LocationValidators.INVALID_CHARACTERS_MSG;
@@ -70,10 +72,13 @@ public class CreateClubController {
     @GetMapping("/createClub")
     public String clubForm(@RequestParam(name = "edit", required = false) Long clubId,
                            Model model,CreateAndEditClubForm createAndEditClubForm,
-                           HttpServletRequest request) {
+                           HttpServletRequest request) throws MalformedURLException {
 
         logger.info("GET /createClub");
         prefillModel(model, request);
+        URL url = new URL(request.getRequestURL().toString());
+        String path = (url.getPath() + "/..");
+        model.addAttribute("path", path);
 
         if (clubId != null) {
             Optional<Club> optClub = clubService.findClubById(clubId);
@@ -194,10 +199,11 @@ public class CreateClubController {
 
             clubService.updateOrAddClub(club);
 
-            if (Objects.equals(clubLogo.getOriginalFilename(), "")) {
+            if (!Objects.equals(clubLogo.getOriginalFilename(), "")) {
                 // If there's a logo, set it.
                 clubImageService.updateClubLogo(club, clubLogo);
             }
+
             return "redirect:/view-club?clubID=" + club.getClubId();
         }
     }
