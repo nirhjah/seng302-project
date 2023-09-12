@@ -50,7 +50,7 @@
             <div th:style="${actId != null ? 'display:block' : 'display:none'}" class="select-container">
                 <div class="select-box">
                     <label for="team">Activity formation <em>(Team Game and Team Friendly only)</em></label>
-                    <select name="formation" id="formation-dropdown" th:disabled="${#lists.isEmpty(teamFormations)}">
+                    <select name="formation" id="formation-dropdown">
                         <option value="-1">(No Formation)</option>
                         <option th:each="forma : ${teamFormations}"
                                 th:value="${forma.formationId}"
@@ -330,7 +330,8 @@
 
         // Can't select formations if you've selected 'no team'
         if (currentTeamId == -1) {
-            formationDropdown.disabled = true;
+            formationDropdown.value = -1;
+            formationDropdown.style.display = 'none';
             document.querySelector(".formation-activity-display").classList.remove("active");
             return;
         }
@@ -564,7 +565,8 @@
             formationDropdown.removeChild(formationDropdown.lastChild);
         }
         // Set visibility
-        formationDropdown.disabled = !isEnabled;
+        formationDropdown.value = -1;
+        formationDropdown.style.display = 'none';
         formationDropdown.innerHTML = "";
         // Create the default "no value" field
         let item = document.createElement("option");
