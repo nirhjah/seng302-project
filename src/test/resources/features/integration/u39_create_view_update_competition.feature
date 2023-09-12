@@ -25,7 +25,7 @@ Scenario: AC1: Federation administrators are a special type of users and are the
     Scenario: AC2: A competition has a name, is for a given sport, and is for a certain grade level, e.g., U10 (under 10-year-old), masters, MAG level 3. All are compulsory fields.
       Given I am a user of account type federation administrator
       And I am on the create or update competition page
-      And I input valid information for name, sport and grade,
+      And I input valid information for name, dates, sport and grade,
       When I click create competition,
       Then the competition is created
       And I am shown a ui element that display full details for the competition.

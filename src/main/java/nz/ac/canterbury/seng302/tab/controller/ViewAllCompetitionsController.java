@@ -20,9 +20,9 @@ import static nz.ac.canterbury.seng302.tab.controller.ViewAllCompetitionsControl
 @Controller
 public class ViewAllCompetitionsController {
 
-    private CompetitionService competitionService;
+    private final CompetitionService competitionService;
 
-    private SportService sportService;
+    private final SportService sportService;
 
     @Autowired
     public ViewAllCompetitionsController(CompetitionService competitionService, SportService sportService) {
@@ -84,6 +84,7 @@ public class ViewAllCompetitionsController {
 
         model.addAttribute("page", page);
         model.addAttribute("totalPages", pageResult.getTotalPages());
+        model.addAttribute("dateFormatter", CompetitionService.DATE_FORMATTER);
 
         return "viewAllCompetitions";
     }

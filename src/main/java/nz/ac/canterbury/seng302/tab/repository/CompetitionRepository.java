@@ -48,6 +48,6 @@ public interface CompetitionRepository extends CrudRepository<Competition, Long>
             FROM Competition c
               WHERE ((:#{#filteredSports.size}=0 OR (c.sport in :filteredSports)))
               """)
-    Page<Competition> findAllCompetitionsBySports(Pageable pageable, List<String> filteredSports);
+    Page<Competition> findAllCompetitionsBySports(Pageable pageable, @Param("filteredSports") List<String> filteredSports);
 
 }
