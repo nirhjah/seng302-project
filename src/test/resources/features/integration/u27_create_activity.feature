@@ -49,10 +49,15 @@ Feature: Activity Creation
     When I enter a description longer than 150 characters
     Then an error message tells me the description is too long
 
-  Scenario: Missing start and/or end time
+  Scenario: Missing start time
     Given I am on the create activity page
-    When I do not provide both a start and an end time
-    Then an error message tells me the start and end time are compulsory
+    When I do not provide a start time
+    Then an error message tells me the start time is compulsory
+
+  Scenario: Missing end time
+    Given I am on the create activity page
+    When I do not provide an end time
+    Then an error message tells me the end time is compulsory
 
   Scenario: End time before start time
     Given I am on the create activity page

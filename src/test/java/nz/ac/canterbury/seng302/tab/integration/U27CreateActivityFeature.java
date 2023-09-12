@@ -260,13 +260,14 @@ public class U27CreateActivityFeature {
     public void iCanSelectFromGameFriendlyTrainingCompetitionAndOther() throws Exception {
         MvcResult result = mockMvc.perform(get("/create-activity"))
                 .andReturn();
-        ActivityType object = ((List<ActivityType>) Objects.requireNonNull(result.getModelAndView()).getModel().get("activityTypes")).get(0);
-        System.out.println(object.name());
-//                .andExpect(xpath("//option[value()='" + ActivityType.Game + "']").exists())
-//                .andExpect(xpath("//option[value()='" + ActivityType.Friendly + "']").exists())
-//                .andExpect(xpath("//option[value()='" + ActivityType.Training + "']").exists())
-//                .andExpect(xpath("//option[value()='" + ActivityType.Competition + "']").exists())
-//                .andExpect(xpath("//option[value()='" + ActivityType.Other + "']").exists());
+        List<ActivityType> activityTypes = Arrays.asList((ActivityType[]) Objects.requireNonNull(result.getModelAndView()).getModel().get("activityTypes"));
+
+        Assertions.assertEquals(activityTypes.size(), ActivityType.values().length);
+        Assertions.assertTrue(activityTypes.contains(ActivityType.Game));
+        Assertions.assertTrue(activityTypes.contains(ActivityType.Friendly));
+        Assertions.assertTrue(activityTypes.contains(ActivityType.Competition));
+        Assertions.assertTrue(activityTypes.contains(ActivityType.Training));
+        Assertions.assertTrue(activityTypes.contains(ActivityType.Other));
     }
 
     @And("I select {string} as the activity type")
@@ -412,7 +413,7 @@ public class U27CreateActivityFeature {
         mockMvc.perform(multipart("/create-activity")
                         .param("team", String.valueOf(team.getTeamId()))
                         .param("activityType", String.valueOf(defaultActivityType))
-                        .param("description", "1".repeat(chars + 1))
+                        .param("description", "a".repeat(chars + 1))
                         .param("startDateTime", String.valueOf(startDateTime))
                         .param("endDateTime", String.valueOf(endDateTime))
                         .param("country", DEFAULT_COUNTRY)
@@ -436,28 +437,6 @@ public class U27CreateActivityFeature {
                         .param("addressLine1", DEFAULT_ADDR_LINE_1))
                 .andExpect(status().is4xxClientError())
                 .andExpect(view().name("createActivityForm"));
-        verify(activityService, times(0)).updateOrAddActivity(any());
-    }
-
-    @Then("an error message tells me the start and end time are compulsory")
-    public void anErrorMessageTellsMeTheStartAndEndTimeAreCompulsory() throws Exception {
-        MvcResult result = mockMvc.perform(multipart("/create-activity")
-                        .param("team", String.valueOf(team.getTeamId()))
-                        .param("activityType", String.valueOf(defaultActivityType))
-                        .param("description", DEFAULT_DESCRIPTION)
-                        .param("country", DEFAULT_COUNTRY)
-                        .param("city", DEFAULT_CITY)
-                        .param("postcode", DEFAULT_POSTCODE)
-                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
-                .andExpect(status().is4xxClientError())
-                .andExpect(view().name("createActivityForm"))
-                .andReturn();
-        BindingResult bindingResult = (BindingResult) Objects.requireNonNull(result.getModelAndView())
-                .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
-        Assertions.assertTrue(bindingResult.hasErrors());
-        String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-        Assertions.assertEquals(errorMessage, ActivityFormValidators.START_DATE_REQUIRED_MSG);
-        Assertions.assertEquals(errorMessage, ActivityFormValidators.END_DATE_REQUIRED_MSG);
         verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
@@ -532,7 +511,7 @@ public class U27CreateActivityFeature {
         MvcResult result = mockMvc.perform(multipart("/create-activity")
                         .param("team", String.valueOf(team.getTeamId()))
                         .param("activityType", String.valueOf(defaultActivityType))
-                        .param("description", "1".repeat(maxDescLength + 1))
+                        .param("description", "a".repeat(maxDescLength + 1))
                         .param("startDateTime", String.valueOf(startDateTime))
                         .param("endDateTime", String.valueOf(endDateTime))
                         .param("country", DEFAULT_COUNTRY)
@@ -588,4 +567,81 @@ public class U27CreateActivityFeature {
         String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
         Assertions.assertEquals(errorMessage, ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + teamCreationDateTime);
         verify(activityService, times(0)).updateOrAddActivity(any());    }
+
+    @When("I do not provide a start time")
+    public void iDoNotProvideAStartTime() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("team", String.valueOf(team.getTeamId()))
+                        .param("activityType", String.valueOf(defaultActivityType))
+                        .param("description", DEFAULT_DESCRIPTION)
+                        .param("endDateTime", String.valueOf(endDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("createActivityForm"));
+        verify(activityService, times(0)).updateOrAddActivity(any());
+    }
+
+    @Then("an error message tells me the start time is compulsory")
+    public void anErrorMessageTellsMeTheStartTimeIsCompulsory() throws Exception {
+        MvcResult result = mockMvc.perform(multipart("/create-activity")
+                        .param("team", String.valueOf(team.getTeamId()))
+                        .param("activityType", String.valueOf(defaultActivityType))
+                        .param("description", DEFAULT_DESCRIPTION)
+                        .param("endDateTime", String.valueOf(endDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("createActivityForm"))
+                .andReturn();
+        BindingResult bindingResult = (BindingResult) Objects.requireNonNull(result.getModelAndView())
+                .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
+        Assertions.assertTrue(bindingResult.hasErrors());
+        String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+        Assertions.assertEquals(errorMessage, ActivityFormValidators.START_DATE_REQUIRED_MSG);
+        verify(activityService, times(0)).updateOrAddActivity(any());
+    }
+
+    @When("I do not provide an end time")
+    public void iDoNotProvideAnEndTime() throws Exception {
+        mockMvc.perform(multipart("/create-activity")
+                        .param("team", String.valueOf(team.getTeamId()))
+                        .param("activityType", String.valueOf(defaultActivityType))
+                        .param("description", DEFAULT_DESCRIPTION)
+                        .param("startDateTime", String.valueOf(startDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("createActivityForm"));
+        verify(activityService, times(0)).updateOrAddActivity(any());
+    }
+
+    @Then("an error message tells me the end time is compulsory")
+    public void anErrorMessageTellsMeTheEndTimeIsCompulsory() throws Exception {
+        MvcResult result = mockMvc.perform(multipart("/create-activity")
+                        .param("team", String.valueOf(team.getTeamId()))
+                        .param("activityType", String.valueOf(defaultActivityType))
+                        .param("description", DEFAULT_DESCRIPTION)
+                        .param("startDateTime", String.valueOf(startDateTime))
+                        .param("country", DEFAULT_COUNTRY)
+                        .param("city", DEFAULT_CITY)
+                        .param("postcode", DEFAULT_POSTCODE)
+                        .param("addressLine1", DEFAULT_ADDR_LINE_1))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("createActivityForm"))
+                .andReturn();
+        BindingResult bindingResult = (BindingResult) Objects.requireNonNull(result.getModelAndView())
+                .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
+        Assertions.assertTrue(bindingResult.hasErrors());
+        String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+        Assertions.assertEquals(errorMessage, ActivityFormValidators.END_DATE_REQUIRED_MSG);
+        verify(activityService, times(0)).updateOrAddActivity(any());
+
+    }
 }
