@@ -73,6 +73,8 @@ public class ViewActivityStatisticIntegrationTests {
     private MvcResult result;
 
     private FactRepository factRespository;
+
+    private FormationRepository formationRepository;
     @Autowired
     private MockMvc mockMvc;
     private User user;
@@ -97,6 +99,7 @@ public class ViewActivityStatisticIntegrationTests {
         factRespository = applicationContext.getBean(FactRepository.class);
         lineUpRepository= applicationContext.getBean(LineUpRepository.class);
         lineUpPositionRepository= applicationContext.getBean(LineUpPositionRepository.class);
+        formationRepository = applicationContext.getBean(FormationRepository.class);
         userRepository.deleteAll();
         teamRepository.deleteAll();
         activityRepository.deleteAll();
@@ -109,7 +112,7 @@ public class ViewActivityStatisticIntegrationTests {
         teamService = Mockito.spy(new TeamService(teamRepository));
         activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository));
         factService= Mockito.spy(new FactService(factRespository));
-        lineUpService=Mockito.spy(new LineUpService(lineUpRepository));
+        lineUpService=Mockito.spy(new LineUpService(lineUpRepository, formationRepository, lineUpPositionRepository, userRepository));
         lineUpPositionService = Mockito.spy(new LineUpPositionService(lineUpPositionRepository));
         this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ViewActivityController(userService,activityService,teamService,factService, lineUpService,lineUpPositionService)).build();
 
