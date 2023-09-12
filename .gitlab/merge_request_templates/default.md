@@ -12,6 +12,7 @@
 ## Required:
 - [ ] User manual up to date?
 - [ ] Javadoc written?
+- [ ] Is TODO comments removed?
 - [ ] No unused imports or unused code
 - [ ] Have you merged with origin/dev?
 

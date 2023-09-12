@@ -21,4 +21,6 @@ public interface LineUpRepository extends CrudRepository<LineUp, Long> {
     @Query("SELECT l.formation FROM LineUp l WHERE l.lineUpId = :lineUpId")
     Optional<Formation> findFormationByLineUpId(Long lineUpId);
 
+    LineUp findLineUpByActivityIdAndFormation(Long activityId, Formation formation);
+
 }

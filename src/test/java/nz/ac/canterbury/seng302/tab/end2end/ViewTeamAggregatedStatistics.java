@@ -148,7 +148,7 @@ public class ViewTeamAggregatedStatistics {
         // PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/viewTeamActivities?page=1&teamID=4");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
-        Assertions.assertTrue(PlaywrightBrowser.page.waitForSelector("ul.activities-table") != null);
+        Assertions.assertNotNull(PlaywrightBrowser.page.waitForSelector("ul.activities-table"));
     }
 
     @When("I am viewing team aggregated statistics")

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.PageRequest;
 
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -28,11 +29,12 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ActivityService {
-
+    
     private final LineUpRepository lineUpRepository;
 
     private final LineUpPositionRepository lineUpPositionRepository;
     private final ActivityRepository activityRepository;
+
 
 
     @Autowired
@@ -492,5 +494,7 @@ public class ActivityService {
     public boolean checkTimeOfFactWithinActivity(Activity activity, int timeOfFact) {
         return timeOfFact <= Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
     }
+
+
 
 }

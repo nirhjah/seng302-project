@@ -19,8 +19,8 @@ import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
 
 /**
  * Custom Security Configuration
- * Adapted from
- * <a href="https://eng-git.canterbury.ac.nz/men63/spring-security-example-2023/">Morgan English's Security Handout</a>
+ * Adapted from Morgan English's Security Handout
+ * <a href="https://eng-git.canterbury.ac.nz/men63/spring-security-example-2023/">...</a>
  */
 @Configuration
 @EnableWebSecurity
@@ -60,15 +60,15 @@ public class SecurityConfiguration {
         // Default return URL if you simply clicked 'login'
         successHandler.setDefaultTargetUrl(DEFAULT_LOGIN_REDIRECT_URL);
         successHandler.setAlwaysUseDefaultTargetUrl(false);
-        /** 
+        /**
          * If you were FORCED to login, then said URL will be added as a parameter by ContinueEntryPoint,
          * saved as a session variable by LoginController, and used by this to redirect you back there.
          */
         successHandler.setTargetUrlParameter(ContinueEntryPoint.LOGIN_REDIRECT_URL_PARAM);
         return successHandler;
     }
- 
- 
+
+
 
     /**
      * filters requests being made on the website
@@ -82,6 +82,7 @@ public class SecurityConfiguration {
         // See https://github.com/spring-projects/spring-security/issues/12546
         http
             .authorizeHttpRequests(auth -> auth.requestMatchers(
+                AntPathRequestMatcher.antMatcher("/favicon.ico"),
                 AntPathRequestMatcher.antMatcher("/geocode/autocomplete"),
                 AntPathRequestMatcher.antMatcher("/h2/**"),
                 AntPathRequestMatcher.antMatcher("/resources/**"),
@@ -89,6 +90,7 @@ public class SecurityConfiguration {
                 AntPathRequestMatcher.antMatcher("/css/**"),
                 AntPathRequestMatcher.antMatcher("/js/**"),
                 AntPathRequestMatcher.antMatcher("/image/**"),
+                    AntPathRequestMatcher.antMatcher("/webjars/axios/**"),
                 AntPathRequestMatcher.antMatcher("/mail/**")
             ).permitAll())
             .headers(headers -> headers.frameOptions().disable())
