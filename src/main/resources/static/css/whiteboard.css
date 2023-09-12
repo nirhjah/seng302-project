@@ -453,8 +453,8 @@ input[type="range"]::-moz-range-track {
     user-select:none;
 }
 .whiteboard-dropdowns .player-card.active img{
-    height:30px;
-    width:30px;
+    min-height:30px;
+    max-width:30px;
     margin-top:18px;
     border-radius: 50%;
 }
