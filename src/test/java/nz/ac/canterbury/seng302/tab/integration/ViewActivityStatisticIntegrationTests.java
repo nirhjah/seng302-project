@@ -118,9 +118,6 @@ public class ViewActivityStatisticIntegrationTests {
         team = new Team("A-Team", "Soccer", new Location(null, null, null, "CHCH", null, "NZ"));
         date = new GregorianCalendar(2024, Calendar.JANUARY, 1).getTime();
 
-        teamRepository.save(team);
-        team = teamService.getTeam(team.getTeamId());
-
         Authentication authentication = mock(Authentication.class);
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
@@ -142,7 +139,6 @@ public class ViewActivityStatisticIntegrationTests {
 
         game.addFactList(factList);
         activityRepository.save(game);
-
 
         mockMvc.perform(get("/view-activities").param("page", "1"))
                 .andExpect(status().isOk());
