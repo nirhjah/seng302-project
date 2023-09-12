@@ -102,6 +102,12 @@ public class ViewMyActivitiesIntegrationTests {
     private LineUpPositionRepository lineUpPositionRepository;
     private LineUpRepository lineUpRepository;
 
+    @Autowired
+    private LineUpPositionService lineUpPositionService;
+    
+    @Autowired
+    private LineUpService lineUpService;
+
     @Before("@view_my_activities")
     public void setup() throws IOException {
         userRepository = applicationContext.getBean(UserRepository.class);
@@ -117,7 +123,7 @@ public class ViewMyActivitiesIntegrationTests {
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
-        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository));
+        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository, factService, lineUpService, lineUpPositionService));
         factService = Mockito.spy(new FactService(factRepository));
         this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ViewTeamController(userService, teamService, activityService, factService, formationService, competitionService)).build();
 

@@ -92,6 +92,8 @@ public class ViewActivityControllerTests {
 
     private User activityPlayer;
 
+    private User activityPlayer2;
+
     private Activity otherActivity;
 
 
@@ -112,6 +114,7 @@ public class ViewActivityControllerTests {
                 USER_POSTCODE, USER_COUNTRY);
         User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD, testLocation);
         activityPlayer = new User("Bob", "Smith", userDOB, "bob@gmail.com", USER_PWORD, testLocation2);
+        activityPlayer2 = new User("joe", "Smith", userDOB, "bob@gmail.com", USER_PWORD, testLocation2);
         userRepository.save(activityPlayer);
 
         team = new Team("test", "Hockey", testLocation, testUser);
@@ -135,6 +138,7 @@ public class ViewActivityControllerTests {
 
         teamRepository.save(team);
         activityPlayer.joinTeam(team);
+        activityPlayer2.joinTeam(team);
 
         when(mockActivityService.findActivityById(Long.parseLong("1"))).thenReturn(activity);
         when(mockUserService.getCurrentUser()).thenReturn(Optional.of(testUser));
@@ -400,4 +404,21 @@ public class ViewActivityControllerTests {
                 .andExpect(MockMvcResultMatchers.status().isFound())
                 .andReturn();
     }
+
+    @Test
+    void testDescriptionLengthSub() throws Exception {
+        String description = "a".repeat(151);
+        String player1IDString = Long.toString(activityPlayer.getId());
+        String player2IDString = Long.toString(activityPlayer2.getId());
+        mockMvc.perform(post("/add-sub", 42L)
+                        .param("actId", "1")
+                        .param("playerOn", player1IDString)
+                        .param("goalValue", player2IDString)
+                        .param("description", description)
+                        .param("time", "1")
+                )
+                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andReturn();
+    }
+
 }

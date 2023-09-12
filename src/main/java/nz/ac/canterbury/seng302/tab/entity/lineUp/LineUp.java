@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Formation;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Line-up entity for describing a line-up and its relationships
@@ -23,22 +27,35 @@ public class LineUp {
     @OneToOne
     @JoinColumn(name = "fk_teamId", referencedColumnName = "teamId")
     private Team team;
-
-    /*
-     * TODO: this is EXTREMELY BAD.
-     *  LineUps should not use CascadeType.ALL when referencing activity.
-     *  But... this is the only way to get the tests working :^)
-     *  And we really need to get the pipeline running so the teaching team can mark us.
-     */
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_activityId", referencedColumnName = "activityId")
     private Activity activity;
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "lineup_subs",
+            joinColumns = @JoinColumn(name = "lineup_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> subs;
+
+    public List<User> getSubs() {
+        if (subs == null) {
+            subs = new ArrayList<>();
+        }
+        return subs;
+    }
+
+    public void setSubs(List<User> subs) {
+        this.subs = subs;
+    }
 
     /**
      * Default constructor for Line-up.
      * Required by JPA.
      */
-    protected LineUp() {}
+    public LineUp() {}
 
     /**
      * Constructs a LineUp with the specified formation, players and team.
@@ -51,6 +68,7 @@ public class LineUp {
         this.formation = formation;
         this.team = team;
         this.activity = activity;
+        this.subs = new ArrayList<>();
     }
 
     public Formation getFormation() {

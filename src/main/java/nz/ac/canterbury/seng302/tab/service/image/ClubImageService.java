@@ -64,7 +64,9 @@ public class ClubImageService extends ImageService<Club> {
         long id = club.getClubId();
         if (clubService.findClubById(id).isPresent()) {
             saveImage(club, file);
+            clubService.updateOrAddClub(club);
         }
+
     }
 
     public ResponseEntity<byte[]> getImageResponse(long id) {
