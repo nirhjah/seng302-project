@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.tab.service;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.entity.Team;
@@ -32,14 +33,24 @@ public class ActivityService {
     private final LineUpRepository lineUpRepository;
 
     private final LineUpPositionRepository lineUpPositionRepository;
+
     private final ActivityRepository activityRepository;
+
+    private final LineUpService lineUpService;
+
+    private final FactService factService;
+
+    private final LineUpPositionService lineUpPositionService;
 
 
     @Autowired
-    public ActivityService(ActivityRepository activityRepository, LineUpRepository lineUpRepository, LineUpPositionRepository lineUpPositionRepository) {
+    public ActivityService(ActivityRepository activityRepository, LineUpRepository lineUpRepository, LineUpPositionRepository lineUpPositionRepository, LineUpService lineUpService, FactService factService, LineUpPositionService lineUpPositionService) {
         this.activityRepository = activityRepository;
         this.lineUpRepository = lineUpRepository;
         this.lineUpPositionRepository = lineUpPositionRepository;
+        this.lineUpService = lineUpService;
+        this.factService = factService;
+        this.lineUpPositionService = lineUpPositionService;
     }
 
     public static final String activityScoreHyphenRegex = "^(\\p{N}+-(\\p{N}+))+$";
@@ -493,11 +504,21 @@ public class ActivityService {
         return timeOfFact <= Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
     }
 
+    /**
+     * returns the list of players without coaches and manageers
+     * @param team the team the players are in
+     * @return a list of the users that arent a coach or manager for that team
+     */
+    private List<User> removeCoachesAndManager(Team team, List<User> players) {
+        Set<User> coachesAndMangers = team.getTeamCoaches();
+        coachesAndMangers.addAll(team.getTeamManagers());
+        List<User> teamCoachesAndManagersList = coachesAndMangers.stream().toList();
 
-    public List<User> getAllPlayersPlaying(LineUp lineUp) {
-        long actId = lineUp.getActivity().getId();
+        return players.stream().filter(player -> !teamCoachesAndManagersList.contains(player)).toList();
+    }
 
-        Optional<List<LineUp>> optionalActivityLineups = findLineUpByActivity(actId);
+    public List<User> getAllPlayersPlaying(Activity activity) {
+        Optional<List<LineUp>> optionalActivityLineups = lineUpService.findLineUpByActivity(activity.getId());
         if (optionalActivityLineups.isEmpty()) {
             return List.of();
         }
@@ -516,20 +537,51 @@ public class ActivityService {
 
 
     /**
-     * @param actId the activity id
+     * @param activity the activity
      * @return a list of users who are not in the lineup
      */
-    public List<User> getAllSubstitutions(LineUp lineUp) {
-        long actId = lineUp.getActivity().getId();
-        Activity activity = activityService.findActivityById(actId);
-        if (activity == null  || activity.getTeam() == null) {
+    public List<User> getAllPlayersNotCurrentlyPlaying(Activity activity) {
+        if (activity == null || activity.getTeam() == null) {
             return List.of();
         }
-        List<User> playersPlaying = getAllPlayersCurrentlyPlaying(actId);
-        List<User> playersInTeam = new ArrayList<>(activityService.findActivityById(actId).getTeam().getTeamMembers());
+
+        long actId = activity.getId();
+        List<User> playersPlaying = getAllPlayersCurrentlyPlaying(activity);
+        List<User> playersInTeam = new ArrayList<>(findActivityById(actId).getTeam().getTeamMembers());
 
         List<User> playersNotPlaying = playersInTeam.stream().filter(player -> !playersPlaying.contains(player)).toList();
 
         return removeCoachesAndManager(activity.getTeam(), playersNotPlaying);
     }
+
+
+    /**
+     * returns the current players who are involved in an activity;
+     * takes into account substitu
+     * @param activity the activity
+     * @return a list of the users that are currrently playing in the activity
+     */
+    private List<User> getAllPlayersInvolved(Activity activity) {
+        if (activity == null || activity.getTeam() == null) {
+            return List.of();
+        }
+
+        List<User> playersPlaying = getAllPlayersPlaying(activity);
+
+        List<Fact> allSubs = factService.getAllFactsOfGivenTypeForActivity(2, activity) // list of all made subs in the game
+                .stream()   // We have to make a stream, because its actual type is UnmodifiableList, which you can't .sort()
+                .sorted(Comparator.comparingInt(sub -> Integer.parseInt(sub.getTimeOfEvent())))  // all the subs sorted by time
+                .toList();
+
+        for (Fact fact : allSubs) {
+            Substitution sub = (Substitution) fact;
+            User playerOn = sub.getPlayerOn();
+            User playerOff = sub.getPlayerOff();
+            playersPlaying = playersPlaying.stream().map(player -> player.getUserId() == playerOff.getUserId() ? playerOn : player).toList();
+        }
+
+        return removeCoachesAndManager(activity.getTeam(), playersPlaying);
+    }
+
+    public List<User> getPlayers
 }
