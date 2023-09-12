@@ -53,12 +53,6 @@ public class LoginController {
         model.addAttribute("httpServletRequest", request);
         logger.info("GET /login");
         
-        // We have to store the "Success URL" in the session variables, because Spring forces
-        // a redirect to a constant URL on login failure (/login?error), so normal parameters are forgotten.
-        if (redirectUrl == null) {
-            redirectUrl = (String) session.getAttribute(DEFAULT_REDIRECT);
-        }
-        
         // If the redirect URL isn't local (Open Redirect Vulnerability), trash it.
         if (redirectUrl != null && !LOCAL_URL_PATTERN.matcher(redirectUrl).matches()) {
             session.removeAttribute(DEFAULT_REDIRECT);
@@ -70,7 +64,22 @@ public class LoginController {
             return "redirect:" + SecurityConfiguration.DEFAULT_LOGIN_REDIRECT_URL;
         }
 
-        if (error != null) {
+        boolean hasError = (error != null);
+
+        /*
+         * We have to store the "Success URL" in the session variables, because Spring forces
+         * a redirect to a constant URL on login failure (/login?error), so normal parameters are forgotten.
+         * Logic:
+         * - /login: Don't redirect
+         * - /login?continue=/here: Save the URL, and redirect on success
+         * - /login?error: The redirect info's gone, so fetch the one saved above
+         * - /login?error&continue=/here: IMPOSSIBLE STATE
+         */ 
+        if (hasError) {
+            redirectUrl = (String) session.getAttribute(DEFAULT_REDIRECT);
+        }
+
+        if (hasError) {
             String errorMessage;
             Exception exception = (Exception)request.getSession().getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
 
