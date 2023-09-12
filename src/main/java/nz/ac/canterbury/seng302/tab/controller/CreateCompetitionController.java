@@ -186,10 +186,10 @@ public class CreateCompetitionController {
         boolean notOk = bindingResult.hasErrors() || postCreateCompetitionErrorCheck(bindingResult, form, IDs);
 
         if (notOk) {
-            if (IDs != null) {
-                // We still add IDs, so the page is still editable.
-                addIdsToModel(model, IDs, isTeamCompetition);
-            }
+            // We still add IDs, so the page is still editable.
+            List<Long> ids = Objects.requireNonNullElseGet(IDs, List::of);
+            addIdsToModel(model, ids, isTeamCompetition);
+
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "createCompetitionForm";
         }
@@ -203,7 +203,6 @@ public class CreateCompetitionController {
             editExistingCompetition(editCompetition, form);
             editCompetitionParticipants(editCompetition, IDs);
 
-            System.out.println("COMPETITION: " + editCompetition);
             editCompetition = competitionService.updateOrAddCompetition(editCompetition);
             return "redirect:/view-competition?competitionID=" + editCompetition.getCompetitionId();
 
@@ -235,12 +234,12 @@ public class CreateCompetitionController {
             CreateAndEditCompetitionForm form,
             List<Long> IDs) {
 
-        boolean shouldReturn = false;
+        boolean bad = false;
         // The competition requires a team or a user to be selected
         if (IDs == null || IDs.isEmpty()) {
             bindingResult.addError(new FieldError("CreateAndEditCompetitionForm", "competitors",
                     CompetitionFormValidators.NO_COMPETITORS_MSG));
-            shouldReturn = true;
+            bad = true;
         }
 
         LocalDateTime start = form.getStartDateTime();
@@ -248,17 +247,17 @@ public class CreateCompetitionController {
         if (!start.isBefore(end)) {
             bindingResult.addError(new FieldError("CreateAndEditCompetitionForm", "startDateTime",
                     CompetitionFormValidators.TIME_TRAVEL_MSG));
-            shouldReturn = true;
+            bad = true;
         }
 
        // All the grade attributes must be selected
         if (form.getAge() == null || form.getSex() == null || form.getCompetitiveness() == null) {
             bindingResult.addError(new FieldError("CreateAndEditCompetitionForm", "grade",
                     CompetitionFormValidators.NO_GRADE_MSG));
-            shouldReturn = true;
+            bad = true;
         }
 
-        return shouldReturn;
+        return bad;
     }
 
     /**
