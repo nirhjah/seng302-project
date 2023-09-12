@@ -518,10 +518,11 @@ public class ActivityService {
             return List.of();
         }
         List<Fact> allSubs = factService.getAllFactsOfGivenTypeForActivity(2, currActivity); // list of all made subs in the game 
+
+        List<Fact> copiedSubs = new ArrayList<>(allSubs); // using a copy here because allsubs is an immutable collection
+        copiedSubs.sort(Comparator.comparingInt(sub -> Integer.parseInt(sub.getTimeOfEvent()))); // all the subs sorted by time 
         
-        allSubs.sort(Comparator.comparingInt(sub -> Integer.parseInt(sub.getTimeOfEvent()))); // all the subs sorted by time 
-        
-        for (Fact fact : allSubs) {
+        for (Fact fact : copiedSubs) {
             Substitution sub = (Substitution) fact;
             User playerOn = sub.getPlayerOn();
             User playerOff = sub.getPlayerOff();
