@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.PageRequest;
 
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ActivityService {
-
+    
     private final LineUpRepository lineUpRepository;
 
     private final LineUpPositionRepository lineUpPositionRepository;
@@ -41,6 +42,7 @@ public class ActivityService {
     private final LineUpPositionService lineUpPositionService;
     
     private final LineUpService lineUpService;
+
 
     @Autowired
     public ActivityService(ActivityRepository activityRepository, LineUpRepository lineUpRepository, LineUpPositionRepository lineUpPositionRepository, FactService factService,
@@ -279,6 +281,9 @@ public class ActivityService {
         if (lineUpRepository.findLineUpByActivityId(activity.getId()).isPresent()) {
 
             List<LineUp> lineup = lineUpRepository.findLineUpsByActivityId(activity.getId());
+            if (lineup.isEmpty()) {
+                return List.of();
+            }
             lineup.sort(Comparator.comparingLong(LineUp::getLineUpId).reversed());
 
             LineUp lineUp =  lineup.get(0);

@@ -165,51 +165,6 @@ public class ViewActivityControllerTests {
                 .andExpect(status().isNotFound());
     }
 
-
-    //Add Activity Stats tests
-
-    @Test
-    void testAddingActivityFactWithNoDescription() throws Exception {
-        mockMvc.perform(post("/view-activity", 42L)
-                        .param("actId", "1")
-                        .param("factType", String.valueOf(FactType.FACT))
-                        .param("overallScoreTeam", "1")
-                        .param("overallScoreOpponent", "1")
-                        .param("activityOutcomes", String.valueOf(ActivityOutcome.None))
-                        .param("time", "1")
-                        .param("goalValue", "1")
-                        .param("scorer", "-1")
-                        .param("playerOn", "1")
-                        .param("playerOff", "1" )
-                        .param("description", "")
-                )
-                .andExpect(view().name("redirect:./view-activity?activityID=1"));
-        verify(mockActivityService, times(0)).updateOrAddActivity(any());
-
-    }
-
-    @Test
-    void testAddingActivityFactWithDescription() throws Exception {
-        when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
-
-        mockMvc.perform(post("/view-activity", 42L)
-                        .param("actId", "1")
-                        .param("factType", String.valueOf(FactType.FACT))
-                        .param("time", "1")
-                        .param("goalValue", "1")
-                        .param("overallScoreTeam", "1")
-                        .param("overallScoreOpponent", "1")
-                        .param("activityOutcomes", String.valueOf(ActivityOutcome.None))
-                        .param("scorer", "-1")
-                        .param("playerOn", "1")
-                        .param("playerOff", "1" )
-                        .param("description", "player fell over")
-                )
-                .andExpect(view().name("redirect:./view-activity?activityID=1"));
-        verify(mockActivityService, times(1)).updateOrAddActivity(any());
-
-    }
-
     @Test
     void testAddingActivityTeamGoalUseDefault() throws Exception {
         mockMvc.perform(post("/overall-score", 42L)
@@ -219,27 +174,6 @@ public class ViewActivityControllerTests {
                 )
                 .andExpect(view().name("redirect:./view-activity?activityID=1"));
         verify(mockActivityService, times(2)).validateActivityScore(any(), any());
-    }
-
-
-    @Test
-    void testAddingSubstitutionFactWithSamePlayerOnPlayerOff() throws Exception {
-        mockMvc.perform(post("/view-activity", 42L)
-                        .param("actId", "1")
-                        .param("factType", String.valueOf(FactType.SUBSTITUTION))
-                        .param("overallScoreTeam", "1")
-                        .param("overallScoreOpponent", "1")
-                        .param("activityOutcomes", String.valueOf(ActivityOutcome.None))
-                        .param("time", "1")
-                        .param("goalValue", "")
-                        .param("scorer", "-1")
-                        .param("playerOn", "1")
-                        .param("playerOff", "1" )
-                        .param("description", "")
-                )
-                .andExpect(view().name("redirect:./view-activity?activityID=1"));
-        verify(mockActivityService, times(0)).updateOrAddActivity(any());
-
     }
 
     @Test

@@ -19,13 +19,13 @@ Feature: U34 – Add activity statistics
     When the activity has ended,
     Then I am able to add an outcome for the overall activity through a dedicated UI element
 
-#  Scenario: AC4
-#    Given I am a manager or coach,
-#    And I am viewing an activity of the type “Game” or “Friendly”
-#    When the activity has begun
-#    And I am adding a goal, substitution or fact
-#    And I specify a time
-#    Then the time must fall within the bounds of the activity (ie cannot be before the beginning or after the end)
+  Scenario: AC4
+    Given I am a manager or coach,
+    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
+    When the activity has begun
+    And I am adding a goal, substitution or fact
+    And I specify a time
+    Then the time must fall within the bounds of the activity (ie cannot be before the beginning or after the end)
 #
 #  Scenario: AC5
 #    Given I am a manager or coach,

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Class for Team object which is annotated as a JPA entity.
@@ -79,7 +80,6 @@ public class Team implements Identifiable, HasImage {
      * constructor that sets the manager
      *
      * Should be used for testing ONLY!
-     * TODO: Remove this constructor, use builder pattern. same for user
      *
      * @param name
      * @param sport
@@ -99,7 +99,6 @@ public class Team implements Identifiable, HasImage {
 
     /**
      * Should be used for testing ONLY!
-     * TODO: Remove this constructor, use builder pattern. same for user
      *
      * @param name  - team name
      * @param sport - sport name
@@ -289,6 +288,16 @@ public class Team implements Identifiable, HasImage {
         return teamMembers;
     }
 
+    /**
+     * Gets all members of team excluding managers and coaches
+     * @return set of users who are not managers or coaches of team
+     */
+    public Set<User> getNonManagersAndCoaches() {
+        return teamMembers.stream()
+                .filter(user -> !isCoach(user) && !isManager(user))
+                .collect(Collectors.toSet());
+    }
+
     public Club getTeamClub() {
         return teamClub;
     }
@@ -300,8 +309,6 @@ public class Team implements Identifiable, HasImage {
      * @param teamClub
      */
     public void setTeamClub(Club teamClub) {
-        // TODO: We shouldn't be comparing string here, we should ideally have these
-        //   columns referencing actual sport entities.
         if (!teamClub.getSport().equals(getSport())) {
             throw new UnmatchedSportException(teamClub.getSport(), getSport());
         }

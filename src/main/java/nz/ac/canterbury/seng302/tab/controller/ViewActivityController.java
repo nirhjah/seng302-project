@@ -3,7 +3,6 @@ package nz.ac.canterbury.seng302.tab.controller;
 import java.time.LocalDateTime;
 import java.time.Duration;
 import java.time.format.DateTimeFormatter;
-import java.util.stream.Collectors;
 import java.util.*;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -182,7 +181,13 @@ public class ViewActivityController {
         if (activity == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
-        LineUp lineUp = lineUpService.findLineUpsByActivity(activityID);
+
+        Optional<Formation> optActFormation = activity.getFormation();
+        LineUp lineUp = null;
+        if (optActFormation.isPresent()) {
+            lineUp = lineUpService.findLineUpByActivityAndFormation(activityID, optActFormation.get());
+        }
+
 
         if (lineUp != null) {
             Map<Integer, Long> playersAndPosition = new HashMap<>();
@@ -210,21 +215,8 @@ public class ViewActivityController {
 
 
         List<Fact> activityFacts = factService.getAllFactsForActivity(activity);
-        if (!activityFacts.isEmpty()) {
-            List<Substitution> activitySubstitutions = new ArrayList<>();
-            List<Goal> activityGoals = new ArrayList<>();
-
-            for (Object fact : activityFacts) {
-                if (fact instanceof Substitution) {
-                    activitySubstitutions.add((Substitution) fact);
-
-                } else if (fact instanceof Goal) {
-                    activityGoals.add((Goal) fact);
-                }
-            }
-            model.addAttribute("activitySubstitutions", activitySubstitutions);
-            model.addAttribute("activityGoals", activityService.sortGoalTimesAscending(activityGoals));
-        }
+        model.addAttribute("activitySubstitutions", factService.getAllFactsOfGivenTypeForActivity(FactType.SUBSTITUTION.ordinal(), activity));
+        model.addAttribute("activityGoals", factService.getAllFactsOfGivenTypeForActivity(FactType.GOAL.ordinal(), activity));
 
         logger.info("activityFacts: {}", activityFacts);
         model.addAttribute("activity", activity);
@@ -242,9 +234,8 @@ public class ViewActivityController {
         }
 
         model.addAttribute("activityFacts", activityFacts);
-        List<Fact> factList = factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity);
 
-        model.addAttribute("factList", factList);
+        model.addAttribute("factList", factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity));
 
         // attributes for the subs
         // all players who are currently playing - for the sub off
@@ -721,7 +712,5 @@ public class ViewActivityController {
 
         return viewActivityRedirectUrl;
     }
-
-
 
 }
