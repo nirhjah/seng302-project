@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -239,7 +240,11 @@ public class CreateTeamFormController {
         // TODO: Debug ONLY: Generate users for this team:
         for (int i=0; i<30; i++) {
             try {
+                var str = UUID.randomUUID().toString();
                 var u = User.defaultDummyUser();
+                u.setEmail(str + "@gmail.com");
+                u.setFirstName(str.substring(0,6));
+                u.setLastName("b");
                 u = userService.updateOrAddUser(u);
                 userService.userJoinTeam(u, team);
             } catch (Exception e) {
