@@ -96,8 +96,8 @@ public class ViewTeamController {
         model.addAttribute("displayToken", team.getToken());
         model.addAttribute("clubId",teamService.getTeamClubId(team));
         model.addAttribute("teamCompetitions", competitionService.getAllCompetitionsWithTeam(team));
-
-        if(team.getTeamClub() != null){
+        model.addAttribute("overallPlayersPlaytime", activityService.top5UsersWithPlayTimeAndAverageInTeam(team));
+        if( team.getTeamClub()!=null){
             model.addAttribute("clubName",team.getTeamClub().getName());
         }
 
@@ -114,7 +114,7 @@ public class ViewTeamController {
         int totalGamesAndFriendlies = activityService.numberOfTotalGamesAndFriendlies(team);
 
         List<Activity> activities = activityService.getLast5GamesOrFriendliesForTeamWithOutcome(team);
-        List<Map<User, Long>> scorerAndPoints = factService.getTop5Scorers(team);
+        Map<User, Long> scorerAndPoints = factService.getTop5Scorers(team);
 
         model.addAttribute("top5Scorers", scorerAndPoints);
         model.addAttribute("last5GOrF", activities);
@@ -185,7 +185,7 @@ public class ViewTeamController {
 
         User currentUser = userService.getCurrentUser().orElseThrow();
 
-        /* 
+        /*
          * Note: This endpoint throws exceptions that will bring the user to an error page.
          * Because there should be no way for this endpoint to fail through the website's normal flow,
          * this is alright to do.

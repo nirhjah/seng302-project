@@ -4,7 +4,6 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <link th:href="@{/css/create-competition.css}" rel="stylesheet">
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>[[${competitionID != null ? 'Update' : 'Create'}]] Competition</title>
 </head>
@@ -189,7 +188,7 @@
         </p>
     </footer>
 </div>
-</body>
+<script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
 <script>
 
     const sportsInput = document.getElementById("sport")
@@ -381,4 +380,5 @@
     }
 
 </script>
+</body>
 </html>

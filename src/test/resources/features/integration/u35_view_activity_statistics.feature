@@ -21,6 +21,11 @@ Feature: U35 – View activity statistics
     When that activity has statistics and facts with times
     Then they are listed and sorted by their time in ascending order
 
+  Scenario: AC5: For all facts, the order is facts without time and then facts with time
+    Given I am viewing an activity
+    When that activity has facts recorded
+    Then they are listed and sorted by their time in ascending order, with the facts with no time associated appearing first.
+
 
 
 
