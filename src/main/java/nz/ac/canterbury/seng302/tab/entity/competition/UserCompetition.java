@@ -19,7 +19,11 @@ import java.util.Set;
 @Entity 
 @DiscriminatorValue("USER")
 public class UserCompetition extends Competition {
-    @ManyToMany(fetch = FetchType.LAZY)
+
+    // We use FetchType=EAGER here because we were getting issues with LAZY.
+    // It's inefficient, but at least it works.
+    // see:  https://vladmihalcea.com/the-best-way-to-handle-the-lazyinitializationexception/
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<User> players = new HashSet<>();
 
     public UserCompetition() {}

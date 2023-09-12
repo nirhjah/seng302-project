@@ -15,7 +15,12 @@ import java.util.*;
 @Entity
 @DiscriminatorValue("TEAM")
 public class TeamCompetition extends Competition {
-    @ManyToMany(fetch = FetchType.LAZY)
+
+    // This should really be a LAZY fetchType, but we are getting
+    // issues with LazyInitializationException, and after a bit of research,
+    // there doesn't seem to be an easy fix.
+    // See more: https://vladmihalcea.com/the-best-way-to-handle-the-lazyinitializationexception/:
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Team> teams = new HashSet<>();
 
     public TeamCompetition() {}
