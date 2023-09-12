@@ -601,10 +601,11 @@
 
     function setUpDecrementStepper(decreaseButton) {
         const valueInput = document.getElementById(decreaseButton.dataset.target);
+        const min = valueInput.getAttribute('min');
         decreaseButton.addEventListener('click', (event) => {
             event.preventDefault();
             const currentValue = parseInt(valueInput.value, 10);
-            if (currentValue > 1) {
+            if (min !== null && currentValue > min) {
                 valueInput.value = currentValue - 1;
             }
         });
