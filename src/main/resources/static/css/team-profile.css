@@ -567,3 +567,7 @@ ul.formation-description > li {
 .formation-RHS {
     margin: auto;
 }
+
+.tabNameAndIndex {
+    display: none;
+}
