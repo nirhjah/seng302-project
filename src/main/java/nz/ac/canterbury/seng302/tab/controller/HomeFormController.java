@@ -41,10 +41,8 @@ public class HomeFormController {
         logger.info("GET /homeForm");
         return "redirect:./home";
     }
-
     @Autowired
     private UserImageService userImageService;
-
     /**
      * Gets the thymeleaf page representing the /home page (a basic welcome screen with nav bar)
      *
@@ -56,8 +54,6 @@ public class HomeFormController {
         logger.info("GET /homeForm");
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("navTeams", teamService.getTeamList());
-
-
         return "homeForm";
     }
 }
