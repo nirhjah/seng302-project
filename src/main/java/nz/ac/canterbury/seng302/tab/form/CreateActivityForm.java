@@ -184,7 +184,10 @@ public class CreateActivityForm {
         Team teamOrNull = activity.getTeam();
         if (teamOrNull != null) {
             this.team = teamOrNull.getTeamId();
+        } else {
+            this.team = -1;
         }
+
     }
 
 

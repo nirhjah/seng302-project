@@ -157,7 +157,7 @@ public class Grade {
     }
 
     // Any age under 13 is regarded as "Boy / girl" as opposed to "Men / women"
-    private final Set<Age> youngAges = Set.of(
+    private static final Set<Age> youngAges = Set.of(
         Age.UNDER_5S,Age.UNDER_6S,Age.UNDER_7S,Age.UNDER_8S,Age.UNDER_9S,Age.UNDER_10S,Age.UNDER_11S,Age.UNDER_12S,Age.UNDER_13S
     );
 

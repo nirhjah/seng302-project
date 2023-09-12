@@ -35,7 +35,7 @@
 
 <div th:unless="${listOfUsers.empty}" class="card-container">
     <div th:each="user : ${listOfUsers}" class="card"
-         th:onclick="|window.location.href='/user-info?name=${user.userId}'|">
+         th:onclick="|window.location.href='@{user-info(name=${user.userId})}'|">
 
         <a th:href="@{user-info(name=${user.userId})}">
             <div class="card-wrapper">
