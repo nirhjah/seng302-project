@@ -446,14 +446,8 @@
         var stayOnTab_Name =  document.getElementById("stayOnTab_Name").innerHTML;
         var stayOnTab_Index =  document.getElementById("stayOnTab_index").innerHTML;
 
-        console.log("tabname" + stayOnTab_Name);
-        console.log("tabindex" + stayOnTab_Index);
-
         if (stayOnTab_Name === "formations-tab") {
             var tabToBeActive = document.getElementById(stayOnTab_Name)
-
-            console.log(tabToBeActive)
-            console.log(stayOnTab_Name)
             tabs.forEach(otherTab => {
                 otherTab.classList.remove('active');
             });
