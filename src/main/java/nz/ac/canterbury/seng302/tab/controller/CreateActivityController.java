@@ -293,48 +293,50 @@ public class CreateActivityController {
 
         activity = activityService.updateOrAddActivity(activity);
 
-        if (activity.getActivityType() == ActivityType.Game || activity.getActivityType() == ActivityType.Friendly) {
+        // Only apply lineup code if the activity can have a lineup
+        if (activity.canContainFormation()) {
 
-        activityLineUp = lineUpService.findLineUpByActivityAndFormation(activity.getId(), activity.getFormation().orElse(null));
+            activityLineUp = lineUpService.findLineUpByActivityAndFormation(activity.getId(),
+                    activity.getFormation().orElse(null));
 
-        if (activityLineUp == null) {
-            Optional<Formation> formationOptional = activity.getFormation();
-            if (formationOptional.isPresent()) {
-                activityLineUp = new LineUp(formationOptional.get(), activity.getTeam(), activity);
-                lineUpService.updateOrAddLineUp(activityLineUp);
+            if (activityLineUp == null) {
+                Optional<Formation> formationOptional = activity.getFormation();
+                if (formationOptional.isPresent()) {
+                    activityLineUp = new LineUp(formationOptional.get(), activity.getTeam(), activity);
+                    lineUpService.updateOrAddLineUp(activityLineUp);
+                }
+            } else {
+                Optional<Formation> formationOptional = activity.getFormation();
+
+                if (formationOptional.isPresent()) {
+                    activityLineUp.setFormation(formationOptional.get());
+                    lineUpService.updateOrAddLineUp(activityLineUp);
+                }
             }
-        } else {
-            Optional<Formation> formationOptional = activity.getFormation();
 
-            if (formationOptional.isPresent()) {
-                activityLineUp.setFormation(formationOptional.get());
-                lineUpService.updateOrAddLineUp(activityLineUp);
+            lineUpService.saveSubs(subs, activityLineUp);
+
+            if (playerAndPositions != null && !playerAndPositions.isEmpty()) {
+                List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
+                if (createActivityForm.getFormation() != -1) {
+
+                    lineUpService.saveLineUp(positionsAndPlayers, bindingResult, activityLineUp);
+
+                }
+                if (bindingResult.hasErrors() && actId != -1) {
+
+                    httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    model.addAttribute("actId", actId);
+                    model.addAttribute(FORMATION_PLAYER_POSITIONS,
+                            lineUpService.getFormationAndPlayersAndPosition(activity));
+                    fillModelWithActivity(model, activity);
+
+                    return TEMPLATE_NAME;
+                }
+
             }
+
         }
-
-        lineUpService.saveSubs(subs, activityLineUp);
-
-        if (playerAndPositions != null && !playerAndPositions.isEmpty()) {
-            List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
-            if (createActivityForm.getFormation() != -1) {
-
-                lineUpService.saveLineUp(positionsAndPlayers, bindingResult, activityLineUp);
-
-            }
-            if (bindingResult.hasErrors() && actId != -1) {
-
-                httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                model.addAttribute("actId", actId);
-                model.addAttribute(FORMATION_PLAYER_POSITIONS, lineUpService.getFormationAndPlayersAndPosition(activity));
-                fillModelWithActivity(model, activity);
-
-                return TEMPLATE_NAME;
-            }
-
-        }
-
-    }
-
 
         return String.format("redirect:./view-activity?activityID=%s", activity.getId());
     }
