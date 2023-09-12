@@ -5,6 +5,7 @@
     <link th:href="@{/css/whiteboard.css}" rel="stylesheet">
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Whiteboard</title>
 </head>
 <body class="view-teams-background">
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
@@ -19,7 +20,7 @@
             <div class="dropdown">
                 <label for="formation-dropdown">Formation</label>
                 <select name="formation" id="formation-dropdown">
-                    <option value="-1">disabled</option>
+                    <option value="-1">(No Formation)</option>
                     <option th:each="forma : ${teamFormations}"
                             th:value="${forma.formationId}"
                             th:text="${forma.formation}"
@@ -27,10 +28,6 @@
                             th:data-custom="${forma.custom}"
                             th:data-custom-positions="${forma.customPlayerPositions}">
                     </option>
-                    <option th:text="'1-4-4-2'" th:value="1" th:data-custom="false"
-                            th:data-custom-positions="''"></option>
-                    <option th:text="'1-4-4-2'" th:value="1" th:data-custom="true"
-                            th:data-custom-positions="'183px,35px;45px,66px;73px,26px;112px,99px;241px,162px;99px,206px;65px,137px;186px,159px;213px,263px;59px,284px;139px,308px'"></option>
                 </select>
             </div>
             <div class="line">
@@ -40,9 +37,14 @@
             </div>
             <div class="dropdown">
                 <label for="lineup">Line-Up</label>
-                <select class="select" id="lineup" disabled>
-                    <option value="disabled">disabled</option>
+                <select class="select" id="lineup">
+                    <option value="-1">(No Lineup)</option>
+                    <option th:each="lineup : ${teamLineUps}"
+                            th:value="${lineup.lineUpId}"
+                            th:text="${lineup.lineUpId.toString()}"
+                    ></option>
                 </select>
+
             </div>
 
             <div class="player-table">
@@ -51,29 +53,9 @@
                 </div>
                 <div class="player-list">
                     <ul class="player-ul">
-                        <li class="player-card">
-                            <img class="player-image" th:src="@{/image/landscape.jpeg}" draggable="false">
-                            <span class="player-name">Player One</span>
-                        </li>
-                        <li class="player-card">
-                            <img class="player-image" th:src="@{/image/default-profile.png}" draggable="false">
-                            <span class="player-name">Player Two</span>
-                        </li>
-                        <li class="player-card">
-                            <img class="player-image" th:src="@{/image/default-profile.png}" draggable="false">
-                            <span class="player-name">Player Three</span>
-                        </li>
-                        <li class="player-card">
-                            <img class="player-image" th:src="@{/image/default-profile.png}" draggable="false">
-                            <span class="player-name">Player Four</span>
-                        </li>
-                        <li class="player-card">
-                            <img class="player-image" th:src="@{/image/default-profile.png}" draggable="false">
-                            <span class="player-name">Player Five</span>
-                        </li>
-                        <li class="player-card">
-                            <img class="player-image" th:src="@{/image/default-profile.png}" draggable="false">
-                            <span class="player-name">Player Six</span>
+                        <li class="player-card" th:each="member : ${teamMembers}">
+                            <img class="player-image" th:src="@{/user-profile-picture/{id}(id = ${member.userId})}" draggable="false">
+                            <span class="player-name" th:text="|${member.firstName} ${member.lastName}|"></span>
                         </li>
                     </ul>
                 </div>
