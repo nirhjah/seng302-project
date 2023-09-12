@@ -301,9 +301,28 @@
 <script th:inline="javascript">
     function typeCanHaveFormation(activityType) {
         return (activityType === "Game" || activityType === "Friendly");
+
     }
 
+
+
     const formationDropdown = document.querySelector("#formation-dropdown");
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const currentActivity = document.querySelector("#activityType").value;
+
+        if (!typeCanHaveFormation(currentActivity)) {
+            formationDropdown.style.display = "none";
+            return;
+        }
+        if (typeCanHaveFormation(currentActivity)) {
+            formationDropdown.style.display = "block";
+            return;
+        }
+
+    });
+
+
 
     function updateFormationList() {
         const currentTeamId = document.querySelector("#team").value;
