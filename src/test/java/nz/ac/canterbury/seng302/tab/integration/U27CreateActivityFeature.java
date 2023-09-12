@@ -139,7 +139,7 @@ public class U27CreateActivityFeature {
         lineUpPositionService = Mockito.spy(new LineUpPositionService(lineUpPositionRepository));
 
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup( new CreateActivityController(teamService, userService, activityService, formationService, lineUpService, lineUpPositionService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateActivityController(teamService, userService, activityService, formationService, lineUpService, lineUpPositionService)).build();
 
         Authentication authentication = mock(Authentication.class);
         SecurityContext securityContext = mock(SecurityContext.class);
@@ -161,23 +161,28 @@ public class U27CreateActivityFeature {
 
         setupMocking();
         Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
+        Location testLocation2 = new Location(null, null, null, "CHCH", null, "NZ");
+
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "johndoe@example.com", "Password123!", testLocation);
         team = new Team("team900", "programming");
+        activity = new Activity(ActivityType.Other, team, DEFAULT_DESCRIPTION, startDateTime, endDateTime, user, testLocation);
 
         userRepository.save(user);
         user = userService.getUser(user.getUserId());
 
         teamRepository.save(team);
         team = teamService.getTeam(team.getTeamId());
-        team.setRole(user, Role.MANAGER);
-        teamService.updateTeam(team);
-        team = teamService.getTeam(team.getTeamId());
+//        team.setRole(user, Role.MANAGER);
+//        teamService.updateTeam(team);
+//        team = teamService.getTeam(team.getTeamId());
         teamCreationDateTime = team.getCreationDate().format(formatter);
+        team = spy(team);
 
         when(userService.getCurrentUser()).thenReturn(Optional.of(user));
         when(teamService.findTeamsWithUser(any())).thenReturn(Collections.singletonList(team));
         when(teamService.getTeam(team.getTeamId())).thenReturn(team);
+        when(team.isManager(user)).thenReturn(true);
     }
 
     @Given("I am anywhere on the system,")

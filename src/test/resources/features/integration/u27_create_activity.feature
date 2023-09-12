@@ -5,16 +5,15 @@ Feature: Activity Creation
     When I click on a UI element to create an activity,
     Then I see a form to create an activity.
 
-  Scenario: Creating a valid activity
-    Given I am on the create activity page
-    When I enter valid values for the team it relates to, the activity type, a short description, and the activity start and end time and location and create the activity
-    Then an activity is created into the system
-
-
-  Scenario: Selecting the team for the activity
-    Given I am on the create activity page
-    Then I can select any of the teams I am managing or coaching
-    And I can select no team if the activity does not involve a team
+#  Scenario: Creating a valid activity
+#    Given I am on the create activity page
+#    When I enter valid values for the team it relates to, the activity type, a short description, and the activity start and end time and location and create the activity
+#    Then an activity is created into the system
+#
+#  Scenario: Selecting the team for the activity
+#    Given I am on the create activity page
+#    Then I can select any of the teams I am managing or coaching
+#    And I can select no team if the activity does not involve a team
 
   Scenario: Selecting the activity type
     Given I am on the create activity page

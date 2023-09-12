@@ -110,13 +110,11 @@ public class ViewActivityControllerTests {
                 USER_POSTCODE, USER_COUNTRY);
         Location testLocation2 = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY,
                 USER_POSTCODE, USER_COUNTRY);
-        Location testLocation3 = new Location(USER_ADDRESS_LINE_1, USER_ADDRESS_LINE_2, USER_SUBURB, USER_CITY,
-                USER_POSTCODE, USER_COUNTRY);
         User testUser = new User(USER_FNAME, USER_LNAME, userDOB, USER_EMAIL, USER_PWORD, testLocation);
         activityPlayer = new User("Bob", "Smith", userDOB, "bob@gmail.com", USER_PWORD, testLocation2);
+        userRepository.save(activityPlayer);
 
-        team = new Team("test", "Hockey", testLocation3, testUser);
-
+        team = new Team("test", "Hockey", testLocation, testUser);
         LocalDateTime start =   LocalDateTime.of(2023, 6,1,6,30);
         LocalDateTime end = LocalDateTime.of(2025, 7,1,8,30);
         Location activityLocation = new Location(ACTVITY_ADDRESS_LINE_1, ACTVITY_ADDRESS_LINE_2, ACTVITY_SUBURB,
@@ -147,8 +145,6 @@ public class ViewActivityControllerTests {
 
     @AfterEach
     void afterEach() {
-        teamRepository.deleteAll();
-        userRepository.deleteAll();
         activityRepository.deleteAll();
     }
     @Test

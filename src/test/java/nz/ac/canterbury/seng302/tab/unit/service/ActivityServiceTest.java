@@ -38,9 +38,6 @@ public class ActivityServiceTest {
     LineUpRepository lineUpRepository;
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
     LineUpPositionRepository lineUpPositionRepository;
 
     @Autowired
@@ -240,13 +237,12 @@ public class ActivityServiceTest {
     @Test
     public void ifATeamHasActivites_ReturnsPageOfThem() throws Exception {
         Team t = new Team("Test Team", "Hockey");
+        teamRepository.save(t);
         User u = new User("Test", "Account", "tab.team900@gmail.com", "password", new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
         Activity game = new Activity(ActivityType.Game, t, "A Test Game",
                 LocalDateTime.of(2025, 1,1,6,30),
                 LocalDateTime.of(2025, 1,1,8,30), u,
                 new Location("Test", "Test", "Test", "test", "Tst", "test"));
-        teamRepository.save(t);
-        userRepository.save(u);
         activityRepository.save(game);
         Assertions.assertEquals(List.of(game), activityService.getAllTeamActivitiesPage(t, 1, 10).toList());
     }
@@ -269,8 +265,6 @@ public class ActivityServiceTest {
                 LocalDateTime.of(2026, 1,1,6,30),
                 LocalDateTime.of(2026, 1,1,8,30), u,
                 new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
-        teamRepository.save(t);
-        userRepository.save(u);
         activityRepository.save(game);
         activityRepository.save(training);
         Assertions.assertEquals(List.of(game), activityService.getAllTeamActivitiesPage(t, 1, 10).toList());
@@ -306,9 +300,6 @@ public class ActivityServiceTest {
                 LocalDateTime.of(2026, 1,1,6,30),
                 LocalDateTime.of(2026, 1,1,8,30), u,
                 new Location("Jack Erskine", null, "Ilam", "Chch", "Test", "NZ"));
-        teamRepository.save(team);
-        userRepository.save(u);
-
         activityRepository.save(training);
         activityRepository.save(game);
         Assertions.assertEquals(120, activityService.getTotalTimeAUserHasPlayedForATeam(u, team));
@@ -406,10 +397,6 @@ public class ActivityServiceTest {
         player.joinTeam(team);
         player2.joinTeam(team);
 
-        userRepository.save(creator);
-        userRepository.save(player);
-        userRepository.save(player2);
-
         Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
                 LocalDateTime.of(2023, 1,1,6,30),
                 LocalDateTime.of(2023, 1,1,8,30),
@@ -452,15 +439,13 @@ public class ActivityServiceTest {
         factRepository.save(subf);
         factRepository.save(subf2);
         factRepository.save(subf3);
-        factRepository.save(subf4);
+           factRepository.save(subf4);
 
         factList2.add(subf);
         factList2.add(subf2);
         factList2.add(subf3);
         factList2.add(subf4);
         activity2.addFactList(factList2);
-
-        teamRepository.save(team);
 
         Formation formation = new Formation("1", team);
         formationRepository.save(formation);
@@ -523,8 +508,6 @@ public class ActivityServiceTest {
         factList2.add(subf1);
         factList2.add(subf2);
         friendly.addFactList(factList2);
-
-        teamRepository.save(team);
 
         Formation formation = new Formation("1", team);
         formationRepository.save(formation);
@@ -609,12 +592,6 @@ public class ActivityServiceTest {
         User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
         User player = new User("sam", "Account", "sam@test.com", "Password1!", location);
         User player2 = new User("bob", "Account", "bob@test.com", "Password1!", location);
-
-        teamRepository.save(team);
-
-        userRepository.save(creator);
-        userRepository.save(player);
-        userRepository.save(player2);
 
         player.joinTeam(team);
         player2.joinTeam(team);
@@ -705,14 +682,8 @@ public class ActivityServiceTest {
         User player = new User("sam", "Account", "sam@test.com", "Password1!", location);
         User player2 = new User("bob", "Account", "bob@test.com", "Password1!", location);
 
-
         player.joinTeam(team);
         player2.joinTeam(team);
-
-        userRepository.save(creator);
-        userRepository.save(player);
-        userRepository.save(player2);
-        teamRepository.save(team);
 
         Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
                 LocalDateTime.of(2023, 1,1,6,30),
@@ -801,10 +772,6 @@ public class ActivityServiceTest {
         User player = new User("sam", "Account", "sam@test.com", "Password1!", location);
         User player2 = new User("bob", "Account", "bob@test.com", "Password1!", location);
         User playerNoFacts = new User("john", "Account", "john@test.com", "Password1!", location);
-
-        teamRepository.save(team);
-
-        userRepository.save(creator);
 
         player.joinTeam(team);
         player2.joinTeam(team);
