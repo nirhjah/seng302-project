@@ -3,8 +3,15 @@ package nz.ac.canterbury.seng302.tab.end2end;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import org.junit.jupiter.api.Assertions;
 
 public class U4EditUserProfile {
+
+    private String DEFAULT_USER_NAME = "Admin Admin";
+    private String DEFAULT_EMAIL= "admin@gmail.com";
+    private String DEFAULT_DOB ="01-01-1970";
+    private String DEFAULT_LOCATION ="adminAddr1 adminAddr2 adminSuburb, adminCity, 4dm1n, adminLand ";
     @Before("@edit_user")
     public void setUp() {
         DefaultFunctions.pwLogin();
@@ -12,6 +19,24 @@ public class U4EditUserProfile {
 
     @Given("I am on the user profile page,")
     public void i_am_on_the_user_profile_page() {
+        String currentUrl = PlaywrightBrowser.page.url();
+        Assertions.assertTrue(currentUrl.contains("user-info"));
+
+        String nameValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('.name').innerText"));
+        String emailValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('.email').innerText"));
+        String dobValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('.dob').innerText"));
+        String locationValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('.location').innerText"));
+        System.out.println(nameValue + " " + emailValue + " " + dobValue + " " + locationValue);
+    }
+
+    @When("I hit the edit button")
+    public void i_hit_the_edit_button(){
+        PlaywrightBrowser.page.locator("a[href='editUser']").click();
+        PlaywrightBrowser.page.waitForTimeout(2000);
+    }
+
+    @When ("I hit the save button")
+    public void i_hit_the_save_button(){
 
     }
 
