@@ -275,6 +275,12 @@
 </body>
 <script th:inline="javascript">
 
+    /**
+     * This handles the pitch dropdown selection for the whiteboard. There is a fixed list of pitchTypes and a for each loop is used to
+     * create the option element for each pitch type.
+     * When a pitchtype is selected then the image of the canvas is set to the pitch type's svg.
+     */
+
     const pitchTypes = ["American Football", "Basketball", "Hockey", "Netball", "Rugby", "Soccer", "Tennis", "Volleyball"];
     const pitchSelect = document.getElementById("pitch");
     pitchTypes.forEach(pitchType => {
@@ -293,6 +299,13 @@
             canvasContainer.style.backgroundImage = `url(${imageUrl})`;
         }
     });
+
+    /**
+     * Handles editing the whiteboard name function. When the name is clicked, the name can be editable.
+     * There is also a limit of 26 characters for the whiteboard name. When the limit of characters is reached, the name cannot be editable
+     * unless clicked on again.
+     */
+
     let isLabelFocused = false;
     const whiteboardDropdowns = document.querySelector('.whiteboard-dropdowns');
     const label = whiteboardDropdowns.querySelector('h3');
@@ -338,6 +351,11 @@
         const yPlayerOffset = 10;
         const xPlayerOffset = 20;
 
+        /**
+         * Handles the drag and drop of team players by adding mouse event listeners
+         * to the team player-card element that is selected in the table. When the player-card is dropped on the whiteboard,
+         * it is converted to fabric js component.
+         */
         playerCards.forEach((playerCard, index) => {
             let isDragging;
             let initialCardX, initialCardY;
@@ -407,6 +425,14 @@
             });
         });
 
+        /**
+         * Takes the playerCard node, index of the node in the player list,
+         * and canvas X and Y coordinates to place a fabric js player icon on the canvas.
+         * @param {Element} playerCard playerCard <li> element that has been dropped on the canvas
+         * @param {number} canvasX X coordinate of the mouse
+         * @param {number} canvasY Y coordinates of the mouse
+         * @param {number} index The index in the player list
+         */
         function createTeamPlayerIcon(playerCard, canvasX, canvasY, index) {
 
             const whiteCircle = new fabric.Circle({
@@ -676,17 +702,29 @@
             canvas.renderAll();
         }
 
+
+        /**
+         * Add all players from the player array back into the player table
+         */
         function addTeamPlayers() {
             playerArray.forEach(({index, node}) => {
                 insertPlayerInTable(index,node)
             })
         }
 
+        /**
+         * Retrieve the player element from the player array using the index
+         * @param {number} index The index of the team player in the player list
+         */
         function addTeamPlayer(index) {
             const teamPlayer = playerArray.find(item => item.index === index);
             insertPlayerInTable(index,teamPlayer.node);
         }
-
+        /**
+         * Adds the team player element back into the player table in the order of the index.
+         * @param {number} index The index of the team player in the player list
+         * @param {element} node The index of the team player in the player list
+         */
         function insertPlayerInTable(index, node){
             const playerList = document.querySelector('.player-ul');
             node.style.display = '';
