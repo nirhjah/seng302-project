@@ -11,7 +11,7 @@
 .player {
     width: 42px;
     height: 35px;
-    background-image: url('../image/icons/player.svg');
+    background-image: url('../image/icons/player.svg') !important;
     background-repeat: no-repeat;
     background-size: cover;
     position: absolute;
@@ -19,7 +19,7 @@
 }
 
 .player.filled {
-    background-image: none;
+    background-image: none !important;
 }
 
 .player.uneditable {

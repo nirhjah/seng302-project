@@ -14,9 +14,13 @@ public interface LineUpRepository extends CrudRepository<LineUp, Long> {
 
     Optional<List<LineUp>> findLineUpByTeamTeamId(Long teamId);
 
+    Optional<List<LineUp>> findLineUpByActivityId(Long activityId);
+
     List<LineUp> findLineUpsByActivityId(Long activityId);
 
     @Query("SELECT l.formation FROM LineUp l WHERE l.lineUpId = :lineUpId")
     Optional<Formation> findFormationByLineUpId(Long lineUpId);
+
+    LineUp findLineUpByActivityIdAndFormation(Long activityId, Formation formation);
 
 }

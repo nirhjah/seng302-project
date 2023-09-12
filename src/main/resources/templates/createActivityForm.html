@@ -6,7 +6,6 @@
     <link th:href="@{/css/formation.css}" rel="stylesheet"/>
 
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>[[${actId != null ? 'Edit' : 'Create'}]] Activity</title>
 </head>
 <body class="create-activity-background">
@@ -48,10 +47,10 @@
             </div>
 
             <!--/* Formation selection dropdown (Only active if the activity supports it) */-->
-            <div class="select-container">
+            <div th:style="${actId != null ? 'display:block' : 'display:none'}" class="select-container">
                 <div class="select-box">
                     <label for="team">Activity formation <em>(Team Game and Team Friendly only)</em></label>
-                    <select name="formation" id="formation-dropdown" th:disabled="${#lists.isEmpty(teamFormations)}">
+                    <select name="formation" id="formation-dropdown">
                         <option value="-1">(No Formation)</option>
                         <option th:each="forma : ${teamFormations}"
                                 th:value="${forma.formationId}"
@@ -65,9 +64,10 @@
                 <div th:each="err : ${#fields.errors('formation')}" th:text="${err}" class="error-message"></div>
             </div>
 
-            <div th:style="${actId != null ? 'display:block' : 'display:none'}" class="formation-activity-display">
+            <div id="formationDisplay" th:style="${actId != null ? 'display:block' : 'display:none'}" class="formation-activity-display">
                 <div>
                     <input type="hidden" id="playerAndPositions" name="playerAndPositions">
+                    <input type="hidden" id="subs" name="subs">
                     <div class="subs-reserves-box">
                         <div class=subs-header>Subs</div>
                         <ul class="subs-ul">
@@ -163,18 +163,15 @@
             </div>
             <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
             <div class="submit-button">
-                <a th:href="@{home}">
-                    <button onclick="getPlayersAndPositions()" type="submit" th:text="${actId != null ? 'Save' : 'Create'}"> </button>
-                </a>
-                <div class="cancel-link">
-                    <a th:if="${actId != null}" th:href="@{view-activity(activityID=${actId})}">Cancel</a>
+                <button onclick="getPlayersAndPositionsAndSubs()" type="submit" th:text="${actId != null ? 'Save' : 'Create'}"> </button>
+                <div class="cancel-link" th:if="${actId != null}">
+                    <a th:href="@{view-activity(activityID=${actId})}">Cancel</a>
                 </div>
             </div>
         </form>
     </div>
 </div>
-</body>
-
+<script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
 <script type="text/javascript" th:inline="javascript">
     /**
      ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
@@ -188,7 +185,7 @@
      * The delay time (in milliseconds) for debouncing the search input.
      * @type {number}
      */
-    const DEBOUNCE_DELAY = 450; // set the debounce delay to 450ms
+    const DEBOUNCE_DELAY = 100; // set the debounce delay to 200ms
     const searchBox = document.querySelector('#address-line-1');
     const resultsContainer = document.querySelector('#autocomplete-container');
     const countryInput = document.querySelector('#country');
@@ -299,12 +296,31 @@
     });
 
 </script>
-<script>
+<script th:inline="javascript">
     function typeCanHaveFormation(activityType) {
         return (activityType === "Game" || activityType === "Friendly");
+
     }
 
+
+
     const formationDropdown = document.querySelector("#formation-dropdown");
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const currentActivity = document.querySelector("#activityType").value;
+
+        if (!typeCanHaveFormation(currentActivity)) {
+            formationDropdown.style.display = "none";
+            return;
+        }
+        if (typeCanHaveFormation(currentActivity)) {
+            formationDropdown.style.display = "block";
+            return;
+        }
+
+    });
+
+
 
     function updateFormationList() {
         const currentTeamId = document.querySelector("#team").value;
@@ -312,13 +328,24 @@
 
         // Can't select formations if you've selected 'no team'
         if (currentTeamId == -1) {
-            formationDropdown.disabled = true;
+            formationDropdown.value = -1;
+            formationDropdown.style.display = 'none';
             document.querySelector(".formation-activity-display").classList.remove("active");
             return;
         }
         // Can't select formations if your activity isn't a "friendly" or "game"
         if (!typeCanHaveFormation(currentActivity)) {
-            formationDropdown.disabled = true;
+            formationDropdown.style.display = "none";
+          
+            document.getElementById("formationDisplay").style.display = "none";
+
+
+            return;
+        }
+        if (typeCanHaveFormation(currentActivity)) {
+            formationDropdown.style.display = "block";
+            document.getElementById("formationDisplay").style.display = "block";
+
             return;
         }
 
@@ -345,9 +372,13 @@
     });
 
 
+    var formationAndPlayersAndPositionJson = /*[[${formationAndPlayersAndPositionJson}]]*/ {};
+
+
 
 
     function loadFormation(target) {
+
         const reservesLi = document.querySelectorAll(".reserves-li");
         const formationId = target.value;
         const formation = target.textContent;
@@ -361,8 +392,144 @@
         } else {
             document.querySelector(".formation-activity-display").classList.add("active");
             generatedOrCustom(formation, custom === "true", customPlayerPositions);
+            const reservesLi = document.querySelectorAll(".reserves-li");
+            const subsUL = document.querySelector('.subs-ul');
+
+            const liElements = subsUL.querySelectorAll('li');
+            liElements.forEach((li) => {
+                li.remove();
+            });
+
+            console.log(formationAndPlayersAndPositionJson)
+
+            for (var formation_ in formationAndPlayersAndPositionJson) {
+                if (formation_ === formationId) {
+                    var playersAndPosition = formationAndPlayersAndPositionJson[formation_];
+
+                    var subsInfo = playersAndPosition[playersAndPosition.length - 1];
+
+                    if (subsInfo.length === 0) {
+                        deactivateSubs()
+                    }
+                    else {
+                        activateSubs()
+                    }
+
+
+                    for (const sublist of subsInfo) {
+                        console.log("Sublist: " + sublist)
+                        const subId = sublist[0];
+                        const subName = sublist[1];
+                        subsUL.appendChild(createSub(subId, subName))
+
+                        const players = document.querySelectorAll(".reserves-li");
+                        players.forEach(player => {
+                            const reserveId = player.querySelector("input").value;
+                            if (reserveId === subId.toString()) {
+                                player.classList.add("in-formation");
+                            }
+                        });
+
+                    }
+
+                    for (const positionIndex in playersAndPosition) {
+
+                        addPositionFunctionality();
+
+                        var playerInfo = playersAndPosition[positionIndex];
+
+                        const playerId = playerInfo[1];
+                        const playerName = playerInfo[2];
+
+                        const position = positions[playerInfo[0]-1]
+                        const close = position.querySelector('.clear-position-button');
+
+                        if (position) {
+                            const idObject = position.querySelector('input');
+
+
+                            const players = document.querySelectorAll(".reserves-li");
+                            players.forEach(player => {
+                                const reserveId = player.querySelector("input").value;
+                                if (reserveId === playerId.toString()) {
+                                    player.classList.add("in-formation");
+                                }
+                            });
+
+
+
+
+                            const playerNameElement = position.querySelector('h3');
+                             playerNameElement.textContent = playerName;
+                             playerNameElement.style.display = 'inline-block';
+                             playerNameElement.style.width = 'auto';
+                             playerNameElement.style.marginLeft = '-4px';
+
+                            const playerImage = position.querySelector('.player-profile-img');
+                            playerImage.src = "/user-profile-picture/" + playerId;
+                            //playerImage.alt = "My Profile";
+
+                            position.style.backgroundImage = 'none';
+                            idObject.value = playerId;
+
+                            fillPosition(position);
+
+                            close.classList.add('active')
+
+
+
+
+                        }
+
+                    }
+
+                }
+
+            }
+
             addPositionFunctionality();
+
         }
+    }
+
+    function createSub(subId, subName) {
+        const playerId = subId
+        const pictureString = "/user-profile-picture/" + playerId
+        const firstName = subName
+
+        const playerLi = document.createElement("li");
+        playerLi.className = "subs-li";
+
+        const liPlayerImage = document.createElement("img");
+        liPlayerImage.className = "li-player-image";
+        liPlayerImage.src = pictureString;
+        liPlayerImage.alt = "My Profile";
+        playerLi.append(liPlayerImage);
+
+        const liPlayerName = document.createElement("span");
+        liPlayerName.className = "li-player-name";
+        liPlayerName.textContent = firstName;
+        playerLi.append(liPlayerName);
+
+        const button = document.createElement("button");
+        button.className = "switch";
+
+        button.classList.add("active");
+
+        button.type = "button";
+        playerLi.append(button);
+        button.addEventListener("click", () => {
+            switchOnClick(button);
+        });
+
+        const playerIdInput = document.createElement("input");
+        playerIdInput.className = "playerId"
+        playerIdInput.type = "hidden";
+        playerIdInput.value = playerId;
+        playerLi.append(playerIdInput);
+        playerOnClick(playerLi)
+
+        return playerLi;
     }
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -381,6 +548,7 @@
         reservesLi.forEach(li => {
             li.classList.remove("in-formation");
         })
+        deactivateSubs();
         const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex]
         const formation = selectedFormation.textContent;
         const custom = selectedFormation.getAttribute("data-custom")
@@ -394,16 +562,17 @@
             formationDropdown.removeChild(formationDropdown.lastChild);
         }
         // Set visibility
-        formationDropdown.disabled = !isEnabled;
+        formationDropdown.value = -1;
+        formationDropdown.style.display = 'none';
         formationDropdown.innerHTML = "";
         // Create the default "no value" field
         let item = document.createElement("option");
-            item.value = -1;
-            item.innerText = emptyValueName;
-/*
-            item.addEventListener("click", onFormationOptionClick);
-*/
-            formationDropdown.appendChild(item);
+        item.value = -1;
+        item.innerText = emptyValueName;
+        /*
+                    item.addEventListener("click", onFormationOptionClick);
+        */
+        formationDropdown.appendChild(item);
         // Add the remaining fields
         for (let i = 0; i < formationList.length; i++) {
             const formation = formationList[i];
@@ -412,9 +581,9 @@
             option.value = formation.formationID;
             option.setAttribute("data-custom-positions", formation.customPlayerPositions);
             option.setAttribute("data-custom", formation.custom);
-/*
-            option.addEventListener("click", onFormationOptionClick);
-*/
+            /*
+                        option.addEventListener("click", onFormationOptionClick);
+            */
             formationDropdown.appendChild(option);
             if (i==0) {
                 populateReserves(formation.players);
@@ -522,26 +691,26 @@
             position.classList.remove("unfilled");
             const clearPositionButton = position.querySelector(".clear-position-button");
 
-                // Action to carry out when a user selects a position with a player selected
-                position.addEventListener('click', () => {
-                    if (!position.classList.contains("filled")) {
-                        const selectedPlayer = document.querySelector(".subs-li.active, .reserves-li.active");
-                        if (selectedPlayer) {
-                            const firstName = selectedPlayer.querySelector(".li-player-name").textContent;
-                            const picture = selectedPlayer.querySelector(".li-player-image").getAttribute("src");
-                            const id = selectedPlayer.querySelector("input").value;
-                            addPlayer(position, firstName, picture, id)
+            // Action to carry out when a user selects a position with a player selected
+            position.addEventListener('click', () => {
+                if (!position.classList.contains("filled")) {
+                    const selectedPlayer = document.querySelector(".subs-li.active, .reserves-li.active");
+                    if (selectedPlayer) {
+                        const firstName = selectedPlayer.querySelector(".li-player-name").textContent;
+                        const picture = selectedPlayer.querySelector(".li-player-image").getAttribute("src");
+                        const id = selectedPlayer.querySelector("input").value;
+                        addPlayer(position, firstName, picture, id)
 
-                            fillPosition(position);
-                            selectedPlayer.classList.remove("active");
-                            selectedPlayer.classList.add("in-formation");
-                        }
-                        checkSubsActive();
-                        getPlayersAndPositions();
+                        fillPosition(position);
+                        selectedPlayer.classList.remove("active");
+                        selectedPlayer.classList.add("in-formation");
                     }
-                });
+                    checkSubsActive();
+                    getPlayersAndPositions();
+                }
+            });
 
-            // Action to carry out when use clicks button to remove player from formation
+                // Action to carry out when use clicks button to remove player from formation
                 clearPositionButton.addEventListener('click', () => {
                         const positionPlayerId = position.querySelector("input").value;
                         const players = document.querySelectorAll(".reserves-li");
@@ -557,7 +726,7 @@
                             deactivateSubs();
                         }
 
-                });
+            });
         }
     }
 
@@ -613,6 +782,9 @@
     function deactivateSubs() {
         subsUl.classList.remove("active");
         subsHeader.classList.remove("active");
+        while (subsUl.firstChild) {
+            subsUl.removeChild(subsUl.firstChild);
+        }
         const switches = document.querySelectorAll(".switch");
         switches.forEach(sw => {
             sw.classList.remove("active");
@@ -659,6 +831,7 @@
         checkSubsActive();
     }
 
+
     function clonePlayer(player) {
         const pictureString = player.querySelector("img").src
         const firstName = player.querySelector("span").textContent;
@@ -696,21 +869,63 @@
         return playerLi;
     }
 
-    function getPlayersAndPositions() {
-                let playersAndPositions = "";
-                for (let i = 0; i < positions.length; i++) {
-                        const position = positions.item(i);
 
-                        if (position.querySelector("input").value != "") {
-                                playersAndPositions = playersAndPositions + position.id.replace("player", "") + " " + position.querySelector("input").value  + ", "
-                                }
-                        else { //if position isn't filled by player, use an X in its place so we know to call an error
-                                playersAndPositions = playersAndPositions + position.id.replace("player", "") + " " + "X"  + ", "
-                                }
-                    }
-                document.getElementById("playerAndPositions").setAttribute("value", playersAndPositions)
+
+
+    //Reload formation after page reload
+    window.addEventListener('load', function () {
+        const formationDropdown = document.getElementById("formation-dropdown");
+        const selectedFormationId = formationDropdown.value;
+        const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex];
+        if (selectedFormationId !== "-1") {
+            loadFormation(selectedFormation);
+        }
+    });
+
+
+    function getPlayersAndPositionsAndSubs() {
+        getPlayersAndPositions()
+        getSubs()
+    }
+
+    function getPlayersAndPositions() {
+        let playersAndPositions = "";
+        for (let i = 0; i < positions.length; i++) {
+            const position = positions.item(i);
+
+            if (position.querySelector("input").value != "") {
+                playersAndPositions = playersAndPositions + position.id.replace("player", "") + " " + position.querySelector("input").value  + ", "
             }
+            else { //if position isn't filled by player, use an X in its place so we know to call an error
+                playersAndPositions = playersAndPositions + position.id.replace("player", "") + " " + "X"  + ", "
+            }
+        }
+        document.getElementById("playerAndPositions").setAttribute("value", playersAndPositions)
+    }
+
+
+    function getSubs() {
+        //we just need player id
+
+        var subsUl = document.querySelector('.subs-ul');
+
+        var liElements = subsUl.querySelectorAll('.subs-li');
+
+        var subsPlayerIds = '';
+
+        liElements.forEach(function(li) {
+            var playerIdInput = li.querySelector('.playerId');
+            var playerId = playerIdInput.value;
+            subsPlayerIds += playerId + ', ';
+        });
+
+        subsPlayerIds = subsPlayerIds.replace(/, $/, '');
+
+        document.getElementById("subs").setAttribute("value", subsPlayerIds)
+
+    }
 
 
 </script>
+</body>
 </html>
