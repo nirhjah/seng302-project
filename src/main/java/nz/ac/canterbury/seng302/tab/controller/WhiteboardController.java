@@ -4,12 +4,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FormationService;
-import nz.ac.canterbury.seng302.tab.service.LineUpService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
+import nz.ac.canterbury.seng302.tab.response.LineUpInfo;
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,15 +33,18 @@ public class WhiteboardController {
 
     private final ActivityService activityService;
 
+    private final LineUpPositionService lineUpPositionService;
+
     Team team;
     private final Logger logger = LoggerFactory.getLogger(WhiteboardController.class);
 
 
-    public WhiteboardController(FormationService formationService, TeamService teamService, LineUpService lineUpService, ActivityService activityService) {
+    public WhiteboardController(FormationService formationService, TeamService teamService, LineUpService lineUpService, ActivityService activityService, LineUpPositionService lineUpPositionService) {
         this.teamService = teamService;
         this.formationService = formationService;
         this.lineUpService = lineUpService;
         this.activityService = activityService;
+        this.lineUpPositionService = lineUpPositionService;
     }
 
 
@@ -65,7 +69,6 @@ public class WhiteboardController {
 
         //Index of list of players equals the associated lineup
         List<List<User>> playersPerLineup = teamLineUps.stream().map(
-                // TODO: convert to proper
                 lineUp -> {
                     long id = lineUp.getActivity().getId();
                     return activityService.getAllPlayersPlaying(id);
@@ -90,4 +93,27 @@ public class WhiteboardController {
 
         return "whiteboardForm";
     }
+
+
+
+    /**
+     * Creates JSON object of a lineup, given an id.
+     * @param lineupId The id of the lineup
+     * @return JSON object
+     */
+    @GetMapping(path = "/whiteboard/get_lineup", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<LineUpInfo> getTeamsJSON(@RequestParam long lineupId) {
+        Optional<LineUp> optLineUp = lineUpService.findLineUpById(lineupId);
+        if (optLineUp.isPresent()) {
+            LineUp lineUp = optLineUp.get();
+            Optional<List<LineUpPosition>> lineUpPositions = lineUpPositionService.findLineUpPositionsByLineUp(lineupId);
+            if (lineUpPositions.isPresent()) {
+                return ResponseEntity.ok().body(
+                        new LineUpInfo(lineUp, lineUpPositions.get())
+                );
+            }
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 }
