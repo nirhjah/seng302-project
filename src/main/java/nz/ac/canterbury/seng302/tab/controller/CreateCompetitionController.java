@@ -194,7 +194,12 @@ public class CreateCompetitionController {
             return "createCompetitionForm";
         }
 
-        postCreateCompetitionErrorCheck(bindingResult, form, IDs);
+        boolean notOk = postCreateCompetitionErrorCheck(bindingResult, form, IDs);
+
+        if (notOk) {
+            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return "createCompetitionForm";
+        }
 
         Optional<Competition> optionalCompetition = competitionService.findCompetitionById(competitionID);
         if (optionalCompetition.isPresent()) {
@@ -232,15 +237,17 @@ public class CreateCompetitionController {
      * @param bindingResult Any found errors are added to this
      * @param form The form containing the data we're validating
      */
-    private void postCreateCompetitionErrorCheck(
+    private boolean postCreateCompetitionErrorCheck(
             BindingResult bindingResult,
             CreateAndEditCompetitionForm form,
             List<Long> IDs) {
 
+        boolean shouldReturn = false;
         // The competition requires a team or a user to be selected
         if (IDs == null || IDs.isEmpty()) {
             bindingResult.addError(new FieldError("CreateAndEditCompetitionForm", "competitors",
                     CompetitionFormValidators.NO_COMPETITORS_MSG));
+            shouldReturn = true;
         }
 
         LocalDateTime start = form.getStartDateTime();
@@ -248,13 +255,17 @@ public class CreateCompetitionController {
         if (!start.isBefore(end)) {
             bindingResult.addError(new FieldError("CreateAndEditCompetitionForm", "startDateTime",
                     CompetitionFormValidators.TIME_TRAVEL_MSG));
+            shouldReturn = true;
         }
 
        // All the grade attributes must be selected
         if (form.getAge() == null || form.getSex() == null || form.getCompetitiveness() == null) {
             bindingResult.addError(new FieldError("CreateAndEditCompetitionForm", "grade",
                     CompetitionFormValidators.NO_GRADE_MSG));
+            shouldReturn = true;
         }
+
+        return shouldReturn;
     }
 
     /**
