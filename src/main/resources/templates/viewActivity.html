@@ -317,6 +317,7 @@
                         <button onclick="addSubModal.style.display = 'block'" type="button"
                          th:style="${(playersInLineUp.size() > 0) ? null : 'display:none'}">Add Substitution</button>
                     </div>
+                    <h3 th:style="${(playersInLineUp.size() > 0) ? 'display:none' : null}"> You cannot make a Substitution as there is no lineup</h3>
                 </div>
             </div>
         </div>
