@@ -197,8 +197,10 @@ public class CreateActivityController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Incorrect permissions to edit activity");
         }
 
+        if (team != null) {
+            model.addAttribute(FORMATION_PLAYER_POSITIONS, lineUpService.getFormationAndPlayersAndPosition(activity));
+        }
 
-        model.addAttribute(FORMATION_PLAYER_POSITIONS, lineUpService.getFormationAndPlayersAndPosition(activity));
         fillModelWithActivity(model, activity);
         createActivityForm.prepopulate(activity);
         return TEMPLATE_NAME;
