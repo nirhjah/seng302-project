@@ -235,12 +235,13 @@
     document.addEventListener('DOMContentLoaded', function() {
         if (sportsInput.value.trim() !== "") {
             getCompetitors();
+        }
+        updateTotalCount();
+        if (checkBox.classList.contains("disabled")) {
+            typeCheckbox.disabled = "disabled"
+        }
+    });
 
-            updateTotalCount();
-            if (checkBox.classList.contains("disabled")) {
-                typeCheckbox.disabled = "disabled"
-            }
-        }});
 
     const totalHeading = document.getElementById('totalHeading');
 
