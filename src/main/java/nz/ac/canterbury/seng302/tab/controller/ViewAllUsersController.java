@@ -3,8 +3,6 @@ package nz.ac.canterbury.seng302.tab.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,8 +35,6 @@ public class ViewAllUsersController {
 
     @Autowired
     LocationService locationService;
-
-    final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final int PAGE_SIZE = 10;
 
@@ -94,7 +90,6 @@ public class ViewAllUsersController {
             @Nullable List<String> favCities) {
         if (page <= 0) { // We want the user to think "Page 1" is the first page, even though Java starts
                          // at 0.
-            logger.info("Invalid page no., returning empty list");
             return Page.empty();
         }
         if (nameQuery == null) {
@@ -109,12 +104,9 @@ public class ViewAllUsersController {
         var pageable = PageRequest.of(page - 1, PAGE_SIZE, UserService.SORT_BY_LAST_AND_FIRST_NAME);
 
         if (nameQuery.isEmpty() && favSports.isEmpty() && favCities.isEmpty()) {
-            logger.info("Empty query string, empty sports list AND empty city list, returning all users...");
             return userService.getPaginatedUsers(pageable);
         } else {
-            logger.info("Query string: {}", nameQuery);
-            logger.info("Sports: {}", favSports);
-            logger.info("cities: {}", favCities);
+
             return userService.findUsersByNameOrSportOrCity(pageable, favSports, favCities, nameQuery);
         }
     }
