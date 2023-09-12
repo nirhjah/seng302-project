@@ -611,11 +611,14 @@
                                 canvas.remove(child);
                             })
                         }
-                        if (playerArray.length !== 0) {
-                            addTeamPlayers();
-                        }
                         canvas.remove(obj);
                     });
+
+                    if (activeObject.id.includes("teamPlayer")) {
+                        const number = activeObject.id.match(/\d+/);
+                        const index = parseInt(number[0], 10);
+                        addTeamPlayer(index);
+                    }
                 }
                 canvas.remove(...canvas.getActiveObjects());
                 canvas.remove(canvas.getActiveObject())
