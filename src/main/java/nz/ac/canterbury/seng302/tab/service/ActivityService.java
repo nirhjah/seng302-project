@@ -268,6 +268,9 @@ public class ActivityService {
         if (lineUpRepository.findLineUpByActivityId(activity.getId()).isPresent()) {
 
             List<LineUp> lineup = lineUpRepository.findLineUpsByActivityId(activity.getId());
+            if (lineup.isEmpty()) {
+                return List.of();
+            }
             lineup.sort(Comparator.comparingLong(LineUp::getLineUpId).reversed());
 
             LineUp lineUp =  lineup.get(0);

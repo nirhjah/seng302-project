@@ -210,21 +210,8 @@ public class ViewActivityController {
 
 
         List<Fact> activityFacts = factService.getAllFactsForActivity(activity);
-        if (!activityFacts.isEmpty()) {
-            List<Substitution> activitySubstitutions = new ArrayList<>();
-            List<Goal> activityGoals = new ArrayList<>();
-
-            for (Object fact : activityFacts) {
-                if (fact instanceof Substitution) {
-                    activitySubstitutions.add((Substitution) fact);
-
-                } else if (fact instanceof Goal) {
-                    activityGoals.add((Goal) fact);
-                }
-            }
-            model.addAttribute("activitySubstitutions", activitySubstitutions);
-            model.addAttribute("activityGoals", activityService.sortGoalTimesAscending(activityGoals));
-        }
+        model.addAttribute("activitySubstitutions", factService.getAllFactsOfGivenTypeForActivity(FactType.SUBSTITUTION.ordinal(), activity));
+        model.addAttribute("activityGoals", factService.getAllFactsOfGivenTypeForActivity(FactType.GOAL.ordinal(), activity));
 
         logger.info("activityFacts: {}", activityFacts);
         model.addAttribute("activity", activity);
@@ -242,9 +229,8 @@ public class ViewActivityController {
         }
 
         model.addAttribute("activityFacts", activityFacts);
-        List<Fact> factList = factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity);
 
-        model.addAttribute("factList", factList);
+        model.addAttribute("factList", factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity));
 
         // attributes for the subs
         // all players who are currently playing - for the sub off
@@ -628,12 +614,13 @@ public class ViewActivityController {
     private List<User> getAllPlayersCurrentlyPlaying(long actId) {
         List<User> playersPlaying = getAllPlayersPlaying(actId);
         Activity currActivity = activityService.findActivityById(actId);
-        if (currActivity == null  || currActivity.getTeam() == null) {
+        if (currActivity == null || currActivity.getTeam() == null) {
             return List.of();
         }
-        List<Fact> allSubs = factService.getAllFactsOfGivenTypeForActivity(2, currActivity); // list of all made subs in the game 
-        
-        allSubs.sort(Comparator.comparingInt(sub -> Integer.parseInt(sub.getTimeOfEvent()))); // all the subs sorted by time 
+        List<Fact> allSubs = factService.getAllFactsOfGivenTypeForActivity(2, currActivity) // list of all made subs in the game 
+                .stream()   // We have to make a stream, because its actual type is UnmodifiableList, which you can't .sort()
+                .sorted(Comparator.comparingInt(sub -> Integer.parseInt(sub.getTimeOfEvent())))  // all the subs sorted by time 
+                .toList();
         
         for (Fact fact : allSubs) {
             Substitution sub = (Substitution) fact;
@@ -688,123 +675,4 @@ public class ViewActivityController {
 
         return optionaLineupPositions.get().stream().map(x -> x.getPlayer()).toList();
     }
-
-
-    /**
-     * Handles creating an event and adding overall scores
-     *
-     * @param actId               activity ID to add stats/event to
-     * @param factType            selected fact type
-     * @param description         description of event
-     * @param activityOutcome     outcome of activity (win loss or draw) for team
-     * @param time                time of event
-     * @param subOffId            user ID of sub off
-     * @param subOnId             user ID of sub on
-     * @param createEventForm     CreateEventForm object used for validation
-     * @param bindingResult       BindingResult used for errors
-     * @param request             request
-     * @param model               model to be filled
-     * @param httpServletResponse httpServerletResponse
-     * @param redirectAttributes  stores error message to be displayed
-     * @return view activity page
-     */
-    @PostMapping("/view-activity")
-    public String createEvent(
-            @RequestParam(name = "actId", defaultValue = "-1") long actId,
-            @RequestParam(name = "factType", defaultValue = "FACT") FactType factType,
-            @RequestParam(name = "description", defaultValue = "") String description,
-            @RequestParam(name = "activityOutcomes", defaultValue = "None") ActivityOutcome activityOutcome,
-            @RequestParam(name = "time") String time,
-            @RequestParam(name = "playerOff", defaultValue = "-1") int subOffId,
-            @RequestParam(name = "playerOn", defaultValue = "-1") int subOnId,
-            @Validated CreateEventForm createEventForm,
-            BindingResult bindingResult,
-            HttpServletRequest request,
-            Model model,
-            HttpServletResponse httpServletResponse,
-            RedirectAttributes redirectAttributes) {
-
-        logger.info(factType.name());
-        logger.info(String.format("got the act id: %s", actId));
-        logger.info(String.format("got the player on id: %s", subOnId));
-        logger.info(String.format("got the player on id: %s", subOffId));
-
-        model.addAttribute(httpServletRequestString, request);
-
-        Activity activity = activityService.findActivityById(actId);
-        Fact fact;
-        String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
-
-
-        if (factType == FactType.SUBSTITUTION && subOffId == subOnId) {
-            logger.info("players cannot sub themselves");
-            bindingResult.addError(new FieldError(createEventFormString, "subOn", "Players cannot sub themselves"));
-        }
-
-        if (factType == FactType.FACT && description.isEmpty()) {
-            logger.info("description was not provided for fact");
-            bindingResult.addError(new FieldError(createEventFormString, "description", "Fact type events require a description"));
-        }
-
-
-        if (bindingResult.hasErrors()) {
-            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            redirectAttributes.addFlashAttribute("scoreInvalid", leaveModalOpenString);
-            redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
-            return viewActivityRedirectUrl;
-        }
-
-        List<Fact> factList = new ArrayList<>();
-
-
-        switch (factType) {
-            case FACT:
-                fact = new Fact(description, time, activity);
-                factList.add(fact);
-
-                break;
-
-            case SUBSTITUTION:
-                Optional<User> potentialSubOff = userService.findUserById(subOffId);
-                if (potentialSubOff.isEmpty()) {
-                    logger.error("subbed off player Id not found");
-                    return viewActivityRedirectUrl;
-                }
-                User playerOff = potentialSubOff.get();
-
-                Optional<User> potentialSubOn = userService.findUserById(subOnId);
-                if (potentialSubOff.isEmpty()) {
-                    logger.error("subbed on player Id not found");
-                    return viewActivityRedirectUrl;
-                }
-
-                User playerOn = potentialSubOn.get();
-
-                fact = new Substitution(description, time, activity, playerOff, playerOn);
-                factList.add(fact);
-
-                break;
-
-            case NONE:
-                break;
-
-            default:
-                logger.error("fact type unknown value");
-                return viewActivityRedirectUrl;
-        }
-
-        if (activityOutcome != ActivityOutcome.None) {
-            activity.setActivityOutcome(activityOutcome);
-        }
-
-
-        activity.addFactList(factList);
-        activityService.updateOrAddActivity(activity);
-
-
-        return viewActivityRedirectUrl;
-    }
-
-
-
 }
