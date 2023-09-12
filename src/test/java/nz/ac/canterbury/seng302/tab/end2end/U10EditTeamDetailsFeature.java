@@ -58,8 +58,10 @@ public class U10EditTeamDetailsFeature {
         System.out.println(locationValue);
         DEFAULT_TEAM_NAME= nameValue;
         DEFAULT_SPORT= sportValue;
+        String[] location = locationValue.split("\\s+");
 
-//        addressline1 city, country
+        DEFAULT_CITY= location[1];
+        DEFAULT_COUNTRY= location[2];
 
         PlaywrightBrowser.page.locator("#edit-profile").click();
 
