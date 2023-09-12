@@ -256,6 +256,12 @@
 </body>
 <script th:inline="javascript">
 
+    /**
+     * This handles the pitch dropdown selection for the whiteboard. There is a fixed list of pitchTypes and a for each loop is used to
+     * create the option element for each pitch type.
+     * When a pitchtype is selected then the image of the canvas is set to the pitch type's svg.
+     */
+
     const pitchTypes = ["American Football", "Basketball", "Hockey", "Netball", "Rugby", "Soccer", "Tennis", "Volleyball"];
     const pitchSelect = document.getElementById("pitch");
     pitchTypes.forEach(pitchType => {
@@ -274,6 +280,13 @@
             canvasContainer.style.backgroundImage = `url(${imageUrl})`;
         }
     });
+
+    /**
+     * Handles editing the whiteboard name function. When the name is clicked, the name can be editable.
+     * There is also a limit of 26 characters for the whiteboard name. When the limit of characters is reached, the name cannot be editable
+     * unless clicked on again.
+     */
+
     let isLabelFocused = false;
     const whiteboardDropdowns = document.querySelector('.whiteboard-dropdowns');
     const label = whiteboardDropdowns.querySelector('h3');
@@ -302,6 +315,9 @@
         isLabelFocused = false;
     });
 
+    /**
+     * Functions related to the canvas
+     */
     document.addEventListener("DOMContentLoaded", function () {
         pitchSelect.value = "soccer";
         let canvas = new fabric.Canvas('canvas');
@@ -316,6 +332,11 @@
         const yPlayerOffset = 10;
         const xPlayerOffset = 20;
 
+        /**
+         * Handles the drag and drop of team players by adding mouse event listeners
+         * to the team player-card element that is selected in the table. When the player-card is dropped on the whiteboard,
+         * it is converted to fabric js component.
+         */
         playerCards.forEach((playerCard, index) => {
             let isDragging;
             let initialCardX, initialCardY;
@@ -385,6 +406,14 @@
             });
         });
 
+        /**
+         * Takes the playerCard node, index of the node in the player list,
+         * and canvas X and Y coordinates to place a fabric js player icon on the canvas.
+         * @param {Element} playerCard playerCard <li> element that has been dropped on the canvas
+         * @param {number} canvasX X coordinate of the mouse
+         * @param {number} canvasY Y coordinates of the mouse
+         * @param {number} index The index in the player list
+         */
         function createTeamPlayerIcon(playerCard, canvasX, canvasY, index) {
 
             const whiteCircle = new fabric.Circle({
@@ -433,6 +462,13 @@
 
         const upperCanvas = document.querySelector(".upper-canvas")
 
+        /**
+         * Handles the switching of whiteboard buttons and opening closing of dropdowns
+         *
+         * @param buttonClass button type e.g. shape, draw, erase etc.
+         * @param drawMode boolean for whether the whiteboard is in drawing mode
+         * @param selectMode boolean for whether the whiteboard is in selection mode
+         */
         function handleButtonClick(buttonClass, drawMode, selectMode) {
             const buttons = document.querySelectorAll('.whiteboard-buttons button');
             buttons.forEach(button => {
@@ -457,6 +493,9 @@
             upperCanvas.classList.remove("erase");
         }
 
+        /**
+         * Allows for dropdowns to close whenever they are clicked off
+         */
         document.addEventListener('mousedown', function (event) {
             const buttonBox = document.querySelector(".whiteboard-buttons")
             // Check if the clicked element is not the box
@@ -495,6 +534,9 @@
             }
         });
 
+        /**
+         * Handles switching line types for the free draw tool
+         */
         const drawStyleButtonSolid = document.querySelector('.customisation-box.draw .draw-style-button-solid');
         const drawStyleButtonDashed = document.querySelector('.customisation-box.draw .draw-style-button-dashed');
 
@@ -505,6 +547,13 @@
         drawStyleButtonDashed.addEventListener('click', function () {
             switchLineTypes()
         });
+
+        function switchLineTypes() {
+            drawStyleButtonSolid.classList.toggle('active')
+            drawStyleButtonDashed.classList.toggle('active')
+            updateLineType()
+        }
+
 
         function updateLineType() {
             const canvasWidth = 5 * canvas.freeDrawingBrush.width
@@ -517,6 +566,9 @@
             }
         }
 
+        /**
+         * Handles switching line width for the free draw tool
+         */
         const rangeInput = document.getElementById('rangeInput');
         const widthValueInput = document.getElementById('widthValue');
 
@@ -536,25 +588,18 @@
             }
         });
 
-        function switchLineTypes() {
-            drawStyleButtonSolid.classList.toggle('active')
-            drawStyleButtonDashed.classList.toggle('active')
-            updateLineType()
-        }
-
-        // Drawing Tool Colour
-
+        /**
+         * Handles switching colours for the free draw tool
+         */
         const colourPicker = document.querySelector('.colour-picker');
         const colourValueInput = document.getElementById('colourValue');
 
-        // Event listener for the colour picker
         colourPicker.addEventListener('input', function () {
             const newColour = this.value;
             colourValueInput.value = newColour.substr(1).toUpperCase();
             canvas.freeDrawingBrush.color = this.value;
         });
 
-        // Event listener for the colour value input
         colourValueInput.addEventListener('input', function () {
             const newColour = this.value;
             if (isValidHexcolour(newColour)) {
@@ -563,17 +608,17 @@
             }
         });
 
-        // Prevents shortcuts from activating while typing into colour input
         colourValueInput.addEventListener('keydown', function (event) {
             event.stopPropagation();
         });
 
-
-        // Checks if a given string is a valid hex colour
         function isValidHexcolour(hex) {
             return /^([0-9A-F]{3}){1,2}$/i.test(hex);
         }
 
+        /**
+         * Handles shortcut functionality
+         */
         document.addEventListener('keydown', function (event) {
             if (event.key === 's') {
                 handleButtonClick('select-button', false, true);
@@ -588,17 +633,19 @@
                 const activeObject = canvas.getActiveObject()
                 if (activeObject instanceof fabric.Group) {
                     activeObject.getObjects().forEach(obj => {
-                        // For arrows, as groups of objects and selection groups are the same thing
                         if (obj instanceof fabric.Group) {
                             obj.getObjects().forEach(child => {
                                 canvas.remove(child);
                             })
                         }
-                        if (playerArray.length !== 0) {
-                            addTeamPlayers();
-                        }
                         canvas.remove(obj);
                     });
+
+                    if (activeObject.id.includes("teamPlayer")) {
+                        const number = activeObject.id.match(/\d+/);
+                        const index = parseInt(number[0], 10);
+                        addTeamPlayer(index);
+                    }
                 }
                 canvas.remove(...canvas.getActiveObjects());
                 canvas.remove(canvas.getActiveObject())
@@ -613,6 +660,9 @@
             }
         });
 
+        /**
+         * Handles erasing objects with the eraser cursor
+         */
         function eraseObjects(event) {
             let pointer = canvas.getPointer(event);
             let objects = canvas.getObjects();
@@ -636,17 +686,29 @@
             canvas.renderAll();
         }
 
+
+        /**
+         * Add all players from the player array back into the player table
+         */
         function addTeamPlayers() {
             playerArray.forEach(({index, node}) => {
                 insertPlayerInTable(index,node)
             })
         }
 
+        /**
+         * Retrieve the player element from the player array using the index
+         * @param {number} index The index of the team player in the player list
+         */
         function addTeamPlayer(index) {
             const teamPlayer = playerArray.find(item => item.index === index);
             insertPlayerInTable(index,teamPlayer.node);
         }
-
+        /**
+         * Adds the team player element back into the player table in the order of the index.
+         * @param {number} index The index of the team player in the player list
+         * @param {element} node The index of the team player in the player list
+         */
         function insertPlayerInTable(index, node){
             const playerList = document.querySelector('.player-ul');
             node.style.display = '';
@@ -666,7 +728,9 @@
 
         /** Shapes **/
 
-            // Border Style
+        /**
+         * Handles switching border style for the shapes
+         */
         let shapeOutline = [];
 
         const shapeStyleButtonSolid = document.querySelector('.customisation-box.shape .draw-style-button-solid');
@@ -690,8 +754,9 @@
             }
         }
 
-        // Shape
-
+        /**
+         * Handles selecting the shape
+         */
         let shape = 'circle'
 
         document.querySelector('.shape-button-circle').addEventListener('click', function () {
@@ -739,14 +804,15 @@
             shape = selectedShape
         }
 
-        // Fill
+        /**
+         * Handles selecting colour fill for the shape
+         */
         let innerColour = '#FF0000'
         let innerHidden = false;
 
         const colourPickerFill = document.querySelector('.colour-picker.fill');
         const colourValueInputFill = document.getElementById('colourValueFill');
 
-        // Event listener for the colour picker
         colourPickerFill.addEventListener('input', function () {
             const newColour = this.value;
             colourValueInputFill.value = newColour.substr(1).toUpperCase();
@@ -755,7 +821,6 @@
             innerHidden = false;
         });
 
-        // Event listener for the colour value input
         colourValueInputFill.addEventListener('input', function () {
             const newColour = this.value;
             if (isValidHexcolour(newColour)) {
@@ -766,7 +831,6 @@
             }
         });
 
-        // Prevents shortcuts from activating while typing into colour input
         colourValueInputFill.addEventListener('keydown', function (event) {
             event.stopPropagation();
         });
@@ -779,14 +843,15 @@
         });
 
 
-        // Outline
+        /**
+         * Handles switching outline colour for the shape
+         */
         let outerColour = '#FF0000'
         let outerHidden = false;
 
         const colourPickerOutline = document.querySelector('.colour-picker.outline');
         const colourValueInputOutline = document.getElementById('colourValueOutline');
 
-        // Event listener for the colour picker
         colourPickerOutline.addEventListener('input', function () {
             const newColour = this.value;
             colourValueInputOutline.value = newColour.substr(1).toUpperCase();
@@ -795,7 +860,6 @@
             outerHidden = false;
         });
 
-        // Event listener for the colour value input
         colourValueInputOutline.addEventListener('input', function () {
             const newColour = this.value;
             if (isValidHexcolour(newColour)) {
@@ -808,7 +872,6 @@
 
         const whiteboardTitle = document.querySelector(".whiteboard-title")
 
-        // Prevents shortcuts from activating while typing into colour input
         colourValueInputOutline.addEventListener('keydown', function (event) {
             event.stopPropagation();
         });
@@ -825,10 +888,11 @@
         });
 
 
-        // Drawing Shapes
+        /**
+         * Functionality for drawing shapes
+         */
 
-        // Event listener for canvas interactions
-        let mouseDown = false; // Track mouse button state
+        let mouseDown = false;
         let drawingShape = null;
         let startX;
         let startY;
@@ -838,6 +902,10 @@
         let rightLine;
         const aw = 36;
 
+        /**
+         * Handles mouse:down interaction. Encompasses creating the shapes, and setting their origin. Also includes
+         * call for erase tool.
+         */
         canvas.on('mouse:down', function (options) {
             const {x, y} = canvas.getPointer(options.e);
             if (canvas.getActiveObject() && activeMode !== "erase-button") {
@@ -954,12 +1022,14 @@
                         canvas.add(leftLine);
                         canvas.add(rightLine);
                     }
-                    // drawingShape.set({borderColor: '#257AFD', cornerColor: '#ffffff', cornerStrokeColor: '#257AFD'})
                     canvas.add(drawingShape);
                 }
             }
         });
 
+        /**
+         * Handles mouse:move interaction. While mouse:down draws the shapes.
+         */
         canvas.on('mouse:move', function (options) {
             const pointer = canvas.getPointer(options.e);
             const {x, y} = pointer;
@@ -1028,7 +1098,7 @@
                         }
                         canvas.renderAll();
                     } else if (shapeButton.classList.contains("line")) {
-                        // Have to do ti separately as the line glitches if you set x/y to the value it already is
+                        // Have to do to separately as the line glitches if you set x/y to the value it already is
                         if (x !== startX) {
                             drawingShape.set({x2: x})
                         }
@@ -1090,6 +1160,9 @@
             }
         });
 
+        /**
+         * Handles mouse:up interaction. Stops the drawing of shapes, and groups the arrow elements into a single shape.
+         */
         canvas.on('mouse:up', function () {
             mouseDown = false;
             if (activeMode === "shape-button") {
@@ -1139,12 +1212,17 @@
 
 
         /** Formation **/
-
         document.getElementById("formation-dropdown").addEventListener("change", function (event) {
             const selectedOption = event.target.options[event.target.selectedIndex];
             loadFormation(selectedOption);
         });
 
+        /**
+         * Calls correct function for formation generation based on whether the formation is custom after selection
+         * from dropdown.
+         *
+         * @param target selected formation from dropdown
+         */
         function loadFormation(target) {
             const formationId = target.value;
             const formation = target.textContent;
@@ -1165,7 +1243,11 @@
 
         const radius = 14;
 
-        // Adapted from formations page
+        /**
+         * Renders formation on the canvas from the provided string.
+         *
+         * @param formationString formation in string form, e.g. '1-4-4-2'
+         */
         function renderPlayers(formationString) {
             const formation = formationString.split("-").map(num => parseInt(num));
             // Builds formation
@@ -1182,6 +1264,11 @@
             }
         }
 
+        /**
+         * Renders formation on the canvas from provided lineup
+         *
+         * @param positions positions of the icons on the pitch, in form e.g.'20px,30px;40px,60px;'
+         */
         function renderPlayersCustom(positions) {
             // Due to a lack of foresight the displacement is saved as a static px value rather than a percentage, hence
             // it is prudent to turn the value into a percentage
@@ -1198,6 +1285,9 @@
             }
         }
 
+        /**
+         * Sets the colour of the initial default player icons in the navbar
+         */
         const playerIconsContainer = document.querySelector(".player-icon-container");
         let playerIcons = document.querySelectorAll(".player-icon");
         const playerAdd = document.querySelector(".add-player-icon");
@@ -1208,6 +1298,9 @@
             addPlayerIconMovement(icon);
         }
 
+        /**
+         * Handles adding additional default player icons
+         */
         playerAdd.addEventListener('click', function () {
             playerIcons = document.querySelectorAll(".player-icon");
             if (playerIcons.length < 5) {
@@ -1222,6 +1315,11 @@
             }
         });
 
+        /**
+         * Adds functionality for moving default player icons
+         *
+         * @param playerIcon default player icon html object
+         */
         function addPlayerIconMovement(playerIcon) {
             let iconIsDragging = false;
             const yOffset = 15;
@@ -1263,6 +1361,9 @@
             })
         }
 
+        /**
+         * Generates a default player icon on the canvas
+         */
         function createPlayerIcon(x, y, fill) {
             const playerIconOuter = new fabric.Circle({
                 left: x,
