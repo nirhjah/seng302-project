@@ -163,11 +163,9 @@
             </div>
             <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
             <div class="submit-button">
-                <a th:href="@{home}">
-                    <button onclick="getPlayersAndPositionsAndSubs()" type="submit" th:text="${actId != null ? 'Save' : 'Create'}"> </button>
-                </a>
-                <div class="cancel-link">
-                    <a th:if="${actId != null}" th:href="@{view-activity(activityID=${actId})}">Cancel</a>
+                <button onclick="getPlayersAndPositionsAndSubs()" type="submit" th:text="${actId != null ? 'Save' : 'Create'}"> </button>
+                <div class="cancel-link" th:if="${actId != null}">
+                    <a th:href="@{view-activity(activityID=${actId})}">Cancel</a>
                 </div>
             </div>
         </form>
