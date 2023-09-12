@@ -42,7 +42,9 @@ public class UserCompetition extends Competition {
     }
 
     public Set<User> getPlayers() {
-        return Collections.unmodifiableSet(players);
+        // This must be mutable, for some weird reason.
+        // JPA calls "sort" on this value internally, so if it's immutable, there's an error
+        return new HashSet<>(players);
     }
 
     public void addPlayer(User player) {

@@ -57,7 +57,9 @@ public class TeamCompetition extends Competition {
     }
 
     public Set<Team> getTeams() {
-      return Set.copyOf(this.teams);
+        // This is stupid, but returned set must be mutable
+        // JPA calls "sort" on this value internally, so if it's immutable, there's an error
+        return new HashSet<>(this.teams);
     }
 
     public void setTeams(Set<Team> teams) {
