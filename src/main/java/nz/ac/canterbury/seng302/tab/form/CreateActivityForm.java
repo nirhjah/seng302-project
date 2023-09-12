@@ -171,7 +171,12 @@ public class CreateActivityForm {
         this.city = location.getCity();
         this.suburb = location.getSuburb();
         this.activityType = activity.getActivityType();
-        this.team = activity.getTeam().getTeamId();
+        if (activity.getTeam() != null) {
+            this.team = activity.getTeam().getTeamId();
+        } else {
+            this.team = -1;
+        }
+
     }
 
 
