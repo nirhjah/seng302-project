@@ -82,6 +82,7 @@ public class SecurityConfiguration {
         // See https://github.com/spring-projects/spring-security/issues/12546
         http
             .authorizeHttpRequests(auth -> auth.requestMatchers(
+                AntPathRequestMatcher.antMatcher("/favicon.ico"),
                 AntPathRequestMatcher.antMatcher("/geocode/autocomplete"),
                 AntPathRequestMatcher.antMatcher("/h2/**"),
                 AntPathRequestMatcher.antMatcher("/resources/**"),
