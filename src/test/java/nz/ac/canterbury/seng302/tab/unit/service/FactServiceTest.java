@@ -11,6 +11,8 @@ import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.FactRepository;
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.FactService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -37,6 +39,12 @@ public class FactServiceTest {
 
     @Autowired
     ActivityRepository activityRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    TeamRepository teamRepository;
 
     @Test
     public void testActivityLength() throws Exception {
@@ -160,6 +168,8 @@ public class FactServiceTest {
                 LocalDateTime.of(2023, 1,1,8,30),
                 creator,  new Location(null, null, null,
                 "Christchurch", null, "New Zealand"));
+        userRepository.save(creator);
+        teamRepository.save(team);
         activityRepository.save(activity);
 
         List<Fact> factList = new ArrayList<>();
@@ -193,6 +203,8 @@ public class FactServiceTest {
                 LocalDateTime.of(2023, 1,1,8,30),
                 creator,  new Location(null, null, null,
                 "Christchurch", null, "New Zealand"));
+        userRepository.save(creator);
+        teamRepository.save(team);
         activityRepository.save(activity);
 
         List<Fact> factList = new ArrayList<>();
@@ -241,6 +253,8 @@ public class FactServiceTest {
                 LocalDateTime.of(2023, 1,1,8,30),
                 creator,  new Location(null, null, null,
                 "Christchurch", null, "New Zealand"));
+        userRepository.save(creator);
+        teamRepository.save(team);
         activityRepository.save(activity);
 
         List<Fact> factList = new ArrayList<>();

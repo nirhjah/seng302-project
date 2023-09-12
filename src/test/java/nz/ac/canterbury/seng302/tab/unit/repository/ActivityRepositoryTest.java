@@ -9,6 +9,8 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,12 @@ public class ActivityRepositoryTest {
 
     @Autowired
     ActivityRepository activityRepository;
+
+    @Autowired
+    TeamRepository teamRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     private Location location;
     @BeforeEach
@@ -54,6 +62,8 @@ public class ActivityRepositoryTest {
         Activity activityTwo = new Activity(ActivityType.Friendly, team, "A random friendly",
                 LocalDateTime.of(2023, 2,1,6,30),
                 LocalDateTime.of(2023, 2,1,8,30), creator, location);
+        userRepository.save(creator);
+        teamRepository.save(team);
         activityRepository.save(activity);
         activityRepository.save(activityTwo);
         Assertions.assertEquals(List.of(activity, activityTwo), activityRepository.findAll());
@@ -96,6 +106,9 @@ public class ActivityRepositoryTest {
                 new Location(null, null, null, "Nelson", null, "New Zealand"));
 
         List<Activity> activities = Arrays.asList(activity1, activity2, activity3, activity4, activity5, activity6);
+        userRepository.save(user);
+        teamRepository.save(team1);
+        teamRepository.save(team2);
         activityRepository.save(activity1);
         activityRepository.save(activity2);
         activityRepository.save(activity3);
@@ -145,6 +158,8 @@ public class ActivityRepositoryTest {
                 new Location(null, null, null, "Christchurch", null, "New Zealand"));
         activity1.setActivityOutcome(ActivityOutcome.Win);
         activity2.setActivityOutcome(ActivityOutcome.Loss);
+        userRepository.save(user);
+        teamRepository.save(team1);
         activityRepository.save(activity1);
         activityRepository.save(activity2);
         activityRepository.save(activity3);
@@ -187,6 +202,8 @@ public class ActivityRepositoryTest {
         activity4.setActivityOutcome(ActivityOutcome.Draw);
         activity5.setActivityOutcome(ActivityOutcome.Win);
         activity6.setActivityOutcome(ActivityOutcome.Draw);
+        userRepository.save(user);
+        teamRepository.save(team1);
         activityRepository.save(activity1);
         activityRepository.save(activity2);
         activityRepository.save(activity3);
@@ -227,6 +244,8 @@ public class ActivityRepositoryTest {
                 LocalDateTime.of(2023, 1,1,6,30),
                 LocalDateTime.of(2023, 1,1,8,30), user,
                 new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        userRepository.save(user);
+        teamRepository.save(team1);
         activityRepository.save(activity1);
         activityRepository.save(activity2);
         activityRepository.save(activity3);
@@ -266,6 +285,8 @@ public class ActivityRepositoryTest {
                 LocalDateTime.of(2023, 1,1,6,30),
                 LocalDateTime.of(2023, 1,1,8,30), user,
                 new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        userRepository.save(user);
+        teamRepository.save(team1);
         activityRepository.save(activity1);
         activityRepository.save(activity2);
         activityRepository.save(activity3);
@@ -285,6 +306,8 @@ public class ActivityRepositoryTest {
                 LocalDateTime.of(2023, 1,6,6,30),
                 LocalDateTime.of(2023, 1,6,8,30), user,
                 new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        userRepository.save(user);
+        teamRepository.save(team1);
         activityRepository.save(activity1);
 
         Assertions.assertEquals(1, activityRepository.getAllGamesAndFriendlies(team1));
@@ -299,6 +322,8 @@ public class ActivityRepositoryTest {
                 LocalDateTime.of(2023, 1,6,6,30),
                 LocalDateTime.of(2023, 1,6,8,30), user,
                 new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        userRepository.save(user);
+        teamRepository.save(team1);
         activityRepository.save(activity1);
 
         Assertions.assertEquals(1, activityRepository.getAllGamesAndFriendlies(team1));
@@ -323,6 +348,8 @@ public class ActivityRepositoryTest {
                 LocalDateTime.of(2023, 1,4,8,30), user,
                 new Location(null, null, null, "Christchurch", null, "New Zealand"));
         activity2.setActivityOutcome(ActivityOutcome.Win);
+        userRepository.save(user);
+        teamRepository.save(team1);
         activityRepository.save(activity1);
         activityRepository.save(activity2);
         activityRepository.save(activity3);
@@ -350,6 +377,8 @@ public class ActivityRepositoryTest {
                 new Location(null, null, null, "Christchurch", null, "New Zealand"));
         activity2.setActivityOutcome(ActivityOutcome.Win);
         activity3.setActivityOutcome(ActivityOutcome.Loss);
+        userRepository.save(user);
+        teamRepository.save(team1);
         activityRepository.save(activity1);
         activityRepository.save(activity2);
         activityRepository.save(activity3);
@@ -377,6 +406,8 @@ public class ActivityRepositoryTest {
                 new Location(null, null, null, "Christchurch", null, "New Zealand"));
         activity2.setActivityOutcome(ActivityOutcome.Win);
         activity3.setActivityOutcome(ActivityOutcome.Draw);
+        userRepository.save(user);
+        teamRepository.save(team1);
         activityRepository.save(activity1);
         activityRepository.save(activity2);
         activityRepository.save(activity3);

@@ -29,15 +29,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 
-import javax.xml.xpath.XPathExpressionException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
@@ -111,8 +108,6 @@ public class U27CreateActivityFeature {
     private final String DEFAULT_CITY = "Christchurch";
 
     private final String DEFAULT_COUNTRY = "New Zealand";
-
-    private final Location DEFAULT_LOCATION = new Location(DEFAULT_ADDR_LINE_1, null, null, DEFAULT_CITY, DEFAULT_POSTCODE, DEFAULT_COUNTRY);
 
     private ActivityType chosenActivityType;
 

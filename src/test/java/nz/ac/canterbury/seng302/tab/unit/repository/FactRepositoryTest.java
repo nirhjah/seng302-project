@@ -11,6 +11,8 @@ import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.FactRepository;
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,12 @@ public class FactRepositoryTest {
 
     @Autowired
     ActivityRepository activityRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    TeamRepository teamRepository;
 
     @Test
     public void getAllActivityFacts() throws Exception {
@@ -151,6 +159,8 @@ public class FactRepositoryTest {
                 LocalDateTime.of(2023, 1,1,8,30),
                 creator,  new Location(null, null, null,
                 "Christchurch", null, "New Zealand"));
+        userRepository.save(creator);
+        teamRepository.save(team);
         activityRepository.save(activity);
         List<Fact> factListAct = new ArrayList<>();
         factListAct.add(new Goal("Goal was scored", "1h 40m", activity, creator, 1));
@@ -177,6 +187,8 @@ public class FactRepositoryTest {
                 LocalDateTime.of(2023, 1,1,8,30),
                 creator,  new Location(null, null, null,
                 "Christchurch", null, "New Zealand"));
+        userRepository.save(creator);
+        teamRepository.save(team);
         activityRepository.save(activity);
         List<Fact> factListAct = new ArrayList<>();
         factListAct.add(new Goal("Goal was scored", "1h 40m", activity, creator, 1));
@@ -203,6 +215,9 @@ public class FactRepositoryTest {
                 LocalDateTime.of(2023, 1,1,8,30),
                 creator,  new Location(null, null, null,
                 "Christchurch", null, "New Zealand"));
+        userRepository.save(creator);
+        teamRepository.save(team);
+        teamRepository.save(anotherTeam);
         activityRepository.save(activity);
         List<Fact> factListAct = new ArrayList<>();
         factListAct.add(new Goal("Goal was scored", "1h 40m", activity, creator, 1));
@@ -236,6 +251,8 @@ public class FactRepositoryTest {
                 LocalDateTime.of(2023, 1,1,8,30),
                 creator,  new Location(null, null, null,
                 "Christchurch", null, "New Zealand"));
+        userRepository.save(creator);
+        teamRepository.save(team);
         activityRepository.save(activity);
         List<Fact> factListAct = new ArrayList<>();
         factListAct.add(new Goal("Goal was scored", "1h 40m", activity, creator, 1));
@@ -266,6 +283,8 @@ public class FactRepositoryTest {
                 LocalDateTime.of(2023, 1,1,8,30),
                 creator,  new Location(null, null, null,
                 "Christchurch", null, "New Zealand"));
+        userRepository.save(creator);
+        teamRepository.save(team);
         activityRepository.save(activity);
 
         List<Fact> factList = new ArrayList<>();

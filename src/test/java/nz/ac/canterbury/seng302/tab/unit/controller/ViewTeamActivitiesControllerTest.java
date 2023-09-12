@@ -55,9 +55,9 @@ public class ViewTeamActivitiesControllerTest {
                 LocalDateTime.of(2030, 1,1,6,30),
                 LocalDateTime.of(2030, 1,1,8,30), user,
                 new Location(null,null,null,"CHCH", null, "NZ"));
-        activityRepository.save(game);
         teamRepository.save(team);
         userRepository.save(user);
+        activityRepository.save(game);
     }
     @AfterEach
     public void afterEach() {

@@ -44,6 +44,7 @@ public class ViewActivitiesControllerTest {
                 null, "NZ");
         User user = new User("John", "Doe",
                 new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", testLocation);
+        userRepository.save(user);
         game = new Activity(ActivityType.Other, null , "Personal Activity",
                 LocalDateTime.of(2030, 1,1,6,30),
                 LocalDateTime.of(2030, 1,1,8,30), user,
@@ -53,6 +54,7 @@ public class ViewActivitiesControllerTest {
     @AfterEach
     public void afterEach() {
         activityRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
 
