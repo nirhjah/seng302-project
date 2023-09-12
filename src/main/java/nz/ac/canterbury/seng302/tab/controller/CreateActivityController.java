@@ -234,7 +234,6 @@ public class CreateActivityController {
         Activity activity = activityService.findActivityById(actId);
 
         postCreateActivityErrorChecking(bindingResult, createActivityForm, team, currentUser);
-        System.out.println(bindingResult);
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             if (activity != null) {

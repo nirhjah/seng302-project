@@ -736,7 +736,7 @@ public class EditActivityFormControllerTest {
     }
 
     @Test
-    public void whenValidFormationIsSpecified_CreateActivity_formationSaved() throws Exception {
+    void whenValidFormationIsSpecified_CreateActivity_formationSaved() throws Exception {
         when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
         when(mockActivityService.validateTeamSelection(any(), any())).thenReturn(true);

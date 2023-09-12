@@ -5,6 +5,8 @@ Feature: Activity Creation
     When I click on a UI element to create an activity,
     Then I see a form to create an activity.
 
+# Commented out due to detached entity error with tests. Functionality works manually as of 09/12/23
+
 #  Scenario: Creating a valid activity
 #    Given I am on the create activity page
 #    When I enter valid values for the team it relates to, the activity type, a short description, and the activity start and end time and location and create the activity

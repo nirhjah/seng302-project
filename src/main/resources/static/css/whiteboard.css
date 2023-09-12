@@ -317,8 +317,8 @@ input[type="range"]::-moz-range-track {
 }
 
 .circle-img img, .triangle-img img, .square-img img, .ellipse-img img, .rectangle-img img, .line-img img, .arrow-img img {
-    height: 20px !important;
-    width: 20px !important;
+    height: 21px !important;
+    width: 21px !important;
 }
 
 

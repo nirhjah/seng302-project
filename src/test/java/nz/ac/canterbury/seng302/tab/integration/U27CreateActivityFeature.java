@@ -309,7 +309,7 @@ public class U27CreateActivityFeature {
                 .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
         Assertions.assertTrue(bindingResult.hasErrors());
         String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-        Assertions.assertEquals(errorMessage, ActivityFormValidators.TEAM_REQUIRED_MSG);
+        Assertions.assertEquals(ActivityFormValidators.TEAM_REQUIRED_MSG, errorMessage);
         verify(activityService, times(0)).updateOrAddActivity(any());
 
     }
@@ -346,7 +346,7 @@ public class U27CreateActivityFeature {
                 .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
         Assertions.assertTrue(bindingResult.hasErrors());
         String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-        Assertions.assertEquals(errorMessage, ActivityFormValidators.ACTIVITY_TYPE_MSG);
+        Assertions.assertEquals(ActivityFormValidators.ACTIVITY_TYPE_MSG, errorMessage);
         verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
@@ -386,7 +386,7 @@ public class U27CreateActivityFeature {
                 .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
         Assertions.assertTrue(bindingResult.hasErrors());
         String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-        Assertions.assertEquals(errorMessage, ActivityFormValidators.DESC_CONTAINS_INVALID_CHAR_MSG);
+        Assertions.assertEquals(ActivityFormValidators.DESC_CONTAINS_INVALID_CHAR_MSG, errorMessage);
         verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
@@ -460,7 +460,7 @@ public class U27CreateActivityFeature {
                 .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
         Assertions.assertTrue(bindingResult.hasErrors());
         String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-        Assertions.assertEquals(errorMessage, ActivityFormValidators.END_BEFORE_START_MSG);
+        Assertions.assertEquals(ActivityFormValidators.END_BEFORE_START_MSG, errorMessage);
         verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
@@ -502,7 +502,7 @@ public class U27CreateActivityFeature {
                 .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
         Assertions.assertTrue(bindingResult.hasErrors());
         String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-        Assertions.assertEquals(errorMessage, ActivityFormValidators.NO_DESC_MSG);
+        Assertions.assertEquals(ActivityFormValidators.NO_DESC_MSG, errorMessage);
         verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
@@ -525,7 +525,7 @@ public class U27CreateActivityFeature {
                 .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
         Assertions.assertTrue(bindingResult.hasErrors());
         String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-        Assertions.assertEquals(errorMessage, ActivityFormValidators.DESC_TOO_LONG_MSG);
+        Assertions.assertEquals(ActivityFormValidators.DESC_TOO_LONG_MSG, errorMessage);
         verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
@@ -565,7 +565,7 @@ public class U27CreateActivityFeature {
                 .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
         Assertions.assertTrue(bindingResult.hasErrors());
         String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-        Assertions.assertEquals(errorMessage, ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + teamCreationDateTime);
+        Assertions.assertEquals(ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + teamCreationDateTime, errorMessage);
         verify(activityService, times(0)).updateOrAddActivity(any());    }
 
     @When("I do not provide a start time")
@@ -602,7 +602,7 @@ public class U27CreateActivityFeature {
                 .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
         Assertions.assertTrue(bindingResult.hasErrors());
         String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-        Assertions.assertEquals(errorMessage, ActivityFormValidators.START_DATE_REQUIRED_MSG);
+        Assertions.assertEquals(ActivityFormValidators.START_DATE_REQUIRED_MSG, errorMessage);
         verify(activityService, times(0)).updateOrAddActivity(any());
     }
 
@@ -640,7 +640,7 @@ public class U27CreateActivityFeature {
                 .getModel().get("org.springframework.validation.BindingResult.createActivityForm");
         Assertions.assertTrue(bindingResult.hasErrors());
         String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-        Assertions.assertEquals(errorMessage, ActivityFormValidators.END_DATE_REQUIRED_MSG);
+        Assertions.assertEquals(ActivityFormValidators.END_DATE_REQUIRED_MSG, errorMessage);
         verify(activityService, times(0)).updateOrAddActivity(any());
 
     }
