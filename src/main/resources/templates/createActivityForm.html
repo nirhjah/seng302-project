@@ -46,8 +46,6 @@
                 <div th:each="err : ${#fields.errors('team')}" th:text="${err}" class="error-message"></div>
             </div>
 
-            <div th:text="'Test'"></div>
-
             <!--/* Formation selection dropdown (Only active if the activity supports it) */-->
             <div th:style="${actId != null ? 'display:block' : 'display:none'}" class="select-container">
                 <div class="select-box">
@@ -353,7 +351,7 @@
 
         // Otherwise, get the list of formations
         populateFormationDropdown(false, "(loading...)", {});
-        axios.get("createActivity/get_team_formation", {params: {teamId: currentTeamId}})
+        axios.get("create-activity/get_team_formation", {params: {teamId: currentTeamId}})
             .then(response => {
                 const formationList = response.data;
                 if (formationList.length == 0) {
