@@ -39,7 +39,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -80,6 +79,7 @@ public class U39CreateViewUpdateCompetition {
     private CompetitionRepository competitionRepository;
 
     private MockMvc mockMvc;
+
     private MockMvc viewAllMockMvc;
 
     private User user;
@@ -106,6 +106,7 @@ public class U39CreateViewUpdateCompetition {
 
     // The filter arguments to pass into the viewAllCompetitions request:
     private ViewAllCompetitionsController.Timing timing = null;
+
     private List<String> filterSports = new ArrayList<>();
 
     private String VIEW_ALL = "/view-all-competitions";
@@ -208,8 +209,7 @@ public class U39CreateViewUpdateCompetition {
 
     @And("I input valid information for name, dates, sport and grade,")
     public void iInputValidInformationForNameSportAndGradeLevel() throws Exception {
-
-        mockMvc.perform(multipart("/create-competition", 42L)
+        mockMvc.perform(multipart("/create-competition")
                         .param("name", "Sample Competition")
                         .param("sport", "Soccer")
                         .param("startDateTime", getFormattedDate(1000))
@@ -219,7 +219,8 @@ public class U39CreateViewUpdateCompetition {
                         .param("competitiveness", String.valueOf(Grade.Competitiveness.PROFESSIONAL))
                         .param("usersOrTeams", "users")
                         .param("userTeamID", String.valueOf(user.getId())))
-                .andExpect(status().isFound());
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/view-competition?competitionID=2"));
     }
 
     @When("I attempt to access the create a competition page,")
@@ -271,14 +272,6 @@ public class U39CreateViewUpdateCompetition {
         verify(competitionService, times(1)).updateOrAddCompetition(any());
     }
 
-    @And("I am shown a ui element that display full details for the competition.")
-    public void iAmShownAUiElementThatDisplayFullDetailsForTheCompetition() {
-        // Commented out while viewCompetition is not on dev
-        //        mockMvc.perform(get("/viewCompetition")
-        //                        .param("id", String.valueOf(competition.getCompetitionId())))
-        //                .andExpect(status().isOk()) // Accepted 200
-        //                .andExpect(view().name("viewCompetitionForm"));
-    }
 
     @And("I input invalid information for one of name, sport or grade,")
     public void iInputInvalidInformationForOneOfNameSportOrGrade() throws Exception {
