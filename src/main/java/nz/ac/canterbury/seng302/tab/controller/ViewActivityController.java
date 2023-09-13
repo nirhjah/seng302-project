@@ -267,17 +267,20 @@ public class ViewActivityController {
      * @return string with display of outcome
      */
     private String outcomeString(Activity activity) {
-        String outcomeString = "";
-        if (activity.getOutcome() == ActivityOutcome.Win) {
-            outcomeString = "Winner: " + activity.getTeam().getName();
+        String outcomeString = "Invalid Activity Type";
+        if (activity.getTeam() != null) {
+            if (activity.getOutcome() == ActivityOutcome.Win) {
+                outcomeString = "Winner: " + activity.getTeam().getName();
+            }
+            if (activity.getOutcome() == ActivityOutcome.Loss) {
+                outcomeString = "Winner: Opponent Team";
+            }
+            if (activity.getOutcome() == ActivityOutcome.Draw) {
+                outcomeString = "Draw";
+            }
+            return outcomeString;
         }
-        if (activity.getOutcome() == ActivityOutcome.Loss) {
-            outcomeString = "Winner: Opponent Team";
-        }
-        if (activity.getOutcome() == ActivityOutcome.Draw) {
-            outcomeString = "Draw";
-        }
-        return outcomeString;
+
     }
 
     /**
