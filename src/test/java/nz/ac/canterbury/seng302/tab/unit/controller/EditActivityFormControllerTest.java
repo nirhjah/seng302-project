@@ -1022,7 +1022,7 @@ public class EditActivityFormControllerTest {
         Mockito.doReturn(ACT_ID).when(localActivity).getId();
         when(mockActivityService.updateOrAddActivity(any())).thenReturn(localActivity);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(localActivity);
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("formation", "-1")
@@ -1051,7 +1051,7 @@ public class EditActivityFormControllerTest {
         Mockito.doReturn(ACT_ID).when(localActivity).getId();
         when(mockActivityService.updateOrAddActivity(any())).thenReturn(localActivity);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(localActivity);
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("formation", "-1")
