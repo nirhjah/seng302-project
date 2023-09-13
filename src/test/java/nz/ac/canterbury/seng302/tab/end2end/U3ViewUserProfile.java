@@ -28,7 +28,6 @@ public class U3ViewUserProfile {
                 "return h3Elements.map(element => element.textContent); " +
                 "}");
         Assertions.assertNotNull(h3TextList);
-
     }
 
     @Given("I am on my user profile page,")

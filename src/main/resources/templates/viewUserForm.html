@@ -54,28 +54,28 @@
                             <img th:src="@{/image/icons/name.svg}"/>
                             <div>
                                 <h3 class="attribute-type">Name</h3>
-                                <h3 th:text="|*{firstName} *{lastName}|"></h3>
+                                <h3 class ="name" th:text="|*{firstName} *{lastName}|"></h3>
                             </div>
                         </div>
                         <div class="user-label">
                             <img th:src="@{/image/icons/email.svg}"/>
                             <div>
                                 <h3 class="attribute-type">Email</h3>
-                                <h3 th:text="*{email}"></h3>
+                                <h3 class = "email" th:text="*{email}"></h3>
                             </div>
                         </div>
                         <div class="user-label">
                             <img  th:src="@{/image/icons/date-of-birth.svg}"/>
                             <div>
                                 <h3 class="attribute-type">Date of Birth</h3>
-                                <h3 th:text="*{#dates.format(dateOfBirth, 'dd-MM-yyyy')}"></h3>
+                                <h3 class= "dob" th:text="*{#dates.format(dateOfBirth, 'dd-MM-yyyy')}"></h3>
                             </div>
                         </div>
                         <div class="user-label">
                             <img  th:src="@{/image/icons/location.svg}"/>
                             <div>
                                 <h3 class="attribute-type">Location</h3>
-                                <h3 th:text="*{location}"></h3>
+                                <h3 class = "location" th:text="*{location}"></h3>
                             </div>
                         </div>
                         <div class="user-label">
