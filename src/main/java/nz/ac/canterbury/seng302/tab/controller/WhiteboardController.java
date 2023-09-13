@@ -81,7 +81,7 @@ public class WhiteboardController {
             team = teamOpt.get();
         }
         else {
-            return "homeForm";
+            return "redirect:/home";
         }
 
         model.addAttribute("teamFormations", formationService.getTeamsFormations(teamID));
@@ -94,18 +94,6 @@ public class WhiteboardController {
         model.addAttribute("teamLineupsPositions", positionsList);
 
         model.addAttribute("playersPerLineup", playersPerLineup);
-
-        Map<Long, LineUpInfo> map = new HashMap<>();
-
-        for (LineUp lineup : teamLineUps) {
-            var opt = lineUpPositionService.findLineUpPositionsByLineUp(lineup.getLineUpId());
-            if (opt.isPresent()) {
-                var linfo = new LineUpInfo(lineup, opt.get());
-                map.put(lineup.getLineUpId(), linfo);
-            }
-        }
-
-        model.addAttribute("lineUpToLineUpPositions", map);
 
         return "whiteboardForm";
     }
