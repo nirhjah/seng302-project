@@ -49,14 +49,16 @@ public class CreateTeamFormController {
     private FormationService formationService;
     private ActivityService activityService;
     private LineUpPositionService lineUpPositionService;
+    private LineUpService lineUpService;
 
-    public CreateTeamFormController(TeamService teamService, SportService sportService, UserService userService, FormationService formationService, ActivityService activityService, LineUpPositionService lineUpPositionService) {
+    public CreateTeamFormController(TeamService teamService, SportService sportService, UserService userService, FormationService formationService, ActivityService activityService, LineUpPositionService lineUpPositionService, LineUpService lineUpService) {
         this.teamService = teamService;
         this.sportService = sportService;
         this.userService = userService;
         this.formationService = formationService;
         this.activityService = activityService;
         this.lineUpPositionService = lineUpPositionService;
+        this.lineUpService = lineUpService;
     }
 
 
@@ -206,6 +208,7 @@ public class CreateTeamFormController {
 
         // Create lineup:
         LineUp lineUp = new LineUp(f, team, activity);
+        lineUp = lineUpService.updateOrAddLineUp(lineUp);
         for (int i=0; i<users.size(); i++) {
             LineUpPosition lup = new LineUpPosition(lineUp, users.get(i), i+1);
             lineUpPositionService.addLineUpPosition(lup);
@@ -286,6 +289,7 @@ public class CreateTeamFormController {
             sportService.addSport(new Sport(trimmedSport));
         }
 
+        addDebugEntities(team);
 
         return String.format("redirect:./team-info?teamID=%s", team.getTeamId());
     }

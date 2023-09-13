@@ -85,8 +85,8 @@ public class LineUpService {
         return lineUpRepository.findFormationByLineUpId(id);
     }
 
-    public void updateOrAddLineUp(LineUp lineUp) {
-        lineUpRepository.save(lineUp);
+    public LineUp updateOrAddLineUp(LineUp lineUp) {
+        return lineUpRepository.save(lineUp);
     }
 
 
