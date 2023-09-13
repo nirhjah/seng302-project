@@ -345,7 +345,7 @@ public class CreateActivityController {
      */
     @GetMapping(path = "/create-activity/get_team_formation", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<FormationInfo>> getTeamFormation(@RequestParam("teamId") long teamId) {
-        logger.info("GET /createActivity/get_team_formation");
+        logger.info("GET /create-activity/get_team_formation");
         // CHECK: Are we logged in?
         Optional<User> oCurrentUser = userService.getCurrentUser();
         if (oCurrentUser.isEmpty()) {
