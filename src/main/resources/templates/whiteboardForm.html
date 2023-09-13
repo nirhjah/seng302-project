@@ -333,7 +333,6 @@
         const yPlayerOffset = 10;
         const xPlayerOffset = 20;
 
-        let currentX, currentY;
 
         /**
          * Handles the drag and drop of team players by adding mouse event listeners
@@ -478,8 +477,7 @@
                 ctx.restore();
             }
         }
-        console.log(currentX);
-        console.log(currentY);
+
 
         fabric.Object.prototype.controls.deleteControl = new fabric.Control({
             x: 0.5,
