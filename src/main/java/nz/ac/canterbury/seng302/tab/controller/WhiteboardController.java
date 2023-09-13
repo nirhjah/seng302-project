@@ -111,7 +111,7 @@ public class WhiteboardController {
     }
 
     @GetMapping(path = "/whiteboard/get_lineup", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LineUpInfo> getTeamsJSON(@RequestParam long lineupId) {
+    public ResponseEntity<LineUpInfo> getLineUpJSON(@RequestParam long lineupId) {
         Optional<LineUp> optLineUp = lineUpService.findLineUpById(lineupId);
         if (optLineUp.isPresent()) {
             LineUp lineUp = optLineUp.get();
