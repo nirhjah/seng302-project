@@ -159,7 +159,8 @@
             </div>
 
             <div class="member-selection-box">
-                <div class="inactive-cover" th:unless="*{sport}">
+                <div class="inactive-cover" th:classappend="${users != null || teams != null} ? '' : 'active'"
+                     th:styleappend="${users != null || teams != null} ? 'display: none;' : ''">
                     <h3>You must type in a sport before you may add competitors</h3>
                 </div>
 
@@ -217,6 +218,20 @@
     const sportsInput = document.getElementById("sport")
     const inactiveCover = document.querySelector(".inactive-cover")
 
+
+    window.onload = function () {
+        if (sportsInput.value.trim() !== "") {
+            inactiveCover.classList.remove("active")
+            setTimeout(() => {
+                inactiveCover.style.display = "none";
+                getCompetitors();
+            }, 1000);
+        } else {
+            inactiveCover.classList.add("active")
+            inactiveCover.style.display = "flex";
+        }
+    };
+
     document.addEventListener('DOMContentLoaded', function() {
         if (sportsInput.value.trim() !== "") {
             getCompetitors();
@@ -227,12 +242,14 @@
         }
     });
 
+
     const totalHeading = document.getElementById('totalHeading');
 
     function updateTotalCount() {
         let itemCount = competitorsUl.children.length;
         totalHeading.textContent = 'Total: ' + itemCount;
     }
+
 
     sportsInput.addEventListener("change", () => {
         clearCompetitors();
@@ -305,6 +322,11 @@
     function getCompetitors() {
         if (!inactiveCover.classList.contains("active")) {
             const type = typeCheckbox.checked ? "users" : "teams"
+            if (!sportsInput.value) {
+                // return early, we can't query for users or teams because we don't know the sport.
+                return
+            }
+            console.log("getCompetitors(")
             axios.get("create-competition/get_" + type, {params: {sport: sportsInput.value, search: searchQuery.value}})
                 .then(response => {
                     generateUsersTeams(response.data);
