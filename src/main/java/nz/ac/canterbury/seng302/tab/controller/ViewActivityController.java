@@ -280,7 +280,7 @@ public class ViewActivityController {
             }
             return outcomeString;
         }
-
+        return outcomeString;
     }
 
     /**
