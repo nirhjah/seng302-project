@@ -132,7 +132,6 @@ public class RegisterController {
             Model model, RedirectAttributes redirectAttributes, HttpSession session) throws IOException, MessagingException {
 
         // Run the custom validation methods
-        // TODO: Move validators that might be reused into their own class
         checkEmailIsNotInUse(registerForm, bindingResult);
         checkPasswordsMatchAndIsSecure(registerForm, bindingResult);
         model.addAttribute("httpServletRequest",request);

@@ -80,7 +80,6 @@ public class Team implements Identifiable, HasImage {
      * constructor that sets the manager
      *
      * Should be used for testing ONLY!
-     * TODO: Remove this constructor, use builder pattern. same for user
      *
      * @param name
      * @param sport
@@ -100,7 +99,6 @@ public class Team implements Identifiable, HasImage {
 
     /**
      * Should be used for testing ONLY!
-     * TODO: Remove this constructor, use builder pattern. same for user
      *
      * @param name  - team name
      * @param sport - sport name
@@ -311,8 +309,6 @@ public class Team implements Identifiable, HasImage {
      * @param teamClub
      */
     public void setTeamClub(Club teamClub) {
-        // TODO: We shouldn't be comparing string here, we should ideally have these
-        //   columns referencing actual sport entities.
         if (!teamClub.getSport().equals(getSport())) {
             throw new UnmatchedSportException(teamClub.getSport(), getSport());
         }

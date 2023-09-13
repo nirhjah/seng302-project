@@ -1,8 +1,5 @@
 package nz.ac.canterbury.seng302.tab.response.competition;
 
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.helper.ImageType;
-
 public class CompetitionUserInfo {
 
     private Long userTeamID;

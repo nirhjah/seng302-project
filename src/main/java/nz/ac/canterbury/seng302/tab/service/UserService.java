@@ -7,8 +7,6 @@ import nz.ac.canterbury.seng302.tab.authentication.TokenVerification;
 import nz.ac.canterbury.seng302.tab.entity.Sport;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +39,6 @@ import java.util.Optional;
 @Configuration
 @ComponentScan("nz.ac.canterbury.seng302.tab.service")
 public class UserService {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final UserRepository userRepository;
 
@@ -102,9 +99,6 @@ public class UserService {
             @Nullable List<String> favouriteCities,
             @Nullable String nameSearch) {
 
-        logger.info("fav cities = {}", favouriteCities);
-        logger.info("fav sports = {}", favouriteSports);
-        logger.info("nameSearch = {}", nameSearch);
         if (favouriteSports == null) {
             favouriteSports = List.of();
         }
@@ -114,9 +108,6 @@ public class UserService {
         if (nameSearch != null && nameSearch.isEmpty()) {
             nameSearch = null;
         }
-        logger.info("...nameSearch = {}", nameSearch);
-        logger.info("...fav sports = {}", favouriteSports);
-        logger.info("...fav city = {}", favouriteCities);
         return userRepository.findUserByFilteredLocationsAndSports(pageable, favouriteCities, favouriteSports,
                 nameSearch);
     }

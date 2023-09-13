@@ -148,10 +148,10 @@
                                         <div style="display: unset" th:each="err : ${#fields.errors('timeOfFact')}"
                                              th:text="${err}" class="error-message"></div>
                                         <div style="margin-bottom: 10%; padding-top: 5px" class="number-spinner">
-                                            <button class="decreaseTime">-</button>
-                                            <input type="number" class="valueInputTime" min="0"
-                                                   id="time-of-fact" name="timeOfFact" th:field="*{timeOfFact}">
-                                            <button class="increaseTime">+</button>
+                                            <button class="decrement" data-target="time-of-fact">-</button>
+                                            <input type="number" class="valueInputTime" min="0" value="0"
+                                                   id="time-of-fact" name="timeOfFact">
+                                            <button class="increment" data-target="time-of-fact">+</button>
                                         </div>
                                     </div>
                                 </div>
@@ -176,7 +176,7 @@
                 <table style="padding: 15px; border-collapse: collapse; border: 2px solid; border-radius: 5px; margin:2%; width:96%">
                     <thead style="background-color: #0b2239">
                     <tr>
-                        <th style="width: 30%; background-color: #0b2239"> Time</th>
+                        <th style="width: 30%; background-color: #0b2239"> Time (minutes)</th>
                         <th style="width: 70%; background-color: #0b2239"> Description</th>
                     </tr>
                     </thead>
@@ -195,7 +195,7 @@
         </div>
 
         <div class="content-box" id="formation-tab">
-            <div class="content" style="overflow=none">
+            <div class="content" style="overflow: unset">
                  <div id="addSubModal" class="modal"
                          th:style="${subInvalid != null ? 'display:block' : 'display:none'}">
                      <div class="add-goal-modal-content event" style="bottom: unset">
@@ -243,9 +243,10 @@
                                      <label class="goal-form-labels" for="time-of-goal">Time (minutes)<span class="required">*</span></label>
 
                                      <div style="margin-bottom: 10%" class="number-spinner">
-                                         <button class="decreaseTime">-</button>
-                                         <input type="number" class="valueInputTime" value="1" min="1" id="time-of-sub" name="timeOfSub" th:field="*{time}">
-                                         <button class="increaseTime">+</button>
+                                         <button class="decrement" data-target="time-of-sub">-</button>
+                                         <input type="number" class="valueInputTime" value="0" min="0"
+                                            id="time-of-sub" name="time">
+                                         <button class="increment" data-target="time-of-sub">+</button>
                                      </div>
                                 </div>
 
@@ -266,6 +267,8 @@
                      th:data-formation="${formation.formation}"
                      th:data-custom="${formation.custom}"
                      th:data-customPlayers="${formation.customPlayerPositions}"></div>
+                <h3 style="margin: auto" th:if="${formation == null}">No formation information available</h3>
+
                 <div>
                     <div class="sub-table">
                         <div class="sub-header">
@@ -314,6 +317,7 @@
                         <button onclick="addSubModal.style.display = 'block'" type="button"
                          th:style="${(playersInLineUp.size() > 0) ? null : 'display:none'}">Add Substitution</button>
                     </div>
+                    <h3 th:style="${(playersInLineUp.size() > 0) ? 'display:none' : null}"> You cannot make a Substitution as there is no lineup</h3>
                 </div>
             </div>
         </div>
@@ -462,10 +466,10 @@
                                                 class="required">*</span></label>
 
                                         <div style="margin-bottom: 10%" class="number-spinner">
-                                            <button class="decreaseTime">-</button>
-                                            <input type="number" class="valueInputTime" value="1" min="1"
-                                                   id="time-of-goal" name="timeOfGoal" th:field="*{time}">
-                                            <button class="increaseTime">+</button>
+                                            <button class="decrement" data-target="time-of-goal" type="button">-</button>
+                                            <input type="number" class="valueInputTime" value="0" min="0"
+                                                   id="time-of-goal" name="time">
+                                            <button class="increment" data-target="time-of-goal" type="button">+</button>
                                         </div>
                                     </div>
 
@@ -473,10 +477,10 @@
                                     <div class="goal-input-div">
                                         <label class="goal-form-labels" for="goal-value">Goal Value</label>
                                         <div class="number-spinner">
-                                            <button class="decreaseGoal">-</button>
+                                            <button class="decrement" data-target="goal-value">-</button>
                                             <input type="number" class="valueInputGoal" value="1" min="1"
                                                    id="goal-value" name="goalValue">
-                                            <button class="increaseGoal">+</button>
+                                            <button class="increment" data-target="goal-value">+</button>
                                         </div>
 
                                     </div>
@@ -542,46 +546,6 @@
 
 <script th:inline="javascript">
 
-    /*  const decreaseButtonGoal = document.querySelector('.decrease');
-      const increaseButtonGoal = document.querySelector('.increase');
-      const valueInputGoal = document.querySelector('.valueInput');
-
-      decreaseButtonGoal.addEventListener('click', () => {
-          event.preventDefault();
-          const currentValue = parseInt(valueInputGoal.value, 10);
-          if (currentValue > 1) {
-              valueInputGoal.value = currentValue - 1;
-          }
-      });
-
-      increaseButtonGoal.addEventListener('click', () => {
-          event.preventDefault();
-          valueInputGoal.value = parseInt(valueInputGoal.value, 10) + 1;
-      });
-
-
-      const decreaseButtonTime = document.querySelector('.decreaseTime');
-      const increaseButtonTime = document.querySelector('.increaseTime');
-      const valueInputTime = document.querySelector('.valueInputTime');
-
-      if (valueInputTime.value === "") {
-          valueInputTime.value = 1;
-      }
-
-      decreaseButtonTime.addEventListener('click', () => {
-          event.preventDefault();
-          const currentValue = parseInt(valueInputTime.value, 10);
-          if (currentValue > 1) {
-              valueInputTime.value = currentValue - 1;
-          }
-      });
-
-      increaseButtonTime.addEventListener('click', () => {
-          event.preventDefault();
-          valueInputTime.value = parseInt(valueInputTime.value, 10) + 1;
-      });
-*/
-
     function render() {
         setTimeout(function () {
             loadFormation();
@@ -619,7 +583,7 @@
                 playerNameElement.style.marginLeft = '-4px';
 
                 const playerImage = position.querySelector('.player-profile-img');
-                playerImage.src = "/user-profile-picture/" + playerId;
+                playerImage.src = "user-profile-picture/" + playerId;
                 playerImage.alt = "My Profile";
 
                 position.style.backgroundImage = 'none';
@@ -628,58 +592,54 @@
 
     }
 
-    function setUpSteppers(decreaseButton, increaseButton, valueInput) {
-        decreaseButton.addEventListener('click', (event) => {
-            event.preventDefault();
-            const currentValue = parseInt(valueInput.value, 10);
-            if (currentValue > 1) {
-                valueInput.value = currentValue - 1;
-            }
-        });
-
+    function setUpIncrementSteppers(increaseButton) {
+        const valueInput = document.getElementById(increaseButton.dataset.target);
         increaseButton.addEventListener('click', (event) => {
             event.preventDefault();
             valueInput.value = parseInt(valueInput.value, 10) + 1;
         });
     }
 
-
-    const decreaseButtonGoal = document.querySelector('.decreaseGoal');
-    const increaseButtonGoal = document.querySelector('.increaseGoal');
-    const valueInputGoal = document.querySelector('.valueInputGoal');
-    setUpSteppers(decreaseButtonGoal, increaseButtonGoal, valueInputGoal);
-
-    const decreaseButtonTime = document.querySelector('.decreaseTime');
-    const increaseButtonTime = document.querySelector('.increaseTime');
-    const valueInputTime = document.querySelector('.valueInputTime');
-
-    if (valueInputTime.value === "") {
-        valueInputTime.value = 1;
+    function setUpDecrementStepper(decreaseButton) {
+        const valueInput = document.getElementById(decreaseButton.dataset.target);
+        const min = valueInput.getAttribute('min');
+        decreaseButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            const currentValue = parseInt(valueInput.value, 10);
+            if (min !== null && currentValue > min) {
+                valueInput.value = currentValue - 1;
+            }
+        });
     }
 
-    setUpSteppers(decreaseButtonTime, increaseButtonTime, valueInputTime);
+    for (const elem of document.getElementsByClassName("decrement")) {
+        setUpDecrementStepper(elem);
+    }
 
+    for (const elem of document.getElementsByClassName("increment")) {
+        setUpIncrementSteppers(elem);
+    }
 
-        var addGoalModal = document.getElementById("addGoalModal");
-        var overallScoreModal = document.getElementById("addOverallScoreModal");
-        var addSubModal = document.getElementById("addSubModal");
-        var addFactModal = document.getElementById("addFactModal");
-        var outcomeModal = document.getElementById("outcomeModal");
+    var addGoalModal = document.getElementById("addGoalModal");
+    var overallScoreModal = document.getElementById("addOverallScoreModal");
+    var addSubModal = document.getElementById("addSubModal");
+    var addFactModal = document.getElementById("addFactModal");
+    var outcomeModal = document.getElementById("outcomeModal");
 
-        window.onclick = function(event) {
-            if (event.target === overallScoreModal) {
-                overallScoreModal.style.display = "none";
-            }
-            if (event.target === addGoalModal) {
-                addGoalModal.style.display = "none";
-            }
-          if (event.target === addSubModal) {
-                addSubModal.style.display = "none";
-          }
-            if (event.target === outcomeModal) {
-                outcomeModal.style.display = "none";
-            }
+    window.onclick = function(event) {
+        if (event.target === overallScoreModal) {
+            overallScoreModal.style.display = "none";
         }
+        if (event.target === addGoalModal) {
+            addGoalModal.style.display = "none";
+        }
+        if (event.target === addSubModal) {
+            addSubModal.style.display = "none";
+        }
+        if (event.target === outcomeModal) {
+            outcomeModal.style.display = "none";
+        }
+    }
 
     function toggleDropdown(icon) {
         const subCard = icon.closest('.sub-card');
