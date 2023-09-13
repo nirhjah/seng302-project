@@ -636,7 +636,7 @@
             } else if (event.key === 'Delete' || event.key === 'Backspace') {
                 const activeObject = canvas.getActiveObject()
                 if (activeObject instanceof fabric.Group) {
-                    if (activeObject.id.includes("teamPlayer")) {
+                    if (activeObject.id && activeObject.id.includes("teamPlayer")) {
                         const number = activeObject.id.match(/\d+/);
                         const index = parseInt(number[0], 10);
                         addTeamPlayer(index);
@@ -674,7 +674,7 @@
             for (let i = 0; i < objects.length; i++) {
                 if (objects[i].containsPoint(pointer)) {
                     if (objects[i] instanceof fabric.Group) {
-                        if (objects[i].id.includes("teamPlayer")) {
+                        if (objects[i].id && objects[i].id.includes("teamPlayer")) {
                             const number = objects[i].id.match(/\d+/);
                             const index = parseInt(number[0], 10);
                             addTeamPlayer(index);
@@ -1190,7 +1190,6 @@
                     // Old arrow elements get pushed to the top left corner for some reason so need to delete them
                     canvas.remove(canvas.getObjects()[canvas.getObjects().length - 1])
                     canvas.remove(canvas.getObjects()[canvas.getObjects().length - 2])
-                    canvas.remove(canvas.getObjects()[canvas.getObjects().length - 3])
                     canvas.add(lineGroup);
                     lineGroup.setCoords();
                 }
@@ -1240,7 +1239,7 @@
          * @param {number} canvasX X coordinate of the mouse
          * @param {number} canvasY Y coordinates of the mouse
          */
-        function createLineupTeamPlayerIcon(id, name, canvasX, canvasY) {
+        function createLineupTeamPlayerIcon(id, name, canvasX, canvasY, index) {
 
             const imageURL = "/user-profile-picture/" + id;
 
@@ -1276,7 +1275,7 @@
                 });
 
                 const group = new fabric.Group([whiteCircle, img, playerName], {
-                    id: `teamPlayer`,
+                    id: `teamPlayer:${index}`,
                     left: canvasX-xPlayerOffset-2,
                     top: canvasY-yPlayerOffset+10,
                     hasControls: false,
@@ -1309,7 +1308,6 @@
             if (playerArray.length !== 0) {
                 addTeamPlayers();
             }
-            console.log(formationId);
             if (parseInt(formationId) !== -1) {
                 formationSwitch(formation, custom, customPlayerPositions, null);
             }
@@ -1390,14 +1388,13 @@
             const userInfo = lineUpPosition.userInfo
             const playerName = userInfo.firstName + " " + userInfo.lastName;
             const playerId = userInfo.userId;
-            createLineupTeamPlayerIcon(playerId, playerName, left, top);
             playerCards.forEach((playerCard, index) => {
                 const id = playerCard.querySelector("input").value;
-                console.log(id, playerId);
                 if (parseInt(id) === playerId) {
                     console.log(id, playerId)
                     playerArray.push({index: index, node: playerCard});
                     playerCard.style.display = 'none';
+                    createLineupTeamPlayerIcon(playerId, playerName, left, top, index);
                 }
             })
         }
