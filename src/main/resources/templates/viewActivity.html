@@ -109,21 +109,19 @@
                     <div class="general-activity-bottom">
                         <h3 class="attribute-type">Description</h3>
                         <div class="description-box">
-                            <h3 class="description-content">
-                                <!--/*
-                                    The description is allowed to have newlines, but they don't render in HTML,
-                                    and the CSS `white-space: pre;` has too many side effects.
-                                    
-                                    Solution: Split the list by newline (which is &#10; escaped), and add a <br>
-                                    (Make sure it's escaped so there's no XSS)
+                            <!--/*
+                                The description is allowed to have newlines, but they don't render in HTML,
+                                and the CSS `white-space: pre;` has too many side effects.
+                                
+                                Solution: Split the list by newline (which is &#10; escaped), and add a <br>
+                                (Make sure it's escaped so there's no XSS)
 
-                                    Note: #strings.listSplit() was tried, but it consumes multiple newlines at once,
-                                    so double newlines for spacing were crushed into one newline.
-                                */-->
-                                <th:block th:with="escapedDesc = ${#strings.escapeXml(activity.description)}"
-                                            th:utext="${#strings.replace(escapedDesc, '&#10;', '&lt;br&gt;')}">
-                                    [[${line}]]<br>
-                                </th:block>
+                                Note: #strings.listSplit() was tried, but it consumes multiple newlines at once,
+                                so double newlines for spacing were crushed into one newline.
+                            */-->
+                            <h3 class="description-content"
+                                        th:with="escapedDesc = ${#strings.escapeXml(activity.description)}"
+                                        th:utext="${#strings.replace(escapedDesc, '&#10;', '&lt;br&gt;')}">
                             </h3>
 
                     </div>
