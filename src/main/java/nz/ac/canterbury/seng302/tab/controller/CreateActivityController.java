@@ -67,7 +67,11 @@ public class CreateActivityController {
      * @throws MalformedURLException can be thrown by getting the path if invalid
      */
     public void prefillModel(Model model, HttpServletRequest httpServletRequest) throws MalformedURLException {
-        User user = userService.getCurrentUser().get();
+        Optional<User> optU = userService.getCurrentUser();
+        if (optU.isEmpty()) {
+            return;
+        }
+        User user = optU.get();
         List<Team> teamList = teamService.findTeamsWithUser(user).stream()
                 .filter(team -> team.isManager(user) || team.isCoach(user))
                 .toList();
@@ -178,7 +182,12 @@ public class CreateActivityController {
             return TEMPLATE_NAME;
         }
 
-        User currentUser = userService.getCurrentUser().get();
+        Optional<User> optU = userService.getCurrentUser();
+        if (optU.isEmpty()) {
+            return "redirect:/login";
+        }
+        User currentUser = optU.get();
+
         Activity activity = activityService.findActivityById(actId);
 
         // You can't edit an activity that doesn't exist
@@ -234,7 +243,11 @@ public class CreateActivityController {
         model.addAttribute("httpServletRequest", httpServletRequest);
         prefillModel(model, httpServletRequest);
 
-        User currentUser = userService.getCurrentUser().get();
+        Optional<User> optU = userService.getCurrentUser();
+        if (optU.isEmpty()) {
+            return "redirect:/login";
+        }
+        User currentUser = optU.get();
         Team team = teamService.getTeam(createActivityForm.getTeam());
         Activity activity = activityService.findActivityById(actId);
 

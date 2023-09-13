@@ -258,10 +258,14 @@ public class CreateClubController {
      * @param model model to be filled
      */
     public void prefillModel(Model model, HttpServletRequest httpServletRequest) {
-        Optional<User> user = userService.getCurrentUser();
+        Optional<User> optU = userService.getCurrentUser();
+        if (optU.isEmpty()) {
+            return;
+        }
+        User user = optU.get();
         List<Team> teamsUserManagerOf = new ArrayList<>();
         for (Team team : teamService.getTeamList()) {
-            if (team.isManager(user.get())) {
+            if (team.isManager(user)) {
                 teamsUserManagerOf.add(team);
             }
         }
