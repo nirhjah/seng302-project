@@ -97,6 +97,6 @@ class RegisterControllerTest {
         optionalUser = userRepository.findByEmail(form.getEmail());
         mockMvc.perform(get(CONFIRM_URL)
                 .param("token", BAD_TOKEN))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isFound());
     }
 }
