@@ -1201,6 +1201,7 @@
         /**Lineup Loading**/
         document.getElementById("lineup-dropdown").addEventListener("change", function (event) {
             const selectedOption = event.target.options[event.target.selectedIndex];
+            formationDropdown.selectedIndex = 0;
             loadLineUp(selectedOption);
         });
 
@@ -1213,8 +1214,10 @@
             if (playerArray.length !== 0) {
                 addTeamPlayers();
             }
-            if (lineUpId !== "-1") {
+            if (parseInt(lineUpId) !== -1) {
                 getLineUpPositions(formation, custom, customPlayerPositions, lineUpId)
+            } else {
+                canvas.clear();
             }
         }
 
@@ -1287,6 +1290,7 @@
         /** Formation **/
         document.getElementById("formation-dropdown").addEventListener("change", function (event) {
             const selectedOption = event.target.options[event.target.selectedIndex];
+            lineupDropdown.selectedIndex = 0;
             loadFormation(selectedOption);
         });
 
@@ -1305,7 +1309,8 @@
             if (playerArray.length !== 0) {
                 addTeamPlayers();
             }
-            if (formationId !== -1) {
+            console.log(formationId);
+            if (parseInt(formationId) !== -1) {
                 formationSwitch(formation, custom, customPlayerPositions, null);
             }
         }
@@ -1388,8 +1393,11 @@
             createLineupTeamPlayerIcon(playerId, playerName, left, top);
             playerCards.forEach((playerCard, index) => {
                 const id = playerCard.querySelector("input").value;
-                if (id === playerId) {
-                    insertPlayerInTable(index, playerCard.node)
+                console.log(id, playerId);
+                if (parseInt(id) === playerId) {
+                    console.log(id, playerId)
+                    playerArray.push({index: index, node: playerCard});
+                    playerCard.style.display = 'none';
                 }
             })
         }
