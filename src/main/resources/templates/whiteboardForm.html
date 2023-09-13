@@ -57,6 +57,31 @@
                             <img class="player-image" th:src="@{/user-profile-picture/{id}(id = ${member.userId})}" draggable="false">
                             <span class="player-name" th:text="|${member.firstName} ${member.lastName}|"></span>
                         </li>
+                        <li class="player-card">
+                            <img class="player-image" th:src="@{/image/landscape.jpeg}" draggable="false">
+                            <span class="player-name">Player One</span>
+                        </li>
+                        <li class="player-card">
+                            <img class="player-image" th:src="@{/image/default-profile.png}" draggable="false">
+                            <span class="player-name">Player Two</span>
+                        </li>
+                        <li class="player-card">
+                            <img class="player-image" th:src="@{/image/default-profile.png}" draggable="false">
+                            <span class="player-name">Player Three</span>
+                        </li>
+                        <li class="player-card">
+                            <img class="player-image" th:src="@{/image/default-profile.png}" draggable="false">
+                            <span class="player-name">Player Four</span>
+                        </li>
+                        <li class="player-card">
+                            <img class="player-image" th:src="@{/image/default-profile.png}" draggable="false">
+                            <span class="player-name">Player Five</span>
+                        </li>
+                        <li class="player-card">
+                            <img class="player-image" th:src="@{/image/default-profile.png}" draggable="false">
+                            <span class="player-name">Player Six</span>
+                        </li>
+
                     </ul>
                 </div>
             </div>
@@ -406,7 +431,6 @@
                 }
             });
         });
-
         /**
          * Takes the playerCard node, index of the node in the player list,
          * and canvas X and Y coordinates to place a fabric js player icon on the canvas.
@@ -434,6 +458,22 @@
                 fontSize: 16,
                 fontWeight: 500,
             });
+
+           const x = new fabric.Text("x", {
+                fill: 'red',
+                left: canvasX +30,
+                top: canvasY -15,
+                fontFamily: '"Noto Sans", sans-serif',
+                fontSize: 16,
+                fontWeight: 600,
+            });
+
+            x.set({
+                hoverCursor: 'pointer',
+                selectable: false,
+                class: 'delete-icon',
+            });
+
             fabric.Image.fromURL(playerCardImage, function (img) {
 
                 img.set({
@@ -450,7 +490,7 @@
                     }),
                 });
 
-                const group = new fabric.Group([whiteCircle, img, playerName], {
+                const group = new fabric.Group([whiteCircle, img, playerName,x], {
                     id: `teamPlayer:${index}`,
                     left: canvasX-xPlayerOffset-2,
                     top: canvasY-yPlayerOffset+10,
@@ -458,6 +498,10 @@
                 });
                 canvas.add(group);
                 canvas.renderAll();
+                x.on('mousedown', function () {
+                    canvas.remove(group);
+                    canvas.renderAll();
+                });
             });
         }
 
