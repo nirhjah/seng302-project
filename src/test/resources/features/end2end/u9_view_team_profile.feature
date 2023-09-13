@@ -11,6 +11,3 @@ Feature: U9 - View Team Profile
   Given I am on my team details page,
   When I see the team's details (a.k.a. profile), i.e. it's name, location and sport
   Then I cannot edit any of the details that are shown to me.
-
-
-    # Enter steps here
