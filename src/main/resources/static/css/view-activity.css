@@ -1074,18 +1074,16 @@ table, th, td {
 .description-box {
     border: 2px solid #778DA9;
     word-break: break-all;
-    max-height: 12em;
-    overflow: scroll;
-}
-
-.description-content {
-    white-space: pre;
+    /* The scrollbar made the text no longer centred */
+    /* max-height: 12em; */
+    /* overflow: auto; */
+    overflow-x: auto;
 }
 
 .activity-details {
     width: 100%;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 .general-activity-left {
@@ -1104,9 +1102,14 @@ table, th, td {
     text-align: left;
 }
 
+.general-activity-bottom {
+    margin-top: 1em;
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
 @media(max-width: 700px) {
     .activity-details {
-        flex-direction: column;
         margin: auto;
     }
     .general-activity-left {
