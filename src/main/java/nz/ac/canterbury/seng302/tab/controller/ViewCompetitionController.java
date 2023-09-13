@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 /**
@@ -64,8 +65,8 @@ public class ViewCompetitionController {
             throw new IllegalArgumentException("Competition of unknown type: " + competition);
         }
 
-        String displayDate = competition.getCompetitionStartDate().format(CompetitionService.DATE_FORMATTER);
-        model.addAttribute("displayDate", displayDate);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy K:mm a");
+        model.addAttribute("displayDate", competition.getCompetitionStartDate().format(formatter).concat(" - ").concat(competition.getCompetitionEndDate().format(formatter)));
 
         // Rambling that's required for navBar.html
         model.addAttribute("httpServletRequest", request);
