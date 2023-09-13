@@ -94,10 +94,8 @@
                 </div>
             </div>
             <div class="submit-button">
-                <a data-cy="submit" th:href="@{home}">
-                    <button type="submit" th:if="${isEditing}">Save</button>
-                    <button type="submit" th:unless="${isEditing}">Create</button>
-                </a>
+                <button data-cy="submit" type="submit" th:if="${isEditing}">Save</button>
+                <button data-cy="submit" type="submit" th:unless="${isEditing}">Create</button>
             </div>
             <div th:if="${invalid_input != null}" th:text="${invalid_input}" class="error-message"></div>
             <div data-cy="cancel" class="cancel-link">
