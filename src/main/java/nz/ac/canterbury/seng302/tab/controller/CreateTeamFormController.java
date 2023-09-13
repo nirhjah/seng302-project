@@ -289,7 +289,7 @@ public class CreateTeamFormController {
             sportService.addSport(new Sport(trimmedSport));
         }
 
-        addDebugEntities(team);
+        //addDebugEntities(team);
 
         return String.format("redirect:./team-info?teamID=%s", team.getTeamId());
     }

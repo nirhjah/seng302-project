@@ -20,14 +20,14 @@ public class LineUp {
     private Long lineUpId;
 
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_formationId", referencedColumnName = "formationId")
     private Formation formation;
 
     @OneToOne
     @JoinColumn(name = "fk_teamId", referencedColumnName = "teamId")
     private Team team;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_activityId", referencedColumnName = "activityId")
     private Activity activity;
 
