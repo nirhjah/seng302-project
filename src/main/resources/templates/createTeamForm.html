@@ -93,9 +93,9 @@
                     <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
                 </div>
             </div>
-            <div class="submit-button">
-                <button data-cy="submit" type="submit" th:if="${isEditing}">Save</button>
-                <button data-cy="submit" type="submit" th:unless="${isEditing}">Create</button>
+            <div data-cy="submit" class="submit-button">
+                <button type="submit" th:if="${isEditing}">Save</button>
+                <button type="submit" th:unless="${isEditing}">Create</button>
             </div>
             <div th:if="${invalid_input != null}" th:text="${invalid_input}" class="error-message"></div>
             <div data-cy="cancel" class="cancel-link">
