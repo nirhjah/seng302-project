@@ -12,10 +12,15 @@ import java.util.*;
 /**
  * Class for Team Competition - competition composed of teams only
  */
-@Entity(name ="TeamCompetition") 
+@Entity
 @DiscriminatorValue("TEAM")
 public class TeamCompetition extends Competition {
-    @ManyToMany(fetch = FetchType.LAZY)
+
+    // This should really be a LAZY fetchType, but we are getting
+    // issues with LazyInitializationException, and after a bit of research,
+    // there doesn't seem to be an easy fix.
+    // See more: https://vladmihalcea.com/the-best-way-to-handle-the-lazyinitializationexception/:
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Team> teams = new HashSet<>();
 
     public TeamCompetition() {}
@@ -52,10 +57,12 @@ public class TeamCompetition extends Competition {
     }
 
     public Set<Team> getTeams() {
-      return Collections.unmodifiableSet(this.teams);
+        // This is stupid, but returned set must be mutable
+        // JPA calls "sort" on this value internally, so if it's immutable, there's an error
+        return new HashSet<>(this.teams);
     }
 
-    public void setTeams(Collection<Team> teams) {
-      this.teams = Set.copyOf(teams);
+    public void setTeams(Set<Team> teams) {
+      this.teams = teams;
     }
 }

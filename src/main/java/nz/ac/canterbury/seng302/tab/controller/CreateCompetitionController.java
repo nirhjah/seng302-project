@@ -2,8 +2,6 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nz.ac.canterbury.seng302.tab.entity.Grade;
-import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
@@ -18,6 +16,7 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.validator.CompetitionFormValidators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -48,10 +46,18 @@ public class CreateCompetitionController {
 
     private final TeamService teamService;
 
+    private static final String TEAMS = "teams";
+    private static final String USERS = "users";
+
+    @Autowired
     public CreateCompetitionController(CompetitionService competitionService, UserService userService, TeamService teamService) {
         this.competitionService = competitionService;
         this.userService = userService;
         this.teamService = teamService;
+    }
+
+    private void addIdsToModel(Model model) {
+
     }
 
     /**
@@ -68,11 +74,90 @@ public class CreateCompetitionController {
 
         logger.info("GET /create-competition");
         prefillModel(model, request);
+        boolean isEditing = false;
         if (competitionID != null) {
             Optional<Competition> optionalCompetition = competitionService.findCompetitionById(competitionID);
-            optionalCompetition.ifPresent(competition -> prefillFormWithCompetition(model, form, competition));
+            if (optionalCompetition.isPresent()) {
+                Competition competition = optionalCompetition.get();
+                model.addAttribute("competitionID", competition.getCompetitionId());
+                form.prefillWithCompetition(competition);
+                isEditing = true;
+
+                if (competition instanceof TeamCompetition teamCompetition) {
+                    model.addAttribute(TEAMS, (teamCompetition).getTeams());
+                } else {
+                    model.addAttribute(USERS, ((UserCompetition) competition).getPlayers());
+                }
+            }
         }
+        model.addAttribute("isEditing", isEditing);
         return "createCompetitionForm";
+    }
+
+    /**
+     * Takes a list of Ids.
+     * If the competition is a TeamCompetition,
+     * Adds teams to a competition.
+     * If the competition is a UserCompetition,
+     * adds users instead.
+     * @param competition The competition to edit
+     * @param IDs A list of ids. These are primary keys.
+     */
+    private void editCompetitionParticipants(Competition competition, List<Long> IDs) {
+        if (competition instanceof TeamCompetition teamCompetition) {
+            Set<Team> teams = IDs.stream()
+                    .map(teamService::getTeam)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+            teamCompetition.setTeams(teams);
+        } else if (competition instanceof UserCompetition userCompetition) {
+            Set<User> users = IDs.stream()
+                    .map(userService::getUser)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+            userCompetition.setPlayers(users);
+        } else {
+            // should never happen
+            logger.error("Unknown competition type: {}", competition);
+        }
+    }
+
+    /**
+     * Edits an existing competition, according to the form passed in.
+     * @param competition The competition to edit
+     * @param form The form passed in by the user
+     */
+    private void editExistingCompetition(Competition competition, CreateAndEditCompetitionForm form) {
+        competition.setName(form.getName());
+        competition.setSport(form.getSport());
+        competition.setGrade(form.getGrade());
+        competition.setLocation(form.getLocation());
+        competition.setDate(form.getStartDateTime(), form.getEndDateTime());
+    }
+
+    private Set<Team> getTeamsFromIds(List<Long> IDs) {
+        return IDs.stream()
+                .map(teamService::getTeam)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
+
+    private Set<User> getUsersFromIds(List<Long> IDs) {
+        return IDs.stream()
+                .map(userService::getUser)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
+
+    private void addIdsToModel(Model model, List<Long> IDs, boolean isTeamCompetition) {
+        if (isTeamCompetition) {
+            Set<Team> teams = getTeamsFromIds(IDs);
+            model.addAttribute(TEAMS, teams);
+        } else {
+            // else, its a user competition
+            Set<User> users = getUsersFromIds(IDs);
+            model.addAttribute(USERS, users);
+        }
     }
 
     /**
@@ -86,7 +171,6 @@ public class CreateCompetitionController {
      * @param model                 The model object to hold attributes for the view.
      * @param httpServletRequest    The request object to get additional information about the HTTP request.
      * @return The view name to be displayed after the competition creation/edit process.
-     * @throws IOException If an I/O error occurs during file handling.
      */
     @PostMapping("/create-competition")
     public String createCompetition(
@@ -97,7 +181,7 @@ public class CreateCompetitionController {
             BindingResult bindingResult,
             HttpServletResponse httpServletResponse,
             Model model,
-            HttpServletRequest httpServletRequest) throws IOException {
+            HttpServletRequest httpServletRequest) {
         prefillModel(model, httpServletRequest);
 
         Optional<User> optUser = userService.getCurrentUser();
@@ -105,77 +189,43 @@ public class CreateCompetitionController {
             return "redirect:/home";
         }
 
-        postCreateActivityErrorChecking(bindingResult, form, IDs);
+        boolean isTeamCompetition = usersOrTeams.equals(TEAMS);
+        boolean notOk = bindingResult.hasErrors() || postCreateCompetitionErrorCheck(bindingResult, form, IDs);
 
+        if (notOk) {
+            // We still add IDs, so the page is still editable.
+            List<Long> ids = Objects.requireNonNullElseGet(IDs, List::of);
+            addIdsToModel(model, ids, isTeamCompetition);
 
-        if (bindingResult.hasErrors()) {
-            System.out.println(bindingResult.getAllErrors());
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            if (IDs != null) {
-                if (usersOrTeams.equals("teams")) {
-                    Set<Team> teams = IDs.stream()
-                            .map(teamService::getTeam)
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toSet());
-                    model.addAttribute("teams", teams);
-                } else {
-                    Set<User> users = IDs.stream()
-                            .map(userService::getUser)
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toSet());
-                    model.addAttribute("users", users);
-                }
-            }
             return "createCompetitionForm";
         }
 
         Optional<Competition> optionalCompetition = competitionService.findCompetitionById(competitionID);
         if (optionalCompetition.isPresent()) {
-
+            // Then we are editing:
             Competition editCompetition = optionalCompetition.get();
-            editCompetition.setName(form.getName());
-            editCompetition.setSport(form.getSport());
-            editCompetition.setGrade(form.getGrade());
-            editCompetition.setLocation(form.getLocation());
-            if (usersOrTeams.equals("teams")) {
-                Set<Team> teams = IDs.stream()
-                        .map(teamService::getTeam)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toSet());
-                ((TeamCompetition) editCompetition).setTeams(teams);
-            } else {
-                Set<User> users = IDs.stream()
-                        .map(userService::getUser)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toSet());
-                ((UserCompetition) editCompetition).setPlayers(users);
-            }
 
-            competitionService.updateOrAddCompetition(editCompetition);
+            editExistingCompetition(editCompetition, form);
+            editCompetitionParticipants(editCompetition, IDs);
+
+            editCompetition = competitionService.updateOrAddCompetition(editCompetition);
             return "redirect:/view-competition?competitionID=" + editCompetition.getCompetitionId();
 
         } else {
+            // Else, create a new competition:
             Competition competition;
 
-            if (usersOrTeams.equals("teams")) {
-                Set<Team> teams = IDs.stream()
-                        .map(teamService::getTeam)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toSet());
-                LocalDateTime now = LocalDateTime.now();
-                competition = new TeamCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), now, now, teams);
+            if (isTeamCompetition) {
+                Set<Team> teams = getTeamsFromIds(IDs);
+                competition = new TeamCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), form.getStartDateTime(), form.getEndDateTime(), teams);
             } else {
-                Set<User> users = IDs.stream()
-                        .map(userService::getUser)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toSet());
-                LocalDateTime now = LocalDateTime.now();
-                competition = new UserCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), now, now, users);
+                Set<User> users = getUsersFromIds(IDs);
+                competition = new UserCompetition(form.getName(), form.getGrade(), form.getSport(), form.getLocation(), form.getStartDateTime(), form.getEndDateTime(), users);
             }
 
-            competitionService.updateOrAddCompetition(competition);
+            competition = competitionService.updateOrAddCompetition(competition);
             return "redirect:/view-competition?competitionID=" + competition.getCompetitionId();
-
         }
     }
 
@@ -184,56 +234,35 @@ public class CreateCompetitionController {
      * @param bindingResult Any found errors are added to this
      * @param form The form containing the data we're validating
      */
-    private void postCreateActivityErrorChecking(
+    private boolean postCreateCompetitionErrorCheck(
             BindingResult bindingResult,
             CreateAndEditCompetitionForm form,
-            List<Long> IDs) {
-
+            List<Long> IDs
+    ) {
+        boolean bad = false;
         // The competition requires a team or a user to be selected
         if (IDs == null || IDs.isEmpty()) {
             bindingResult.addError(new FieldError("CreateAndEditCompetitionForm", "competitors",
                     CompetitionFormValidators.NO_COMPETITORS_MSG));
+            bad = true;
+        }
+
+        LocalDateTime start = form.getStartDateTime();
+        LocalDateTime end = form.getEndDateTime();
+        if (!start.isBefore(end)) {
+            bindingResult.addError(new FieldError("CreateAndEditCompetitionForm", "startDateTime",
+                    CompetitionFormValidators.TIME_TRAVEL_MSG));
+            bad = true;
         }
 
        // All the grade attributes must be selected
         if (form.getAge() == null || form.getSex() == null || form.getCompetitiveness() == null) {
             bindingResult.addError(new FieldError("CreateAndEditCompetitionForm", "grade",
                     CompetitionFormValidators.NO_GRADE_MSG));
+            bad = true;
         }
-    }
 
-    /**
-     * Prefills form with competition fields
-     *
-     * @param model to be populated
-     * @param form form to be populated
-     * @param competition  competition to get info from
-     */
-    public void prefillFormWithCompetition(Model model, CreateAndEditCompetitionForm form, Competition competition) {
-        model.addAttribute("competitionID", competition.getCompetitionId());
-
-        form.setName(competition.getName());
-        form.setSport(competition.getSport());
-
-        Grade grade = competition.getGrade();
-        form.setAge(grade.getAge());
-        form.setSex(grade.getSex());
-        form.setCompetitiveness(grade.getCompetitiveness());
-
-        Location location = competition.getLocation();
-        if (location != null) {
-            form.setAddressLine1(location.getAddressLine1());
-            form.setAddressLine2(location.getAddressLine2());
-            form.setSuburb(location.getSuburb());
-            form.setPostcode(location.getPostcode());
-            form.setCity(location.getCity());
-            form.setCountry(location.getCountry());
-        }
-        if (competition instanceof TeamCompetition) {
-            model.addAttribute("teams", ((TeamCompetition) competition).getTeams());
-        } else {
-            model.addAttribute("users", ((UserCompetition) competition).getPlayers());
-        }
+        return bad;
     }
 
     /**
@@ -285,6 +314,4 @@ public class CreateCompetitionController {
                 )).toList()
         );
     }
-
-
 }
