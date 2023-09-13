@@ -202,7 +202,7 @@
             </div>
 
             <div data-cy="cancel" class="cancel-link">
-                <a th:if="${isEditing}" th:href="@{competition-info(teamID=${teamID})}">Cancel</a>
+                <a th:if="${isEditing}" th:href="@{view-competition(competitionID=${competitionID})}">Cancel</a>
                 <a th:unless="${isEditing}" th:href="@{home}">Cancel</a>
             </div>
         </form>
