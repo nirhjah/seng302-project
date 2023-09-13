@@ -165,6 +165,29 @@ public class CreateTeamFormController {
         return CREATE_TEAM_TEMPLATE;
     }
 
+
+    private void addDebugEntities(Team team) {
+        // TODO remove this
+        // Generate users:
+        for (int i=0; i<30; i++) {
+            try {
+                var str = UUID.randomUUID().toString();
+                var u = User.defaultDummyUser();
+                u.setEmail(str + "@gmail.com");
+                u.setFirstName(str.substring(0,6));
+                u.setLastName("b");
+                u = userService.updateOrAddUser(u);
+                userService.userJoinTeam(u, team);
+            } catch (Exception e) {
+                logger.error("exception caught: " + e.getMessage());
+            }
+        }
+
+        // Generate formations:
+
+    }
+
+
     /**
      * Posts a form response with team name, sport and location
      *
@@ -237,20 +260,6 @@ public class CreateTeamFormController {
             sportService.addSport(new Sport(trimmedSport));
         }
 
-        // TODO: Debug ONLY: Generate users for this team:
-        for (int i=0; i<30; i++) {
-            try {
-                var str = UUID.randomUUID().toString();
-                var u = User.defaultDummyUser();
-                u.setEmail(str + "@gmail.com");
-                u.setFirstName(str.substring(0,6));
-                u.setLastName("b");
-                u = userService.updateOrAddUser(u);
-                userService.userJoinTeam(u, team);
-            } catch (Exception e) {
-                logger.error("exception caught: " + e.getMessage());
-            }
-        }
 
         return String.format("redirect:./team-info?teamID=%s", team.getTeamId());
     }
