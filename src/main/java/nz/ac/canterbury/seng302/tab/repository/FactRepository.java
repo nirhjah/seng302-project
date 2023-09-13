@@ -6,6 +6,7 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import org.springframework.data.jpa.repository.Query;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -29,6 +30,6 @@ public interface FactRepository extends CrudRepository<Fact, Long> {
      * @return an Object List which contains the scorer and their total scores for the team
      */
     @Query("SELECT f.scorer, sum(f.goalValue) FROM Activity a JOIN Goal f WHERE f.factType=1 AND f MEMBER of a.activityFacts AND a.team=:team AND (a.activityType = 0 OR a.activityType = 1) GROUP BY f.scorer ORDER BY sum(f.goalValue) desc limit 5")
-    List<Object[]> getListOfTopScorersAndTheirScores(Team team);
+    List<Object[]> getListOfTopScorersAndTheirScores(@Param("team") Team team);
 
 }
