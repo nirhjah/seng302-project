@@ -1,11 +1,13 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-import java.util.Optional;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import nz.ac.canterbury.seng302.tab.entity.*;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -18,16 +20,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Sport;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
-import nz.ac.canterbury.seng302.tab.service.SportService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Spring Boot Controller class for the Create Team Form
@@ -46,11 +46,19 @@ public class CreateTeamFormController {
     private TeamService teamService;
     private SportService sportService;
     private UserService userService;
+    private FormationService formationService;
+    private ActivityService activityService;
+    private LineUpPositionService lineUpPositionService;
+    private LineUpService lineUpService;
 
-    public CreateTeamFormController(TeamService teamService, SportService sportService, UserService userService) {
+    public CreateTeamFormController(TeamService teamService, SportService sportService, UserService userService, FormationService formationService, ActivityService activityService, LineUpPositionService lineUpPositionService, LineUpService lineUpService) {
         this.teamService = teamService;
         this.sportService = sportService;
         this.userService = userService;
+        this.formationService = formationService;
+        this.activityService = activityService;
+        this.lineUpPositionService = lineUpPositionService;
+        this.lineUpService = lineUpService;
     }
 
 
@@ -164,6 +172,7 @@ public class CreateTeamFormController {
         return CREATE_TEAM_TEMPLATE;
     }
 
+
     /**
      * Posts a form response with team name, sport and location
      *
@@ -235,7 +244,6 @@ public class CreateTeamFormController {
         if (!knownSports.contains(trimmedSport)) {
             sportService.addSport(new Sport(trimmedSport));
         }
-
         return String.format("redirect:./team-info?teamID=%s", team.getTeamId());
     }
 }

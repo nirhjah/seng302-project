@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
+import javax.sound.sampled.Line;
 import java.util.*;
 
 @Service
@@ -43,6 +44,10 @@ public class LineUpService {
         this.formationRepository = formationRepository;
         this.lineUpPositionRepository = lineUpPositionRepository;
         this.userRepository = userRepository;
+    }
+
+    public Optional<LineUp> findLineUpById(long id) {
+        return lineUpRepository.findById(id);
     }
 
     public Optional<List<LineUp>> findLineUpsByTeam(long id) {
@@ -80,8 +85,8 @@ public class LineUpService {
         return lineUpRepository.findFormationByLineUpId(id);
     }
 
-    public void updateOrAddLineUp(LineUp lineUp) {
-        lineUpRepository.save(lineUp);
+    public LineUp updateOrAddLineUp(LineUp lineUp) {
+        return lineUpRepository.save(lineUp);
     }
 
 
@@ -208,5 +213,4 @@ public class LineUpService {
             }
         }
     }
-
 }
