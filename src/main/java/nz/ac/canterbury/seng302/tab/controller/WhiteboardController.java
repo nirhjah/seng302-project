@@ -1,13 +1,12 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FormationService;
-import nz.ac.canterbury.seng302.tab.service.LineUpService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -15,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -32,15 +32,18 @@ public class WhiteboardController {
 
     private final ActivityService activityService;
 
+    private final LineUpPositionService lineUpPositionService;
+
     Team team;
     private final Logger logger = LoggerFactory.getLogger(WhiteboardController.class);
 
 
-    public WhiteboardController(FormationService formationService, TeamService teamService, LineUpService lineUpService, ActivityService activityService) {
+    public WhiteboardController(FormationService formationService, TeamService teamService, LineUpService lineUpService, ActivityService activityService, LineUpPositionService lineUpPositionService) {
         this.teamService = teamService;
         this.formationService = formationService;
         this.lineUpService = lineUpService;
         this.activityService = activityService;
+        this.lineUpPositionService = lineUpPositionService;
     }
 
 
@@ -85,6 +88,12 @@ public class WhiteboardController {
         model.addAttribute("teamMembers", team.getNonManagersAndCoaches());
 
         model.addAttribute("teamLineUps", teamLineUps);
+
+        List<List<LineUpPosition>> positionsList = new ArrayList<>();
+        for (LineUp lineup : teamLineUps) {
+            positionsList.add(lineUpPositionService.findLineUpPositionsByLineUp(lineup.getLineUpId()).get());
+        }
+        model.addAttribute("teamLineupsPositions", positionsList);
 
         model.addAttribute("playersPerLineup", playersPerLineup);
 

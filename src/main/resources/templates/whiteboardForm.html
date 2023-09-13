@@ -42,6 +42,8 @@
                     <option th:each="lineup : ${teamLineUps}"
                             th:value="${lineup.lineUpId}"
                             th:text="${lineup.lineUpId.toString()}"
+                            th:data-custom="${lineup.formation.custom}"
+                            th:data-custom-positions="${lineup.formation.customPlayerPositions}"
                     ></option>
                 </select>
             </div>
@@ -1203,7 +1205,7 @@
         function loadLineUp(target) {
             const lineupId = target.value;
             const lineup = target.textContent;
-            console.log(lineup)
+            console.log(lineupId)
             const custom = target.getAttribute("data-custom")
             const customPlayerPositions = target.getAttribute("data-custom-positions");
             canvas.clear();
@@ -1212,8 +1214,10 @@
             }
             if (lineupId !== "-1") {
                 if (custom === true || custom === "true") {
+                    console.log("custom")
                     renderTeamPlayersCustom(customPlayerPositions)
                 } else {
+                    console.log("norm")
                     renderTeamPlayers(lineup)
                 }
             }
@@ -1224,8 +1228,11 @@
          *
          * @param formationString formation in string form, e.g. '1-4-4-2'
          */
-        function renderTeamPlayers(formationString) {
+        function renderTeamPlayers(lineup) {
+            let positionList = /*[[${teamLineupsPositions}]]*/ [];
+            console.log(positionList);
             const formation = formationString.split("-").map(num => parseInt(num));
+
             // Builds formation
             let j = 0;
             for (let i = 0; i < formation.length; i++) {
