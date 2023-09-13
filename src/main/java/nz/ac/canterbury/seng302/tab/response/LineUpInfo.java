@@ -12,7 +12,7 @@ public class LineUpInfo {
 
     public String formationString;
 
-    public List<Long> subs;
+    public List<Long> subs = List.of();
 
     public List<LineUpPositionInfo> lineUpPositions;
 
@@ -22,5 +22,9 @@ public class LineUpInfo {
         this.lineUpPositions = lineUpPositions.stream().map(
                 x -> new LineUpPositionInfo(x)
         ).toList();
+    }
+
+    public void setSubs(List<Long> lis) {
+        subs = lis;
     }
 }

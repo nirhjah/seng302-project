@@ -82,7 +82,7 @@ public class WhiteboardController {
             team = teamOpt.get();
         }
         else {
-            return "homeForm";
+            return "redirect:/home";
         }
 
         model.addAttribute("teamFormations", formationService.getTeamsFormations(teamID));
@@ -96,18 +96,6 @@ public class WhiteboardController {
 
         model.addAttribute("playersPerLineup", playersPerLineup);
 
-        Map<Long, LineUpInfo> map = new HashMap<>();
-
-        for (LineUp lineup : teamLineUps) {
-            var opt = lineUpPositionService.findLineUpPositionsByLineUp(lineup.getLineUpId());
-            if (opt.isPresent()) {
-                var linfo = new LineUpInfo(lineup, opt.get());
-                map.put(lineup.getLineUpId(), linfo);
-            }
-        }
-
-        model.addAttribute("lineUpToLineUpPositions", map);
-
         return "whiteboardForm";
     }
 
@@ -118,9 +106,13 @@ public class WhiteboardController {
             LineUp lineUp = optLineUp.get();
             Optional<List<LineUpPosition>> lineUpPositions = lineUpPositionService.findLineUpPositionsByLineUp(lineUpId);
             if (lineUpPositions.isPresent()) {
-                return ResponseEntity.ok().body(
-                        new LineUpInfo(lineUp, lineUpPositions.get())
-                );
+                LineUpInfo lineUpInfo = new LineUpInfo(lineUp, lineUpPositions.get());
+                List<Long> subs = activityService.getAllPlayerSubstitutes(lineUp.getActivity().getId())
+                        .stream()
+                        .map(user -> user.getId())
+                        .toList();
+                lineUpInfo.setSubs(subs);
+                return ResponseEntity.ok().body(lineUpInfo);
             }
         }
         return ResponseEntity.notFound().build();
