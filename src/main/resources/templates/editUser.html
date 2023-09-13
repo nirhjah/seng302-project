@@ -140,9 +140,7 @@
                 </div>
                 <div class="submit-button">
                     <label th:if="${errorMessage}" th:text="${errorMessage}" style="position: fixed;"></label>
-                    <a th:href="@{home}">
-                        <button type="submit" id="submit" formnovalidate>Save</button>
-                    </a>
+                    <button type="submit" id="submit" formnovalidate>Save</button>
                 </div>
                 <div class="cancel-link">
                     <a th:href="@{user-info/self}">Cancel</a>
