@@ -69,6 +69,29 @@
                 <div th:each="err : ${#fields.errors('grade')}" th:text="${err}" class="error-message"></div>
             </div>
 
+            <!-- Start date, End date selection: -->
+            <div class="create-header">
+                <h2>Date</h2>
+                <img th:src="@{/image/icons/clock.svg}"/>
+            </div>
+            <div class="input-boxes">
+                <!--/* Start Date */-->
+                <div class="input-box">
+                    <input type="datetime-local" class="datetime-input" id="startDateTime" name="startDateTime"
+                           th:value="*{startDateTime}">
+                    <label for="startDateTime">Start date & time<span class="required">*</span> </label>
+                    <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}" class="error-message"></div>
+                </div>
+
+                <!--/* End Date */-->
+                <div class="input-box">
+                    <input type="datetime-local" class="datetime-input" id="endDateTime" name="endDateTime"
+                           th:value="*{endDateTime}">
+                    <label for="endDateTime">End date & time<span class="required">*</span> </label>
+                    <div th:each="err : ${#fields.errors('endDateTime')}" th:text="${err}" class="error-message"></div>
+                </div>
+            </div>
+
             <div class="create-header">
                 <h2>Location (Optional)</h2>
                 <img th:src="@{/image/icons/dark-blue-location.svg}"/>
@@ -140,6 +163,7 @@
                      th:styleappend="${users != null || teams != null} ? 'display: none;' : ''">
                     <h3>You must type in a sport before you may add competitors</h3>
                 </div>
+
                 <div class="competitors-box">
                     <div class="competitors-header">
                         <h4>Competitors</h4>
@@ -172,12 +196,13 @@
 
 
             <div class="submit-button">
-                <a th:href="@{home}">
-                    <button type="submit" th:text="${competitionID != null ? 'Save' : 'Create'}"></button>
-                </a>
+                <button type="submit" th:text="${competitionID != null ? 'Save' : 'Create'}"></button>
             </div>
 
-
+            <div data-cy="cancel" class="cancel-link">
+                <a th:if="${isEditing}" th:href="@{view-competition(competitionID=${competitionID})}">Cancel</a>
+                <a th:unless="${isEditing}" th:href="@{home}">Cancel</a>
+            </div>
         </form>
     </div>
     <footer>
@@ -194,6 +219,20 @@
     const sportsInput = document.getElementById("sport")
     const inactiveCover = document.querySelector(".inactive-cover")
 
+
+    window.onload = function () {
+        if (sportsInput.value.trim() !== "") {
+            inactiveCover.classList.remove("active")
+            setTimeout(() => {
+                inactiveCover.style.display = "none";
+                getCompetitors();
+            }, 1000);
+        } else {
+            inactiveCover.classList.add("active")
+            inactiveCover.style.display = "flex";
+        }
+    };
+
     document.addEventListener('DOMContentLoaded', function() {
         if (sportsInput.value.trim() !== "") {
             getCompetitors();
@@ -204,12 +243,14 @@
         }
     });
 
+
     const totalHeading = document.getElementById('totalHeading');
 
     function updateTotalCount() {
         let itemCount = competitorsUl.children.length;
         totalHeading.textContent = 'Total: ' + itemCount;
     }
+
 
     sportsInput.addEventListener("change", () => {
         clearCompetitors();
@@ -282,6 +323,11 @@
     function getCompetitors() {
         if (!inactiveCover.classList.contains("active")) {
             const type = typeCheckbox.checked ? "users" : "teams"
+            if (!sportsInput.value) {
+                // return early, we can't query for users or teams because we don't know the sport.
+                return
+            }
+            console.log("getCompetitors(")
             axios.get("create-competition/get_" + type, {params: {sport: sportsInput.value, search: searchQuery.value}})
                 .then(response => {
                     generateUsersTeams(response.data);

@@ -143,7 +143,6 @@ public class ViewActivityStatisticIntegrationTests {
         game.addFactList(factList);
         activityRepository.save(game);
 
-
         mockMvc.perform(get("/view-activities").param("page", "1"))
                 .andExpect(status().isOk());
     }

@@ -15,7 +15,7 @@
         <h1>[[${actId != null ? 'Edit' : 'Create'}]] Activity</h1>
     </div>
     <div class="wrapper">
-        <form th:action="@{createActivity}" th:object="${createActivityForm}" id="createActivityForm" method="post">
+        <form th:action="@{create-activity}" th:object="${createActivityForm}" id="createActivityForm" method="post">
             <input type="hidden" th:if="${actId != null}" th:name="actId" th:value="${actId}"/>
 
             <!--/* Activity Type dropdown */-->
@@ -351,7 +351,7 @@
 
         // Otherwise, get the list of formations
         populateFormationDropdown(false, "(loading...)", {});
-        axios.get("createActivity/get_team_formation", {params: {teamId: currentTeamId}})
+        axios.get("create-activity/get_team_formation", {params: {teamId: currentTeamId}})
             .then(response => {
                 const formationList = response.data;
                 if (formationList.length == 0) {

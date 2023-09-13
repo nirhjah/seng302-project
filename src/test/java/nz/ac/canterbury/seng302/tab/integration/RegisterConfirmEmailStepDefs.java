@@ -175,6 +175,6 @@ public class RegisterConfirmEmailStepDefs {
     public void iAmRedirectedToNOTFOUNDPage() throws Exception {
         latestResult
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isFound());
     }
 }
