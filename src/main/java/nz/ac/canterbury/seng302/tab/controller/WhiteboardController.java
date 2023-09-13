@@ -7,6 +7,7 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.response.LineUpInfo;
+import nz.ac.canterbury.seng302.tab.response.competition.CompetitionUserInfo;
 import nz.ac.canterbury.seng302.tab.service.*;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.service.*;
@@ -111,11 +112,11 @@ public class WhiteboardController {
     }
 
     @GetMapping(path = "/whiteboard/get_lineup", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LineUpInfo> getLineUpJSON(@RequestParam long lineupId) {
-        Optional<LineUp> optLineUp = lineUpService.findLineUpById(lineupId);
+    public ResponseEntity<LineUpInfo> getLineUpJSON(@RequestParam long lineUpId) {
+        Optional<LineUp> optLineUp = lineUpService.findLineUpById(lineUpId);
         if (optLineUp.isPresent()) {
             LineUp lineUp = optLineUp.get();
-            Optional<List<LineUpPosition>> lineUpPositions = lineUpPositionService.findLineUpPositionsByLineUp(lineupId);
+            Optional<List<LineUpPosition>> lineUpPositions = lineUpPositionService.findLineUpPositionsByLineUp(lineUpId);
             if (lineUpPositions.isPresent()) {
                 return ResponseEntity.ok().body(
                         new LineUpInfo(lineUp, lineUpPositions.get())
