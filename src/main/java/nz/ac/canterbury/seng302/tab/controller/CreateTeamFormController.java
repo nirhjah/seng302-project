@@ -1,17 +1,12 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.Normalizer;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
 import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +20,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Spring Boot Controller class for the Create Team Form
@@ -48,13 +48,15 @@ public class CreateTeamFormController {
     private UserService userService;
     private FormationService formationService;
     private ActivityService activityService;
+    private LineUpPositionService lineUpPositionService;
 
-    public CreateTeamFormController(TeamService teamService, SportService sportService, UserService userService, FormationService formationService, ActivityService activityService) {
+    public CreateTeamFormController(TeamService teamService, SportService sportService, UserService userService, FormationService formationService, ActivityService activityService, LineUpPositionService lineUpPositionService) {
         this.teamService = teamService;
         this.sportService = sportService;
         this.userService = userService;
         this.formationService = formationService;
         this.activityService = activityService;
+        this.lineUpPositionService = lineUpPositionService;
     }
 
 
@@ -172,6 +174,7 @@ public class CreateTeamFormController {
     private void addDebugEntities(Team team) {
         // TODO remove this
         // Generate users:
+        var users = new ArrayList<User>();
         for (int i=0; i<30; i++) {
             try {
                 var str = UUID.randomUUID().toString();
@@ -181,6 +184,7 @@ public class CreateTeamFormController {
                 u.setLastName("b");
                 u = userService.updateOrAddUser(u);
                 userService.userJoinTeam(u, team);
+                users.add(u);
             } catch (Exception e) {
                 logger.error("exception caught: " + e.getMessage());
             }
@@ -200,8 +204,12 @@ public class CreateTeamFormController {
         f = formationService.addOrUpdateFormation(f);
         activity.setFormation(f);
 
-        // make lineup:
-        LineUp lineUp = new LineUp(); // TODO add lineups and positions automatically
+        // Create lineup:
+        LineUp lineUp = new LineUp(f, team, activity);
+        for (int i=0; i<users.size(); i++) {
+            LineUpPosition lup = new LineUpPosition(lineUp, users.get(i), i+1);
+            lineUpPositionService.addLineUpPosition(lup);
+        }
 
     }
 
