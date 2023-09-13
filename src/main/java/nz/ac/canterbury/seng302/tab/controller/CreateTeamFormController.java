@@ -3,10 +3,16 @@ package nz.ac.canterbury.seng302.tab.controller;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.Normalizer;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import nz.ac.canterbury.seng302.tab.entity.*;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,14 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Sport;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditTeamForm;
-import nz.ac.canterbury.seng302.tab.service.SportService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 
 /**
  * Spring Boot Controller class for the Create Team Form
@@ -47,11 +46,15 @@ public class CreateTeamFormController {
     private TeamService teamService;
     private SportService sportService;
     private UserService userService;
+    private FormationService formationService;
+    private ActivityService activityService;
 
-    public CreateTeamFormController(TeamService teamService, SportService sportService, UserService userService) {
+    public CreateTeamFormController(TeamService teamService, SportService sportService, UserService userService, FormationService formationService, ActivityService activityService) {
         this.teamService = teamService;
         this.sportService = sportService;
         this.userService = userService;
+        this.formationService = formationService;
+        this.activityService = activityService;
     }
 
 
@@ -183,7 +186,22 @@ public class CreateTeamFormController {
             }
         }
 
-        // Generate formations:
+        // Generate activity:
+        var t = "test comp";
+        var now = LocalDateTime.now();
+        var next = now.plusMinutes(10);
+        var loc = team.getLocation();
+        var user = userService.getCurrentUser().get();
+        Activity activity = new Activity(ActivityType.Game, team, t, now, next, user, loc);
+        activity = activityService.updateOrAddActivity(activity);
+
+        // Generate formation:
+        Formation f = new Formation("1-4-4-2", team);
+        f = formationService.addOrUpdateFormation(f);
+        activity.setFormation(f);
+
+        // make lineup:
+        LineUp lineUp = new LineUp(); // TODO add lineups and positions automatically
 
     }
 

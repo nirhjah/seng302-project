@@ -19,10 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Spring Boot Controller class for the whiteboard
@@ -94,12 +91,21 @@ public class WhiteboardController {
         model.addAttribute("teamLineUps", teamLineUps);
 
         List<List<LineUpPosition>> positionsList = new ArrayList<>();
-        for (LineUp lineup : teamLineUps) {
-            positionsList.add(lineUpPositionService.findLineUpPositionsByLineUp(lineup.getLineUpId()).get());
-        }
         model.addAttribute("teamLineupsPositions", positionsList);
 
         model.addAttribute("playersPerLineup", playersPerLineup);
+
+        Map<Long, LineUpInfo> map = new HashMap<>();
+
+        for (LineUp lineup : teamLineUps) {
+            var opt = lineUpPositionService.findLineUpPositionsByLineUp(lineup.getLineUpId());
+            if (opt.isPresent()) {
+                var linfo = new LineUpInfo(lineup, opt.get());
+                map.put(lineup.getLineUpId(), linfo);
+            }
+        }
+
+        model.addAttribute("lineUpToLineUpPositions", map);
 
         return "whiteboardForm";
     }
@@ -111,15 +117,4 @@ public class WhiteboardController {
         }
         return null;
     }
-
-
-    /**
-     * Creates JSON object of a lineup, given an id.
-     * @param lineupId The id of the lineup
-     * @return JSON object
-     */
-    @GetMapping(path = "/whiteboard/get_lineup", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LineUpInfo> getTeamsJSON(@RequestParam long lineupId) {
-    }
-
 }
