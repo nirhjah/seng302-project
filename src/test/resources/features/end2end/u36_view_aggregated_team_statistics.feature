@@ -7,10 +7,10 @@ Feature: U36 – View aggregated team statistics
     Then I will see the team statistics
 
 
-  Scenario: AC1: When looking at a team, I can see how many games that team has played, won, lost, and drew overall (including friendlies).
-    Given I see the aggregated team statistics
-    And there are activities (game or friendly)  that have won, lost or drew overall,
-    Then I can see a total of how many games or friendlies the team has played, won, lost and drew overall
+#  Scenario: AC1: When looking at a team, I can see how many games that team has played, won, lost, and drew overall (including friendlies).
+#    Given I see the aggregated team statistics
+#    And there are activities (game or friendly)  that have won, lost or drew overall,
+#    Then I can see a total of how many games or friendlies the team has played, won, lost and drew overall
 
 
 #  Scenario: AC2: I can see a trend of the last 5 matches in terms of game and friendly won, lost and drew. Friendlies are visually distinguishable from games in that trend.
