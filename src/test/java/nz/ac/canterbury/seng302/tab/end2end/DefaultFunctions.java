@@ -58,7 +58,7 @@ public class DefaultFunctions {
             PlaywrightBrowser.page.locator("button#create-formation-button").click();
 
             //create activity
-            PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createActivity");
+            PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-activity");
             PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
             PlaywrightBrowser.page.locator("#activityType").selectOption("Game");
@@ -109,7 +109,7 @@ public class DefaultFunctions {
         String endDateTimeString = endDateTime.format(formatter);
 
 
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createActivity");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-activity");
            PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
             PlaywrightBrowser.page.locator("#activityType").selectOption("Game");
             PlaywrightBrowser.page.locator("#team").selectOption("team ag stats team");
@@ -122,7 +122,7 @@ public class DefaultFunctions {
             PlaywrightBrowser.page.locator("input#country").type("New Zealand");
             PlaywrightBrowser.page.locator("div.submit-button button[type='submit']").click();
 
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createActivity");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-activity");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("#activityType").selectOption("Game");
         PlaywrightBrowser.page.locator("#team").selectOption("team ag stats team");
@@ -135,7 +135,7 @@ public class DefaultFunctions {
         PlaywrightBrowser.page.locator("input#country").type("New Zealand");
         PlaywrightBrowser.page.locator("div.submit-button button[type='submit']").click();
 
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createActivity");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-activity");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("#activityType").selectOption("Game");
         PlaywrightBrowser.page.locator("#team").selectOption("team ag stats team");
@@ -149,7 +149,7 @@ public class DefaultFunctions {
         PlaywrightBrowser.page.locator("input#country").type("New Zealand");
         PlaywrightBrowser.page.locator("div.submit-button button[type='submit']").click();
 
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createActivity");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-activity");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("#activityType").selectOption("Game");
         PlaywrightBrowser.page.locator("#team").selectOption("team ag stats team");
@@ -162,7 +162,7 @@ public class DefaultFunctions {
         PlaywrightBrowser.page.locator("input#country").type("New Zealand");
         PlaywrightBrowser.page.locator("div.submit-button button[type='submit']").click();
 
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createActivity");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-activity");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("#activityType").selectOption("Game");
         PlaywrightBrowser.page.locator("#team").selectOption("team ag stats team");

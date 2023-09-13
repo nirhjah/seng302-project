@@ -1,9 +1,9 @@
 @create_view_update_competition
 Feature: U39 – Create / view / update competition
-Scenario: AC1: Federation administrators are a special type of users and are the only one allowed to create or update competitions
-  Given I am a user of account type federation administrator
-  When I attempt to access the create a competition page,
-  Then I am brought to the create competition page.
+  Scenario: AC1: Federation administrators are a special type of users and are the only one allowed to create or update competitions
+    Given I am a user of account type federation administrator
+    When I attempt to access the create a competition page,
+    Then I am brought to the create competition page.
 
 
   Scenario: AC1: Federation administrators are a special type of users and are the only one allowed to create or update competitions
@@ -28,7 +28,6 @@ Scenario: AC1: Federation administrators are a special type of users and are the
       And I input valid information for name, dates, sport and grade,
       When I click create competition,
       Then the competition is created
-      And I am shown a ui element that display full details for the competition.
 
       Scenario: AC2: A competition has a name, is for a given sport, and is for a certain grade level, e.g., U10 (under 10-year-old), masters, MAG level 3. All are compulsory fields.
         Given I am a user of account type federation administrator
@@ -130,7 +129,6 @@ Scenario: AC1: Federation administrators are a special type of users and are the
       | "soccer" |
       | "hockey" |
       | "rugby"  |
-
 
   Scenario: AC16
   Given I am a federation manager

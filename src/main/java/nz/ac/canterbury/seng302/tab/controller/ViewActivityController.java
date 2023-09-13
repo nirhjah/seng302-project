@@ -161,6 +161,7 @@ public class ViewActivityController {
             HttpServletRequest request,
             CreateEventForm createEventForm) {
 
+
         model.addAttribute(createEventFormString, createEventForm);
         model.addAttribute("addFactForm", new AddFactForm());
 
@@ -256,7 +257,6 @@ public class ViewActivityController {
             model.addAttribute("completed", "idk");
         }
         populateOther(model, activity);
-
         return "viewActivity";
     }
 
