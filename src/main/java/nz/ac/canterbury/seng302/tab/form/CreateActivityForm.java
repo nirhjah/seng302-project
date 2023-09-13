@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import jakarta.validation.constraints.NotBlank;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
 import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
@@ -87,17 +86,8 @@ public class CreateActivityForm {
         return description;
     }
 
-    /**
-     * Sets the description field (called by Spring when filling the form)
-     */
     public void setDescription(String description) {
-        // We strip this so the description isn't just "\n\n\n\nHELLO\n\n"
-        String newDescription = description.strip();
-        // Bug: On Windows newlines are "\r\n", on Linux (and in browsers) they're "\n".
-        // So a newline heavy description can fail the length test on Windows.
-        // Fix: Strip out the "\r"
-        newDescription = newDescription.replace("\r\n", "\n");
-        this.description = newDescription;
+        this.description = description;
     }
 
     public LocalDateTime getStartDateTime() {
@@ -117,6 +107,7 @@ public class CreateActivityForm {
     }
 
     public String getAddressLine1() {
+
         return addressLine1;
     }
 
@@ -180,10 +171,8 @@ public class CreateActivityForm {
         this.city = location.getCity();
         this.suburb = location.getSuburb();
         this.activityType = activity.getActivityType();
-        
-        Team teamOrNull = activity.getTeam();
-        if (teamOrNull != null) {
-            this.team = teamOrNull.getTeamId();
+        if (activity.getTeam() != null) {
+            this.team = activity.getTeam().getTeamId();
         } else {
             this.team = -1;
         }

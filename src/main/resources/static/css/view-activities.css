@@ -48,7 +48,6 @@
 .title, .details, .description {
     display: block;
     margin: 0 5px 5px 5px;
-    word-wrap: break-word;
 }
 
 
