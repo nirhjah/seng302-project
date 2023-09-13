@@ -17,7 +17,7 @@ public class EmailCheck implements ConstraintValidator<UserFormValidators.EmailV
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext context) {
-        if (email == "") {
+        if (email.equals("")) {
             return true;
         }
         else {

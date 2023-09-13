@@ -17,7 +17,7 @@ public class CityCheck implements ConstraintValidator<UserFormValidators.cityVal
 
     @Override
     public boolean isValid(String city, ConstraintValidatorContext context) {
-        if (city == "") {
+        if (city.equals("")) {
             return true;
         }
         else {

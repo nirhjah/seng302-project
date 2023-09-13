@@ -17,7 +17,7 @@ public class NameCheck implements ConstraintValidator<UserFormValidators.NameVal
 
     @Override
     public boolean isValid(String name, ConstraintValidatorContext context) {
-        if (name == "") {
+        if (name.equals("")) {
             return true;
         }
         else {

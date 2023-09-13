@@ -16,7 +16,7 @@ public class PasswordCheck implements ConstraintValidator<UserFormValidators.Pas
 
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context) {
-        if (password == "") {
+        if (password.equals("")) {
             return true;
         }
         else {

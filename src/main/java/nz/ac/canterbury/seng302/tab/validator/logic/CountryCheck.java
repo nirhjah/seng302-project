@@ -17,7 +17,7 @@ public class CountryCheck implements ConstraintValidator<UserFormValidators.coun
 
     @Override
     public boolean isValid(String country, ConstraintValidatorContext context) {
-        if (country == "") {
+        if (country.equals("")) {
             return true;
         }
         else {
