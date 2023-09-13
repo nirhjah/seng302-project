@@ -74,12 +74,14 @@ public class CreateCompetitionController {
 
         logger.info("GET /create-competition");
         prefillModel(model, request);
+        boolean isEditing = false;
         if (competitionID != null) {
             Optional<Competition> optionalCompetition = competitionService.findCompetitionById(competitionID);
             if (optionalCompetition.isPresent()) {
                 Competition competition = optionalCompetition.get();
                 model.addAttribute("competitionID", competition.getCompetitionId());
                 form.prefillWithCompetition(competition);
+                isEditing = true;
 
                 if (competition instanceof TeamCompetition teamCompetition) {
                     model.addAttribute(TEAMS, (teamCompetition).getTeams());
@@ -88,6 +90,7 @@ public class CreateCompetitionController {
                 }
             }
         }
+        model.addAttribute("isEditing", isEditing);
         return "createCompetitionForm";
     }
 
@@ -200,7 +203,6 @@ public class CreateCompetitionController {
 
         Optional<Competition> optionalCompetition = competitionService.findCompetitionById(competitionID);
         if (optionalCompetition.isPresent()) {
-            logger.info("IS PRESENT");
             // Then we are editing:
             Competition editCompetition = optionalCompetition.get();
 
@@ -213,7 +215,6 @@ public class CreateCompetitionController {
         } else {
             // Else, create a new competition:
             Competition competition;
-            logger.info("IS NOT PRESENT");
 
             if (isTeamCompetition) {
                 Set<Team> teams = getTeamsFromIds(IDs);
