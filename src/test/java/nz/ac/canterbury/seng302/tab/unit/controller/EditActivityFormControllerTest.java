@@ -2,8 +2,10 @@ package nz.ac.canterbury.seng302.tab.unit.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -15,16 +17,10 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
-import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
-import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
-import nz.ac.canterbury.seng302.tab.service.*;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,6 +40,13 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
+import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
+import nz.ac.canterbury.seng302.tab.service.ActivityService;
+import nz.ac.canterbury.seng302.tab.service.FormationService;
+import nz.ac.canterbury.seng302.tab.service.LineUpService;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
@@ -161,7 +164,6 @@ public class EditActivityFormControllerTest {
                         .param("suburb", "A Place"))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("./view-activity?activityID=" + localActivity.getId()));
-
     }
 
     @Test
@@ -1004,5 +1006,67 @@ public class EditActivityFormControllerTest {
         verify(mockLineUpService, times(0)).updateOrAddLineUp(any());
 
     }
+
+    /**
+     * These tests make sure the acceptable inputs line up with U27's ACs.
+     * Specifically AC7's "A description made of numbers or non-alphabetical characters only [is invalid]"
+     */
+    @ParameterizedTest
+    @ValueSource(strings = {"Hello", "What's up?", "こんにちは", "haere rā", "Say hi\n\nSay bye", "We are going to 🏈 WIN", "4L"})
+    void activityDescription_validDescriptions(String desc) throws Exception {
+        when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
+        when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+        when(mockActivityService.validateTeamSelection(any(), any())).thenReturn(true);
+        // When complete, the controller saves the activity & redirects to its ID.
+        Activity localActivity = spy(activity);
+        Mockito.doReturn(ACT_ID).when(localActivity).getId();
+        when(mockActivityService.updateOrAddActivity(any())).thenReturn(localActivity);
+        when(mockActivityService.findActivityById(ACT_ID)).thenReturn(localActivity);
+        mockMvc.perform(post("/create-activity")
+                        .param("actId", String.valueOf(ACT_ID))
+                        .param("activityType", String.valueOf(ActivityType.Training))
+                        .param("formation", "-1")
+                        .param("team", String.valueOf(TEAM_ID))
+                        .param("description", desc)
+                        .param("startDateTime", "2023-07-01T10:00:00")
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "1 Change address")
+                        .param("addressLine2", "B")
+                        .param("city", "Greymouth")
+                        .param("country", "New Zealand")
+                        .param("postcode", "8888")
+                        .param("suburb", "A Place"))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("./view-activity?activityID=" + localActivity.getId()));
+    }
+    
+    @ParameterizedTest
+    @ValueSource(strings = {"45", "💪💪💪", "1\n2\n3", ";~;"})
+    void activityDescription_invalidDescriptions(String desc) throws Exception {
+        when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
+        when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+        when(mockActivityService.validateTeamSelection(any(), any())).thenReturn(true);
+        // When complete, the controller saves the activity & redirects to its ID.
+        Activity localActivity = spy(activity);
+        Mockito.doReturn(ACT_ID).when(localActivity).getId();
+        when(mockActivityService.updateOrAddActivity(any())).thenReturn(localActivity);
+        when(mockActivityService.findActivityById(ACT_ID)).thenReturn(localActivity);
+        mockMvc.perform(post("/create-activity")
+                        .param("actId", String.valueOf(ACT_ID))
+                        .param("activityType", String.valueOf(ActivityType.Training))
+                        .param("formation", "-1")
+                        .param("team", String.valueOf(TEAM_ID))
+                        .param("description", desc)
+                        .param("startDateTime", "2023-07-01T10:00:00")
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "1 Change address")
+                        .param("addressLine2", "B")
+                        .param("city", "Greymouth")
+                        .param("country", "New Zealand")
+                        .param("postcode", "8888")
+                        .param("suburb", "A Place"))
+                .andExpect(status().isBadRequest());
+    }
+
 
 }
