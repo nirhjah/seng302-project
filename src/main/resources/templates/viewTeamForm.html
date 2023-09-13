@@ -223,7 +223,7 @@
                         <h3 style="margin-top: 12px">Last 5 Matches: </h3>
                    <div class="last5" style="margin-top: 57px">
                        <ul class="last5Ul">
-                           <li th:each="act : ${last5GOrF}" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|">
+                           <li th:each="act : ${last5GOrF}" th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
                                <div>
                                    <h3 th:text="${act.activityType.name()}"> </h3>
                                    <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},

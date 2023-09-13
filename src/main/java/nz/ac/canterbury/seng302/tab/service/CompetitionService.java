@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,8 +24,6 @@ import java.util.Optional;
  */
 @Service
 public class CompetitionService {
-    Logger logger = LoggerFactory.getLogger(getClass());
-
     private final CompetitionRepository competitionRepository;
 
     private static final List<String> EMPTY_LIST = List.of();
@@ -71,6 +70,8 @@ public class CompetitionService {
                 x -> x.getClass() == UserCompetition.class
         ).toList();
     }
+
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMM yyyy");
 
     /**
      * update or add a competition
