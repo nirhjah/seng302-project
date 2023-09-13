@@ -190,5 +190,29 @@ public class DefaultFunctions {
     }
 
 
+    public static void pwCreateTeamForCompetition() {
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createTeam");
+        PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
+
+        PlaywrightBrowser.page.locator("input#name").type("CompetitionTeam");
+        PlaywrightBrowser.page.locator("input#sport").type("soccer");
+        PlaywrightBrowser.page.locator("input#city").type("Christchurch");
+        PlaywrightBrowser.page.locator("input#country").type("New Zealand");
+        PlaywrightBrowser.page.locator("div.submit-button button[type='submit']").click();
+    }
+
+    public static void pwCreateCompetition() {
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-competition");
+        PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
+        PlaywrightBrowser.page.locator("input#name").type("soccercomp");
+        PlaywrightBrowser.page.locator("input#sport").type("soccer");
+        PlaywrightBrowser.page.fill("#startDateTime", "2025-04-02T05:15");
+        PlaywrightBrowser.page.fill("#endDateTime", "2026-04-02T05:15");
+        PlaywrightBrowser.page.locator("ul.users-teams-ul li").first().click();
+        PlaywrightBrowser.page.locator("div.submit-button button[type='submit']").click();
+
+    }
+
+
     }
 
