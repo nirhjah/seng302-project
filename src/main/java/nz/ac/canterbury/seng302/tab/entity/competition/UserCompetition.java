@@ -19,7 +19,11 @@ import java.util.Set;
 @Entity 
 @DiscriminatorValue("USER")
 public class UserCompetition extends Competition {
-    @ManyToMany(fetch = FetchType.LAZY)
+
+    // We use FetchType=EAGER here because we were getting issues with LAZY.
+    // It's inefficient, but at least it works.
+    // see:  https://vladmihalcea.com/the-best-way-to-handle-the-lazyinitializationexception/
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<User> players = new HashSet<>();
 
     public UserCompetition() {}
@@ -38,7 +42,9 @@ public class UserCompetition extends Competition {
     }
 
     public Set<User> getPlayers() {
-        return Collections.unmodifiableSet(players);
+        // This must be mutable, for some weird reason.
+        // JPA calls "sort" on this value internally, so if it's immutable, there's an error
+        return new HashSet<>(players);
     }
 
     public void addPlayer(User player) {
