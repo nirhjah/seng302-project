@@ -383,7 +383,7 @@ input[type="range"]::-moz-range-track {
 .whiteboard-dropdowns .player-header{
     height:18%;
     background:#415a77;
-    border-radius: 5px 5px 0 0;
+    border-radius: 15px 15px 0 0;
     color:white;
     display:flex;
     justify-content:center;
