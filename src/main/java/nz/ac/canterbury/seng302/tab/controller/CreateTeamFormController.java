@@ -173,50 +173,6 @@ public class CreateTeamFormController {
     }
 
 
-    private void addDebugEntities(Team team) {
-        // TODO remove this
-        // Generate users:
-        var users = new ArrayList<User>();
-        for (int i=0; i<30; i++) {
-            try {
-                var str = UUID.randomUUID().toString();
-                var u = User.defaultDummyUser();
-                u.setEmail(str + "@gmail.com");
-                u.setFirstName(str.substring(0,6));
-                u.setLastName("b");
-                u = userService.updateOrAddUser(u);
-                userService.userJoinTeam(u, team);
-                users.add(u);
-            } catch (Exception e) {
-                logger.error("exception caught: " + e.getMessage());
-            }
-        }
-
-        // Generate activity:
-        var t = "test comp";
-        var now = LocalDateTime.now();
-        var next = now.plusMinutes(10);
-        var loc = team.getLocation();
-        var user = userService.getCurrentUser().get();
-        Activity activity = new Activity(ActivityType.Game, team, t, now, next, user, loc);
-        activity = activityService.updateOrAddActivity(activity);
-
-        // Generate formation:
-        Formation f = new Formation("1-4-4-2", team);
-        f = formationService.addOrUpdateFormation(f);
-        activity.setFormation(f);
-
-        // Create lineup:
-        LineUp lineUp = new LineUp(f, team, activity);
-        lineUp = lineUpService.updateOrAddLineUp(lineUp);
-        for (int i=0; i<11; i++) {
-            LineUpPosition lup = new LineUpPosition(lineUp, users.get(i), i+1);
-            lineUpPositionService.addLineUpPosition(lup);
-        }
-
-    }
-
-
     /**
      * Posts a form response with team name, sport and location
      *
@@ -288,9 +244,6 @@ public class CreateTeamFormController {
         if (!knownSports.contains(trimmedSport)) {
             sportService.addSport(new Sport(trimmedSport));
         }
-
-        addDebugEntities(team);
-
         return String.format("redirect:./team-info?teamID=%s", team.getTeamId());
     }
 }
