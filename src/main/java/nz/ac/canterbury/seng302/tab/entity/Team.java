@@ -182,8 +182,6 @@ public class Team implements Identifiable, HasImage {
      * U24/AC1 states that the token must consist of letters and numbers, the UUID
      * method will generate '-'s aswell so we replace all occurances with the empty
      * string
-     *
-     * @return new random token only containing characters and numbers
      */
     public void generateToken(TeamService teamService) {
         // Generates a new token if the current one is already in use.

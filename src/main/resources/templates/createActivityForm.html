@@ -466,7 +466,7 @@
                              playerNameElement.style.marginLeft = '-4px';
 
                             const playerImage = position.querySelector('.player-profile-img');
-                            playerImage.src = "/user-profile-picture/" + playerId;
+                            playerImage.src = "user-profile-picture/" + playerId;
                             //playerImage.alt = "My Profile";
 
                             position.style.backgroundImage = 'none';
@@ -494,7 +494,7 @@
 
     function createSub(subId, subName) {
         const playerId = subId
-        const pictureString = "/user-profile-picture/" + playerId
+        const pictureString = "user-profile-picture/" + playerId
         const firstName = subName
 
         const playerLi = document.createElement("li");
@@ -605,7 +605,7 @@
 
             const liPlayerImage = document.createElement("img");
             liPlayerImage.className = "li-player-image";
-            liPlayerImage.src = "/user-profile-picture/" + player.playerID;
+            liPlayerImage.src = "user-profile-picture/" + player.playerID;
             liPlayerImage.alt = "My Profile";
             playerLi.append(liPlayerImage);
 

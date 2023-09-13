@@ -11,7 +11,6 @@ import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.entity.Formation;
-import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
@@ -243,7 +242,7 @@ public class ViewActivityController {
         List<User> playersPlaying = activityService.getAllPlayersCurrentlyPlaying(activity.getId());
         model.addAttribute("playersInLineUp", playersPlaying);
         // all players who arent playing - for the sub on
-        List<User> playersNotPlaying = activityService.getAllPlayersNotCurrentlyPlaying(activity.getId());
+        List<User> playersNotPlaying = activityService.getAllPlayerSubstitutes(activity.getId());
         model.addAttribute("playersNotInLineUp", playersNotPlaying);
 
         // Rambling that's required for navBar.html
@@ -267,15 +266,18 @@ public class ViewActivityController {
      * @return string with display of outcome
      */
     private String outcomeString(Activity activity) {
-        String outcomeString = "";
-        if (activity.getOutcome() == ActivityOutcome.Win) {
-            outcomeString = "Winner: " + activity.getTeam().getName();
-        }
-        if (activity.getOutcome() == ActivityOutcome.Loss) {
-            outcomeString = "Winner: Opponent Team";
-        }
-        if (activity.getOutcome() == ActivityOutcome.Draw) {
-            outcomeString = "Draw";
+        String outcomeString = "Invalid Activity Type";
+        if (activity.getTeam() != null) {
+            if (activity.getOutcome() == ActivityOutcome.Win) {
+                outcomeString = "Winner: " + activity.getTeam().getName();
+            }
+            if (activity.getOutcome() == ActivityOutcome.Loss) {
+                outcomeString = "Winner: Opponent Team";
+            }
+            if (activity.getOutcome() == ActivityOutcome.Draw) {
+                outcomeString = "Draw";
+            }
+            return outcomeString;
         }
         return outcomeString;
     }
