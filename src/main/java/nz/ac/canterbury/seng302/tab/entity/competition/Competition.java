@@ -38,9 +38,9 @@ public abstract class Competition {
      * date comparison in custom queries, for some reason.
      * So instead, we represent dates as a long; time in seconds since the 1970 UNIX epoch.
      */
-    @Column(nullable = true)
+    @Column()
     private long competitionStart;
-    @Column(nullable = true)
+    @Column()
     private long competitionEnd;
 
     // Timezone of where the app is running.
@@ -49,14 +49,6 @@ public abstract class Competition {
 
     protected Competition() {}
     
-    /**
-     * main constructor
-     * @param name competition name
-     * @param grade competition grade
-     * @param sport competition sport
-     * @param location competition location 
-    */
-
     /**
      * main constructor
      * @param name

@@ -25,7 +25,7 @@ Feature: U39 – Create / view / update competition
     Scenario: AC2: A competition has a name, is for a given sport, and is for a certain grade level, e.g., U10 (under 10-year-old), masters, MAG level 3. All are compulsory fields.
       Given I am a user of account type federation administrator
       And I am on the create or update competition page
-      And I input valid information for name, sport and grade,
+      And I input valid information for name, dates, sport and grade,
       When I click create competition,
       Then the competition is created
 
