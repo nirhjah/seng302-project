@@ -209,7 +209,7 @@ public class CreateTeamFormController {
         // Create lineup:
         LineUp lineUp = new LineUp(f, team, activity);
         lineUp = lineUpService.updateOrAddLineUp(lineUp);
-        for (int i=0; i<users.size(); i++) {
+        for (int i=0; i<11; i++) {
             LineUpPosition lup = new LineUpPosition(lineUp, users.get(i), i+1);
             lineUpPositionService.addLineUpPosition(lup);
         }
@@ -289,7 +289,7 @@ public class CreateTeamFormController {
             sportService.addSport(new Sport(trimmedSport));
         }
 
-        //addDebugEntities(team);
+        addDebugEntities(team);
 
         return String.format("redirect:./team-info?teamID=%s", team.getTeamId());
     }

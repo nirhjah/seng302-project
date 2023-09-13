@@ -117,9 +117,13 @@ public class WhiteboardController {
             LineUp lineUp = optLineUp.get();
             Optional<List<LineUpPosition>> lineUpPositions = lineUpPositionService.findLineUpPositionsByLineUp(lineupId);
             if (lineUpPositions.isPresent()) {
-                return ResponseEntity.ok().body(
-                        new LineUpInfo(lineUp, lineUpPositions.get())
-                );
+                LineUpInfo lineUpInfo = new LineUpInfo(lineUp, lineUpPositions.get());
+                List<Long> subs = activityService.getAllPlayerSubstitutes(lineUp.getActivity().getId())
+                        .stream()
+                        .map(user -> user.getId())
+                        .toList();
+                lineUpInfo.setSubs(subs);
+                return ResponseEntity.ok().body(lineUpInfo);
             }
         }
         return ResponseEntity.notFound().build();
