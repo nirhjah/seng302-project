@@ -91,6 +91,6 @@ class WhiteboardControllerTest {
     void testGettingWhiteboardWithInvalidTeam() throws Exception {
 
         mockMvc.perform(get("/whiteboard").param("teamID", String.valueOf(2))
-        ).andExpect(view().name("homeForm"));
+        ).andExpect(view().name("redirect:/home"));
     }
 }
