@@ -110,11 +110,19 @@ public class WhiteboardController {
         return "whiteboardForm";
     }
 
-    private LineUpInfo getLineUpInfo(LineUp lineup) {
-        Optional<List<LineUpPosition>> lineUpPositions = lineUpPositionService.findLineUpPositionsByLineUp(lineup.getLineUpId());
-        if (lineUpPositions.isPresent()) {
-            new LineUpInfo(lineup, lineUpPositions.get());
+    @GetMapping(path = "/whiteboard/get_lineup", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<LineUpInfo> getTeamsJSON(@RequestParam long lineupId) {
+        Optional<LineUp> optLineUp = lineUpService.findLineUpById(lineupId);
+        if (optLineUp.isPresent()) {
+            LineUp lineUp = optLineUp.get();
+            Optional<List<LineUpPosition>> lineUpPositions = lineUpPositionService.findLineUpPositionsByLineUp(lineupId);
+            if (lineUpPositions.isPresent()) {
+                return ResponseEntity.ok().body(
+                        new LineUpInfo(lineUp, lineUpPositions.get())
+                );
+            }
         }
-        return null;
+        return ResponseEntity.notFound().build();
     }
+
 }
