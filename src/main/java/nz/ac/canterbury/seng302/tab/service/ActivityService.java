@@ -536,7 +536,7 @@ public class ActivityService {
      * @param actId the activity id 
      * @return a list of users who are not in the lineup
     */
-    public List<User> getAllPlayersNotCurrentlyPlaying(long actId) {
+    public List<User> getAllPlayerSubstitutes(long actId) {
         Activity activity = findActivityById(actId);
         if (activity == null  || activity.getTeam() == null) {
             return List.of();

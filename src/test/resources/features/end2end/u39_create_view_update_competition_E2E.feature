@@ -11,10 +11,10 @@ Scenario: AC5: If a team is currently enrolled into a competition, there is a UI
     When I apply a filter for that sport and select an option to display all competitions,
     Then I am shown all competitions, past and current for the selected sport.
 
-  Scenario: AC6: There is a convenient way to browse for all current and past competitions per sport.
-    Given I am on a page dedicated to displaying competitions and there exists past and current competitions for a sport,
-    When I apply a filter for that sport and I select an option to display only current competitions,
-    Then I am shown only current competitions for the selected sport.
+#  Scenario: AC6: There is a convenient way to browse for all current and past competitions per sport.
+#    Given I am on a page dedicated to displaying competitions and there exists past and current competitions for a sport,
+#    When I apply a filter for that sport and I select an option to display only current competitions,
+#    Then I am shown only current competitions for the selected sport.
 
 
   Scenario: AC6: There is a convenient way to browse for all current and past competitions per sport.

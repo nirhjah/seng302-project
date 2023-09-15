@@ -7,7 +7,9 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Line-up entity for describing a line-up and its relationships
@@ -20,14 +22,14 @@ public class LineUp {
     private Long lineUpId;
 
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_formationId", referencedColumnName = "formationId")
     private Formation formation;
 
     @OneToOne
     @JoinColumn(name = "fk_teamId", referencedColumnName = "teamId")
     private Team team;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_activityId", referencedColumnName = "activityId")
     private Activity activity;
 
@@ -38,16 +40,16 @@ public class LineUp {
             joinColumns = @JoinColumn(name = "lineup_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private List<User> subs;
+    private Set<User> subs;
 
-    public List<User> getSubs() {
+    public Set<User> getSubs() {
         if (subs == null) {
-            subs = new ArrayList<>();
+            subs = new HashSet<>();
         }
         return subs;
     }
 
-    public void setSubs(List<User> subs) {
+    public void setSubs(Set<User> subs) {
         this.subs = subs;
     }
 
@@ -68,7 +70,7 @@ public class LineUp {
         this.formation = formation;
         this.team = team;
         this.activity = activity;
-        this.subs = new ArrayList<>();
+        this.subs = new HashSet<>();
     }
 
     public Formation getFormation() {

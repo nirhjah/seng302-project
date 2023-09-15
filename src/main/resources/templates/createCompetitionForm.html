@@ -327,7 +327,6 @@
                 // return early, we can't query for users or teams because we don't know the sport.
                 return
             }
-            console.log("getCompetitors(")
             axios.get("create-competition/get_" + type, {params: {sport: sportsInput.value, search: searchQuery.value}})
                 .then(response => {
                     generateUsersTeams(response.data);

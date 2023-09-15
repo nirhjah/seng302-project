@@ -36,15 +36,16 @@
                 <hr>
             </div>
             <div class="dropdown">
-                <label for="lineup">Line-Up</label>
-                <select class="select" id="lineup">
+                <label for="lineup-dropdown" >Line-Up</label>
+                <select class="select" id="lineup-dropdown">
                     <option value="-1">(No Lineup)</option>
                     <option th:each="lineup : ${teamLineUps}"
                             th:value="${lineup.lineUpId}"
-                            th:text="${lineup.lineUpId.toString()}"
+                            th:text="${lineup.formation.getFormation()}"
+                            th:data-custom="${lineup.formation.custom}"
+                            th:data-custom-positions="${lineup.formation.customPlayerPositions}"
                     ></option>
                 </select>
-
             </div>
 
             <div class="player-table">
@@ -56,6 +57,7 @@
                         <li class="player-card" th:each="member : ${teamMembers}">
                             <img class="player-image" th:src="@{/user-profile-picture/{id}(id = ${member.userId})}" draggable="false">
                             <span class="player-name" th:text="|${member.firstName} ${member.lastName}|"></span>
+                            <input class="player-id" type="hidden" th:value="${member.id}">
                         </li>
                     </ul>
                 </div>
@@ -254,6 +256,7 @@
     </div>
 </div>
 <script type="text/javascript" th:src="@{/webjars/fabric/5.3.0/dist/fabric.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
 </body>
 <script th:inline="javascript">
 
@@ -333,6 +336,7 @@
         const yPlayerOffset = 10;
         const xPlayerOffset = 20;
 
+
         /**
          * Handles the drag and drop of team players by adding mouse event listeners
          * to the team player-card element that is selected in the table. When the player-card is dropped on the whiteboard,
@@ -395,6 +399,8 @@
 
                         const canvasX = cardRect.left - canvas.upperCanvasEl.getBoundingClientRect().left;
                         const canvasY = cardRect.top - canvas.upperCanvasEl.getBoundingClientRect().top;
+                        currentX=canvasX;
+                        currentY=canvasY;
                         createTeamPlayerIcon(playerCard, canvasX, canvasY, index);
 
                         playerCard.style.display = 'none';
@@ -407,6 +413,10 @@
             });
         });
 
+        var deleteIcon = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg version='1.1' id='Ebene_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='595.275px' height='595.275px' viewBox='200 215 230 470' xml:space='preserve'%3E%3Ccircle style='fill:%23F44336;' cx='299.76' cy='439.067' r='218.516'/%3E%3Cg%3E%3Crect x='267.162' y='307.978' transform='matrix(0.7071 -0.7071 0.7071 0.7071 -222.6202 340.6915)' style='fill:white;' width='65.545' height='262.18'/%3E%3Crect x='266.988' y='308.153' transform='matrix(0.7071 0.7071 -0.7071 0.7071 398.3889 -83.3116)' style='fill:white;' width='65.544' height='262.179'/%3E%3C/g%3E%3C/svg%3E";
+        var deleteImg = document.createElement('img');
+
+        deleteImg.src= deleteIcon;
         /**
          * Takes the playerCard node, index of the node in the player list,
          * and canvas X and Y coordinates to place a fabric js player icon on the canvas.
@@ -416,7 +426,6 @@
          * @param {number} index The index in the player list
          */
         function createTeamPlayerIcon(playerCard, canvasX, canvasY, index) {
-
             const whiteCircle = new fabric.Circle({
                 left: canvasX,
                 top: canvasY,
@@ -434,6 +443,7 @@
                 fontSize: 16,
                 fontWeight: 500,
             });
+
             fabric.Image.fromURL(playerCardImage, function (img) {
 
                 img.set({
@@ -454,11 +464,45 @@
                     id: `teamPlayer:${index}`,
                     left: canvasX-xPlayerOffset-2,
                     top: canvasY-yPlayerOffset+10,
-                    hasControls: false,
                 });
                 canvas.add(group);
                 canvas.renderAll();
             });
+        }
+
+        function renderIcon(icon) {
+            return function renderIcon(ctx, left, top, styleOverride, fabricObject) {
+                var size = this.cornerSize;
+                ctx.save();
+                ctx.translate(left, top);
+                ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
+                ctx.drawImage(icon, -size/2, -size/2, size, size);
+                ctx.restore();
+            }
+        }
+
+
+        fabric.Object.prototype.controls.deleteControl = new fabric.Control({
+            x: 0.5,
+            y: -0.5,
+            offsetY: -10,
+            offsetX: 10,
+            cursorStyle: 'pointer',
+            mouseUpHandler: deleteObject,
+            render: renderIcon(deleteImg),
+            cornerSize: 24
+        });
+
+        function deleteObject(eventData, transform) {
+            var target = transform.target;
+            var canvas = target.canvas;
+            canvas.remove(target);
+            if (target.id.includes("teamPlayer")) {
+                const number = target.id.match(/\d+/);
+                const index = parseInt(number[0], 10);
+                addTeamPlayer(index);
+            }
+            canvas.requestRenderAll();
         }
 
         const upperCanvas = document.querySelector(".upper-canvas")
@@ -524,10 +568,12 @@
         });
 
         const formationDropdown = document.getElementById("formation-dropdown");
+        const lineupDropdown = document.getElementById("lineup-dropdown");
 
         document.querySelector('.delete-button').addEventListener('click', function () {
             canvas.clear();
             formationDropdown.selectedIndex = 0;
+            lineupDropdown.selectedIndex = 0;
             if (playerArray.length !== 0) {
                 addTeamPlayers();
             }
@@ -631,6 +677,12 @@
             } else if (event.key === 'Delete' || event.key === 'Backspace') {
                 const activeObject = canvas.getActiveObject()
                 if (activeObject instanceof fabric.Group) {
+                    if (activeObject.id && activeObject.id.includes("teamPlayer")) {
+                        const number = activeObject.id.match(/\d+/);
+                        const index = parseInt(number[0], 10);
+                        addTeamPlayer(index);
+                    }
+
                     activeObject.getObjects().forEach(obj => {
                         if (obj instanceof fabric.Group) {
                             obj.getObjects().forEach(child => {
@@ -639,12 +691,6 @@
                         }
                         canvas.remove(obj);
                     });
-
-                    if (activeObject.id.includes("teamPlayer")) {
-                        const number = activeObject.id.match(/\d+/);
-                        const index = parseInt(number[0], 10);
-                        addTeamPlayer(index);
-                    }
                 }
                 canvas.remove(...canvas.getActiveObjects());
                 canvas.remove(canvas.getActiveObject())
@@ -655,6 +701,7 @@
                     addTeamPlayers();
                 }
                 formationDropdown.selectedIndex = 0;
+                lineupDropdown.selectedIndex = 0;
             }
         });
 
@@ -668,15 +715,15 @@
             for (let i = 0; i < objects.length; i++) {
                 if (objects[i].containsPoint(pointer)) {
                     if (objects[i] instanceof fabric.Group) {
-                        objects[i].getObjects().forEach(obj => {
-                            canvas.remove(obj);
-                        });
-
-                        if (objects[i].id.includes("teamPlayer")) {
+                        if (objects[i].id && objects[i].id.includes("teamPlayer")) {
                             const number = objects[i].id.match(/\d+/);
                             const index = parseInt(number[0], 10);
                             addTeamPlayer(index);
                         }
+
+                        objects[i].getObjects().forEach(obj => {
+                            canvas.remove(obj);
+                        });
                     }
                     canvas.remove(objects[i]);
                 }
@@ -705,7 +752,7 @@
         /**
          * Adds the team player element back into the player table in the order of the index.
          * @param {number} index The index of the team player in the player list
-         * @param {element} node The index of the team player in the player list
+         * @param {Element} node The index of the team player in the player list
          */
         function insertPlayerInTable(index, node){
             const playerList = document.querySelector('.player-ul');
@@ -1184,7 +1231,6 @@
                     // Old arrow elements get pushed to the top left corner for some reason so need to delete them
                     canvas.remove(canvas.getObjects()[canvas.getObjects().length - 1])
                     canvas.remove(canvas.getObjects()[canvas.getObjects().length - 2])
-                    canvas.remove(canvas.getObjects()[canvas.getObjects().length - 3])
                     canvas.add(lineGroup);
                     lineGroup.setCoords();
                 }
@@ -1192,10 +1238,99 @@
             }
         });
 
+        /**Lineup Loading**/
+        document.getElementById("lineup-dropdown").addEventListener("change", function (event) {
+            const selectedOption = event.target.options[event.target.selectedIndex];
+            formationDropdown.selectedIndex = 0;
+            loadLineUp(selectedOption);
+        });
+
+        function loadLineUp(target) {
+            const lineUpId = target.value;
+            const formation = target.textContent;
+            const custom = target.getAttribute("data-custom")
+            const customPlayerPositions = target.getAttribute("data-custom-positions");
+            canvas.clear();
+            if (playerArray.length !== 0) {
+                addTeamPlayers();
+            }
+            if (parseInt(lineUpId) !== -1) {
+                getLineUpPositions(formation, custom, customPlayerPositions, lineUpId)
+            } else {
+                canvas.clear();
+            }
+        }
+
+        function getLineUpPositions(formation, custom, customPlayerPositions, lineUpId) {
+            axios.get("/whiteboard/get_lineup", { params: { lineUpId: lineUpId } })
+                .then(response => {
+                    formationSwitch(formation, custom, customPlayerPositions, response.data);
+                })
+                .catch(error => {
+                    alert("ERROR see console");
+                    console.error(error);
+                });
+        }
+
+        /**
+         * Takes the playerCard node, index of the node in the player list,
+         * and canvas X and Y coordinates to place a fabric js player icon on the canvas.
+         * @param {number} id playerId for getting img
+         * @param {string} name player name
+         * @param {number} canvasX X coordinate of the mouse
+         * @param {number} canvasY Y coordinates of the mouse
+         */
+        function createLineupTeamPlayerIcon(id, name, canvasX, canvasY, index) {
+
+            const imageURL = "/user-profile-picture/" + id;
+
+            const whiteCircle = new fabric.Circle({
+                left: canvasX,
+                top: canvasY,
+                radius: 15,
+                fill: 'white',
+            });
+
+            const playerName = new fabric.Text(name, {
+                fill: 'black',
+                left: canvasX - 23,
+                top: canvasY + 31,
+                fontFamily: '"Noto Sans", sans-serif',
+                fontSize: 16,
+                fontWeight: 500,
+            });
+            fabric.Image.fromURL(imageURL, function (img) {
+
+                img.set({
+                    left: canvasX,
+                    top: canvasY,
+                    scaleX: 30 / img.width,
+                    scaleY: 30 / img.height,
+                    clipPath: new fabric.Ellipse({
+                        rx: img.width/2,
+                        ry: img.height/2,
+                        originX: 'center',
+                        originY: 'center',
+                        fill: 'transparent',
+                    }),
+                });
+
+                const group = new fabric.Group([whiteCircle, img, playerName], {
+                    id: `teamPlayer:${index}`,
+                    left: canvasX-xPlayerOffset-2,
+                    top: canvasY-yPlayerOffset+10,
+                    hasControls: false,
+                });
+                canvas.add(group);
+                canvas.renderAll();
+            });
+        }
+
 
         /** Formation **/
         document.getElementById("formation-dropdown").addEventListener("change", function (event) {
             const selectedOption = event.target.options[event.target.selectedIndex];
+            lineupDropdown.selectedIndex = 0;
             loadFormation(selectedOption);
         });
 
@@ -1214,12 +1349,24 @@
             if (playerArray.length !== 0) {
                 addTeamPlayers();
             }
-            if (formationId !== "-1") {
-                if (custom === true || custom === "true") {
-                    renderPlayersCustom(customPlayerPositions)
-                } else {
-                    renderPlayers(formation)
-                }
+            if (parseInt(formationId) !== -1) {
+                formationSwitch(formation, custom, customPlayerPositions, null);
+            }
+        }
+
+        /**
+         * Determines what to data to load to generate the formation
+         *
+         * @param formation formation string
+         * @param custom boolean for whether formation is custom
+         * @param customPlayerPositions custom player positions
+         * @param lineUpId if the line-up is -1 then don't generate as line-up else generate as line up
+         */
+        function formationSwitch(formation, custom, customPlayerPositions, lineUpPositions) {
+            if (custom === true || custom === "true") {
+                renderPlayersCustom(customPlayerPositions, lineUpPositions)
+            } else {
+                renderPlayers(formation, lineUpPositions)
             }
         }
 
@@ -1229,8 +1376,9 @@
          * Renders formation on the canvas from the provided string.
          *
          * @param formationString formation in string form, e.g. '1-4-4-2'
+         * @param lineUpPositions players in each position
          */
-        function renderPlayers(formationString) {
+        function renderPlayers(formationString, lineUpPositions) {
             const formation = formationString.split("-").map(num => parseInt(num));
             // Builds formation
             let j = 0;
@@ -1239,7 +1387,12 @@
                 while (formation[i] !== 0) {
                     const top = canvas.height - ((i + 1) / (formation.length + 1)) * canvas.height - radius;
                     const left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * canvas.width - radius;
-                    createPlayerIcon(left, top, '#EA3B52')
+                    if (lineUpPositions === null || lineUpPositions === undefined) {
+                        createPlayerIcon(left, top, '#EA3B52')
+                    } else {
+                        handleLineupGeneration(lineUpPositions, j, left, top);
+                    }
+
                     formation[i] -= 1;
                     j++;
                 }
@@ -1251,7 +1404,7 @@
          *
          * @param positions positions of the icons on the pitch, in form e.g.'20px,30px;40px,60px;'
          */
-        function renderPlayersCustom(positions) {
+        function renderPlayersCustom(positions, lineUpPositions) {
             // Due to a lack of foresight the displacement is saved as a static px value rather than a percentage, hence
             // it is prudent to turn the value into a percentage
             const pitchHeightOriginal = 360;
@@ -1263,9 +1416,30 @@
                 let coordinates = positionsList[i].split(",")
                 const left = parseInt(coordinates[0]) * canvas.width / pitchWidthOriginal;
                 let top = canvas.width - parseInt(coordinates[1]) * canvas.width / pitchHeightOriginal;
-                createPlayerIcon(left, top, '#EA3B52')
+                if (lineUpPositions === null || lineUpPositions === undefined) {
+                    createPlayerIcon(left, top, '#EA3B52')
+                } else {
+                    handleLineupGeneration(lineUpPositions, i, left, top);
+                }
             }
         }
+
+        function handleLineupGeneration(lineUpPositions, i, left, top) {
+            const lineUpPosition = lineUpPositions.lineUpPositions[i];
+            const userInfo = lineUpPosition.userInfo
+            const playerName = userInfo.firstName + " " + userInfo.lastName;
+            const playerId = userInfo.userId;
+            playerCards.forEach((playerCard, index) => {
+                const id = playerCard.querySelector("input").value;
+                if (parseInt(id) === playerId) {
+                    console.log(id, playerId)
+                    playerArray.push({index: index, node: playerCard});
+                    playerCard.style.display = 'none';
+                    createLineupTeamPlayerIcon(playerId, playerName, left, top, index);
+                }
+            })
+        }
+
 
         /**
          * Sets the colour of the initial default player icons in the navbar
@@ -1358,8 +1532,8 @@
                 originY: 'center'
             });
             const playerIconInner = new fabric.Circle({
-                left: x,
-                top: y,
+                left: x - 0.5,
+                top: y - 0.5,
                 radius: radius - 4,
                 fill: fill,
                 strokeWidth: 2,
