@@ -261,7 +261,7 @@ input[type="range"]::-moz-range-track {
 }
 
 .visibility-selection .default-svg, .visibility-selection .selected-svg {
-    height: 9px;
+    height: 10px;
 }
 
 .visibility-selection.active .default-svg, .visibility-selection .selected-svg {
@@ -313,8 +313,8 @@ input[type="range"]::-moz-range-track {
 }
 
 .circle-img img, .triangle-img img, .square-img img, .ellipse-img img, .rectangle-img img, .line-img img, .arrow-img img {
-    height: 20px !important;
-    width: 20px !important;
+    height: 21px !important;
+    width: 21px !important;
 }
 
 .whiteboard-dropdowns{
@@ -466,7 +466,7 @@ input[type="range"]::-moz-range-track {
     border-radius: 40px;
     margin-left: 3px;
     cursor: pointer;
-    border: #1d1d1d 3px solid;
+    border: #1d1d1d 2px solid;
     box-shadow: inset 0 0 0 3px white;
 }
 

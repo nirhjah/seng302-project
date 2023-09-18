@@ -1231,9 +1231,6 @@
                     lineGroup.addWithUpdate(leftLine);
                     lineGroup.addWithUpdate(rightLine);
                     // Old arrow elements get pushed to the top left corner for some reason so need to delete them
-                    canvas.remove(canvas.getObjects()[canvas.getObjects().length - 1])
-                    canvas.remove(canvas.getObjects()[canvas.getObjects().length - 2])
-                    canvas.remove(canvas.getObjects()[canvas.getObjects().length - 3])
                     canvas.add(lineGroup);
                     lineGroup.setCoords();
                 }
@@ -1364,6 +1361,7 @@
                 if (canvas.isDrawingMode) {
                     drawingMode = true;
                     canvas.isDrawingMode = false;
+                    canvas.selection = true
                 }
                 iconIsDragging = true;
                 copyIcon = playerIcon.cloneNode(false)
@@ -1386,18 +1384,26 @@
             })
 
             document.addEventListener("mouseup", (e) => {
-                const {x, y} = canvas.getPointer(e);
-
+                const whiteboardRect = canvas.upperCanvasEl.getBoundingClientRect()
+                const pointer = canvas.getPointer(e);
+                const {x, y} = pointer;
                 if (iconIsDragging) {
+                    if (x > -radius && y > -radius && x < canvas.width + radius && y < canvas.height + radius) {
+                        const canvasLeft = whiteboardRect.left;
+                        const canvasTop = whiteboardRect.top;
+                        console.log(newX, newY, canvasLeft, canvasTop, newX - canvasLeft, newY - canvasTop)
+                        const xP = e.clientX - canvasLeft;
+                        const yP = e.clientY - canvasTop;
+                        createPlayerIcon(xP, yP, copyIcon.style.background)
+                        if (drawingMode) {
+                            drawingMode = false;
+                            canvas.isDrawingMode = true;
+                            canvas.selection = false;
+                        }
+                    }
                     iconIsDragging = false;
-                    createPlayerIcon(x, y, copyIcon.style.background)
                     playerIconsContainer.removeChild(copyIcon)
                     copyIcon.remove();
-                }
-
-                if (drawingMode) {
-                    drawingMode = false;
-                    canvas.isDrawingMode = true;
                 }
             })
         }
