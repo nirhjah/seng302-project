@@ -17,6 +17,6 @@ public class CreateActivityFeature {
     public void i_see_a_registration_form() {
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
-        Assertions.assertEquals("http://" + PlaywrightBrowser.baseUrl + "/createActivity", PlaywrightBrowser.page.url());
+        Assertions.assertEquals("http://" + PlaywrightBrowser.baseUrl + "/create-activity", PlaywrightBrowser.page.url());
     }
 }

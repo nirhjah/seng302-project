@@ -536,7 +536,7 @@ public class ActivityService {
      * @param actId the activity id 
      * @return a list of users who are not in the lineup
     */
-    public List<User> getAllPlayersNotCurrentlyPlaying(long actId) {
+    public List<User> getAllPlayerSubstitutes(long actId) {
         Activity activity = findActivityById(actId);
         if (activity == null  || activity.getTeam() == null) {
             return List.of();
@@ -587,6 +587,21 @@ public class ActivityService {
         List<User> teamCoachesAndManagersList = coachesAndMangers.stream().toList();
 
         return players.stream().filter(player -> !teamCoachesAndManagersList.contains(player)).toList();
+    }
+
+    /**
+     * Gets all future activities for given user (includes personal and team based)
+     * @param user user to get future activities of
+     * @return List of all future activities for user
+     */
+    public List<Activity> getAllFutureActivitiesForUser(User user) {
+        List<Activity> futureTeamActivities = new ArrayList<>();
+            for (Activity activity :  activityRepository.findUserTeamAndPersonalActivities(user)) {
+                if (activity.getActivityStart().isAfter(LocalDateTime.now())) {
+                    futureTeamActivities.add(activity);
+                }
+            }
+        return futureTeamActivities;
     }
 
 }

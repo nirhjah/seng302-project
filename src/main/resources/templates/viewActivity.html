@@ -112,7 +112,7 @@
                         <div style="width: 100%; display: inline-block">
                         <div class="submit-button" style="width: 25%; min-width: 150px; float: left; padding-top: 25px; padding-bottom: 8px">
                             <a th:if="${activity.team==null || (activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}"
-                               th:href="@{createActivity(edit=${activity.id})}" type="button">
+                               th:href="@{create-activity(edit=${activity.id})}" type="button">
                                 <button type="submit" id="editActivityBtn">Edit</button>
                             </a>
                         </div>
@@ -317,6 +317,7 @@
                         <button onclick="addSubModal.style.display = 'block'" type="button"
                          th:style="${(playersInLineUp.size() > 0) ? null : 'display:none'}">Add Substitution</button>
                     </div>
+                    <h3 th:style="${(playersInLineUp.size() > 0) ? 'display:none' : null}"> You cannot make a Substitution as there is no lineup</h3>
                 </div>
             </div>
         </div>

@@ -163,13 +163,13 @@ public class CreateActivityController {
      * @return the create activity template
      * @throws MalformedURLException thrown in some cases
      */
-    @GetMapping("/createActivity")
+    @GetMapping("/create-activity")
     public String activityForm(
             @RequestParam(name="edit", required=false) Long actId,
             CreateActivityForm createActivityForm,
             Model model,
             HttpServletRequest httpServletRequest) throws MalformedURLException {
-        logger.info("GET /createActivity");
+        logger.info("GET /create-activity");
         model.addAttribute("httpServletRequest", httpServletRequest);
         prefillModel(model, httpServletRequest);
 
@@ -219,7 +219,7 @@ public class CreateActivityController {
      * @return returns my activity page iff the details are valid, returns to activity page otherwise
      * @throws MalformedURLException thrown in some cases
      */
-    @PostMapping("/createActivity")
+    @PostMapping("/create-activity")
     public String createActivity(
             @RequestParam(name = "actId", defaultValue = "-1") Long actId,
             @RequestParam(name = "playerAndPositions", required = false) String playerAndPositions,
@@ -230,7 +230,7 @@ public class CreateActivityController {
             HttpServletResponse httpServletResponse,
             Model model) throws MalformedURLException {
 
-        logger.info("POST /createActivity");
+        logger.info("POST /create-activity");
         model.addAttribute("httpServletRequest", httpServletRequest);
         prefillModel(model, httpServletRequest);
 
@@ -239,7 +239,6 @@ public class CreateActivityController {
         Activity activity = activityService.findActivityById(actId);
 
         postCreateActivityErrorChecking(bindingResult, createActivityForm, team, currentUser);
-
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             if (activity != null) {
@@ -289,7 +288,6 @@ public class CreateActivityController {
             }
 
         }
-
 
         activity = activityService.updateOrAddActivity(activity);
 
@@ -345,9 +343,9 @@ public class CreateActivityController {
      * A JSON API endpoint, which gives the formations of an associated team. Used by the createActivity page to update
      * @return A json object of type <code>{formationId: "formationString", ...}</code>
      */
-    @GetMapping(path = "/createActivity/get_team_formation", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/create-activity/get_team_formation", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<FormationInfo>> getTeamFormation(@RequestParam("teamId") long teamId) {
-        logger.info("GET /createActivity/get_team_formation");
+        logger.info("GET /create-activity/get_team_formation");
         // CHECK: Are we logged in?
         Optional<User> oCurrentUser = userService.getCurrentUser();
         if (oCurrentUser.isEmpty()) {

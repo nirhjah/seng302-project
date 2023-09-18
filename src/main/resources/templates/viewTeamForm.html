@@ -79,9 +79,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="float-container">
-                                
-                                    
+                            <div>
                                 <div class="float-child">
                                     <div class="user-label">
                                         <img th:src="@{/image/icons/name.svg}"/>
@@ -223,7 +221,7 @@
                         <h3 style="margin-top: 12px">Last 5 Matches: </h3>
                    <div class="last5" style="margin-top: 57px">
                        <ul class="last5Ul">
-                           <li th:each="act : ${last5GOrF}" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|">
+                           <li th:each="act : ${last5GOrF}" th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
                                <div>
                                    <h3 th:text="${act.activityType.name()}"> </h3>
                                    <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
@@ -355,7 +353,7 @@
                 <div class="competitions">
                     <ul>
                         <!-- /*onclick go to comp page*/ -->
-                        <li th:each="comp : ${teamCompetitions}" th:onclick="|window.location.href='/view-competition?competitionID=${comp.competitionId}'|">
+                        <li th:each="comp : ${teamCompetitions}" th:onclick="|window.location.href='@{view-competition(competitionID=${comp.competitionId})}'|">
                             <div>
                                 <h3 th:text="${comp.name}"> </h3>
                                 <h4 th:text="${comp.grade.age.description}"> </h4>

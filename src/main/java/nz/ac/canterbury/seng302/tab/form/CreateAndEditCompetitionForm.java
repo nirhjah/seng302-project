@@ -4,11 +4,13 @@ import nz.ac.canterbury.seng302.tab.entity.Grade;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.entity.competition.Competition;
+import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
 import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -45,11 +47,31 @@ public class CreateAndEditCompetitionForm {
 
     private Grade.Sex sex;
 
+    @ActivityFormValidators.startActivityValidator
+    private LocalDateTime startDateTime;
+
+    @ActivityFormValidators.endActivityValidator
+    private LocalDateTime endDateTime;
+
     private Grade.Competitiveness competitiveness;
 
     private Set<Team> teams;
 
     private Set<User> players;
+
+    public void setStartDateTime(LocalDateTime dateTime) {
+        startDateTime = dateTime;
+    }
+    public void setEndDateTime(LocalDateTime dateTime) {
+        endDateTime = dateTime;
+    }
+
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
+    }
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
+    }
 
     public String getName() {
         return name;
@@ -192,6 +214,34 @@ public class CreateAndEditCompetitionForm {
                         location.getCountry()
                 )
                 .allMatch(value -> value == null || value.isEmpty());
+    }
+
+    /**
+     * Prefills form with competition fields
+     *
+     * @param competition  competition to get info from
+     */
+    public void prefillWithCompetition(Competition competition) {
+        setName(competition.getName());
+        setSport(competition.getSport());
+
+        Grade grade = competition.getGrade();
+        setAge(grade.getAge());
+        setSex(grade.getSex());
+        setCompetitiveness(grade.getCompetitiveness());
+
+        setStartDateTime(competition.getCompetitionStartDate());
+        setEndDateTime(competition.getCompetitionEndDate());
+
+        Location location = competition.getLocation();
+        if (location != null) {
+            setAddressLine1(location.getAddressLine1());
+            setAddressLine2(location.getAddressLine2());
+            setSuburb(location.getSuburb());
+            setPostcode(location.getPostcode());
+            setCity(location.getCity());
+            setCountry(location.getCountry());
+        }
     }
 
 }

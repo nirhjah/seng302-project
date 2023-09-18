@@ -16,7 +16,7 @@ public class UB2CustomBackgroundsFeature {
     }
     @Given("I am creating a whiteboard")
     public void i_am_creating_a_whiteboard() {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/view-teams?page=1");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/view-teams?page=2");
         PlaywrightBrowser.page.locator(".card-wrapper").locator("h5:has-text('whiteboardteam')").first().click();
         PlaywrightBrowser.page.locator("#whiteboard").click();
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);

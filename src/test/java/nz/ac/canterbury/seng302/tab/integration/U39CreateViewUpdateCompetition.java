@@ -39,7 +39,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -78,6 +79,7 @@ public class U39CreateViewUpdateCompetition {
     private CompetitionRepository competitionRepository;
 
     private MockMvc mockMvc;
+
     private MockMvc viewAllMockMvc;
 
     private User user;
@@ -104,6 +106,7 @@ public class U39CreateViewUpdateCompetition {
 
     // The filter arguments to pass into the viewAllCompetitions request:
     private ViewAllCompetitionsController.Timing timing = null;
+
     private List<String> filterSports = new ArrayList<>();
 
     private String VIEW_ALL = "/view-all-competitions";
@@ -195,17 +198,29 @@ public class U39CreateViewUpdateCompetition {
                 .andExpect(view().name("createCompetitionForm"));
     }
 
-    @And("I input valid information for name, sport and grade,")
+    /*
+    Gets a formatted date to be passed into mockMvc
+     */
+    private String getFormattedDate(int secondsToAdd) {
+        ZoneOffset zero = ZoneOffset.ofHours(0);
+        LocalDateTime date = LocalDateTime.ofInstant(Instant.now().plusSeconds(secondsToAdd), zero);
+        return date.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    }
+
+    @And("I input valid information for name, dates, sport and grade,")
     public void iInputValidInformationForNameSportAndGradeLevel() throws Exception {
-        mockMvc.perform(multipart("/create-competition", 42L)
+        mockMvc.perform(multipart("/create-competition")
                         .param("name", "Sample Competition")
                         .param("sport", "Soccer")
+                        .param("startDateTime", getFormattedDate(1000))
+                        .param("endDateTime", getFormattedDate(2000))
                         .param("age", String.valueOf(Grade.Age.ADULT))
                         .param("sex", String.valueOf(Grade.Sex.MENS))
                         .param("competitiveness", String.valueOf(Grade.Competitiveness.PROFESSIONAL))
                         .param("usersOrTeams", "users")
                         .param("userTeamID", String.valueOf(user.getId())))
-                .andExpect(status().isFound());
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/view-competition?competitionID=2"));
     }
 
     @When("I attempt to access the create a competition page,")
@@ -257,14 +272,6 @@ public class U39CreateViewUpdateCompetition {
         verify(competitionService, times(1)).updateOrAddCompetition(any());
     }
 
-    @And("I am shown a ui element that display full details for the competition.")
-    public void iAmShownAUiElementThatDisplayFullDetailsForTheCompetition() {
-        // Commented out while viewCompetition is not on dev
-        //        mockMvc.perform(get("/viewCompetition")
-        //                        .param("id", String.valueOf(competition.getCompetitionId())))
-        //                .andExpect(status().isOk()) // Accepted 200
-        //                .andExpect(view().name("viewCompetitionForm"));
-    }
 
     @And("I input invalid information for one of name, sport or grade,")
     public void iInputInvalidInformationForOneOfNameSportOrGrade() throws Exception {
@@ -345,6 +352,8 @@ public class U39CreateViewUpdateCompetition {
                         .param("sport", "Soccer")
                         .param("age", String.valueOf(Grade.Age.ADULT))
                         .param("sex", String.valueOf(Grade.Sex.MENS))
+                        .param("startDateTime", getFormattedDate(1000))
+                        .param("endDateTime", getFormattedDate(2000))
                         .param("competitiveness", String.valueOf(Grade.Competitiveness.PROFESSIONAL))
                         .param("usersOrTeams", competitionType)
                         .param("userTeamID", String.valueOf(users.get(0).getId())))
@@ -374,6 +383,8 @@ public class U39CreateViewUpdateCompetition {
                         .param("sport", "Soccer")
                         .param("age", String.valueOf(Grade.Age.ADULT))
                         .param("sex", String.valueOf(Grade.Sex.MENS))
+                        .param("startDateTime", getFormattedDate(1000))
+                        .param("endDateTime", getFormattedDate(2000))
                         .param("competitiveness", String.valueOf(Grade.Competitiveness.PROFESSIONAL))
                         .param("usersOrTeams", competitionType)
                         .param("userTeamID", String.valueOf(teams.get(0).getId())))
@@ -524,7 +535,6 @@ public class U39CreateViewUpdateCompetition {
     private void generateCompetitionsForSport(String sport) {
         long smallTimeStep = 5000;
         long bigTimeStep = 10000;
-        Date now = Date.from(Instant.now());
 
         for (int i=0; i<NUM_PAST; i++) {
             Competition comp = new UserCompetition("myCompetition", Grade.randomGrade(), sport);

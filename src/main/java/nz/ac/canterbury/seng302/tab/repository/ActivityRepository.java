@@ -37,20 +37,28 @@ public interface ActivityRepository extends CrudRepository<Activity, Long> {
     Page<Activity> findActivitiesByUserSorted(Pageable pageable, @Param("user") User user);
 
     @Query("SELECT a FROM Activity a WHERE (a.activityType = 0 OR a.activityType = 1) and (a.outcome = 0 OR a.outcome = 1 OR a.outcome = 2) and a.team= :team ORDER BY a.activityEnd desc , a.activityStart desc LIMIT 5")
-    List<Activity> getLast5GameOrFriendly(Team team);
+    List<Activity> getLast5GameOrFriendly(@Param("team") Team team);
 
     @Query("SELECT COUNT(a) FROM Activity a WHERE (a.activityType = 0 OR a.activityType = 1) and a.team= :team")
-    int getAllGamesAndFriendlies(Team team);
+    int getAllGamesAndFriendlies(@Param("team") Team team);
 
     @Query("SELECT count(a) FROM Activity a WHERE (a.activityType = 0 OR a.activityType = 1) and a.team= :team and a.outcome=0")
-    int getNumberOfWinsForATeam(Team team);
+    int getNumberOfWinsForATeam(@Param("team") Team team);
 
     @Query("SELECT count(a) FROM Activity a WHERE (a.activityType = 0 OR a.activityType = 1) and a.team= :team and a.outcome=1")
-    int getNumberOfLosesForATeam(Team team);
+    int getNumberOfLosesForATeam(@Param("team") Team team);
 
     @Query("SELECT count(a) FROM Activity a WHERE (a.activityType = 0 OR a.activityType = 1) and a.team= :team and a.outcome=2")
-    int getNumberOfDrawsForATeam(Team team);
+    int getNumberOfDrawsForATeam(@Param("team") Team team);
 
     @Query("SELECT (a) FROM Activity a WHERE (a.activityType = 0 OR a.activityType = 1) and a.team= :team")
-    List<Activity> getAllGamesAndFriendliesForTeam(Team team);
+    List<Activity> getAllGamesAndFriendliesForTeam(@Param("team") Team team);
+
+    @Query("SELECT a FROM Activity a " +
+            "LEFT JOIN Team t ON a.team = t " +
+            "WHERE a.activityOwner = :user " +
+            "OR (a.team IS NOT NULL AND :user IN (SELECT tr.user FROM TeamRole tr WHERE t = tr.team)) " +
+            "GROUP BY a, t.name " +
+            "ORDER BY COALESCE(LOWER(t.name),''), a.activityStart")
+    List<Activity> findUserTeamAndPersonalActivities(@Param("user") User user);
 }
