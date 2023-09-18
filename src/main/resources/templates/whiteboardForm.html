@@ -1391,7 +1391,6 @@
                     if (x > -radius && y > -radius && x < canvas.width + radius && y < canvas.height + radius) {
                         const canvasLeft = whiteboardRect.left;
                         const canvasTop = whiteboardRect.top;
-                        console.log(newX, newY, canvasLeft, canvasTop, newX - canvasLeft, newY - canvasTop)
                         const xP = e.clientX - canvasLeft;
                         const yP = e.clientY - canvasTop;
                         createPlayerIcon(xP, yP, copyIcon.style.background)
