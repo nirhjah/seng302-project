@@ -928,5 +928,46 @@ public class ActivityServiceTest {
         Assertions.assertEquals(1, currPlaying.size());
         Assertions.assertEquals(currPlaying.get(0), player);
     }
+
+    @Test
+    void testGettingFutureActivitiesForUser() throws Exception {
+        Team t = new Team("Test Team", "Hockey");
+        teamRepository.save(t);
+        User user = new User("Test", "Account", "tab.team900@gmail.com", "password", new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
+        Activity game = new Activity(ActivityType.Game, t, "A Test Game",
+                LocalDateTime.of(2025, 1,1,6,30),
+                LocalDateTime.of(2025, 1,1,8,30), user,
+                new Location("Test", "Test", "Test", "test", "Tst", "test"));
+        Activity training = new Activity(ActivityType.Training, null, "A Test Game",
+                LocalDateTime.of(2025, 1,1,6,30),
+                LocalDateTime.of(2025, 1,1,8,30), user,
+                new Location("Test", "Test", "Test", "test", "Tst", "test"));
+        activityRepository.save(game);
+        activityRepository.save(training);
+
+
+        List<Activity> expectedFutureActivities = List.of(training, game);
+        Assertions.assertEquals(expectedFutureActivities, activityService.getAllFutureActivitiesForUser(user));
+    }
+
+    @Test
+    void testGettingFutureActivitiesForUser_NoFutureActivities() throws Exception {
+        Team t = new Team("Test Team", "Hockey");
+        teamRepository.save(t);
+        User user = new User("Test", "Account", "tab.team900@gmail.com", "password", new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
+        Activity game = new Activity(ActivityType.Game, t, "A Test Game",
+                LocalDateTime.of(2020, 1,1,6,30),
+                LocalDateTime.of(2020, 1,1,8,30), user,
+                new Location("Test", "Test", "Test", "test", "Tst", "test"));
+        Activity training = new Activity(ActivityType.Training, null, "A Test Game",
+                LocalDateTime.of(2021, 1,1,6,30),
+                LocalDateTime.of(2021, 1,1,8,30), user,
+                new Location("Test", "Test", "Test", "test", "Tst", "test"));
+        activityRepository.save(game);
+        activityRepository.save(training);
+
+        List<Activity> expectedFutureActivities = List.of();
+        Assertions.assertEquals(expectedFutureActivities, activityService.getAllFutureActivitiesForUser(user));
+    }
     
 }
