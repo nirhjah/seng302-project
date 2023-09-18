@@ -540,8 +540,41 @@ input[type="range"]::-moz-range-track {
     100% { opacity: 0;  }
 }
 
+.recording-image {
+    background: #1B263B;
+    border-radius: 50%;
+    height: 15px;
+    width: 15px;
+    transition: all .1s ease-in-out;
+}
 
+.recording-button.active .recording-image {
+    border-radius: 2px;
+    cursor: pointer;
+    height: 9px;
+    width: 9px;
+    background: #EA3B52;
+}
 
+.recording-button.active .recording-image-border {
+    border: 3px #EA3B52 solid;
+}
+
+.recording-image-border {
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    border: 3px #1B263B solid;
+    border-radius: 50px;
+}
+
+.record-button-border {
+    width: 24px;
+    position: absolute;
+    height: 24px;
+    border-radius: 50px;
+    border: red solid 2px;
+}
 
 
 

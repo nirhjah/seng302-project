@@ -250,12 +250,11 @@
                     <span class="tooltip">Camera (F)</span>
                     <img class="selected-svg" th:src="@{/image/icons/camera-active.svg}"/>
                     <img class="default-svg" th:src="@{/image/icons/camera.svg}"/>
-
                 </button>
                 <button class="recording-button">
                     <span class="tooltip">Record (R)</span>
-                    <img class="selected-svg" />
-                    <img class="default-svg" />
+                    <span class="recording-image"></span>
+                    <span class="recording-image-border"></span>
                 </button>
             </div>
             <div class="whiteboard">
@@ -540,7 +539,7 @@
         const cameraFlash = document.querySelector('.camera-flash');
         const mySound = new Audio("/static/mp3/cameraflashmp3-14565.mp3");
 
-        function addActiveClass() {
+        function clickCamera() {
             cameraButton.classList.add('active');
             // mySound.play()
             cameraFlash.classList.add("active");
@@ -549,15 +548,15 @@
             }, 990);
         }
 
-        function removeActiveClass() {
+        function deactivateCamera() {
             cameraButton.classList.remove('active');
         }
 
-        cameraButton.addEventListener('mousedown', addActiveClass);
+        cameraButton.addEventListener('mousedown', clickCamera);
 
-        cameraButton.addEventListener('mouseup', removeActiveClass);
+        cameraButton.addEventListener('mouseup', deactivateCamera);
 
-        cameraButton.addEventListener('mouseleave', removeActiveClass);
+        cameraButton.addEventListener('mouseleave', deactivateCamera);
 
         const recordingButton = document.querySelector('.recording-button');
 
@@ -702,7 +701,9 @@
                 }
                 formationDropdown.selectedIndex = 0;
             } else if (event.key === 'f') {
-
+                clickCamera();
+            } else if (event.key === 'r') {
+                toggleRecording();
             }
         });
 
@@ -1352,6 +1353,7 @@
          */
         function addPlayerIconMovement(playerIcon) {
             let iconIsDragging = false;
+            let drawingMode = false;
             const yOffset = 15;
             const xOffset = 18;
             let copyIcon;
@@ -1359,6 +1361,10 @@
             let newY;
 
             playerIcon.addEventListener("mousedown", (e) => {
+                if (canvas.isDrawingMode) {
+                    drawingMode = true;
+                    canvas.isDrawingMode = false;
+                }
                 iconIsDragging = true;
                 copyIcon = playerIcon.cloneNode(false)
                 copyIcon.classList.add("active")
@@ -1387,6 +1393,11 @@
                     createPlayerIcon(x, y, copyIcon.style.background)
                     playerIconsContainer.removeChild(copyIcon)
                     copyIcon.remove();
+                }
+
+                if (drawingMode) {
+                    drawingMode = false;
+                    canvas.isDrawingMode = true;
                 }
             })
         }
