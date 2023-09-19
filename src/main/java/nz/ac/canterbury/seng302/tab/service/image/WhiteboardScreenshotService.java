@@ -106,10 +106,11 @@ public class WhiteboardScreenshotService extends ImageService<WhiteboardScreensh
      */
     public WhiteboardScreenshot createScreenshotForTeam(MultipartFile file, Team team, boolean isPublic) {
         WhiteboardScreenshot screenshot = createScreenshot(file, isPublic);
-        team.addScreenshot(screenshot);
-        team = teamService.updateTeam(team);
         screenshot.setTeam(team);
-        return repository.save(screenshot);
+        screenshot = repository.save(screenshot);
+        team.addScreenshot(screenshot);
+        teamService.updateTeam(team);
+        return screenshot;
     }
 
 
