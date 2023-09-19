@@ -4,15 +4,85 @@
     <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
+    <link th:href="@{/css/profile.css}" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <title>Home</title>
 </head>
 <body class="home-background">
  <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
-    <div class="Welcome-header">
-        <h1>Welcome!</h1>
-    </div>
+
+ <div class="Welcome-header">
+     <h1 th:text="Welcome + ${user.firstName}"></h1>
+ </div>
+
+
+ <div>
+
+     <div>
+         <div class="last5" style="margin-top: 57px">
+             <ul class="last5Ul">
+                 <li th:each="team : ${userTeams}" th:onclick="|window.location.href='@{team-info(teamID=${team.teamId})}'|">
+                     <div>
+
+                         <div class="image-styling">
+                             <img th:src="@{/team-profile-picture/{id}(id = ${team.getId()})}" width="200" height="200">
+                             </br>
+                         </div>
+
+                         <h3 th:text="${team.getName()}"> </h3>
+                         <h3 th:text="${team.getSport()}"> </h3>
+
+
+
+                     </div>
+
+                 </li>
+             </ul>
+         </div>
+
+         </div>
+
+
+     <div>
+
+         <div class="last5" style="margin-top: 57px">
+             <ul class="last5Ul">
+                 <li th:each="act : ${userActivities}" th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
+                     <div>
+                         <h3 th:text="${act.activityType.name()}"> </h3>
+                         <h3 th:text="${act.team.getName()}"> </h3>
+
+                         <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
+                               endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')}" th:text="${startDate} + ' - ' + ${endDate}" ></h4>
+                     </div>
+
+                 </li>
+             </ul>
+         </div>
+
+     </div>
+
+
+     <div>
+     </div>
+
+
+
+
+
+
+
+
+
+     </div>
+
+
+
+
+
+
+
     <footer>
         <p>
             Image by <a

@@ -47,7 +47,7 @@ public class HomeFormController {
     @GetMapping("/")
     public String home() {
         logger.info("GET /homeForm");
-        return "redirect:./home";
+        return "redirect:./login";
     }
 
     @Autowired
@@ -69,6 +69,7 @@ public class HomeFormController {
         if (optUser.isPresent()) {
             model.addAttribute("userTeams", optUser.get().getJoinedTeams());
             model.addAttribute("userActivities", activityService.getAllFutureActivitiesForUser(optUser.get()));
+            model.addAttribute("user", optUser.get());
         }
 
         return "homeForm";
