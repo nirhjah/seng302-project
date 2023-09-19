@@ -17,7 +17,7 @@ public class WhiteboardScreenshot implements Identifiable, HasImage {
     @Enumerated
     private ImageType screenshotType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Team team;
 
     // Screenshots are private by default.

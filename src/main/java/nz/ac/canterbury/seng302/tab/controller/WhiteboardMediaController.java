@@ -5,6 +5,8 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.service.image.WhiteboardScreenshotService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Controller
 public class WhiteboardMediaController {
+
+    Logger logger = LoggerFactory.getLogger(WhiteboardMediaController.class);
 
     WhiteboardScreenshotService whiteboardScreenshotService;
     UserService userService;
@@ -64,14 +68,15 @@ public class WhiteboardMediaController {
 
     @PostMapping("whiteboard-media/save/screenshot")
     public void setScreenshot(
-//            @RequestParam("file") MultipartFile file,
-//            @RequestParam("teamId") long teamId,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("teamId") long teamId,
             @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
     ) {
-        //Team team = teamService.getTeam(teamId);
-        System.out.println("ISPUBLIC: " + isPublic);
-//        if (team != null) {
-//            whiteboardScreenshotService.createScreenshotForTeam(file, team, isPublic);
-//        }
+        Team team = teamService.getTeam(teamId);
+        if (team != null) {
+            whiteboardScreenshotService.createScreenshotForTeam(file, team, isPublic);
+        } else {
+            logger.warn("No team found with id: {}", teamId);
+        }
     }
 }
