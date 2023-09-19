@@ -46,9 +46,6 @@
                 <li sec:authorize="isAnonymous()">
                     <a th:href="@{register}" th:classappend="${httpServletRequest.requestURI == '/register' ? 'active' : ''}">Register</a>
                 </li>
-                <li sec:authorize="hasAnyRole('ROLE_FEDERATION_MANAGER')">
-                    <a th:href="@{inviteToFederationManager}" th:classappend="${httpServletRequest.requestURI == '/inviteToFederationManager' ? 'active' : ''}">Invite</a>
-                </li>
 
                 <div sec:authorize="isAuthenticated()" class="view-profile">
                     View Profile:
