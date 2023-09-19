@@ -1,0 +1,61 @@
+package nz.ac.canterbury.seng302.tab.controller;
+
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.service.UserService;
+import nz.ac.canterbury.seng302.tab.service.image.WhiteboardScreenshotService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+/**
+ * This controller handles saved media,
+ * i.e. screenshots or recordings of the whiteboard.
+ *  ----
+ * Note that this controller shouldn't do any real html rendering,
+ * rather, it should just deploy endpoints for other parts
+ * of the codebase to access images/videos/thumbnails
+ */
+@Controller
+public class WhiteboardMediaController {
+
+    WhiteboardScreenshotService whiteboardScreenshotService;
+    UserService userService;
+
+    @Autowired
+    public WhiteboardMediaController(WhiteboardScreenshotService whiteboardScreenshotService, UserService userService) {
+        this.whiteboardScreenshotService = whiteboardScreenshotService;
+        this.userService = userService;
+    }
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("whiteboard-media/screenshot/{id}")
+    public @ResponseBody ResponseEntity<byte[]> getPreview(@PathVariable long id) {
+        User user = userService.getCurrentUser().get();
+        return whiteboardScreenshotService.getScreenshot(id);
+    }
+
+    // For video thumbnails:
+    @GetMapping("whiteboard-media/thumbnail/{id}")
+    public @ResponseBody ResponseEntity<byte[]> getThumbnail(@PathVariable long id) {
+        return whiteboardScreenshotService.getScreenshot(id);
+    }
+
+    /*
+    TODO: Not sure if we should return a ResponseEntity here...
+     we may need to look into data streaming, and stream the file across.
+     Currently, the FDatasaver just loads the whole file into memory as bytes,
+     and yeets it across. This won't work well for large recordings of 300mb or above,
+     since itll put too much strain on our singular VM
+     */
+    @GetMapping("whiteboard-media/video/{id}")
+    public @ResponseBody ResponseEntity<byte[]> getRecording(@PathVariable long id) {
+        return whiteboardScreenshotService.getScreenshot(id);
+    }
+}
