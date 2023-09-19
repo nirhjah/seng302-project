@@ -5,6 +5,8 @@
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
     <link th:href="@{/css/profile.css}" rel="stylesheet">
+    <link th:href="@{/css/home.css}" rel="stylesheet">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <title>Home</title>
@@ -13,27 +15,49 @@
  <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 
  <div class="Welcome-header">
-     <h1 th:text="Welcome + ${user.firstName}"></h1>
+     <h1 th:text="Welcome +  ' ' + ${user.firstName} + '!'"></h1>
  </div>
 
 
- <div>
+ <div class="homePageWrapper">
 
-     <div>
-         <div class="last5" style="margin-top: 57px">
-             <ul class="last5Ul">
-                 <li th:each="team : ${userTeams}" th:onclick="|window.location.href='@{team-info(teamID=${team.teamId})}'|">
-                     <div>
+     <div class="teamsDiv" style="border-radius: 15px">
+
+         <div style="padding-top: 19px;">
+             <h2 style="text-align: center">My Teams</h2>
+
+             </div>
+
+         <div class="last5" style="margin-top: 57px; padding-bottom: 21px;">
+             <ul style="overflow: auto;margin-top: -28px; max-height: 425px;" class="last5Ul">
+                 <li style="width: unset" th:each="team : ${userTeams}" th:onclick="|window.location.href='@{team-info(teamID=${team.teamId})}'|">
+                     <div style="display: flex">
 
                          <div class="image-styling">
-                             <img th:src="@{/team-profile-picture/{id}(id = ${team.getId()})}" width="200" height="200">
+                             <img style="margin-top: 8px; height: 130px; width: 130px;" th:src="@{/team-profile-picture/{id}(id = ${team.getId()})}" width="200" height="200">
                              </br>
                          </div>
 
-                         <h3 th:text="${team.getName()}"> </h3>
-                         <h3 th:text="${team.getSport()}"> </h3>
+                         <div style="margin-left: 15px" class="teamText">
 
 
+                             <div class="user-label">
+                                 <img style="width: 34px; height: 34px" th:src="@{/image/icons/name.svg}"/>
+                                 <div>
+                                     <h3 class="attribute-type">Name</h3>
+                                     <h3 style="margin-top: -10px"  th:text="${team.getName()}"> </h3>
+                                 </div>
+                             </div>
+
+                             <div class="user-label">
+                                 <img style="width: 34px; height: 34px" th:src="@{/image/icons/sports-alt.svg}"/>
+                                 <div>
+                                     <h3 class="attribute-type">Sport</h3>
+                                     <h3 style="margin-top: -10px" th:text="${team.getSport()}"> </h3>
+                                 </div>
+                             </div>
+
+                        </div>
 
                      </div>
 
@@ -44,7 +68,7 @@
          </div>
 
 
-     <div>
+     <div class="ActivitiesDiv">
 
          <div class="last5" style="margin-top: 57px">
              <ul class="last5Ul">
