@@ -68,7 +68,9 @@ public class HomeFormController {
         Optional<User> optUser = userService.getCurrentUser();
         if (optUser.isPresent()) {
             model.addAttribute("userTeams", optUser.get().getJoinedTeams());
-            model.addAttribute("userActivities", activityService.getAllFutureActivitiesForUser(optUser.get()));
+            model.addAttribute("userPersonalActivities", activityService.getAllFuturePersonalActivitiesForUser(optUser.get()));
+            model.addAttribute("userTeamActivities", activityService.getAllFutureTeamActivitiesForUser(optUser.get()));
+
             model.addAttribute("user", optUser.get());
         }
 
