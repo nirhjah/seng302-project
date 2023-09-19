@@ -609,7 +609,7 @@ public class ActivityService {
      * @param user the user whose personal activities we are looking for
      * @return a list of the users personal activities
      */
-    public List<Activity> getAllPersonalActivitiesForUser(User user) {
+    public List<Activity> getAllFuturePersonalActivitiesForUser(User user) {
         List<Activity> futureTeamActivities = new ArrayList<>();
         for (Activity activity :  activityRepository.getPersonalActivitiesForUser(user)) {
             if (activity.getActivityStart().isAfter(LocalDateTime.now())) {
@@ -624,7 +624,7 @@ public class ActivityService {
      * @param user the user whose team activities we are looking for
      * @return a list of upcoming team activities for the user
      */
-    public List<Activity> getAllTeamActivitiesForUser(User user) {
+    public List<Activity> getAllFutureTeamActivitiesForUser(User user) {
         List<Activity> futureTeamActivities = new ArrayList<>();
         for (Activity activity :  activityRepository.getTeamActivitiesForUser(user)) {
             if (activity.getActivityStart().isAfter(LocalDateTime.now())) {

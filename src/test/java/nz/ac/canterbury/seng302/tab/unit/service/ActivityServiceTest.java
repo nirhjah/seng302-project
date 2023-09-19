@@ -59,6 +59,9 @@ public class ActivityServiceTest {
     @Autowired
     FactRepository factRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     private User player;
     
     private User player2;
@@ -968,6 +971,52 @@ public class ActivityServiceTest {
 
         List<Activity> expectedFutureActivities = List.of();
         Assertions.assertEquals(expectedFutureActivities, activityService.getAllFutureActivitiesForUser(user));
+    }
+
+    @Test
+    void testGettingTeamActivities_withPersonalActivities() throws Exception {
+        Team t = new Team("Test Team", "Hockey");
+        teamRepository.save(t);
+        User user = new User("Test", "Account", "tab.team900@gmail.com", "password", new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
+        userRepository.save(user);
+        t.setMember(user);
+        teamRepository.save(t);
+        Activity game = new Activity(ActivityType.Game, t, "A Test Game",
+                LocalDateTime.of(2024, 1,1,6,30),
+                LocalDateTime.of(2024, 1,1,8,30), user,
+                new Location("Test", "Test", "Test", "test", "Tst", "test"));
+        Activity training = new Activity(ActivityType.Training, null, "A Test Game",
+                LocalDateTime.of(2024, 1,1,6,30),
+                LocalDateTime.of(2024, 1,1,8,30), user,
+                new Location("Test", "Test", "Test", "test", "Tst", "test"));
+        activityRepository.save(game);
+        activityRepository.save(training);
+
+        List<Activity> expectedFutureActivities = List.of(game);
+        Assertions.assertEquals(expectedFutureActivities, activityService.getAllFutureTeamActivitiesForUser(user));
+    }
+
+    @Test
+    void testGettingPersonalActivities_withTeamActivities() throws Exception {
+        Team t = new Team("Test Team", "Hockey");
+        teamRepository.save(t);
+        User user = new User("Test", "Account", "tab.team900@gmail.com", "password", new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
+        userRepository.save(user);
+        t.setMember(user);
+        teamRepository.save(t);
+        Activity game = new Activity(ActivityType.Game, t, "A Test Game",
+                LocalDateTime.of(2024, 1,1,6,30),
+                LocalDateTime.of(2024, 1,1,8,30), user,
+                new Location("Test", "Test", "Test", "test", "Tst", "test"));
+        Activity training = new Activity(ActivityType.Training, null, "A Test Game",
+                LocalDateTime.of(2024, 1,1,6,30),
+                LocalDateTime.of(2024, 1,1,8,30), user,
+                new Location("Test", "Test", "Test", "test", "Tst", "test"));
+        activityRepository.save(game);
+        activityRepository.save(training);
+
+        List<Activity> expectedFutureActivities = List.of(training);
+        Assertions.assertEquals(expectedFutureActivities, activityService.getAllFuturePersonalActivitiesForUser(user));
     }
     
 }
