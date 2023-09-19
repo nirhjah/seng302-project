@@ -21,7 +21,7 @@
 
  <div class="homePageWrapper">
 
-     <div class="teamsDiv" style="margin-left: 9%; margin-right: 5%; border-radius: 15px">
+     <div class="teamsDiv" style="margin-left: 9%; margin-right: 5%; border-radius: 15px; height: 550px">
 
          <div style="padding-top: 19px;">
              <h2 style="text-align: center">My Teams</h2>
@@ -29,7 +29,8 @@
              </div>
 
          <div class="last5" style="margin-top: 57px; padding-bottom: 21px;">
-             <ul style="overflow: auto;margin-top: -28px; height: 425px;" class="last5Ul">
+             <h2 th:if="${userTeams.isEmpty()}" style="text-align: center">You aren't apart of any teams</h2>
+             <ul style="overflow: auto;margin-top: -28px; height: 425px; padding-bottom: 10px" class="last5Ul">
                  <li style="width: unset" th:each="team : ${userTeams}" th:onclick="|window.location.href='@{team-info(teamID=${team.teamId})}'|">
                      <div style="display: flex">
 
@@ -68,7 +69,7 @@
          </div>
 
 
-     <div style="margin-right: 5%; border-radius: 15px;" class="teamsDiv">
+     <div style="margin-right: 5%; border-radius: 15px; height: 550px" class="teamsDiv">
 
          <div style="padding-top: 19px;">
              <h2 style="text-align: center"> Upcoming Team Activities</h2>
@@ -77,7 +78,8 @@
 
 
          <div class="last5" style="margin-top: 57px; padding-bottom: 21px;">
-             <ul style="overflow: auto;margin-top: -28px; height: 425px;" class="last5Ul">
+             <h2 th:if="${userTeamActivities.isEmpty()}" style="text-align: center">You have no upcoming team activities</h2>
+             <ul style="overflow: auto;margin-top: -28px; height: 425px; padding-bottom: 10px" class="last5Ul">
                  <li style="width: unset" th:each="act : ${userTeamActivities}" th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
 
                      <div>
@@ -93,7 +95,7 @@
 
                      </div>
 
-                     <div style="margin-right: 17px;">
+                     <div style="margin-right: 10px;">
 
                          <div class="user-label">
                              <img style="width: 34px; height: 34px" th:src="@{/image/icons/team.svg}"/>
@@ -109,7 +111,7 @@
                              <div>
                                  <h3  class="attribute-type">Date</h3>
                                  <h4 style="margin-top: -8px;" th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
-                               endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')}" th:text="${startDate} + ' - ' + ${endDate}" ></h4>                             </div>
+                               endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')}" th:text="${startDate} + ' \n ' + ${endDate}" ></h4>                             </div>
                          </div>
 
                      </div>
@@ -120,29 +122,48 @@
 
      </div>
 
-     <div class="teamsDiv" style="border-radius: 15px">
+     <div class="teamsDiv" style="border-radius: 15px; height: 550px">
 
          <div style="padding-top: 19px;">
              <h2 style="text-align: center"> Upcoming Personal Activities</h2>
          </div>
 
          <div class="last5" style="margin-top: 57px; padding-bottom: 21px;">
-             <ul style="overflow: auto;margin-top: -28px; height: 425px;" class="last5Ul">
+             <h2 th:if="${userPersonalActivities.isEmpty()}" style="text-align: center">You have no upcoming personal activities</h2>
+             <ul style="overflow: auto;margin-top: -28px; height: 425px; padding-bottom: 10px" class="last5Ul">
                  <li style="width: unset" th:each="act : ${userPersonalActivities}" th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
+
                      <div>
-                         <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Game'}" th:src="@{/image/icons/game.svg}"/>
-                         <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Friendly'}" th:src="@{/image/icons/Friendly.svg}"/>
-                         <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Competition'}" th:src="@{/image/icons/Comp.svg}"/>
-                         <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Training'}" th:src="@{/image/icons/Training.svg}"/>
-                         <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Other'}" th:src="@{/image/icons/Other.svg}"/>
-
-
+                         <div class="image-styling"  style="margin-top: 14px;">
+                             <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Game'}" th:src="@{/image/icons/game.svg}"/>
+                             <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Friendly'}" th:src="@{/image/icons/friendly.svg}"/>
+                             <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Competition'}" th:src="@{/image/icons/competition.svg}"/>
+                             <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Training'}" th:src="@{/image/icons/training.svg}"/>
+                             <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Other'}" th:src="@{/image/icons/other.svg}"/>
+                         </div>
                      </div>
 
-                     <div style="margin-right: 34px;">
+                     <div style="margin-right: 45px;">
+                         <div class="user-label">
+                             <img style="width: 34px; height: 34px" th:src="@{/image/icons/calendar.svg}"/>
+                             <div>
+                                 <h3  class="attribute-type">Start Date</h3>
+                                 <h3 style="margin-top: -8px;"
+                                     th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},"
+                                     th:text="${startDate}" ></h3>
+                             </div>
+                         </div>
 
-                         <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
-                               endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')}" th:text="${startDate} + ' - ' + ${endDate}" ></h4>
+                         <div class="user-label">
+                             <img style="width: 34px; height: 34px" th:src="@{/image/icons/calendar.svg}"/>
+                             <div>
+                                 <h3  class="attribute-type">End Date</h3>
+                                 <h3 style="margin-top: -8px;"
+                                     th:with="endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')},"
+                                     th:text="${endDate}" ></h3>
+                             </div>
+                         </div>
+
                      </div>
 
                  </li>
