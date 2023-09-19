@@ -1387,7 +1387,7 @@
                 while (formation[i] !== 0) {
                     const top = canvas.height - ((i + 1) / (formation.length + 1)) * canvas.height - radius;
                     const left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * canvas.width - radius;
-                    if (lineUpPositions === null || lineUpPositions === undefined) {
+                    if (!lineUpPositions) {
                         createPlayerIcon(left, top, '#EA3B52')
                     } else {
                         handleLineupGeneration(lineUpPositions, j, left, top);
@@ -1416,7 +1416,7 @@
                 let coordinates = positionsList[i].split(",")
                 const left = parseInt(coordinates[0]) * canvas.width / pitchWidthOriginal;
                 let top = canvas.width - parseInt(coordinates[1]) * canvas.width / pitchHeightOriginal;
-                if (lineUpPositions === null || lineUpPositions === undefined) {
+                if (!lineUpPositions) {
                     createPlayerIcon(left, top, '#EA3B52')
                 } else {
                     handleLineupGeneration(lineUpPositions, i, left, top);
