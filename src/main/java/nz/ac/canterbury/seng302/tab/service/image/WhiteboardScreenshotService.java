@@ -1,11 +1,13 @@
 package nz.ac.canterbury.seng302.tab.service.image;
 
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.WhiteboardScreenshot;
 import nz.ac.canterbury.seng302.tab.helper.ImageService;
 import nz.ac.canterbury.seng302.tab.helper.ImageType;
 import nz.ac.canterbury.seng302.tab.repository.WhiteboardScreenshotRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ public class WhiteboardScreenshotService extends ImageService<WhiteboardScreensh
 
     private final WhiteboardScreenshotRepository repository;
     private final TeamService teamService;
+    private final UserService userService;
 
     /**
      * Writes files to the /{profile}/USER_PROFILE_PICTURES/ folder
@@ -35,10 +38,11 @@ public class WhiteboardScreenshotService extends ImageService<WhiteboardScreensh
      * @param profile The deployment environment, which determines the
      */
     @Autowired
-    public WhiteboardScreenshotService(@Value("${spring.profiles.active:unknown}") String profile, WhiteboardScreenshotRepository repository, TeamService teamService) {
+    public WhiteboardScreenshotService(@Value("${spring.profiles.active:unknown}") String profile, WhiteboardScreenshotRepository repository, TeamService teamService, UserService userService) {
         super(getDeploymentType(profile));
         this.repository = repository;
         this.teamService = teamService;
+        this.userService = userService;
     }
 
     /**
@@ -68,6 +72,19 @@ public class WhiteboardScreenshotService extends ImageService<WhiteboardScreensh
         return ImageType.PNG_OR_JPEG;
     }
 
+    private boolean canView(WhiteboardScreenshot screenshot) {
+        if (screenshot.isPublic()) {
+            return true;
+        }
+
+        // Else, loop through all teams that this user is a part of.
+        // If the screenshot belongs to any of the teams,
+        // then return true, (else false.)
+        Team team = screenshot.getTeam();
+        User user = userService.getCurrentUser().orElseThrow();
+        return (team.getTeamMembers().contains(user));
+    }
+
     /**
      * Creates a new screenshot, and saves it.
      *
@@ -90,24 +107,19 @@ public class WhiteboardScreenshotService extends ImageService<WhiteboardScreensh
     public WhiteboardScreenshot createScreenshotForTeam(MultipartFile file, Team team, boolean isPublic) {
         WhiteboardScreenshot screenshot = createScreenshot(file, isPublic);
         team.addScreenshot(screenshot);
-        teamService.updateTeam(team);
-        return screenshot;
-    }
-
-    /**
-     * Creates a screenshot, and immediately adds it to a team.
-     * @param file The file with the image data
-     * @param team The team in question
-     */
-    public void createScreenshotForTeam(MultipartFile file, Team team) {
-        createScreenshotForTeam(file, team, false);
+        team = teamService.updateTeam(team);
+        screenshot.setTeam(team);
+        return repository.save(screenshot);
     }
 
 
     public ResponseEntity<byte[]> getScreenshot(long id) {
         Optional<WhiteboardScreenshot> opt = repository.findById(id);
         if (opt.isPresent()) {
-            return getImageResponse(opt.get());
+            WhiteboardScreenshot screenshot = opt.get();
+            if (canView(screenshot)) {
+                return getImageResponse(screenshot);
+            }
         }
         // else, there's no content:
         return ResponseEntity.noContent().build();

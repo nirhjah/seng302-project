@@ -1,14 +1,15 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.service.image.WhiteboardScreenshotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * This controller handles saved media,
@@ -23,11 +24,13 @@ public class WhiteboardMediaController {
 
     WhiteboardScreenshotService whiteboardScreenshotService;
     UserService userService;
+    TeamService teamService;
 
     @Autowired
-    public WhiteboardMediaController(WhiteboardScreenshotService whiteboardScreenshotService, UserService userService) {
+    public WhiteboardMediaController(WhiteboardScreenshotService whiteboardScreenshotService, UserService userService, TeamService teamService) {
         this.whiteboardScreenshotService = whiteboardScreenshotService;
         this.userService = userService;
+        this.teamService = teamService;
     }
 
     /**
@@ -37,7 +40,6 @@ public class WhiteboardMediaController {
      */
     @GetMapping("whiteboard-media/screenshot/{id}")
     public @ResponseBody ResponseEntity<byte[]> getPreview(@PathVariable long id) {
-        User user = userService.getCurrentUser().get();
         return whiteboardScreenshotService.getScreenshot(id);
     }
 
@@ -57,5 +59,19 @@ public class WhiteboardMediaController {
     @GetMapping("whiteboard-media/video/{id}")
     public @ResponseBody ResponseEntity<byte[]> getRecording(@PathVariable long id) {
         return whiteboardScreenshotService.getScreenshot(id);
+    }
+
+
+    @PostMapping("whiteboard-media/save/screenshot")
+    public void setScreenshot(
+//            @RequestParam("file") MultipartFile file,
+//            @RequestParam("teamId") long teamId,
+            @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
+    ) {
+        //Team team = teamService.getTeam(teamId);
+        System.out.println("ISPUBLIC: " + isPublic);
+//        if (team != null) {
+//            whiteboardScreenshotService.createScreenshotForTeam(file, team, isPublic);
+//        }
     }
 }

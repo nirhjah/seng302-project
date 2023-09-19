@@ -17,6 +17,9 @@ public class WhiteboardScreenshot implements Identifiable, HasImage {
     @Enumerated
     private ImageType screenshotType;
 
+    @ManyToOne
+    private Team team;
+
     // Screenshots are private by default.
     // this is safer
     @Column
@@ -25,6 +28,14 @@ public class WhiteboardScreenshot implements Identifiable, HasImage {
     @Override
     public long getId() {
         return id;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    public Team getTeam() {
+        return team;
     }
 
     public boolean isPublic() {
