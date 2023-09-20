@@ -66,11 +66,24 @@ th:nth-child(4) {
 }
 
 .filter-bar{
-    display:flex;
+    display: flex;
     flex-direction: row;
     height:35px;
     justify-content: center;
     margin: auto;
+    align-items: center;
+}
+
+
+.apply-filters-button {
+    border: 0;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0 15px;
+    border-radius: 20px;
+    background-color: #415A77;
+    color: white;
+    font-family: "Noto Sans", sans-serif;
 }
 
 .search-input {

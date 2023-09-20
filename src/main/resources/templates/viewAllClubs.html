@@ -16,15 +16,13 @@
     <!--/* Search Field */-->
     <form id="search-form" th:action="@{view-clubs}" method="get">
         <div class="search-bar">
-            <input class ="search-input" type="text" th:name="currentSearch" id="clubName" th:value="${currentSearch}" placeholder="Search Clubs" />
+            <input class="search-input" type="text" th:name="currentSearch" id="clubName" th:value="${currentSearch}" placeholder="Search Clubs" />
                 <button class="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
         </div>
-        <div style="display: flex; flex-direction: column;">
-            <div class="filter-bar">
-                <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cities')}"></div>
-                <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sports')}"></div>
-                <button class="apply-filters-button" type="submit">Apply Filters</button>
-            </div>
+        <div class="filter-bar">
+            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cities')}"></div>
+            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sports')}"></div>
+            <button class="apply-filters-button" type="submit">Apply Filters</button>
         </div>
     </form>
 
@@ -34,17 +32,19 @@
 
     <!--/* The table of clubs */-->
     <div class="card-container">
-        <div th:each="club : ${listOfClubs}" class="card"
-             th:onclick="|window.location.href='@{view-club(clubID=${club.id})}'|">
+        <div th:each="club : ${listOfClubs}" class="card">
             <div class="card-wrapper">
-                <div class="card-image">
-                    <img th:src="@{/club-logo/{id}(id = ${club.id})}" class="card-img-top" th:alt="${club.name}">
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">[[|${club.name} |]]</h5>
-                    <p class="card-text" th:text="|Sport: ${club.sport}|">Club sport</p>
-                    <p class="card-text" th:if="${club.location}" th:text="|Location: ${club.location}|">Club location</p>
-                </div>
+                <a th:href="@{view-club(clubID=${club.id})}">
+                    <div class="card-image">
+                        <!-- <img th:src="@{/club-logo/{id}(id = ${club.id})}" class="card-img-top" th:alt="${club.name}"> -->
+                        <img th:src="@{image/icons/club-logo.svg}" class="card-img-top" th:alt="${club.name}">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">[[|${club.name} |]]</h5>
+                        <p class="card-text" th:text="|Sport: ${club.sport}|">Club sport</p>
+                        <p class="card-text" th:if="${club.location}" th:text="|Location: ${club.location}|">Club location</p>
+                    </div>
+                </a>
             </div>
         </div>
     </div>
