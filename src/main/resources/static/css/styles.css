@@ -103,7 +103,7 @@ td {
     background-color: #0b2239;
     font-weight: 500;
 }
-.view-competition-background,
+
 .home-background,
 .view-users-background,
 .view-teams-background,
@@ -600,7 +600,7 @@ ul.autocomplete-result{
     margin-top: 15px;
 }
 
-.checkbox-box label, .competitor-message {
+.checkbox-box label {
     font-family: "Noto Sans", sans-serif;
     left: 1px;
     font-size: 1em;
