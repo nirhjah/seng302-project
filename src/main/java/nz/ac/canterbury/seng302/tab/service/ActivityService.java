@@ -590,21 +590,6 @@ public class ActivityService {
     }
 
     /**
-     * Gets all future activities for given user (includes personal and team based)
-     * @param user user to get future activities of
-     * @return List of all future activities for user
-     */
-    public List<Activity> getAllFutureActivitiesForUser(User user) {
-        List<Activity> futureTeamActivities = new ArrayList<>();
-            for (Activity activity :  activityRepository.findUserTeamAndPersonalActivities(user)) {
-                if (activity.getActivityStart().isAfter(LocalDateTime.now())) {
-                    futureTeamActivities.add(activity);
-                }
-            }
-        return futureTeamActivities;
-    }
-
-    /**
      * Gets all future Personal Activities - ie ones that a user created for themselves
      * @param user the user whose personal activities we are looking for
      * @return a list of the users personal activities

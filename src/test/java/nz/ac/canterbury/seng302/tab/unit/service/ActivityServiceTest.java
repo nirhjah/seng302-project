@@ -933,47 +933,6 @@ public class ActivityServiceTest {
     }
 
     @Test
-    void testGettingFutureActivitiesForUser() throws Exception {
-        Team t = new Team("Test Team", "Hockey");
-        teamRepository.save(t);
-        User user = new User("Test", "Account", "tab.team900@gmail.com", "password", new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
-        Activity game = new Activity(ActivityType.Game, t, "A Test Game",
-                LocalDateTime.of(2025, 1,1,6,30),
-                LocalDateTime.of(2025, 1,1,8,30), user,
-                new Location("Test", "Test", "Test", "test", "Tst", "test"));
-        Activity training = new Activity(ActivityType.Training, null, "A Test Game",
-                LocalDateTime.of(2025, 1,1,6,30),
-                LocalDateTime.of(2025, 1,1,8,30), user,
-                new Location("Test", "Test", "Test", "test", "Tst", "test"));
-        activityRepository.save(game);
-        activityRepository.save(training);
-
-
-        List<Activity> expectedFutureActivities = List.of(training, game);
-        Assertions.assertEquals(expectedFutureActivities, activityService.getAllFutureActivitiesForUser(user));
-    }
-
-    @Test
-    void testGettingFutureActivitiesForUser_NoFutureActivities() throws Exception {
-        Team t = new Team("Test Team", "Hockey");
-        teamRepository.save(t);
-        User user = new User("Test", "Account", "tab.team900@gmail.com", "password", new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
-        Activity game = new Activity(ActivityType.Game, t, "A Test Game",
-                LocalDateTime.of(2020, 1,1,6,30),
-                LocalDateTime.of(2020, 1,1,8,30), user,
-                new Location("Test", "Test", "Test", "test", "Tst", "test"));
-        Activity training = new Activity(ActivityType.Training, null, "A Test Game",
-                LocalDateTime.of(2021, 1,1,6,30),
-                LocalDateTime.of(2021, 1,1,8,30), user,
-                new Location("Test", "Test", "Test", "test", "Tst", "test"));
-        activityRepository.save(game);
-        activityRepository.save(training);
-
-        List<Activity> expectedFutureActivities = List.of();
-        Assertions.assertEquals(expectedFutureActivities, activityService.getAllFutureActivitiesForUser(user));
-    }
-
-    @Test
     void testGettingTeamActivities_withPersonalActivities() throws Exception {
         Team t = new Team("Test Team", "Hockey");
         teamRepository.save(t);
@@ -1018,5 +977,58 @@ public class ActivityServiceTest {
         List<Activity> expectedFutureActivities = List.of(training);
         Assertions.assertEquals(expectedFutureActivities, activityService.getAllFuturePersonalActivitiesForUser(user));
     }
-    
+
+    @Test
+    void testGettingFuturePersonalActivities_OnlyPastPersonalActivities() throws Exception {
+        Team t = new Team("Test Team", "Hockey");
+        teamRepository.save(t);
+        User user = new User("Test", "Account", "tab.team900@gmail.com", "password", new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
+        userRepository.save(user);
+        t.setMember(user);
+        teamRepository.save(t);
+
+        Activity training = new Activity(ActivityType.Training, null, "training",
+                LocalDateTime.of(2021, 1,1,6,30),
+                LocalDateTime.of(2021, 1,1,8,30), user,
+                new Location("Test", "Test", "Test", "test", "Tst", "test"));
+
+        Activity other = new Activity(ActivityType.Other, null, "other",
+                LocalDateTime.of(2021, 1,2,6,30),
+                LocalDateTime.of(2021, 1,2,8,30), user,
+                new Location("Test", "Test", "Test", "test", "Tst", "test"));
+
+        activityRepository.save(other);
+        activityRepository.save(training);
+
+        List<Activity> expectedFutureActivities = List.of();
+        Assertions.assertEquals(expectedFutureActivities, activityService.getAllFuturePersonalActivitiesForUser(user));
+    }
+
+    @Test
+    void testGettingFutureTeamActivities_OnlyPastTeamActivities() throws Exception {
+        Team t = new Team("Test Team", "Hockey");
+        teamRepository.save(t);
+        User user = new User("Test", "Account", "tab.team900@gmail.com", "password", new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
+        userRepository.save(user);
+        t.setMember(user);
+        teamRepository.save(t);
+
+        Activity game = new Activity(ActivityType.Game, t, "game",
+                LocalDateTime.of(2021, 1,1,6,30),
+                LocalDateTime.of(2021, 1,1,8,30), user,
+                new Location("Test", "Test", "Test", "test", "Tst", "test"));
+
+        Activity friendly = new Activity(ActivityType.Friendly, null, "friendly",
+                LocalDateTime.of(2021, 1,2,6,30),
+                LocalDateTime.of(2021, 1,2,8,30), user,
+                new Location("Test", "Test", "Test", "test", "Tst", "test"));
+
+        activityRepository.save(game);
+        activityRepository.save(friendly);
+
+        List<Activity> expectedFutureActivities = List.of();
+        Assertions.assertEquals(expectedFutureActivities, activityService.getAllFutureTeamActivitiesForUser(user));
+    }
+
+
 }
