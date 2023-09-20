@@ -98,49 +98,5 @@ public class HomeFormController {
         return "homeForm";
     }
 
-    /**
-     * Post method to handle joining teams
-     * @param token - unique team token
-     * @param joinTeamForm form with token
-     * @param bindingResult result of form
-     * @param model mapping to pass to HTML
-     * @param httpServletResponse response
-     * @param request request
-     * @param redirectAttributes redirect attributes
-     * @return
-     */
-    @PostMapping("/home")
-    public String joinTeamsForm(
-            @RequestParam("token") String token,
-            @Validated JoinTeamForm joinTeamForm,
-            BindingResult bindingResult,
-            Model model,
-            HttpServletResponse httpServletResponse, HttpServletRequest request,
-            RedirectAttributes redirectAttributes) {
-
-        model.addAttribute("token", token);
-        model.addAttribute("httpServletRequest", request);
-
-        User user = userService.getCurrentUser().get();
-        Optional<Team> team = teamService.findByToken(token);
-        if (team.isEmpty()) {
-            bindingResult.addError(new FieldError("joinTeamForm", "token", "Token is invalid"));
-        }
-
-        if (bindingResult.hasErrors()) {
-            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            redirectAttributes.addFlashAttribute("tokenInvalid", "Leave Modal Open");
-            redirectAttributes.addFlashAttribute("formBindingResult", bindingResult);
-
-            return "redirect:/home";
-        }
-
-        if (team.isPresent()) {
-            userService.userJoinTeam(user, team.get());
-        }
-
-        return "homeForm";
-    }
-
 }
 

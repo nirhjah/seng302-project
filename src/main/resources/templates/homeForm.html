@@ -33,7 +33,7 @@
              <div th:if="${userTeams.isEmpty()}" class="submit-button"  style="width: 75%; margin: auto; padding-top: 20px">
                  <button id="joinTeamByTokenModalBtn2" onclick="modal.style.display = 'block'" type="button" class="registerLoginButton">Join Team by Token</button>
              </div>
-             <form id="forgot-password-form" th:action="@{home}" method="post" th:object="${joinTeamForm}">
+             <form id="forgot-password-form" th:action="@{/my-teams(page=1)}" method="post" th:object="${joinTeamForm}">
              <div id="joinTeamModal" class="modal" th:style="${tokenInvalid != null ? 'display:block' : 'display:none'}">
 
                  <div class="modal-content">
@@ -41,6 +41,7 @@
                      <h4 class="reset-password-info"> Join Team By Token </h4>
 
                      <div class="input-box">
+                         <input hidden value="teams" id="type" name="type" th:value="home">
                          <input type="text" class="form-control" id="token" placeholder="" th:field="*{token}" th:value="${token}"
                                 data-cy="token" autofocus>
                          <label for="token"> Token: <span class="required">*</span></label>
