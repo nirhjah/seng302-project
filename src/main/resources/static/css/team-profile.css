@@ -28,10 +28,11 @@
         min-height: unset;
     }
 
-    .content {
-        max-height: unset;
-        height: unset;
+    #team-wrapper .content {
+        max-height: unset !important;
+        height: unset !important;
     }
+
 
     .wrapper-profile {
         display: flex !important;
