@@ -20,7 +20,7 @@
                 <button class="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
         </div>
         <div class="filter-bar">
-            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${ {'a','a','a','a','a','a','a','a','a','a','a','a','a','a','a'} }, 'Filter by city', 'cities')}"></div>
+            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cities')}"></div>
             <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sports')}"></div>
         </div>
         <div class="apply-filters-button-container">
@@ -38,8 +38,8 @@
             <div class="card-wrapper">
                 <a th:href="@{view-club(clubID=${club.id})}">
                     <div class="card-image">
-                        <!-- <img th:src="@{/club-logo/{id}(id = ${club.id})}" class="card-img-top" th:alt="${club.name}"> -->
-                        <img th:src="@{image/icons/club-logo.svg}" class="card-img-top" th:alt="${club.name}">
+                        <!-- /* For display purposes: @{image/icons/club-logo.svg} */ -->
+                        <img th:src="@{/club-logo/{id}(id = ${club.id})}" class="card-img-top" th:alt="${club.name}">
                     </div>
                     <div class="card-body">
                         <h5 class="card-title">[[|${club.name} |]]</h5>

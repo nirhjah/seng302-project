@@ -19,14 +19,14 @@ import nz.ac.canterbury.seng302.tab.service.ClubService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 
 @Controller
-public class ViewAllClubs {
+public class ViewAllClubsController {
     
-    private static final Logger logger = LoggerFactory.getLogger(ViewAllClubs.class);
+    private static final Logger logger = LoggerFactory.getLogger(ViewAllClubsController.class);
 
     private ClubService clubService;
     private UserService userService;
 
-    public ViewAllClubs(ClubService clubService, UserService userService) {
+    public ViewAllClubsController(ClubService clubService, UserService userService) {
         this.clubService = clubService;
         this.userService = userService;
     }
@@ -59,10 +59,13 @@ public class ViewAllClubs {
         User currentUser = userService.getCurrentUser().orElseThrow();
         model.addAttribute("httpServletRequest", httpServletRequest);
 
-        // THESE ARE JUST TEST CLUBS, DON'T ACTUALLY DO THIS
         List<Club> testListOfClubs = generateClubs(nClubs, currentUser);
-
+        // FOR THE BACKEND PERSON: MODIFY THESE
         model.addAttribute("listOfClubs", testListOfClubs);
+        // For the search dropdowns
+        model.addAttribute("cities", List.of("Auck", "Chch", "Well", "Ham", "Inv", "Kai"));
+        model.addAttribute("sports", List.of("kick", "run", "jump", "fly", "swim", "float", "dive", "etc"));
+        // For the paginator
         model.addAttribute("page", page);
         model.addAttribute("totalPages", 1);
         return "viewAllClubs";
