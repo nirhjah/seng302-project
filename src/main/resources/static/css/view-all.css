@@ -73,16 +73,22 @@ th:nth-child(4) {
     margin: auto;
 }
 
-
 .apply-filters-button {
     border: 0;
     text-decoration: none;
     font-weight: bold;
+    font-size: 16px;
     padding: 0 15px;
     border-radius: 20px;
     background-color: #415A77;
     color: white;
     font-family: "Noto Sans", sans-serif;
+    height: 30px;
+}
+
+.apply-filters-button-container {
+    display: flex;
+    justify-content: center;
 }
 
 .search-input {
