@@ -40,16 +40,16 @@ public class HomeFormControllerTest {
     @BeforeEach
     public void beforeEach() {
         userRepository.deleteAll();
+        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", new Location(null, null, null, "CHCH", null, "NZ"));
+        userRepository.save(user);
+        when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
+
     }
 
 
     @Test
     @WithMockUser
     void getHomePage_LoggedIn_GoToHomeForm() throws Exception {
-
-        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", new Location(null, null, null, "CHCH", null, "NZ"));
-        userRepository.save(user);
-        when(mockUserService.getCurrentUser()).thenReturn(Optional.of(user));
 
         mockMvc.perform(get("/home"))
                 .andExpect(status().isOk())
