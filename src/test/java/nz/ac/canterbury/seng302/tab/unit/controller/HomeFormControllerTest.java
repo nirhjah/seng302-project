@@ -4,6 +4,7 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -35,6 +36,12 @@ public class HomeFormControllerTest {
     private UserRepository userRepository;
 
     private User user;
+
+    @BeforeEach
+    public void beforeEach() {
+        userRepository.deleteAll();
+    }
+
 
     @Test
     @WithMockUser
