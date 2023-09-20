@@ -83,6 +83,7 @@ public class SecurityConfiguration {
         http
             .authorizeHttpRequests(auth -> auth.requestMatchers(
                 AntPathRequestMatcher.antMatcher("/favicon.ico"),
+                AntPathRequestMatcher.antMatcher("/error"),
                 AntPathRequestMatcher.antMatcher("/geocode/autocomplete"),
                 AntPathRequestMatcher.antMatcher("/h2/**"),
                 AntPathRequestMatcher.antMatcher("/resources/**"),
