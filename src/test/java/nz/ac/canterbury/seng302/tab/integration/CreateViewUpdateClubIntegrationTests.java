@@ -87,15 +87,11 @@ public class CreateViewUpdateClubIntegrationTests {
     private SportService sportService;
 
     @Autowired
-    private CompetitionService competitionService;
-    @Autowired
     private FormationService formationService;
 
     private ClubRepository clubRepository;
 
     private ClubImageService clubImageService;
-
-    private CompetitionRepository competitionRepository;
 
     private User user;
 
@@ -123,7 +119,6 @@ public class CreateViewUpdateClubIntegrationTests {
         clubImageService = applicationContext.getBean(ClubImageService.class);
         locationRepository = applicationContext.getBean(LocationRepository.class);
         sportRepository= applicationContext.getBean(SportRepository.class);
-        competitionRepository= applicationContext.getBean(CompetitionRepository.class);
 
 
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
@@ -135,9 +130,8 @@ public class CreateViewUpdateClubIntegrationTests {
         teamService = Mockito.spy(new TeamService(teamRepository));
         locationService= Mockito.spy(new LocationService(locationRepository));
         sportService= Mockito.spy(new SportService(sportRepository));
-        competitionService= Mockito.spy(new CompetitionService(competitionRepository));
 
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService, clubImageService), new ViewTeamController(userService, teamService, activityService, factService, formationService,competitionService), new ViewClubController(userService, teamService, clubService)
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateClubController(clubService, userService, teamService, clubImageService), new ViewTeamController(userService, teamService, activityService, factService, formationService), new ViewClubController(userService, teamService, clubService)
         , new ViewAllTeamsController(teamService, userService, locationService,sportService)).build();
 
         Authentication authentication = Mockito.mock(Authentication.class);
