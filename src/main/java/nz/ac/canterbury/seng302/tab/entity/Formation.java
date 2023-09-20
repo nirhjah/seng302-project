@@ -100,7 +100,7 @@ public class Formation {
 
     @Override
     public String toString() {
-        return title.isBlank() ? formation : title;
+        return title == null ? formation : title;
     }
 
 }

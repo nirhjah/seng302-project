@@ -173,7 +173,8 @@ class ViewTeamControllerTest {
                         .param("formation", formation)
                         .param("customPlayerPositions", "")
                         .param("custom", String.valueOf(false))
-                        .param("teamID", String.valueOf(TEAM_ID)))
+                        .param("teamID", String.valueOf(TEAM_ID))
+                        .param("formation-title", ""))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/team-info?teamID=" + TEAM_ID));
         verify(mockFormationService, times(1)).addOrUpdateFormation(any());
@@ -189,7 +190,8 @@ class ViewTeamControllerTest {
                         .param("formation", "1-4-4-2")
                         .param("customPlayerPositions", "")
                         .param("custom", String.valueOf(false))
-                        .param("teamID", String.valueOf(TEAM_ID)))
+                        .param("teamID", String.valueOf(TEAM_ID))
+                        .param("formation-title", ""))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/team-info?teamID=" + TEAM_ID));
         verify(mockFormationService, times(1)).addOrUpdateFormation(any());
@@ -203,7 +205,8 @@ class ViewTeamControllerTest {
                         .param("formation", formation)
                         .param("customPlayerPositions", "")
                         .param("custom", String.valueOf(false))
-                        .param("teamID", String.valueOf(TEAM_ID)))
+                        .param("teamID", String.valueOf(TEAM_ID))
+                        .param("formation-title", ""))
                 .andExpect(status().isBadRequest());
     }
 
@@ -214,7 +217,8 @@ class ViewTeamControllerTest {
                         .param("formation", "1-4-4-2")
                         .param("customPlayerPositions", "")
                         .param("custom", String.valueOf(false))
-                        .param("teamID", String.valueOf(TEAM_ID)))
+                        .param("teamID", String.valueOf(TEAM_ID))
+                        .param("formation-title", ""))
                 .andExpect(status().isNotFound());
     }
 
@@ -227,7 +231,8 @@ class ViewTeamControllerTest {
                         .param("formation", "1-4-4-2")
                         .param("customPlayerPositions", "")
                         .param("custom", String.valueOf(false))
-                        .param("teamID", String.valueOf(TEAM_ID)))
+                        .param("teamID", String.valueOf(TEAM_ID))
+                        .param("formation-title", ""))
                 .andExpect(status().isForbidden());
     }
 
