@@ -23,6 +23,8 @@
             <div class="filter-bar">
                 <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cities')}"></div>
                 <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sports')}"></div>
+            </div>
+            <div class="apply-filters-button-container">
                 <button class="apply-filters-button" type="submit">Apply Filters</button>
             </div>
         </div>
