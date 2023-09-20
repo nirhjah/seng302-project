@@ -38,12 +38,18 @@ public class LoginController {
         this.userService = userService;
     }
 
+
+    @GetMapping("/")
+    public String home() {
+        logger.info("GET /homeForm");
+        return "redirect:./home";
+    }
     /**
      * Gets form to be displayed
      * @return thymeleaf register
      * @throws AuthenticationException If logging in failed with an unknown error
      */
-    @GetMapping("/login")
+    @GetMapping("/home")
     public String form(
             @RequestParam(name="error", required=false) String error,
             @RequestParam(name=DEFAULT_REDIRECT, required=false) String redirectUrl,
@@ -51,7 +57,7 @@ public class LoginController {
             HttpServletRequest request,
             HttpSession session) {
         model.addAttribute("httpServletRequest", request);
-        logger.info("GET /login");
+        logger.info("GET /home");
         
         // If the redirect URL isn't local (Open Redirect Vulnerability), trash it.
         if (redirectUrl != null && !LOCAL_URL_PATTERN.matcher(redirectUrl).matches()) {

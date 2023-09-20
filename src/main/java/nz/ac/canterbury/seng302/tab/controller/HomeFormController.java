@@ -1,8 +1,5 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.image.UserImageService;
@@ -11,10 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.Optional;
 
 /**
  * Spring Boot Controller class for the Home Form class.
@@ -44,11 +37,11 @@ public class HomeFormController {
      *
      * @return redirect to /home
      */
-    @GetMapping("/")
-    public String home() {
-        logger.info("GET /homeForm");
-        return "redirect:./home";
-    }
+//    @GetMapping("/")
+//    public String home() {
+//        logger.info("GET /homeForm");
+//        return "redirect:./home";
+//    }
 
     @Autowired
     private UserImageService userImageService;
@@ -59,19 +52,19 @@ public class HomeFormController {
      * @param model (map-like) representation of data to be used in thymeleaf display
      * @return thymeleaf homeForm
      */
-    @GetMapping("/home")
-    public String getTemplate(Model model, HttpServletRequest request) {
-        logger.info("GET /homeForm");
-        model.addAttribute("httpServletRequest", request);
-        model.addAttribute("navTeams", teamService.getTeamList());
-
-        Optional<User> optUser = userService.getCurrentUser();
-        if (optUser.isPresent()) {
-            model.addAttribute("userTeams", optUser.get().getJoinedTeams());
-            model.addAttribute("userActivities", activityService.getAllFutureActivitiesForUser(optUser.get()));
-        }
-
-        return "homeForm";
-    }
+//    @GetMapping("/home")
+//    public String getTemplate(Model model, HttpServletRequest request) {
+//        logger.info("GET /homeForm");
+//        model.addAttribute("httpServletRequest", request);
+//        model.addAttribute("navTeams", teamService.getTeamList());
+//
+//        Optional<User> optUser = userService.getCurrentUser();
+//        if (optUser.isPresent()) {
+//            model.addAttribute("userTeams", optUser.get().getJoinedTeams());
+//            model.addAttribute("userActivities", activityService.getAllFutureActivitiesForUser(optUser.get()));
+//        }
+//
+//        return "homeForm";
+//    }
 }
 
