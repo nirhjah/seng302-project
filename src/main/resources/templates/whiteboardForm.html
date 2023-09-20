@@ -348,6 +348,7 @@
             canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
         });
 
+
         pitchSelect.addEventListener("change", function () {
             const selectedValue = this.value;
             const imageUrl = `${imagePath}${selectedValue}.svg`;
@@ -1431,9 +1432,17 @@
 
         /** Formation **/
         document.getElementById("formation-dropdown").addEventListener("change", function (event) {
+
+            const defaultImageUrl = `${imagePath}${pitchSelect.value}.svg`;
+            fabric.Image.fromURL(defaultImageUrl, function (img) {
+                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+            });
+            
             const selectedOption = event.target.options[event.target.selectedIndex];
             lineupDropdown.selectedIndex = 0;
             loadFormation(selectedOption);
+
+
         });
 
         /**
