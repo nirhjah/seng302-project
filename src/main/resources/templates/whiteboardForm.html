@@ -248,8 +248,19 @@
                         <img th:src="@{/image/icons/add-white.svg}"/>
                     </button>
                 </div>
+                <button class="camera-button">
+                    <span class="tooltip">Camera (F)</span>
+                    <img class="selected-svg" th:src="@{/image/icons/camera-active.svg}"/>
+                    <img class="default-svg" th:src="@{/image/icons/camera.svg}"/>
+                </button>
+                <button class="recording-button">
+                    <span class="tooltip">Record (R)</span>
+                    <span class="recording-image"></span>
+                    <span class="recording-image-border"></span>
+                </button>
             </div>
             <div class="whiteboard">
+                <div class="camera-flash"></div>
                 <canvas id="canvas" width="560" height="700"></canvas>
             </div>
         </div>
@@ -399,8 +410,6 @@
 
                         const canvasX = cardRect.left - canvas.upperCanvasEl.getBoundingClientRect().left;
                         const canvasY = cardRect.top - canvas.upperCanvasEl.getBoundingClientRect().top;
-                        currentX=canvasX;
-                        currentY=canvasY;
                         createTeamPlayerIcon(playerCard, canvasX, canvasY, index);
 
                         playerCard.style.display = 'none';
@@ -472,7 +481,7 @@
 
         function renderIcon(icon) {
             return function renderIcon(ctx, left, top, styleOverride, fabricObject) {
-                var size = this.cornerSize;
+                let size = this.cornerSize;
                 ctx.save();
                 ctx.translate(left, top);
                 ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
@@ -517,7 +526,8 @@
         function handleButtonClick(buttonClass, drawMode, selectMode) {
             const buttons = document.querySelectorAll('.whiteboard-buttons button');
             buttons.forEach(button => {
-                if (!button.parentElement.classList.contains("content") && !button.classList.contains("add-player-icon")) {
+                if (!button.parentElement.classList.contains("content") && !button.classList.contains("add-player-icon")
+                    && !button.classList.contains("recording-button")) {
                     button.classList.remove('active')
                 }
             });
@@ -566,6 +576,39 @@
         document.querySelector('.select-button').addEventListener('click', function () {
             handleButtonClick('select-button', false, true);
         });
+
+        const cameraButton = document.querySelector('.camera-button');
+        const cameraFlash = document.querySelector('.camera-flash');
+        const mySound = new Audio("/static/mp3/cameraflashmp3-14565.mp3");
+
+        function clickCamera() {
+            cameraButton.classList.add('active');
+            // mySound.play()
+            cameraFlash.classList.add("active");
+            setTimeout(() => {
+                cameraFlash.classList.remove("active");
+            }, 990);
+        }
+
+        function deactivateCamera() {
+            cameraButton.classList.remove('active');
+        }
+
+        cameraButton.addEventListener('mousedown', clickCamera);
+
+        cameraButton.addEventListener('mouseup', deactivateCamera);
+
+        cameraButton.addEventListener('mouseleave', deactivateCamera);
+
+        const recordingButton = document.querySelector('.recording-button');
+
+        recordingButton.addEventListener('click', function () {
+            toggleRecording();
+        });
+
+        function toggleRecording() {
+            recordingButton.classList.toggle('active');
+        }
 
         const formationDropdown = document.getElementById("formation-dropdown");
         const lineupDropdown = document.getElementById("lineup-dropdown");
@@ -702,6 +745,10 @@
                 }
                 formationDropdown.selectedIndex = 0;
                 lineupDropdown.selectedIndex = 0;
+            } else if (event.key === 'f') {
+                clickCamera();
+            } else if (event.key === 'r') {
+                toggleRecording();
             }
         });
 
@@ -1229,8 +1276,6 @@
                     lineGroup.addWithUpdate(leftLine);
                     lineGroup.addWithUpdate(rightLine);
                     // Old arrow elements get pushed to the top left corner for some reason so need to delete them
-                    canvas.remove(canvas.getObjects()[canvas.getObjects().length - 1])
-                    canvas.remove(canvas.getObjects()[canvas.getObjects().length - 2])
                     canvas.add(lineGroup);
                     lineGroup.setCoords();
                 }
@@ -1385,8 +1430,8 @@
             for (let i = 0; i < formation.length; i++) {
                 let playersInRow = formation[i]
                 while (formation[i] !== 0) {
-                    const top = canvas.height - ((i + 1) / (formation.length + 1)) * canvas.height - radius;
-                    const left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * canvas.width - radius;
+                    const top = canvas.height - ((i + 1) / (formation.length + 1)) * canvas.height;
+                    const left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * canvas.width;
                     if (lineUpPositions === null || lineUpPositions === undefined) {
                         createPlayerIcon(left, top, '#EA3B52')
                     } else {
@@ -1478,6 +1523,7 @@
          */
         function addPlayerIconMovement(playerIcon) {
             let iconIsDragging = false;
+            let drawingMode = false;
             const yOffset = 15;
             const xOffset = 18;
             let copyIcon;
@@ -1485,6 +1531,11 @@
             let newY;
 
             playerIcon.addEventListener("mousedown", (e) => {
+                if (canvas.isDrawingMode) {
+                    drawingMode = true;
+                    canvas.isDrawingMode = false;
+                    canvas.selection = true
+                }
                 iconIsDragging = true;
                 copyIcon = playerIcon.cloneNode(false)
                 copyIcon.classList.add("active")
@@ -1506,11 +1557,23 @@
             })
 
             document.addEventListener("mouseup", (e) => {
-                const {x, y} = canvas.getPointer(e);
-
+                const whiteboardRect = canvas.upperCanvasEl.getBoundingClientRect()
+                const pointer = canvas.getPointer(e);
+                const {x, y} = pointer;
                 if (iconIsDragging) {
+                    if (x > -radius && y > -radius && x < canvas.width + radius && y < canvas.height + radius) {
+                        const canvasLeft = whiteboardRect.left;
+                        const canvasTop = whiteboardRect.top;
+                        const xP = e.clientX - canvasLeft;
+                        const yP = e.clientY - canvasTop;
+                        createPlayerIcon(xP, yP, copyIcon.style.background)
+                        if (drawingMode) {
+                            drawingMode = false;
+                            canvas.isDrawingMode = true;
+                            canvas.selection = false;
+                        }
+                    }
                     iconIsDragging = false;
-                    createPlayerIcon(x, y, copyIcon.style.background)
                     playerIconsContainer.removeChild(copyIcon)
                     copyIcon.remove();
                 }
@@ -1532,8 +1595,8 @@
                 originY: 'center'
             });
             const playerIconInner = new fabric.Circle({
-                left: x - 0.5,
-                top: y - 0.5,
+                left: x,
+                top: y,
                 radius: radius - 4,
                 fill: fill,
                 strokeWidth: 2,
