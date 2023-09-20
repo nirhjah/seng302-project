@@ -176,12 +176,11 @@
                     <div class="formation-LHS" th:style="${isUserManagerOrCoach ? '' : 'display: none'}">
                         <div class="create-formation-display">
                             <div class="input-box">
-                                <input type="text" id="formation-string" name="formation" placeholder="e.g. 1-4-4-2">
+                                <input type="text" id="formation-string" name="formation" placeholder="">
                                 <label for="formation-string">Formation</label>
                             </div>
                             <button type="button" id="generate-formation-button" onclick="render(document.getElementById('formation-string').value, null)">Generate Formation</button>
                         </div>
-                        <br>
                         <div class="formation-description">
                             Formations represent the number of players in a row
                             <ul class="formation-description">
@@ -191,10 +190,18 @@
                                 <li>
                                     Number of rows: Between <strong>1</strong> and <strong>8</strong>
                                 </li>
+                                <li style="list-style-type: none">
+                                    e.g. <strong>1-4-4-2</strong>, <strong>1-2-2</strong>, <strong>6</strong>
+                                </li>
                             </ul>
-                            e.g. <strong>1-4-4-2</strong>, <strong>1-2-2</strong>, <strong>6</strong>
                         </div>
                         <div class="error-message">Formation must match specified form</div>
+                        <div class="formation-title-display">
+                            <div class="input-box">
+                                <input type="text" id="formation-title" name="formation-title" maxlength="20" placeholder="">
+                                <label for="formation-title">Optional Title</label>
+                            </div>
+                        </div>
                     </div>
                     <div class="formation-RHS">
                         <p th:if="${isUserManagerOrCoach}" class="formation-description drag-info">Drag shirts to move</p>
@@ -209,7 +216,7 @@
                 </form>
             </div>
         </div>
-        <div class="content-box" id="statistics-tab" style="margin-bottom: 300px">
+        <div class="content-box" id="statistics-tab">
             <div class="content">
                 <div class="col-wrapper">
                     <div class="third-col" style="padding-bottom: 20px">
