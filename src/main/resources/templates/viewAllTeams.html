@@ -17,16 +17,14 @@
     <form id="search-form" th:action="@{view-teams}" method="get">
         <div class="search-bar">
             <input class ="search-input" type="text" th:name="currentSearch" id="teamName" th:value="${currentSearch}" placeholder="Search Teams" />
-                <button class="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
+            <button class="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
         </div>
-        <div style="display: flex; flex-direction: column;">
-            <div class="filter-bar">
-                <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cities')}"></div>
-                <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sports')}"></div>
-            </div>
-            <div class="apply-filters-button-container">
-                <button class="apply-filters-button" type="submit">Apply Filters</button>
-            </div>
+        <div class="filter-bar">
+            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${cities}, 'Filter by city', 'cities')}"></div>
+            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sports')}"></div>
+        </div>
+        <div class="apply-filters-button-container">
+            <button class="apply-filters-button" type="submit">Apply Filters</button>
         </div>
     </form>
 
