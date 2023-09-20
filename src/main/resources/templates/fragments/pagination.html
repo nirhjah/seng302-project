@@ -18,33 +18,15 @@
             window.location.href = url.toString();
         }
     </script>
-<!--    <div class="paginationContainer">-->
-<!--        <div class="totalPages">-->
-<!--            Total Pages: [[${totalPages}]]-->
-<!--        </div>-->
 
-<!--        <button th:unless="${page == 1}" class = "pagination-button" th:disabled="${page == 1}" th:onclick="|gotoPage(1)|">-->
-<!--            <span>&leftarrow; First</span>-->
-<!--        </button>-->
-<!--        <button th:unless="${page == 1}" class = "pagination-button" th:disabled="${page == 1}" >-->
-<!--            <span>&leftarrow; Prev</span>-->
-<!--        </button>-->
-<!--        <button class="paginationActive" th:text="${page - 1}" th:onclick="|gotoPage(${page - 1})|"></button>-->
-<!--        <button class="paginationActive" th:text="${page}"></button>-->
-<!--        <button th:unless="${(page + 1) > totalPages}" th:onclick="|gotoPage(${page + 1})|" class="paginationActive" th:text="${page+1}"></button>-->
-<!--        <button th:unless="${page == totalPages}" th:onclick="|gotoPage(${page + 1})|" class="pagination-button">-->
-<!--            Next &rightarrow;-->
-<!--        </button>-->
-<!--        <button th:unless="${page == totalPages}" class="pagination-button" th:disabled="${page == totalPages}"  th:onclick="|gotoPage(${totalPages})|">-->
-<!--            Last &rightarrow;-->
-<!--        </button>-->
     <div class="pagination-container">
+        <div class="pagination-buttons">
             <button th:disabled="${page == 1}" th:onclick="|gotoPage(1)|" >
                 <span>First</span>
             </button>
 
             <button th:disabled="${page == 1}" th:onclick="|gotoPage(${page - 1})|">
-                <span>< Prev</span>
+                <span>&lt; Prev</span>
             </button>
 
         <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
@@ -68,6 +50,7 @@
             <button th:disabled="${page == totalPages}" th:onclick="|gotoPage(${totalPages})|">
                 <span>Last</span>
             </button>
+        </div>
         <div class="totalPages">
             Total Pages: [[${totalPages}]]
         </div>
