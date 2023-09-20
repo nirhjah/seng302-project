@@ -156,7 +156,7 @@
                             th:data-formation="${formation.formation}"
                             th:data-pos="${formation.customPlayerPositions}"
                             th:data-custom="${formation.custom ? 'true' : null}"
-                            onclick="renderSavedFormation(this.dataset.formation, this.dataset.custom, this.dataset.pos)"
+                            onclick="renderSavedFormation(this.dataset.formation, this.dataset.custom, this.dataset.pos, this.outerText)"
                             class="formation-li">
                             <span class="title">
                                 <h3 th:text="${formation}"></h3>
@@ -514,9 +514,12 @@
             }
         }
 
-        function renderSavedFormation(formation, custom, customPlayerPositions) {
+        function renderSavedFormation(formation, custom, customPlayerPositions, title) {
+            console.log(title);
             const formationDisplay = document.querySelector('.formation-display');
             const input = document.getElementById('formation-string');
+            const titleInput = document.getElementById('formation-title');
+            titleInput.value = title
             input.value = formation;
             formationDisplay.classList.add('active');
             generatedOrCustom(formation, custom, customPlayerPositions)
