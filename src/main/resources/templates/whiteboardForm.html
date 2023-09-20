@@ -23,8 +23,9 @@
                     <option value="-1">(No Formation)</option>
                     <option th:each="forma : ${teamFormations}"
                             th:value="${forma.formationId}"
-                            th:text="${forma.formation}"
+                            th:text="${forma}"
                             th:selected="${forma == selectedFormation}"
+                            th:data-formation="${forma.formation}"
                             th:data-custom="${forma.custom}"
                             th:data-custom-positions="${forma.customPlayerPositions}">
                     </option>
@@ -1292,8 +1293,8 @@
 
         function loadLineUp(target) {
             const lineUpId = target.value;
-            const formation = target.textContent;
-            const custom = target.getAttribute("data-custom")
+            const formation = target.getAttribute("data-formation");
+            const custom = target.getAttribute("data-custom");
             const customPlayerPositions = target.getAttribute("data-custom-positions");
             canvas.clear();
             if (playerArray.length !== 0) {
@@ -1387,8 +1388,8 @@
          */
         function loadFormation(target) {
             const formationId = target.value;
-            const formation = target.textContent;
-            const custom = target.getAttribute("data-custom")
+            const formation = target.getAttribute("data-formation");
+            const custom = target.getAttribute("data-custom");
             const customPlayerPositions = target.getAttribute("data-custom-positions");
             canvas.clear();
             if (playerArray.length !== 0) {

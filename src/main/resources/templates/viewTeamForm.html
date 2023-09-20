@@ -16,7 +16,7 @@
 
     <span id="stayOnTab_Name" class="tabNameAndIndex" th:text="${stayOnTab_name}"></span>
     <span id="stayOnTab_index" class="tabNameAndIndex" th:text="${stayOnTab_index}"></span>
-    <div class="wrapper-profile" id="wrapper-profile">
+    <div class="wrapper-profile" id="team-wrapper">
         <div class="tab-box">
             <div class="tab active">
                 <img class="tab-icon" th:src="@{/image/icons/team.svg}"/>
@@ -125,7 +125,7 @@
                             </div>
                             <div class="edit-button">
                                 <a th:href="@{editTeamRole(edit=${teamID})}" th:if="${isUserManager}">
-                                    <button id="edit-roles" type="button">Edit Roles</button>
+                                    <button id="edit-roles" type="button">Roles</button>
                                 </a>
                             </div>
                             <div class="edit-button">
@@ -159,7 +159,7 @@
                             onclick="renderSavedFormation(this.dataset.formation, this.dataset.custom, this.dataset.pos)"
                             class="formation-li">
                             <span class="title">
-                                <h3 th:text="${formation.formation} + (${formation.custom} ? ' Custom' : '')"></h3>
+                                <h3 th:text="${formation}"></h3>
                             </span>
                             <input type="hidden" class="formation-id" th:value="${formation.formationId}" />
                         </li>

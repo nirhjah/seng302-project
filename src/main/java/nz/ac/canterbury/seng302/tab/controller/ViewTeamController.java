@@ -178,6 +178,7 @@ public class ViewTeamController {
             @RequestParam(name="formationID", defaultValue = "-1") long formationID,
             @RequestParam("customPlayerPositions") String customPlayerPositions,
             @RequestParam("custom") Boolean custom,
+            @RequestParam("formation-title") String formationTitle,
             RedirectAttributes redirectAttributes) {
         logger.info("POST /team-info/create-formation");
 
@@ -205,9 +206,11 @@ public class ViewTeamController {
         Formation formation;
         if (formationOptional.isPresent()) {
             formation = formationOptional.get();
+            formation.setTitle(formationTitle);
             formation.setFormation(newFormation);
         } else {
             formation = new Formation(newFormation, team);
+            formation.setTitle(formationTitle);
         }
         formation.setCustomPlayerPositions(customPlayerPositions);
         formation.setCustom(custom);

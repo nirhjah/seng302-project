@@ -33,6 +33,9 @@ public class Formation {
     @Column
     private String customPlayerPositions;
 
+    @Column
+    private String title;
+
     /**
      * Default constructor for Formation.
      * Required by JPA.
@@ -79,6 +82,14 @@ public class Formation {
         return this.formationId;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public boolean isCustom() {
         return custom;
     }
@@ -87,9 +98,9 @@ public class Formation {
         return customPlayerPositions;
     }
 
-//    @Override
-//    public String toString() {
-//        return String.format("Formation(formation='%s', team='%s')", getFormation(), getTeam());
-//    }
+    @Override
+    public String toString() {
+        return title.isBlank() ? formation : title;
+    }
 
 }
