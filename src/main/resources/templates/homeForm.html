@@ -6,7 +6,7 @@
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
     <link th:href="@{/css/profile.css}" rel="stylesheet">
     <link th:href="@{/css/home.css}" rel="stylesheet">
-
+    <link th:href="@{/css/view-all.css}" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <title>Home</title>
@@ -15,7 +15,7 @@
  <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 
  <div class="Welcome-header">
-     <h1 th:text="Welcome +  ' ' + ${user.firstName} + '!'"></h1>
+     <h1 th:text="${welcomeString}"></h1>
  </div>
 
 
@@ -29,7 +29,33 @@
              </div>
 
          <div class="last5" style="margin-top: 57px; padding-bottom: 21px;">
-             <h2 th:if="${userTeams.isEmpty()}" style="text-align: center">You aren't apart of any teams</h2>
+             <h3 th:if="${userTeams.isEmpty()}" style="text-align: center; font-size: 20px">You aren't apart of any teams</h3>
+             <div th:if="${userTeams.isEmpty()}" class="submit-button"  style="width: 75%; margin: auto; padding-top: 20px">
+                 <button id="joinTeamByTokenModalBtn2" onclick="modal.style.display = 'block'" type="button" class="registerLoginButton">Join Team by Token</button>
+             </div>
+             <form id="forgot-password-form" th:action="@{home}" method="post" th:object="${joinTeamForm}">
+             <div id="joinTeamModal" class="modal" th:style="${tokenInvalid != null ? 'display:block' : 'display:none'}">
+
+                 <div class="modal-content">
+                     <span class="close" onclick="modal.style.display = 'none'">&times;</span>
+                     <h4 class="reset-password-info"> Join Team By Token </h4>
+
+                     <div class="input-box">
+                         <input type="text" class="form-control" id="token" placeholder="" th:field="*{token}" th:value="${token}"
+                                data-cy="token" autofocus>
+                         <label for="token"> Token: <span class="required">*</span></label>
+                     </div>
+
+                     <div th:each="err : ${#fields.errors('token')}" th:text="${err}" class="error-message"></div>
+
+
+                     <div class="submit-button">
+                         <button id="joinTeam" type="submit" class="registerLoginButton">Join Team</button>
+                     </div>
+
+                 </div>
+             </form>
+             </div>
              <ul style="overflow: auto;margin-top: -28px; height: 425px; padding-bottom: 10px" class="last5Ul">
                  <li style="width: unset" th:each="team : ${userTeams}" th:onclick="|window.location.href='@{team-info(teamID=${team.teamId})}'|">
                      <div style="display: flex">
@@ -78,7 +104,7 @@
 
 
          <div class="last5" style="margin-top: 57px; padding-bottom: 21px;">
-             <h2 th:if="${userTeamActivities.isEmpty()}" style="text-align: center">You have no upcoming team activities</h2>
+             <h3 th:if="${userTeamActivities.isEmpty()}" style="text-align: center; font-size: 20px">You have no upcoming team activities</h3>
              <ul style="overflow: auto;margin-top: -28px; height: 425px; padding-bottom: 10px" class="last5Ul">
                  <li style="width: unset" th:each="act : ${userTeamActivities}" th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
 
@@ -129,7 +155,12 @@
          </div>
 
          <div class="last5" style="margin-top: 57px; padding-bottom: 21px;">
-             <h2 th:if="${userPersonalActivities.isEmpty()}" style="text-align: center">You have no upcoming personal activities</h2>
+             <h3 th:if="${userPersonalActivities.isEmpty()}" style="text-align: center; font-size: 20px">You have no upcoming personal activities</h3>
+             <form method="get" th:action="@{create-activity}">
+                 <div th:if="${userPersonalActivities.isEmpty()}" class="submit-button"  style="width: 75%; margin: auto; padding-top: 30px">
+                     <button type="submit" >Create Activity</button>
+                 </div>
+             </form>
              <ul style="overflow: auto;margin-top: -28px; height: 425px; padding-bottom: 10px" class="last5Ul">
                  <li style="width: unset" th:each="act : ${userPersonalActivities}" th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
 
@@ -155,11 +186,11 @@
                          </div>
 
                          <div class="user-label">
-                             <img style="width: 34px; height: 34px" th:src="@{/image/icons/calendar.svg}"/>
+                             <img style="width: 34px; height: 34px" th:src="@{/image/icons/clock.svg}"/>
                              <div>
-                                 <h3  class="attribute-type">End Date</h3>
+                                 <h3  class="attribute-type">Start Time</h3>
                                  <h3 style="margin-top: -8px;"
-                                     th:with="endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')},"
+                                     th:with="endDate=${#temporals.format(act.activityStart, 'h:mm a')},"
                                      th:text="${endDate}" ></h3>
                              </div>
                          </div>
@@ -202,3 +233,12 @@
 </div>
 </body>
 </html>
+<script>
+    var modal = document.getElementById("joinTeamModal");
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
