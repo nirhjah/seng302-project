@@ -169,6 +169,7 @@ public class ViewTeamController {
      *                              "20px30px;40px20px"
      * @param custom boolean to represent whether a formation has been manually changed by dragging and dropping the
      *               players rather than simply being from a generated formation string
+     * @param formationTitle optional title for formation
      * @return reloads the page on success, brings you to an error page on failure.
      */
     @PostMapping("/team-info/create-formation")
