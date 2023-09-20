@@ -128,7 +128,7 @@ public class U25JoinTeamFeature {
     public void i_input_a_valid_team_invitation_token() throws Exception {
         mockMvc.perform(post("/my-teams", 42L)
                 .with(csrf())
-                .param("token", team.getToken())).andExpect(status().isFound());
+                .param("token", team.getToken()).param("type", "team")).andExpect(status().isFound());
     }
 
     @Then("I am added as a member to that team")
@@ -142,7 +142,7 @@ public class U25JoinTeamFeature {
     public void i_have_joined_a_new_team() throws Exception {
         mockMvc.perform(post("/my-teams", 42L)
                 .with(csrf())
-                .param("token", team.getToken())).andExpect(status().isFound());
+                .param("token", team.getToken()).param("type", "team")).andExpect(status().isFound());
 
     }
 
@@ -157,7 +157,7 @@ public class U25JoinTeamFeature {
     public void i_input_an_invalid_team_invitation_token() throws Exception {
         mockMvc.perform(post("/my-teams", 42L)
                 .with(csrf())
-                .param("token", "invalidtoken"));
+                .param("token", "invalidtoken").param("type", "team"));
     }
 
     @Then("An error message tells me the token is invalid")
