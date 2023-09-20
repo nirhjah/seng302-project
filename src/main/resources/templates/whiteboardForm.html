@@ -1262,7 +1262,7 @@
         }
 
         function getLineUpPositions(formation, custom, customPlayerPositions, lineUpId) {
-            axios.get("/whiteboard/get_lineup", { params: { lineUpId: lineUpId } })
+            axios.get("whiteboard/get_lineup", { params: { lineUpId: lineUpId } })
                 .then(response => {
                     formationSwitch(formation, custom, customPlayerPositions, response.data);
                 })
