@@ -599,7 +599,7 @@
 
         const cameraButton = document.querySelector('.camera-button');
         const cameraFlash = document.querySelector('.camera-flash');
-        const mySound = new Audio("/static/mp3/cameraflashmp3-14565.mp3");
+        const mySound = new Audio("audio/cameraflash.mp3");
 
         function clickCamera() {
             cameraButton.classList.add('active');
@@ -1384,7 +1384,7 @@
          */
         function createLineupTeamPlayerIcon(id, name, canvasX, canvasY, index) {
 
-            const imageURL = "/user-profile-picture/" + id;
+            const imageURL = "user-profile-picture/" + id;
 
             const whiteCircle = new fabric.Circle({
                 left: canvasX,

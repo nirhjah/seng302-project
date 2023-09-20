@@ -1,7 +1,7 @@
 <div th:fragment="messageDropDown" class="message-dropdown-container">
     <p th:text="${message}" class="message-dropdown-text"></p>
     <a onclick="hideMessage()">
-        <img src="/image/icons/cross-white.svg">
+        <img th:src="@{/image/icons/cross-white.svg}" alt="Hide message">
     </a>
     <script>
         function hideMessage() {
