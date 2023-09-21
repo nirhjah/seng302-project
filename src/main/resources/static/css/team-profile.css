@@ -535,7 +535,7 @@
 
 .whiteboard-media-images {
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
     float: left
 }
 
