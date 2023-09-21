@@ -79,25 +79,6 @@ public class CreateTeamFormController {
                 trimmedPostcode, trimmedCountry);
     }
 
-//    private void addDebugEntities(Team team) {
-//        // Generate users:
-//        var users = new ArrayList<User>();
-//        for (int i = 0; i < 30; i++) {
-//            try {
-//                var str = UUID.randomUUID().toString();
-//                var u = User.defaultDummyUser();
-//                u.setEmail(str + "@gmail.com");
-//                u.setFirstName(str.substring(0, 6));
-//                u.setLastName("b");
-//                u = userService.updateOrAddUser(u);
-//                userService.userJoinTeam(u, team);
-//                users.add(u);
-//            } catch (Exception e) {
-//                logger.error("exception caught: " + e.getMessage());
-//            }
-//        }
-//    }
-
 
         /**
          * Triggers the generation of a new token for a team
