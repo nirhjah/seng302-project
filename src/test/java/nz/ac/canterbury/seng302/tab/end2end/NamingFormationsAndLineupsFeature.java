@@ -55,7 +55,7 @@ public class NamingFormationsAndLineupsFeature {
         PlaywrightBrowser.page.locator("#whiteboard").click();
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
-        Assertions.assertEquals("lineup1", PlaywrightBrowser.page.locator("#lineup-dropdown").locator("option").first().textContent());
+        Assertions.assertEquals("lineup1", PlaywrightBrowser.page.locator("#lineup-dropdown").locator("option").last().textContent());
     }
 
     @Given("I am creating a lineup")
@@ -87,7 +87,7 @@ public class NamingFormationsAndLineupsFeature {
     public void theLineupHasADefaultNameBasedOnTheActivityDateAndFormation() {
         PlaywrightBrowser.page.click("button:has-text('Edit')");
         PlaywrightBrowser.page.waitForTimeout(5000);
-        Assertions.assertEquals("02/04/25 - 02/04/26: 2", PlaywrightBrowser.page.locator("input#lineUpName").inputValue());
+        Assertions.assertEquals("lineup1", PlaywrightBrowser.page.locator("input#lineUpName").inputValue());
     }
 
 

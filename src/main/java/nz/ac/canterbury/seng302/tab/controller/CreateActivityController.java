@@ -216,6 +216,7 @@ public class CreateActivityController {
      * @param httpServletRequest the request
      * @param httpServletResponse the response to send
      * @param subs subs added to the lineup
+     * @param lineUpName optional name for lineup, defaults to start date + end date of activity + formation string
      * @return returns my activity page iff the details are valid, returns to activity page otherwise
      * @throws MalformedURLException thrown in some cases
      */
