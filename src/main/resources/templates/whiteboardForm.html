@@ -273,7 +273,7 @@
 <div id="screenshot-modal" class="modal">
     <div class="modal-content">
         <button class="close" id="close-screenshot-modal">&times;</button>
-        <form style="height: unset" th:action="@{/whiteboard/upload-screenshot}" method="post">
+        <form enctype="multipart/form-data" th:action="@{/whiteboard/upload-screenshot}" method="post">
             <h3 style="text-align: center; font-size: x-large; padding-bottom: 10px">What's cooking</h3>
             <img id="screenshot-display" class="screenshot-display" alt="Screenshot of the whiteboard" />
             <input type="file" id="screenshot-input" name="screenshot-input" />
@@ -633,10 +633,15 @@
             fetch(dataURL)
                 .then(res => res.blob())
                 .then(blob => {
+                    console.log("Making file")
                     const file = new File([blob], 'screenshot.png', {type: "image/png"});
                     const dt = new DataTransfer();
+                    console.log("Adding File");
                     dt.items.add(file);
+                    console.log("Setting file");
                     screenshotUpload.files = dt.files;
+                    console.log(screenshotUpload);
+                    console.log(screenshotUpload.files);
             })
 
             screenshotModal.style.display = "block";

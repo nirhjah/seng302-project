@@ -1,7 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -117,13 +117,24 @@ public class WhiteboardController {
         return ResponseEntity.notFound().build();
     }
 
+    // TESTING CONTROLLER, PLEASE DELETE
     @PostMapping("/whiteboard/upload-screenshot")
     public ResponseEntity<String> uploadWhiteboardScreenshot(
             @RequestParam("screenshot-input") MultipartFile whiteboardScreenshot,
-            @RequestParam("screenshot-name") String name) {
+            @RequestParam("screenshot-name") String name) throws IOException {
         
         logger.info("POST /whiteboard/upload-screenshot");
-        return ResponseEntity.ok("Name="+name+", whiteboardScreenshot's size="+whiteboardScreenshot.getSize());
+        return ResponseEntity.ok(
+            String.format("""
+            Name='%s'<br>
+            whiteboardScreenshot's size=%d<br>
+            <img src="data:image/png;base64,%s" />
+            """,
+            name,
+            whiteboardScreenshot.getSize(),
+            Base64.getEncoder().encodeToString(whiteboardScreenshot.getBytes())
+            )
+        );
     }
 
 

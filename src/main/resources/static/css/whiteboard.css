@@ -603,7 +603,7 @@ input[type="range"]::-moz-range-track {
     width: 360px;
 }
 
-.screenshot-input {
+#screenshot-input {
     display: none;
 }
 
