@@ -518,9 +518,23 @@
 }
 
 .whiteboard-media-select {
+    display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
+.whiteboard-play-button {
+    display: flex;
+    width: 100%;
+}
+
+.whiteboard-media-recordings {
+    height: 100%;
+}
+
+.whiteboard-media-images {
+    height: 100%;
+}
 
 
 @media (max-width: 500px) {
