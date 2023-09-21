@@ -3,7 +3,9 @@
     <label for="drop" class="toggle1"><img th:src="@{/image/icons/hamburger.svg}"></label>
     <input type="checkbox" id="drop"/>
     <ul class="menu">
-        <li><a th:href="@{home}">Home</a></li>
+        <li class="home-button">
+            <img th:src="@{/image/logo-short.svg}"/>
+        </li>
         <li sec:authorize="isAnonymous()">
             <a th:href="@{login}"
                th:classappend="${httpServletRequest.requestURI == '/login' ? 'active' : ''}">Login</a>
@@ -13,25 +15,33 @@
                th:classappend="${httpServletRequest.requestURI == '/register' ? 'active' : ''}">Register</a>
         </li>
 
+        <li><a th:href="@{createClub}">Create Club</a></li>
+
+        <li><a th:href="@{createActivity}">Activity</a></li>
+
         <li sec:authorize="isAuthenticated()">
-            <a th:href="@{view-teams(page=1)}"
-               th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a>
+            <label for="drop-1" class="toggle" onclick ='createToggle()' >Create +</label>
+            <a href="">Users</a>
+            <input class ="checkbox" type="checkbox" id="drop-1"/>
+            <ul>
+                <li><a th:href="@{createTeam}">Create Team</a></li>
+                <li><a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a></li>
+            </ul>
         </li>
 
         <li sec:authorize="isAuthenticated()">
             <a th:href="@{view-users(page=1)}"
                th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
         </li>
-        <li sec:authorize="isAuthenticated()">
-            <label for="drop-1" class="toggle" onclick ='createToggle()' >Create +</label>
-            <a href="">Create</a>
-            <input class ="checkbox" type="checkbox" id="drop-1"/>
-            <ul>
-                <li><a th:href="@{createActivity}">Activity</a></li>
-                <li><a th:href="@{createClub}">Club</a></li>
-                <li><a th:href="@{createTeam}">Team</a></li>
-            </ul>
 
+        <li sec:authorize="isAuthenticated()">
+            <label for="drop-2" class="toggle" onclick ='createToggle()' >Create +</label>
+            <a href="">Teams</a>
+            <input class ="checkbox" type="checkbox" id="drop-2"/>
+            <ul>
+                <li><a th:href="@{createTeam}">Create Team</a></li>
+                <li><a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a></li>
+            </ul>
         </li>
         <div sec:authorize="isAuthenticated()" class="view-profile">
             View Profile:
