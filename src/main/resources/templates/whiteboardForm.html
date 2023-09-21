@@ -269,13 +269,14 @@
     </div>
 </div>
 
+<!-- /* Upload Screenshot Modal */ -->
 <div id="screenshot-modal" class="modal">
     <div class="modal-content">
         <button class="close" id="close-screenshot-modal">&times;</button>
         <form style="height: unset" th:action="@{/whiteboard/upload-screenshot}" method="post">
             <h3 style="text-align: center; font-size: x-large; padding-bottom: 10px">What's cooking</h3>
             <img id="screenshot-display" class="screenshot-display" alt="Screenshot of the whiteboard" />
-            <input type="hidden" id="screenshot-input" name="screenshot-input" />
+            <input type="file" id="screenshot-input" name="screenshot-input" />
             
             <label for="screenshot-name">Screenshot Name:</label>
             <input type="text" name="screenshot-name" id="screenshot-name">
@@ -542,14 +543,14 @@
 
         function deleteObject(eventData, transform) {
             var target = transform.target;
-            var canvas = target.canvas;
-            canvas.remove(target);
+            var _canvas = target.canvas;
+            _canvas.remove(target);
             if (target.id.includes("teamPlayer")) {
                 const number = target.id.match(/\d+/);
                 const index = parseInt(number[0], 10);
                 addTeamPlayer(index);
             }
-            canvas.requestRenderAll();
+            _canvas.requestRenderAll();
         }
 
         const upperCanvas = document.querySelector(".upper-canvas")
@@ -627,8 +628,16 @@
         mySound.preload = "auto";
 
         function createScreenshotModal() {
-            screenshotDisplay.src = canvas.toDataURL();
-            screenshotUpload.files = [new File(canvas.toBlob(), "screenshot")];
+            const dataURL = canvas.toDataURL();
+            screenshotDisplay.src = dataURL;
+            fetch(dataURL)
+                .then(res => res.blob())
+                .then(blob => {
+                    const file = new File([blob], 'screenshot.png', {type: "image/png"});
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    screenshotUpload.files = dt.files;
+            })
 
             screenshotModal.style.display = "block";
         }
@@ -1400,7 +1409,7 @@
         }
 
         function getLineUpPositions(formation, custom, customPlayerPositions, lineUpId) {
-            axios.get("whiteboard/get_lineup", { params: { lineUpId: lineUpId } })
+            axios.get("whiteboard/get-lineup", { params: { lineUpId: lineUpId } })
                 .then(response => {
                     formationSwitch(formation, custom, customPlayerPositions, response.data);
                 })

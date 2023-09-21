@@ -15,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -96,7 +98,7 @@ public class WhiteboardController {
         return "whiteboardForm";
     }
 
-    @GetMapping(path = "/whiteboard/get_lineup", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/whiteboard/get-lineup", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LineUpInfo> getLineUpJSON(@RequestParam("lineUpId") long lineUpId) {
         Optional<LineUp> optLineUp = lineUpService.findLineUpById(lineUpId);
         if (optLineUp.isPresent()) {
@@ -114,5 +116,15 @@ public class WhiteboardController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @PostMapping("/whiteboard/upload-screenshot")
+    public ResponseEntity<String> uploadWhiteboardScreenshot(
+            @RequestParam("screenshot-input") MultipartFile whiteboardScreenshot,
+            @RequestParam("screenshot-name") String name) {
+        
+        logger.info("POST /whiteboard/upload-screenshot");
+        return ResponseEntity.ok("Name="+name+", whiteboardScreenshot's size="+whiteboardScreenshot.getSize());
+    }
+
 
 }
