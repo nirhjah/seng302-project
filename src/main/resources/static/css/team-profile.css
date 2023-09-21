@@ -508,6 +508,11 @@
 }
 
 
+#wrapper-profile .content {
+    max-height: 460px;
+    height: 100vh;
+}
+
 .content.whiteboard-media {
     display: flex;
 }
