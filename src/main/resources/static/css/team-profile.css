@@ -601,6 +601,15 @@ Custom scrollbar:
     border-radius: 5px;
 }
 
+/* Define the button style */
+
+/*
+TODO: Do some checks; we want to button(s) to be invisible, since it looks bad
+
+.whiteboard-media-content::-webkit-scrollbar-button {
+}
+ */
+
 /* Define the button style when being hovered over */
 .whiteboard-media-content::-webkit-scrollbar-button:hover {
     background-color: #999999;
