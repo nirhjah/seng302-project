@@ -179,7 +179,9 @@
                                 <input type="text" id="formation-string" name="formation" placeholder="">
                                 <label for="formation-string">Formation</label>
                             </div>
-                            <button type="button" id="generate-formation-button" onclick="render(document.getElementById('formation-string').value, null)">Generate Formation</button>
+                            <button type="button" id="generate-formation-button" onclick="render(document.getElementById('formation-string').value, null)">
+                                <img th:src="@{/image/icons/reload.svg}"> Generate
+                            </button>
                         </div>
                         <div class="formation-description">
                             Formations represent the number of players in a row
@@ -199,7 +201,7 @@
                         <div class="formation-title-display">
                             <div class="input-box">
                                 <input type="text" id="formation-title" name="formation-title" maxlength="20" placeholder="">
-                                <label for="formation-title">Optional Title</label>
+                                <label for="formation-title">Formation Name (optional)</label>
                             </div>
                         </div>
                     </div>

@@ -362,6 +362,7 @@
 .create-formation-display {
     display: flex;
     margin: 2vh 0 5px 0;
+    max-width: 1px;
 }
 
 .content.formations {
@@ -370,7 +371,8 @@
 }
 
 .formation-display {
-    margin: 20px 23px 20px 41px;
+    margin: 2% 3% 3% 6%;
+    justify-content: space-between;
 }
 
 .input-box {
@@ -378,7 +380,6 @@
     margin: unset;
     height: 38px;
     width: 30%;
-
 }
 
 .error-message, .formation-display {
@@ -391,7 +392,6 @@
 
 .formation-display.active {
     display: flex;
-    justify-content: center;
     width: 100%;
 }
 
@@ -568,6 +568,7 @@
     font-style: italic;
     font-size: small;
     line-height: 1.1rem;
+    white-space: nowrap;
 }
 
 /* Other CSS files disable the icon before a <li>, this adds it back for specific children */
@@ -578,10 +579,6 @@ ul.formation-description > li {
 
 .drag-info {
     text-align: center;
-}
-
-.formation-RHS {
-    margin: auto;
 }
 
 .tabNameAndIndex {
@@ -615,3 +612,14 @@ ul.formation-description > li {
     max-height: 460px;
     height: 100vh;
 }
+
+#generate-formation-button img {
+    width: 18px;
+    margin-right: 10px;
+}
+
+#generate-formation-button {
+    display: flex;
+    align-items: center;
+}
+
