@@ -20,20 +20,24 @@
         <div class="tab-box">
             <div class="tab active">
                 <img class="tab-icon" th:src="@{/image/icons/team.svg}"/>
-                <button class="tab-button"> Team Profile &nbsp;</button>
+                <button class="tab-button">Profile</button>
             </div>
             <div class="tab" id="formations-tab">
                 <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
-                <button class="tab-button" >Formations &nbsp;</button>
+                <button class="tab-button" >Formations</button>
             </div>
             <div class="tab" id="stats-tab">
 <!--                this is a temporary icon for statistic, which is probably going to be replaced when working-->
 <!--                on the team aggregated statistic task-->
                 <img class ="tab-icon" th:src="@{/image/icons/statistics.png}"/>
-                <button class="tab-button" >Statistics &nbsp;</button>
-                <div class="tab-line"></div>
+                <button class="tab-button" >Statistics</button>
+            </div>
+            <div class="tab" id="whiteboard-tab">
+                <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
+                <button class="tab-button" >Whiteboard</button>
             </div>
         </div>
+        <div class="tab-line"></div>
         <div class="content-box active" id="team-profile-tab">
             <div class="content">
                 <div class="profile-top-content">
@@ -342,8 +346,9 @@
                 </div>
             </div>
         </div>
-
-    </div>
+        <div class="content-box">
+            <div class="content"></div>
+        </div>
     <footer>
         <p>
             Image by <a
@@ -448,14 +453,14 @@
                 });
                 tab.classList.add('active');
                 if (index === 0) {
-                    tabLine.style.left = "18px"; //64
+                    tabLine.style.left = "0";
                 } else if (index === 1) {
-                    tabLine.style.left = "247px"; //368
+                    tabLine.style.left = "25%";
                 } else if (index === 2) {
-                    tabLine.style.left = "460px"; //670
+                    tabLine.style.left = "50%";
                 }
                 else {
-                    tabLine.style.left = "685px";
+                    tabLine.style.left = "75%";
                 }
                 displayBox.forEach(box => {
                     box.classList.remove('active')
@@ -541,6 +546,7 @@
 
 
     </script>
+    </div>
 </div>
 </body>
 </html>
