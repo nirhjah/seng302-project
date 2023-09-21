@@ -601,12 +601,6 @@ Custom scrollbar:
     border-radius: 5px;
 }
 
-/* Define the button style */
-.whiteboard-media-content::-webkit-scrollbar-button {
-    background-color: #4d7fff;
-    border-radius: 5px;
-}
-
 /* Define the button style when being hovered over */
 .whiteboard-media-content::-webkit-scrollbar-button:hover {
     background-color: #999999;
