@@ -16,7 +16,7 @@
 
     <span id="stayOnTab_Name" class="tabNameAndIndex" th:text="${stayOnTab_name}"></span>
     <span id="stayOnTab_index" class="tabNameAndIndex" th:text="${stayOnTab_index}"></span>
-    <div class="wrapper-profile" id="team-wrapper">
+    <div class="wrapper-profile" id="wrapper-profile">
         <div class="tab-box">
             <div class="tab active">
                 <img class="tab-icon" th:src="@{/image/icons/team.svg}"/>
@@ -125,7 +125,7 @@
                             </div>
                             <div class="edit-button">
                                 <a th:href="@{editTeamRole(edit=${teamID})}" th:if="${isUserManager}">
-                                    <button id="edit-roles" type="button">Roles</button>
+                                    <button id="edit-roles" type="button">Edit Roles</button>
                                 </a>
                             </div>
                             <div class="edit-button">
@@ -156,10 +156,10 @@
                             th:data-formation="${formation.formation}"
                             th:data-pos="${formation.customPlayerPositions}"
                             th:data-custom="${formation.custom ? 'true' : null}"
-                            onclick="renderSavedFormation(this.dataset.formation, this.dataset.custom, this.dataset.pos, this.outerText)"
+                            onclick="renderSavedFormation(this.dataset.formation, this.dataset.custom, this.dataset.pos)"
                             class="formation-li">
                             <span class="title">
-                                <h3 th:text="${formation}"></h3>
+                                <h3 th:text="${formation.formation} + (${formation.custom} ? ' Custom' : '')"></h3>
                             </span>
                             <input type="hidden" class="formation-id" th:value="${formation.formationId}" />
                         </li>
@@ -176,13 +176,12 @@
                     <div class="formation-LHS" th:style="${isUserManagerOrCoach ? '' : 'display: none'}">
                         <div class="create-formation-display">
                             <div class="input-box">
-                                <input type="text" id="formation-string" name="formation" placeholder="">
+                                <input type="text" id="formation-string" name="formation" placeholder="e.g. 1-4-4-2">
                                 <label for="formation-string">Formation</label>
                             </div>
-                            <button type="button" id="generate-formation-button" onclick="render(document.getElementById('formation-string').value, null)">
-                                <img th:src="@{/image/icons/reload.svg}"> Generate
-                            </button>
+                            <button type="button" id="generate-formation-button" onclick="render(document.getElementById('formation-string').value, null)">Generate Formation</button>
                         </div>
+                        <br>
                         <div class="formation-description">
                             Formations represent the number of players in a row
                             <ul class="formation-description">
@@ -192,18 +191,10 @@
                                 <li>
                                     Number of rows: Between <strong>1</strong> and <strong>5</strong>
                                 </li>
-                                <li style="list-style-type: none">
-                                    e.g. <strong>1-4-4-2</strong>, <strong>1-2-2</strong>, <strong>6</strong>
-                                </li>
                             </ul>
+                            e.g. <strong>1-4-4-2</strong>, <strong>1-2-2</strong>, <strong>6</strong>
                         </div>
                         <div class="error-message">Formation must match specified form</div>
-                        <div class="formation-title-display">
-                            <div class="input-box">
-                                <input type="text" id="formation-title" name="formation-title" maxlength="20" placeholder="">
-                                <label for="formation-title">Formation Name (optional)</label>
-                            </div>
-                        </div>
                     </div>
                     <div class="formation-RHS">
                         <p th:if="${isUserManagerOrCoach}" class="formation-description drag-info">Drag shirts to move</p>
@@ -218,7 +209,7 @@
                 </form>
             </div>
         </div>
-        <div class="content-box" id="statistics-tab">
+        <div class="content-box" id="statistics-tab" style="margin-bottom: 300px">
             <div class="content">
                 <div class="col-wrapper">
                     <div class="third-col" style="padding-bottom: 20px">
@@ -516,12 +507,9 @@
             }
         }
 
-        function renderSavedFormation(formation, custom, customPlayerPositions, title) {
-            console.log(title);
+        function renderSavedFormation(formation, custom, customPlayerPositions) {
             const formationDisplay = document.querySelector('.formation-display');
             const input = document.getElementById('formation-string');
-            const titleInput = document.getElementById('formation-title');
-            titleInput.value = title
             input.value = formation;
             formationDisplay.classList.add('active');
             generatedOrCustom(formation, custom, customPlayerPositions)
