@@ -250,7 +250,7 @@
                         <img th:src="@{/image/icons/add-white.svg}"/>
                     </button>
                 </div>
-                <button class="camera-button">
+                <button class="camera-button" id="camera-button">
                     <span class="tooltip">Camera (F)</span>
                     <img class="selected-svg" th:src="@{/image/icons/camera-active.svg}"/>
                     <img class="default-svg" th:src="@{/image/icons/camera.svg}"/>
@@ -262,17 +262,34 @@
                 </button>
             </div>
             <div class="whiteboard">
-                <div class="camera-flash"></div>
+                <div class="camera-flash" id="camera-flash"></div>
                 <canvas id="canvas" width="560" height="700"></canvas>
             </div>
         </div>
     </div>
 </div>
 
-<video id="recorded-canvas" controls></video>
-<div>
-    <img id="screenshotDisplay">
+<div id="screenshot-modal" class="modal">
+    <div class="modal-content">
+        <button class="close" id="close-screenshot-modal">&times;</button>
+        <form style="height: unset" th:action="@{/whiteboard/upload-screenshot}" method="post">
+            <h3 style="text-align: center; font-size: x-large; padding-bottom: 10px">What's cooking</h3>
+            <img id="screenshot-display" class="screenshot-display" alt="Screenshot of the whiteboard" />
+            <input type="hidden" id="screenshot-input" name="screenshot-input" />
+            
+            <label for="screenshot-name">Screenshot Name:</label>
+            <input type="text" name="screenshot-name" id="screenshot-name">
+
+            <div class="submit-button">
+                <button id="submit-screenshot" type="submit">Send Screenshot</button>
+            </div>
+
+        </form>
+    </div>
+
 </div>
+
+<video id="recorded-canvas" controls></video>
 
 <script type="text/javascript" th:src="@{/webjars/fabric/5.3.0/dist/fabric.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
@@ -597,37 +614,54 @@
             handleButtonClick('select-button', false, true);
         });
 
-        const cameraButton = document.querySelector('.camera-button');
-        const cameraFlash = document.querySelector('.camera-flash');
-        const mySound = new Audio("audio/cameraflash-cropped.mp3");
+        /* Screenshot code */
+        const cameraButton = document.getElementById('camera-button');
+        const cameraFlash = document.querySelector('#camera-flash');
+        const screenshotModal = document.getElementById("screenshot-modal");
+        const closeScreenshotModalButton = document.getElementById("close-screenshot-modal");
+        const screenshotDisplay = document.getElementById('screenshot-display')
+        const screenshotUpload = document.getElementById("screenshot-input");
 
-        function clickCamera() {
+        const mySound = new Audio("audio/cameraflash-cropped.mp3");
+        mySound.preload = "auto";
+
+        function createScreenshotModal() {
+            screenshotDisplay.src = canvas.toDataURL();
+            screenshotUpload.files = [new File(canvas.toBlob(), "screenshot")];
+
+            screenshotModal.style.display = "block";
+        }
+        
+        function closeScreenshotModal() {
+            screenshotModal.style.display = "none";
+        }
+
+        function screenFlash() {
             cameraButton.classList.add('active');
             mySound.play()
             cameraFlash.classList.add("active");
             setTimeout(() => {
                 cameraFlash.classList.remove("active");
             }, 990);
+        }
 
-            var dataURL = canvas.toDataURL();
-            const screenshotDisplay = document.getElementById('screenshotDisplay')
-            screenshotDisplay.src = dataURL;
+        function clickCamera() {
+            screenFlash();
 
+            createScreenshotModal()
         }
 
         function deactivateCamera() {
             cameraButton.classList.remove('active');
         }
 
-        cameraButton.addEventListener('mousedown', clickCamera);
-
+        cameraButton.addEventListener('click', clickCamera);
         cameraButton.addEventListener('mouseup', deactivateCamera);
-
         cameraButton.addEventListener('mouseleave', deactivateCamera);
+        closeScreenshotModalButton.addEventListener('click', closeScreenshotModal);
 
+        /* Recording code*/
         const recordingButton = document.querySelector('.recording-button');
-
-
         const whiteboardToRecord = document.getElementById('canvas');
 
         //This is used to display the recording on screen once recorded, for testing purposes
