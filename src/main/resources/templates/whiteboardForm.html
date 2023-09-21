@@ -42,7 +42,7 @@
                     <option value="-1">(No Lineup)</option>
                     <option th:each="lineup : ${teamLineUps}"
                             th:value="${lineup.lineUpId}"
-                            th:text="${lineup.formation.getFormation()}"
+                            th:text="${lineup.lineUpName}"
                             th:data-custom="${lineup.formation.custom}"
                             th:data-custom-positions="${lineup.formation.customPlayerPositions}"
                     ></option>
