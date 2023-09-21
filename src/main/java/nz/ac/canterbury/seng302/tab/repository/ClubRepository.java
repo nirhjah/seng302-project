@@ -36,4 +36,10 @@ public interface ClubRepository extends CrudRepository<Club, Long> {
             @Param("filteredLocations") List<String> filteredLocations,
             @Param("filteredSports") List<String> filteredSports,
             @Param("name") String name);
+
+    @Query("SELECT DISTINCT c.sport FROM Club c")
+    List<String> findAllClubSports();
+
+    @Query("SELECT DISTINCT c.location.city FROM Club c")
+    List<String> findAllClubCities();
 }

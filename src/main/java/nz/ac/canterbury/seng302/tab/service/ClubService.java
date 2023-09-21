@@ -75,5 +75,9 @@ public class ClubService {
         return clubRepository.findClubByFilteredLocationsAndSports(pageable, filteredLocations, filteredSports, name);
     }
 
+    public List<String> getClubCities() {return clubRepository.findAllClubCities();}
+
+    public List<String> getClubSports() {return clubRepository.findAllClubSports();}
+
 
 }
