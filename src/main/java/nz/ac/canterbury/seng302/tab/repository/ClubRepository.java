@@ -26,7 +26,7 @@ public interface ClubRepository extends CrudRepository<Club, Long> {
 
     @Query("SELECT c FROM Club c "+
            "WHERE (:#{#filteredLocations.size} = 0 OR LOWER(c.location.city) in (:filteredLocations)) "+
-           "AND (:#{#filteredLocations.size} = 0 OR LOWER(c.sport) in (:filteredSports)) "+
+           "AND (:#{#filteredSports.size} = 0 OR LOWER(c.sport) in (:filteredSports)) "+
            "AND (:name IS NULL OR :name = '' "+
            "OR (LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) "+
            "OR (LOWER(c.location.city) LIKE LOWER(CONCAT('%', :name, '%'))) "+
@@ -37,6 +37,3 @@ public interface ClubRepository extends CrudRepository<Club, Long> {
             @Param("filteredSports") List<String> filteredSports,
             @Param("name") String name);
 }
-
-
-
