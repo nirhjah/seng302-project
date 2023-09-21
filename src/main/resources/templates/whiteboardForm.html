@@ -1282,7 +1282,7 @@
          */
         function createLineupTeamPlayerIcon(id, name, canvasX, canvasY, index) {
 
-            const imageURL = "/user-profile-picture/" + id;
+            const imageURL = "user-profile-picture/" + id;
 
             const whiteCircle = new fabric.Circle({
                 left: canvasX,
@@ -1385,8 +1385,8 @@
             for (let i = 0; i < formation.length; i++) {
                 let playersInRow = formation[i]
                 while (formation[i] !== 0) {
-                    const top = canvas.height - ((i + 1) / (formation.length + 1)) * canvas.height - radius;
-                    const left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * canvas.width - radius;
+                    const top = canvas.height - ((i + 1) / (formation.length + 1)) * canvas.height;
+                    const left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * canvas.width;
                     if (!lineUpPositions) {
                         createPlayerIcon(left, top, '#EA3B52')
                     } else {
