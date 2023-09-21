@@ -87,7 +87,7 @@ public class NamingFormationsAndLineupsFeature {
     public void theLineupHasADefaultNameBasedOnTheActivityDateAndFormation() {
         PlaywrightBrowser.page.click("button:has-text('Edit')");
         PlaywrightBrowser.page.waitForTimeout(5000);
-        Assertions.assertEquals("lineup1", PlaywrightBrowser.page.locator("input#lineUpName").inputValue());
+        Assertions.assertEquals("02/04/25 - 02/04/26: 2", PlaywrightBrowser.page.locator("input#lineUpName").inputValue());
     }
 
 
