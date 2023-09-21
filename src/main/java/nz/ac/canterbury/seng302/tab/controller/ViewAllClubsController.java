@@ -1,14 +1,10 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.repository.ClubRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -16,14 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Club;
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.ClubService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 
 @Controller
 public class ViewAllClubsController {
