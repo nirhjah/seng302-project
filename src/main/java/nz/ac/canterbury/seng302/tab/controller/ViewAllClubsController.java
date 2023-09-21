@@ -29,16 +29,11 @@ public class ViewAllClubsController {
     private static final Logger logger = LoggerFactory.getLogger(ViewAllClubsController.class);
 
     private ClubService clubService;
-    private UserService userService;
-
-    @Autowired
-    private ClubRepository clubRepository;
 
     private static final int PAGE_SIZE = 10;
 
-    public ViewAllClubsController(ClubService clubService, UserService userService) {
+    public ViewAllClubsController(ClubService clubService) {
         this.clubService = clubService;
-        this.userService = userService;
     }
 
     @GetMapping("/view-clubs")
@@ -53,23 +48,30 @@ public class ViewAllClubsController {
         logger.info("GET /view-clubs");
 
         PageRequest pageable = PageRequest.of(pageNo - 1, PAGE_SIZE);
-        Page<Club> clubs =  clubRepository.findClubByFilteredLocationsAndSports(pageable, cities, sports, currentSearch);
+
+        if (cities == null) {
+            cities = List.of();
+        }
+        if (sports == null) {
+            sports = List.of();
+        }
+        Page<Club> clubs =  clubService.findClubFilteredByLocationsAndSports(pageable, cities, sports, currentSearch);
         int maxPage = clubs.getTotalPages();
         pageNo = Math.max(Math.min(pageNo, maxPage), 1);
 
         model.addAttribute("httpServletRequest", httpServletRequest);
 
         List<Club> listOfClubs = clubs.getContent();
-        List<String> listOfClubLocations = List.of();
-        List<String> listOfClubSports = List.of();
+        List<String> listOfClubLocations = clubService.getClubCities();
+        List<String> listOfClubSports = clubService.getClubSports();
         // FOR THE BACKEND PERSON: MODIFY THESE
         model.addAttribute("listOfClubs", listOfClubs);
         // For the search dropdowns
         model.addAttribute("cities", listOfClubLocations);
         model.addAttribute("sports", listOfClubSports);
         // For the paginator
-        model.addAttribute("page", clubs);
-        model.addAttribute("totalPages", 1);
+        model.addAttribute("page", pageNo);
+        model.addAttribute("totalPages", clubs.getTotalPages());
         model.addAttribute("currentSearch", currentSearch);
 
         return "viewAllClubs";

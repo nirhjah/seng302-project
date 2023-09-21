@@ -24,30 +24,30 @@ public interface ClubRepository extends CrudRepository<Club, Long> {
 
     List<Club> findAll();
 
-    @Query("SELECT c FROM Club c " +
-           "Where c.sport = :sport " +
-           "AND :name IS NOT NULL " +
-           "AND (LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
-           "ORDER By LOWER(c.name) ASC")
-    List<Club> findClubByNameAndSport(@Param("name") String name, @Param("sport") String sport);
-
-    @Query("SELECT c FROM Club c " +
-           "WHERE (:{#searchedSports.size}=0 or c.sport in (:searchedSports)) " +
-           "AND (:name IS NOT NULL) " +
-           "AND (LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')) "+
-           "OR (c.location.city) LIKE LOWER(CONCAT('%', :name, '%')))) "+
-           "ORDER BY LOWER(c.name) ASC, (c.location) ASC ")
-    Page<Club> findClubByNameAndSportIn(Pageable pageable, @Param("searchedSports") List<String> searchedSports,
-            @Param("name") String name);
-            
-    @Query("SELECT c FROM Club c "+
-           "WHERE (:#{#filteredLocations.size} = 0 OR c.location.city in (:filteredLocations)) "+
-           "AND (:name IS NOT NULL "+
-           "AND (LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) "+
-           "OR (LOWER(c.location.city) LIKE LOWER(CONCAT('%', :name, '%')))) "+
-           "ORDER BY LOWER(c.name) ASC, LOWER(c.location.city) ASC ")
-    Page<Club> findClubByFilteredLocations(@Param("filteredLocations") List<String> filteredLocations,
-            Pageable pageable, @Param("name") String name); 
+//    @Query("SELECT c FROM Club c " +
+//           "Where c.sport = :sport " +
+//           "AND :name IS NOT NULL " +
+//           "AND (LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
+//           "ORDER By LOWER(c.name) ASC")
+//    List<Club> findClubByNameAndSport(@Param("name") String name, @Param("sport") String sport);
+//
+//    @Query("SELECT c FROM Club c " +
+//           "WHERE (:{#searchedSports.size}=0 or c.sport in (:searchedSports)) " +
+//           "AND (:name IS NOT NULL) " +
+//           "AND (LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')) "+
+//           "OR (c.location.city) LIKE LOWER(CONCAT('%', :name, '%')))) "+
+//           "ORDER BY LOWER(c.name) ASC, (c.location) ASC ")
+//    Page<Club> findClubByNameAndSportIn(Pageable pageable, @Param("searchedSports") List<String> searchedSports,
+//            @Param("name") String name);
+//
+//    @Query("SELECT c FROM Club c "+
+//           "WHERE (:#{#filteredLocations.size} = 0 OR c.location.city in (:filteredLocations)) "+
+//           "AND (:name IS NOT NULL "+
+//           "AND (LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) "+
+//           "OR (LOWER(c.location.city) LIKE LOWER(CONCAT('%', :name, '%')))) "+
+//           "ORDER BY LOWER(c.name) ASC, LOWER(c.location.city) ASC ")
+//    Page<Club> findClubByFilteredLocations(@Param("filteredLocations") List<String> filteredLocations,
+//            Pageable pageable, @Param("name") String name);
 
 
     @Query("SELECT c FROM Club c "+
@@ -62,7 +62,14 @@ public interface ClubRepository extends CrudRepository<Club, Long> {
             @Param("filteredLocations") List<String> filteredLocations,
             @Param("filteredSports") List<String> filteredSports,
             @Param("name") String name);
+
+    @Query("SELECT DISTINCT c.sport FROM Club c")
+    List<String> findAllClubSports();
+
+    @Query("SELECT DISTINCT c.location.city FROM Club c")
+    List<String> findAllClubCities();
 }
+
 
 
 
