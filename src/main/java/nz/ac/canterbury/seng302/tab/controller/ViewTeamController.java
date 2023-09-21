@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -97,6 +98,17 @@ public class ViewTeamController {
         if( team.getTeamClub()!=null){
             model.addAttribute("clubName",team.getTeamClub().getName());
         }
+
+        List<Map<String,String>> dummy = List.of(
+                Map.of("hello", "hello2"),
+                Map.of("hello", "hello2"),
+                Map.of("hello", "hello2"),
+                Map.of("hello", "hello2"),
+                Map.of("hello", "hello2"),
+                Map.of("hello", "hello2")
+        );
+        model.addAttribute("screenshots", dummy);
+        model.addAttribute("recordings", dummy);
 
         // Is the currently logged in user this team's manager?
         Optional<User> oUser = userService.getCurrentUser();

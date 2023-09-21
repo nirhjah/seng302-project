@@ -346,7 +346,7 @@
             <div class="content whiteboard-media">
                 <div class="whiteboard-media-select media-wrapper">
                     <div class="whiteboard-media-images">
-                        <div th:each="" class="media">
+                        <div th:each="rec : ${recordings}" class="media">
                             <div class="media-body">
                                 This is an image 123
                             </div>
@@ -460,6 +460,7 @@
 
         tabs.forEach((tab, index) => {
             tab.addEventListener('click', (e) => {
+                console.log("HELLO?")
                 tabs.forEach(otherTab => {
                     otherTab.classList.remove('active');
                 });

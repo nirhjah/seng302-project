@@ -567,8 +567,6 @@ Following CSS is adapted from card-wrapper on view-all pages.
 }
 
 .media img {
-    height: 80%;
-    aspect-ratio: 1 / 1;
     border-radius: 10px;
 }
 
