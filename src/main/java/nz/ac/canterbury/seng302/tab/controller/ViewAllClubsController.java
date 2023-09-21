@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.repository.ClubRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -29,6 +31,9 @@ public class ViewAllClubsController {
     private ClubService clubService;
     private UserService userService;
 
+    @Autowired
+    private ClubRepository clubRepository;
+
     private static final int PAGE_SIZE = 10;
 
     public ViewAllClubsController(ClubService clubService, UserService userService) {
@@ -48,11 +53,10 @@ public class ViewAllClubsController {
         logger.info("GET /view-clubs");
 
         PageRequest pageable = PageRequest.of(pageNo - 1, PAGE_SIZE);
-        Page<Club> clubs = Page.empty(); //Replace with q
+        Page<Club> clubs =  clubRepository.findClubByFilteredLocationsAndSports(pageable, cities, sports, currentSearch);
         int maxPage = clubs.getTotalPages();
         pageNo = Math.max(Math.min(pageNo, maxPage), 1);
 
-        User currentUser = userService.getCurrentUser().orElseThrow();
         model.addAttribute("httpServletRequest", httpServletRequest);
 
         List<Club> listOfClubs = clubs.getContent();
