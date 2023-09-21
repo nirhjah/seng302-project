@@ -50,14 +50,17 @@ public class ClubServiceTest {
     }
 
 
-    // @Test
-    // void testFilteringClubByNameWithNoLocationOrSport() throws IOException {
-    //     Club club = new Club("Rugby Club", location, "Rugby",null);
-    //     List<String> filteredLocations = List.of();
-    //     List<String> filteredSports = List.of("Rugby");
-    //     Page<Club> clubs = clubService.findClubFilteredByLocationsAndSports(Pageable.ofSize(1), List.of(), List.of(), club.getName());
-    //     
-    //     Assertions.assertEquals(List.of(club), clubs);
-    // }
+    @Test
+    void testFilteringClubByMultipleSportsWithNoLocationOrName() throws IOException {
+        Club club1 = new Club("Rugby Club", location, "Rugby", null);
+        Club club2 = new Club("Football club", location, "Football", null);
+        clubService.updateOrAddClub(club1);
+        clubService.updateOrAddClub(club2);
+        List<String> filteredSports = List.of("football", "rugby");
+        Page<Club> clubs = clubService.findClubFilteredByLocationsAndSports(Pageable.ofSize(10), List.of(), filteredSports, "");
+        
+        Assertions.assertTrue(clubs.getContent().contains(club1));
+        Assertions.assertTrue(clubs.getContent().contains(club2));
+    }
     
 }
