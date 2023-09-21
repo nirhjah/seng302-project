@@ -557,13 +557,15 @@ Following CSS is adapted from card-wrapper on view-all pages.
 }
 
 .media {
-    margin: 50px 30px;
+    margin: 5px 5px;
     overflow: hidden;
     border-radius: 10px;
     display: flex;
     height:fit-content;
     cursor:pointer;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+    aspect-ratio: 1 / 1;
+    width: 25%;
 }
 
 .media img {
