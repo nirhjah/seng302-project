@@ -303,7 +303,6 @@ header .header-left .hamburger div {
     width: 50px;
     height: 50px;
     background-color: white;
-    margin: 3px 10px 3px 3px;
 }
 
 .navbar-view-all-button,
@@ -392,108 +391,122 @@ header .header-left .hamburger div {
 }
 
 .toggle1 img{
-  height:28px;
-  cursor: pointer;
+    height:28px;
+    cursor: pointer;
 }
 
 .icons-size{
-  color: #333;
-  font-size: 14px;
+    color: #333;
+    font-size: 14px;
 }
 .action{
-  position: fixed;
-  top: 7px;
-  right: 20px;
+    position: fixed;
+    top: 7px;
+    right: 20px;
 }
 .action .profile{
-  line-height: 0 !important;
-  border-radius: 50%;
-  cursor: pointer;
-  height: 50px;
-  overflow: hidden;
-  position: relative;
-  width: 50px;
-  background:white;
+    line-height: 0 !important;
+    border-radius: 50%;
+    cursor: pointer;
+    height: 50px;
+    overflow: hidden;
+    position: relative;
+    width: 50px;
+    background:white;
 }
 .action .profile img{
-  width: 100%;
-  top:0;
-  position: absolute;
-  object-fit: cover;
-  left: 0;
-  height: 100%;
+    width: 100%;
+    top:0;
+    position: absolute;
+    object-fit: cover;
+    left: 0;
+    height: 100%;
 }
 .action .profile-menu{
-  line-height: 0 !important;
-  background-color:#FFF;
-  border-radius: 15px;
-  padding: 10px 20px;
-  position: absolute;
-  right: -10px;
-  transition: 0.5s;
-  top: 120px;
-  visibility: hidden;
-  opacity: 0;
+    line-height: 0 !important;
+    background-color:#FFF;
+    border-radius: 15px;
+    padding: 10px 20px;
+    position: absolute;
+    right: -10px;
+    transition: 0.5s;
+    top: 120px;
+    visibility: hidden;
+    opacity: 0;
 }
 .action .profile-menu.active{
-  opacity: 1;
-  top: 80px;
-  visibility: visible;
+    opacity: 1;
+    top: 80px;
+    visibility: visible;
 }
+
 .action .profile-menu::before{
-  background-color:#fff;
-  content: '';
-  height: 20px;
-  position: absolute;
-  right: 30px;
-  transform:rotate(45deg);
-  top:-5px;
-  width: 20px;
+    background-color:#fff;
+    content: '';
+    height: 20px;
+    position: absolute;
+    right: 30px;
+    transform:rotate(45deg);
+    top:-5px;
+    width: 20px;
 }
 .action .profile-menu h3{
-  color: #555;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 1.3em;
-  padding: 20px 0;
-  text-align: left;
-  width: 100%;
+    color: #555;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.3em;
+    padding: 20px 0;
+    text-align: left;
+    width: 100%;
+    cursor: default;
 }
+
 .action .profile-menu h3 div{
-  color: #818181;
-  font-size: 14px;
-  font-weight: 400;
+    color: #818181;
+    font-size: 14px;
+    font-weight: 400;
 }
+
 .action .profile-menu ul li{
-  align-items: center;
-  border-top:1px solid rgba(0,0,0,0.05);
-  display: flex;
-  justify-content: left;
-  list-style: none;
-  padding: 10px 0;
-  background:white;
+    align-items: center;
+    border-top:1px solid rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: left;
+    list-style: none;
+    padding: 10px 0;
+    background:white;
+    width: 100%;
 }
+
 .action .profile-menu ul li img{
-  max-width: 20px;
-  margin-right: 10px;
-  opacity: 0.5;
-  transition:0.5s
+    max-width: 20px;
+    margin-right: 10px;
+    opacity: 0.5;
+    transition:0.5s
 }
+
 .action .profile-menu ul li a{
-  display: inline-block;
-  color: #555;
-  font-size: 14px;
-  font-weight: 600;
-  padding-left: 15px;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: 0.5s;
-  white-space: nowrap;
+    display: inline-block;
+    color: #555;
+    font-size: 14px;
+    font-weight: 600;
+    padding-left: 15px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: 0.5s;
+    white-space: nowrap;
 }
+
 .action .profile-menu ul li:hover img{
-  opacity: 1;
+    opacity: 1;
 }
-.action .profile-menu ul li:hover a{
-  color: #0b2239;
-  background:white;
+
+
+.profile-menu ul {
+    flex-direction: column;
 }
+
+.action .profile-menu ul li:hover {
+
+}
+

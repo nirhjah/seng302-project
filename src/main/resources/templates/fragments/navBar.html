@@ -1,12 +1,10 @@
-<nav th:fragment="navbar">
-<header th:fragment="navbar" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<nav th:fragment="navbar" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <link th:href="@{/css/navbar.css}" rel="stylesheet">
+    <link th:href="@{/css/preloader.css}" rel="stylesheet">
     <label for="drop" class="toggle1"><img th:src="@{/image/icons/hamburger.svg}"></label>
     <input type="checkbox" id="drop"/>
     <ul class="menu">
-        <li class="home-button">
-            <img th:src="@{/image/logo-short.svg}"/>
-        </li>
+        <li><a th:href="@{home}">Home</a></li>
         <li sec:authorize="isAnonymous()">
             <a th:href="@{login}"
                th:classappend="${httpServletRequest.requestURI == '/login' ? 'active' : ''}">Login</a>
@@ -16,33 +14,25 @@
                th:classappend="${httpServletRequest.requestURI == '/register' ? 'active' : ''}">Register</a>
         </li>
 
-        <li><a th:href="@{createClub}">Create Club</a></li>
-
-        <li><a th:href="@{createActivity}">Activity</a></li>
-
         <li sec:authorize="isAuthenticated()">
-            <label for="drop-1" class="toggle" onclick ='createToggle()' >Create +</label>
-            <a href="">Users</a>
-            <input class ="checkbox" type="checkbox" id="drop-1"/>
-            <ul>
-                <li><a th:href="@{createTeam}">Create Team</a></li>
-                <li><a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a></li>
-            </ul>
+            <a th:href="@{view-teams(page=1)}"
+               th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a>
         </li>
 
         <li sec:authorize="isAuthenticated()">
             <a th:href="@{view-users(page=1)}"
                th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
         </li>
-
         <li sec:authorize="isAuthenticated()">
-            <label for="drop-2" class="toggle" onclick ='createToggle()' >Create +</label>
-            <a href="">Teams</a>
-            <input class ="checkbox" type="checkbox" id="drop-2"/>
+            <label for="drop-1" class="toggle" onclick ='createToggle()' >Create <i class="navbar-dropdown-triangle"></i></label>
+            <a href="">Create</a>
+            <input class ="checkbox" type="checkbox" id="drop-1"/>
             <ul>
-                <li><a th:href="@{createTeam}">Create Team</a></li>
-                <li><a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a></li>
+                <li><a th:href="@{createActivity}">Activity</a></li>
+                <li><a th:href="@{createClub}">Club</a></li>
+                <li><a th:href="@{createTeam}">Team</a></li>
             </ul>
+
         </li>
         <div sec:authorize="isAuthenticated()" class="view-profile">
             View Profile:
@@ -56,93 +46,31 @@
             </select>
         </div>
     </ul>
-<div class="action" sec:authorize="isAuthenticated()">
-    <div class="profile" onclick="menuToggle();">
-        <img class="navbar-profile-picture"
-             th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
-    <link th:href="@{/css/preloader.css}" rel="stylesheet">
-    <div class="header-left">
-        <div class="hamburger">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
+    <div class="action" sec:authorize="isAuthenticated()">
+        <div class="profile" onclick="menuToggle();">
+            <img class="navbar-profile-picture"
+                 th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
         </div>
-        <nav class="nav-bar">
+
+        <div class="profile-menu">
+            <h3 th:text="${firstName} + ' ' + ${lastName}"></h3>
             <ul>
                 <li>
-                    <a th:href="@{home}" th:classappend="${httpServletRequest.requestURI == '/home' ? 'active' : ''}">Home</a>
+                    <a th:href="@{user-info/self}">My Profile</a>
                 </li>
-
-                <div class="create-buttons">
-                    <li class="navbar-create-button" sec:authorize="isAuthenticated()">
-                        <div class="navbar-create-dropdown">
-                            <a th:href="@{createTeam}">Create Team</a>
-                            <a th:href="@{create-activity}">Create Activity</a>
-                            <a th:href="@{createClub}">Create Club</a>
-                        </div>
-                        <a>
-                            <span th:text="Create"></span>
-                            <i class="navbar-dropdown-triangle"></i>
-                        </a>
-                    </li>
-                </div>
-
-                <div class="view-all-buttons">
-                    <li class="navbar-view-all-button" sec:authorize="isAuthenticated()">
-                        <div class="navbar-view-all-dropdown">
-                            <a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a>
-                            <a th:href="@{view-users(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
-                            <a th:href="@{view-clubs(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-clubs' ? 'active' : ''}">View All Clubs</a>
-                        </div>
-                        <a>
-                            <span th:text="'View All'"></span>
-                            <i class="navbar-dropdown-triangle"></i>
-                        </a>
-                    </li>
-                </div>
-
-                <li sec:authorize="isAnonymous()">
-                    <a th:href="@{login}" th:classappend="${httpServletRequest.requestURI == '/login' ? 'active' : ''}">Login</a>
+                <li>
+                    <a th:href="@{my-teams}">My Teams</a>
                 </li>
-                <li sec:authorize="isAnonymous()">
-                    <a th:href="@{register}" th:classappend="${httpServletRequest.requestURI == '/register' ? 'active' : ''}">Register</a>
+                <li>
+                    <a th:href="@{view-activities(page=1)}">My Activities</a>
                 </li>
-
-                <div sec:authorize="isAuthenticated()" class="view-profile">
-                    View Profile:
-                    <select class="form-control" id="dropDownList" name="teamSelector"
-                            onchange="if(this.value != '-1') window.location.href = 'team-info?teamID=' + this.value;">
-                        <option value="-1" selected>Select a Team</option>
-                        <option th:each="team : ${G_navTeams}"
-                                th:value="${team.teamId}"
-                                th:text="${team}"
-                                th:selected="${team.teamId.equals(teamID)}"></option>
-                    </select>
-                </div>
-
+                <li>
+                    <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
+                </li>
             </ul>
-        </nav>
+        </div>
+        <form id="logoutForm" th:action="@{logout}" method="POST"></form>
     </div>
-
-    <div class="profile-menu">
-        <h3 th:text="${firstName} + ' ' + ${lastName}"></h3>
-        <ul>
-            <li>
-                <a th:href="@{user-info/self}">My Profile</a>
-            </li>
-            <li>
-                <a th:href="@{my-teams}">My Teams</a>
-            </li>
-            <li>
-                <a th:href="@{view-activities(page=1)}">My Activities</a>
-            </li>
-            <li>
-                <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
-            </li>
-        </ul>
-    </div>
-    <form id="logoutForm" th:action="@{logout}" method="POST"></form>
-</div>
     <script>
 
         function createToggle(){
