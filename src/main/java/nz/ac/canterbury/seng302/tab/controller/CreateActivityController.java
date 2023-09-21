@@ -293,9 +293,11 @@ public class CreateActivityController {
 
         activity = activityService.updateOrAddActivity(activity);
 
-        if (lineUpName == "" && activity.getFormation().isPresent()) {
+        if (Objects.equals(lineUpName, "")) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
-            lineUpName = activity.getActivityStart().format(formatter) + " - " + activity.getActivityEnd().format(formatter) + ": " + activity.getFormation().get().getFormation();
+            if (activity.getFormation().isPresent()) {
+                lineUpName = activity.getActivityStart().format(formatter) + " - " + activity.getActivityEnd().format(formatter) + ": " + activity.getFormation().get().getFormation();
+            } 
         }
 
         // Only apply lineup code if the activity can have a lineup
