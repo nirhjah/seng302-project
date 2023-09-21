@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.service.image;
 
+import jakarta.transaction.Transactional;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.WhiteboardScreenshot;
@@ -72,7 +73,7 @@ public class WhiteboardScreenshotService extends ImageService<WhiteboardScreensh
         return ImageType.PNG_OR_JPEG;
     }
 
-    private boolean canView(WhiteboardScreenshot screenshot) {
+    public boolean canView(WhiteboardScreenshot screenshot) {
         if (screenshot.isPublic()) {
             return true;
         }
@@ -114,6 +115,18 @@ public class WhiteboardScreenshotService extends ImageService<WhiteboardScreensh
     }
 
 
+    /*
+    We need @Transactional to get around LazyInitializationException.
+     https://stackoverflow.com/questions/21574236/how-to-fix-org-hibernate-lazyinitializationexception-could-not-initialize-prox
+     For future, we need to be wary about where we are accessing the screenshots as lazy.
+
+    Also, this method needs to be public, or else @Transactional wont work.
+
+    Not only that, but @Transactional ONLY WORKS when it is called from outside the bean.
+    Further reading here:
+    https://codete.com/blog/5-common-spring-transactional-pitfalls
+     */
+    @Transactional
     public ResponseEntity<byte[]> getScreenshot(long id) {
         Optional<WhiteboardScreenshot> opt = repository.findById(id);
         if (opt.isPresent()) {

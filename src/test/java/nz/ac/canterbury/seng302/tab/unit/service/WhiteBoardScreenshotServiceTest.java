@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
+import jakarta.transaction.Transactional;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
@@ -13,23 +14,28 @@ import nz.ac.canterbury.seng302.tab.service.image.WhiteboardScreenshotService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.util.AssertionErrors.fail;
 
 @Import({WhiteboardScreenshotService.class})
 @SpringBootTest
+@WithMockUser
 public class WhiteBoardScreenshotServiceTest {
-
     @Autowired
     private WhiteboardScreenshotService whiteboardScreenshotService;
 
@@ -67,15 +73,29 @@ public class WhiteBoardScreenshotServiceTest {
         }
     }
 
+    private void setupUser() {
+        try {
+            user = User.defaultDummyUser();
+        } catch (Exception ex1) {
+            fail(ex1.getMessage());
+        }
+        String email = UUID.randomUUID() + "@gmail.com";
+        user.setEmail(email);
+        user = userService.updateOrAddUser(user);
+        Mockito.when(userService.getCurrentUser()).thenReturn(Optional.of(user));
+
+        privateScreenshots.clear();
+        publicScreenshots.clear();
+    }
+
     @BeforeEach
-    void beforeEach() {
+    void beforeEach()  {
         // Check that we are on test.
         // If we aren't on test, we shouldn't run the test!!!
         // (This will mess up our filesystem on prod if it fails!!!)
         assertEquals(FileDataSaver.DeploymentType.TEST, whiteboardScreenshotService.getDeploymentType());
 
-        privateScreenshots.clear();
-        publicScreenshots.clear();
+        setupUser();
 
         // Clear files for test
         UserImageService.clearTestFolder();
@@ -89,6 +109,7 @@ public class WhiteBoardScreenshotServiceTest {
     }
 
     @Test
+    @WithMockUser
     void testPrivateScreenshotsInvisible() {
         // Take a user, check that the file is saved.
         makeScreenshots();
@@ -100,6 +121,7 @@ public class WhiteBoardScreenshotServiceTest {
     }
 
     @Test
+    @WithMockUser
     void testPublicScreenshotsVisible() {
         // Take a user, check that the file is saved.
         makeScreenshots();
