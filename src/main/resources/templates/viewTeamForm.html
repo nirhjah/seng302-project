@@ -33,10 +33,6 @@
                 <button class="tab-button" >Statistics &nbsp;</button>
                 <div class="tab-line"></div>
             </div>
-            <div class="tab" id="competitions-tab">
-                <img class ="tab-icon"  th:src="@{/image/icons/gradeLevel.png}"/>
-                <button class="tab-button" >Competitions &nbsp;</button>
-            </div>
         </div>
         <div class="content-box active" id="team-profile-tab">
             <div class="content">
@@ -343,25 +339,6 @@
 
 
 
-                </div>
-            </div>
-        </div>
-
-        <div class="content-box" id="comp-tab">
-            <div class="content">
-                <h2 style="text-align: center; margin-top: 15px; margin-bottom: 10px"> Team Competitions </h2>
-                <div class="competitions">
-                    <ul>
-                        <!-- /*onclick go to comp page*/ -->
-                        <li th:each="comp : ${teamCompetitions}" th:onclick="|window.location.href='@{view-competition(competitionID=${comp.competitionId})}'|">
-                            <div>
-                                <h3 th:text="${comp.name}"> </h3>
-                                <h4 th:text="${comp.grade.age.description}"> </h4>
-                                <h4 th:text="${comp.grade.sex}"> </h4>
-                                <h4 th:text="${comp.grade.competitiveness}"> </h4>
-                            </div>
-                        </li>
-                    </ul>
                 </div>
             </div>
         </div>

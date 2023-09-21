@@ -83,6 +83,7 @@ public class SecurityConfiguration {
         http
             .authorizeHttpRequests(auth -> auth.requestMatchers(
                 AntPathRequestMatcher.antMatcher("/favicon.ico"),
+                AntPathRequestMatcher.antMatcher("/error"),
                 AntPathRequestMatcher.antMatcher("/geocode/autocomplete"),
                 AntPathRequestMatcher.antMatcher("/h2/**"),
                 AntPathRequestMatcher.antMatcher("/resources/**"),
@@ -103,7 +104,7 @@ public class SecurityConfiguration {
                     "/geocode/autocomplete", "/lost-password", "/reset-password", "/confirm")
             .permitAll()
             // Only Federation Managers (maybe admins) can access this
-            .requestMatchers("/create-competition", "/inviteToFederationManager")
+            .requestMatchers("/inviteToFederationManager")
             .hasRole(AuthorityType.FEDERATION_MANAGER.name())
             // Only allow admins to reach the "/admin" and "/populate_database" page
             .requestMatchers("/admin", "/populate_database")
