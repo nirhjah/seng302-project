@@ -13,6 +13,7 @@
     <div class="whiteboard-wrapper">
         <div class="whiteboard-dropdowns">
             <h3 class="whiteboard-title" contenteditable="true">Untitled</h3>
+
             <div class="dropdown">
                 <label for="pitch">Pitch Type</label>
                 <select class="select" id="pitch"></select>
@@ -63,6 +64,7 @@
                     </ul>
                 </div>
             </div>
+
 
         </div>
         <div>
@@ -267,6 +269,12 @@
         </div>
     </div>
 </div>
+
+<video id="recorded-canvas" controls></video>
+<div>
+    <img id="screenshotDisplay">
+</div>
+
 <script type="text/javascript" th:src="@{/webjars/fabric/5.3.0/dist/fabric.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
 </body>
@@ -287,15 +295,7 @@
         pitchSelect.appendChild(option);
     });
 
-    const imagePath = "image/pitches/";
-    pitchSelect.addEventListener("change", function () {
-        const selectedValue = this.value;
-        const imageUrl = `${imagePath}${selectedValue}.svg`;
-        if (document.querySelector(".canvas-container") !== null) {
-            const canvasContainer = document.querySelector(".canvas-container");
-            canvasContainer.style.backgroundImage = `url(${imageUrl})`;
-        }
-    });
+
 
     /**
      * Handles editing the whiteboard name function. When the name is clicked, the name can be editable.
@@ -338,8 +338,28 @@
         pitchSelect.value = "soccer";
         let canvas = new fabric.Canvas('canvas');
         let activeMode = null;
+        const imagePath = "image/pitches/";
+
         canvas.freeDrawingBrush.width = 5;
         canvas.freeDrawingBrush.color = '#ff0000';
+
+
+        const defaultImageUrl = `${imagePath}${pitchSelect.value}.svg`;
+        fabric.Image.fromURL(defaultImageUrl, function (img) {
+            canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+        });
+
+
+        pitchSelect.addEventListener("change", function () {
+            const selectedValue = this.value;
+            const imageUrl = `${imagePath}${selectedValue}.svg`;
+            canvas.clear();
+
+            fabric.Image.fromURL(imageUrl, function (img) {
+                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+            });
+
+        });
 
         const playerCards = document.querySelectorAll('.player-card');
         const whiteboard = document.querySelector('.whiteboard');
@@ -347,6 +367,7 @@
         const playerArray = [];
         const yPlayerOffset = 10;
         const xPlayerOffset = 20;
+
 
 
         /**
@@ -589,6 +610,11 @@
             setTimeout(() => {
                 cameraFlash.classList.remove("active");
             }, 990);
+
+            var dataURL = canvas.toDataURL();
+            const screenshotDisplay = document.getElementById('screenshotDisplay')
+            screenshotDisplay.src = dataURL;
+
         }
 
         function deactivateCamera() {
@@ -603,8 +629,40 @@
 
         const recordingButton = document.querySelector('.recording-button');
 
+
+        //This is used to display the recording on screen once recorded, for testing purposes
+        const testVideoDisplay = document.getElementById('recorded-canvas');
+        var whiteboardToRecord = document.querySelector("canvas");
+
+        let recording = false;
+        var videoStream = whiteboardToRecord.captureStream(30);
+        var mediaRecorder = new MediaRecorder(videoStream);
+
+
         recordingButton.addEventListener('click', function () {
             toggleRecording();
+            if (!recording) {
+                var chunks = [];
+                mediaRecorder.ondataavailable = function(e) {
+                    chunks.push(e.data);
+                };
+
+                mediaRecorder.onstop = function(e) {
+                    var blob = new Blob(chunks, { 'type' : 'video/mp4' });
+                    chunks = [];
+                    var videoURL = URL.createObjectURL(blob);
+                    testVideoDisplay.src = videoURL;
+                };
+                mediaRecorder.ondataavailable = function(e) {
+                    chunks.push(e.data);
+                };
+
+                mediaRecorder.start();
+                recording = true;
+            } else {
+                mediaRecorder.stop();
+                recording = false;
+            }
         });
 
         function toggleRecording() {
@@ -1375,9 +1433,17 @@
 
         /** Formation **/
         document.getElementById("formation-dropdown").addEventListener("change", function (event) {
+
+            const defaultImageUrl = `${imagePath}${pitchSelect.value}.svg`;
+            fabric.Image.fromURL(defaultImageUrl, function (img) {
+                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+            });
+            
             const selectedOption = event.target.options[event.target.selectedIndex];
             lineupDropdown.selectedIndex = 0;
             loadFormation(selectedOption);
+
+
         });
 
         /**

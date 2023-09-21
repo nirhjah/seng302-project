@@ -30,7 +30,7 @@ public class Formation {
     /**
      * String is of form e.g. '10px,20px;20px30px;'
      */
-    @Column
+    @Column(columnDefinition = "MEDIUMBLOB")
     private String customPlayerPositions;
 
     @Column
