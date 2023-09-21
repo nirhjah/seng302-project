@@ -30,7 +30,6 @@ public class Formation {
     /**
      * String is of form e.g. '10px,20px;20px30px;'
      */
-
     @Column(columnDefinition = "MEDIUMBLOB")
     private String customPlayerPositions;
 
@@ -88,9 +87,5 @@ public class Formation {
         return customPlayerPositions;
     }
 
-//    @Override
-//    public String toString() {
-//        return String.format("Formation(formation='%s', team='%s')", getFormation(), getTeam());
-//    }
 
 }

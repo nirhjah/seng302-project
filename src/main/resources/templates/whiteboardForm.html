@@ -13,6 +13,7 @@
     <div class="whiteboard-wrapper">
         <div class="whiteboard-dropdowns">
             <h3 class="whiteboard-title" contenteditable="true">Untitled</h3>
+
             <div class="dropdown">
                 <label for="pitch">Pitch Type</label>
                 <select class="select" id="pitch"></select>
@@ -63,6 +64,7 @@
                     </ul>
                 </div>
             </div>
+
 
         </div>
         <div>
@@ -249,13 +251,30 @@
                         <img th:src="@{/image/icons/add-white.svg}"/>
                     </button>
                 </div>
+                <button class="camera-button">
+                    <span class="tooltip">Camera (F)</span>
+                    <img class="selected-svg" th:src="@{/image/icons/camera-active.svg}"/>
+                    <img class="default-svg" th:src="@{/image/icons/camera.svg}"/>
+                </button>
+                <button class="recording-button">
+                    <span class="tooltip">Record (R)</span>
+                    <span class="recording-image"></span>
+                    <span class="recording-image-border"></span>
+                </button>
             </div>
             <div class="whiteboard">
+                <div class="camera-flash"></div>
                 <canvas id="canvas" width="560" height="700"></canvas>
             </div>
         </div>
     </div>
 </div>
+
+<video id="recorded-canvas" controls></video>
+<div>
+    <img id="screenshotDisplay">
+</div>
+
 <script type="text/javascript" th:src="@{/webjars/fabric/5.3.0/dist/fabric.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
 </body>
@@ -276,15 +295,7 @@
         pitchSelect.appendChild(option);
     });
 
-    const imagePath = "image/pitches/";
-    pitchSelect.addEventListener("change", function () {
-        const selectedValue = this.value;
-        const imageUrl = `${imagePath}${selectedValue}.svg`;
-        if (document.querySelector(".canvas-container") !== null) {
-            const canvasContainer = document.querySelector(".canvas-container");
-            canvasContainer.style.backgroundImage = `url(${imageUrl})`;
-        }
-    });
+
 
     /**
      * Handles editing the whiteboard name function. When the name is clicked, the name can be editable.
@@ -327,8 +338,28 @@
         pitchSelect.value = "soccer";
         let canvas = new fabric.Canvas('canvas');
         let activeMode = null;
+        const imagePath = "image/pitches/";
+
         canvas.freeDrawingBrush.width = 5;
         canvas.freeDrawingBrush.color = '#ff0000';
+
+
+        const defaultImageUrl = `${imagePath}${pitchSelect.value}.svg`;
+        fabric.Image.fromURL(defaultImageUrl, function (img) {
+            canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+        });
+
+
+        pitchSelect.addEventListener("change", function () {
+            const selectedValue = this.value;
+            const imageUrl = `${imagePath}${selectedValue}.svg`;
+            canvas.clear();
+
+            fabric.Image.fromURL(imageUrl, function (img) {
+                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+            });
+
+        });
 
         const playerCards = document.querySelectorAll('.player-card');
         const whiteboard = document.querySelector('.whiteboard');
@@ -336,6 +367,7 @@
         const playerArray = [];
         const yPlayerOffset = 10;
         const xPlayerOffset = 20;
+
 
 
         /**
@@ -400,9 +432,8 @@
 
                         const canvasX = cardRect.left - canvas.upperCanvasEl.getBoundingClientRect().left;
                         const canvasY = cardRect.top - canvas.upperCanvasEl.getBoundingClientRect().top;
-                        currentX=canvasX;
-                        currentY=canvasY;
                         createTeamPlayerIcon(playerCard, canvasX, canvasY, index);
+
                         playerCard.style.display = 'none';
                     } else {
                         playerCard.style.position = "static";
@@ -486,7 +517,7 @@
 
         function renderIcon(icon) {
             return function renderIcon(ctx, left, top, styleOverride, fabricObject) {
-                var size = this.cornerSize;
+                let size = this.cornerSize;
                 ctx.save();
                 ctx.translate(left, top);
                 ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
@@ -531,7 +562,8 @@
         function handleButtonClick(buttonClass, drawMode, selectMode) {
             const buttons = document.querySelectorAll('.whiteboard-buttons button');
             buttons.forEach(button => {
-                if (!button.parentElement.classList.contains("content") && !button.classList.contains("add-player-icon")) {
+                if (!button.parentElement.classList.contains("content") && !button.classList.contains("add-player-icon")
+                    && !button.classList.contains("recording-button")) {
                     button.classList.remove('active')
                 }
             });
@@ -580,6 +612,76 @@
         document.querySelector('.select-button').addEventListener('click', function () {
             handleButtonClick('select-button', false, true);
         });
+
+        const cameraButton = document.querySelector('.camera-button');
+        const cameraFlash = document.querySelector('.camera-flash');
+        const mySound = new Audio("/static/mp3/cameraflashmp3-14565.mp3");
+
+        function clickCamera() {
+            cameraButton.classList.add('active');
+            // mySound.play()
+            cameraFlash.classList.add("active");
+            setTimeout(() => {
+                cameraFlash.classList.remove("active");
+            }, 990);
+
+            var dataURL = canvas.toDataURL();
+            const screenshotDisplay = document.getElementById('screenshotDisplay')
+            screenshotDisplay.src = dataURL;
+
+        }
+
+        function deactivateCamera() {
+            cameraButton.classList.remove('active');
+        }
+
+        cameraButton.addEventListener('mousedown', clickCamera);
+
+        cameraButton.addEventListener('mouseup', deactivateCamera);
+
+        cameraButton.addEventListener('mouseleave', deactivateCamera);
+
+        const recordingButton = document.querySelector('.recording-button');
+
+
+        //This is used to display the recording on screen once recorded, for testing purposes
+        const testVideoDisplay = document.getElementById('recorded-canvas');
+        var whiteboardToRecord = document.querySelector("canvas");
+
+        let recording = false;
+        var videoStream = whiteboardToRecord.captureStream(30);
+        var mediaRecorder = new MediaRecorder(videoStream);
+
+
+        recordingButton.addEventListener('click', function () {
+            toggleRecording();
+            if (!recording) {
+                var chunks = [];
+                mediaRecorder.ondataavailable = function(e) {
+                    chunks.push(e.data);
+                };
+
+                mediaRecorder.onstop = function(e) {
+                    var blob = new Blob(chunks, { 'type' : 'video/mp4' });
+                    chunks = [];
+                    var videoURL = URL.createObjectURL(blob);
+                    testVideoDisplay.src = videoURL;
+                };
+                mediaRecorder.ondataavailable = function(e) {
+                    chunks.push(e.data);
+                };
+
+                mediaRecorder.start();
+                recording = true;
+            } else {
+                mediaRecorder.stop();
+                recording = false;
+            }
+        });
+
+        function toggleRecording() {
+            recordingButton.classList.toggle('active');
+        }
 
         const formationDropdown = document.getElementById("formation-dropdown");
         const lineupDropdown = document.getElementById("lineup-dropdown");
@@ -716,6 +818,10 @@
                 }
                 formationDropdown.selectedIndex = 0;
                 lineupDropdown.selectedIndex = 0;
+            } else if (event.key === 'f') {
+                clickCamera();
+            } else if (event.key === 'r') {
+                toggleRecording();
             }
         });
 
@@ -1243,8 +1349,6 @@
                     lineGroup.addWithUpdate(leftLine);
                     lineGroup.addWithUpdate(rightLine);
                     // Old arrow elements get pushed to the top left corner for some reason so need to delete them
-                    canvas.remove(canvas.getObjects()[canvas.getObjects().length - 1])
-                    canvas.remove(canvas.getObjects()[canvas.getObjects().length - 2])
                     canvas.add(lineGroup);
                     lineGroup.setCoords();
                 }
@@ -1343,9 +1447,17 @@
 
         /** Formation **/
         document.getElementById("formation-dropdown").addEventListener("change", function (event) {
+
+            const defaultImageUrl = `${imagePath}${pitchSelect.value}.svg`;
+            fabric.Image.fromURL(defaultImageUrl, function (img) {
+                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+            });
+
             const selectedOption = event.target.options[event.target.selectedIndex];
             lineupDropdown.selectedIndex = 0;
             loadFormation(selectedOption);
+
+
         });
 
         /**
@@ -1492,6 +1604,7 @@
          */
         function addPlayerIconMovement(playerIcon) {
             let iconIsDragging = false;
+            let drawingMode = false;
             const yOffset = 15;
             const xOffset = 18;
             let copyIcon;
@@ -1499,6 +1612,11 @@
             let newY;
 
             playerIcon.addEventListener("mousedown", (e) => {
+                if (canvas.isDrawingMode) {
+                    drawingMode = true;
+                    canvas.isDrawingMode = false;
+                    canvas.selection = true
+                }
                 iconIsDragging = true;
                 copyIcon = playerIcon.cloneNode(false)
                 copyIcon.classList.add("active")
@@ -1520,11 +1638,23 @@
             })
 
             document.addEventListener("mouseup", (e) => {
-                const {x, y} = canvas.getPointer(e);
-
+                const whiteboardRect = canvas.upperCanvasEl.getBoundingClientRect()
+                const pointer = canvas.getPointer(e);
+                const {x, y} = pointer;
                 if (iconIsDragging) {
+                    if (x > -radius && y > -radius && x < canvas.width + radius && y < canvas.height + radius) {
+                        const canvasLeft = whiteboardRect.left;
+                        const canvasTop = whiteboardRect.top;
+                        const xP = e.clientX - canvasLeft;
+                        const yP = e.clientY - canvasTop;
+                        createPlayerIcon(xP, yP, copyIcon.style.background)
+                        if (drawingMode) {
+                            drawingMode = false;
+                            canvas.isDrawingMode = true;
+                            canvas.selection = false;
+                        }
+                    }
                     iconIsDragging = false;
-                    createPlayerIcon(x, y, copyIcon.style.background)
                     playerIconsContainer.removeChild(copyIcon)
                     copyIcon.remove();
                 }
@@ -1546,8 +1676,8 @@
                 originY: 'center'
             });
             const playerIconInner = new fabric.Circle({
-                left: x - 0.5,
-                top: y - 0.5,
+                left: x,
+                top: y,
                 radius: radius - 4,
                 fill: fill,
                 strokeWidth: 2,
