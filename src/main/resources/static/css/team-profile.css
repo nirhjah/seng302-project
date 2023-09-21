@@ -528,27 +528,14 @@
     min-width: 300px;
 }
 
-.whiteboard-media-recordings {
-    height: 100%;
-}
 
-.whiteboard-media-images {
+.whiteboard-media-content {
     height: 100%;
     overflow: auto;
     display: inline-flex;
     max-width: 70%;
 }
 
-/*
-Following CSS is adapted from card-wrapper on view-all pages.
- */
-.media-container {
-    display: flex;
-    flex-wrap:wrap;
-    justify-content: center;
-    margin-left: 5%;
-    margin-right: 5%;
-}
 
 .media-image{
     border-radius: 5px;
@@ -562,7 +549,7 @@ Following CSS is adapted from card-wrapper on view-all pages.
     display: inline-flex;
     cursor:pointer;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 2 / 3; /* Aspect ratio of pitch */
     height: 90%;
     flex-shrink: 0;
 }
@@ -589,6 +576,40 @@ Following CSS is adapted from card-wrapper on view-all pages.
 
 .media img:hover {
     cursor: pointer;
+}
+
+/*
+Custom scrollbar:
+ */
+
+/* Define the scrollbar style */
+.whiteboard-media-content::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+/* Define the thumb style */
+.whiteboard-media-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom right, #333333 0%, #111111 100%);
+    border-radius: 5px;
+}
+
+/* Define the track style */
+.whiteboard-media-content::-webkit-scrollbar-track {
+    background-color: #ddd;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Define the button style */
+.whiteboard-media-content::-webkit-scrollbar-button {
+    background-color: #4d7fff;
+    border-radius: 5px;
+}
+
+/* Define the button style when being hovered over */
+.whiteboard-media-content::-webkit-scrollbar-button:hover {
+    background-color: #999999;
 }
 
 
