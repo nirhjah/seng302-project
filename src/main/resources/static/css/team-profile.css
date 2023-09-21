@@ -507,6 +507,17 @@
     max-width: 15ch;
 }
 
+
+.content.whiteboard-media {
+    display: flex;
+}
+
+.whiteboard-media-select {
+    flex-direction: column;
+}
+
+
+
 @media (max-width: 500px) {
     .float-child {
         width: 100vw;
