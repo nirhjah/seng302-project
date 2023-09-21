@@ -521,8 +521,6 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
 }
 
 .whiteboard-play-button {
@@ -537,6 +535,8 @@
 
 .whiteboard-media-images {
     height: 100%;
+    overflow: hidden;
+    float: left
 }
 
 /*
@@ -561,21 +561,17 @@ Following CSS is adapted from card-wrapper on view-all pages.
     overflow: hidden;
     border-radius: 10px;
     display: flex;
-    height:fit-content;
     cursor:pointer;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
     aspect-ratio: 1 / 1;
-    width: 25%;
+    height: 90%;
+    flex-shrink: 0;
 }
 
 .media img {
     border-radius: 10px;
 }
 
-.media-wrapper {
-    background: #415A77;
-    padding: 5px;
-}
 
 .media-body {
     /*height: 100%;*/
