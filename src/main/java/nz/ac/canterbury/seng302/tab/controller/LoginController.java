@@ -42,14 +42,14 @@ public class LoginController {
     @GetMapping("/")
     public String home() {
         logger.info("GET /homeForm");
-        return "redirect:./home";
+        return "redirect:./login";
     }
     /**
      * Gets form to be displayed
      * @return thymeleaf register
      * @throws AuthenticationException If logging in failed with an unknown error
      */
-    @GetMapping("/home")
+    @GetMapping("/login")
     public String form(
             @RequestParam(name="error", required=false) String error,
             @RequestParam(name=DEFAULT_REDIRECT, required=false) String redirectUrl,
@@ -118,14 +118,14 @@ public class LoginController {
     }
 
 
-    /**
-     * Takes the user to the home page if they don't want to login
-     * @return redirect to the home page
-     */
-    @GetMapping("/cancel-login")
-    public String cancelLogin()
-    {
-        logger.info("GET /");
-        return "redirect:./demo";
-    }
+//    /**
+//     * Takes the user to the home page if they don't want to login
+//     * @return redirect to the home page
+//     */
+//    @GetMapping("/cancel-login")
+//    public String cancelLogin()
+//    {
+//        logger.info("GET /");
+//        return "redirect:./demo";
+//    }
 }
