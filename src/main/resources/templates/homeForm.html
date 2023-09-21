@@ -23,13 +23,13 @@
 
      <div class="teamsDiv" style="margin-left: 9%; margin-right: 5%; border-radius: 15px; height: 550px">
 
-         <div style="padding-top: 19px;">
+         <div style="padding-top: 19px; ">
              <h2 style="text-align: center">My Teams</h2>
 
              </div>
 
          <div class="last5" style="margin-top: 57px; padding-bottom: 21px;">
-             <h3 th:if="${userTeams.isEmpty()}" style="text-align: center; font-size: 20px">You aren't apart of any teams</h3>
+             <h3 th:if="${userTeams.isEmpty()}" style="text-align: center; font-size: 20px">You aren't a part of any teams</h3>
              <div th:if="${userTeams.isEmpty()}" class="submit-button"  style="width: 75%; margin: auto; padding-top: 20px">
                  <button id="joinTeamByTokenModalBtn2" onclick="modal.style.display = 'block'" type="button" class="registerLoginButton">Join Team by Token</button>
              </div>
@@ -66,7 +66,7 @@
                              </br>
                          </div>
 
-                         <div style="margin-left: 15px" class="teamText">
+                         <div class="teamText">
 
 
                              <div class="user-label">
@@ -96,7 +96,7 @@
          </div>
 
 
-     <div style="margin-right: 5%; border-radius: 15px; height: 550px" class="teamsDiv">
+     <div class="teamActivitiesDiv">
 
          <div style="padding-top: 19px;">
              <h2 style="text-align: center"> Upcoming Team Activities</h2>
@@ -122,7 +122,7 @@
 
                      </div>
 
-                     <div style="margin-right: 10px;">
+                     <div class="teamText">
 
                          <div class="user-label">
                              <img style="width: 34px; height: 34px" th:src="@{/image/icons/team.svg}"/>
@@ -149,7 +149,7 @@
 
      </div>
 
-     <div class="teamsDiv" style="border-radius: 15px; height: 550px">
+     <div class="personalActivitiesDiv">
 
          <div style="padding-top: 19px;">
              <h2 style="text-align: center"> Upcoming Personal Activities</h2>
