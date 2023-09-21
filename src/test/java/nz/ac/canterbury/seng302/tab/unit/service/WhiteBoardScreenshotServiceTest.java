@@ -35,7 +35,7 @@ import static org.springframework.test.util.AssertionErrors.fail;
 @Import({WhiteboardScreenshotService.class})
 @SpringBootTest
 @WithMockUser
-public class WhiteBoardScreenshotServiceTest {
+class WhiteBoardScreenshotServiceTest {
     @Autowired
     private WhiteboardScreenshotService whiteboardScreenshotService;
 

@@ -27,8 +27,6 @@ import java.util.Optional;
 @ComponentScan("nz.ac.canterbury.seng302.tab.service")
 public class WhiteboardScreenshotService extends ImageService<WhiteboardScreenshot> {
 
-    private final Logger logger = LoggerFactory.getLogger(WhiteboardScreenshot.class);
-
     private final WhiteboardScreenshotRepository repository;
     private final TeamService teamService;
     private final UserService userService;
@@ -60,12 +58,12 @@ public class WhiteboardScreenshotService extends ImageService<WhiteboardScreensh
 
     @Override
     public byte[] getDefaultBytes() {
-        // TODO: Create a custom image here
+        // TO IMPLEMENT: Create a custom image here
         /*
-        Actually, we need to do some digging down into FileDataSaver
+        We also need to do some digging down into FileDataSaver
         to see what actually happens when our entity isn't found.
          */
-        return null;
+        return new byte[] {0};
     }
 
     @Override
