@@ -40,7 +40,7 @@ public class ClubServiceTest {
     }
 
     @Test
-    void testFilteringClubByNameWithNoLocationOrSport() throws IOException {
+    void testFilteringClubBySportWithNoLocationOrName() throws IOException {
         Club club = new Club("Rugby Club", location, "Rugby",null);
         clubService.updateOrAddClub(club);
         Page<Club> clubs = clubService.findClubFilteredByLocationsAndSports(Pageable.ofSize(1), List.of(), List.of("rugby"), "");
@@ -51,7 +51,7 @@ public class ClubServiceTest {
 
 
     // @Test
-    // void testFilteringClubByLocationWithNoNameOrSport() throws IOException {
+    // void testFilteringClubByNameWithNoLocationOrSport() throws IOException {
     //     Club club = new Club("Rugby Club", location, "Rugby",null);
     //     List<String> filteredLocations = List.of();
     //     List<String> filteredSports = List.of("Rugby");
