@@ -536,7 +536,8 @@
 .whiteboard-media-images {
     height: 100%;
     overflow: auto;
-    float: left
+    display: inline-flex;
+    max-width: 70%;
 }
 
 /*
@@ -558,9 +559,8 @@ Following CSS is adapted from card-wrapper on view-all pages.
 
 .media {
     margin: 5px 5px;
-    overflow: hidden;
     border-radius: 10px;
-    display: flex;
+    display: inline-flex;
     cursor:pointer;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
     aspect-ratio: 1 / 1;
