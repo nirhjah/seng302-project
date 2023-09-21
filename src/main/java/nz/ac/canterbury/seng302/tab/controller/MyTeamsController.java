@@ -143,7 +143,7 @@ public class MyTeamsController {
         if(team.isPresent()) {
             userService.userJoinTeam(user, team.get());
         }
-        if (type == "team") {
+        if (Objects.equals(type, "team")) {
             return "redirect:/my-teams?page=1";
         } else {
             return "redirect:/home";
