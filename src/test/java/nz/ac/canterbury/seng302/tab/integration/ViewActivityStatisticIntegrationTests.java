@@ -12,15 +12,10 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.mail.EmailService;
-import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
-import nz.ac.canterbury.seng302.tab.repository.FactRepository;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
-import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FactService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
+import nz.ac.canterbury.seng302.tab.repository.*;
+import nz.ac.canterbury.seng302.tab.service.*;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +52,11 @@ public class ViewActivityStatisticIntegrationTests {
     private TeamService teamService;
     @SpyBean
     private ActivityService activityService;
+    @SpyBean
+    private LineUpService lineUpService;
+
+    @SpyBean
+    private LineUpPositionService lineUpPositionService;
 
     @SpyBean
     private FactService factService;
@@ -66,9 +66,15 @@ public class ViewActivityStatisticIntegrationTests {
     private TeamRepository teamRepository;
     private ActivityRepository activityRepository;
 
+    private LineUpRepository lineUpRepository;
+
+    private LineUpPositionRepository lineUpPositionRepository;
+
     private MvcResult result;
 
     private FactRepository factRespository;
+
+    private FormationRepository formationRepository;
     @Autowired
     private MockMvc mockMvc;
     private User user;
@@ -78,6 +84,11 @@ public class ViewActivityStatisticIntegrationTests {
 
     private Date date;
 
+    private Fact fact;
+    private Fact fact1;
+    private Fact fact2;
+
+
 
 
     @Before("@ViewActivityStatistics")
@@ -86,6 +97,9 @@ public class ViewActivityStatisticIntegrationTests {
         teamRepository = applicationContext.getBean(TeamRepository.class);
         activityRepository = applicationContext.getBean(ActivityRepository.class);
         factRespository = applicationContext.getBean(FactRepository.class);
+        lineUpRepository= applicationContext.getBean(LineUpRepository.class);
+        lineUpPositionRepository= applicationContext.getBean(LineUpPositionRepository.class);
+        formationRepository = applicationContext.getBean(FormationRepository.class);
         userRepository.deleteAll();
         teamRepository.deleteAll();
         activityRepository.deleteAll();
@@ -94,11 +108,13 @@ public class ViewActivityStatisticIntegrationTests {
         EmailService emailService = applicationContext.getBean(EmailService.class);
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
 
-        userService = Mockito.spy(new UserService(userRepository, taskScheduler, emailService, passwordEncoder));
+        userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
-        activityService = Mockito.spy(new ActivityService(activityRepository));
         factService= Mockito.spy(new FactService(factRespository));
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService), new ViewActivityController(userService,activityService,teamService,factService)).build();
+        lineUpService=Mockito.spy(new LineUpService(lineUpRepository, formationRepository, lineUpPositionRepository, userRepository));
+        lineUpPositionService = Mockito.spy(new LineUpPositionService(lineUpPositionRepository));
+        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository, factService, lineUpService, lineUpPositionService));
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService, activityService), new ViewActivityController(userService,activityService,teamService,factService, lineUpService,lineUpPositionService)).build();
 
         Location testLocation = new Location(null, null, null, "CHCH", null, "NZ");
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "testing@gmail.com", "Password123!", testLocation);
@@ -118,15 +134,14 @@ public class ViewActivityStatisticIntegrationTests {
                 date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), user,
                 new Location(null, null, null, "CHCH", null, "NZ"));
         List<Fact> factList = new ArrayList<>();
-        factList.add(new Fact("Someone fell over", "1h 25m", game));
-        factList.add(new Fact("Someone fell over again", "1h 30m", game));
-        factList.add(new Fact("Someone fell over yet again", "1h 42m", game));
-        factList.add(new Substitution("Player was taken off", "1h 40m", game, user, user));
-        factList.add(new Fact("Testing scrollable feature", "1h 25m", game));
+        factList.add(new Fact("Someone fell over", "25", game));
+        factList.add(new Fact("Someone fell over again", "3", game));
+        factList.add(new Fact("Someone fell over yet again", "42", game));
+        factList.add(new Substitution("Player was taken off", "40", game, user, user));
+        factList.add(new Fact("Testing scrollable feature", "15", game));
 
         game.addFactList(factList);
         activityRepository.save(game);
-
 
         mockMvc.perform(get("/view-activities").param("page", "1"))
                 .andExpect(status().isOk());
@@ -156,11 +171,11 @@ public class ViewActivityStatisticIntegrationTests {
                 date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), user,
                 new Location(null, null, null, "CHCH", null, "NZ"));
         List<Fact> factList = new ArrayList<>();
-        factList.add(new Fact("Someone fell over", "1h 25m", game));
-        factList.add(new Fact("Someone fell over again", "1h 30m", game));
-        factList.add(new Fact("Someone fell over yet again", "1h 42m", game));
-        factList.add(new Substitution("Player was taken off", "1h 40m", game, user, user));
-        factList.add(new Fact("Testing scrollable feature", "1h 25m", game));
+        factList.add(new Fact("Someone fell over", "25", game));
+        factList.add(new Fact("Someone fell over again", "30", game));
+        factList.add(new Fact("Someone fell over yet again", "42", game));
+        factList.add(new Substitution("Player was taken off", "4", game, user, user));
+        factList.add(new Fact("Testing scrollable feature", "12", game));
 
         game.addFactList(factList);
         activityRepository.save(game);
@@ -192,7 +207,7 @@ public class ViewActivityStatisticIntegrationTests {
         Assertions.assertEquals("Player was taken off",description);
         Assertions.assertEquals(user.getFirstName(), userOff.getFirstName());
         Assertions.assertEquals(user.getLastName(), userOff.getLastName());
-        Assertions.assertEquals("1h 40m", time);
+        Assertions.assertEquals("4", time);
 
 
     }
@@ -203,11 +218,11 @@ public class ViewActivityStatisticIntegrationTests {
                 date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), user,
                 new Location(null, null, null, "CHCH", null, "NZ"));
         List<Fact> factList = new ArrayList<>();
-        factList.add(new Fact("Someone fell over", "1h 25m", game));
-        factList.add(new Fact("Someone fell over again", "1h 30m", game));
-        factList.add(new Fact("Someone fell over yet again", "1h 42m", game));
-        factList.add(new Substitution("Player was taken off", "1h 40m", game, user, user));
-        factList.add(new Fact("Testing scrollable feature", "1h 25m", game));
+        factList.add(new Fact("Someone fell over", "25", game));
+        factList.add(new Fact("Someone fell over again", "30", game));
+        factList.add(new Fact("Someone fell over yet again", "42", game));
+        factList.add(new Substitution("Player was taken off", "45", game, user, user));
+        factList.add(new Fact("Testing scrollable feature", "5", game));
 
         game.addFactList(factList);
         activityRepository.save(game);
@@ -230,5 +245,17 @@ public class ViewActivityStatisticIntegrationTests {
     @Then("they are listed and sorted by their time in ascending order")
     public void they_are_listed_and_sorted_by_their_time_in_ascending_order() {
 
+    }
+
+    @When("that activity has facts recorded")
+    public void thatActivityHasFactsRecorded() {
+        fact = new Fact("CCH", "1", game);
+        fact1 = new Fact("CHC", null, game);
+        fact2 = new Fact("CHC", "6", game);
+    }
+
+    @Then("they are listed and sorted by their time in ascending order, with the facts with no time associated appearing first.")
+    public void theyAreListedAndSortedByTheirTimeInAscendingOrderWithTheFactsWithNoTimeAssociatedAppearingFirst() {
+        Assertions.assertEquals(List.of(fact1, fact, fact2), factService.sortFactTimesAscending(List.of(fact, fact1, fact2)));
     }
 }

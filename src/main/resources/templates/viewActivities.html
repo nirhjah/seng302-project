@@ -17,8 +17,8 @@
     </div>
     <div class="wrapper-activities">
         <ul class="activities-table">
-            <li th:each="activity : ${activities}" th:onclick="|window.location.href='/view-activity?activityID=${activity.id}'|">
-                <span class="title"><a th:if="${activity.team!=null}" th:href="@{profile(teamID=${activity.team.teamId})}" th:text="${activity.team != null} ? ${activity.team.name} : 'Personal'"></a></span>
+            <li th:each="activity : ${activities}" th:onclick="|window.location.href='@{view-activity(activityID=${activity.id})}'|">
+                <span class="title"><a th:if="${activity.team!=null}" th:href="@{team-info(teamID=${activity.team.teamId})}" th:text="${activity.team != null} ? ${activity.team.name} : 'Personal'"></a></span>
                 <span class="details" th:with="startDate=${#temporals.format(activity.activityStart, 'dd MMM yyyy')},
                                                             endDate=${#temporals.format(activity.activityEnd, 'dd MMM yyyy')},
                                                             startTime=${#temporals.format(activity.activityStart, 'hh:mma')},
@@ -30,15 +30,16 @@
                 <span class="description" th:text="${activity.description}"></span>
                 <div class="submit-button">
                     <a th:if="${activity.team==null || (activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}"
-                       th:href="@{createActivity(edit=${activity.id})}" type="button">
-                        <button type="submit">Edit</button>
+                       th:href="@{create-activity(edit=${activity.id})}" type="button">
+                        <button type="submit" id="editActivityBtn">Edit</button>
                         </a>
                 </div>
 
             </li>
         </ul>
     </div>
-    <div th:insert="fragments/pagination.html :: pagination(pageName='view-team-activities')"></div>
+    <div th:insert="~{fragments/pagination.html :: pagination(pageName='view-team-activities')}"></div>
+
     <footer>
         <p>
             Image by <a

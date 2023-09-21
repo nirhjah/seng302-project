@@ -3,12 +3,6 @@ package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 /**
  * Location entity for storing information about a location
  */
@@ -31,10 +25,10 @@ public class Location {
     @Column
     private String postcode;
 
-    @Column(nullable = false)
+    @Column
     private String city;
 
-    @Column(nullable = false)
+    @Column
     private String country;
 
     public Location (String addressLine1, String addressLine2, String suburb, String city, String postcode, String country ){
@@ -42,7 +36,7 @@ public class Location {
         this.addressLine2 = (addressLine2 == null || addressLine2.equals("")) ? null : addressLine2;
         this.suburb = (suburb == null || suburb.equals("")) ? null : suburb;
         this.postcode = (postcode == null || postcode.equals("")) ? null : postcode;
-        this.country= country;
+        this.country = country;
         this.city = city;
     }
 

@@ -8,6 +8,7 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.enums.FactType;
 import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.FactRepository;
 import nz.ac.canterbury.seng302.tab.service.FactService;
@@ -17,9 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
@@ -162,14 +164,19 @@ public class FactServiceTest {
 
         List<Fact> factList = new ArrayList<>();
         factList.add(new Fact("Someone fell over", "1h 30m", activity));
-        Goal goal = new Goal("Goal was scored", "1h 40m", activity, player);
+        Goal goal = new Goal("Goal was scored", "1h 40m", activity, player, 1);
         factRepository.save(goal);
         factList.add(goal);
         factList.add(new Substitution("Player was taken off", "1h 40m", activity, creator, player));
         activity.addFactList(factList);
         activityRepository.save(activity);
 
-        Assertions.assertEquals(List.of(Map.of(player, 1L)), (factService.getTop5Scorers(team)));
+        Map<User, Long> scoreInformation = new HashMap<>();
+        scoreInformation.put(player, 1L);
+
+
+        Assertions.assertEquals(scoreInformation, (factService.getTop5Scorers(team)));
+
     }
 
 
@@ -190,9 +197,9 @@ public class FactServiceTest {
 
         List<Fact> factList = new ArrayList<>();
         factList.add(new Fact("Someone fell over", "1h 30m", activity));
-        Goal goal = new Goal("Goal was scored", "1h 40m", activity, player);
-        Goal goal1 = new Goal("A Goal was scored again", "1h 40m", activity, creator);
-        Goal goal2 = new Goal("A Goal", "1h 40m", activity, creator);
+        Goal goal = new Goal("Goal was scored", "1h 40m", activity, player, 1);
+        Goal goal1 = new Goal("A Goal was scored again", "1h 40m", activity, creator, 1);
+        Goal goal2 = new Goal("A Goal", "1h 40m", activity, creator, 1);
         factRepository.save(goal1);
         factRepository.save(goal2);
         factRepository.save(goal);
@@ -203,7 +210,14 @@ public class FactServiceTest {
         activity.addFactList(factList);
         activityRepository.save(activity);
 
-        Assertions.assertEquals(List.of(Map.of(creator, 2L), Map.of(player, 1L)), (factService.getTop5Scorers(team)));
+
+        Map<User, Long> scoreInformation = new HashMap<>();
+        scoreInformation.put(creator, 2L);
+        scoreInformation.put(player, 1L);
+
+
+        Assertions.assertEquals(scoreInformation, (factService.getTop5Scorers(team)));
+
     }
 
     @Test
@@ -231,32 +245,32 @@ public class FactServiceTest {
 
         List<Fact> factList = new ArrayList<>();
 
-        Goal goal = new Goal("Goal was scored", "1h 40m", activity, player);
+        Goal goal = new Goal("Goal was scored", "1h 40m", activity, player, 1);
 
-        Goal goal1 = new Goal("A Goal was scored again", "1h 40m", activity, creator);
-        Goal goal2 = new Goal("A Goal", "1h 40m", activity, creator);
+        Goal goal1 = new Goal("A Goal was scored again", "1h 40m", activity, creator, 1);
+        Goal goal2 = new Goal("A Goal", "1h 40m", activity, creator, 1);
 
-        Goal goal3 = new Goal("A Goal", "1h 40m", activity, player1);
-        Goal goal4 = new Goal("A Goal", "1h 40m", activity, player1);
-        Goal goal5 = new Goal("A Goal", "1h 40m", activity, player1);
+        Goal goal3 = new Goal("A Goal", "1h 40m", activity, player1, 1);
+        Goal goal4 = new Goal("A Goal", "1h 40m", activity, player1, 1);
+        Goal goal5 = new Goal("A Goal", "1h 40m", activity, player1, 1);
 
-        Goal goal6 = new Goal("A Goal", "1h 40m", activity, player2);
-        Goal goal7 = new Goal("A Goal", "1h 40m", activity, player2);
-        Goal goal8 = new Goal("A Goal", "1h 40m", activity, player2);
-        Goal goal9 = new Goal("A Goal", "1h 40m", activity, player2);
+        Goal goal6 = new Goal("A Goal", "1h 40m", activity, player2, 1);
+        Goal goal7 = new Goal("A Goal", "1h 40m", activity, player2, 1);
+        Goal goal8 = new Goal("A Goal", "1h 40m", activity, player2, 1);
+        Goal goal9 = new Goal("A Goal", "1h 40m", activity, player2, 1);
 
-        Goal goal10 = new Goal("A Goal", "1h 40m", activity, player3);
-        Goal goal11 = new Goal("A Goal", "1h 40m", activity, player3);
-        Goal goal12 = new Goal("A Goal", "1h 40m", activity, player3);
-        Goal goal13 = new Goal("A Goal", "1h 40m", activity, player3);
-        Goal goal14 = new Goal("A Goal", "1h 40m", activity, player3);
+        Goal goal10 = new Goal("A Goal", "1h 40m", activity, player3, 1);
+        Goal goal11 = new Goal("A Goal", "1h 40m", activity, player3, 1);
+        Goal goal12 = new Goal("A Goal", "1h 40m", activity, player3, 1);
+        Goal goal13 = new Goal("A Goal", "1h 40m", activity, player3, 1);
+        Goal goal14 = new Goal("A Goal", "1h 40m", activity, player3, 1);
 
-        Goal goal15 = new Goal("A Goal", "1h 40m", activity, player4);
-        Goal goal16 = new Goal("A Goal", "1h 40m", activity, player4);
-        Goal goal17 = new Goal("A Goal", "1h 40m", activity, player4);
-        Goal goal18 = new Goal("A Goal", "1h 40m", activity, player4);
-        Goal goal19 = new Goal("A Goal", "1h 40m", activity, player4);
-        Goal goal20 = new Goal("A Goal", "1h 40m", activity, player4);
+        Goal goal15 = new Goal("A Goal", "1h 40m", activity, player4, 1);
+        Goal goal16 = new Goal("A Goal", "1h 40m", activity, player4, 1);
+        Goal goal17 = new Goal("A Goal", "1h 40m", activity, player4, 1);
+        Goal goal18 = new Goal("A Goal", "1h 40m", activity, player4, 1);
+        Goal goal19 = new Goal("A Goal", "1h 40m", activity, player4, 1);
+        Goal goal20 = new Goal("A Goal", "1h 40m", activity, player4, 1);
 
         factList.add(goal);
         factList.add(goal1);
@@ -282,6 +296,166 @@ public class FactServiceTest {
         activity.addFactList(factList);
         activityRepository.save(activity);
 
-        Assertions.assertEquals(List.of(Map.of(player4, 6L), Map.of(player3, 5L), Map.of(player2, 4L), Map.of(player1, 3L), Map.of(creator, 2L)), (factService.getTop5Scorers(team)));
+        Map<User, Long> scoreInformation = new HashMap<>();
+        scoreInformation.put(player4, 6L);
+        scoreInformation.put(player3, 5L);
+        scoreInformation.put(player2, 4L);
+        scoreInformation.put(player1, 3L);
+        scoreInformation.put(creator, 2L);
+
+
+
+        Assertions.assertEquals(scoreInformation, (factService.getTop5Scorers(team)));
+    }
+
+    @Test
+    void testGoalsInCorrectOrder() throws Exception {
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        User player = new User("Another", "Test", "test1234@test.com", "Password1!",
+                new Location(null, null, null, "CHCH", null, "NZ"));
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+        activityRepository.save(activity);
+
+        List<Fact> factList = new ArrayList<>();
+        List<Goal> goalsList = new ArrayList<>();
+
+        Goal goal1 = new Goal("Goal was scored", "40", activity, player, 1);
+        Goal goal2 = new Goal("Goal was scored again", "25", activity, player, 1);
+        Goal goal3 = new Goal("Goal was scored yet again", "27", activity, player, 1);
+
+        factRepository.save(goal1);
+        factRepository.save(goal2);
+        factRepository.save(goal3);
+
+        factList.add(goal1);
+        factList.add(goal2);
+        factList.add(goal3);
+
+        activity.addFactList(factList);
+
+        activityRepository.save(activity);
+
+        for (Object fact : activity.getFactList()) {
+            if(fact instanceof Goal) {
+                goalsList.add((Goal) fact);
+            }
+        }
+
+        List<Goal> expectedGoalList = List.of(goal2, goal3, goal1);
+        Assertions.assertEquals(expectedGoalList, factService.getAllFactsOfGivenTypeForActivity(FactType.GOAL.ordinal(), activity));
+    }
+
+    @Test
+    void factTimeOrdering() throws Exception {
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+        activityRepository.save(activity);
+
+        Goal goal1 = new Goal("Goal was scored", "1", activity, creator, 1);
+        Goal goal2 = new Goal("Goal was scored again", null, activity, creator, 1);
+        Goal goal3 = new Goal("Goal was scored yet again", "2", activity, creator, 1);
+
+        factRepository.save(goal1);
+        factRepository.save(goal2);
+        factRepository.save(goal3);
+        activityRepository.save(activity);
+
+        List<Goal> expectedGoalList = List.of(goal2, goal1, goal3);
+        Assertions.assertEquals(expectedGoalList, factService.getAllFactsOfGivenTypeForActivity(FactType.GOAL.ordinal(), activity));
+    }
+
+    @Test
+    void factTimeOrderingIncluding10() throws Exception {
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+        activityRepository.save(activity);
+
+        Goal goal1 = new Goal("Goal was scored", "1", activity, creator, 1);
+        Goal goal2 = new Goal("Goal was scored again", "10", activity, creator, 1);
+        Goal goal3 = new Goal("Goal was scored yet again", "2", activity, creator, 1);
+
+        factRepository.save(goal1);
+        factRepository.save(goal2);
+        factRepository.save(goal3);
+        activityRepository.save(activity);
+
+        List<Goal> expectedGoalList = List.of(goal1, goal3, goal2);
+        Assertions.assertEquals(expectedGoalList, factService.getAllFactsOfGivenTypeForActivity(FactType.GOAL.ordinal(), activity));
+    }
+
+    @Test
+    void factTimeOrderingForFacts() throws Exception {
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+        activityRepository.save(activity);
+
+        Fact fact1 = new Fact("Goal was scored", "34", activity);
+        Fact fact2 = new Fact("Goal was scored again", "9", activity);
+        Fact fact3 = new Fact("Goal was scored yet again", null, activity);
+
+        factRepository.save(fact1);
+        factRepository.save(fact2);
+        factRepository.save(fact3);
+        activityRepository.save(activity);
+
+        List<Fact> expectedGoalList = List.of(fact3, fact2, fact1);
+        Assertions.assertEquals(expectedGoalList, factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity));
+    }
+
+    @Test
+    void factTimeOrderingForSubs() throws Exception {
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Location location1 = new Location(null, null, null, "Nelson", null,
+                "New");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        User player = new User("Test", "Account", "test1234@test.com", "Password1!", location1);
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+        activityRepository.save(activity);
+
+        Substitution fact1 = new Substitution("Goal was scored", "34", activity, player, creator);
+        Substitution fact2 = new Substitution("Goal was scored again", "9", activity, player, creator);
+        Substitution fact3 = new Substitution("Goal was scored yet again", "64", activity, player, creator);
+
+        factRepository.save(fact1);
+        factRepository.save(fact2);
+        factRepository.save(fact3);
+        activityRepository.save(activity);
+
+        List<Fact> expectedGoalList = List.of(fact2, fact1, fact3);
+        Assertions.assertEquals(expectedGoalList, factService.getAllFactsOfGivenTypeForActivity(FactType.SUBSTITUTION.ordinal(), activity));
     }
 }

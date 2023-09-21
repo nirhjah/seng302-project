@@ -13,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static nz.ac.canterbury.seng302.tab.form.RegisterForm.getDummyRegisterForm;
@@ -98,6 +97,6 @@ class RegisterControllerTest {
         optionalUser = userRepository.findByEmail(form.getEmail());
         mockMvc.perform(get(CONFIRM_URL)
                 .param("token", BAD_TOKEN))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isFound());
     }
 }

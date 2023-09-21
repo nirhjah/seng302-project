@@ -1,12 +1,12 @@
 @create_formation
-Feature: U32 – Create formation
+Feature: U32 - Create formation
   Scenario: AC1 - All formations
-    Given I am on my team’s profile
-    When I click on a UI element to see all the team’s formations
+    Given I am on my team's profile
+    When I click on a UI element to see all the team's formations
     Then I see a list of all formations for that team
 
   Scenario: AC2 - Graphical display for formation
-    Given I am on my team’s formation page
+    Given I am on my team's formation page
     When I click on a UI element to create a new line-up
     Then I see a graphical representation of a sport pitch corresponding to the sport of that team
 
@@ -15,11 +15,11 @@ Feature: U32 – Create formation
     When I generate that formation
     Then an error message tells me that the formation is invalid.
     Examples:
-      | input         |
-      | " "           |
-      | "1-4-4-"      |
-      | "0"           |
-      | "formation123"|
+      | input          |
+      | " "            |
+      | "1-4-4-"       |
+      | "0"            |
+      | "formation123" |
 
   Scenario: AC5 - Formation
     Given I am on the formation creation page

@@ -1,4 +1,5 @@
 <nav th:fragment="navbar">
+<header th:fragment="navbar" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <link th:href="@{/css/navbar.css}" rel="stylesheet">
     <label for="drop" class="toggle1"><img th:src="@{/image/icons/hamburger.svg}"></label>
     <input type="checkbox" id="drop"/>
@@ -59,6 +60,68 @@
     <div class="profile" onclick="menuToggle();">
         <img class="navbar-profile-picture"
              th:src="'data:image/png;base64,' + ${displayPicture}" alt="My Profile"/>
+    <link th:href="@{/css/preloader.css}" rel="stylesheet">
+    <div class="header-left">
+        <div class="hamburger">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+        <nav class="nav-bar">
+            <ul>
+                <li>
+                    <a th:href="@{home}" th:classappend="${httpServletRequest.requestURI == '/home' ? 'active' : ''}">Home</a>
+                </li>
+
+                <div class="create-buttons">
+                    <li class="navbar-create-button" sec:authorize="isAuthenticated()">
+                        <div class="navbar-create-dropdown">
+                            <a th:href="@{createTeam}">Create Team</a>
+                            <a th:href="@{create-activity}">Create Activity</a>
+                            <a th:href="@{createClub}">Create Club</a>
+                        </div>
+                        <a>
+                            <span th:text="Create"></span>
+                            <i class="navbar-dropdown-triangle"></i>
+                        </a>
+                    </li>
+                </div>
+
+                <div class="view-all-buttons">
+                    <li class="navbar-view-all-button" sec:authorize="isAuthenticated()">
+                        <div class="navbar-view-all-dropdown">
+                            <a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a>
+                            <a th:href="@{view-users(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
+                            <a th:href="@{view-clubs(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-clubs' ? 'active' : ''}">View All Clubs</a>
+                        </div>
+                        <a>
+                            <span th:text="'View All'"></span>
+                            <i class="navbar-dropdown-triangle"></i>
+                        </a>
+                    </li>
+                </div>
+
+                <li sec:authorize="isAnonymous()">
+                    <a th:href="@{login}" th:classappend="${httpServletRequest.requestURI == '/login' ? 'active' : ''}">Login</a>
+                </li>
+                <li sec:authorize="isAnonymous()">
+                    <a th:href="@{register}" th:classappend="${httpServletRequest.requestURI == '/register' ? 'active' : ''}">Register</a>
+                </li>
+
+                <div sec:authorize="isAuthenticated()" class="view-profile">
+                    View Profile:
+                    <select class="form-control" id="dropDownList" name="teamSelector"
+                            onchange="if(this.value != '-1') window.location.href = 'team-info?teamID=' + this.value;">
+                        <option value="-1" selected>Select a Team</option>
+                        <option th:each="team : ${G_navTeams}"
+                                th:value="${team.teamId}"
+                                th:text="${team}"
+                                th:selected="${team.teamId.equals(teamID)}"></option>
+                    </select>
+                </div>
+
+            </ul>
+        </nav>
     </div>
 
     <div class="profile-menu">

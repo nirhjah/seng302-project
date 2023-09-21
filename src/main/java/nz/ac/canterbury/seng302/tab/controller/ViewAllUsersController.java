@@ -1,12 +1,8 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import nz.ac.canterbury.seng302.tab.helper.GenerateRandomUsers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,7 +10,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,8 +36,6 @@ public class ViewAllUsersController {
     @Autowired
     LocationService locationService;
 
-    final Logger logger = LoggerFactory.getLogger(getClass());
-
     private static final int PAGE_SIZE = 10;
 
 
@@ -64,10 +57,6 @@ public class ViewAllUsersController {
             Model model, HttpServletRequest request) {
         Page<User> userPage = getUserPage(page, currentSearch, sports, cities);
         List<User> userList = userPage.toList();
-        Optional<User> user = userService.getCurrentUser();
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
 
         // get all the cities that populate the dropdown
         List<Location> locations = userService.findLocationBysearch(currentSearch);
@@ -79,11 +68,12 @@ public class ViewAllUsersController {
         model.addAttribute("currentSearch", currentSearch);
         model.addAttribute("page", page);
         model.addAttribute("listOfUsers", userList);
-        model.addAttribute("listOfSports", userService.findSportBysearch(currentSearch).stream().map(Sport::getName).toList()); //nirhjah
+        ArrayList<String> ls = new ArrayList<>(List.of("soccer1", "rugby1", "golf1", "time1", "oter1"));
+        ls.addAll(userService.findSportBysearch(currentSearch).stream().map(Sport::getName).toList());
+        model.addAttribute("listOfSports", ls); //nirhjah
         model.addAttribute("listOfCities", listOfCities);
         model.addAttribute("totalPages", userPage.getTotalPages());
-        model.addAttribute("navTeams", teamService.getTeamList());
-        model.addAttribute("httpServletRequest",request);
+        model.addAttribute("httpServletRequest", request);
         return "viewAllUsers";
     }
 
@@ -100,7 +90,6 @@ public class ViewAllUsersController {
             @Nullable List<String> favCities) {
         if (page <= 0) { // We want the user to think "Page 1" is the first page, even though Java starts
                          // at 0.
-            logger.info("Invalid page no., returning empty list");
             return Page.empty();
         }
         if (nameQuery == null) {
@@ -115,12 +104,9 @@ public class ViewAllUsersController {
         var pageable = PageRequest.of(page - 1, PAGE_SIZE, UserService.SORT_BY_LAST_AND_FIRST_NAME);
 
         if (nameQuery.isEmpty() && favSports.isEmpty() && favCities.isEmpty()) {
-            logger.info("Empty query string, empty sports list AND empty city list, returning all users...");
             return userService.getPaginatedUsers(pageable);
         } else {
-            logger.info("Query string: {}", nameQuery);
-            logger.info("Sports: {}", favSports);
-            logger.info("cities: {}", favCities);
+
             return userService.findUsersByNameOrSportOrCity(pageable, favSports, favCities, nameQuery);
         }
     }

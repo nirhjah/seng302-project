@@ -1,12 +1,10 @@
 package nz.ac.canterbury.seng302.tab.end2end;
 
 import com.microsoft.playwright.ElementHandle;
-import com.microsoft.playwright.options.LoadState;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import nz.ac.canterbury.seng302.tab.service.FormationService;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.Arrays;
@@ -27,12 +25,12 @@ public class U32CreateFormationFeature {
         }
     }
 
-    @Given("I am on my team’s profile")
+    @Given("I am on my team's profile")
     public void iAmOnMyTeamSProfile() throws Exception {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/profile?teamID=1");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=1");
     }
 
-    @When("I click on a UI element to see all the team’s formations")
+    @When("I click on a UI element to see all the team's formations")
     public void iClickOnAUIElementToSeeAllTheTeamSFormations() {
         PlaywrightBrowser.page.locator("div.tab#formations-tab").click();
     }
@@ -42,7 +40,7 @@ public class U32CreateFormationFeature {
         PlaywrightBrowser.page.locator(".formation-li");
     }
 
-    @Given("I am on my team’s formation page")
+    @Given("I am on my team's formation page")
     public void iAmOnMyTeamSFormationPage() throws Exception {
         iAmOnMyTeamSProfile();
         iClickOnAUIElementToSeeAllTheTeamSFormations();
@@ -116,8 +114,14 @@ public class U32CreateFormationFeature {
     }
 
     @Then("the formation is persisted in the system")
-    public void theFormationIsPersistedInTheSystem() {
+    public void theFormationIsPersistedInTheSystem() throws Exception {
+        String url = PlaywrightBrowser.page.url();
+        Assertions.assertTrue(url.contains("/team-info"),
+            "The current URL '"+url+"' did not contain '/team-info'");
+
+        PlaywrightBrowser.page.locator("#formations-tab").click();    // Saving a formation returns you to the first tab
         List<ElementHandle> formationListElements = PlaywrightBrowser.page.querySelectorAll(".formation-li");
+        Assertions.assertNotEquals(0, formationListElements.size(), "Could not find any formation elements on the page");
         Assertions.assertEquals("1-4-3-3", formationListElements.get(formationListElements.size()-1).textContent().trim());
     }
 

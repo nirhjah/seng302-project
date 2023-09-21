@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.tab.form;
 import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotBlank;
+import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.validator.ActivityFormValidators;
@@ -14,9 +15,9 @@ public class CreateActivityForm {
     @ActivityFormValidators.activityTypeValidator
     private ActivityType activityType;
 
-    private long teamId;
+    private long team;
     
-    private long formationId;
+    private long formation;
 
     @ActivityFormValidators.descriptionValidator
     private String description;
@@ -47,6 +48,16 @@ public class CreateActivityForm {
     @LocationValidators.suburbValidator
     private String suburb;
 
+    public String getLineup() {
+        return lineup;
+    }
+
+    public void setLineup(String lineup) {
+        this.lineup = lineup;
+    }
+
+    private String lineup;
+
     public ActivityType getActivityType() {
         return activityType;
     }
@@ -56,19 +67,19 @@ public class CreateActivityForm {
     }
     
     public long getFormation() {
-        return formationId;
+        return formation;
     }
 
     public void setFormation(long formation) {
-        this.formationId = formation;
+        this.formation = formation;
     }
 
     public long getTeam() {
-        return teamId;
+        return team;
     }
 
     public void setTeam(long team) {
-        this.teamId = team;
+        this.team = team;
     }
 
     public String getDescription() {
@@ -147,5 +158,26 @@ public class CreateActivityForm {
     public Location getLocation() {
         return new Location(this.addressLine1, this.addressLine2, this.suburb, this.city, this.postcode, this.country);
     }
+
+    public void prepopulate(Activity activity) {
+        Location location = activity.getLocation();
+        this.description = activity.getDescription();
+        this.startDateTime = activity.getActivityStart();
+        this.endDateTime = activity.getActivityEnd();
+        this.addressLine1 = location.getAddressLine1();
+        this.addressLine2 = location.getAddressLine2();
+        this.postcode = location.getPostcode();
+        this.country = location.getCountry();
+        this.city = location.getCity();
+        this.suburb = location.getSuburb();
+        this.activityType = activity.getActivityType();
+        if (activity.getTeam() != null) {
+            this.team = activity.getTeam().getTeamId();
+        } else {
+            this.team = -1;
+        }
+
+    }
+
 
 }

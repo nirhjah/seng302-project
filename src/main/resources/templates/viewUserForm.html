@@ -1,0 +1,148 @@
+<!--/* View Users Page
+  - Contains the details of a specified user.
+
+  Attributes:
+  - thisUser: Optional<User> - The user detail we'll show. If it's empty, they've asked
+      for a non-existent
+  */-->
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+    <link th:href="@{/css/profile.css}" rel="stylesheet">
+    <link th:href="@{/css/user-profile.css}" rel="stylesheet">
+    <link th:href="@{/css/login.css}" rel="stylesheet" />
+    <link th:href="@{/css/password.css}" rel="stylesheet" />
+    <link th:href="@{/css/view-all.css}" rel="stylesheet" />
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
+    <title>View User</title>
+</head>
+<body class="profile-background">
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+<div th:if="${fedmanTokenMessage != null}" th:insert="~{fragments/messageDropDown.html :: messageDropDown(message=${fedmanTokenMessage})}"></div>
+    <div class="profile-form">
+        <div class="wrapper-profile">
+            <p th:if="${thisUser.isEmpty()}">
+              <strong>Specified user does not exist</strong>
+            </p>
+            <div class="profile-top-content">
+                <div class="profile-pic">
+                    <form id="upload-picture" method="post" th:action="@{/user-info/upload-pfp(userId=${userId})}" enctype="multipart/form-data">
+                        <div class="image-styling">
+                            <img th:src="@{/user-profile-picture/{id}(id = ${thisUser.get().userId})}"  width="200" height="200" alt="User image">
+                            </br>
+                        </div>
+                        </br>
+                        <div th:if="${canEdit}">
+                            <div class="file-upload">
+                                <div class="file-label-border">
+                                    <label for="file" class="file-label">
+                                        Edit Profile Picture </label>
+                                </div>
+                                <input type="file" name="file" class="form-control-file" id="file" accept=".jpg, .jpeg, .png, .svg, .svg+xml">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="team-info">
+                    <div class="team-display">
+                        <h2>User Profile</h2>
+                        <div class="user-label">
+                            <img th:src="@{/image/icons/name.svg}"/>
+                            <div>
+                                <h3 class="attribute-type">Name</h3>
+                                <h3 th:text="|*{firstName} *{lastName}|"></h3>
+                            </div>
+                        </div>
+                        <div class="user-label">
+                            <img th:src="@{/image/icons/email.svg}"/>
+                            <div>
+                                <h3 class="attribute-type">Email</h3>
+                                <h3 th:text="*{email}"></h3>
+                            </div>
+                        </div>
+                        <div class="user-label">
+                            <img  th:src="@{/image/icons/date-of-birth.svg}"/>
+                            <div>
+                                <h3 class="attribute-type">Date of Birth</h3>
+                                <h3 th:text="*{#dates.format(dateOfBirth, 'dd-MM-yyyy')}"></h3>
+                            </div>
+                        </div>
+                        <div class="user-label">
+                            <img  th:src="@{/image/icons/location.svg}"/>
+                            <div>
+                                <h3 class="attribute-type">Location</h3>
+                                <h3 th:text="*{location}"></h3>
+                            </div>
+                        </div>
+                        <div class="user-label">
+                            <img th:src="@{/image/icons/sports.svg}"/>
+                            <div>
+                                <h3 class="attribute-type">Favourite Sports</h3>
+                                <div class="sport-box" id="sport-box">
+                                <li th:each="sport : ${favSportNames}" th:text="${sport}"></li>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div class="profile-bottom-content">
+                <div class="profile-buttons">
+                    <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+                    <div th:if="${canEdit}" class="edit-button">
+                        <a th:href="@{editUser}">
+                            <button type="button">Edit Profile</button>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const input = document.getElementById('file');
+
+    input.addEventListener('change', () => {
+        const file = input.files[0];
+        if (file.size > 10000000) {
+            alert('File size must be less than 10MB');
+            return;
+        }
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml','image/jpg'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('File type must be jpeg, png or svg');
+            return;
+        }
+        document.getElementById('upload-picture').submit();
+    });
+
+</script>
+<footer>
+    <p>
+        Image by <a
+            href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+        on Freepik
+    </p>
+</footer>
+  <script th:inline="javascript">
+    // The AC only specifies a back button if we came from the view-users page.
+    const legal_url = '/view-users';
+    const backButton = document.getElementsByClassName('back-button')[0];
+    const buttons = document.querySelector('.profile-buttons');
+    const previousPage = document.referrer;
+    if (previousPage.includes(legal_url)) {
+        backButton.style.visibility = '';
+    } else {
+        buttons.width = '50%';
+        backButton.remove();
+    }
+  </script>
+
+</body>
+
+</html>

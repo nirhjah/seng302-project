@@ -59,7 +59,6 @@ public class ViewTeamActivitiesController {
             model.addAttribute("displayName", selectedTeam.getName());
             model.addAttribute("selectedTeam", selectedTeam);
             logger.info("TEAM IS: " + selectedTeam.getName());
-            model.addAttribute("displayTeamPicture", selectedTeam.getPictureString());
         } else {
             logger.error("No Team Found");
             return "redirect:./home";
@@ -80,10 +79,6 @@ public class ViewTeamActivitiesController {
 
         Page<Activity> page = activityService.getAllTeamActivitiesPage(selectedTeam, pageNo, maxPageSize);
         List<Activity> listActivities = page.getContent();
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("displayPicture", user.get().getPictureString());
-        model.addAttribute("navTeams", teamService.getTeamList());
         model.addAttribute("httpServletRequest", request);
         model.addAttribute("page", pageNo);
         model.addAttribute("totalPages", page.getTotalPages() == 0 ? 1 : page.getTotalPages());

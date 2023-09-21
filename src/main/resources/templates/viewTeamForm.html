@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <link th:href="@{/css/profile.css}" rel="stylesheet">
+    <link th:href="@{/css/team-profile.css}" rel="stylesheet">
+    <link th:href="@{/css/formation.css}" rel="stylesheet">
+    <title>Profile</title>
+</head>
+<body class="profile-background">
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+<div class="team-profile-form">
+
+    <span id="stayOnTab_Name" class="tabNameAndIndex" th:text="${stayOnTab_name}"></span>
+    <span id="stayOnTab_index" class="tabNameAndIndex" th:text="${stayOnTab_index}"></span>
+    <div class="wrapper-profile" id="wrapper-profile">
+        <div class="tab-box">
+            <div class="tab active">
+                <img class="tab-icon" th:src="@{/image/icons/team.svg}"/>
+                <button class="tab-button"> Team Profile &nbsp;</button>
+            </div>
+            <div class="tab" id="formations-tab">
+                <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
+                <button class="tab-button" >Formations &nbsp;</button>
+            </div>
+            <div class="tab" id="stats-tab">
+<!--                this is a temporary icon for statistic, which is probably going to be replaced when working-->
+<!--                on the team aggregated statistic task-->
+                <img class ="tab-icon" th:src="@{/image/icons/statistics.png}"/>
+                <button class="tab-button" >Statistics &nbsp;</button>
+                <div class="tab-line"></div>
+            </div>
+        </div>
+        <div class="content-box active" id="team-profile-tab">
+            <div class="content">
+                <div class="profile-top-content">
+                    <div class="profile-pic">
+                        <form id="upload-picture" method="post" th:action="@{team-info}" enctype="multipart/form-data">
+                            <div class="image-styling">
+                                <img th:src="@{/team-profile-picture/{id}(id = ${teamID})}" width="200" height="200">
+                                </br>
+                            </div>
+                            </br>
+                            <div class="file-upload" th:if="${isUserManagerOrCoach}">
+                                <div class="file-label-border">
+                                    <label for="file" class="file-label">
+                                        Edit Profile Picture </label>
+                                </div>
+                                <input type="file" name="file" class="form-control-file" id="file" accept=".jpg, .jpeg, .png, .svg, .svg+xml">
+                                <input type="hidden" name="teamID" th:value="${teamID}">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="team-info">
+                        <div class="team-display">
+                            <div class="profile-top-content">
+                                <h2>Team Profile</h2>
+                                <div class="join-token" th:if="${isUserManagerOrCoach}">
+                                    <label> Join Token</label>
+                                    <div class="join-token-box-outer">
+                                        <a href="#" class="copy-token">
+                                            <img th:src="@{image/icons/copy.svg}">
+                                        </a>
+                                        <div class="join-token-box">
+                                            <span class="token-value" th:text="${displayToken}"></span>
+                                            <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}" th:method="post">
+                                                <button type="submit">
+                                                    <img th:src="@{image/icons/reload.svg}">
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="float-child">
+                                    <div class="user-label">
+                                        <img th:src="@{/image/icons/name.svg}"/>
+                                        <div>
+                                            <h3 class="attribute-type">Name</h3>
+                                            <h3 data-cy="name" th:text="*{displayName}"></h3>
+                                        </div>
+                                    </div>
+                                    <div class="user-label">
+                                        <img th:src="@{/image/icons/sports-alt.svg}"/>
+                                        <div>
+                                            <h3 class="attribute-type">Sport</h3>
+                                            <h3 data-cy="sport" th:text="*{displaySport}"></h3>
+                                        </div>
+                                    </div>
+                                    <div class="user-label">
+                                        <img th:src="@{/image/icons/location.svg}"/>
+                                        <div>
+                                            <h3 class="attribute-type">Location</h3>
+                                            <h3 data-cy="location" th:text="*{displayLocation}"></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="float-child" th:if="${clubId}">
+                                    <a th:href="@{/view-club?clubID={id}(id=${clubId})}" class="club-link">
+                                        <div class="user-label">
+                                                <img th:src="@{/club-logo/{id}(id = ${clubId})}"/>
+                                            <div>
+                                                <h3 class="attribute-type">Club</h3>
+                                                <h3 data-cy="club" th:text="*{clubName}"></h3>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-bottom-content">
+                    <form th:action="@{team-info}" class="profile-buttons" method="post">
+                        <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+                        <div class="grouped-buttons">
+                            <div class="edit-button">
+                                <a th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
+                                    <button id="edit-profile" type="button">Edit Profile</button>
+                                </a>
+                            </div>
+                            <div class="edit-button">
+                                <a th:href="@{editTeamRole(edit=${teamID})}" th:if="${isUserManager}">
+                                    <button id="edit-roles" type="button">Edit Roles</button>
+                                </a>
+                            </div>
+                            <div class="edit-button">
+                                <a th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
+                                    <button id="activities" type="button">Activities</button>
+                                </a>
+                            </div>
+                            <div class="edit-button">
+                                <a th:href="@{whiteboard(teamID=${teamID})}" th:if="${isUserManagerOrCoach}">
+                                    <button id="whiteboard" type="button">Whiteboard</button>
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="content-box">
+            <div class="content formations">
+                <div class="formation-list-outer">
+                    <ul class="formation-list active">
+                        <li th:if="${isUserManagerOrCoach}" id="create-formation-li" onclick="render('1-4-4-2', null)">
+                            <h3>Create a Formation</h3>
+                            <img th:src="@{/image/icons/add-symbol.svg}" alt=""/>
+                            <input type="hidden" class="formation-id" value="-1"/>
+                        </li>
+                        <li th:each="formation : ${formations}"
+                            th:data-formation="${formation.formation}"
+                            th:data-pos="${formation.customPlayerPositions}"
+                            th:data-custom="${formation.custom ? 'true' : null}"
+                            onclick="renderSavedFormation(this.dataset.formation, this.dataset.custom, this.dataset.pos)"
+                            class="formation-li">
+                            <span class="title">
+                                <h3 th:text="${formation.formation} + (${formation.custom} ? ' Custom' : '')"></h3>
+                            </span>
+                            <input type="hidden" class="formation-id" th:value="${formation.formationId}" />
+                        </li>
+                        <!--/* Tell the user if there's no formations */-->
+                        <div th:if="${#lists.isEmpty(formations)}" class="no-formation">
+                            <h3>No Formations</h3>
+                        </div>
+
+                    </ul>
+                    <button class="toggle-formation-button">&lt;</button>
+                </div>
+                <form class="formation-display" method="post" th:action="@{/team-info/create-formation}" onsubmit="return submissionCheck(document.getElementById('formation-string').value)">
+                    <!--/* The LHS contains the input, and removing it centres the formation */-->
+                    <div class="formation-LHS" th:style="${isUserManagerOrCoach ? '' : 'display: none'}">
+                        <div class="create-formation-display">
+                            <div class="input-box">
+                                <input type="text" id="formation-string" name="formation" placeholder="e.g. 1-4-4-2">
+                                <label for="formation-string">Formation</label>
+                            </div>
+                            <button type="button" id="generate-formation-button" onclick="render(document.getElementById('formation-string').value, null)">Generate Formation</button>
+                        </div>
+                        <br>
+                        <div class="formation-description">
+                            Formations represent the number of players in a row
+                            <ul class="formation-description">
+                                <li>
+                                    Players per row: Between <strong>1</strong> and <strong>9</strong>
+                                </li>
+                                <li>
+                                    Number of rows: Between <strong>1</strong> and <strong>5</strong>
+                                </li>
+                            </ul>
+                            e.g. <strong>1-4-4-2</strong>, <strong>1-2-2</strong>, <strong>6</strong>
+                        </div>
+                        <div class="error-message">Formation must match specified form</div>
+                    </div>
+                    <div class="formation-RHS">
+                        <p th:if="${isUserManagerOrCoach}" class="formation-description drag-info">Drag shirts to move</p>
+                        <div class="formation-outer" th:insert="~{fragments/formationDisplay.html::formationDisplay(${isUserManagerOrCoach})}"></div>
+                        <!--/* Only coaches/managers can edit formations */-->
+                        <th:block th:if="${isUserManagerOrCoach}">
+                            <input type="hidden" name="teamID" th:value="${teamID}" />
+                            <input type="hidden" name="formationID" class="current-formation-id"/>
+                            <button type="submit" class="create-formation" id="create-formation-button">Create Formation</button>
+                        </th:block>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="content-box" id="statistics-tab" style="margin-bottom: 300px">
+            <div class="content">
+                <div class="col-wrapper">
+                    <div class="third-col" style="padding-bottom: 20px">
+
+                        <h3 style="margin-top: 12px">Last 5 Matches: </h3>
+                   <div class="last5" style="margin-top: 57px">
+                       <ul class="last5Ul">
+                           <li th:each="act : ${last5GOrF}" th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
+                               <div>
+                                   <h3 th:text="${act.activityType.name()}"> </h3>
+                                   <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
+                               endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')}" th:text="${startDate} + ' - ' + ${endDate}" ></h4>
+                                   <h4 th:text="'Score: ' + ${act.activityTeamScore} + ' : ' + ${act.otherTeamScore}" > </h4>
+                               </div>
+                               <div>
+                                   <img th:if="${act.outcome.toString() == 'Win'}" th:src="@{/image/icons/win.svg}"/>
+                                   <img th:if="${act.outcome.toString() == 'Loss'}" th:src="@{/image/icons/loss.svg}"/>
+                                   <img th:if="${act.outcome.toString() == 'Draw'}" th:src="@{/image/icons/draw.svg}"/>
+                               </div>
+                           </li>
+                       </ul>
+                   </div>
+
+
+                    </div>
+                    <div style="margin-left: 9px; margin-bottom: 10px" class="third-col">
+
+                        <div class="select-container">
+                            <div class="select-box">
+                                <select style="color: #1B263B; font-weight: bold;" id="dropdown" name="dropdown">
+                                    <option value="topScorersDiv">Top 5 Scorers</option>
+                                    <option value="topOverallPlaytimeDiv">Top 5 Playtimes</option>
+                                </select>
+
+                            </div>
+                        </div>
+
+
+                        <div id="topScorersDiv" class="hidden" >
+
+                        <div class="top5Players">
+                            <ul>
+                                <li th:each="player : ${top5Scorers}">
+                                    <div>
+                                        <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
+                                    </div>
+                                    <div style="width: 100%; margin-top: 16px">
+                                        <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"> </h3>
+
+                                        <h4 th:text="${player.value == 1 ? player.value.toString() + ' pt' : player.value.toString() + ' pts'}"></h4>
+                                    </div>
+
+                                </li>
+                            </ul>
+
+                        </div>
+
+</div>
+
+                        <div id="topOverallPlaytimeDiv" class="hidden" style="display: none;">
+
+                        <div class="top5Players">
+                            <ul>
+                                <li th:each="player : ${overallPlayersPlaytime}">
+                                    <div>
+                                        <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
+                                    </div>
+                                    <div class="player-name-div" style="width: 100%; margin-top: 16px">
+                                        <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"> </h3>
+                                    </div>
+
+                                    <div class="player-time-div">
+
+                                        <h4 th:text="'Total: ' + ${player.value[0].toString()} + 'm'"></h4>
+                                        <h4 th:text="'Avg: ' + ${player.value[1].toString()} + 'm'"></h4>
+
+                                    </div>
+
+                                </li>
+                            </ul>
+
+                        </div>
+
+</div>
+
+
+
+
+                    </div>
+                    <div style="margin-bottom: 10px; width: 32%" class="third-col">
+
+                        <h3 style="margin-top: 12px">Outcome of Games and Friendlies:</h3>
+                        <div class="outcome-container">
+                            <div class="outcome-grid">
+                                <div class="cell" id="cell-1">
+                                    <h3> Total </h3>
+                                    <h4 th:text="${totalGOrF}"></h4>
+
+                                </div>
+                                <div style="background-color: #96D099" class="cell" id="cell-2">
+                                    <h3> Wins </h3>
+                                    <h4 th:text="${totalWins}"></h4>
+
+                                </div>
+                                <div style="background-color: #FB5C5C" class="cell" id="cell-3">
+                                    <h3> Losses </h3>
+                                    <h4 th:text="${totalLosses}"></h4>
+
+                                </div>
+                                <div style="background-color: lightgray" class="cell" id="cell-4">
+                                    <h3> Draws </h3>
+                                    <h4 th:text="${totalDraws}"></h4>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <form th:action="@{team-info}" class="profile-buttons" method="post">
+                            <a class="edit-button" th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
+                                <button style="margin-left: -27px; width: max-content" type="button">View Team Activities</button>
+                            </a>
+                        </form>
+
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <footer>
+        <p>
+            Image by <a
+                href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+            on Freepik
+        </p>
+    </footer>
+
+    <script th:inline="javascript">
+        const dropdown = document.getElementById('dropdown');
+        const topScorersDiv = document.getElementById('topScorersDiv');
+        const topOverallPlaytimeDiv = document.getElementById('topOverallPlaytimeDiv');
+
+        dropdown.addEventListener('change', function() {
+            if (dropdown.value === 'topScorersDiv') {
+                topScorersDiv.style.display = 'block';
+                topOverallPlaytimeDiv.style.display = 'none';
+            } else if (dropdown.value === 'topOverallPlaytimeDiv') {
+                topScorersDiv.style.display = 'none';
+                topOverallPlaytimeDiv.style.display = 'block';
+            }
+        });
+
+        const input = document.getElementById('file');
+
+
+        const VALID_FORMATION_REGEX = new RegExp(/*[[ ${formationRegex} ]]*/ "");
+        const fileInput = document.getElementById('file');
+
+        if (fileInput !== null) {
+            fileInput.addEventListener('change', () => {
+                const file = fileInput.files[0];
+                if (file.size > 10000000) {
+                    alert('File size must be less than 10MB');
+                    return;
+                }
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/jpg'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('File type must be jpeg, png or svg');
+                return;
+            }
+            document.getElementById('upload-picture').submit();
+        });
+    }
+
+    const copyButton = document.querySelector('.copy-token');
+    const tokenValue = document.querySelector('.token-value');
+    if (tokenValue !== null) {
+        const token = tokenValue.innerHTML;
+        copyButton.addEventListener('click', () => {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(tokenValue);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            document.execCommand('copy');
+            selection.removeAllRanges();
+            tokenValue.innerHTML = 'Copied...';
+            setTimeout(() => {
+                tokenValue.style.opacity = 0;
+                setTimeout(() => {
+                    tokenValue.style.opacity = 1;
+                    tokenValue.innerHTML = token;
+                }, 500);
+            }, 1000);
+        });
+    }
+
+        const tabs = document.querySelectorAll('.tab');
+        const tabLine = document.querySelector('.tab-line');
+        const displayBox = document.querySelectorAll('.content-box');
+        const displayContent = document.querySelectorAll('.content');
+
+
+        var stayOnTab_Name =  document.getElementById("stayOnTab_Name").innerHTML;
+        var stayOnTab_Index =  document.getElementById("stayOnTab_index").innerHTML;
+
+        if (stayOnTab_Name === "formations-tab") {
+            var tabToBeActive = document.getElementById(stayOnTab_Name)
+            tabs.forEach(otherTab => {
+                otherTab.classList.remove('active');
+            });
+            tabToBeActive.classList.add('active')
+
+            displayBox.forEach(box => {
+                box.classList.remove('active')
+            });
+            displayBox[stayOnTab_Index].classList.add('active');
+            displayContent.forEach(content => {
+                content.classList.remove('active')
+            });
+            displayContent[stayOnTab_Index].classList.add('active');
+
+        }
+
+
+
+        tabs.forEach((tab, index) => {
+            tab.addEventListener('click', (e) => {
+                tabs.forEach(otherTab => {
+                    otherTab.classList.remove('active');
+                });
+                tab.classList.add('active');
+                if (index === 0) {
+                    tabLine.style.left = "18px"; //64
+                } else if (index === 1) {
+                    tabLine.style.left = "247px"; //368
+                } else if (index === 2) {
+                    tabLine.style.left = "460px"; //670
+                }
+                else {
+                    tabLine.style.left = "685px";
+                }
+                displayBox.forEach(box => {
+                    box.classList.remove('active')
+                });
+                displayBox[index].classList.add('active');
+                displayContent.forEach(content => {
+                    content.classList.remove('active')
+                });
+                displayContent[index].classList.add('active');
+            });
+        });
+
+
+        const formationListItems = document.querySelectorAll('.formation-list li')
+        const createFormation = document.querySelector('.create-formation')
+        const currentFormationId = document.querySelector('.current-formation-id')
+
+        formationListItems.forEach((formation, index) => {
+            formation.addEventListener('click', () => {
+                formationListItems.forEach(otherFormation => {
+                    otherFormation.classList.remove('active');
+                });
+                formation.classList.add('active');
+                currentFormationId.value = document.querySelector('li.active .formation-id').value;
+                if (index > 0) {
+                    createFormation.innerHTML = "Update Formation"
+                } else {
+                    createFormation.innerHTML = "Create Formation"
+                }
+            });
+        });
+
+
+        function render(formation, customPlayerPositions) {
+            const input = document.getElementById('formation-string');
+            const errorMessage = document.querySelector('.error-message')
+            const formationDisplay = document.querySelector('.formation-display')
+            input.value = formation;
+            if (validateFormation(formation)) {
+                formationDisplay.classList.add('active')
+                errorMessage.classList.remove('active')
+                if (customPlayerPositions !== null && customPlayerPositions.size > 0) {
+                    renderPlayersCustom(customPlayerPositions)
+                } else {
+                    renderPlayers(formation);
+                }
+            } else {
+                errorMessage.classList.add('active')
+            }
+        }
+
+        function renderSavedFormation(formation, custom, customPlayerPositions) {
+            const formationDisplay = document.querySelector('.formation-display');
+            const input = document.getElementById('formation-string');
+            input.value = formation;
+            formationDisplay.classList.add('active');
+            generatedOrCustom(formation, custom, customPlayerPositions)
+        }
+
+        function submissionCheck(formation) {
+            const errorMessage = document.querySelector('.error-message')
+            const valid = validateFormation(formation)
+            if (!valid) {
+                errorMessage.classList.add('active')
+            }
+            return valid
+        }
+
+        function validateFormation(formation) {
+            return VALID_FORMATION_REGEX.test(formation);
+        }
+
+        const toggleFormationButton = document.querySelector(".toggle-formation-button");
+        const formationList = document.querySelector(".formation-list");
+        toggleFormationButton.addEventListener("click", () => {
+            if (toggleFormationButton.textContent === "<") {
+                toggleFormationButton.textContent = ">";
+            } else {
+                toggleFormationButton.textContent = "<";
+            }
+            formationList.classList.toggle("active");
+        });
+
+
+    </script>
+</div>
+</body>
+</html>

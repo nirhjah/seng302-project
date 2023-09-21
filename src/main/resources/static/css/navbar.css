@@ -222,16 +222,26 @@ li > a:only-child:after { content: ''; }
 }
 
 
-.header-right li a{
-  display: block;
-  color: #fefefe;
-  font-size: 1.3em;
-  font-weight:500;
-  padding: 10px 25px;
-  border-radius: 50px;
-  transition: 0.2s;
-  margin: 5px;
-  font-family: "Noto Sans", sans-serif;
+.header-right li a {
+    display: block;
+    color: #fefefe;
+    font-size: 1.3em;
+    font-weight: 500;
+    padding: 10px 25px;
+    border-radius: 50px;
+    transition: 0.2s;
+    margin: 5px;
+    font-family: "Noto Sans", sans-serif;
+}
+
+nav ul li a:hover,
+nav ul li a.active,
+.navbar-user-button:hover,
+.navbar-create-button:hover,
+.navbar-view-all-button:hover {
+    background: #415a77;
+    color: #fff;
+    opacity: 1;
 }
 
 header .header-right {
@@ -246,11 +256,86 @@ header .header-right {
   transition: 0.2s;
 }
 
+header .header-left .hamburger {
+    cursor: pointer;
+    display: none;
+}
 
-.navbar-user-button a{
-  padding: 0 !important;
-  display: flex !important;
-  align-items: center !important;
+header .header-left .hamburger div {
+    width: 30px;
+    height: 2px;
+    margin: 6px 0;
+    background: #fff;
+}
+
+@media only screen and (max-width: 1500px) {
+    header .header-left .hamburger {
+        display: block;
+    }
+
+    header .header-left nav {
+        margin: 0;
+        position: absolute;
+        top: -600%;
+        left: 0;
+        width: 100vw;
+        height: fit-content;
+        background-color: #0b2239;
+        padding: 30px;
+        transition: 0.2s;
+        text-align: center;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    header .header-left nav.active {
+        top: 75px;
+        z-index: 1000;
+    }
+
+    header .header-left nav ul {
+        display: block;
+    }
+}
+
+.navbar-profile-picture {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    background-color: white;
+    margin: 3px 10px 3px 3px;
+}
+
+.navbar-view-all-button,
+.navbar-user-button,
+.navbar-create-button {
+    position: relative;
+    border-radius: 20px;
+    transition: 0.2s;
+}
+
+.navbar-create-button, .navbar-view-all-button {
+    margin-left: 20px;
+}
+
+.navbar-view-all-button a,
+.navbar-user-button a,
+.navbar-create-button a{
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.navbar-user-dropdown, .navbar-create-dropdown, .navbar-view-all-dropdown {
+    display: none;
+    position: absolute;
+    top: 104%;
+    background-color: #415A77;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    z-index: 1000;
+    transition: 0.2s;
+    white-space: nowrap;
 }
 
 .navbar-user-button a:hover{
@@ -263,33 +348,47 @@ header .header-right {
   opacity: 1;
 }
 
-.navbar-user-dropdown{
-  display: none;
-  position: absolute;
-  top: 104%;
-  right: 4px;
-  background-color: #415A77;
-  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-  z-index: 1000;
-  transition: 0.2s;
-  width: 96%
+
+.navbar-user-dropdown.show, .navbar-create-dropdown.show, .navbar-view-all-dropdown.show {
+    display: block;
 }
 
-.triangle {
-  display: inline-block;
-  width: 0;
-  height: 0;
-  margin-left: 10px;
-  margin-right: 10px;
-  border-style: solid;
-  border-width: 8px 8px 0 8px;
-  border-color: white transparent transparent transparent;
+.navbar-user-dropdown a, .navbar-create-dropdown a, .navbar-view-all-dropdown.show a {
+    display: block !important;
+    text-decoration: none;
+    text-align: left;
+    padding: 5px 80px 5px 8px !important;
+    border-radius: 4px !important;
 }
 
-.triangle.up {
-  border-width: 0 8px 8px 8px;
-  border-color: transparent transparent white transparent;
+.navbar-user-dropdown a:hover, .navbar-create-dropdown a:hover, .navbar-view-all-dropdown a:hover {
+    background-color: #0b2239;
+}
+
+.view-profile, .create-buttons, .view-all-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar-dropdown-triangle {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-style: solid;
+    border-width: 8px 8px 0 8px;
+    border-color: white transparent transparent transparent;
+}
+
+.navbar-dropdown-triangle.up {
+    border-width: 0 8px 8px 8px;
+    border-color: transparent transparent white transparent;
+}
+
+.navbar-user-button a:hover, .navbar-create-button a:hover, .navbar-view-all-button a:hover {
+    cursor: pointer;
 }
 
 .toggle1 img{

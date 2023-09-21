@@ -74,15 +74,10 @@ public class Activity {
     @Enumerated(EnumType.ORDINAL)
     private ActivityOutcome outcome;
 
-
-    private static final String START_SCORE = "0";
-
     /**
      * Empty Constructor for JPA
      */
     public Activity() {
-        setActivityTeamScore(START_SCORE);
-        setOtherTeamScore(START_SCORE);
     }
 
     /**
@@ -102,8 +97,8 @@ public class Activity {
         this.activityEnd = activityEnd;
         this.activityOwner = creator;
         this.location = location;
-        this.setOtherTeamScore("0");
-        this.setActivityTeamScore("0");
+        this.setOtherTeamScore("");
+        this.setActivityTeamScore("");
     }
 
     /**
@@ -222,6 +217,24 @@ public class Activity {
     public List<User> getInvolvedMembers() {
         if (team != null) {
             return new ArrayList<>(team.getTeamMembers());
+        }
+        return List.of();
+    }
+
+
+    /**
+     * Gets all team members minus the manager and coaches, used to populate the subs dropdown of activity stats
+     * @return list of team members without manager and coach
+     */
+    public List<User> getInvolvedMembersNoManagerAndCoaches() {
+        List<User> teamMembersWithoutManagersAndCoaches = new ArrayList<>();
+        if (team != null) {
+            for (User member : team.getTeamMembers()) {
+                if (!team.isManager(member) && !team.isCoach(member)) {
+                    teamMembersWithoutManagersAndCoaches.add(member);
+                }
+            }
+            return teamMembersWithoutManagersAndCoaches;
         }
         return List.of();
     }

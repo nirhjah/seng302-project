@@ -1,0 +1,241 @@
+.profile-form, .team-profile-form {
+    flex-direction: column;
+    min-height: 90vh;
+}
+
+.wrapper-profile {
+    position: absolute;
+    width: 850px;
+    height: 550px;
+    display: grid;
+    font-weight: 500;
+    font-family: "Noto Sans", sans-serif;
+    color: #1b263b;
+}
+
+.wrapper-profile .user-info {
+    position: absolute;
+    top: 0;
+    width: 400px;
+    height: 440px;
+    right: 0;
+}
+
+.wrapper-profile .team-info {
+    position: absolute;
+    top: 0;
+    width: 60%;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 5%;
+    left: 35%;
+    transition: 0.5s;
+}
+
+.team-info h3, .user-info h3 {
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 600;
+    font-size: 35px;
+    color: #1B263B;
+}
+
+.team-info {
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 600;
+    color: #1b263b;
+}
+
+.team-info form {
+    width: 100%;
+}
+
+.team-info h2 {
+    font-size: 35px;
+}
+
+.team-info h3 {
+    font-size: 22px;
+}
+
+
+.team-display .user-display {
+    padding: 20px 0 20px 0;
+    margin-bottom: 100px;
+    width: 100%;
+}
+
+.user-info h3 {
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 600;
+    font-size: 35px;
+    color: #1B263B;
+}
+
+.wrapper-profile .profile-pic {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 289px;
+    height: 350px;
+}
+
+.profile-buttons {
+    float: right;
+    position: absolute;
+    right: 5%;
+    bottom: 30px;
+    display: flex;
+    left: 5%;
+    align-items: center;
+    justify-content: space-between;
+    transition: 0.5s;
+}
+
+
+.profile-buttons button {
+    padding: 0 30px;
+    height: 40px;
+}
+
+.edit-button {
+    text-align: right;
+}
+
+
+.sport-box {
+    height: 60px;
+    width: 280px;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 7px;
+    margin: 5px 0;
+    border: 2px dashed #778DA9;
+    border-radius: 11px;
+    overflow-y: scroll;
+    max-height: 100px;
+    gap: 3px;
+    align-content: flex-start;
+}
+
+.sport-box li {
+    margin: 0;
+    list-style: none;
+    border-radius: 20px;
+    background: #778DA9;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 1px solid #1B263B;
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: "Noto Sans", sans-serif;
+    color: #FFFF;
+    text-align: center;
+}
+
+.sport-box li i {
+    color: #FFF;
+    margin-right: 8px;
+    margin-left: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 50%;
+    background: #778DA9;
+}
+
+/*.content input {*/
+/*    width: 293px;*/
+/*    height: 25px;*/
+/*    border-bottom-left-radius: 11px;*/
+/*    border-bottom-right-radius: 11px;*/
+/*    border: 2px solid #778DA9;*/
+/*    border-top: none;*/
+/*}*/
+
+.sport-box::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sport-box::-webkit-scrollbar-track {
+    background-color: #E0E1DD;
+}
+
+.sport-box::-webkit-scrollbar-thumb {
+    background-color: #415A77;
+    border-radius: 10px
+}
+
+.sport-box::-webkit-scrollbar-thumb:hover {
+    background-color: #0D1B2A;
+}
+
+.details button {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: "Noto Sans", sans-serif;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.team-display {
+    width: 100%;
+}
+
+.user-label{
+    display:flex;
+    align-items:center;
+    margin: 10px 0;
+}
+
+.user-label img{
+    height: 30px;
+    width: 30px;
+    margin-right: 10px;
+}
+
+.last5 li {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 5%;
+    margin-left: 5%;
+    margin-right: 5%;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.last5 li:hover {
+    cursor: pointer;
+    transform: scaleX(1.03) scaleY(1.03);
+    box-shadow: 0 2px 3px 4px rgba(0, 0, 0, 0.2);
+}
+
+.last5 img {
+    width: 50px;
+    height: 50px;
+}
+
+.last5 h3 {
+    color: #1B263B;
+    font-size: 25px;
+    font-weight: 600;
+    text-decoration-thickness: 2px;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+
+.last5 h4 {
+    top: 40px;
+    right: 28%;
+    text-align: left;
+    font-size: 14px;
+}
+
+.last5 li .r {
+    display: flex;
+    align-items: center;
+}

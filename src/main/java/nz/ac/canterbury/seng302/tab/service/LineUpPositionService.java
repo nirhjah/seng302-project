@@ -11,11 +11,24 @@ import java.util.Optional;
 @Service
 public class LineUpPositionService {
 
+
     @Autowired
     private LineUpPositionRepository lineUpPositionRepository;
+
+    @Autowired
+    public LineUpPositionService(LineUpPositionRepository lineUpPositionRepository) {
+        this.lineUpPositionRepository = lineUpPositionRepository;
+    }
+
 
     public Optional<List<LineUpPosition>> findLineUpPositionsByLineUp(long id) {
         return lineUpPositionRepository.findLineUpPositionsByLineUpLineUpId(id);
     }
+
+
+    public LineUpPosition addLineUpPosition(LineUpPosition lineUpPosition) {
+        return lineUpPositionRepository.save(lineUpPosition);
+    }
+
 
 }

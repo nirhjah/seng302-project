@@ -7,8 +7,8 @@ Required variables: formationEditable, true if you want the formation to be edit
   <input type="hidden" name="custom" class="custom" value="false">
   <input type="hidden" name="customPlayerPositions" class="custom-player-positions">
   <div id="pitch" class="pitch"></div>
-  <script>
-    const formationEditable = [[${formationEditable}]];
+  <script th:inline="javascript">
+    const formationEditable = /*[[${formationEditable}]]*/ false;
 
     const pitch = document.getElementById("pitch");
     const custom = document.querySelector(".custom");
@@ -97,8 +97,7 @@ Required variables: formationEditable, true if you want the formation to be edit
 
         image.setAttribute("class", "player-profile-img");
         close.setAttribute("class", "clear-position-button");
-        close.setAttribute("onclick", "clearPlayer(this.parentNode)");
-        close.setAttribute("src", "../image/icons/remove.svg");
+        close.setAttribute("src", "image/icons/remove.svg");
         id.setAttribute("type", "hidden");
 
         player.appendChild(name);

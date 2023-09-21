@@ -1,13 +1,8 @@
 package nz.ac.canterbury.seng302.tab.service;
 
-import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
-import nz.ac.canterbury.seng302.tab.entity.Club;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.enums.Role;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
-import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +11,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.*;
+import nz.ac.canterbury.seng302.tab.entity.Club;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.Role;
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 
 /**
  * Spring Boot Service class for Team Service
@@ -92,34 +89,6 @@ public class TeamService {
     public Page<Team> findPaginated(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         return teamRepository.findAll(pageable);
-    }
-
-    /**
-     * Method which updates the picture by taking the MultipartFile type and
-     * updating the picture
-     * stored in the team with id primary key.
-     *
-     * @param file MultipartFile file upload
-     * @param id   Team's unique id
-     */
-    public void updatePicture(MultipartFile file, long id) {
-        Team team = teamRepository.findById(id).get();
-
-        // Gets the original file name as a string for validation
-        String pictureString = StringUtils.cleanPath(file.getOriginalFilename());
-        if (pictureString.contains("..")) {
-            System.out.println("not a valid file");
-        }
-        try {
-            // Encodes the file to a byte array and then convert it to string, then set it
-            // as the pictureString variable.
-            team.setPictureString(Base64.getEncoder().encodeToString(file.getBytes()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Saved the updated picture string in the database.
-        teamRepository.save(team);
     }
 
     /**
@@ -279,5 +248,39 @@ public class TeamService {
     public List<Team> findTeamsByClub(Club club) {
         long id = club.getClubId();
         return teamRepository.findTeamsByTeamClubClubId(id);
+    }
+
+    public List<Team> findTeamsBySportAndSearch(String sport, String search) {
+        return teamRepository.findTeamsByNameAndSport(search, sport);
+    }
+
+    /**
+     * Checks if a team has a club and return the club id if it does.
+     * @param team the team which the method checks if it contains club
+     * @return the club id if the team has a club
+     */
+    public Long getTeamClubId(Team team) {
+        if (team.getTeamClub() == null) {
+            return null;
+        }
+        return team.getTeamClub().getClubId();
+    }
+
+    /**
+     * Gets a unique list of all the sports teams are in, alphabetically ordered.
+     */
+    public List<String> getAllTeamSports() {
+        return teamRepository.getAllDistinctSports();
+    }
+
+    /**
+     * Gets a unique list of all the cities teams are in, alphabetcally
+     */
+    public List<String> getAllTeamCities() {
+        return teamRepository.getAllDistinctCities();
+    }
+
+    public Optional<Team> findTeamById(long id) {
+        return teamRepository.findById(id);
     }
 }

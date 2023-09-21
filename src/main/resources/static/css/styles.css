@@ -80,7 +80,6 @@ td {
     border: none;
     outline: 0;
     padding: 0.1em;
-    cursor: pointer;
 }
 
 .wrapper,.wrapper-profile,.wrapper-edit-profile{
@@ -356,11 +355,12 @@ ul {
     color: black;
 }
 .multipleSelection {
+    position: relative;
     background-color: #415A77;
     font-family: "Noto Sans", sans-serif;
     font-size: 1em;
     color: #fff;
-    border-radius: 20px;
+    border-radius: 15px;
     border: none;
     padding: .1em .5em;
     cursor: pointer;
@@ -372,32 +372,18 @@ ul {
 }
 
 
-.selectBox {
-    position: relative;
-}
-
 .selectBox select {
     width: 100%;
     font-weight: bold;
     color: #ffffff;
     background: #415A77;
     border-radius: 20px;
-    font-size: 16px;
+    font-size: medium;
     border: none;
     outline: 0;
     padding: .1em .5em;
     cursor: pointer;
 }
-
-
-.overSelect {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-}
-
 
 #checkBoxes {
     display: none;
@@ -408,13 +394,15 @@ ul {
 .checkbox {
     display: none;
     max-height: 200px;
-    overflow-y: scroll;
+    overflow-y: auto;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background-color: #415a77;
 }
 
 .checkbox label {
     display: block;
-    padding: 3px;
-
+    padding: 7px;
 }
 
 .checkbox label:hover {
@@ -440,18 +428,6 @@ ul {
     display: flex;
 }
 
-.apply-filters-button {
-    border: 0;
-    text-decoration: none;
-    /* font-size: 17px; */
-    font-weight: bold;
-    padding: 0 15px;
-    border-radius: 20px;
-    background-color: #415A77;
-    color: white;
-    font-family: "Noto Sans", sans-serif;
-}
-
 .selectBox {
     position: relative;
 }
@@ -464,24 +440,6 @@ ul {
     bottom: 0;
 }
 
-.checkbox {
-    display: none;
-    max-height: 200px;
-    overflow-y: scroll;
-    border-bottom-right-radius: 5px;
-    border-bottom-left-radius: 5px;
-    background-color: #415a77;
-}
-
-.checkbox label {
-    display: block;
-    padding: 7px;
-
-}
-
-.checkbox label:hover {
-    background-color: #4F615E;
-}
 
 ul.autocomplete-result{
     display:block;
@@ -548,4 +506,67 @@ ul.autocomplete-result{
     background-clip: text;
     -webkit-background-clip: text;
 }
+
+
+.create-header {
+    display: flex;
+    align-content: center;
+    width: 120%;
+    align-items: center;
+    margin-top: 35px;
+    margin-left: -10%;
+}
+
+.create-header h2 {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 25px;
+    color: #0b2239;
+    white-space: nowrap;
+}
+
+.create-header img {
+    height: 30px;
+    margin: 0 5px;
+    width: 35px;
+}
+
+.create-header::before {
+    min-width: 15px;
+    margin-right: 5px;
+}
+
+.create-header::after {
+    width: 67%;
+}
+
+.create-header::before, .create-header::after {
+    content: "";
+    border-top: 4px solid #0b2239;
+    align-content: center;
+    display: flex;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.multiply:before {
+    content: "\00D7";
+}
+
+.checkbox-box {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+}
+
+.checkbox-box label {
+    font-family: "Noto Sans", sans-serif;
+    left: 1px;
+    font-size: 1em;
+    font-weight: 500;
+    transition: 0.5s;
+    color: #888888;
+    border-bottom: none;
+}
+
+
 

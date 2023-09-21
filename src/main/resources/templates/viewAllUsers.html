@@ -19,12 +19,12 @@
                th:value="*{currentSearch}" data-cy="currentSearch" autofocus minlength="3">
         <button class="search-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
     </div>
-    <div class="filter-bar">
-        <div th:if="${not #lists.isEmpty(listOfUsers)}" style="display: flex">
-            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>
-            <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfCities}, 'Filter by city', 'cities')}" th:if="${not #lists.isEmpty(listOfCities)}"></div>
-            <button class="apply-filters-button" type="submit">Apply Filters</button>
-        </div>
+    <div th:if="${not #lists.isEmpty(listOfUsers)}" class="filter-bar">
+        <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfCities}, 'Filter by city', 'cities')}" th:if="${not #lists.isEmpty(listOfCities)}"></div>
+        <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}" th:if="${not #lists.isEmpty(listOfSports)}"></div>
+    </div>
+    <div class="apply-filters-button-container">
+        <button class="apply-filters-button" type="submit">Apply Filters</button>
     </div>
 </form>
 
@@ -35,12 +35,12 @@
 
 <div th:unless="${listOfUsers.empty}" class="card-container">
     <div th:each="user : ${listOfUsers}" class="card"
-         th:onclick="|window.location.href='/user-info?name=${user.userId}'|">
+         th:onclick="|window.location.href='@{user-info(name=${user.userId})}'|">
 
         <a th:href="@{user-info(name=${user.userId})}">
             <div class="card-wrapper">
                 <div class="card-image">
-                    <img th:src="${'data:image/jpeg;base64,' + user.pictureString}" class="card-img-top" alt="User image">
+                    <img th:src="@{/user-profile-picture/{id}(id = ${user.userId})}"  class="card-img-top"  alt="User image">
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">[[|${user.firstName} ${user.lastName}|]]</h5>

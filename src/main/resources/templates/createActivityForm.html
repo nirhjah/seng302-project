@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <link th:href="@{/css/create-activity.css}" rel="stylesheet"/>
     <link th:href="@{/css/formation.css}" rel="stylesheet"/>
 
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>[[${actId != null ? 'Edit' : 'Create'}]] Activity</title>
 </head>
 <body class="create-activity-background">
@@ -16,13 +15,13 @@
         <h1>[[${actId != null ? 'Edit' : 'Create'}]] Activity</h1>
     </div>
     <div class="wrapper">
-        <form th:action="@{createActivity}" th:object="${createActivityForm}" id="createActivityForm" method="post">
+        <form th:action="@{create-activity}" th:object="${createActivityForm}" id="createActivityForm" method="post">
             <input type="hidden" th:if="${actId != null}" th:name="actId" th:value="${actId}"/>
 
             <!--/* Activity Type dropdown */-->
             <div class="select-container">
                 <label for="activityType">Activity Type <span class="required">*</span> </label>
-                <select name="activityType" id="activityType" onchange="updateFormationList()">
+                <select th:field="*{activityType}" name="activityType" id="activityType" onchange="updateFormationList()">
                     <option th:each="type : ${activityTypes}"
                             th:value="${type}"
                             th:text="${type}"
@@ -36,7 +35,7 @@
             <div class="select-container">
                 <div class="select-box">
                     <label for="team">Activity Team <span class="required">*</span></label>
-                    <select name="team" id="team" onchange="updateFormationList()">
+                    <select th:field="*{team}" name="team" id="team" onchange="updateFormationList()">
                         <option value="-1">(No Team)</option>
                         <option th:each="team : ${teamList}"
                                 th:value="${team.getTeamId()}"
@@ -48,44 +47,54 @@
             </div>
 
             <!--/* Formation selection dropdown (Only active if the activity supports it) */-->
-            <div class="select-container">
+            <div th:style="${actId != null ? 'display:block' : 'display:none'}" class="select-container">
                 <div class="select-box">
                     <label for="team">Activity formation <em>(Team Game and Team Friendly only)</em></label>
-                    <select onchange="changeDisplayedFormation()" name="formation" id="formation-dropdown" th:disabled="${#lists.isEmpty(teamFormations)}">
+                    <select name="formation" id="formation-dropdown">
                         <option value="-1">(No Formation)</option>
                         <option th:each="forma : ${teamFormations}"
                                 th:value="${forma.formationId}"
-                                th:text="${forma.formation} + (${forma.custom} ? ' Custom' : '')"
-                                th:selected="${forma == selectedFormation}"></option>
+                                th:text="${forma.formation}"
+                                th:selected="${forma == selectedFormation}"
+                                th:data-custom="${forma.custom}"
+                                th:data-custom-positions="${forma.customPlayerPositions}"
+                        ></option>
                     </select>
                 </div>
                 <div th:each="err : ${#fields.errors('formation')}" th:text="${err}" class="error-message"></div>
             </div>
 
-            <div class="formation-activity-display" >
-                <input type="hidden" id="positions" name="positions">
-                <div class="subs-reserves-box">
-                    <div class=subs-header>Subs</div>
-                    <ul class="subs-ul">
-                    </ul>
-                    <div class="reserves-header active">Reserves</div>
-                    <ul class="reserves-ul active">
-                        <li th:each="player : ${players}" class="reserves-li">
-                            <img class="li-player-image" th:src="${'data:image/jpeg;base64,' + player.getPictureString}" alt="My Profile"/>
-                            <span class="li-player-name" th:text="${player.getFirstName}"></span>
-                            <button class="switch" type="button"></button>
-                            <input type="hidden" class="playerId" th:value="${player.getUserId}">
-                        </li>
-                    </ul>
+            <div id="formationDisplay" th:style="${actId != null ? 'display:block' : 'display:none'}" class="formation-activity-display">
+                <div>
+                    <input type="hidden" id="playerAndPositions" name="playerAndPositions">
+                    <input type="hidden" id="subs" name="subs">
+                    <div class="subs-reserves-box">
+                        <div class=subs-header>Subs</div>
+                        <ul class="subs-ul">
+                        </ul>
+                        <div class="reserves-header active">Reserves</div>
+                        <ul class="reserves-ul active">
+                            <li th:each="player : ${players}" class="reserves-li">
+                                <img th:src="@{/user-profile-picture/{id}(id = ${player.userId})}"  class="li-player-image"  alt="Player Image">
+                                <span class="li-player-name" th:text="${player.getFirstName}"></span>
+                                <button class="switch" type="button"></button>
+                                <input type="hidden" class="playerId" th:value="${player.getUserId}">
+                            </li>
+                        </ul>
+                    </div>
+                    <div th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"></div>
                 </div>
-                <div th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"></div>
+                <div>
+                    <button class="cancel-button" type="button">Cancel</button>
+                </div>
             </div>
+            <div th:each="err : ${#fields.errors('lineup')}" th:text="${err}" class="error-message"></div>
 
             <!--/* Activity Description */-->
             <div class="description-box">
                 <label for="description">Description: <span class="required">*</span></label>
                 <textarea class="description-text" id="description" th:name="description" autofocus placeholder=""
-                          th:text="${description}"></textarea>
+                          th:text="*{description}"></textarea>
                 <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
                 <p id="charCount" class="charCount"></p>
             </div>
@@ -94,35 +103,34 @@
                 <!--/* Start Date */-->
                 <div class="input-box">
                     <input type="datetime-local" class="datetime-input" id="startDateTime" name="startDateTime"
-                           th:value="${startDateTime}">
+                           th:value="*{startDateTime}">
                     <label for="startDateTime">Start date & time of activity<span class="required">*</span> </label>
-                    <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}"
-                         class="error-message"></div>
+                    <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}" class="error-message"></div>
                 </div>
 
                 <!--/* End Date */-->
                 <div class="input-box">
                     <input type="datetime-local" class="datetime-input" id="endDateTime" name="endDateTime"
-                           th:value="${endDateTime}">
+                           th:value="*{endDateTime}">
                     <label for="endDateTime">End date & time of activity<span class="required">*</span> </label>
                     <div th:each="err : ${#fields.errors('endDateTime')}" th:text="${err}" class="error-message"></div>
                 </div>
             </div>
 
+
             <div class="input-boxes">
                 <div class="input-box">
                     <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
-                           data-cy="location" autofocus placeholder="" autocomplete="off" th:value="${addressLine1}"
+                           data-cy="location" autofocus placeholder="" autocomplete="off" th:value="*{addressLine1}"
                            title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
                     <label for="address-line-1">Address Line 1<span class="required">*</span></label>
                     <div class="autocomplete-container" id="autocomplete-container"></div>
                     <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="error-message"></div>
                 </div>
 
-
                 <div class="input-box">
                     <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
-                           data-cy="location" autofocus placeholder="" th:value="${addressLine2}"
+                           data-cy="location" autofocus placeholder="" th:value="*{addressLine2}"
                            title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
                     <label for="address-line-2">Address Line 2</label>
                 </div>
@@ -130,43 +138,40 @@
             </div>
             <div class="input-box">
                 <input type="text" class="form-control" id="suburb" th:name="suburb"
-                       data-cy="location" autofocus placeholder="" th:value="${suburb}">
+                       data-cy="location" autofocus placeholder="" th:value="*{suburb}">
                 <label for="suburb">Suburb</label>
             </div>
             <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
             <div class="input-box">
                 <input type="text" class="form-control" id="postcode" th:name="postcode"
-                       data-cy="location" autofocus placeholder="" th:value="${postcode}">
+                       data-cy="location" autofocus placeholder="" th:value="*{postcode}">
                 <label for="postcode">Postcode<span class="required">*</span></label>
             </div>
             <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
 
             <div class="input-box">
                 <input type="text" class="form-control" id="city" th:name="city"
-                       data-cy="location" autofocus placeholder="" th:value="${city}">
+                       data-cy="location" autofocus placeholder="" th:value="*{city}">
                 <label for="city">City <span class="required">*</span></label>
             </div>
             <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
 
             <div class="input-box">
                 <input type="text" class="form-control" id="country" th:name="country"
-                       data-cy="location" autofocus placeholder="" th:value="${country}">
+                       data-cy="location" autofocus placeholder="" th:value="*{country}">
                 <label for="country">Country <span class="required">*</span></label>
             </div>
             <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
             <div class="submit-button">
-                <a th:href="@{home}">
-                    <button type="submit" th:text="${actId != null ? 'Save' : 'Create'}"></button>
-                </a>
-                <div class="cancel-link">
-                    <a th:if="${actId != null}" th:href="@{view-activity(activityID=${actId})}">Cancel</a>
+                <button onclick="getPlayersAndPositionsAndSubs()" type="submit" th:text="${actId != null ? 'Save' : 'Create'}"> </button>
+                <div class="cancel-link" th:if="${actId != null}">
+                    <a th:href="@{view-activity(activityID=${actId})}">Cancel</a>
                 </div>
             </div>
         </form>
     </div>
 </div>
-</body>
-
+<script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
 <script type="text/javascript" th:inline="javascript">
     /**
      ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
@@ -180,7 +185,7 @@
      * The delay time (in milliseconds) for debouncing the search input.
      * @type {number}
      */
-    const DEBOUNCE_DELAY = 450; // set the debounce delay to 450ms
+    const DEBOUNCE_DELAY = 100; // set the debounce delay to 200ms
     const searchBox = document.querySelector('#address-line-1');
     const resultsContainer = document.querySelector('#autocomplete-container');
     const countryInput = document.querySelector('#country');
@@ -289,33 +294,65 @@
             charCount.style.color='#888888';
         }
     });
+
 </script>
-<script>
+<script th:inline="javascript">
     function typeCanHaveFormation(activityType) {
         return (activityType === "Game" || activityType === "Friendly");
+
     }
 
+
+
+    const formationDropdown = document.querySelector("#formation-dropdown");
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const currentActivity = document.querySelector("#activityType").value;
+
+        if (!typeCanHaveFormation(currentActivity)) {
+            formationDropdown.style.display = "none";
+            return;
+        }
+        if (typeCanHaveFormation(currentActivity)) {
+            formationDropdown.style.display = "block";
+            return;
+        }
+
+    });
+
+
+
     function updateFormationList() {
-        const formationDropdown = document.querySelector("#formation-dropdown");
         const currentTeamId = document.querySelector("#team").value;
         const currentActivity = document.querySelector("#activityType").value;
 
         // Can't select formations if you've selected 'no team'
         if (currentTeamId == -1) {
-            formationDropdown.disabled = true;
+            formationDropdown.value = -1;
+            formationDropdown.style.display = 'none';
+            document.querySelector(".formation-activity-display").classList.remove("active");
             return;
         }
         // Can't select formations if your activity isn't a "friendly" or "game"
         if (!typeCanHaveFormation(currentActivity)) {
-            formationDropdown.disabled = true;
+            formationDropdown.style.display = "none";
+          
+            document.getElementById("formationDisplay").style.display = "none";
+
+
+            return;
+        }
+        if (typeCanHaveFormation(currentActivity)) {
+            formationDropdown.style.display = "block";
+            document.getElementById("formationDisplay").style.display = "block";
+
             return;
         }
 
         // Otherwise, get the list of formations
         populateFormationDropdown(false, "(loading...)", {});
-        axios.get("createActivity/get_team_formation", {params: {teamId: currentTeamId}})
+        axios.get("create-activity/get_team_formation", {params: {teamId: currentTeamId}})
             .then(response => {
-                console.log(response);
                 const formationList = response.data;
                 if (formationList.length == 0) {
                     populateFormationDropdown(false, "(team has no formations)", {});
@@ -327,51 +364,281 @@
                 alert("ERROR see console");
                 console.error(error);
             });
-
-        
     }
 
-    function populateFormationDropdown(isEnabled, emptyValueName, otherFields) {
-        const formationDropdown = document.querySelector("#formation-dropdown");
+    document.getElementById("formation-dropdown").addEventListener("change", function(event) {
+        const selectedOption = event.target.options[event.target.selectedIndex];
+        loadFormation(selectedOption);
+    });
+
+
+    var formationAndPlayersAndPositionJson = /*[[${formationAndPlayersAndPositionJson}]]*/ {};
+
+
+
+
+    function loadFormation(target) {
+
+        const reservesLi = document.querySelectorAll(".reserves-li");
+        const formationId = target.value;
+        const formation = target.textContent;
+        const custom = target.getAttribute("data-custom")
+        const customPlayerPositions = target.getAttribute("data-custom-positions");
+        reservesLi.forEach(li => {
+            li.classList.remove("in-formation");
+        })
+        if (formationId == -1) {
+            document.querySelector(".formation-activity-display").classList.remove("active");
+        } else {
+            document.querySelector(".formation-activity-display").classList.add("active");
+            generatedOrCustom(formation, custom === "true", customPlayerPositions);
+            const reservesLi = document.querySelectorAll(".reserves-li");
+            const subsUL = document.querySelector('.subs-ul');
+
+            const liElements = subsUL.querySelectorAll('li');
+            liElements.forEach((li) => {
+                li.remove();
+            });
+
+            console.log(formationAndPlayersAndPositionJson)
+
+            for (var formation_ in formationAndPlayersAndPositionJson) {
+                if (formation_ === formationId) {
+                    var playersAndPosition = formationAndPlayersAndPositionJson[formation_];
+
+                    var subsInfo = playersAndPosition[playersAndPosition.length - 1];
+
+                    if (subsInfo.length === 0) {
+                        deactivateSubs()
+                    }
+                    else {
+                        activateSubs()
+                    }
+
+
+                    for (const sublist of subsInfo) {
+                        console.log("Sublist: " + sublist)
+                        const subId = sublist[0];
+                        const subName = sublist[1];
+                        subsUL.appendChild(createSub(subId, subName))
+
+                        const players = document.querySelectorAll(".reserves-li");
+                        players.forEach(player => {
+                            const reserveId = player.querySelector("input").value;
+                            if (reserveId === subId.toString()) {
+                                player.classList.add("in-formation");
+                            }
+                        });
+
+                    }
+
+                    for (const positionIndex in playersAndPosition) {
+
+                        addPositionFunctionality();
+
+                        var playerInfo = playersAndPosition[positionIndex];
+
+                        const playerId = playerInfo[1];
+                        const playerName = playerInfo[2];
+
+                        const position = positions[playerInfo[0]-1]
+                        const close = position.querySelector('.clear-position-button');
+
+                        if (position) {
+                            const idObject = position.querySelector('input');
+
+
+                            const players = document.querySelectorAll(".reserves-li");
+                            players.forEach(player => {
+                                const reserveId = player.querySelector("input").value;
+                                if (reserveId === playerId.toString()) {
+                                    player.classList.add("in-formation");
+                                }
+                            });
+
+
+
+
+                            const playerNameElement = position.querySelector('h3');
+                             playerNameElement.textContent = playerName;
+                             playerNameElement.style.display = 'inline-block';
+                             playerNameElement.style.width = 'auto';
+                             playerNameElement.style.marginLeft = '-4px';
+
+                            const playerImage = position.querySelector('.player-profile-img');
+                            playerImage.src = "user-profile-picture/" + playerId;
+                            //playerImage.alt = "My Profile";
+
+                            position.style.backgroundImage = 'none';
+                            idObject.value = playerId;
+
+                            fillPosition(position);
+
+                            close.classList.add('active')
+
+
+
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            addPositionFunctionality();
+
+        }
+    }
+
+    function createSub(subId, subName) {
+        const playerId = subId
+        const pictureString = "user-profile-picture/" + playerId
+        const firstName = subName
+
+        const playerLi = document.createElement("li");
+        playerLi.className = "subs-li";
+
+        const liPlayerImage = document.createElement("img");
+        liPlayerImage.className = "li-player-image";
+        liPlayerImage.src = pictureString;
+        liPlayerImage.alt = "My Profile";
+        playerLi.append(liPlayerImage);
+
+        const liPlayerName = document.createElement("span");
+        liPlayerName.className = "li-player-name";
+        liPlayerName.textContent = firstName;
+        playerLi.append(liPlayerName);
+
+        const button = document.createElement("button");
+        button.className = "switch";
+
+        button.classList.add("active");
+
+        button.type = "button";
+        playerLi.append(button);
+        button.addEventListener("click", () => {
+            switchOnClick(button);
+        });
+
+        const playerIdInput = document.createElement("input");
+        playerIdInput.className = "playerId"
+        playerIdInput.type = "hidden";
+        playerIdInput.value = playerId;
+        playerLi.append(playerIdInput);
+        playerOnClick(playerLi)
+
+        return playerLi;
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const formationDropdown = document.getElementById("formation-dropdown");
+        const selectedFormationId = formationDropdown.value;
+        const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex];
+        if (selectedFormationId !== "-1") {
+            loadFormation(selectedFormation);
+        }
+    });
+
+    const cancelButton = document.querySelector(".cancel-button");
+
+    cancelButton.addEventListener("click", () => {
+        const reservesLi = document.querySelectorAll(".reserves-li");
+        reservesLi.forEach(li => {
+            li.classList.remove("in-formation");
+        })
+        deactivateSubs();
+        const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex]
+        const formation = selectedFormation.textContent;
+        const custom = selectedFormation.getAttribute("data-custom")
+        const customPlayerPositions = selectedFormation.getAttribute("data-custom-positions");
+        generatedOrCustom(formation, custom === "true", customPlayerPositions);
+        addPositionFunctionality();
+    })
+
+    function populateFormationDropdown(isEnabled, emptyValueName, formationList) {
+        while (formationDropdown.firstChild) {
+            formationDropdown.removeChild(formationDropdown.lastChild);
+        }
         // Set visibility
-        formationDropdown.disabled = !isEnabled;
+        formationDropdown.value = -1;
+        formationDropdown.style.display = 'none';
         formationDropdown.innerHTML = "";
         // Create the default "no value" field
         let item = document.createElement("option");
-            item.value = -1;
-            item.innerText = emptyValueName;
-            formationDropdown.appendChild(item);
+        item.value = -1;
+        item.innerText = emptyValueName;
+        /*
+                    item.addEventListener("click", onFormationOptionClick);
+        */
+        formationDropdown.appendChild(item);
         // Add the remaining fields
-        for (const [formationId, formation] of Object.entries(otherFields)) {
-            let item = document.createElement("option");
-            item.value = formationId;
-            item.innerText = formation;
-            formationDropdown.appendChild(item);
+        for (let i = 0; i < formationList.length; i++) {
+            const formation = formationList[i];
+            const option = document.createElement("option");
+            option.textContent = formation.formation;
+            option.value = formation.formationID;
+            option.setAttribute("data-custom-positions", formation.customPlayerPositions);
+            option.setAttribute("data-custom", formation.custom);
+            /*
+                        option.addEventListener("click", onFormationOptionClick);
+            */
+            formationDropdown.appendChild(option);
+            if (i==0) {
+                populateReserves(formation.players);
+            }
         }
     }
 
-    updateFormationList()
+
+    function populateReserves(players) {
+        const playerReserveList = document.querySelector(".reserves-ul");
+        while (playerReserveList.firstChild) {
+            playerReserveList.removeChild(playerReserveList.lastChild);
+        }
+        for (let i = 0; i < players.length; i++) {
+            const player = players[i];
+            const playerLi = document.createElement("li");
+            playerLi.className = "reserves-li";
+            playerReserveList.append(playerLi);
+
+            const liPlayerImage = document.createElement("img");
+            liPlayerImage.className = "li-player-image";
+            liPlayerImage.src = "user-profile-picture/" + player.playerID;
+            liPlayerImage.alt = "My Profile";
+            playerLi.append(liPlayerImage);
+
+            const liPlayerName = document.createElement("span");
+            liPlayerName.className = "li-player-name";
+            liPlayerName.textContent = player.firstName;
+            playerLi.append(liPlayerName);
+
+            const button = document.createElement("button");
+            button.className = "switch";
+            button.type = "button";
+            playerLi.append(button);
+            button.addEventListener("click", () => {
+                switchOnClick(button);
+            });
+
+            const playerId = document.createElement("input");
+            playerId.className = "playerId"
+            playerId.type = "hidden";
+            playerId.value = player.playerID;
+            playerLi.append(playerId);
+            playerOnClick(playerLi)
+        }
+    }
+
+
 </script>
 <script>
-
-    function changeDisplayedFormation() {
-        const element = document.getElementById("formation-dropdown");
-        const value = element.options[element.selectedIndex].value;
-        console.log(value);
-        if (value == -1) {
-            document.querySelector(".formation-activity-display").classList.remove("active");
-        }
-        else {
-            document.querySelector(".formation-activity-display").classList.add("active");
-            const formationString = element[value].text;
-            renderPlayers(formationString);
-            addPositionFunctionality();
-        }
-    }
 
     const playersSubs = document.querySelectorAll(".subs-li");
     const playersReserves = document.querySelectorAll(".reserves-li");
     const positions = pitch.childNodes;
+
     playersSubs.forEach((player) => {
         playerOnClick(player);
     });
@@ -379,19 +646,33 @@
         playerOnClick(player);
     });
 
+    // Adds functionality for selecting a player from the reserves and subs
     function playerOnClick(player) {
         player.addEventListener('click', () => {
-            playersReserves.forEach(otherReserve => {
+            const playersReservesDynamic = document.querySelectorAll(".reserves-li");
+            const playersSubsDynamic = document.querySelectorAll(".subs-li");
+            // Removes active from other players in subs/reserves
+            playersReservesDynamic.forEach(otherReserve => {
                 if (otherReserve !== player) {
                     otherReserve.classList.remove('active');
                 }
             });
-            playersSubs.forEach(otherSub => {
+            playersSubsDynamic.forEach(otherSub => {
                 if (otherSub !== player) {
                     otherSub.classList.remove('active')
                 }
             });
-            player.classList.toggle('active');
+
+            if (!subsUl.classList.contains('active') || !checkFilled()) {
+                player.classList.toggle('active');
+            }
+
+            if (subsUl.classList.contains('active') && checkFilled()) {
+                player.style.cursor = "default";
+            } else {
+                player.style.cursor = "pointer";
+            }
+
             for (let i = 0; i < positions.length; i++) {
                 const position = positions.item(i);
                 if (player.classList.contains('active') && !position.classList.contains("filled")) {
@@ -403,6 +684,7 @@
         });
     }
 
+    // Adds functionality for adding and removing players to/from a position
     function addPositionFunctionality() {
         for (let i = 0; i < positions.length; i++) {
             const position = positions.item(i);
@@ -411,38 +693,45 @@
 
             // Action to carry out when a user selects a position with a player selected
             position.addEventListener('click', () => {
-                const selectedPlayer = document.querySelector(".subs-li.active, .reserves-li.active");
-                if (selectedPlayer) {
-                    const firstName = selectedPlayer.querySelector(".li-player-name").textContent;
-                    const picture = selectedPlayer.querySelector(".li-player-image").getAttribute("src");
-                    const id = selectedPlayer.querySelector("input").value;
-                    addPlayer(position, firstName, picture, id)
+                if (!position.classList.contains("filled")) {
+                    const selectedPlayer = document.querySelector(".subs-li.active, .reserves-li.active");
+                    if (selectedPlayer) {
+                        const firstName = selectedPlayer.querySelector(".li-player-name").textContent;
+                        const picture = selectedPlayer.querySelector(".li-player-image").getAttribute("src");
+                        const id = selectedPlayer.querySelector("input").value;
+                        addPlayer(position, firstName, picture, id)
 
-                    fillPosition(position);
-                    selectedPlayer.classList.remove("active");
-                    selectedPlayer.classList.add("in-formation");
+                        fillPosition(position);
+                        selectedPlayer.classList.remove("active");
+                        selectedPlayer.classList.add("in-formation");
+                    }
+                    checkSubsActive();
+                    getPlayersAndPositions();
                 }
-                checkSubsActive();
             });
 
-            // Action to carry out when use clicks button to remove player from formation
-            clearPositionButton.addEventListener('click', () => {
-                const positionPlayerId = position.querySelector("input").value;
-                const players = document.querySelectorAll(".reserves-li");
-                players.forEach(player => {
-                    console.log()
-                    const playerId = player.querySelector("input").value;
-                    if (playerId === positionPlayerId) {
-                        player.classList.remove("in-formation");
-                        position.classList.remove("filled");
-                    }
-                });
-                deactivateSubs();
+                // Action to carry out when use clicks button to remove player from formation
+                clearPositionButton.addEventListener('click', () => {
+                        const positionPlayerId = position.querySelector("input").value;
+                        const players = document.querySelectorAll(".reserves-li");
+                        players.forEach(player => {
+                            const playerId = player.querySelector("input").value;
+                            if (playerId === positionPlayerId) {
+                                player.classList.remove("in-formation");
+                                position.classList.remove("filled");
+                            }
+                        });
+                        clearPlayer(position)
+                        if (subsUl.children.length==0) {
+                            deactivateSubs();
+                        }
+
             });
         }
     }
 
-    //
+
+    // Prevents filled position from acting as an unfilled position and removes response from position when player is selected
     function fillPosition(position) {
         position.classList.add("filled");
         for (let i = 0; i < positions.length; i++) {
@@ -450,49 +739,59 @@
         }
     }
 
+    const subsUl = document.querySelector(".subs-ul");
+    const subsHeader = document.querySelector(".subs-header");
+
+    // Checks to see if the subs list can be activated whenever all the positions on the pitch are filled
     function checkSubsActive() {
+        if (checkFilled()) {
+            activateSubs();
+        } else if (subsUl.children.length==0) {
+            deactivateSubs();
+        }
+    }
+
+    // Checks whether all positions on the line-up are filled
+    function checkFilled() {
         let subsActive = true;
-        const subsUl = document.querySelector(".subs-ul");
-        const subsLi = document.querySelectorAll(".subs-li");
-        const subsHeader = document.querySelector(".subs-header");
-        const reservesLi = document.querySelectorAll(".reserves-li");
         for (let i = 0; i < positions.length; i++) {
-            position = positions.item(i)
+            const position = positions.item(i)
             if (!position.classList.contains("filled")) {
                 subsActive = false;
                 break;
             }
         }
-        if (subsActive) {
-            deactivateSubs()
-        } else {
-            subsUl.classList.remove("active");
-            subsHeader.classList.remove("active");
-            subsLi.forEach(li => {
-                const switchButton = li.querySelector(".switch")
-                switchButton.classList.remove("active");
-            })
-            reservesLi.forEach(li => {
-                const switchButton = li.querySelector(".switch")
-                switchButton.classList.remove("active");
-            })
-        }
+        return subsActive;
     }
 
-    function deactivateSubs() {
-        const subsUl = document.querySelector(".subs-ul");
-        const subsLi = document.querySelectorAll(".subs-li");
-        const subsHeader = document.querySelector(".subs-header");
-        const reservesLi = document.querySelectorAll(".reserves-li");
+    // Activates Subs
+    function activateSubs() {
         subsUl.classList.add("active");
         subsHeader.classList.add("active");
-        subsLi.forEach(li => {
-            const switchButton = li.querySelector(".switch")
-            switchButton.classList.add("active");
+        const switches = document.querySelectorAll(".switch");
+        switches.forEach(sw => {
+            sw.classList.add("active");
         })
-        reservesLi.forEach(li => {
-            const switchButton = li.querySelector(".switch")
-            switchButton.classList.add("active");
+        const players = document.querySelectorAll(".reserves-li, .subs-li");
+        players.forEach(player => {
+            player.style.cursor = "default";
+        })
+    }
+
+    // Deactivates subs
+    function deactivateSubs() {
+        subsUl.classList.remove("active");
+        subsHeader.classList.remove("active");
+        while (subsUl.firstChild) {
+            subsUl.removeChild(subsUl.firstChild);
+        }
+        const switches = document.querySelectorAll(".switch");
+        switches.forEach(sw => {
+            sw.classList.remove("active");
+        })
+        const players = document.querySelectorAll(".reserves-li, .subs-li");
+        players.forEach(player => {
+            player.style.cursor = "pointer";
         })
     }
 
@@ -501,27 +800,132 @@
     // Iterate over each switch button
     switchButtons.forEach((button) => {
         button.addEventListener('click', () => {
-            const listItem = button.parentElement;
-            const reservesUL = document.querySelector('.reserves-ul');
-            const subsUL = document.querySelector('.subs-ul');
-            const parentUl = listItem.parentElement;
-
-            if (button.classList.contains('active')) {
-                // Move the li element to subs-ul
-                if (parentUl.classList.contains("reserves-ul")) {
-                    subsUL.appendChild(listItem);
-                    listItem.classList.add("subs-li");
-                    listItem.classList.remove("reserves-li");
-                } else {
-                    reservesUL.appendChild(listItem);
-                    listItem.classList.add("reserves-li");
-                    listItem.classList.remove("subs-li");
-                }
-                parentUl.removeChild(listItem);
-            }
+            switchOnClick(button);
         });
     });
 
+    // Onclick functionality for switch buttons
+    function switchOnClick(button) {
+        const listItem = button.parentElement;
+        const reservesUL = document.querySelector('.reserves-ul');
+        const subsUL = document.querySelector('.subs-ul');
+        // Different methods for subs and reserves as player objects should remain in reserves
+        if (button.classList.contains('active')) {
+            // Move the li element to subs-ul
+            if (listItem.classList.contains("reserves-li")) {
+                subsUL.appendChild(clonePlayer(listItem))
+                listItem.classList.add("in-formation")
+            } else {
+                const playerId = listItem.querySelector('input').value;
+                const reserves = reservesUL.querySelectorAll('.reserves-li');
+                for (const player of reserves) {
+                    const input = player.querySelector('input');
+                    if (input.value === playerId) {
+                        player.classList.remove("in-formation")
+                        break;
+                    }
+                }
+                subsUL.removeChild(listItem);
+            }
+        }
+        checkSubsActive();
+    }
+
+
+    function clonePlayer(player) {
+        const pictureString = player.querySelector("img").src
+        const firstName = player.querySelector("span").textContent;
+        const playerId = player.querySelector("input").value;
+
+        const playerLi = document.createElement("li");
+        playerLi.className = "subs-li";
+
+        const liPlayerImage = document.createElement("img");
+        liPlayerImage.className = "li-player-image";
+        liPlayerImage.src = pictureString;
+        liPlayerImage.alt = "My Profile";
+        playerLi.append(liPlayerImage);
+
+        const liPlayerName = document.createElement("span");
+        liPlayerName.className = "li-player-name";
+        liPlayerName.textContent = firstName;
+        playerLi.append(liPlayerName);
+
+        const button = document.createElement("button");
+        button.className = "switch";
+        button.type = "button";
+        playerLi.append(button);
+        button.addEventListener("click", () => {
+            switchOnClick(button);
+        });
+
+        const playerIdInput = document.createElement("input");
+        playerIdInput.className = "playerId"
+        playerIdInput.type = "hidden";
+        playerIdInput.value = playerId;
+        playerLi.append(playerIdInput);
+        playerOnClick(playerLi)
+
+        return playerLi;
+    }
+
+
+
+
+    //Reload formation after page reload
+    window.addEventListener('load', function () {
+        const formationDropdown = document.getElementById("formation-dropdown");
+        const selectedFormationId = formationDropdown.value;
+        const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex];
+        if (selectedFormationId !== "-1") {
+            loadFormation(selectedFormation);
+        }
+    });
+
+
+    function getPlayersAndPositionsAndSubs() {
+        getPlayersAndPositions()
+        getSubs()
+    }
+
+    function getPlayersAndPositions() {
+        let playersAndPositions = "";
+        for (let i = 0; i < positions.length; i++) {
+            const position = positions.item(i);
+
+            if (position.querySelector("input").value != "") {
+                playersAndPositions = playersAndPositions + position.id.replace("player", "") + " " + position.querySelector("input").value  + ", "
+            }
+            else { //if position isn't filled by player, use an X in its place so we know to call an error
+                playersAndPositions = playersAndPositions + position.id.replace("player", "") + " " + "X"  + ", "
+            }
+        }
+        document.getElementById("playerAndPositions").setAttribute("value", playersAndPositions)
+    }
+
+
+    function getSubs() {
+        //we just need player id
+
+        var subsUl = document.querySelector('.subs-ul');
+
+        var liElements = subsUl.querySelectorAll('.subs-li');
+
+        var subsPlayerIds = '';
+
+        liElements.forEach(function(li) {
+            var playerIdInput = li.querySelector('.playerId');
+            var playerId = playerIdInput.value;
+            subsPlayerIds += playerId + ', ';
+        });
+
+        subsPlayerIds = subsPlayerIds.replace(/, $/, '');
+
+        document.getElementById("subs").setAttribute("value", subsPlayerIds)
+
+    }
+
 
 </script>
+</body>
 </html>

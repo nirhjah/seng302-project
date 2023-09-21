@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <link th:href="@{/css/create-club.css}" rel="stylesheet">
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>[[${clubId != null ? 'Edit' : 'Create'}]] Club</title>
 </head>
 <body class="view-teams-background">
@@ -16,14 +16,26 @@
     </div>
 
     <div class="wrapper">
-        <form th:action="@{createClub}" th:object="${createAndEditClubForm}" id="createAndEditClubForm" method="post">
+        <form th:action="@{createClub}" th:object="${createAndEditClubForm}" id="createAndEditClubForm" method="post" enctype="multipart/form-data">
             <input type="hidden" th:if="${clubId != null}" th:name="clubId" th:value="${clubId}"/>
 
+            <div class="preview-logo">
+                <div class="logo-container">
 
+                    <img id="club-logo" th:src="${clubId == null ? 'image/icons/club-logo.svg' : 'club-logo/' + clubId}" />
 
+                </div>
+                <div class="file-upload" >
+                    <div class="file-label-border">
+                        <label for="file" class="file-label">
+                            Upload Logo </label>
+                    </div>
+                    <input id ="file" type='file' th:name="file" accept=".jpg, .jpeg, .png, .svg, .svg+xml" onchange="readImageURL(this);"/>
+                </div>
+            </div>
 
             <div class="input-box">
-                <input type="text" class="form-control" id="name" th:name="name" th:value="${name}"
+                <input type="text" class="form-control" id="name" th:name="name" th:value="*{name}"
                        data-cy="name" autofocus placeholder=""
                        title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
                 <label for="name">Club Name <span class="required">*</span></label>
@@ -31,7 +43,7 @@
             </div>
 
             <div class="input-box">
-                <input type="text" class="form-control" id="sport" th:name="sport" th:value="${sport}"
+                <input type="text" class="form-control" id="sport" th:name="sport" th:value="*{sport}"
                        data-cy="sport" autofocus placeholder=""
                        title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
                 <label for="sport">Club Sport <span class="required">*</span></label>
@@ -42,7 +54,7 @@
             <div class="input-boxes">
                 <div class="input-box">
                     <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
-                           data-cy="location" autofocus placeholder="" autocomplete="off" th:value="${addressLine1}"
+                           data-cy="location" autofocus placeholder="" autocomplete="off" th:value="*{addressLine1}"
                            title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
                     <label for="address-line-1">Address Line 1<span class="required">*</span></label>
                     <div class="autocomplete-container" id="autocomplete-container"></div>
@@ -52,7 +64,7 @@
 
                 <div class="input-box">
                     <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
-                           data-cy="location" autofocus placeholder="" th:value="${addressLine2}"
+                           data-cy="location" autofocus placeholder="" th:value="*{addressLine2}"
                            title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
                     <label for="address-line-2">Address Line 2</label>
                 </div>
@@ -61,60 +73,57 @@
 
             <div class="input-boxes">
 
-            <div class="input-box">
-                <input type="text" class="form-control" id="suburb" th:name="suburb"
-                       data-cy="location" autofocus placeholder="" th:value="${suburb}">
-                <label for="suburb">Suburb</label>
-            </div>
-            <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
-            <div class="input-box">
-                <input type="text" class="form-control" id="postcode" th:name="postcode"
-                       data-cy="location" autofocus placeholder="" th:value="${postcode}">
-                <label for="postcode">Postcode<span class="required">*</span></label>
-                <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
-            </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="suburb" th:name="suburb"
+                           data-cy="location" autofocus placeholder="" th:value="*{suburb}">
+                    <label for="suburb">Suburb</label>
+                </div>
+                <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="postcode" th:name="postcode"
+                           data-cy="location" autofocus placeholder="" th:value="*{postcode}">
+                    <label for="postcode">Postcode<span class="required">*</span></label>
+                    <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
+                </div>
             </div>
 
             <div class="input-boxes">
-            <div class="input-box">
-                <input type="text" class="form-control" id="city" th:name="city"
-                       data-cy="location" autofocus placeholder="" th:value="${city}">
-                <label for="city">City <span class="required">*</span></label>
-                <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
-            </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="city" th:name="city"
+                           data-cy="location" autofocus placeholder="" th:value="*{city}">
+                    <label for="city">City <span class="required">*</span></label>
+                    <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
+                </div>
 
-            <div class="input-box">
-                <input type="text" class="form-control" id="country" th:name="country"
-                       data-cy="location" autofocus placeholder="" th:value="${country}">
-                <label for="country">Country <span class="required">*</span></label>
-                <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
-            </div>
+                <div class="input-box">
+                    <input type="text" class="form-control" id="country" th:name="country"
+                           data-cy="location" autofocus placeholder="" th:value="*{country}">
+                    <label for="country">Country <span class="required">*</span></label>
+                    <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
+                </div>
             </div>
 
             <label class="selectTeamsLabel"> Select Teams </label>
-            <select name="selectedTeams" id="selectedTeams" multiple>
+            <select th:field="*{selectedTeams}" name="selectedTeams" id="selectedTeams" multiple>
                 <option class="selectTeamsOption" th:each="team : ${listOfTeams}"
                         th:value="${team.teamId}"
                         th:text="${team}"
                         th:selected="${selectedTeams != null && selectedTeams.contains(team)}"></option>
             </select>
 
-            <label style="font-family: 'Noto Sans', sans-serif"> Hold ctrl and click on teams to select/deselect multiple </label>
+            <label style="font-family: 'Noto Sans', sans-serif"> Hold ctrl and click on teams to select/deselect
+                multiple </label>
 
             <div th:each="err : ${#fields.errors('selectedTeams')}" th:text="${err}" class="error-message"></div>
 
 
             <div class="submit-button">
-                <a th:href="@{home}">
-                    <button type="submit" th:text="${clubId != null ? 'Save' : 'Create'}"></button>
-
-                </a>
+                <button type="submit" th:text="${clubId != null ? 'Save' : 'Create'}"></button>
             </div>
         </form>
     </div>
 </div>
-</body>
-
+<script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
 <script type="text/javascript" th:inline="javascript">
     /**
      ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
@@ -124,11 +133,12 @@
     const ENDPOINT = path + "/geocode/autocomplete";
 </script>
 <script th:inline="javascript">
+
     /**
      * The delay time (in milliseconds) for debouncing the search input.
      * @type {number}
      */
-    const DEBOUNCE_DELAY = 450; // set the debounce delay to 450ms
+    const DEBOUNCE_DELAY = 100; // set the debounce delay to 200ms
 
     const searchBox = document.querySelector('#address-line-1');
     const resultsContainer = document.querySelector('#autocomplete-container');
@@ -150,6 +160,38 @@
             clearTimeout(timeoutId);
             timeoutId = setTimeout(() => fn.apply(this, arguments), delay);
         }
+    }
+
+    function readImageURL(input) {
+        const allowedExtensions = ["jpg", "jpeg", "png", "svg"];
+        const fileName = input.value;
+        const fileExtension = fileName.split(".").pop().toLowerCase();
+
+        if (!allowedExtensions.includes(fileExtension)) {
+            alert('File type must be jpeg, png or svg');
+            input.value = "";
+            return;
+        }
+
+        if (!(input.files && input.files[0])) {
+            return; // No input, invalid
+        }
+
+        const file = input.files[0];
+
+        if (file.size > 10000000) {
+            alert("File size must be less than 10MB");
+            input.value = "";
+            return;
+        }
+        const reader = new FileReader();
+        const image = document.getElementById('club-logo');
+
+        reader.onload = function (e) {
+            image.src = e.target.result;
+        };
+
+        reader.readAsDataURL(input.files[0]);
     }
 
     /**
@@ -223,8 +265,6 @@
     });
 
 
-
-
-
 </script>
+</body>
 </html>

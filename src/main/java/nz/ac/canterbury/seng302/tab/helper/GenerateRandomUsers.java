@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.helper;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -11,6 +10,8 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class GenerateRandomUsers {
 
     @Autowired
     SportRepository sportRepository;
+
+    @Autowired
+    TeamRepository teamRepository;
 
     private final Random random = ThreadLocalRandom.current();
 
@@ -44,7 +48,7 @@ public class GenerateRandomUsers {
      * <p><strong>NOTE:</strong> This user isn't saved to the repository, you need to do that.</p>
      * @return A randomly generated user.
      */
-    public User createRandomUser() throws IOException {
+    public User createRandomUser() {
 
         String firstName = RANDOM_NAMES[random.nextInt(0, RANDOM_NAMES.length)];
         
@@ -69,9 +73,10 @@ public class GenerateRandomUsers {
      * <p><strong>NOTE</strong>: This user isn't saved to the repository, you need to do that.</p>
      * @return A randomly generated user.
      */
-    public User createRandomUserWithSports() throws IOException {
-
+    public User createRandomUserWithSports() {
         User user = createRandomUser();
+
+
         // Generate random sports
         if (sportRepository.count() == 0) {
             for (String sportName: RANDOM_SPORTS) {
@@ -86,6 +91,15 @@ public class GenerateRandomUsers {
         List<Sport> ourSports = allSports.subList(0, random.nextInt(allSports.size()));
 
         user.setFavoriteSports(ourSports);
+        List<Team> allTeams = teamRepository.findAll();
+
+        if(allTeams.isEmpty()) {
+            return user;
+        }
+
+        for (Team team : allTeams) {
+            user.joinTeam(team);
+        }
 
         return user;
 

@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,10 +62,6 @@ public class FormationRepositoryTest {
         Formation formation = new Formation("4-4-3",uniqueTeam);
         formationRepository.save(formation);
         List<Formation> formationList = formationRepository.findByTeamTeamId(uniqueTeam.getTeamId());
-        System.out.println(formationList);
-        System.out.println("team.id = " + team.getTeamId());
-        System.out.println("uniqueTeam.id = " + uniqueTeam.getTeamId());
-        System.out.println(formationList);
         assertEquals(1, formationList.size());
         Formation retrievedFormation = formationList.get(0);
         Assertions.assertEquals(formation, retrievedFormation);

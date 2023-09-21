@@ -1,9 +1,11 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.util.Optional;
-
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.image.UserImageService;
+import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.servlet.http.HttpServletResponse;
-import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.service.UserService;
+import java.util.Optional;
 
+/**
+ * Spring Boot Controller class for the ViewUserForm
+ */
 @Controller
 public class ViewUserController {
     Logger logger = LoggerFactory.getLogger(ViewUserController.class);
@@ -28,6 +31,10 @@ public class ViewUserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserImageService userImageService;
+
 
     /**
      * Gets the thymeleaf page representing the /demo page (a basic welcome screen
@@ -44,34 +51,38 @@ public class ViewUserController {
             Model model,
             HttpServletResponse httpServletResponse, HttpServletRequest request) {
         logger.info("GET /user-info");
+        model.addAttribute("httpServletRequest",request);
+        Optional<User> userOptional = userService.findUserById(userId);
+        model.addAttribute("thisUser", userOptional);
 
-        Optional<User> user = userService.findUserById(userId);
-        String userPicture = null;
-        if (user.isEmpty()) { // If empty, throw a 404
+        User user;
+        if (userOptional.isEmpty()) { // If empty, throw a 404
             httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return "redirect:/home";
         } else {
-            userPicture = user.get().getPictureString();
+            user = userOptional.get();
             model.addAttribute("userId", userId);
-            model.addAttribute("favSportNames", user.get().getFavouriteSportNames());
+            model.addAttribute("favSportNames", user.getFavouriteSportNames());
         }
 
         // Thymeleaf has no special support for optionals
-        model.addAttribute("thisUser", user);
-        model.addAttribute("firstName", user.get().getFirstName());
-        model.addAttribute("lastName", user.get().getLastName());
-        model.addAttribute("email", user.get().getEmail());
-        model.addAttribute("dateOfBirth", user.get().getDateOfBirth());
-        model.addAttribute("location", user.get().getLocation());
-        model.addAttribute("displayPicture", userPicture);
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("email", user.getEmail());
+        model.addAttribute("dateOfBirth", user.getDateOfBirth());
+        model.addAttribute("location", user.getLocation());
         model.addAttribute("navTeams", teamService.getTeamList());
-        model.addAttribute("httpServletRequest",request);
+        model.addAttribute("fedmanTokenMessage", (String)model.asMap().get("fedmanTokenMessage"));
+
+
+        model.addAttribute("displayPicture", userImageService.readFileOrDefaultB64((long) userId));
 
         var curUser = userService.getCurrentUser();
         boolean canEdit = curUser.filter(value -> value.getUserId() == userId).isPresent();
         // canEdit = whether or not this profile can be edited (i.e. belongs to the User)
         model.addAttribute("canEdit", canEdit);
 
-        return "viewUserTemplate";
+        return "viewUserForm";
     }
 
     /**
@@ -81,7 +92,7 @@ public class ViewUserController {
      * @return thymeleaf template
      */
     @GetMapping("/user-info/self")
-    public String getCurrentUser(Model model, HttpServletResponse httpServletResponse)
+    public String getCurrentUser(Model model, HttpServletResponse httpServletResponse, RedirectAttributes redirectAttributes)
     {
         Optional<User> user = userService.getCurrentUser();
         if (user.isEmpty())
@@ -90,6 +101,8 @@ public class ViewUserController {
         }
         else {
             User authUser = user.get();
+            //This redirect is 2 layers deep so have to add it again
+            redirectAttributes.addFlashAttribute("fedmanTokenMessage", (String)model.asMap().get("fedmanTokenMessage"));
             return "redirect:/user-info?name=" + authUser.getUserId();
         }
 
@@ -112,21 +125,15 @@ public class ViewUserController {
     ) {
         Optional<User> user = userService.getCurrentUser();
         if (user.isEmpty()) {
+            logger.error("Current user non-existant!");
             return "redirect:/login";
         }
         User authUser = user.get();
         model.addAttribute("userId", userId);
 
-        userService.updatePicture(file, userId);
+        // Saving the file in the file system
+        userImageService.updateProfilePicture(file);
+
         return "redirect:/user-info?name=" + authUser.getUserId();
     }
-
-    /**
-     * @param contentType The picture file type in string, e.g image/jpg, image/svg+xml etc
-     * @return Boolean type if the contentType parameter matches either the image/png, image/jpg, image/svg+xml or image/jpeg string
-     */
-    private boolean isSupportedContentType(String contentType){
-        return contentType.equals("image/png")|| contentType.equals("image/jpg")||contentType.equals("image/svg+xml")|| contentType.equals("image/jpeg");
-    }
-
 }

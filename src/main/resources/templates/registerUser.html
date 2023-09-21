@@ -3,11 +3,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
 <head>
-    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
-    <link th:href="@{/css/register.css}" rel="stylesheet" />
-    <link th:href="@{/css/password.css}" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link th:href="@{/css/register.css}" rel="stylesheet"/>
+    <link th:href="@{/css/password.css}" rel="stylesheet"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Register</title>
@@ -41,16 +40,19 @@
                         <input type="text" class="form-control" id="last-name" placeholder="" th:field="*{lastName}"
                                data-cy="lastName" required autofocus onkeyup="checkPasswordStrength()">
                         <label for="last-name"> Last Name <span class="required">*</span></label>
-                        <div th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error-message last-name"></div>
+                        <div th:each="err : ${#fields.errors('lastName')}" th:text="${err}"
+                             class="error-message last-name"></div>
                     </div>
                 </div>
-                <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message first-name"></div>
+                <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}"
+                     class="error-message first-name"></div>
                 <div class="input-box">
                     <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
                            data-cy="dateOfBirth" required autofocus>
                     <label for="date-of-birth"> Date of Birth <span class="required">*</span></label>
                 </div>
-                <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message date-of-birth"></div>
+                <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}"
+                     class="error-message date-of-birth"></div>
                 <div class="input-box">
                     <input type="email" class="form-control" id="email" placeholder="" th:field="*{email}"
                            data-cy="email" required autofocus onkeyup="checkPasswordStrength()">
@@ -59,7 +61,7 @@
                 <div th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error-message email"></div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="password" placeholder="" th:field="*{password}"
-                           data-cy="password" required autofocus oninput= "checkPasswordStrength(this)">
+                           data-cy="password" required autofocus oninput="checkPasswordStrength(this)">
                     <img th:src="@{/image/icons/hide.png}" class="password-toggle"/>
                     <label for="password"> Password <span class="required">*</span></label>
                 </div>
@@ -67,16 +69,21 @@
                     <div class="password-strength-meter">
                         <div class="bar"></div>
                     </div>
-<!--                    <div class="password-strength-text"></div>-->
                     <ul class="password-information-text">
-                        <li id="password-min-characters"><img th:src="@{/image/icons/password-cross.svg}" /> Password must be at least 8 characters</li>
-                        <li class="password-items"> Must contain the following items: </li>
+                        <li id="password-min-characters"><img th:src="@{/image/icons/password-cross.svg}"/> Password
+                            must be at least 8 characters
+                        </li>
+                        <li class="password-items"> Must contain the following items:</li>
                         <ul>
-                            <li id ="password-letter-case"><img th:src="@{/image/icons/password-cross.svg}" /> Uppercase and lowercase letters</li>
-                            <li id="password-numbers"><img th:src="@{/image/icons/password-cross.svg}" /> Numbers</li>
-                            <li id="password-symbols"><img th:src="@{/image/icons/password-cross.svg}" /> Symbols</li>
+                            <li id="password-letter-case"><img th:src="@{/image/icons/password-cross.svg}"/> Uppercase
+                                and lowercase letters
+                            </li>
+                            <li id="password-numbers"><img th:src="@{/image/icons/password-cross.svg}"/> Numbers</li>
+                            <li id="password-symbols"><img th:src="@{/image/icons/password-cross.svg}"/> Symbols</li>
                         </ul>
-                        <li id="password-user-details"><img th:src="@{/image/icons/password-cross.svg}" /> Mustn't contain your name or email</li>
+                        <li id="password-user-details"><img th:src="@{/image/icons/password-cross.svg}"/> Mustn't
+                            contain your name or email
+                        </li>
                     </ul>
                     <div th:if="${#fields.hasErrors('password')}" class="error-message password">
                         <span th:text="${#fields.errors('password').get(#fields.errors('password').size() - 1)}"></span>
@@ -95,11 +102,12 @@
                 <div class="input-boxes">
                     <div class="input-box">
                         <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
-                               data-cy="location"autofocus placeholder="" th:field="*{addressLine1}"
+                               data-cy="location" autofocus placeholder="" th:field="*{addressLine1}"
                                autocomplete="off"
                                title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
                         <label for="address-line-1">Address Line 1</label>
-                        <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="error-message address-line-1"></div>
+                        <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}"
+                             class="error-message address-line-1"></div>
                         <div class="autocomplete-container" id="autocomplete-container"></div>
                     </div>
                     <div class="input-box">
@@ -107,7 +115,8 @@
                                data-cy="location" autofocus placeholder="" th:field="*{addressLine2}"
                                title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, apostrophes and pound signs. Must include at least one letter or number">
                         <label for="address-line-2">Address Line 2</label>
-                        <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message address-line-2"></div>
+                        <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}"
+                             class="error-message address-line-2"></div>
                     </div>
                 </div>
                 <div class="input-box">
@@ -116,7 +125,8 @@
                            placeholder="" th:field="*{suburb}"
                            title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
                     <label for="suburb">Suburb</label>
-                    <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message suburb"></div>
+                    <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}"
+                         class="error-message suburb"></div>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="postcode" th:name="postcode"
@@ -124,7 +134,8 @@
                            placeholder="" th:field="*{postcode}"
                            title="May include letters, numbers, forward slashes, and hyphens. Must start with letter or number">
                     <label for="postcode">Postcode</label>
-                    <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message postcode"></div>
+                    <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}"
+                         class="error-message postcode"></div>
                 </div>
                 <div class="input-box">
                     <input type="text" class="form-control" id="city" th:name="city"
@@ -140,9 +151,11 @@
                            placeholder="" th:field="*{country}"
                            title="May include letters, hyphens, apostrophes and spaces. Must start with letter">
                     <label for="country">Country <span class="required">*</span></label>
-                    <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message country"></div>
+                    <div th:each="err : ${#fields.errors('country')}" th:text="${err}"
+                         class="error-message country"></div>
                 </div>
             </div>
+            <script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
             <script type="text/javascript" th:inline="javascript">
                 /**
                  ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
@@ -151,7 +164,7 @@
                 const path = /*[[${path}]]*/ "";
                 const ENDPOINT = path + "/geocode/autocomplete";
             </script>
-            <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>
+            <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"></script>
             <div class="submit-button">
                 <button class="previous-button" type="button">Previous</button>
                 <button class="next-button" type="button">Next</button>
@@ -184,13 +197,13 @@
     const postcodeError = document.getElementsByClassName("error-message postcode");
     const cityError = document.getElementsByClassName("error-message city");
     const countryError = document.getElementsByClassName("error-message country");
-    const firstPageErrors = [firstNameError.length,  lastNameError.length,  dateOfBirthError.length,  emailError.length,  passwordError.length,  confirmPasswordError.length];
+    const firstPageErrors = [firstNameError.length, lastNameError.length, dateOfBirthError.length, emailError.length, passwordError.length, confirmPasswordError.length];
     const secondPageErrors = [addressLine1Error.length, addressLine2Error.length, suburbError.length, postcodeError.length, cityError.length, countryError.length];
     const firstPageContainsErrors = firstPageErrors.includes(1);
     const secondPageContainsErrors = secondPageErrors.includes(1)
 
 
-    window.onload = function() {
+    window.onload = function () {
         if (!firstPageContainsErrors && secondPageContainsErrors) {
             secondPageInitialisation();
         }
@@ -239,29 +252,28 @@
         const password = document.getElementById("password").value;
 
         // password requirements labels
-        const minChar= document.getElementById("password-min-characters");
-        const hasLetterCase= document.getElementById("password-letter-case");
-        const hasNumber= document.getElementById("password-numbers");
-        const hasSymbol= document.getElementById("password-symbols");
-        const ownDetails= document.getElementById("password-user-details");
+        const minChar = document.getElementById("password-min-characters");
+        const hasLetterCase = document.getElementById("password-letter-case");
+        const hasNumber = document.getElementById("password-numbers");
+        const hasSymbol = document.getElementById("password-symbols");
+        const ownDetails = document.getElementById("password-user-details");
 
 
         // password requirements icon images
         const minCharImg = minChar.querySelector("img");
         const letterCaseImg = hasLetterCase.querySelector("img");
-        const numberImg=hasNumber.querySelector("img");
-        const symbolImg= hasSymbol.querySelector("img");
-        const detailsImg= ownDetails.querySelector("img");
+        const numberImg = hasNumber.querySelector("img");
+        const symbolImg = hasSymbol.querySelector("img");
+        const detailsImg = ownDetails.querySelector("img");
         if (password) {
             let strength = 0;
 
             if (password.length >= 8) {
-                minChar.style.color="green"
+                minChar.style.color = "green"
                 minCharImg.src = "image/icons/password-tick.svg";
                 strength++;
-            }
-            else{
-                minChar.style.color="red"
+            } else {
+                minChar.style.color = "red"
                 minCharImg.src = "image/icons/password-cross.svg";
             }
 
@@ -272,37 +284,36 @@
                 strength++;
             }
 
-            if (/[A-Z]/.test(password) &&/[a-z]/.test(password) ){
-                hasLetterCase.style.color="green";
+            if (/[A-Z]/.test(password) && /[a-z]/.test(password)) {
+                hasLetterCase.style.color = "green";
                 letterCaseImg.src = "image/icons/password-tick.svg";
-            }
-            else{
-                hasLetterCase.style.color="red";
+            } else {
+                hasLetterCase.style.color = "red";
                 letterCaseImg.src = "image/icons/password-cross.svg";
             }
             if (/\d/.test(password)) {
-                hasNumber.style.color="green";
-                numberImg.src= "image/icons/password-tick.svg";
+                hasNumber.style.color = "green";
+                numberImg.src = "image/icons/password-tick.svg";
                 strength++;
-            }else{
-                hasNumber.style.color="red";
-                numberImg.src= "image/icons/password-cross.svg";
+            } else {
+                hasNumber.style.color = "red";
+                numberImg.src = "image/icons/password-cross.svg";
             }
             if (/[\W_]/.test(password)) {
-                hasSymbol.style.color="green"
-                symbolImg.src="image/icons/password-tick.svg";
+                hasSymbol.style.color = "green"
+                symbolImg.src = "image/icons/password-tick.svg";
                 strength++;
-            }else{
-                hasSymbol.style.color="red";
-                symbolImg.src="image/icons/password-cross.svg";
+            } else {
+                hasSymbol.style.color = "red";
+                symbolImg.src = "image/icons/password-cross.svg";
             }
             if ((!firstName || !password.includes(firstName)) && (!lastName || !password.includes(lastName)) && (!email || !password.includes(email))) {
-                ownDetails.style.color="green"
-                detailsImg.src= "image/icons/password-tick.svg";
+                ownDetails.style.color = "green"
+                detailsImg.src = "image/icons/password-tick.svg";
                 strength++;
-            }else{
-                ownDetails.style.color="red"
-                detailsImg.src="image/icons/password-cross.svg";
+            } else {
+                ownDetails.style.color = "red"
+                detailsImg.src = "image/icons/password-cross.svg";
             }
 
             if (strength < 3) {
@@ -328,20 +339,20 @@
             bar.classList.remove("strong");
             bar.classList.remove("weak");
             bar.style.width = "0%";
-            ownDetails.style.color="red"
-            detailsImg.src="image/icons/password-cross.svg";
+            ownDetails.style.color = "red"
+            detailsImg.src = "image/icons/password-cross.svg";
 
-            hasSymbol.style.color="red";
-            symbolImg.src="image/icons/password-cross.svg";
+            hasSymbol.style.color = "red";
+            symbolImg.src = "image/icons/password-cross.svg";
 
-            hasLetterCase.style.color="red";
+            hasLetterCase.style.color = "red";
             letterCaseImg.src = "image/icons/password-cross.svg";
 
-            minChar.style.color="red"
+            minChar.style.color = "red"
             minCharImg.src = "image/icons/password-cross.svg";
 
-            hasNumber.style.color="red";
-            numberImg.src= "image/icons/password-cross.svg";
+            hasNumber.style.color = "red";
+            numberImg.src = "image/icons/password-cross.svg";
         }
     }
 
@@ -368,15 +379,14 @@
     if (firstPageContainsErrors) {
         passwordInput.setAttribute('th:field', '');
         confirmPasswordInput.setAttribute('th:field', '');
-        passwordInput.value=""
-        confirmPasswordInput.value=""
+        passwordInput.value = ""
+        confirmPasswordInput.value = ""
     } else {
         checkPasswordStrength();
     }
 
     passwordInput.type = 'password'
     confirmPasswordInput.type = 'password'
-
 
 
 </script>

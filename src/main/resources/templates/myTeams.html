@@ -69,10 +69,10 @@
 
     <div class="card-container">
         <div th:each="team : ${displayTeams}" class ="card"
-             th:onclick="|window.location.href='@{profile(teamID=${team.teamId})}'|">
+             th:onclick="|window.location.href='@{team-info(teamID=${team.teamId})}'|">
             <div class="card-wrapper">
                 <div class="card-image">
-                    <img th:src="${'data:image/jpeg;base64,' + team.pictureString}" class="card-img-top" alt="User image">
+                    <img th:src="@{/team-profile-picture/{id}(id = ${team.teamId})}" class="card-img-top" alt="Team image">
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">[[|${team.name} |]]</h5>
@@ -85,7 +85,7 @@
     </div>
 
 
-    <div th:if="${displayTeams != null}" th:insert="fragments/pagination.html :: pagination(pageName='my-teams')"></div>
+    <div th:if="${displayTeams != null}" th:insert="~{fragments/pagination.html :: pagination(pageName='my-teams')}"></div>
 
     <footer>
         <p>

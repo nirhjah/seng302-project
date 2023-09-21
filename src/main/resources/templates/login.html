@@ -16,11 +16,9 @@
   <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
   <div class="login-form">
     <div th:if="${message != null}" th:insert="~{fragments/messageDropDown.html :: messageDropDown(message=${message})}"></div>
-    <!--    <div class="login-header">-->
-<!--      <h1>Login</h1>-->
-<!--    </div>-->
     <div class="wrapper">
       <form  th:action="@{login}" method="post">
+        <input th:if="${continue}" name="continue" th:value="${continue}" type="hidden">
         <div class="icon">
           <a th:href="@{home}">
             <img id="cancelButton" th:src="@{/image/icons/cross.svg}"/>
@@ -51,7 +49,7 @@
           <a th:href="@{register}">Create Account</a>
         </div>
         <div class="cancel-link">
-          <a th:href="@{forgot-password}">Lost password</a>
+          <a th:href="@{lost-password}">Lost password</a>
         </div>
       </form>
     </div>

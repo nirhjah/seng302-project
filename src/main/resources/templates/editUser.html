@@ -1,0 +1,235 @@
+<!--/*
+    Edit User Form.
+
+    Attributes:
+    - editUserForm: The POJO containing the user's details, should be pre-filled on first load
+    - validNameRegex: The valid name pattern (Any language's alphabet, with spaces and hyphens. Otherwise no symbols/numbers)
+    - validNameMessage: The message to display if the validNameRegex fails 
+*/-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+<head>
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+    <link th:href="@{/css/edit-user.css}" rel="stylesheet"/>
+    <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1
+">
+    <title th:inline="text">Edit User</title>
+<body class="edit-user-background">
+<div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+    <div class="user-form">
+        <div class="user-header">
+            <h1 th:inline="text">Edit User</h1>
+        </div>
+        <div class="wrapper">
+            <form th:action="@{editUser}" method="post" th:object="${editUserForm}" id="editUserForm">
+                <div class="edit-inputs">
+                    <div class="create-header">
+                        <h2>Password</h2>
+                        <img th:src="@{/image/icons/lock.svg}"/>
+                    </div>
+                    <div class="submit-button">
+                        <a th:href="@{update-password}">
+                            <button type="button">Update Password</button>
+                        </a>
+                    </div>
+                    <div class="create-header">
+                        <h2>Details</h2>
+                        <img th:src="@{/image/icons/dark-blue-user.svg}"/>
+                    </div>
+                    <div class="input-boxes">
+                        <div class="input-box">
+                            <input type="text" class="form-control" id="first-name" th:name="firstName"
+                                   data-cy="firstName" autofocus placeholder="" th:value="*{firstName}">
+                            <label for="first-name">First Name <span class="required">*</span></label>
+                        </div>
+                        <div th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error-message"></div>
+
+                        <div class="input-box">
+                            <input type="text" class="form-control" id="last-name" th:name="lastName"
+                                   data-cy="lastName" autofocus placeholder="" th:value="*{lastName}">
+                            <label for="last-name">Last Name <span class="required">*</span></label>
+                        </div>
+                        <div th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error-message"></div>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="email" th:name="email"
+                               data-cy="email" autofocus placeholder="" th:value="*{email}">
+                        <label for="email">Email <span class="required">*</span></label>
+                        <p th:each="err : ${#fields.errors('email')}" th:text="${err}" class="errorMessage" />
+                    </div>
+                    <div class="input-box">
+                        <input type="date" class="form-control" id="date-of-birth" placeholder="" th:field="*{dateOfBirth}"
+                               data-cy="dateOfBirth" required autofocus>
+                        <label for="date-of-birth">Date of Birth <span class="required">*</span></label>
+                        <div th:each="err : ${#fields.errors('dateOfBirth')}" th:text="${err}" class="error-message"></div>
+                    </div>
+                    <div class="sport-input-box">
+                        <div class="details">
+                            <label class="sports-label" for="sport-box">Favourite Sports</label>
+                            <button type="button">Clear</button>
+                        </div>
+                        <div class="content">
+                            <ul><input type="text" spellcheck="false" list="sports" id="sport-list"></ul>
+                            <datalist id="sports">
+                                <option th:each="sport : ${knownSports}" th:text="${sport}">
+                            </datalist>
+                        </div>
+                        <div class="sport-box" id="sport-box"></div>
+                        <label for="sport-list" id="error-message"></label>
+                    </div>
+                    <div class="create-header">
+                        <h2>Location</h2>
+                        <img th:src="@{/image/icons/dark-blue-location.svg}"/>
+                    </div>
+                    <div class="input-boxes">
+                        <div class="input-box">
+                            <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
+                                   data-cy="location" autofocus placeholder="" autocomplete="off" th:value="*{addressLine1}"
+                            title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
+                            <label for="address-line-1">Address Line 1</label>
+                            <div class="autocomplete-container" id="autocomplete-container"></div>
+                        </div>
+                        <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="error-message"></div>
+
+                        <div class="input-box">
+                            <input type="text" class="form-control" id="address-line-2" th:name="addressLine2"
+                                   data-cy="location" autofocus placeholder="" th:value="*{addressLine2}"
+                                   title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
+                            <label for="address-line-2">Address Line 2</label>
+                        </div>
+                        <div th:each="err : ${#fields.errors('addressLine2')}" th:text="${err}" class="error-message"></div>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="suburb" th:name="suburb"
+                               data-cy="location" autofocus placeholder="" th:value="*{suburb}">
+                        <label for="suburb">Suburb</label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('suburb')}" th:text="${err}" class="error-message"></div>
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="postcode" th:name="postcode"
+                               data-cy="location" autofocus placeholder="" th:value="*{postcode}">
+                        <label for="postcode">Postcode</label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
+
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="city" th:name="city"
+                               data-cy="location" autofocus placeholder="" th:value="*{city}">
+                        <label for="city">City <span class="required">*</span></label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
+
+                    <div class="input-box">
+                        <input type="text" class="form-control" id="country" th:name="country"
+                               data-cy="location" autofocus placeholder="" th:value="*{country}">
+                        <label for="country">Country <span class="required">*</span></label>
+                    </div>
+                    <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
+                    <script type="text/javascript" th:inline="javascript">
+                        /**
+                         ` * The endpoint for the OpenRouteService Geocoding API's autocomplete feature.
+                         * @type {string}
+                         */
+                        const path = /*[[${path}]]*/ "";
+                        const ENDPOINT = path + "/geocode/autocomplete";
+                    </script>
+                    <script type="text/javascript" th:src="@{/js/fullLocationAutocomplete.js}"> </script>
+                </div>
+                <div class="submit-button">
+                    <label th:if="${errorMessage}" th:text="${errorMessage}" style="position: fixed;"></label>
+                    <button type="submit" id="submit" formnovalidate>Save</button>
+                </div>
+                <div class="cancel-link">
+                    <a th:href="@{user-info/self}">Cancel</a>
+                </div>
+            </form>
+        </div>
+    <footer>
+        <p>
+            Image by <a
+                href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+            on Freepik
+        </p>
+    </footer>
+</div>
+<script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
+<script th:inline="javascript">
+    const ul = document.querySelector(".content ul"),
+        sportDisplay = document.querySelector(".sport-box"),
+        input = document.querySelector(".content input");
+    const form = document.getElementById("editUserForm");
+
+    const tagsInput = document.createElement("input");
+    tagsInput.setAttribute("type", "hidden");
+    tagsInput.setAttribute("name", "tags");
+    let tags = /*[[${favouriteSports}]]*/ [];
+
+    createTag();
+    function createTag(){
+        sportDisplay.querySelectorAll("li").forEach(li => li.remove());
+        tags.slice().reverse().forEach(tag =>{
+            let liTag = `<li>${tag} <i class="multiply" onclick="remove(this, '${tag}')"></i></li>`;
+            sportDisplay.insertAdjacentHTML("afterbegin", liTag);
+        });
+    }
+
+    function remove(element, tag){
+        let index  = tags.indexOf(tag);
+        tags = [...tags.slice(0, index), ...tags.slice(index + 1)];
+        element.parentElement.remove();
+        createTag();
+    }
+
+    function addTag(e) {
+        if(e.key == "Enter"){
+            e.preventDefault();
+            let tag = e.target.value.replace(/\s+/g, ' ');
+            if(tag.length>0 && !tags.includes(tag)){
+                if(tag.match("([A-Za-z-'\\s]+)$")){
+                    document.getElementById("error-message").innerText  ="";
+                    tags.push(tag);
+                    createTag();
+                }
+                else {
+                    document.getElementById("error-message").innerText  ="Sport contains invalid characters";
+                    document.getElementById("error-message").className = "error-message";
+                }
+            }
+            else if (tag.length==0){
+                document.getElementById("error-message").innerText  ="Please enter a sport";
+            }
+            e.target.value = "";
+        }
+    }
+
+    input.addEventListener("keyup", addTag);
+
+
+    const removeBtn = document.querySelector(".details button");
+    removeBtn.addEventListener("click", () =>{
+        tags.length = 0;
+        sportDisplay.querySelectorAll("li").forEach(li => li.remove());
+    });
+    form.addEventListener('submit', (event) => {
+        const tagsInput = document.createElement("input");
+        tagsInput.setAttribute("type", "hidden");
+        tagsInput.setAttribute("name", "tags");
+        tagsInput.setAttribute("value", tags.join(","));
+        form.appendChild(tagsInput);
+        return true;
+    });
+
+    const inputBox = document.getElementById("sport-list");
+
+    inputBox.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // prevent form submission
+        }
+    });
+
+</script>
+</body>
+</html>

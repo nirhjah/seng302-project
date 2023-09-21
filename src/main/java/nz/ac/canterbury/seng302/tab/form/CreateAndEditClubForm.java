@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.form;
 
+import nz.ac.canterbury.seng302.tab.entity.Club;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.validator.LocationValidators;
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
@@ -11,13 +12,12 @@ import java.util.List;
  */
 public class CreateAndEditClubForm {
 
-    @TeamFormValidators.teamNameValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG)
+    @TeamFormValidators.teamNameValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG_TEAM_NAME)
     private String name;
 
-    @TeamFormValidators.teamSportValidator(message = TeamFormValidators.INVALID_CHARACTERS_MSG)
+    @TeamFormValidators.teamSportValidator(message = TeamFormValidators.INVALID_SPORT_MSG)
     private String sport;
 
-    @LocationValidators.addressValidator
     private String addressLine1;
     @LocationValidators.addressValidator
     private String addressLine2;
@@ -106,5 +106,18 @@ public class CreateAndEditClubForm {
 
     public Location getLocation() {
         return new Location(this.addressLine1, this.addressLine2, this.suburb, this.city, this.postcode, this.country);
+    }
+
+
+    public void prepopulate(Club club) {
+        Location location = club.getLocation();
+        this.name = club.getName();
+        this.sport = club.getSport();
+        this.addressLine1 = location.getAddressLine1();
+        this.addressLine2 = location.getAddressLine2();
+        this.postcode = location.getPostcode();
+        this.country = location.getCountry();
+        this.city = location.getCity();
+        this.suburb = location.getSuburb();
     }
 }

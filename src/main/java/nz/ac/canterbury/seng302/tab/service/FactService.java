@@ -4,18 +4,14 @@ import nz.ac.canterbury.seng302.tab.entity.Activity;
 import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.entity.UserTeamStatistic;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.helper.TimeOfFactComparator;
 import nz.ac.canterbury.seng302.tab.repository.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class FactService {
@@ -42,17 +38,18 @@ public class FactService {
      * @return list of activities with the wanted fact type.
      */
     public List<Fact> getAllFactsOfGivenTypeForActivity(int factType, Activity activity) {
-        return factRepository.getFactByFactTypeAndActivity(factType, activity);
+        return sortFactTimesAscending(factRepository.getFactByFactTypeAndActivity(factType, activity));
     }
 
     /**
-     * Gets a user's total goals for a team they are apart of
-     * @param user the user's whose goals are being found
-     * @param team the team the user is apart of
-     * @return the total number of goals they've scored for a team
+     * Sorts given list of goals by time
+     * @param factList list of goals
+     * @return list of goals sorted in ascending time order
      */
-    public int getTotalGoalsForTeamPerUser(User user, Team team) {
-        return factRepository.getTotalGoalsScoredPerTeam(user, team);
+    public List<Fact> sortFactTimesAscending(List<Fact> factList) {
+        return factList.stream()
+                .sorted(new TimeOfFactComparator())
+                .toList();
     }
 
     /**
@@ -77,38 +74,39 @@ public class FactService {
 
     /**
      * Get the total time a player participated in an activity
-     * TODO implement in combination with subbing and starting line up
      * @param activity the activity the player took part in
      * @return the length of the activity in minutes
      */
     public long getTimePlayed(Activity activity) {
         return Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
     }
-
-    /**
-     * Get total goals for a player for a given activity
-     * @param activity the activity being played
-     * @param user the user whose goals are wanted
-     * @return the number of goals the user scored during that activity
-     */
-    public long getGoalsForActivityForPlayer(Activity activity, User user) {
-        return factRepository.getGoalsForActivityForPlayer(activity, user);
-    }
-
+    
     /**
      * Code for handling return of multiple entities adapted from
      * https://www.baeldung.com/jpa-return-multiple-entities#:~:text=In%20order%20to%20create%20a,primary%20and%20corresponding%20foreign%20keys.
      * @param team team that top scorers are to be found from
      * @return a List of mapping of top scorer by name to their number of goals
      */
-    public List<Map<User, Long>> getTop5Scorers(Team team) {
-        List<Object[]> scorers =  factRepository.getListOfTopScorersAndTheirScores(team);
-        List<Map<User, Long>> scoreInformation = new ArrayList<>();
+    public Map<User, Long> getTop5Scorers(Team team) {
+        List<Object[]> scorers = factRepository.getListOfTopScorersAndTheirScores(team);
+        Map<User, Long> scoreInformation = new HashMap<>();
         for (Object[] scorerInfo : scorers) {
             User u = (User) scorerInfo[0];
             Long i = (Long) scorerInfo[1];
-            scoreInformation.add(Map.of(u, i));
+            scoreInformation.put(u, i);
         }
-        return scoreInformation;
+
+
+        return scoreInformation.entrySet()
+                .stream()
+                .sorted(Map.Entry.<User, Long>comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (score1, score2) -> score1,
+                        LinkedHashMap::new
+                ));
     }
+
+    public void addOrUpdate(Fact fact) {factRepository.save(fact);}
 }

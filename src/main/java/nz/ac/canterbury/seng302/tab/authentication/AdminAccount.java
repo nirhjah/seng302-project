@@ -1,45 +1,94 @@
 package nz.ac.canterbury.seng302.tab.authentication;
 
-import nz.ac.canterbury.seng302.tab.entity.*;
-import nz.ac.canterbury.seng302.tab.repository.FormationRepository;
-import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
+import java.util.*;
+
+import nz.ac.canterbury.seng302.tab.entity.Sport;
+import org.springframework.beans.factory.annotation.Value;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
+import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
+
+/**
+  Creates an admin user in the database. This class is automatically run on every startup.
+ */
 @Component
 public class AdminAccount implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // TODO: This SHOULD NOT be hard coded in. Either remove this account, or make it an env variable.
-    private static final String ADMIN_PW = "1";
+    private String adminEmail;
+    private String adminPassword;
 
-    private static final String EMAIL = "admin@gmail.com";
-
-    @Autowired
-    public AdminAccount(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AdminAccount(UserRepository userRepository,PasswordEncoder passwordEncoder,
+            @Value("${adminEmail:admin@gmail.com}") String adminEmail,
+            @Value("${adminPassword:1}") String adminPassword) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.adminEmail = adminEmail;
+        this.adminPassword = adminPassword;
+    }
+
+    /**
+     * <p>
+     *  Give the current user a role if they don't already have it.
+     * </p>
+     *
+     * This exists so we can add roles easily to the production admin (Currently federation manager).
+     * @param admin The user we're giving the role to
+     * @param role The role we're assigning
+     */
+    private void giveRoleIfNotPresent(User admin, AuthorityType role) {
+        // Don't add duplicate roles
+        for (GrantedAuthority existingRole : admin.getAuthorities()) {
+            if (existingRole.getAuthority().equals(role.role())) {
+                return;
+            }
+        }
+
+        admin.grantAuthority(role);
+    }
+
+    /**
+     * Creates an admin account if one doesn't exist, or returns the existing one.
+     */
+    private User createOrGetAdminAccount(){
+        // Don't create a duplicate admin
+        Optional<User> currentAdmin = userRepository.findByEmail(adminEmail);
+        if (currentAdmin.isPresent()) {
+            return currentAdmin.get();
+        }
+
+        // Create admin
+        Location location = new Location("adminAddr1", "adminAddr2", "adminSuburb", "adminCity", "4dm1n", "adminLand");
+        User admin = new User("Admin", "Admin", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
+                adminEmail, passwordEncoder.encode(adminPassword), location);
+
+        Sport sport = new Sport("soccer");
+        admin.setFavoriteSports(List.of(sport));
+        // You need to confirm your email before you can log in.
+        admin.confirmEmail();
+
+        return admin;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        // Don't run if the user already exists
-        if (userRepository.findByEmail(EMAIL).isPresent()) {
-            return;
-        }
+        // Create the admin if it doesn't exist
+        // (Prevents duplicate admins on every reboot)
+        User admin = createOrGetAdminAccount();
+        // Give role if they don't exist
+        // (Same reason as above, don't want duplicate roles)
+        giveRoleIfNotPresent(admin, AuthorityType.ADMIN);
+        giveRoleIfNotPresent(admin, AuthorityType.FEDERATION_MANAGER);
 
-        Location location = new Location("admin", "admin", "admin", "admin", "admin", "admin");
-
-        User admin = new User("Admin", "Admin", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), EMAIL, passwordEncoder.encode(ADMIN_PW), location);
-
-        admin.confirmEmail();
+        // If anyone could find a way to prevent this class from being
+        // run during tests that'd be great.
         userRepository.save(admin);
-
     }
 }

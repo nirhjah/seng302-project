@@ -1,78 +1,102 @@
-#Feature: U34 – Add activity statistics
-#  Scenario: AC1: Score added to the team is in same format for both teams
-#    Given I have created a activity type that is a game or friendly,
-#    When I add a score to each team,
-#    Then it must be in the same format, i.e. if team A receives a score “3”, then team B receives a score “1”, or if team A receives a score “141-1” then team B receives a score “138-8”
+@add_activity_stats
+Feature: U34 – Add activity statistics
+
+#  Scenario: AC1
+#    Given I am a manager or coach,
+#    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
+#    When the activity has begun
+#    Then I am able to add an overall score, and record any substitutions or goals through a dedicated UI element for each.
 #
+  Scenario: AC2
+    Given I am a manager or coach,
+    And I am viewing an activity of any type
+    When the activity has begun
+    Then I am able to record facts through a dedicated UI element.
+
+  Scenario: AC3
+    Given I am a manager or coach,
+    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
+    When the activity has ended,
+    Then I am able to add an outcome for the overall activity through a dedicated UI element
+
+  Scenario: AC4
+    Given I am a manager or coach,
+    And I am viewing an activity of the type ‘Game’ or ‘Friendly’
+    When the activity has begun
+    And I am adding a goal, substitution or fact
+    And I specify a time
+    Then the time must fall within the bounds of the activity (ie cannot be before the beginning or after the end)
 #
-#  Scenario: AC1: User cannot add scores of different formats
-#    Given I have created a activity type that is a game or friendly
-#    And I have given Team A a score value of in the format “4”
-#    When I give Team B’s format in the score “123-4”
-#    Then an error appears telling me that both teams require their scores in the same format
-#
-#
-#  Scenario: AC1: User needs to specify person who scored and time of score in statistics
-#    Given there is an activity type of game or friendly
-#    And I am adding statistics for it.
-#    When I am adding a score,
-#    Then I must specify the person who scored
-#    And the time it occurred.
-#
-#
-#  Scenario: AC2: Person who scored must be a member of the team when adding a score
-#    Given I am adding a score,
-#    When I select the person who scored,
-#    Then they must be a member of the team, who is not a coach
-#
-#  Scenario: AC2: The time of score must be within timing of the game when adding a score
-#    Given I am adding a score,
-#    When I specify a time that it occurred
-#    Then it must be within the timing of the game. (eg. 40 minutes or 1h 20m)
-#
-#  Scenario: AC2: The time is in the correct format when adding a score
-#    Given I am adding a score
-#    When I specify a time,
-#    Then it is given in the format of the hours and minutes into a game
-#
-#  Scenario: AC3: Player and time must be specified when adding substitution
-#    Given there is an activity type of game or friendly
-#    When I am adding a substitution,
-#    Then I must specify the player who was taken off, the one who was put on and the time that this occured.
-#
-#
-#  Scenario: AC3: Person who scored must be in team  when adding substitution
-#    Given I am adding a substitution
-#    When I select the person who scored
-#    Then  they must be a member of the team
-#
-#  Scenario: AC3: Time of substitution should be within timing of game when adding substitution
-#    Given I am adding a substitution,
-#    When I specify a time for the substitution
-#    Then it must be within the timing of the game.
-#
-#
-#  Scenario: AC3: The time is in the correct format when adding a substitution
-#    Given I am adding a substitution
-#    When I specify a time
-#    Then it is the amount of hours, minutes, seconds into the activity
-#
-#  Scenario: AC4: A description should be specified when adding a fact
-#    Given There is an activity type that is not training
-#    When I am adding a fact
-#    Then I must specify a description and optionally a time at when the fact took place
-#
-#  Scenario: AC4: Time of fact should be within timing of game when adding fact
-#    Given I am adding a fact
-#    When I specify a time that it occurred
-#    Then it must be within the timing of the game
-#
-#  Scenario: AC4: The time is in the correct format when adding a fact
-#    Given I am adding a fact
-#    When if I specify a time
-#    Then is it the amount of hours, minutes, seconds into the activity
-#
-#
-#
-#
-#
+#  Scenario: AC5
+#    Given I am a manager or coach,
+#    And I am viewing an activity of the type Game or Friendly
+#    When the activity has begun
+#    And I am adding a goal, substitution or fact
+#    And I am specifying a team member to be associated with the statistics
+#    Then the I can only specify players (not managers or coaches)
+
+  Scenario: AC6
+    Given I am a manager or coach,
+    And I am viewing an activity of the type Game or Friendly
+    When the activity has begun
+    And there is a current overall score
+    Then I am able to update the overall score again
+
+  Scenario: AC7
+    Given I am a manager or coach,
+    And I am viewing an activity of the type Game or Friendly
+    When I am adding the overall score
+    And I enter the score in the format 5 for Team A and 7 for Team B, or 5-6 for Team A and 7-6 for Team B
+    Then the application accepts the scores as the format matches
+
+
+  Scenario: AC8
+    Given I am a manager or coach,
+    And I am viewing an activity of the type Game or Friendly
+    When I am adding the overall score
+    And I enter the score in the format 5 for Team A and 7-6 for Team B
+    Then the application does not accept the scores as the format does not match and an error message displays telling the user that the score formats do not match
+
+#  Scenario: AC9
+#    Given I am a manager or coach,
+#    And I am viewing an activity of the type Game or Friendly
+#    And the activity has begun
+#    When I click the UI element to add a goal
+#    Then there is a form with the required field of scorer and time it occurred and the optional fields description and value.
+
+  Scenario: AC10
+    Given I am a manager or coach,
+    And I am viewing an activity of the type Game or Friendly
+    And the activity has begun
+    And I am adding a score
+    When I do not enter a value into the goal value field (and rest of form is right)
+    Then the system accepts and uses a default value of 1
+
+  Scenario: AC11
+    Given I am a manager or coach,
+    And I am viewing an activity of the type Game or Friendly
+    And the activity has begun
+    And I am adding a score
+    When I enter a positive integer (given rest of form is valid)
+    Then the system accepts
+
+ Scenario: AC13
+   Given I am a manager or coach,
+   And I am viewing an activity of the type ‘Game’ or ‘Friendly’
+   When the activity has begun
+   And I am adding a substitution
+   Then I must fill out the required fields of time, player on and player off, and optionally fill out the description field
+
+  Scenario: AC14
+    Given I am a manager or coach,
+    And I am viewing an activity of any type
+    When the activity has begun
+    And I am adding a fact about the activity
+    Then I must fill out the required field of description and optionally the time it occurred.
+
+  Scenario: AC15
+    Given I am a manager or coach,
+    And I am adding a description to the fact type ‘Fact’ or ‘Substitution’ or ‘Goal’,
+    And I enter a description longer than 150 characters,
+    When I click the ‘Add Fact’ or ‘Add Substitution’ or ‘Add Goal’ button,
+    Then an error message tells me that the description must be 150 characters or less

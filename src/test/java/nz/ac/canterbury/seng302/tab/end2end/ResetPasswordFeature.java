@@ -15,7 +15,7 @@ public class ResetPasswordFeature {
     }
     @Given("I am on the lost password form")
     public void i_am_on_the_lost_password_form() {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/forgot-password");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/lost-password");
     }
 
 

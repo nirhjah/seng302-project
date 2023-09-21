@@ -37,15 +37,10 @@ Feature: U38 – Create / view / update a club
     When I select teams that contain different sports
     Then An error message tells me that teams must have the same sport
 
-#  Scenario: AC6: Teams belonging to a club have a link to their clubs in their team’s profile page.
-#    Given I am on the team’s profile page and the team belongs to a club,
-#    When I click on the link to their club,
-#    Then I will see their club details (Not sure if this is what the link does)
-#
-#  Scenario: AC8: When searching for teams, I can also search for clubs.
-#    Given I am on the teams search form,
-#    When the search string contains the name of the club,
-#    Then the teams belonging to that club is shown in the list of results.
+  Scenario: AC6: Teams belonging to a club have a link to their clubs in their team’s profile page.
+    Given I am on the team’s profile page and the team belongs to a club,
+    When I click on the link to their club,
+    Then I will see their club details (Not sure if this is what the link does)
 
     Scenario: AC9: When creating a club, I must specify a name, sport (PO APPROVED) and a location, i.e. address line 1, address line 2, suburb, postcode, city, and country, with address line 1, postcode, city and country being compulsory. I can add an optional logo. If none given, a generic club image is used.
       Given I am on the create club page
