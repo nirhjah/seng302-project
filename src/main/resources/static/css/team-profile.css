@@ -521,11 +521,14 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 .whiteboard-play-button {
     display: flex;
-    width: 100%;
+    width: 30%;
+    min-width: 300px;
 }
 
 .whiteboard-media-recordings {
@@ -535,6 +538,74 @@
 .whiteboard-media-images {
     height: 100%;
 }
+
+/*
+Following CSS is adapted from card-wrapper on view-all pages.
+ */
+.media-container {
+    display: flex;
+    flex-wrap:wrap;
+    justify-content: center;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.media-image{
+    border-radius: 5px;
+    background:whitesmoke;
+    height:200px;
+}
+
+.media {
+    margin: 50px 30px;
+    overflow: hidden;
+    border-radius: 10px;
+    display: flex;
+    height:fit-content;
+    cursor:pointer;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+}
+
+.media img {
+    height: 80%;
+    aspect-ratio: 1 / 1;
+    border-radius: 10px;
+}
+
+.media-wrapper {
+    background: #415A77;
+    padding: 5px;
+}
+
+.media-body {
+    /*height: 100%;*/
+    width: 200px;
+    padding: 6px;
+    box-sizing: border-box;
+    color: white;
+    font-family: "Noto Sans", sans-serif;
+    height:fit-content;
+}
+
+.media-body .media-title{
+    text-align: center;
+    font-size:16px;
+}
+
+.media img:hover {
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 @media (max-width: 500px) {
