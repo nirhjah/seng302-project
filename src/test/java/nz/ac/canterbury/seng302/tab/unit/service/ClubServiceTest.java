@@ -14,6 +14,7 @@ import java.util.List;
 
 
 import java.io.IOException;
+import java.util.Set;
 
 @DataJpaTest
 @Import(ClubService.class)
@@ -61,6 +62,41 @@ public class ClubServiceTest {
         
         Assertions.assertTrue(clubs.getContent().contains(club1));
         Assertions.assertTrue(clubs.getContent().contains(club2));
+
+
+    }
+
+    @Test
+    void testGettingListOfSportsForClub() throws IOException {
+        Club c = new Club("Test", location, "Rugby", null);
+        Club c1 = new Club("Another one", location, "Hockey", null);
+        Club c2 = new Club("Testing", location, "Soccer", null);
+        Club c3 = new Club("hello", location, "Rugby", null);
+        clubService.updateOrAddClub(c);
+        clubService.updateOrAddClub(c1);
+        clubService.updateOrAddClub(c2);
+        clubService.updateOrAddClub(c3);
+
+        List<String> sports = List.of(c.getSport(), c1.getSport(), c2.getSport());
+        Assertions.assertTrue(sports.containsAll(clubService.getClubSports()));
+
+    }
+
+    @Test
+    void testGettingListOfLocationsForClub() throws IOException {
+        Location l1 = new Location("abc", "def", "hjk", "chch", "888", "NZ");
+        Club c = new Club("Test", l1, "Rugby", null);
+        Location l2 = new Location(null, null, null, "city", "111", "chch");
+        Club c1 = new Club("Another one",l2 , "Hockey", null);
+        Location l3 = new Location("fds", null, null, "city", "56", "chch");
+        Club c2 = new Club("Testing", l3, "Soccer", null);
+        clubService.updateOrAddClub(c);
+        clubService.updateOrAddClub(c1);
+        clubService.updateOrAddClub(c2);
+
+        List<String> sports = List.of(c1.getLocation().getCity(), c.getLocation().getCity());
+        Assertions.assertTrue(sports.containsAll(clubService.getClubCities()));
+
     }
     
 }
