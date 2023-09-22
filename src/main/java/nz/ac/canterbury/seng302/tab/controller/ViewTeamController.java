@@ -1,15 +1,19 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.service.*;
 import nz.ac.canterbury.seng302.tab.service.image.TeamImageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
@@ -21,10 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.servlet.http.HttpServletRequest;
-import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.Formation;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
 
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -99,14 +99,14 @@ public class ViewTeamController {
             model.addAttribute("clubName",team.getTeamClub().getName());
         }
 
-        List<Map<String,String>> dummy = List.of(
-                Map.of("hello", "hello2"),
-                Map.of("hello", "hello2"),
-                Map.of("hello", "hello2"),
-                Map.of("hello", "hello2"),
-                Map.of("hello", "hello2"),
-                Map.of("hello", "hello2")
+        WhiteboardScreenshot screenshot = new WhiteboardScreenshot();
+
+
+        screenshot.setTeam(team);
+        List<WhiteboardScreenshot> dummy = List.of(
+                screenshot
         );
+
         model.addAttribute("screenshots", dummy);
         model.addAttribute("recordings", dummy);
 

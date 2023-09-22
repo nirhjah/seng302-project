@@ -342,25 +342,33 @@
                 </div>
             </div>
         </div>
+
+        <!--
+        Whiteboard media:
+        View recordings, and view screenshots tab.
+        -->
         <div class="content-box" id="whiteboard-media-tab">
             <div class="content whiteboard-media">
                 <div class="whiteboard-media-select">
                     <div class="whiteboard-media-content">
-                        <div th:each="rec : ${recordings}" class="media">
-                            <div class="media-body">
-                                <img th:src="@{}">
-
-                                <img th:src="@{/url-url/{id}(id = ${rec.id})}"  class="card-img-top"
-                                     alt="Thumbnail">
-                            </div>
+                        <div th:each="rec : ${screenshots}" class="media">
+                            <a th:href="@{team-info}" target="_blank">
+                                <div class="media-body">
+                                    <img th:src="@{/whiteboard-media/screenshot/{id}(id = ${rec.id})}"  class="card-img-top"
+                                         alt="Screenshot">
+                                </div>
+                            </a>
                         </div>
                     </div>
 
                     <div class="whiteboard-media-content">
                         <div th:each="rec : ${recordings}" class="media">
-                            <div class="media-body">
-                                This is an image 123
-                            </div>
+                            <a th:href="@{team-info}" target="_blank">
+                                <div class="media-body">
+                                    <img th:src="@{/whiteboard-media/screenshot/{id}(id = ${rec.id})}"  class="card-img-top"
+                                         alt="Screenshot">
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>

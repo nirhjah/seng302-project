@@ -15,10 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 
 
@@ -31,6 +35,8 @@ public class WhiteboardScreenshotService extends ImageService<WhiteboardScreensh
     private final TeamService teamService;
     private final UserService userService;
 
+    private final byte[] defaultBytes;
+
     /**
      * Writes files to the /{profile}/USER_PROFILE_PICTURES/ folder
      * inside the project's directory
@@ -42,6 +48,14 @@ public class WhiteboardScreenshotService extends ImageService<WhiteboardScreensh
         this.repository = repository;
         this.teamService = teamService;
         this.userService = userService;
+
+        try {
+            Resource resource = new ClassPathResource("/static/image/pitches/soccer.svg");
+            InputStream is = resource.getInputStream();
+            defaultBytes = is.readAllBytes();
+        } catch (IOException iox) {
+            throw new RuntimeException("Couldn't initialize WhiteBoardScreenshotService");
+        }
     }
 
     /**
@@ -58,17 +72,16 @@ public class WhiteboardScreenshotService extends ImageService<WhiteboardScreensh
 
     @Override
     public byte[] getDefaultBytes() {
-        // TO IMPLEMENT: Create a custom image here
         /*
-        We also need to do some digging down into FileDataSaver
+        We should do some digging into FileDataSaver
         to see what actually happens when our entity isn't found.
          */
-        return new byte[] {0};
+        return defaultBytes;
     }
 
     @Override
     public ImageType getDefaultImageType() {
-        return ImageType.PNG_OR_JPEG;
+        return ImageType.SVG;
     }
 
     public boolean canView(WhiteboardScreenshot screenshot) {
