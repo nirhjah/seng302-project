@@ -1,19 +1,14 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
+import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.service.*;
 import nz.ac.canterbury.seng302.tab.service.image.TeamImageService;
+import nz.ac.canterbury.seng302.tab.service.image.WhiteboardScreenshotService;
+import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
@@ -23,11 +18,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
-import jakarta.servlet.http.HttpServletRequest;
-
-import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Spring Boot Controller class for the ViewTeamForm
@@ -54,6 +50,9 @@ public class ViewTeamController {
 
     @Autowired
     private FactService factService;
+
+    @Autowired
+    private WhiteboardScreenshotService whiteboardScreenshotService;
 
     public ViewTeamController(UserService userService, TeamService teamService, ActivityService activityService, FactService factService, FormationService formationService) {
         this.userService = userService;
@@ -99,16 +98,10 @@ public class ViewTeamController {
             model.addAttribute("clubName",team.getTeamClub().getName());
         }
 
-        WhiteboardScreenshot screenshot = new WhiteboardScreenshot();
-
-
-        screenshot.setTeam(team);
-        List<WhiteboardScreenshot> dummy = List.of(
-                screenshot
-        );
-
-        model.addAttribute("screenshots", dummy);
-        model.addAttribute("recordings", dummy);
+        Set<WhiteboardScreenshot> screenshots = team.getScreenshots();
+        model.addAttribute("screenshots", screenshots);
+        // This should eventually use team.getRecordings() as opposed to team.getScreenshots()
+        model.addAttribute("recordings", screenshots);
 
         // Is the currently logged in user this team's manager?
         Optional<User> oUser = userService.getCurrentUser();
@@ -159,6 +152,13 @@ public class ViewTeamController {
             @RequestParam("teamID") long teamID) {
         logger.info("POST /team-info");
         teamImageService.updateProfilePicture(teamID, file);
+
+        // THIS CODE IS FOR TESTING ONLY!!!
+        var team = teamService.getTeam(teamID);
+        if (team != null) {
+            whiteboardScreenshotService.createScreenshotForTeam(file, team, false);
+        }
+
         return "redirect:/team-info?teamID=" + teamID;
     }
 

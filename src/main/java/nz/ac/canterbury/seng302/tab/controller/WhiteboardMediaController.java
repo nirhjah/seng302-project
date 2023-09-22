@@ -42,7 +42,7 @@ public class WhiteboardMediaController {
      * @return
      */
     @GetMapping("whiteboard-media/screenshot/{id}")
-    public @ResponseBody ResponseEntity<byte[]> getPreview(@PathVariable long id) {
+    public @ResponseBody ResponseEntity<byte[]> getPreview(@PathVariable(name="id") long id) {
         return whiteboardScreenshotService.getScreenshot(id);
     }
 
