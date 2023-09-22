@@ -59,7 +59,7 @@
              </form>
 
              </div>
-             <ul style="overflow: auto;margin-top: -50px; height: 425px; padding-bottom: 10px" class="homeCard">
+             <ul style="overflow: auto;margin-top: -50px; height: 450px; padding-bottom: 10px" class="homeCard">
                  <li style="width: unset; border: solid 4px #1b263b;" th:each="team : ${userTeams}" th:onclick="|window.location.href='@{team-info(teamID=${team.teamId})}'|">
                      <div style="display: flex">
 
@@ -108,7 +108,7 @@
 
          <div class="last5" style="margin-top: 57px; padding-bottom: 21px;">
              <h3 th:if="${userTeamActivities.isEmpty()}" style="text-align: center; font-size: 20px">You have no upcoming team activities</h3>
-             <ul style="overflow: auto;margin-top: -50px; height: 425px; padding-bottom: 10px" class="homeCard">
+             <ul style="overflow: auto;margin-top: -50px; height: 450px; padding-bottom: 10px" class="homeCard">
                  <li style="width: unset; border: solid 4px #1b263b;" th:each="act : ${userTeamActivities}" th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
 
                      <div>
@@ -164,7 +164,7 @@
                      <button type="submit" >Create Activity</button>
                  </div>
              </form>
-             <ul style="overflow: auto;margin-top: -50px; height: 425px; padding-bottom: 10px" class="homeCard">
+             <ul style="overflow: auto;margin-top: -50px; height: 450px; padding-bottom: 10px" class="homeCard">
                  <li style="width: unset; border: solid 4px #1b263b; justify-content: unset" th:each="act : ${userPersonalActivities}" th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
 
                      <div>
