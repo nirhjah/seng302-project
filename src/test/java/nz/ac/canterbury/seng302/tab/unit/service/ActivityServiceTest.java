@@ -1,9 +1,9 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
 import nz.ac.canterbury.seng302.tab.entity.*;
-import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
-import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
-import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
+import nz.ac.canterbury.seng302.tab.entity.fact.Fact;
+import nz.ac.canterbury.seng302.tab.entity.fact.Goal;
+import nz.ac.canterbury.seng302.tab.entity.fact.Substitution;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.enums.*;
