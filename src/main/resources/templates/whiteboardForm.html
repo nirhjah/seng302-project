@@ -266,17 +266,38 @@
                 <div class="camera-flash"></div>
                 <canvas id="canvas" width="560" height="700"></canvas>
             </div>
-        </div>
+
+
+            <div id="recording-modal" class="modal">
+                <div class="recording-modal-content">
+                    <button class="close-button" id="close-recording-modal" onclick="recordingModal.style.display = 'none'">&times;</button>
+                    <h3 class="modal-header">Save </h3>
+                    <video id="recorded-canvas" controls></video>
+                    <form encType="multipart/form-data" th:action="@{/whiteboard/save-recording}" method="post">
+                        <input type="file" id="recording-input" name="recording-input"/>
+
+                        <div class="input-box">
+                            <input class="form-control" type="text" name="recording-name" id="recording-name"
+                                   required>
+                            <label for="recording-name">
+                                Recording name:
+                                <span class="required">*</span>
+                            </label>
+                        </div>
+                        <div class="submit-button">
+                            <button id="submit-recording" type="submit">Save Recording</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
     </div>
 </div>
-
-<video id="recorded-canvas" controls></video>
-<div>
-    <img id="screenshotDisplay">
-</div>
-
+    
 <script type="text/javascript" th:src="@{/webjars/fabric/5.3.0/dist/fabric.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
+</div>
 </body>
 <script th:inline="javascript">
 
@@ -295,6 +316,13 @@
         pitchSelect.appendChild(option);
     });
 
+    const recordingModal = document.getElementById('recording-modal');
+
+    window.onclick = function(event) {
+        if (event.target === recordingModal) {
+            recordingModal.style.display = "none";
+        }
+    }
 
 
     /**
@@ -648,10 +676,28 @@
         const testVideoDisplay = document.getElementById('recorded-canvas');
         var whiteboardToRecord = document.querySelector("canvas");
 
+
+
         let recording = false;
         var videoStream = whiteboardToRecord.captureStream(30);
         var mediaRecorder = new MediaRecorder(videoStream);
+        const recordingUpload = document.getElementById("recording-input");
+        let videoURL;
 
+        function openRecordingModal(videoURL) {
+            fetch(videoURL)
+                .then(res => res.blob())
+                .then(blob => {
+                    const file = new File([blob], 'recording.mp4',
+                        {type: "video/mp4"}
+                    );
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    recordingUpload.files = dt.files;
+                })
+            recordingModal.style.display = "block";
+
+        }
 
         recordingButton.addEventListener('click', function () {
             toggleRecording();
@@ -664,7 +710,8 @@
                 mediaRecorder.onstop = function(e) {
                     var blob = new Blob(chunks, { 'type' : 'video/mp4' });
                     chunks = [];
-                    var videoURL = URL.createObjectURL(blob);
+                    videoURL = URL.createObjectURL(blob);
+                    openRecordingModal(videoURL);
                     testVideoDisplay.src = videoURL;
                 };
                 mediaRecorder.ondataavailable = function(e) {
@@ -693,6 +740,10 @@
             if (playerArray.length !== 0) {
                 addTeamPlayers();
             }
+            const defaultImageUrl = `${imagePath}${pitchSelect.value}.svg`;
+            fabric.Image.fromURL(defaultImageUrl, function (img) {
+                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+            });
         });
 
         /**
@@ -1358,6 +1409,11 @@
 
         /**Lineup Loading**/
         document.getElementById("lineup-dropdown").addEventListener("change", function (event) {
+            const defaultImageUrl = `${imagePath}${pitchSelect.value}.svg`;
+            fabric.Image.fromURL(defaultImageUrl, function (img) {
+                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+            });
+
             const selectedOption = event.target.options[event.target.selectedIndex];
             formationDropdown.selectedIndex = 0;
             loadLineUp(selectedOption);
