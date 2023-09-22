@@ -85,7 +85,9 @@ public class MyTeamsControllerTests {
     @Test
     public void whenJoiningATeamWithValidToken() throws Exception {
         mockMvc.perform(post("/my-teams")
-                        .param("token", team.getToken()))
+                        .param("token", team.getToken())
+                        .param("type", "team"))
+
                 .andExpect(view().name("redirect:/my-teams?page=1"));
 
         verify(mockUserService, times(1)).userJoinTeam(any(), any());
@@ -99,7 +101,8 @@ public class MyTeamsControllerTests {
     @Test
     public void whenJoiningATeamWithInvalidToken() throws Exception {
         mockMvc.perform(post("/my-teams")
-                        .param("token", "invalid"))
+                        .param("token", "invalid")
+                        .param("type", "team"))
                 .andExpect(view().name("redirect:/my-teams?page=1"));
 
         verify(mockUserService, times(0)).userJoinTeam(user, team);

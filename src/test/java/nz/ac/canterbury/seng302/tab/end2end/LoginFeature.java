@@ -79,6 +79,6 @@ public class LoginFeature {
     public void iAmTakenToTheHomePage() {
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
-        Assertions.assertEquals("http://" + PlaywrightBrowser.baseUrl + "/home", PlaywrightBrowser.page.url());
+        Assertions.assertEquals("http://" + PlaywrightBrowser.baseUrl + "/login?continue=/home", PlaywrightBrowser.page.url());
     }
 }
