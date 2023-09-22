@@ -4,10 +4,12 @@
 
 .teamsDiv {
     background-color: white;
-    height: fit-content;
     width: 24%;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
     border-radius: 9px;
+    margin-left: 9%; margin-right: 5%;
+    height: 550px;
+    border: solid 8px #1b263b;
 }
 
 .teamActivitiesDiv {
@@ -16,7 +18,8 @@
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
     border-radius: 9px;
     margin-right: 5%;
-    height: 550px
+    height: 550px;
+    border: solid 8px #1b263b;
 }
 
 .personalActivitiesDiv {
@@ -29,6 +32,13 @@
 
 .teamText {
     margin-left: 15px;
+}
+
+.homeCard {
+    overflow: auto;
+    margin-top: -50px;
+    height: 450px;
+    padding-bottom: 10px;
 }
 
 @media (max-width: 1300px) {
@@ -57,7 +67,7 @@
     }
 
     .homeCard {
-        width: 100%;
+        width: 100% !important;
     }
 
 }
