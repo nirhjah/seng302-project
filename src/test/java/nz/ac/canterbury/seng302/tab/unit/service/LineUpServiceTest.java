@@ -123,6 +123,7 @@ public class LineUpServiceTest {
         game.setFormation(formation);
         activityRepository.save(game);
         lineUp = new LineUp(game.getFormation().get(), team, game);
+        lineUp.setLineUpName("lineup1");
         lineUpService.updateOrAddLineUp(lineUp);
         LineUpPosition lineUpPosition = new LineUpPosition(lineUp, player1, 1);
         LineUpPosition lineUpPosition2 = new LineUpPosition(lineUp, player2, 2);
@@ -141,6 +142,8 @@ public class LineUpServiceTest {
         expectedplayersAndPosition.add(playerInfo2);
         List<Object> specificPlayerSubInfo = Arrays.asList(sub1.getId(), sub1.getFirstName());
         expectedsubsInfo.add(specificPlayerSubInfo);
+        expectedplayersAndPosition.add(List.of("lineup1"));
+
         expectedplayersAndPosition.add(expectedsubsInfo);
 
         expectedformationAndPlayersAndPosition.put(formation.getFormationId(), expectedplayersAndPosition);
