@@ -42,7 +42,7 @@
                     <option value="-1">(No Lineup)</option>
                     <option th:each="lineup : ${teamLineUps}"
                             th:value="${lineup.lineUpId}"
-                            th:text="${lineup.formation.getFormation()}"
+                            th:text="${lineup.lineUpName}"
                             th:data-custom="${lineup.formation.custom}"
                             th:data-custom-positions="${lineup.formation.customPlayerPositions}"
                     ></option>
@@ -60,6 +60,7 @@
                             <span class="player-name" th:text="|${member.firstName} ${member.lastName}|"></span>
                             <input class="player-id" type="hidden" th:value="${member.id}">
                         </li>
+
                     </ul>
                 </div>
             </div>
@@ -461,6 +462,18 @@
             });
         });
 
+        function getPlayerNameWidth(playerCard){
+            const tempElement = document.createElement('span');
+            tempElement.textContent = playerCard.querySelector('.player-name').textContent;
+            tempElement.style.position = 'absolute';
+            tempElement.style.left = '-9999px';
+            document.body.appendChild(tempElement);
+            const textContentWidth = tempElement.offsetWidth;
+            document.body.removeChild(tempElement);
+            return textContentWidth
+
+        }
+
         var deleteIcon = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg version='1.1' id='Ebene_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='595.275px' height='595.275px' viewBox='200 215 230 470' xml:space='preserve'%3E%3Ccircle style='fill:%23F44336;' cx='299.76' cy='439.067' r='218.516'/%3E%3Cg%3E%3Crect x='267.162' y='307.978' transform='matrix(0.7071 -0.7071 0.7071 0.7071 -222.6202 340.6915)' style='fill:white;' width='65.545' height='262.18'/%3E%3Crect x='266.988' y='308.153' transform='matrix(0.7071 0.7071 -0.7071 0.7071 398.3889 -83.3116)' style='fill:white;' width='65.544' height='262.179'/%3E%3C/g%3E%3C/svg%3E";
         var deleteImg = document.createElement('img');
 
@@ -474,18 +487,20 @@
          * @param {number} index The index in the player list
          */
         function createTeamPlayerIcon(playerCard, canvasX, canvasY, index) {
+            const playerNameWidth= getPlayerNameWidth(playerCard);
             const whiteCircle = new fabric.Circle({
-                left: canvasX,
+                left: canvasX-15,
                 top: canvasY,
                 radius: 15,
                 fill: 'white',
             });
 
+
             const playerCardSpan = playerCard.querySelector('.player-name').textContent;
             const playerCardImage= playerCard.querySelector('.player-image').src
             const playerName = new fabric.Text(playerCardSpan, {
                 fill: 'black',
-                left: canvasX - 23,
+                left: canvasX - playerNameWidth/2,
                 top: canvasY + 31,
                 fontFamily: '"Noto Sans", sans-serif',
                 fontSize: 16,
@@ -495,7 +510,7 @@
             fabric.Image.fromURL(playerCardImage, function (img) {
 
                 img.set({
-                    left: canvasX,
+                    left: canvasX-15,
                     top: canvasY,
                     scaleX: 30 / img.width,
                     scaleY: 30 / img.height,
@@ -1486,7 +1501,7 @@
             fabric.Image.fromURL(defaultImageUrl, function (img) {
                 canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
             });
-            
+
             const selectedOption = event.target.options[event.target.selectedIndex];
             lineupDropdown.selectedIndex = 0;
             loadFormation(selectedOption);
@@ -1547,7 +1562,7 @@
                 while (formation[i] !== 0) {
                     const top = canvas.height - ((i + 1) / (formation.length + 1)) * canvas.height;
                     const left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * canvas.width;
-                    if (lineUpPositions === null || lineUpPositions === undefined) {
+                    if (!lineUpPositions) {
                         createPlayerIcon(left, top, '#EA3B52')
                     } else {
                         handleLineupGeneration(lineUpPositions, j, left, top);
@@ -1576,7 +1591,7 @@
                 let coordinates = positionsList[i].split(",")
                 const left = parseInt(coordinates[0]) * canvas.width / pitchWidthOriginal;
                 let top = canvas.width - parseInt(coordinates[1]) * canvas.width / pitchHeightOriginal;
-                if (lineUpPositions === null || lineUpPositions === undefined) {
+                if (!lineUpPositions) {
                     createPlayerIcon(left, top, '#EA3B52')
                 } else {
                     handleLineupGeneration(lineUpPositions, i, left, top);
