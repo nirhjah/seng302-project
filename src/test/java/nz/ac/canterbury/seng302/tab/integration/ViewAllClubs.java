@@ -96,7 +96,7 @@ public class ViewAllClubs {
 
     private void setupMorganMocking() throws IOException {
 
-        userService = applicationContext.getBean(UserService.class);
+        userService = Mockito.spy(applicationContext.getBean(UserService.class));
         teamService = applicationContext.getBean(TeamService.class);
         locationService = applicationContext.getBean(LocationService.class);
         sportService = applicationContext.getBean(SportService.class);
@@ -138,23 +138,8 @@ public class ViewAllClubs {
     public void setup() throws IOException {
         setupMorganMocking();
 
-        team = new Team("test3", "Rugby", new Location("3 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand"));
-
-        Location testLocation = new Location("23 test street", "24 test street", "surburb", "city", "8782",
-                "New Zealand");
-        user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
-                "johndoe@example.com", "Password123!", testLocation);
-        userRepository.save(user);
-
-
-        club = new Club("Rugby Club", new Location("5 Test Lane", "", "", "Christchurch", "8042", "New Zealand"), "Rugby",null);
-        club2 = new Club("Hockey Club", new Location("34 Testing", "", "", "Nelson", "2020", "New Zealand"), "Hockey", null);
-        club3 = new Club("Football Club", new Location("Testing", "", "", "Auckland", "2020", "New Zealand"), "Football", null);
-        team.setTeamClub(club);
-
-        clubRepository.save(club);
-        teamRepository.save(team);
-        Mockito.when(userService.getCurrentUser()).thenReturn(Optional.of(user));
+        selectedSports.clear();
+        selectedCities.clear();
     }
 
     @Given("there are no other clubs")
@@ -174,13 +159,9 @@ public class ViewAllClubs {
         selectedCities.add(cityName);
     }
 
-
-
     @Then("only these clubs are selected:")
     @SuppressWarnings("unchecked")
-    public void only_these_teams_are_selected(List<String> expectedClubs) throws Exception {
-        // We want the expectedTeams to exactly match the resulting teams
-        // but we don't care about order
+    public void only_these_clubs_are_selected(List<String> expectedClubs) throws Exception {
         Set<String> expectedClubsSet = Set.copyOf(expectedClubs);
         performGet()
                 .andExpect(status().isOk()) // Accepted 200
@@ -194,5 +175,10 @@ public class ViewAllClubs {
                 });
     }
 
-
+    @Given("there is a club called {string} with the sport {string}")
+    public void there_is_a_club_calledWithTheSport(String clubName, String sport) throws IOException{
+        Location location = new Location("", "", "", "test", "", "Test Country");
+        Club club = new Club(clubName, location, sport, null);
+        clubService.updateOrAddClub(club);
+    }
 }
