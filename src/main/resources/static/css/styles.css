@@ -292,7 +292,7 @@ input:invalid + label:after {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 5rem;
+    font-size: 4rem;
     color: #0d1b2a;
     padding: 1rem;
     background: linear-gradient(-30deg, #333 50%, white 50%);
