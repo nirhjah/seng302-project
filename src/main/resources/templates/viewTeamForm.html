@@ -14,6 +14,8 @@
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
 <div class="team-profile-form">
 
+    <span id="stayOnTab_Name" class="tabNameAndIndex" th:text="${stayOnTab_name}"></span>
+    <span id="stayOnTab_index" class="tabNameAndIndex" th:text="${stayOnTab_index}"></span>
     <div class="wrapper-profile" id="wrapper-profile">
         <div class="tab-box">
             <div class="tab active">
@@ -30,10 +32,6 @@
                 <img class ="tab-icon" th:src="@{/image/icons/statistics.png}"/>
                 <button class="tab-button" >Statistics &nbsp;</button>
                 <div class="tab-line"></div>
-            </div>
-            <div class="tab" id="competitions-tab">
-                <img class ="tab-icon"  th:src="@{/image/icons/gradeLevel.png}"/>
-                <button class="tab-button" >Competitions &nbsp;</button>
             </div>
         </div>
         <div class="content-box active" id="team-profile-tab">
@@ -77,9 +75,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="float-container">
-                                
-                                    
+                            <div>
                                 <div class="float-child">
                                     <div class="user-label">
                                         <img th:src="@{/image/icons/name.svg}"/>
@@ -193,7 +189,7 @@
                                     Players per row: Between <strong>1</strong> and <strong>9</strong>
                                 </li>
                                 <li>
-                                    Number of rows: Between <strong>1</strong> and <strong>8</strong>
+                                    Number of rows: Between <strong>1</strong> and <strong>5</strong>
                                 </li>
                             </ul>
                             e.g. <strong>1-4-4-2</strong>, <strong>1-2-2</strong>, <strong>6</strong>
@@ -221,7 +217,7 @@
                         <h3 style="margin-top: 12px">Last 5 Matches: </h3>
                    <div class="last5" style="margin-top: 57px">
                        <ul class="last5Ul">
-                           <li th:each="act : ${last5GOrF}" th:onclick="|window.location.href='/view-activity?activityID=${act.id}'|">
+                           <li th:each="act : ${last5GOrF}" th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
                                <div>
                                    <h3 th:text="${act.activityType.name()}"> </h3>
                                    <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
@@ -347,25 +343,6 @@
             </div>
         </div>
 
-        <div class="content-box" id="comp-tab">
-            <div class="content">
-                <h2 style="text-align: center; margin-top: 15px; margin-bottom: 10px"> Team Competitions </h2>
-                <div class="competitions">
-                    <ul>
-                        <!-- /*onclick go to comp page*/ -->
-                        <li th:each="comp : ${teamCompetitions}" th:onclick="|window.location.href='/view-competition?competitionID=${comp.competitionId}'|">
-                            <div>
-                                <h3 th:text="${comp.name}"> </h3>
-                                <h4 th:text="${comp.grade.age.description}"> </h4>
-                                <h4 th:text="${comp.grade.sex}"> </h4>
-                                <h4 th:text="${comp.grade.competitiveness}"> </h4>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
     </div>
     <footer>
         <p>
@@ -439,7 +416,30 @@
         const tabLine = document.querySelector('.tab-line');
         const displayBox = document.querySelectorAll('.content-box');
         const displayContent = document.querySelectorAll('.content');
-        const wrapperProfile = document.getElementById("wrapper-profile")
+
+
+        var stayOnTab_Name =  document.getElementById("stayOnTab_Name").innerHTML;
+        var stayOnTab_Index =  document.getElementById("stayOnTab_index").innerHTML;
+
+        if (stayOnTab_Name === "formations-tab") {
+            var tabToBeActive = document.getElementById(stayOnTab_Name)
+            tabs.forEach(otherTab => {
+                otherTab.classList.remove('active');
+            });
+            tabToBeActive.classList.add('active')
+
+            displayBox.forEach(box => {
+                box.classList.remove('active')
+            });
+            displayBox[stayOnTab_Index].classList.add('active');
+            displayContent.forEach(content => {
+                content.classList.remove('active')
+            });
+            displayContent[stayOnTab_Index].classList.add('active');
+
+        }
+
+
 
         tabs.forEach((tab, index) => {
             tab.addEventListener('click', (e) => {
@@ -467,6 +467,7 @@
                 displayContent[index].classList.add('active');
             });
         });
+
 
         const formationListItems = document.querySelectorAll('.formation-list li')
         const createFormation = document.querySelector('.create-formation')

@@ -7,7 +7,9 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import nz.ac.canterbury.seng302.tab.controller.*;
 import nz.ac.canterbury.seng302.tab.entity.*;
-import nz.ac.canterbury.seng302.tab.entity.fact.Fact;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.repository.*;
@@ -91,6 +93,7 @@ public class AddActivityStatisticsIntegrationTests {
     private Activity otherActivity;
 
     private FactRepository factRespository;
+    private FormationRepository formationRepository;
 
 
     private ActivityRepository activityRepository;
@@ -98,6 +101,8 @@ public class AddActivityStatisticsIntegrationTests {
     LocalDateTime startTime;
 
     private Fact fact;
+
+    private Substitution sub;
 
     private String description;
 
@@ -111,16 +116,17 @@ public class AddActivityStatisticsIntegrationTests {
         factRespository = applicationContext.getBean(FactRepository.class);
         lineUpPositionRepository = applicationContext.getBean(LineUpPositionRepository.class);
         lineUpRepository = applicationContext.getBean(LineUpRepository.class);
+        formationRepository = applicationContext.getBean(FormationRepository.class);
 
         TaskScheduler taskScheduler = applicationContext.getBean(TaskScheduler.class);
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
 
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
-        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository));
         factService= Mockito.spy(new FactService(factRespository));
-        lineUpService=Mockito.spy(new LineUpService(lineUpRepository));
+        lineUpService=Mockito.spy(new LineUpService(lineUpRepository, formationRepository, lineUpPositionRepository, userRepository));
         lineUpPositionService = Mockito.spy(new LineUpPositionService(lineUpPositionRepository));
+        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository, factService, lineUpService, lineUpPositionService));
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivityController(userService,activityService,teamService,factService, lineUpService, lineUpPositionService)).build();
 
@@ -375,6 +381,23 @@ public class AddActivityStatisticsIntegrationTests {
                         .param("actId", String.valueOf(activity.getId()))
                         .param("timeOfFact", "5")
                         .param("description", description))
+                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andReturn();
+    }
+
+    @When("I am adding a substitution")
+    public void iAmAddingASubstitution() {
+        sub = new Substitution("", "1", activity, user, user2);
+    }
+
+    @Then("I must fill out the required fields of time, player on and player off, and optionally fill out the description field")
+    public void iMustFillOutTheRequiredFieldsOfTimePlayerOnAndPlayerOffAndOptionallyFillOutTheDescriptionField() throws Exception{
+        mockMvc.perform(post("/add-sub")
+                .param("actId", String.valueOf(activity.getId()))
+                .param("playerOn", "3")
+                .param("playerOff", "2")
+                .param("description", "")
+                .param("time", "1"))
                 .andExpect(MockMvcResultMatchers.status().isFound())
                 .andReturn();
     }

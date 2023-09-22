@@ -35,6 +35,10 @@ public class FormationServiceTest {
 
     private Formation formation;
 
+    private Formation formation2;
+    private Formation formation3;
+
+
     @BeforeEach
     public void setUp() throws IOException {
         teamRepository.deleteAll();
@@ -72,5 +76,17 @@ public class FormationServiceTest {
         Assertions.assertEquals(formation2.getFormation(),expectedFormation.get().getFormation());
     }
 
+
+    @Test
+    void testGettingTeamsFormations() {
+
+        formation2 = new Formation ("1-2-2-4",team);
+        formationService.addOrUpdateFormation(formation2);
+        formation3 = new Formation ("5-3-1",team);
+        formationService.addOrUpdateFormation(formation3);
+        List<Formation> expectedTeamsFormations = List.of(formation, formation2, formation3);
+        Assertions.assertEquals(expectedTeamsFormations, formationService.getTeamsFormations(team.getTeamId()));
+
+    }
 
 }

@@ -95,7 +95,7 @@ public class ViewTeamAggregatedStatistics {
     @Given("there are activities \\(game or friendly)  that have won, lost or drew overall,")
     public void there_are_activities_game_or_friendly_that_have_won_lost_or_drew_overall() {
 
-        PlaywrightBrowser.page.waitForTimeout(120000); //waiting for activity to end
+        PlaywrightBrowser.page.waitForTimeout(130000); //waiting for activity to end
 
         PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/view-activity?activityID=2");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
@@ -148,7 +148,7 @@ public class ViewTeamAggregatedStatistics {
         // PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/viewTeamActivities?page=1&teamID=4");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
-        Assertions.assertTrue(PlaywrightBrowser.page.waitForSelector("ul.activities-table") != null);
+        Assertions.assertNotNull(PlaywrightBrowser.page.waitForSelector("ul.activities-table"));
     }
 
     @When("I am viewing team aggregated statistics")

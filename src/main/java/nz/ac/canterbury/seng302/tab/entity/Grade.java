@@ -3,7 +3,10 @@ package nz.ac.canterbury.seng302.tab.entity;
 import jakarta.persistence.*;
 import org.thymeleaf.util.StringUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * Grade level for sports.
@@ -170,6 +173,21 @@ public class Grade {
         this.sex = sex;
         this.age = DEFAULT_AGE;
         this.competitiveness = DEFAULT_COMPETITIVENESS;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Grade grade) {
+            return grade.sex == this.sex &&
+                    grade.age == this.age &&
+                    grade.competitiveness == this.competitiveness;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return sex.hashCode()/3 + age.hashCode()/3 + competitiveness.hashCode()/3;
     }
 
     private static Random random = new Random();

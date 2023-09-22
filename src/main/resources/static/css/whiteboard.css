@@ -29,9 +29,10 @@
     display: flex;
     align-items: center;
     border-radius: 5px 5px 0 0;
+    padding-right: 10px;
 }
 
-.whiteboard-buttons button {
+.select-button, .draw-button, .erase-button, .shape-button, .delete-button, .customisation-box button, .camera-button, .recording-button {
     height: 35px;
     width: 35px;
     border: none;
@@ -68,7 +69,7 @@
     width: 23px;
 }
 
-.whiteboard-buttons button.active {
+.select-button.active, .draw-button.active, .erase-button.active, .shape-button.active, .delete-button.active, .customisation-box button.active, .camera-button.active {
     background: #0b2239;
     border: 3px white solid;
 }
@@ -126,12 +127,12 @@
     border-color: #0b2239 transparent transparent transparent;
 }
 
-.customisation-box.draw-button {
+.customisation-box.draw {
     margin-top: 255px;
     margin-left: 55px;
 }
 
-.customisation-box.shape-button {
+.customisation-box.shape {
     margin-left: 146px;
     margin-top: 342px;
 }
@@ -249,23 +250,18 @@ input[type="range"]::-moz-range-track {
 }
 
 .visibility-selection {
-    height: 15px !important;
-    width: 15px !important;
+    height: 20px !important;
+    width: 20px !important;
     border: none !important;
     border-radius: 30px !important;
     background: white !important;
     position: absolute !important;
-    margin-left: 59px !important;
-    margin-top: 33px !important;
+    margin-left: 56px !important;
+    margin-top: 28px !important;
 }
 
-
-.visibility-selection .selected-svg {
-    height: 6px;
-}
-
-.visibility-selection .default-svg {
-    height: 7px;
+.visibility-selection .default-svg, .visibility-selection .selected-svg {
+    height: 10px;
 }
 
 .visibility-selection.active .default-svg, .visibility-selection .selected-svg {
@@ -317,16 +313,9 @@ input[type="range"]::-moz-range-track {
 }
 
 .circle-img img, .triangle-img img, .square-img img, .ellipse-img img, .rectangle-img img, .line-img img, .arrow-img img {
-    height: 20px !important;
-    width: 20px !important;
+    height: 21px !important;
+    width: 21px !important;
 }
-
-
-
-
-
-
-
 
 .whiteboard-dropdowns{
     width:300px;
@@ -378,6 +367,213 @@ input[type="range"]::-moz-range-track {
 
 .whiteboard-dropdowns h3:focus {
     outline: none;
+}
+
+.whiteboard-dropdowns .player-table{
+    height:300px;
+    width:100%;
+    border-radius:20px;
+    border:4px solid #415a77;
+}
+
+.whiteboard-dropdowns .player-header{
+    height: 18%;
+    background: #415a77;
+    border-radius: 12px 12px 0 0;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 19px;
+}
+
+.whiteboard-dropdowns .player-list{
+    height:80%;
+    padding:0 5px 5px 5px;
+    overflow:auto;
+    scrollbar-width:none;
+}
+
+.whiteboard-dropdowns .player-card{
+    display:flex;
+    align-items:center;
+    justify-content:left;
+    height:50px;
+    width:283px;
+    border: 2px solid rgb(119, 141, 169);
+    border-radius:10px;
+    position: relative;
+    padding:0 5px;
+    background:white;
+    cursor:grab;
+    margin:5px 0;
+    user-select: none;
+}
+
+.whiteboard-dropdowns .player-container{
+    display:flex;
+    align-items:center;
+}
+
+.whiteboard-dropdowns .player-container .active{
+    cursor: move;
+    user-select: none;
+}
+
+
+.whiteboard-dropdowns .player-card img{
+    border-radius:50%;
+    background-color:white;
+    margin:0 5px;
+    height:35px;
+    width:35px;
+}
+
+.whiteboard-dropdowns .player-card span{
+    font-weight:550;
+    font-size: 20px;
+    color:#1B263B;
+    margin-left:8px;
+
+}
+
+.whiteboard-dropdowns .player-card.active {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    user-select:none;
+}
+.whiteboard-dropdowns .player-card.active img{
+    min-height:30px;
+    max-width:30px;
+    margin-top:18px;
+    border-radius: 50%;
+}
+
+.whiteboard-dropdowns .player-card.active span{
+    width:100px;
+    font-size:16px;
+}
+
+.player-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 40px;
+    margin-left: 3px;
+    cursor: pointer;
+    border: #1d1d1d 2px solid;
+    box-shadow: inset 0 0 0 3px white;
+}
+
+.player-icon.active {
+    position: absolute;
+    cursor: grabbing;
+    z-index: 1;
+}
+
+.add-player-icon {
+    width: 23px;
+    height: 23px;
+    background: #9C9C9C;
+    border-radius: 40px;
+    margin: 0 6px 0 7px !important;
+    cursor: pointer;
+    padding: 4px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    border: none;
+}
+
+.add-player-icon img {
+    height: 17px !important;
+    width: 17px !important;
+}
+
+.add-player-icon.active {
+    display: flex;
+}
+
+.player-icon-container {
+    margin-left: 5%;
+    background: white;
+    border-radius: 5px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    padding: 3px 0 3px 0;
+}
+
+.camera-button {
+    margin-left: auto;
+}
+
+.camera-flash {
+    position: fixed;
+    width: 560px;
+    height: 700px;
+    background-color: #fff;
+    visibility: hidden;
+    opacity: 0;
+    z-index: 1;
+}
+
+.camera-flash.active {
+    visibility: visible;
+    -webkit-animation: flash-animation 1s;
+    animation: flash-animation 1s;
+    opacity: 1;
+}
+
+@-webkit-keyframes flash-animation {
+    0% {  opacity: 1;  }
+    100% { opacity: 0; }
+}
+
+@keyframes flash-animation {
+    0% { opacity: 1; }
+    100% { opacity: 0;  }
+}
+
+.recording-image {
+    background: #1B263B;
+    border-radius: 50%;
+    height: 15px;
+    width: 15px;
+    transition: all .1s ease-in-out;
+}
+
+.recording-button.active .recording-image {
+    border-radius: 2px;
+    cursor: pointer;
+    height: 9px;
+    width: 9px;
+    background: #EA3B52;
+}
+
+.recording-button.active .recording-image-border {
+    border: 3px #EA3B52 solid;
+}
+
+.recording-image-border {
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    border: 3px #1B263B solid;
+    border-radius: 50px;
+}
+
+.record-button-border {
+    width: 24px;
+    position: absolute;
+    height: 24px;
+    border-radius: 50px;
+    border: red solid 2px;
 }
 
 

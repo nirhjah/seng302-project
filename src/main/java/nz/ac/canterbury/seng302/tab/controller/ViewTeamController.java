@@ -26,6 +26,8 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 
 import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 /**
  * Spring Boot Controller class for the ViewTeamForm
  */
@@ -50,18 +52,14 @@ public class ViewTeamController {
     private ActivityService activityService;
 
     @Autowired
-    private CompetitionService competitionService;
-
-    @Autowired
     private FactService factService;
 
-    public ViewTeamController(UserService userService, TeamService teamService, ActivityService activityService, FactService factService, FormationService formationService, CompetitionService competitionService) {
+    public ViewTeamController(UserService userService, TeamService teamService, ActivityService activityService, FactService factService, FormationService formationService) {
         this.userService = userService;
         this.formationService = formationService;
         this.teamService = teamService;
         this.activityService = activityService;
         this.factService = factService;
-        this.competitionService = competitionService;
 
     }
 
@@ -95,7 +93,6 @@ public class ViewTeamController {
         model.addAttribute("displayLocation", team.getLocation());
         model.addAttribute("displayToken", team.getToken());
         model.addAttribute("clubId",teamService.getTeamClubId(team));
-        model.addAttribute("teamCompetitions", competitionService.getAllCompetitionsWithTeam(team));
         model.addAttribute("overallPlayersPlaytime", activityService.top5UsersWithPlayTimeAndAverageInTeam(team));
         if( team.getTeamClub()!=null){
             model.addAttribute("clubName",team.getTeamClub().getName());
@@ -180,7 +177,8 @@ public class ViewTeamController {
             @RequestParam("teamID") long teamID,
             @RequestParam(name="formationID", defaultValue = "-1") long formationID,
             @RequestParam("customPlayerPositions") String customPlayerPositions,
-            @RequestParam("custom") Boolean custom) {
+            @RequestParam("custom") Boolean custom,
+            RedirectAttributes redirectAttributes) {
         logger.info("POST /team-info/create-formation");
 
         User currentUser = userService.getCurrentUser().orElseThrow();
@@ -214,6 +212,9 @@ public class ViewTeamController {
         formation.setCustomPlayerPositions(customPlayerPositions);
         formation.setCustom(custom);
         formationService.addOrUpdateFormation(formation);
+        redirectAttributes.addFlashAttribute("stayOnTab_name", "formations-tab");
+        redirectAttributes.addFlashAttribute("stayOnTab_index", 1);
+
         return "redirect:/team-info?teamID=" + teamID;
     }
 

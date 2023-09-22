@@ -6,7 +6,6 @@ import nz.ac.canterbury.seng302.tab.api.response.FormationInfo;
 import nz.ac.canterbury.seng302.tab.api.response.PlayerFormationInfo;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
-import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.form.CreateActivityForm;
 import nz.ac.canterbury.seng302.tab.service.*;
@@ -30,10 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class CreateActivityController {
@@ -52,8 +48,10 @@ public class CreateActivityController {
 
     private static final String TEMPLATE_NAME = "createActivityForm";
 
+    private static final String FORMATION_PLAYER_POSITIONS = "formationAndPlayersAndPositionJson";
+
     public CreateActivityController(TeamService teamService, UserService userService,
-            ActivityService activityService, FormationService formationService, LineUpService lineUpService, LineUpPositionService lineUpPositionService) {
+                                    ActivityService activityService, FormationService formationService, LineUpService lineUpService, LineUpPositionService lineUpPositionService) {
         this.teamService = teamService;
         this.userService = userService;
         this.activityService = activityService;
@@ -92,7 +90,8 @@ public class CreateActivityController {
             model.addAttribute("teamName", activity.getTeam().getName());
             model.addAttribute("teamFormations", formationService.getTeamsFormations(activity.getTeam().getTeamId()));
             model.addAttribute("selectedFormation", activity.getFormation().orElse(null));
-            model.addAttribute("players", activity.getTeam().getTeamMembers());
+            model.addAttribute("players", activity.getInvolvedMembersNoManagerAndCoaches());
+
         }
         model.addAttribute("actId", activity.getId());
         model.addAttribute("startDateTime",formattedStartDateTime);
@@ -122,14 +121,14 @@ public class CreateActivityController {
         if (!activityService.validateStartAndEnd(createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
             bindingResult.addError(new FieldError("CreateActivityForm", "startDateTime", ActivityFormValidators.END_BEFORE_START_MSG));
         }
-        
+
         if (team != null) {
             // The dates are after the team's creation date
 
             if (createActivityForm.getStartDateTime() != null && createActivityForm.getEndDateTime() != null && !activityService.validateActivityDateTime(team.getCreationDate(), createActivityForm.getStartDateTime(), createActivityForm.getEndDateTime())) {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-                    bindingResult.addError(new FieldError("CreateActivityForm", "endDateTime",
-                            ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + team.getCreationDate().format(formatter)));
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                bindingResult.addError(new FieldError("CreateActivityForm", "endDateTime",
+                        ActivityFormValidators.ACTIVITY_BEFORE_TEAM_CREATION + team.getCreationDate().format(formatter)));
 
             }
             // This user needs the authority to create/update activities
@@ -150,7 +149,7 @@ public class CreateActivityController {
         // so the value may be set but it's invalid.
         long formationId = createActivityForm.getFormation();
         if (formationId != -1 && formationId != 0 && (Activity.canContainFormation(createActivityForm.getActivityType(), team)) && formationService.findFormationById(formationId).map(form -> form.getTeam().equals(team)).isEmpty() ) {
-                bindingResult.addError(new FieldError("CreateActivityForm", "formation",
+            bindingResult.addError(new FieldError("CreateActivityForm", "formation",
                     ActivityFormValidators.FORMATION_DOES_NOT_EXIST_MSG));
         }
     }
@@ -164,13 +163,13 @@ public class CreateActivityController {
      * @return the create activity template
      * @throws MalformedURLException thrown in some cases
      */
-    @GetMapping("/createActivity")
+    @GetMapping("/create-activity")
     public String activityForm(
             @RequestParam(name="edit", required=false) Long actId,
             CreateActivityForm createActivityForm,
             Model model,
             HttpServletRequest httpServletRequest) throws MalformedURLException {
-        logger.info("GET /createActivity");
+        logger.info("GET /create-activity");
         model.addAttribute("httpServletRequest", httpServletRequest);
         prefillModel(model, httpServletRequest);
 
@@ -178,7 +177,7 @@ public class CreateActivityController {
         if (actId == null) {
             return TEMPLATE_NAME;
         }
-            
+
         User currentUser = userService.getCurrentUser().get();
         Activity activity = activityService.findActivityById(actId);
 
@@ -198,6 +197,10 @@ public class CreateActivityController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Incorrect permissions to edit activity");
         }
 
+        if (team != null) {
+            model.addAttribute(FORMATION_PLAYER_POSITIONS, lineUpService.getFormationAndPlayersAndPosition(activity));
+        }
+
         fillModelWithActivity(model, activity);
         createActivityForm.prepopulate(activity);
         return TEMPLATE_NAME;
@@ -212,20 +215,24 @@ public class CreateActivityController {
      * @param model model mapping of information
      * @param httpServletRequest the request
      * @param httpServletResponse the response to send
+     * @param subs subs added to the lineup
+     * @param lineUpName optional name for lineup, defaults to start date + end date of activity + formation string
      * @return returns my activity page iff the details are valid, returns to activity page otherwise
      * @throws MalformedURLException thrown in some cases
      */
-    @PostMapping("/createActivity")
+    @PostMapping("/create-activity")
     public String createActivity(
             @RequestParam(name = "actId", defaultValue = "-1") Long actId,
             @RequestParam(name = "playerAndPositions", required = false) String playerAndPositions,
+            @RequestParam(name = "subs", required = false) String subs,
+            @RequestParam(name = "lineUpName", required = false) String lineUpName,
             @Validated CreateActivityForm createActivityForm,
             BindingResult bindingResult,
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
             Model model) throws MalformedURLException {
 
-        logger.info("POST /createActivity");
+        logger.info("POST /create-activity");
         model.addAttribute("httpServletRequest", httpServletRequest);
         prefillModel(model, httpServletRequest);
 
@@ -234,11 +241,12 @@ public class CreateActivityController {
         Activity activity = activityService.findActivityById(actId);
 
         postCreateActivityErrorChecking(bindingResult, createActivityForm, team, currentUser);
-
         if (bindingResult.hasErrors()) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             if (activity != null) {
                 model.addAttribute("actId", actId);
+                model.addAttribute(FORMATION_PLAYER_POSITIONS, lineUpService.getFormationAndPlayersAndPosition(activity));
+
                 fillModelWithActivity(model, activity);
             }
 
@@ -246,12 +254,12 @@ public class CreateActivityController {
         }
 
         Location location = new Location(
-            createActivityForm.getAddressLine1(),
-            createActivityForm.getAddressLine2(),
-            createActivityForm.getSuburb(),
-            createActivityForm.getCity(),
-            createActivityForm.getPostcode(),
-            createActivityForm.getCountry()
+                createActivityForm.getAddressLine1(),
+                createActivityForm.getAddressLine2(),
+                createActivityForm.getSuburb(),
+                createActivityForm.getCity(),
+                createActivityForm.getPostcode(),
+                createActivityForm.getCountry()
         );
 
         if (actId == -1) {  // Creating a new activity
@@ -277,38 +285,66 @@ public class CreateActivityController {
         } else {
             Optional<Formation> formation = formationService.findFormationById(createActivityForm.getFormation());
             // The error checking function checks if this exists, so this should always pass
-            if(formation.isPresent()) {
+            if (formation.isPresent()) {
                 activity.setFormation(formation.get());
             }
 
         }
 
-
         activity = activityService.updateOrAddActivity(activity);
 
-        if (activity.getFormation().isPresent()) {
-            activityLineUp = new LineUp(activity.getFormation().get(), activity.getTeam(), activity);
-            lineUpService.updateOrAddLineUp(activityLineUp);
+        Optional<Formation> optFormation = activity.getFormation();
+        if (Objects.equals(lineUpName, "") && optFormation.isPresent()) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
+            lineUpName = activity.getActivityStart().format(formatter) + " - " + activity.getActivityEnd().format(formatter) + ": " + optFormation.get().getFormation();
+
         }
 
-        if (playerAndPositions != null && !playerAndPositions.isEmpty()) {
-            List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
+        // Only apply lineup code if the activity can have a lineup
+        if (activity.canContainFormation()) {
 
-            if (createActivityForm.getFormation() != -1) {
-                saveLineUp(positionsAndPlayers, bindingResult);
+            activityLineUp = lineUpService.findLineUpByActivityAndFormation(activity.getId(),
+                    activity.getFormation().orElse(null));
 
-            }
-            if (bindingResult.hasErrors() && actId != -1) { //only throw error if we are on edit act page
-                httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                if (activity != null) {
-                    model.addAttribute("actId", actId);
-                    fillModelWithActivity(model, activity);
+            if (activityLineUp == null) {
+                Optional<Formation> formationOptional = activity.getFormation();
+                if (formationOptional.isPresent()) {
+                    activityLineUp = new LineUp(formationOptional.get(), activity.getTeam(), activity);
+                    activityLineUp.setLineUpName(lineUpName);
+                    lineUpService.updateOrAddLineUp(activityLineUp);
                 }
-                return TEMPLATE_NAME;
+            } else {
+                Optional<Formation> formationOptional = activity.getFormation();
+
+                if (formationOptional.isPresent()) {
+                    activityLineUp.setFormation(formationOptional.get());
+                    activityLineUp.setLineUpName(lineUpName);
+                    lineUpService.updateOrAddLineUp(activityLineUp);
+                }
+            }
+            lineUpService.saveSubs(subs, activityLineUp);
+
+            if (playerAndPositions != null && !playerAndPositions.isEmpty()) {
+                List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
+                if (createActivityForm.getFormation() != -1) {
+
+                    lineUpService.saveLineUp(positionsAndPlayers, bindingResult, activityLineUp);
+
+                }
+                if (bindingResult.hasErrors() && actId != -1) {
+
+                    httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    model.addAttribute("actId", actId);
+                    model.addAttribute(FORMATION_PLAYER_POSITIONS,
+                            lineUpService.getFormationAndPlayersAndPosition(activity));
+                    fillModelWithActivity(model, activity);
+
+                    return TEMPLATE_NAME;
+                }
+
             }
 
         }
-
 
         return String.format("redirect:./view-activity?activityID=%s", activity.getId());
     }
@@ -317,9 +353,9 @@ public class CreateActivityController {
      * A JSON API endpoint, which gives the formations of an associated team. Used by the createActivity page to update
      * @return A json object of type <code>{formationId: "formationString", ...}</code>
      */
-    @GetMapping(path = "/createActivity/get_team_formation", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/create-activity/get_team_formation", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<FormationInfo>> getTeamFormation(@RequestParam("teamId") long teamId) {
-        logger.info("GET /createActivity/get_team_formation");
+        logger.info("GET /create-activity/get_team_formation");
         // CHECK: Are we logged in?
         Optional<User> oCurrentUser = userService.getCurrentUser();
         if (oCurrentUser.isEmpty()) {
@@ -368,30 +404,6 @@ public class CreateActivityController {
 
     }
 
-    /**
-     * Takes list of positions and players fron the selected line up then creates LineUpPositions for each and saves them with the lineup
-     * @param positionsAndPlayers list of positions and players
-     */
-    private void saveLineUp(List<String> positionsAndPlayers, BindingResult bindingResult){
-        boolean error = false;
-        for (String positionPlayer : positionsAndPlayers) {
-            if (Objects.equals(Arrays.stream(positionPlayer.split(" ")).toList().get(1), "X")) {
-                logger.info("No player was set at the position " + Arrays.stream(positionPlayer.split(" ")).toList().get(0));
-                error = true;
 
-            } else {
-                logger.info("Valid player so creating line up position object now..");
-                if (userService.findUserById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).isPresent()) {
-                    User player = userService.findUserById(Long.parseLong(Arrays.stream(positionPlayer.split(" ")).toList().get(1))).get();
-                    int position = Integer.parseInt(Arrays.stream(positionPlayer.split(" ")).toList().get(0));
-                    LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, player, position);
-                    lineUpPositionService.addLineUpPosition(lineUpPosition);
-                }
-            }
-        }
-        if (error) {
-            bindingResult.addError(new FieldError("createActivityForm", "lineup", "The line-up is not complete"));
-        }
-    }
 
 }

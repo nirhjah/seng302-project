@@ -11,7 +11,6 @@ import nz.ac.canterbury.seng302.tab.entity.fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.fact.Goal;
 import nz.ac.canterbury.seng302.tab.entity.fact.Substitution;
 import nz.ac.canterbury.seng302.tab.entity.Formation;
-import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.enums.ActivityOutcome;
@@ -161,6 +160,7 @@ public class ViewActivityController {
             HttpServletRequest request,
             CreateEventForm createEventForm) {
 
+
         model.addAttribute(createEventFormString, createEventForm);
         model.addAttribute("addFactForm", new AddFactForm());
 
@@ -181,7 +181,13 @@ public class ViewActivityController {
         if (activity == null) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
-        LineUp lineUp = lineUpService.findLineUpsByActivity(activityID);
+
+        Optional<Formation> optActFormation = activity.getFormation();
+        LineUp lineUp = null;
+        if (optActFormation.isPresent()) {
+            lineUp = lineUpService.findLineUpByActivityAndFormation(activityID, optActFormation.get());
+        }
+
 
         if (lineUp != null) {
             Map<Integer, Long> playersAndPosition = new HashMap<>();
@@ -233,10 +239,10 @@ public class ViewActivityController {
 
         // attributes for the subs
         // all players who are currently playing - for the sub off
-        List<User> playersPlaying = getAllPlayersCurrentlyPlaying(activity.getId());
+        List<User> playersPlaying = activityService.getAllPlayersCurrentlyPlaying(activity.getId());
         model.addAttribute("playersInLineUp", playersPlaying);
         // all players who arent playing - for the sub on
-        List<User> playersNotPlaying = getAllPlayersNotCurrentlyPlaying(activity.getId());
+        List<User> playersNotPlaying = activityService.getAllPlayerSubstitutes(activity.getId());
         model.addAttribute("playersNotInLineUp", playersNotPlaying);
 
         // Rambling that's required for navBar.html
@@ -250,7 +256,6 @@ public class ViewActivityController {
             model.addAttribute("completed", "idk");
         }
         populateOther(model, activity);
-
         return "viewActivity";
     }
 
@@ -261,15 +266,18 @@ public class ViewActivityController {
      * @return string with display of outcome
      */
     private String outcomeString(Activity activity) {
-        String outcomeString = "";
-        if (activity.getOutcome() == ActivityOutcome.Win) {
-            outcomeString = "Winner: " + activity.getTeam().getName();
-        }
-        if (activity.getOutcome() == ActivityOutcome.Loss) {
-            outcomeString = "Winner: Opponent Team";
-        }
-        if (activity.getOutcome() == ActivityOutcome.Draw) {
-            outcomeString = "Draw";
+        String outcomeString = "Invalid Activity Type";
+        if (activity.getTeam() != null) {
+            if (activity.getOutcome() == ActivityOutcome.Win) {
+                outcomeString = "Winner: " + activity.getTeam().getName();
+            }
+            if (activity.getOutcome() == ActivityOutcome.Loss) {
+                outcomeString = "Winner: Opponent Team";
+            }
+            if (activity.getOutcome() == ActivityOutcome.Draw) {
+                outcomeString = "Draw";
+            }
+            return outcomeString;
         }
         return outcomeString;
     }
@@ -593,85 +601,118 @@ public class ViewActivityController {
     }
 
     /**
-     * returns the list of players without coaches and manageers
-     * @param team the team the players are in 
-     * @return a list of the users that arent a coach or manager for that team 
-    */
-    private List<User> removeCoachesAndManager(Team team, List<User> players) {
-        Set<User> coachesAndMangers = team.getTeamCoaches();
-        coachesAndMangers.addAll(team.getTeamManagers());
-        List<User> teamCoachesAndManagersList = coachesAndMangers.stream().toList();
+     * Handles creating an event and adding overall scores
+     *
+     * @param actId               activity ID to add stats/event to
+     * @param factType            selected fact type
+     * @param description         description of event
+     * @param activityOutcome     outcome of activity (win loss or draw) for team
+     * @param time                time of event
+     * @param subOffId            user ID of sub off
+     * @param subOnId             user ID of sub on
+     * @param createEventForm     CreateEventForm object used for validation
+     * @param bindingResult       BindingResult used for errors
+     * @param request             request
+     * @param model               model to be filled
+     * @param httpServletResponse httpServerletResponse
+     * @param redirectAttributes  stores error message to be displayed
+     * @return view activity page
+     */
+    @PostMapping("/view-activity")
+    public String createEvent(
+            @RequestParam(name = "actId", defaultValue = "-1") long actId,
+            @RequestParam(name = "factType", defaultValue = "FACT") FactType factType,
+            @RequestParam(name = "description", defaultValue = "") String description,
+            @RequestParam(name = "activityOutcomes", defaultValue = "None") ActivityOutcome activityOutcome,
+            @RequestParam(name = "time") String time,
+            @RequestParam(name = "playerOff", defaultValue = "-1") int subOffId,
+            @RequestParam(name = "playerOn", defaultValue = "-1") int subOnId,
+            @Validated CreateEventForm createEventForm,
+            BindingResult bindingResult,
+            HttpServletRequest request,
+            Model model,
+            HttpServletResponse httpServletResponse,
+            RedirectAttributes redirectAttributes) {
 
-        return players.stream().filter(player -> !teamCoachesAndManagersList.contains(player)).toList();
-    }
+        logger.info(factType.name());
+        logger.info(String.format("got the act id: %s", actId));
+        logger.info(String.format("got the player on id: %s", subOnId));
+        logger.info(String.format("got the player on id: %s", subOffId));
 
-    /**
-     * returns the current players who are playing in the activity -- takes into account substitutions 
-     * @param actId the activity id 
-     * @return a list of the users that are currrently playing in the activity
-    */
-    private List<User> getAllPlayersCurrentlyPlaying(long actId) {
-        List<User> playersPlaying = getAllPlayersPlaying(actId);
-        Activity currActivity = activityService.findActivityById(actId);
-        if (currActivity == null || currActivity.getTeam() == null) {
-            return List.of();
-        }
-        List<Fact> allSubs = factService.getAllFactsOfGivenTypeForActivity(2, currActivity) // list of all made subs in the game 
-                .stream()   // We have to make a stream, because its actual type is UnmodifiableList, which you can't .sort()
-                .sorted(Comparator.comparingInt(sub -> Integer.parseInt(sub.getTimeOfEvent())))  // all the subs sorted by time 
-                .toList();
-        
-        for (Fact fact : allSubs) {
-            Substitution sub = (Substitution) fact;
-            User playerOn = sub.getPlayerOn();
-            User playerOff = sub.getPlayerOff();
-            playersPlaying = playersPlaying.stream().map(player -> player.getUserId() == playerOff.getUserId() ? playerOn : player).toList();
-        }
+        model.addAttribute(httpServletRequestString, request);
 
-        return removeCoachesAndManager(currActivity.getTeam(), playersPlaying);
-    }
-
-    /**
-     * @param actId the activity id 
-     * @return a list of users who are not in the lineup
-    */
-    private List<User> getAllPlayersNotCurrentlyPlaying(long actId) {
         Activity activity = activityService.findActivityById(actId);
-        if (activity == null  || activity.getTeam() == null) {
-            return List.of();
+        Fact fact;
+        String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
+
+
+        if (factType == FactType.SUBSTITUTION && subOffId == subOnId) {
+            logger.info("players cannot sub themselves");
+            bindingResult.addError(new FieldError(createEventFormString, "subOn", "Players cannot sub themselves"));
         }
-        List<User> playersPlaying = getAllPlayersCurrentlyPlaying(actId);
-        List<User> playersInTeam = new ArrayList<>(activityService.findActivityById(actId).getTeam().getTeamMembers());
 
-        List<User> playersNotPlaying = playersInTeam.stream().filter(player -> !playersPlaying.contains(player)).toList();
+        if (factType == FactType.FACT && description.isEmpty()) {
+            logger.info("description was not provided for fact");
+            bindingResult.addError(new FieldError(createEventFormString, "description", "Fact type events require a description"));
+        }
 
-        return removeCoachesAndManager(activity.getTeam(), playersNotPlaying);
+
+        if (bindingResult.hasErrors()) {
+            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            redirectAttributes.addFlashAttribute("scoreInvalid", leaveModalOpenString);
+            redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
+            return viewActivityRedirectUrl;
+        }
+
+        List<Fact> factList = new ArrayList<>();
+
+
+        switch (factType) {
+            case FACT:
+                fact = new Fact(description, time, activity);
+                factList.add(fact);
+
+                break;
+
+            case SUBSTITUTION:
+                Optional<User> potentialSubOff = userService.findUserById(subOffId);
+                if (potentialSubOff.isEmpty()) {
+                    logger.error("subbed off player Id not found");
+                    return viewActivityRedirectUrl;
+                }
+                User playerOff = potentialSubOff.get();
+
+                Optional<User> potentialSubOn = userService.findUserById(subOnId);
+                if (potentialSubOn.isEmpty()) {
+                    logger.error("subbed on player Id not found");
+                    return viewActivityRedirectUrl;
+                }
+
+                User playerOn = potentialSubOn.get();
+
+                fact = new Substitution(description, time, activity, playerOff, playerOn);
+                factList.add(fact);
+
+                break;
+
+            case NONE:
+                break;
+
+            default:
+                logger.error("fact type unknown value");
+                return viewActivityRedirectUrl;
+        }
+
+        if (activityOutcome != ActivityOutcome.None) {
+            activity.setActivityOutcome(activityOutcome);
+        }
+
+
+        activity.addFactList(factList);
+        activityService.updateOrAddActivity(activity);
+
+
+        return viewActivityRedirectUrl;
     }
 
-    /**
-     * returns a list of the users that are in the lineup 
-     * @param actId the activity id 
-     * @return a list of the users that are currently in the lineup for the activity, if there are no players the returns an empty list 
-    */
-    private List<User> getAllPlayersPlaying(long actId) {
-        Optional<List<LineUp>> optionalActivityLineups = lineUpService.findLineUpByActivity(actId);
-        if (optionalActivityLineups.isEmpty()) {
-            return List.of(); 
-        }
-        List<LineUp> activityLineups = optionalActivityLineups.get();
-        
-        if (activityLineups.isEmpty()) { // there is no lineup for some activities
-            return List.of();
-        } 
-
-        LineUp lineup = activityLineups.get(activityLineups.size() -1); // here we get the last one as that is the most recent one 
-
-        Optional<List<LineUpPosition>> optionaLineupPositions = lineUpPositionService.findLineUpPositionsByLineUp(lineup.getLineUpId());
-
-        if (optionaLineupPositions.isEmpty()) {
-            return List.of();
-        }
-
-        return optionaLineupPositions.get().stream().map(x -> x.getPlayer()).toList();
-    }
 }

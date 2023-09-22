@@ -1,19 +1,23 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
+import nz.ac.canterbury.seng302.tab.response.LineUpInfo;
 import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Spring Boot Controller class for the whiteboard
@@ -21,19 +25,25 @@ import java.util.Optional;
 @Controller
 public class WhiteboardController {
 
-    private FormationService formationService;
-    private TeamService teamService;
+    private final FormationService formationService;
+    private final TeamService teamService;
 
-    private LineUpService lineUpService;
+    private final LineUpService lineUpService;
+
+    private final ActivityService activityService;
+
+    private final LineUpPositionService lineUpPositionService;
 
     Team team;
     private final Logger logger = LoggerFactory.getLogger(WhiteboardController.class);
 
 
-    public WhiteboardController(FormationService formationService, TeamService teamService, LineUpService lineUpService) {
+    public WhiteboardController(FormationService formationService, TeamService teamService, LineUpService lineUpService, ActivityService activityService, LineUpPositionService lineUpPositionService) {
         this.teamService = teamService;
         this.formationService = formationService;
         this.lineUpService = lineUpService;
+        this.activityService = activityService;
+        this.lineUpPositionService = lineUpPositionService;
     }
 
 
@@ -56,11 +66,20 @@ public class WhiteboardController {
 
         Optional<Team> teamOpt = teamService.findTeamById(teamID);
 
+        //Index of list of players equals the associated lineup
+        List<List<User>> playersPerLineup = teamLineUps.stream().map(
+                lineUp -> {
+                    long id = lineUp.getActivity().getId();
+                    return activityService.getAllPlayersPlaying(id);
+                }
+        ).toList();
+
+
         if (teamOpt.isPresent()) {
             team = teamOpt.get();
         }
         else {
-            return "homeForm";
+            return "redirect:/home";
         }
 
         model.addAttribute("teamFormations", formationService.getTeamsFormations(teamID));
@@ -69,7 +88,31 @@ public class WhiteboardController {
 
         model.addAttribute("teamLineUps", teamLineUps);
 
+        List<List<LineUpPosition>> positionsList = new ArrayList<>();
+        model.addAttribute("teamLineupsPositions", positionsList);
+
+        model.addAttribute("playersPerLineup", playersPerLineup);
+
         return "whiteboardForm";
+    }
+
+    @GetMapping(path = "/whiteboard/get_lineup", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<LineUpInfo> getLineUpJSON(@RequestParam("lineUpId") long lineUpId) {
+        Optional<LineUp> optLineUp = lineUpService.findLineUpById(lineUpId);
+        if (optLineUp.isPresent()) {
+            LineUp lineUp = optLineUp.get();
+            Optional<List<LineUpPosition>> lineUpPositions = lineUpPositionService.findLineUpPositionsByLineUp(lineUpId);
+            if (lineUpPositions.isPresent()) {
+                LineUpInfo lineUpInfo = new LineUpInfo(lineUp, lineUpPositions.get());
+                List<Long> subs = activityService.getAllPlayerSubstitutes(lineUp.getActivity().getId())
+                        .stream()
+                        .map(user -> user.getId())
+                        .toList();
+                lineUpInfo.setSubs(subs);
+                return ResponseEntity.ok().body(lineUpInfo);
+            }
+        }
+        return ResponseEntity.notFound().build();
     }
 
 }

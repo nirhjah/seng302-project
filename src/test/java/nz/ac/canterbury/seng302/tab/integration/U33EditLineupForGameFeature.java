@@ -71,6 +71,9 @@ public class U33EditLineupForGameFeature {
     @Autowired
     private LineUpPositionService lineUpPositionService;
 
+    @Autowired
+    private FactService factService;
+
 
     private User user;
 
@@ -102,7 +105,7 @@ public class U33EditLineupForGameFeature {
 
         userService = Mockito.spy(new UserService(userRepository, taskScheduler, passwordEncoder));
         teamService = Mockito.spy(new TeamService(teamRepository));
-        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository));
+        activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository, factService, lineUpService, lineUpPositionService));
 
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(new CreateActivityController(
@@ -156,7 +159,7 @@ public class U33EditLineupForGameFeature {
     @Given("viewing the edit page for a team activity for that team")
     public void viewing_the_edit_page_for_a_team_activity_for_that_team() throws Exception {
         when(activityService.findActivityById(activity.getId())).thenReturn(activity);
-        mockMvc.perform(get("/createActivity?edit={id}", activity.getId()))
+        mockMvc.perform(get("/create-activity?edit={id}", activity.getId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("createActivityForm"));
     }

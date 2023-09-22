@@ -20,7 +20,7 @@ public class ActivityFormValidators {
 
     public static final String TEAM_REQUIRED_MSG = "A team is required for this activity type";
 
-    public static final String DESC_TOO_LONG_MSG = "Description must be less than 150 characters";
+    public static final String DESC_TOO_LONG_MSG = "Description must be 150 characters or less";
 
     public static final String NO_DESC_MSG = "Description is required";
 

@@ -32,7 +32,7 @@ public class ProxyController {
 
         String endpoint = "https://api.openrouteservice.org/geocode/autocomplete" +
                 "?text=" + text +
-                "&api_key=" + opsApiKey +
+                "&api_key=" + "5b3ce3597851110001cf624872c21df9f0f8419799b5718ed8769650" +
                 "&language=" + language;
 
         ResponseEntity<String> response = restTemplate.getForEntity(endpoint, String.class);

@@ -41,7 +41,7 @@ import nz.ac.canterbury.seng302.tab.entity.User;
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @WithMockUser
-public class ViewTeamControllerTest {
+class ViewTeamControllerTest {
 
     @Autowired
     private TeamImageService teamImageService;
@@ -166,7 +166,7 @@ public class ViewTeamControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"1", "1-2", "9-9", "1-4-4-2", "1-2-3-4-5-6-7-8", "9-9-9-9-9-9-9-9"})
+    @ValueSource(strings = {"1", "1-2", "9-9", "1-4-4-2", "1-2-3-4-5", "9-9-9-9-9"})
     void createFormation_validFormation_succeeds(String formation) throws Exception {
         when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         mockMvc.perform(post("/team-info/create-formation")

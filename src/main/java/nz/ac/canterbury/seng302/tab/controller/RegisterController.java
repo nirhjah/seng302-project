@@ -171,8 +171,8 @@ public class RegisterController {
         logger.info("GET /confirm");
 
         if (opt.isEmpty()) {
-            // no user; throw 404
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            redirectAttributes.addFlashAttribute("message", "Invalid Token");
+            return "redirect:/login";
         }
 
         User user = opt.get();

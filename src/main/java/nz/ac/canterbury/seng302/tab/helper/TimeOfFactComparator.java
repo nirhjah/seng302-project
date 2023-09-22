@@ -21,7 +21,9 @@ public class TimeOfFactComparator implements Comparator<Fact> {
         } else if(fact2.getTimeOfEvent() == null) {
             return 1;
         } else {
-            return fact1.getTimeOfEvent().compareTo(fact2.getTimeOfEvent());
+            Integer f1Time = Integer.parseInt(fact1.getTimeOfEvent());
+            Integer f2Time = Integer.parseInt(fact2.getTimeOfEvent());
+            return f1Time.compareTo(f2Time);
         }
     }
 }

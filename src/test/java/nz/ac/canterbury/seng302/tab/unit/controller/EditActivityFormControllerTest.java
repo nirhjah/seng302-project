@@ -2,8 +2,8 @@ package nz.ac.canterbury.seng302.tab.unit.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -15,10 +15,16 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
+import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
+import nz.ac.canterbury.seng302.tab.repository.LineUpRepository;
+import nz.ac.canterbury.seng302.tab.service.*;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,10 +44,6 @@ import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
-import nz.ac.canterbury.seng302.tab.service.ActivityService;
-import nz.ac.canterbury.seng302.tab.service.FormationService;
-import nz.ac.canterbury.seng302.tab.service.TeamService;
-import nz.ac.canterbury.seng302.tab.service.UserService;
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
@@ -78,6 +80,14 @@ public class EditActivityFormControllerTest {
     @MockBean
     private FormationService mockFormationService;
 
+    @MockBean
+    private LineUpService mockLineUpService;
+
+    @Autowired
+    ActivityRepository activityRepository;
+
+    @Autowired
+    LineUpRepository lineUpRepository;
     private Team team;
     private User testUser;
     private Activity activity;
@@ -118,7 +128,7 @@ public class EditActivityFormControllerTest {
     @Test
     public void testDisplayingEditActivityReturns200() throws Exception {
         when(mockActivityService.findActivityById(activity.getId())).thenReturn(activity);
-        mockMvc.perform(get("/createActivity?edit={id}", activity.getId()))
+        mockMvc.perform(get("/create-activity?edit={id}", activity.getId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("createActivityForm"));
     }
@@ -135,7 +145,7 @@ public class EditActivityFormControllerTest {
         Mockito.doReturn(ACT_ID).when(localActivity).getId();
         when(mockActivityService.updateOrAddActivity(any())).thenReturn(localActivity);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(localActivity);
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("formation", "-1")
@@ -160,7 +170,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(activity);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
@@ -182,7 +192,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(activity);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
@@ -204,7 +214,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(activity);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
@@ -228,7 +238,7 @@ public class EditActivityFormControllerTest {
         when(mockTeamService.getTeam(INVALID_TEAM_ID)).thenReturn(null);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(activity);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", INVALID_TEAM_ID.toString())
@@ -250,7 +260,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(activity);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
@@ -272,7 +282,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(activity);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
@@ -294,7 +304,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(activity);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
@@ -316,7 +326,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(activity);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
@@ -338,7 +348,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(activity);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
@@ -360,7 +370,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(activity);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
@@ -382,7 +392,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(activity);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
@@ -404,7 +414,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(activity);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
@@ -426,7 +436,7 @@ public class EditActivityFormControllerTest {
 
     @Test
     public void testDisplayingCreateActivityReturns200() throws Exception {
-        mockMvc.perform(get("/createActivity"))
+        mockMvc.perform(get("/create-activity"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("createActivityForm"));
     }
@@ -442,7 +452,7 @@ public class EditActivityFormControllerTest {
         // When complete, the controller saves the activity & redirects to its ID.
         when(mockActivityService.updateOrAddActivity(any())).thenReturn(activity);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("formation", "-1")
@@ -463,7 +473,7 @@ public class EditActivityFormControllerTest {
     public void whenDescriptionIsEmptyCreateActivity_Return400() throws Exception {
         when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("formation", "-1")
@@ -484,7 +494,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(false);
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
@@ -504,7 +514,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(false);
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
@@ -526,7 +536,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
         when(mockTeamService.getTeam(INVALID_TEAM_ID)).thenReturn(null);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", INVALID_TEAM_ID.toString())
                         .param("description", "testing edit description")
@@ -546,7 +556,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
@@ -566,7 +576,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
@@ -586,7 +596,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
@@ -606,7 +616,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
@@ -626,7 +636,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
@@ -646,7 +656,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
@@ -666,7 +676,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
@@ -686,7 +696,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("activityType", String.valueOf(ActivityType.Training))
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
@@ -701,42 +711,42 @@ public class EditActivityFormControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+//    @Test
+//    public void whenValidFormationIsSpecified_editActivity_formationSaved() throws Exception {
+//        when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
+//        when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+//        when(mockActivityService.validateTeamSelection(any(), any())).thenReturn(true);
+//
+//        Formation formation = new Formation("1-2-3", team);
+//        when(mockFormationService.findFormationById(FORMATION_ID)).thenReturn(Optional.of(formation));
+//        Activity localActivity = spy(activity);
+//        Mockito.doReturn(ACT_ID).when(localActivity).getId();
+//        when(mockActivityService.updateOrAddActivity(any())).thenReturn(localActivity);
+//        when(mockActivityService.findActivityById(ACT_ID)).thenReturn(localActivity);
+//
+//        mockMvc.perform(post("/create-activity")
+//                        .param("actId", String.valueOf(ACT_ID))
+//                        .param("activityType", String.valueOf(ActivityType.Game))
+//                        .param("formation", String.valueOf(FORMATION_ID))
+//                        .param("team", String.valueOf(TEAM_ID))
+//                        .param("description", "testing edit description")
+//                        .param("startDateTime", "2023-07-01T10:00:00")
+//                        .param("endDateTime", "2023-08-01T12:00:00")
+//                        .param("addressLine1", "1 Change address")
+//                        .param("addressLine2", "B")
+//                        .param("city", "Greymouth")
+//                        .param("country", "New Zealand")
+//                        .param("postcode", "8888")
+//                        .param("suburb", "A Place"))
+//                .andExpect(status().isFound())
+//                .andExpect(redirectedUrl("./view-activity?activityID=" + ACT_ID));
+//
+//        Mockito.verify(localActivity).setFormation(formation);
+//
+//    }
+
     @Test
-    public void whenValidFormationIsSpecified_editActivity_formationSaved() throws Exception {
-        when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
-        when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
-        when(mockActivityService.validateTeamSelection(any(), any())).thenReturn(true);
-
-        Formation formation = new Formation("1-2-3", team);
-        when(mockFormationService.findFormationById(FORMATION_ID)).thenReturn(Optional.of(formation));
-        Activity localActivity = spy(activity);
-        Mockito.doReturn(ACT_ID).when(localActivity).getId();
-        when(mockActivityService.updateOrAddActivity(any())).thenReturn(localActivity);
-        when(mockActivityService.findActivityById(ACT_ID)).thenReturn(localActivity);
-
-        mockMvc.perform(post("/createActivity")
-                        .param("actId", String.valueOf(ACT_ID))
-                        .param("activityType", String.valueOf(ActivityType.Game))
-                        .param("formation", String.valueOf(FORMATION_ID))
-                        .param("team", String.valueOf(TEAM_ID))
-                        .param("description", "testing edit description")
-                        .param("startDateTime", "2023-07-01T10:00:00")
-                        .param("endDateTime", "2023-08-01T12:00:00")
-                        .param("addressLine1", "1 Change address")
-                        .param("addressLine2", "B")
-                        .param("city", "Greymouth")
-                        .param("country", "New Zealand")
-                        .param("postcode", "8888")
-                        .param("suburb", "A Place"))
-                .andExpect(status().isFound())
-                .andExpect(redirectedUrl("./view-activity?activityID=" + ACT_ID));
-
-        Mockito.verify(localActivity).setFormation(formation);
-
-    }
-
-    @Test
-    public void whenValidFormationIsSpecified_createActivity_formationSaved() throws Exception {
+    void whenValidFormationIsSpecified_createActivity_formationSaved() throws Exception {
         when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
         when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
         when(mockActivityService.validateTeamSelection(any(), any())).thenReturn(true);
@@ -748,7 +758,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.updateOrAddActivity(any())).thenReturn(activity);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(null);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("actId", "-1")
                         .param("activityType", String.valueOf(ActivityType.Game))
                         .param("formation", String.valueOf(FORMATION_ID))
@@ -785,7 +795,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.updateOrAddActivity(any())).thenReturn(activity);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(activity);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                 .param("actId", String.valueOf(ACT_ID))
                 .param("activityType", String.valueOf(ActivityType.Game))
                 .param("formation", String.valueOf(FORMATION_ID))
@@ -817,7 +827,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.updateOrAddActivity(any())).thenReturn(thisActivity);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(thisActivity);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                 .param("actId", String.valueOf(ACT_ID))
                 .param("activityType", activityType)
                 .param("formation", String.valueOf(FORMATION_ID))
@@ -848,7 +858,7 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.updateOrAddActivity(any())).thenReturn(thisActivity);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(thisActivity);
 
-        mockMvc.perform(post("/createActivity")
+        mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Game))
                         .param("formation", "888888")
@@ -878,7 +888,7 @@ public class EditActivityFormControllerTest {
                     {"1":"1-2-3","2":"2-3-4"}
                 """;
 
-        mockMvc.perform(get("/createActivity/get_team_formation")
+        mockMvc.perform(get("/create-activity/get_team_formation")
                         .param("teamId", String.valueOf(TEAM_ID)))
                 .andExpect(status().isOk());
     }
@@ -899,7 +909,7 @@ public class EditActivityFormControllerTest {
                     {"1":"1-2-3","2":"2-3-4"}
                 """;
 
-        mockMvc.perform(get("/createActivity/get_team_formation")
+        mockMvc.perform(get("/create-activity/get_team_formation")
                         .param("teamId", String.valueOf(TEAM_ID)))
                 .andExpect(status().isOk());
     }
@@ -911,7 +921,7 @@ public class EditActivityFormControllerTest {
         when(mockTeamService.getTeam(TEAM_ID)).thenReturn(otherTeam);
 
 
-        mockMvc.perform(get("/createActivity/get_team_formation")
+        mockMvc.perform(get("/create-activity/get_team_formation")
                         .param("teamId", String.valueOf(TEAM_ID)))
                 .andExpect(status().isForbidden())
                 .andExpect(content().string(""));
@@ -925,9 +935,141 @@ public class EditActivityFormControllerTest {
         when(mockTeamService.getTeam(TEAM_ID)).thenReturn(otherTeam);
 
 
-        mockMvc.perform(get("/createActivity/get_team_formation")
+        mockMvc.perform(get("/create-activity/get_team_formation")
                         .param("teamId", String.valueOf(TEAM_ID)))
                 .andExpect(status().isForbidden())
                 .andExpect(content().string(""));
     }
+
+
+    @Test
+    void editingLineUpWithValidLineUpAndSubs() throws Exception {
+        when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
+        when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+        when(mockActivityService.validateTeamSelection(any(), any())).thenReturn(true);
+        Activity localActivity = spy(activity);
+        Mockito.doReturn(ACT_ID).when(localActivity).getId();
+        when(mockActivityService.updateOrAddActivity(any())).thenReturn(localActivity);
+        when(mockActivityService.findActivityById(ACT_ID)).thenReturn(localActivity);
+        mockMvc.perform(post("/create-activity")
+                        .param("actId", String.valueOf(ACT_ID))
+                        .param("activityType", String.valueOf(ActivityType.Game))
+                        .param("formation", "-1")
+                        .param("team", String.valueOf(TEAM_ID))
+                        .param("description", "testing edit description")
+                        .param("startDateTime", "2023-07-01T10:00:00")
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "1 Change address")
+                        .param("addressLine2", "B")
+                        .param("city", "Greymouth")
+                        .param("country", "New Zealand")
+                        .param("postcode", "8888")
+                        .param("suburb", "A Place")
+                        .param("subs", "1")
+                        .param("playerAndPositions", String.valueOf(List.of("1 1"))))
+
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("./view-activity?activityID=" + localActivity.getId()));
+        verify(mockActivityService, times(1)).updateOrAddActivity(any());
+
+    }
+
+    @Test
+    void editingLineUpWithInvalidLineUp() throws Exception {
+        when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
+        when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+        when(mockActivityService.validateTeamSelection(any(), any())).thenReturn(true);
+        Activity localActivity = spy(activity);
+        Mockito.doReturn(ACT_ID).when(localActivity).getId();
+        when(mockActivityService.updateOrAddActivity(any())).thenReturn(localActivity);
+        when(mockActivityService.findActivityById(ACT_ID)).thenReturn(localActivity);
+        mockMvc.perform(post("/create-activity")
+                        .param("actId", String.valueOf(ACT_ID))
+                        .param("activityType", String.valueOf(ActivityType.Game))
+                        .param("formation", "-1")
+                        .param("team", String.valueOf(TEAM_ID))
+                        .param("description", "testing edit description")
+                        .param("startDateTime", "2023-07-01T10:00:00")
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "1 Change address")
+                        .param("addressLine2", "B")
+                        .param("city", "Greymouth")
+                        .param("country", "New Zealand")
+                        .param("postcode", "8888")
+                        .param("suburb", "A Place")
+                        .param("subs", "1")
+                        .param("playerAndPositions", String.valueOf(List.of("1 X"))))
+
+                .andExpect(status().isFound());
+        verify(mockLineUpService, times(0)).updateOrAddLineUp(any());
+
+    }
+
+    @Test
+    void editingLineUpWithLineUpName() throws Exception {
+        when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
+        when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+        when(mockActivityService.validateTeamSelection(any(), any())).thenReturn(true);
+        Activity localActivity = spy(activity);
+        Mockito.doReturn(ACT_ID).when(localActivity).getId();
+        when(mockActivityService.updateOrAddActivity(any())).thenReturn(localActivity);
+        when(mockActivityService.findActivityById(ACT_ID)).thenReturn(localActivity);
+        mockMvc.perform(post("/create-activity")
+                        .param("actId", String.valueOf(ACT_ID))
+                        .param("activityType", String.valueOf(ActivityType.Game))
+                        .param("formation", "-1")
+                        .param("lineUpName", "lineup1")
+                        .param("team", String.valueOf(TEAM_ID))
+                        .param("description", "testing edit description")
+                        .param("startDateTime", "2023-07-01T10:00:00")
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "1 Change address")
+                        .param("addressLine2", "B")
+                        .param("city", "Greymouth")
+                        .param("country", "New Zealand")
+                        .param("postcode", "8888")
+                        .param("suburb", "A Place")
+                        .param("subs", "1")
+                        .param("playerAndPositions", String.valueOf(List.of("1 1"))))
+
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("./view-activity?activityID=" + localActivity.getId()));
+        verify(mockActivityService, times(1)).updateOrAddActivity(any());
+
+    }
+
+    @Test
+    void editingLineUpWithNoLineUpNameProvided() throws Exception {
+        when(mockActivityService.validateStartAndEnd(any(), any())).thenReturn(true);
+        when(mockActivityService.validateActivityDateTime(any(), any(), any())).thenReturn(true);
+        when(mockActivityService.validateTeamSelection(any(), any())).thenReturn(true);
+        Activity localActivity = spy(activity);
+        Mockito.doReturn(ACT_ID).when(localActivity).getId();
+        when(mockActivityService.updateOrAddActivity(any())).thenReturn(localActivity);
+        when(mockActivityService.findActivityById(ACT_ID)).thenReturn(localActivity);
+        mockMvc.perform(post("/create-activity")
+                        .param("actId", String.valueOf(ACT_ID))
+                        .param("activityType", String.valueOf(ActivityType.Game))
+                        .param("formation", "-1")
+                        .param("lineUpName", "")
+                        .param("team", String.valueOf(TEAM_ID))
+                        .param("description", "testing edit description")
+                        .param("startDateTime", "2023-07-01T10:00:00")
+                        .param("endDateTime", "2023-08-01T12:00:00")
+                        .param("addressLine1", "1 Change address")
+                        .param("addressLine2", "B")
+                        .param("city", "Greymouth")
+                        .param("country", "New Zealand")
+                        .param("postcode", "8888")
+                        .param("suburb", "A Place")
+                        .param("subs", "1")
+                        .param("playerAndPositions", String.valueOf(List.of("1 1"))))
+
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("./view-activity?activityID=" + localActivity.getId()));
+        verify(mockActivityService, times(1)).updateOrAddActivity(any());
+
+    }
+
+
 }

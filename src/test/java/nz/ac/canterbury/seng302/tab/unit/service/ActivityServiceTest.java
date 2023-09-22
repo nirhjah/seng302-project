@@ -1,14 +1,17 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
 import nz.ac.canterbury.seng302.tab.entity.*;
-import nz.ac.canterbury.seng302.tab.entity.fact.Fact;
-import nz.ac.canterbury.seng302.tab.entity.fact.Goal;
-import nz.ac.canterbury.seng302.tab.entity.fact.Substitution;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUpPosition;
 import nz.ac.canterbury.seng302.tab.enums.*;
 import nz.ac.canterbury.seng302.tab.repository.*;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
+import nz.ac.canterbury.seng302.tab.service.FactService;
+import nz.ac.canterbury.seng302.tab.service.LineUpPositionService;
+import nz.ac.canterbury.seng302.tab.service.LineUpService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 @DataJpaTest
-@Import(ActivityService.class)
+@Import({ActivityService.class, FactService.class, LineUpService.class, LineUpPositionService.class})
 public class ActivityServiceTest {
 
     @Autowired
@@ -45,7 +48,23 @@ public class ActivityServiceTest {
     FormationRepository formationRepository;
 
     @Autowired
+    LineUpPositionService lineUpPositionService;
+
+    @Autowired
+    LineUpService lineUpService;
+
+    @Autowired
+    FactService factService;
+
+    @Autowired
     FactRepository factRepository;
+
+    private User player;
+
+    private User player2;
+
+    private User player3;
+
     /**
      * Tests validator for if a start date is before the end
      */
@@ -832,5 +851,123 @@ public class ActivityServiceTest {
 
     }
 
+    /**
+     * sets up the actvity with a lineup and a user in the lineup
+     * @return the actvity to be tested against for the substitution tests
+     * @throws Exception
+    */
+    private Activity setUpSubTests() throws Exception {
+        Location location = new Location(null, null, null, "Christchurch", null,
+                "New Zealand");
+        Team team = new Team("Team 900", "Programming");
+        User creator = new User("Test", "Account", "test123@test.com", "Password1!", location);
+        player = new User("sam", "Account", "sam@test.com", "Password1!", location);
+        player2 = new User("bob", "Account", "bob@test.com", "Password1!", location);
+        player3 = new User("john", "Account", "john@test.com", "Password1!", location);
+
+        player.joinTeam(team);
+        player2.joinTeam(team);
+        player3.joinTeam(team);
+
+        teamRepository.save(team);
+
+        Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                LocalDateTime.of(2023, 1,1,6,30),
+                LocalDateTime.of(2023, 1,1,8,30),
+                creator,  new Location(null, null, null,
+                "Christchurch", null, "New Zealand"));
+
+        Formation formation = new Formation("2", team);
+        formationRepository.save(formation);
+        activity.setFormation(formation);
+        activityRepository.save(activity);
+
+
+        LineUp activityLineUp = new LineUp(activity.getFormation().get(), team, activity);
+
+        lineUpRepository.save(activityLineUp);
+
+        LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, player, 1);
+
+
+        lineUpPositionRepository.save(lineUpPosition);
+
+        return activity;
+    }
+
+    @Test
+    void testGettingAllPlayersThatAreCurrentlyPlayingWithNoSubs() throws Exception {
+        Activity activity = setUpSubTests();
+        List<User> currPlaying = activityService.getAllPlayersCurrentlyPlaying(activity.getId());
+
+        Assertions.assertEquals(1, currPlaying.size());
+        Assertions.assertEquals(currPlaying.get(0), player);
+    }
+
+
+    @Test
+    void testGettingAllPlayersThatAreCurrentlyPlayingWithSubs() throws Exception {
+        Activity activity = setUpSubTests();
+        Substitution sub = new Substitution("subbing player off", "1", activity, player, player2);
+        factRepository.save(sub);
+        List<User> currPlaying = activityService.getAllPlayersCurrentlyPlaying(activity.getId());
+
+        Assertions.assertEquals(1, currPlaying.size());
+        Assertions.assertEquals(currPlaying.get(0), player2);
+    }
+
+    @Test
+    void testGettingAllPlayersThatAreCurrentlyPlayingWithSubOffAndOn() throws Exception {
+        Activity activity = setUpSubTests();
+        Substitution sub = new Substitution("subbing player off", "1", activity, player, player2);
+        Substitution sub2 = new Substitution("subbing player on again", "1", activity, player2, player);
+        factRepository.save(sub);
+        factRepository.save(sub2);
+        List<User> currPlaying = activityService.getAllPlayersCurrentlyPlaying(activity.getId());
+
+        Assertions.assertEquals(1, currPlaying.size());
+        Assertions.assertEquals(currPlaying.get(0), player);
+    }
+
+    @Test
+    void testGettingFutureActivitiesForUser() throws Exception {
+        Team t = new Team("Test Team", "Hockey");
+        teamRepository.save(t);
+        User user = new User("Test", "Account", "tab.team900@gmail.com", "password", new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
+        Activity game = new Activity(ActivityType.Game, t, "A Test Game",
+                LocalDateTime.of(2025, 1,1,6,30),
+                LocalDateTime.of(2025, 1,1,8,30), user,
+                new Location("Test", "Test", "Test", "test", "Tst", "test"));
+        Activity training = new Activity(ActivityType.Training, null, "A Test Game",
+                LocalDateTime.of(2025, 1,1,6,30),
+                LocalDateTime.of(2025, 1,1,8,30), user,
+                new Location("Test", "Test", "Test", "test", "Tst", "test"));
+        activityRepository.save(game);
+        activityRepository.save(training);
+
+
+        List<Activity> expectedFutureActivities = List.of(training, game);
+        Assertions.assertEquals(expectedFutureActivities, activityService.getAllFutureActivitiesForUser(user));
+    }
+
+    @Test
+    void testGettingFutureActivitiesForUser_NoFutureActivities() throws Exception {
+        Team t = new Team("Test Team", "Hockey");
+        teamRepository.save(t);
+        User user = new User("Test", "Account", "tab.team900@gmail.com", "password", new Location("1 Place", "B", "Ilam", "CHCH", "808", "NZ"));
+        Activity game = new Activity(ActivityType.Game, t, "A Test Game",
+                LocalDateTime.of(2020, 1,1,6,30),
+                LocalDateTime.of(2020, 1,1,8,30), user,
+                new Location("Test", "Test", "Test", "test", "Tst", "test"));
+        Activity training = new Activity(ActivityType.Training, null, "A Test Game",
+                LocalDateTime.of(2021, 1,1,6,30),
+                LocalDateTime.of(2021, 1,1,8,30), user,
+                new Location("Test", "Test", "Test", "test", "Tst", "test"));
+        activityRepository.save(game);
+        activityRepository.save(training);
+
+        List<Activity> expectedFutureActivities = List.of();
+        Assertions.assertEquals(expectedFutureActivities, activityService.getAllFutureActivitiesForUser(user));
+    }
 
 }
