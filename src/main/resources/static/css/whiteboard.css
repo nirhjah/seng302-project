@@ -558,7 +558,7 @@ input[type="range"]::-moz-range-track {
 }
 
 .recording-button.active .recording-image-border {
-    border: 3px #EA3B52 solid;
+    stroke: #EA3B52;
 }
 
 
@@ -573,16 +573,16 @@ input[type="range"]::-moz-range-track {
 
 circle {
     fill: white;
-    stroke: #EA3B52;
+    stroke: #1B263B;
     stroke-width: 3;
     stroke-dasharray: 250;
-    stroke-dashoffset: 0;
+    stroke-dashoffset: 1000;
     animation: rotate 3700s linear infinite;
 }
 
 @keyframes rotate {
     to {
-        stroke-dashoffset: 1000;
+        stroke-dashoffset: 0;
     }
 }
 
