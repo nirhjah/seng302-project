@@ -66,12 +66,6 @@
             </div>
 
             <div id="formationDisplay" th:style="${actId != null ? 'display:block' : 'display:none'}" class="formation-activity-display">
-                <div class="input-box">
-
-                    <input type="text" class="form-control" id="lineUpName" th:name="lineUpName"
-                           data-cy="lineUpName" autofocus>
-                    <label for="lineUpName">Lineup Name (Optional)</label>
-                </div>
                 <div>
                     <input type="hidden" id="playerAndPositions" name="playerAndPositions">
                     <input type="hidden" id="subs" name="subs">
@@ -343,7 +337,7 @@
         // Can't select formations if your activity isn't a "friendly" or "game"
         if (!typeCanHaveFormation(currentActivity)) {
             formationDropdown.style.display = "none";
-          
+
             document.getElementById("formationDisplay").style.display = "none";
 
 
@@ -397,7 +391,6 @@
         if (formationId == -1) {
             document.querySelector(".formation-activity-display").classList.remove("active");
         } else {
-
             document.querySelector(".formation-activity-display").classList.add("active");
             generatedOrCustom(formation, custom === "true", customPlayerPositions);
             const reservesLi = document.querySelectorAll(".reserves-li");
@@ -413,11 +406,9 @@
             for (var formation_ in formationAndPlayersAndPositionJson) {
                 if (formation_ === formationId) {
                     var playersAndPosition = formationAndPlayersAndPositionJson[formation_];
+
                     var subsInfo = playersAndPosition[playersAndPosition.length - 1];
 
-                    var thisLineUpName = playersAndPosition[playersAndPosition.length - 2];
-
-                    document.getElementById("lineUpName").value = thisLineUpName;
                     if (subsInfo.length === 0) {
                         deactivateSubs()
                     }
@@ -470,10 +461,10 @@
 
 
                             const playerNameElement = position.querySelector('h3');
-                             playerNameElement.textContent = playerName;
-                             playerNameElement.style.display = 'inline-block';
-                             playerNameElement.style.width = 'auto';
-                             playerNameElement.style.marginLeft = '-4px';
+                            playerNameElement.textContent = playerName;
+                            playerNameElement.style.display = 'inline-block';
+                            playerNameElement.style.width = 'auto';
+                            playerNameElement.style.marginLeft = '-4px';
 
                             const playerImage = position.querySelector('.player-profile-img');
                             playerImage.src = "user-profile-picture/" + playerId;
@@ -718,21 +709,21 @@
                 }
             });
 
-                // Action to carry out when use clicks button to remove player from formation
-                clearPositionButton.addEventListener('click', () => {
-                        const positionPlayerId = position.querySelector("input").value;
-                        const players = document.querySelectorAll(".reserves-li");
-                        players.forEach(player => {
-                            const playerId = player.querySelector("input").value;
-                            if (playerId === positionPlayerId) {
-                                player.classList.remove("in-formation");
-                                position.classList.remove("filled");
-                            }
-                        });
-                        clearPlayer(position)
-                        if (subsUl.children.length==0) {
-                            deactivateSubs();
-                        }
+            // Action to carry out when use clicks button to remove player from formation
+            clearPositionButton.addEventListener('click', () => {
+                const positionPlayerId = position.querySelector("input").value;
+                const players = document.querySelectorAll(".reserves-li");
+                players.forEach(player => {
+                    const playerId = player.querySelector("input").value;
+                    if (playerId === positionPlayerId) {
+                        player.classList.remove("in-formation");
+                        position.classList.remove("filled");
+                    }
+                });
+                clearPlayer(position)
+                if (subsUl.children.length==0) {
+                    deactivateSubs();
+                }
 
             });
         }

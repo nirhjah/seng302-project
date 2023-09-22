@@ -37,7 +37,7 @@ public class Formation {
     private String title;
 
     /**
-     * Default constructor for Formatio
+     * Default constructor for Formation.
      * Required by JPA.
      */
     protected Formation() {}

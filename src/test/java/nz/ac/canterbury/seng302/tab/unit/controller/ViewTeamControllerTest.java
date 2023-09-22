@@ -79,7 +79,7 @@ class ViewTeamControllerTest {
                 "New Zealand");
         user = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(),
                 "johndoe@example.com", "Password123!", userLocation);
-        
+
         team.setCoach(user);
 
         team = Mockito.spy(team);
@@ -99,12 +99,12 @@ class ViewTeamControllerTest {
         Mockito.when(activityService.getLast5GamesOrFriendliesForTeamWithOutcome(team)).thenReturn(null);
         Mockito.when(factService.getTop5Scorers(team)).thenReturn(null);
         mockMvc.perform(get("/team-info")
-                .param("teamID", TEAM_ID.toString()))
-            .andExpect(status().isOk())
-            .andExpect(view().name("viewTeamForm"))
-            .andExpect(MockMvcResultMatchers.model().attribute("teamID", TEAM_ID))
-            .andExpect(MockMvcResultMatchers.model().attribute("displayName", TEAM_NAME))
-            .andExpect(MockMvcResultMatchers.model().attribute("displaySport", TEAM_SPORT));
+                        .param("teamID", TEAM_ID.toString()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("viewTeamForm"))
+                .andExpect(MockMvcResultMatchers.model().attribute("teamID", TEAM_ID))
+                .andExpect(MockMvcResultMatchers.model().attribute("displayName", TEAM_NAME))
+                .andExpect(MockMvcResultMatchers.model().attribute("displaySport", TEAM_SPORT));
     }
 
     @Test
@@ -125,8 +125,8 @@ class ViewTeamControllerTest {
             MockMultipartFile multipartFile = new MockMultipartFile("file",
                     file.getName(), "image/png", input.readAllBytes());
             mockMvc.perform(multipart("/team-info")
-                        .file(multipartFile)
-                        .param("teamID", TEAM_ID.toString()))
+                            .file(multipartFile)
+                            .param("teamID", TEAM_ID.toString()))
                     .andExpect(status().is3xxRedirection())
                     .andExpect(redirectedUrl(String.format("/team-info?teamID=%s", TEAM_ID)));
         }

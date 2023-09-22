@@ -526,7 +526,7 @@
         width: 100vw;
         float: none;
     }
-    
+
     .club-link {
         display: flex;
         align-items: center;
@@ -537,7 +537,7 @@
 
     .logo {
         width: 60px;
-        margin: 0 auto 10px; 
+        margin: 0 auto 10px;
     }
 
     .logo img {
@@ -545,7 +545,7 @@
         height: auto;
         display: block;
     }
-    
+
     .club-header {
         max-width: 10ch;
     }
