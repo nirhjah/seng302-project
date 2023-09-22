@@ -599,6 +599,30 @@ input[type="range"]::-moz-range-track {
     bottom: unset;
 }
 
+.modal-header {
+    text-align: center;
+    font-size: x-large;
+    padding-bottom: 10px
+}
+
+.close-button {
+    background: none;
+    border: none;
+    appearance: none;
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: -15px;
+    margin-right: -6px;
+}
+.close-button:hover,
+.close-button:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 .screenshot-display {
     width: 360px;
 }
