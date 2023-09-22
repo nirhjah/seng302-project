@@ -111,7 +111,7 @@ public class Formation {
 
     @Override
     public String toString() {
-        return title == null ? formation : title;
+        return getDisplayTitle();
     }
 
 }
