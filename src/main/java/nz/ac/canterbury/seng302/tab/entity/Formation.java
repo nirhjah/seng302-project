@@ -86,6 +86,17 @@ public class Formation {
         return title;
     }
 
+    /**
+     * The displayed "title" of a formation. If the user didn't enter one, it'll be the formation numbers + (Custom?)
+     */
+    public String getDisplayTitle() {
+        if (title == null || title.isEmpty()) {
+            return formation + " " + (custom ? "Custom" : "");
+        } else {
+            return title;
+        }
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }

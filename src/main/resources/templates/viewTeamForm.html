@@ -159,7 +159,7 @@
                             onclick="renderSavedFormation(this.dataset.formation, this.dataset.custom, this.dataset.pos, this.outerText)"
                             class="formation-li">
                             <span class="title">
-                                <h3 th:text="${formation}"></h3>
+                                <h3 th:text="${formation.displayTitle}"></h3>
                             </span>
                             <input type="hidden" class="formation-id" th:value="${formation.formationId}" />
                         </li>
