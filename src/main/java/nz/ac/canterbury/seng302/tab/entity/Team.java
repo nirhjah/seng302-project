@@ -45,6 +45,9 @@ public class Team implements Identifiable, HasImage {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<TeamRole> teamRoles = new HashSet<>();
 
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<WhiteboardScreenshot> screenshots = new HashSet<>();
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "team_members",
@@ -116,6 +119,14 @@ public class Team implements Identifiable, HasImage {
     }
     public void setImageType(ImageType imageType) {
         this.imageType = imageType;
+    }
+
+    public Set<WhiteboardScreenshot> getScreenshots() {
+        return screenshots;
+    }
+
+    public void addScreenshot(WhiteboardScreenshot screenshot) {
+        screenshots.add(screenshot);
     }
 
     public Grade getGrade() {
