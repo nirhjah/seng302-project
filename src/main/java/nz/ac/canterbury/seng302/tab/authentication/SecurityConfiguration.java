@@ -100,7 +100,7 @@ public class SecurityConfiguration {
             .csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2/**"), AntPathRequestMatcher.antMatcher("/geocode/autocomplete")))
             .authorizeHttpRequests()
             // accessible to anyone
-            .requestMatchers("/", "/register", LOGIN_URL, "/home",
+            .requestMatchers("/", "/register", LOGIN_URL,
                     "/geocode/autocomplete", "/lost-password", "/reset-password", "/confirm")
             .permitAll()
             // Only Federation Managers (maybe admins) can access this
