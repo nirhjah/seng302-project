@@ -291,7 +291,7 @@
         </label>
       </div>
       <div class="submit-button">
-        <button id="submit-screenshot" type="submit">Send Screenshot</button>
+        <button id="submit-screenshot" type="submit">Save</button>
       </div>
     </form>
   </div>
@@ -671,13 +671,13 @@
                     screenshotUpload.files = dt.files;
             })
 
-            screenshotModal.style.display = "block";
+            screenshotModal.classList.add("modal-fade-in");
         }
         
         function closeScreenshotModal() {
             // Give keyboard shortcut controls back
             allowKeyPresses = true;
-            screenshotModal.style.display = "none";
+            screenshotModal.classList.remove("modal-fade-in");
         }
 
         /** Animates a camera flash on the whiteboard */
