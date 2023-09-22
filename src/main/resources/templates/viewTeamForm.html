@@ -348,7 +348,10 @@
                     <div class="whiteboard-media-content">
                         <div th:each="rec : ${recordings}" class="media">
                             <div class="media-body">
-                                This is an image 123
+                                <img th:src="@{}">
+
+                                <img th:src="@{/url-url/{id}(id = ${rec.id})}"  class="card-img-top"
+                                     alt="Thumbnail">
                             </div>
                         </div>
                     </div>
