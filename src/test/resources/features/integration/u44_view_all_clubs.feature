@@ -2,26 +2,6 @@
 
 Feature: U44 - View All Clubs
 
-#  Scenario: AC1: when viewing all clubs, I can select a sport from a list of sports to filter the clubs
-#    Given I am on the view all clubs page
-#    When I select a sport from a list of sports known by the system
-#    Then only the clubs with the selected sport are displayed
-#
-#  Scenario: AC2: I can filter by location
-#    Given I am on the view all clubs page and all the filters are selected
-#    When no sports are selected,
-#    Then the list of clubs displays all clubs in the database
-#
-#  Scenario: AC3: I
-#    Given I am on the  view all clubs page
-#    When I deselect one or more sports from a list of sports known by the system
-#    Then the list of clubs updates according to the selected sports
-#
-#  Scenario: AC4
-#    Given I am on the view all clubs page
-#    When I enter a search term
-#    Then all clubs matching that search term (including partial matches) display
-
   Scenario: AC1 - Given I am on the view all clubs page showing me results for a search query,
   when I select a city from the list of cities collected from the clubs shown in the list,
   then only the clubs with the selected city are displayed
@@ -30,7 +10,7 @@ Feature: U44 - View All Clubs
     And there is a club called "Baboon" located in "Berlin"
     And there is a club called "Cats" located in "Copenhagen"
     And there is a club called "Humans" located in "Berlin"
-    When I select the city "Berlin"
+    When I filter by the city "berlin"
     Then only these clubs are selected:
       | Baboon |
       | Humans |
@@ -44,8 +24,8 @@ Feature: U44 - View All Clubs
     And there is a club called "Cats" with the sport "rugby"
     And there is a club called "Dolphin" with the sport "handball"
     And there is a club called "Humans" with the sport "football"
-    When I select the sport "football"
-    And I select the sport "rugby"
+    When I filter by the sport "football"
+    And I filter by the sport "rugby"
     Then only these clubs are selected:
       | Anemone |
       |  Cats   |

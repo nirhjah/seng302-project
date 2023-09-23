@@ -117,7 +117,7 @@ public class ViewAllClubs {
      */
     private ResultActions performGet() {
         // Build the request
-        MockHttpServletRequestBuilder request = get("/view-all-clubs")
+        MockHttpServletRequestBuilder request = get("/view-clubs")
                 .with(csrf())       // Required as the post is a form
                 .with(anonymous())  // Pretend we're logged in
                 .param("page", "1");
@@ -154,9 +154,21 @@ public class ViewAllClubs {
         clubService.updateOrAddClub(club);
     }
 
-    @When("When I select the city {string}")
+    @Given("there is a club called {string} with the sport {string}")
+    public void there_is_a_club_called_with_the_sport(String clubName, String sport) throws IOException{
+        Location location = new Location("", "", "", "test", "", "Test Country");
+        Club club = new Club(clubName, location, sport, null);
+        clubService.updateOrAddClub(club);
+    }
+
+    @When("I filter by the city {string}")
     public void when_i_select_the_city(String cityName) {
         selectedCities.add(cityName);
+    }
+
+    @When("I filter by the sport {string}")
+    public void when_i_select_the_sport(String sportName) {
+        selectedSports.add(sportName);
     }
 
     @Then("only these clubs are selected:")
@@ -175,10 +187,4 @@ public class ViewAllClubs {
                 });
     }
 
-    @Given("there is a club called {string} with the sport {string}")
-    public void there_is_a_club_calledWithTheSport(String clubName, String sport) throws IOException{
-        Location location = new Location("", "", "", "test", "", "Test Country");
-        Club club = new Club(clubName, location, sport, null);
-        clubService.updateOrAddClub(club);
-    }
 }
