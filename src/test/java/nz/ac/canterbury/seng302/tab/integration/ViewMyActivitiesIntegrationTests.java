@@ -91,8 +91,6 @@ public class ViewMyActivitiesIntegrationTests {
 
     private Date dateMiddle;
 
-    @Autowired
-    private CompetitionService competitionService;
 
     private Date dateLast;
 
@@ -125,7 +123,7 @@ public class ViewMyActivitiesIntegrationTests {
         teamService = Mockito.spy(new TeamService(teamRepository));
         activityService = Mockito.spy(new ActivityService(activityRepository, lineUpRepository, lineUpPositionRepository, factService, lineUpService, lineUpPositionService));
         factService = Mockito.spy(new FactService(factRepository));
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService, activityService), new ViewTeamController(userService, teamService, activityService, factService, formationService, competitionService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ViewActivitiesController(userService, activityService, teamService), new HomeFormController(userService, teamService, activityService), new ViewTeamController(userService, teamService, activityService, factService, formationService)).build();
 
         userRepository.deleteAll();
         teamRepository.deleteAll();
@@ -184,7 +182,7 @@ public class ViewMyActivitiesIntegrationTests {
 
     @Given("I am on the home form")
     public void iAmOnTheHomeForm() throws Exception {
-        mockMvc.perform(get("/")).andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:./home"));
+        mockMvc.perform(get("/")).andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:./login"));
     }
 
     @When("I click the profile box and then select the My Activities button")

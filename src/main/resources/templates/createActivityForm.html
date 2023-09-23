@@ -65,6 +65,12 @@
             </div>
 
             <div id="formationDisplay" th:style="${actId != null ? 'display:block' : 'display:none'}" class="formation-activity-display">
+                <div class="input-box">
+
+                    <input type="text" class="form-control" id="lineUpName" th:name="lineUpName"
+                           data-cy="lineUpName" autofocus>
+                    <label for="lineUpName">Lineup Name (Optional)</label>
+                </div>
                 <div>
                     <input type="hidden" id="playerAndPositions" name="playerAndPositions">
                     <input type="hidden" id="subs" name="subs">
@@ -390,6 +396,7 @@
         if (formationId == -1) {
             document.querySelector(".formation-activity-display").classList.remove("active");
         } else {
+
             document.querySelector(".formation-activity-display").classList.add("active");
             generatedOrCustom(formation, custom === "true", customPlayerPositions);
             const reservesLi = document.querySelectorAll(".reserves-li");
@@ -405,9 +412,11 @@
             for (var formation_ in formationAndPlayersAndPositionJson) {
                 if (formation_ === formationId) {
                     var playersAndPosition = formationAndPlayersAndPositionJson[formation_];
-
                     var subsInfo = playersAndPosition[playersAndPosition.length - 1];
 
+                    var thisLineUpName = playersAndPosition[playersAndPosition.length - 2];
+
+                    document.getElementById("lineUpName").value = thisLineUpName;
                     if (subsInfo.length === 0) {
                         deactivateSubs()
                     }
