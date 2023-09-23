@@ -30,10 +30,12 @@ public class U9ViewTeamProfile {
 
     @Then("I see the team's details \\(a.k.a. profile), i.e. it's name, location and sport")
     public void i_see_the_team_s_details_a_k_a_profile_i_e_it_s_name_location_and_sport() {
-        String nameValue = String.valueOf(PlaywrightBrowser.page.evaluate("document.querySelector('h3[data-cy=\"name\"]').textContent"));
+        String nameValue = PlaywrightBrowser.page.locator("h3[data-cy=\"name\"]").textContent();
 
-        String sportValue = String.valueOf(PlaywrightBrowser.page.evaluate("document.querySelector('h3[data-cy=\"sport\"]').textContent"));
-        String locationValue = String.valueOf(PlaywrightBrowser.page.evaluate("document.querySelector('h3[data-cy=\"location\"]').textContent"));
+        String sportValue = PlaywrightBrowser.page.locator("h3[data-cy=\"sport\"]").textContent();
+
+        String locationValue = PlaywrightBrowser.page.locator("h3[data-cy=\"location\"]").textContent();
+
         Assertions.assertNotNull(nameValue);
         Assertions.assertNotNull(sportValue);
         Assertions.assertNotNull(locationValue);
