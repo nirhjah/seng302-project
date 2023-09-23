@@ -7,7 +7,7 @@
 }
 
 .upper-canvas.erase {
-    cursor: url('../image/icons/eraser-cursor.png') 10 15, auto !important;
+    cursor: url('../image/icons/eraser-cursor.png') 10 25, auto !important;
 }
 
 .canvas-container {
@@ -540,52 +540,6 @@ input[type="range"]::-moz-range-track {
     100% { opacity: 0;  }
 }
 
-.recording-image {
-    background: #1B263B;
-    border-radius: 50%;
-    height: 16px;
-    width: 16px;
-    transition: all .1s ease-in-out;
-    z-index: 1;
-}
-
-.recording-button.active .recording-image {
-    border-radius: 2px;
-    cursor: pointer;
-    height: 10px;
-    width: 10px;
-    background: #EA3B52;
-}
-
-.recording-button.active .recording-image-border {
-    stroke: #EA3B52;
-}
-
-
-/*border: 3px #1B263B solid;*/
-
-
-.recording-button svg {
-    height: 30px;
-    width: 30px;
-    position: absolute;
-}
-
-circle {
-    fill: white;
-    stroke: #1B263B;
-    stroke-width: 3;
-    stroke-dasharray: 250;
-    stroke-dashoffset: 1000;
-    animation: rotate 3700s linear infinite;
-}
-
-@keyframes rotate {
-    to {
-        stroke-dashoffset: 0;
-    }
-}
-
 .modal {
     display: none;
     position: fixed;
@@ -625,6 +579,7 @@ circle {
     margin-top: -15px;
     margin-right: -6px;
 }
+
 .close-button:hover,
 .close-button:focus {
     color: #000;
@@ -640,4 +595,52 @@ circle {
     width: 100%;
 }
 
+.recording-image {
+    background: #1B263B;
+    border-radius: 50%;
+    height: 16px;
+    width: 16px;
+    transition: all .1s ease-in-out;
+    z-index: 1;
+    position: absolute;
+}
 
+.recording-button.active .recording-image {
+    border-radius: 2px;
+    cursor: pointer;
+    height: 10px;
+    width: 10px;
+    background: #EA3B52;
+}
+
+.recording-button.active .recording-image-border {
+    stroke: #EA3B52;
+}
+
+.circular-progress{
+    position: relative;
+    height: 28px;
+    width: 28px;
+    border-radius: 50%;
+    background: conic-gradient(#1B263B 360deg, #FFFFFF 0deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.circular-progress::before{
+    content: "";
+    position: absolute;
+    height: 22px;
+    width: 22px;
+    border-radius: 50%;
+    background-color: #fff;
+}
+
+.progress-value{
+    position: relative;
+    font-size: 40px;
+    font-weight: 600;
+    color: #EA3B52;
+    display: none;
+}

@@ -259,10 +259,11 @@
                 <button class="recording-button">
                     <span class="tooltip">Record (R)</span>
                     <span class="recording-image"></span>
-                    <svg>
-                        <circle class="recording-image-border" cx="15" cy="15" r="13"/>
-                    </svg>
+                    <span class="circular-progress">
+                        <span class="progress-value">0%</span>
+                    </span>
                 </button>
+
             </div>
             <div class="whiteboard">
                 <div class="camera-flash"></div>
@@ -655,7 +656,7 @@
                 cameraFlash.classList.remove("active");
             }, 990);
 
-            var dataURL = canvas.toDataURL();
+            let dataURL = canvas.toDataURL();
             const screenshotDisplay = document.getElementById('screenshotDisplay')
             screenshotDisplay.src = dataURL;
 
@@ -728,8 +729,32 @@
             }
         });
 
+        let progress;
+        const circularProgress = document.querySelector(".circular-progress")
+        const progressValue = document.querySelector(".progress-value");
+
         function toggleRecording() {
             recordingButton.classList.toggle('active');
+            if (recordingButton.classList.contains('active')) {
+                const minutes = 5;
+                const offset = (3.6 * 27 / 300);
+                let progressStartValue = 0,
+                    progressEndValue = 360,
+                    speed = (minutes * 60) / (3.6 + offset);
+                progress = setInterval(() => {
+                    progressStartValue+=0.1;
+                    progressValue.textContent = `${progressStartValue}%`
+                    circularProgress.style.background = `conic-gradient(#EA3B52 ${progressStartValue}deg, #ffffff 0deg)`
+                    if(progressStartValue >= progressEndValue){
+                        clearInterval(progress);
+                        recordingButton.classList.toggle('active');
+                        circularProgress.style.background = 'conic-gradient(#1B263B 360deg, #FFFFFF 0deg)'
+                    }
+                }, speed);
+            } else {
+                clearInterval(progress);
+                circularProgress.style.background = 'conic-gradient(#1B263B 360deg, #FFFFFF 0deg)'
+            }
         }
 
         const formationDropdown = document.getElementById("formation-dropdown");
@@ -1662,7 +1687,6 @@
          */
         function addPlayerIconMovement(playerIcon) {
             let iconIsDragging = false;
-            let drawingMode = false;
             const yOffset = 15;
             const xOffset = 18;
             let copyIcon;
@@ -1670,11 +1694,6 @@
             let newY;
 
             playerIcon.addEventListener("mousedown", (e) => {
-                if (canvas.isDrawingMode) {
-                    drawingMode = true;
-                    canvas.isDrawingMode = false;
-                    canvas.selection = true
-                }
                 iconIsDragging = true;
                 copyIcon = playerIcon.cloneNode(false)
                 copyIcon.classList.add("active")
@@ -1706,11 +1725,6 @@
                         const xP = e.clientX - canvasLeft;
                         const yP = e.clientY - canvasTop;
                         createPlayerIcon(xP, yP, copyIcon.style.background)
-                        if (drawingMode) {
-                            drawingMode = false;
-                            canvas.isDrawingMode = true;
-                            canvas.selection = false;
-                        }
                     }
                     iconIsDragging = false;
                     playerIconsContainer.removeChild(copyIcon)
@@ -1753,7 +1767,6 @@
             canvas.add(group)
         }
     })
-
 
 </script>
 </html>
