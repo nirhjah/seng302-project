@@ -27,7 +27,7 @@ import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
 @ComponentScan(basePackages = "com.baeldung.security")
 public class SecurityConfiguration {
 
-    public static final String DEFAULT_LOGIN_REDIRECT_URL = "/user-info/self";
+    public static final String DEFAULT_LOGIN_REDIRECT_URL = "/home";
     public static final String LOGIN_URL = "/login";
 
     /**
