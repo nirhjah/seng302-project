@@ -92,9 +92,13 @@ public class WhiteboardScreenshotService extends ImageService<WhiteboardScreensh
      */
     public WhiteboardScreenshot createScreenshot(MultipartFile file, boolean isPublic) {
         WhiteboardScreenshot screenshot = new WhiteboardScreenshot();
-        saveImage(screenshot, file);
         screenshot.setPublic(isPublic);
-        return repository.save(screenshot);
+        // We must save here first, so that an id is allocated to the entity
+        screenshot = repository.save(screenshot);
+        saveImage(screenshot, file);
+        // We must save here AGAIN, because our `saveImage` method mutates the entity.
+        screenshot = repository.save(screenshot);
+        return screenshot;
     }
 
     /**
