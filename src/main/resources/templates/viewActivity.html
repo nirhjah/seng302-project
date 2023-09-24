@@ -565,9 +565,6 @@
         const playersAndPositions = /*[[${playersAndPositions}]]*/ {};
         const playerNames = /*[[${playerNames}]]*/ {};
         const positions = pitch.childNodes;
-        console.log(playersAndPositions);
-        console.log(playerNames);
-        console.log(positions);
 
         for (const positionIndex in playersAndPositions) {
             const playerId = playersAndPositions[positionIndex];
@@ -581,12 +578,11 @@
                 playerNameElement.style.display = 'inline-block';
                 playerNameElement.style.width = 'auto';
                 playerNameElement.style.marginLeft = '-4px';
-
                 const playerImage = position.querySelector('.player-profile-img');
                 playerImage.src = "user-profile-picture/" + playerId;
                 playerImage.alt = "My Profile";
 
-                position.style.backgroundImage = 'none';
+                position.style.backgroundImage = 'none !important';
             }
         }
 
