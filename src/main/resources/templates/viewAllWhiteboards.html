@@ -7,7 +7,7 @@
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <link th:href="@{/css/view-all.css}" rel="stylesheet">
-    <title>View All Clubs</title>
+    <title>View All Whiteboards</title>
 </head>
 
 <body class="view-teams-background">
@@ -16,7 +16,7 @@
 <!--/* Search Field */-->
 <form id="search-form" th:action="@{view-clubs}" method="get">
     <div class="search-bar">
-        <input class="search-input" type="text" th:name="currentSearch" id="clubName" th:value="${currentSearch}" placeholder="Search Clubs" />
+        <input class="search-input" type="text" th:name="currentSearch" id="clubName" th:value="${currentSearch}" placeholder="Search Whiteboards" />
         <button class="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
     </div>
     <div class="filter-bar">
