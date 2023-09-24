@@ -1,10 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.Formation;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.service.*;
 import nz.ac.canterbury.seng302.tab.service.image.TeamImageService;
 import nz.ac.canterbury.seng302.tab.service.image.WhiteboardScreenshotService;
@@ -12,6 +9,8 @@ import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
@@ -23,6 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -66,6 +69,57 @@ public class ViewTeamController {
     }
 
     /**
+     * For testing purposes ONLY.
+     * Delete this method after we are done testing, thanks
+     */
+    private WhiteboardScreenshot createMockScreenshot() {
+        Resource resource = new ClassPathResource("/static/image/default-profile.png");
+        MultipartFile file = null;
+        try {
+            InputStream is = resource.getInputStream();
+            byte[] bytes = is.readAllBytes();
+            // MockMultipartFile isn't available in dev! only in test
+            file = new MultipartFile() {
+                @Override
+                public String getName() {
+                    return "my_screenshot";
+                }
+                @Override
+                public String getOriginalFilename() {
+                    return "screenshot.png";
+                }
+                @Override
+                public String getContentType() {
+                    return "image/png";
+                }
+                @Override
+                public boolean isEmpty() {
+                    return false;
+                }
+                @Override
+                public long getSize() {
+                    return bytes.length;
+                }
+                @Override
+                public byte[] getBytes() throws IOException {
+                    return bytes;
+                }
+                @Override
+                public InputStream getInputStream() throws IOException {
+                    return null;
+                }
+                @Override
+                public void transferTo(File dest) throws IOException, IllegalStateException {
+
+                }
+            };
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+        whiteboardScreenshotService.createScreenshotForTeam(file, team, true);
+    }
+
+    /**
      * Gets form to be displayed, includes the ability to display results of
      * previous form when linked to from POST form
      *
@@ -105,6 +159,12 @@ public class ViewTeamController {
         // model.addAttribute("screenshots", screenshots);
         // This should eventually use team.getRecordings() as opposed to team.getScreenshots()
         // model.addAttribute("recordings", screenshots);
+        List<WhiteboardScreenshot> screenshots = new ArrayList<>();
+        WhiteboardScreenshot ss = createMockScreenshot();
+        for (int i=0; i<10; i++) {
+            screenshots.add(ss);
+        }
+        model.addAttribute("screenshots", screenshots);
 
         // Is the currently logged in user this team's manager?
         Optional<User> oUser = userService.getCurrentUser();
