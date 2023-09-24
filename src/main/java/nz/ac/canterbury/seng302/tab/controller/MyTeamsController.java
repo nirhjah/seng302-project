@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -57,6 +58,7 @@ public class MyTeamsController {
     public String myTeamsForm(@RequestParam(value = "page", defaultValue = "-1") int pageNo,
                                 Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         model.addAttribute("httpServletRequest",request);
+        model.addAttribute("type", "team"); // This means home and teams page can use the same post method to handle teams
 
         model.addAttribute("joinTeamForm", new JoinTeamForm());
 
@@ -109,6 +111,7 @@ public class MyTeamsController {
     @PostMapping("/my-teams")
     public String joinTeamsForm(
             @RequestParam("token") String token,
+            @RequestParam("type") String type,
             @Validated JoinTeamForm joinTeamForm,
             BindingResult bindingResult,
             Model model,
@@ -129,14 +132,21 @@ public class MyTeamsController {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             redirectAttributes.addFlashAttribute("tokenInvalid", "Leave Modal Open");
             redirectAttributes.addFlashAttribute("formBindingResult", bindingResult);
+            if (type.equals("team")) {
+                return "redirect:/my-teams?page=1";
+            } else {
+                return "redirect:/home";
+            }
 
-            return "redirect:/my-teams?page=1";
         }
 
         if(team.isPresent()) {
             userService.userJoinTeam(user, team.get());
         }
-        
-        return "redirect:/my-teams?page=1";
+        if (Objects.equals(type, "team")) {
+            return "redirect:/my-teams?page=1";
+        } else {
+            return "redirect:/home";
+        }
     }
 }

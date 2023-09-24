@@ -151,6 +151,9 @@ public class LineUpService {
 
                 subsInfo.add(specificPlayerSubInfo);
             }
+
+            playersAndPosition.add(List.of(lineUp.getLineUpName()));
+
             playersAndPosition.add(subsInfo);
 
             formationAndPlayersAndPosition.put(formation.getFormationId(), playersAndPosition);

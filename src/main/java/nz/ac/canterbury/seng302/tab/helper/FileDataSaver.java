@@ -339,7 +339,7 @@ public abstract class FileDataSaver {
     public Optional<byte[]> readFile(Long id) {
         Path fullPath = getPath(id);
         try {
-            var bytes = Files.readAllBytes(fullPath);
+            byte[] bytes = Files.readAllBytes(fullPath);
             return Optional.of(bytes);
         } catch (IOException ex) {
             return Optional.empty();
