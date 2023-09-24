@@ -59,8 +59,8 @@
         </div>
         <div class="wrapper">
             <div class="pagination">
-                <div class="circle"></div>
                 <div class="circle active"></div>
+                <div class="circle"></div>
                 <div class="circle"></div>
             </div>
         </div>
@@ -96,6 +96,15 @@
             circle.classList.add("active");
         });
     });
+
+    let currentIndex =0;
+    function switchActiveCircle(){
+        circles.forEach(circle => circle.classList.remove("active"));
+        currentIndex = (currentIndex +1)%circles.length;
+        circles[currentIndex].classList.add("active");
+    }
+    setInterval(switchActiveCircle, 10000);
+
 </script>
 </body>
 
