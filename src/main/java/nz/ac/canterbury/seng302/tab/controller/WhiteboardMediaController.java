@@ -66,16 +66,16 @@ public class WhiteboardMediaController {
 
 
     @PostMapping("whiteboard-media/save/screenshot")
-    public void setScreenshot(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("teamId") long teamId,
-            @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
+    public ResponseEntity<Void> setScreenshot( @RequestParam("screenshot-input") MultipartFile file, @RequestParam("teamId") long teamId, @RequestParam("screenshot-name") String name, @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
     ) {
+        logger.info("got into the method");
+        logger.info(name);
         Team team = teamService.getTeam(teamId);
         if (team != null) {
             whiteboardScreenshotService.createScreenshotForTeam(file, team, isPublic);
         } else {
             logger.warn("No team found with id: {}", teamId);
         }
+        return ResponseEntity.ok().build();
     }
 }
