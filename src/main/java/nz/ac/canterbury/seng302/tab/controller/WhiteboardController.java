@@ -115,6 +115,7 @@ public class WhiteboardController {
     }
 
     // TESTING CONTROLLER, PLEASE DELETE
+    // TODO remove 
     @PostMapping("/whiteboard/upload-screenshot")
     public ResponseEntity<String> uploadWhiteboardScreenshot(
             @RequestParam("screenshot-input") MultipartFile whiteboardScreenshot,

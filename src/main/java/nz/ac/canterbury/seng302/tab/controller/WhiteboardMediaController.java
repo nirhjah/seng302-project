@@ -4,6 +4,9 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.service.image.WhiteboardScreenshotService;
+
+import java.lang.ProcessBuilder.Redirect;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +69,7 @@ public class WhiteboardMediaController {
 
 
     @PostMapping("whiteboard-media/save/screenshot")
-    public ResponseEntity<Void> setScreenshot( @RequestParam("screenshot-input") MultipartFile file, @RequestParam("teamId") long teamId, @RequestParam("screenshot-name") String name, @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
+    public String setScreenshot( @RequestParam("screenshot-input") MultipartFile file, @RequestParam("teamId") long teamId, @RequestParam("screenshot-name") String name, @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
     ) {
         logger.info("got into the method");
         logger.info(name);
@@ -76,6 +79,7 @@ public class WhiteboardMediaController {
         } else {
             logger.warn("No team found with id: {}", teamId);
         }
-        return ResponseEntity.ok().build();
+        // maybe redirect to view the whiteboard 
+        return "redirect:/whiteboard?teamID=" + team.getId();
     }
 }
