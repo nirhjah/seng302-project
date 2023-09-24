@@ -72,7 +72,7 @@ public class ViewTeamController {
      * For testing purposes ONLY.
      * Delete this method after we are done testing, thanks
      */
-    private WhiteboardScreenshot createMockScreenshot() {
+    private WhiteboardScreenshot createMockScreenshot(Team team) {
         Resource resource = new ClassPathResource("/static/image/default-profile.png");
         MultipartFile file = null;
         try {
@@ -116,7 +116,7 @@ public class ViewTeamController {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
-        whiteboardScreenshotService.createScreenshotForTeam(file, team, true);
+        return whiteboardScreenshotService.createScreenshotForTeam(file, team, true);
     }
 
     /**
@@ -160,7 +160,7 @@ public class ViewTeamController {
         // This should eventually use team.getRecordings() as opposed to team.getScreenshots()
         // model.addAttribute("recordings", screenshots);
         List<WhiteboardScreenshot> screenshots = new ArrayList<>();
-        WhiteboardScreenshot ss = createMockScreenshot();
+        WhiteboardScreenshot ss = createMockScreenshot(team);
         for (int i=0; i<10; i++) {
             screenshots.add(ss);
         }
