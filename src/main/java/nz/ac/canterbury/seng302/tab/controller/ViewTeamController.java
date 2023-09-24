@@ -1,7 +1,10 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import nz.ac.canterbury.seng302.tab.entity.*;
+import nz.ac.canterbury.seng302.tab.entity.Activity;
+import nz.ac.canterbury.seng302.tab.entity.Formation;
+import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.*;
 import nz.ac.canterbury.seng302.tab.service.image.TeamImageService;
 import nz.ac.canterbury.seng302.tab.service.image.WhiteboardScreenshotService;
@@ -23,7 +26,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Spring Boot Controller class for the ViewTeamForm
@@ -83,6 +85,7 @@ public class ViewTeamController {
         Team team = teamService.getTeam(teamID);
 
         if (team == null) {
+            logger.error("Couldn't find team with id: {}", teamID);
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
 
@@ -98,10 +101,10 @@ public class ViewTeamController {
             model.addAttribute("clubName",team.getTeamClub().getName());
         }
 
-        Set<WhiteboardScreenshot> screenshots = team.getScreenshots();
-        model.addAttribute("screenshots", screenshots);
+        // Set<WhiteboardScreenshot> screenshots = team.getScreenshots();
+        // model.addAttribute("screenshots", screenshots);
         // This should eventually use team.getRecordings() as opposed to team.getScreenshots()
-        model.addAttribute("recordings", screenshots);
+        // model.addAttribute("recordings", screenshots);
 
         // Is the currently logged in user this team's manager?
         Optional<User> oUser = userService.getCurrentUser();
@@ -153,11 +156,11 @@ public class ViewTeamController {
         logger.info("POST /team-info");
         teamImageService.updateProfilePicture(teamID, file);
 
-        // THIS CODE IS FOR TESTING ONLY!!!
-        var team = teamService.getTeam(teamID);
-        if (team != null) {
-            whiteboardScreenshotService.createScreenshotForTeam(file, team, false);
-        }
+//        // THIS CODE IS FOR TESTING ONLY!!!
+//        var team = teamService.getTeam(teamID);
+//        if (team != null) {
+//            whiteboardScreenshotService.createScreenshotForTeam(file, team, false);
+//        }
 
         return "redirect:/team-info?teamID=" + teamID;
     }
