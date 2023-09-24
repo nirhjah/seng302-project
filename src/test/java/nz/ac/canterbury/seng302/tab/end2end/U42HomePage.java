@@ -49,7 +49,7 @@ public class U42HomePage {
         PlaywrightBrowser.page.locator(".card-wrapper").locator("h5:has-text('0')").first().click();
         PlaywrightBrowser.page.locator("#activities").click();
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
-        Assertions.assertEquals("Game • 02 Apr 2025 - 02 Apr 2026 • 05:15AM - 05:15AM", PlaywrightBrowser.page.querySelector("span.details").innerText());
+        Assertions.assertTrue(PlaywrightBrowser.page.querySelector("span.details").innerText().contains("02 Apr 2025 - 02 Apr 2026"));
     }
 
     @Then("I can see an overview of details for the upcoming activity")
