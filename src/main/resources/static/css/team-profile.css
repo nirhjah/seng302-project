@@ -556,21 +556,20 @@
 }
 
 .media img {
-    height: 80%;
-    width: 80%;
+    height: 100%;
+    width: 100%;
     object-fit: scale-down;
     border-radius: 10px;
 }
 
 
 .media-body {
-    /*height: 100%;*/
-    /*width: 200px;*/
+    height: 100%;
+    width: 100%;
     padding: 6px;
     box-sizing: border-box;
     color: white;
     font-family: "Noto Sans", sans-serif;
-    height:fit-content;
 }
 
 .media-body .media-title{
