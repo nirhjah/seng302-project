@@ -33,11 +33,8 @@ public class Formation {
     @Column(columnDefinition = "MEDIUMBLOB")
     private String customPlayerPositions;
 
-    @Column
-    private String title;
-
     /**
-     * Default constructor for Formation.
+     * Default constructor for Formatio
      * Required by JPA.
      */
     protected Formation() {}

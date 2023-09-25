@@ -27,8 +27,8 @@
                 <button class="tab-button" >Formations &nbsp;</button>
             </div>
             <div class="tab" id="stats-tab">
-                <!--                this is a temporary icon for statistic, which is probably going to be replaced when working-->
-                <!--                on the team aggregated statistic task-->
+<!--                this is a temporary icon for statistic, which is probably going to be replaced when working-->
+<!--                on the team aggregated statistic task-->
                 <img class ="tab-icon" th:src="@{/image/icons/statistics.png}"/>
                 <button class="tab-button" >Statistics &nbsp;</button>
                 <div class="tab-line"></div>
@@ -102,7 +102,7 @@
                                 <div class="float-child" th:if="${clubId}">
                                     <a th:href="@{/view-club?clubID={id}(id=${clubId})}" class="club-link">
                                         <div class="user-label">
-                                            <img th:src="@{/club-logo/{id}(id = ${clubId})}"/>
+                                                <img th:src="@{/club-logo/{id}(id = ${clubId})}"/>
                                             <div>
                                                 <h3 class="attribute-type">Club</h3>
                                                 <h3 data-cy="club" th:text="*{clubName}"></h3>
@@ -183,6 +183,7 @@
                                 <img th:src="@{/image/icons/reload.svg}"> Generate
                             </button>
                         </div>
+
                         <div class="formation-description">
                             Formations represent the number of players in a row
                             <ul class="formation-description">
@@ -224,23 +225,23 @@
                     <div class="third-col" style="padding-bottom: 20px">
 
                         <h3 style="margin-top: 12px">Last 5 Matches: </h3>
-                        <div class="last5" style="margin-top: 57px">
-                            <ul class="last5Ul">
-                                <li th:each="act : ${last5GOrF}" th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
-                                    <div>
-                                        <h3 th:text="${act.activityType.name()}"> </h3>
-                                        <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
+                   <div class="last5" style="margin-top: 57px">
+                       <ul class="last5Ul">
+                           <li th:each="act : ${last5GOrF}" th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
+                               <div>
+                                   <h3 th:text="${act.activityType.name()}"> </h3>
+                                   <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
                                endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')}" th:text="${startDate} + ' - ' + ${endDate}" ></h4>
-                                        <h4 th:text="'Score: ' + ${act.activityTeamScore} + ' : ' + ${act.otherTeamScore}" > </h4>
-                                    </div>
-                                    <div>
-                                        <img th:if="${act.outcome.toString() == 'Win'}" th:src="@{/image/icons/win.svg}"/>
-                                        <img th:if="${act.outcome.toString() == 'Loss'}" th:src="@{/image/icons/loss.svg}"/>
-                                        <img th:if="${act.outcome.toString() == 'Draw'}" th:src="@{/image/icons/draw.svg}"/>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
+                                   <h4 th:text="'Score: ' + ${act.activityTeamScore} + ' : ' + ${act.otherTeamScore}" > </h4>
+                               </div>
+                               <div>
+                                   <img th:if="${act.outcome.toString() == 'Win'}" th:src="@{/image/icons/win.svg}"/>
+                                   <img th:if="${act.outcome.toString() == 'Loss'}" th:src="@{/image/icons/loss.svg}"/>
+                                   <img th:if="${act.outcome.toString() == 'Draw'}" th:src="@{/image/icons/draw.svg}"/>
+                               </div>
+                           </li>
+                       </ul>
+                   </div>
 
 
                     </div>
@@ -259,50 +260,50 @@
 
                         <div id="topScorersDiv" class="hidden" >
 
-                            <div class="top5Players">
-                                <ul>
-                                    <li th:each="player : ${top5Scorers}">
-                                        <div>
-                                            <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
-                                        </div>
-                                        <div style="width: 100%; margin-top: 16px">
-                                            <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"> </h3>
+                        <div class="top5Players">
+                            <ul>
+                                <li th:each="player : ${top5Scorers}">
+                                    <div>
+                                        <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
+                                    </div>
+                                    <div style="width: 100%; margin-top: 16px">
+                                        <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"> </h3>
 
-                                            <h4 th:text="${player.value == 1 ? player.value.toString() + ' pt' : player.value.toString() + ' pts'}"></h4>
-                                        </div>
+                                        <h4 th:text="${player.value == 1 ? player.value.toString() + ' pt' : player.value.toString() + ' pts'}"></h4>
+                                    </div>
 
-                                    </li>
-                                </ul>
-
-                            </div>
+                                </li>
+                            </ul>
 
                         </div>
+
+</div>
 
                         <div id="topOverallPlaytimeDiv" class="hidden" style="display: none;">
 
-                            <div class="top5Players">
-                                <ul>
-                                    <li th:each="player : ${overallPlayersPlaytime}">
-                                        <div>
-                                            <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
-                                        </div>
-                                        <div class="player-name-div" style="width: 100%; margin-top: 16px">
-                                            <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"> </h3>
-                                        </div>
+                        <div class="top5Players">
+                            <ul>
+                                <li th:each="player : ${overallPlayersPlaytime}">
+                                    <div>
+                                        <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
+                                    </div>
+                                    <div class="player-name-div" style="width: 100%; margin-top: 16px">
+                                        <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"> </h3>
+                                    </div>
 
-                                        <div class="player-time-div">
+                                    <div class="player-time-div">
 
-                                            <h4 th:text="'Total: ' + ${player.value[0].toString()} + 'm'"></h4>
-                                            <h4 th:text="'Avg: ' + ${player.value[1].toString()} + 'm'"></h4>
+                                        <h4 th:text="'Total: ' + ${player.value[0].toString()} + 'm'"></h4>
+                                        <h4 th:text="'Avg: ' + ${player.value[1].toString()} + 'm'"></h4>
 
-                                        </div>
+                                    </div>
 
-                                    </li>
-                                </ul>
-
-                            </div>
+                                </li>
+                            </ul>
 
                         </div>
+
+</div>
 
 
 
@@ -390,36 +391,36 @@
                     return;
                 }
                 const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/jpg'];
-                if (!allowedTypes.includes(file.type)) {
-                    alert('File type must be jpeg, png or svg');
-                    return;
-                }
-                document.getElementById('upload-picture').submit();
-            });
-        }
+            if (!allowedTypes.includes(file.type)) {
+                alert('File type must be jpeg, png or svg');
+                return;
+            }
+            document.getElementById('upload-picture').submit();
+        });
+    }
 
-        const copyButton = document.querySelector('.copy-token');
-        const tokenValue = document.querySelector('.token-value');
-        if (tokenValue !== null) {
-            const token = tokenValue.innerHTML;
-            copyButton.addEventListener('click', () => {
-                const selection = window.getSelection();
-                const range = document.createRange();
-                range.selectNodeContents(tokenValue);
-                selection.removeAllRanges();
-                selection.addRange(range);
-                document.execCommand('copy');
-                selection.removeAllRanges();
-                tokenValue.innerHTML = 'Copied...';
+    const copyButton = document.querySelector('.copy-token');
+    const tokenValue = document.querySelector('.token-value');
+    if (tokenValue !== null) {
+        const token = tokenValue.innerHTML;
+        copyButton.addEventListener('click', () => {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(tokenValue);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            document.execCommand('copy');
+            selection.removeAllRanges();
+            tokenValue.innerHTML = 'Copied...';
+            setTimeout(() => {
+                tokenValue.style.opacity = 0;
                 setTimeout(() => {
-                    tokenValue.style.opacity = 0;
-                    setTimeout(() => {
-                        tokenValue.style.opacity = 1;
-                        tokenValue.innerHTML = token;
-                    }, 500);
-                }, 1000);
-            });
-        }
+                    tokenValue.style.opacity = 1;
+                    tokenValue.innerHTML = token;
+                }, 500);
+            }, 1000);
+        });
+    }
 
         const tabs = document.querySelectorAll('.tab');
         const tabLine = document.querySelector('.tab-line');
