@@ -15,13 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -86,6 +82,8 @@ public class WhiteboardController {
 
         model.addAttribute("teamLineUps", teamLineUps);
 
+        model.addAttribute("teamId", team.getId());
+
         List<List<LineUpPosition>> positionsList = new ArrayList<>();
         model.addAttribute("teamLineupsPositions", positionsList);
 
@@ -114,47 +112,6 @@ public class WhiteboardController {
     }
 
 
-    // testing controller
-    @PostMapping("/whiteboard/save-recording")
-    public ResponseEntity<String> saveWhiteboardRecording(
-            @RequestParam("recording-input") MultipartFile whiteboardRecording,
-            @RequestParam("recording-name") String name) throws IOException {
-
-        logger.info("POST /whiteboard/save-recording");
-        return ResponseEntity.ok(
-                String.format("""
-            Name='%s'<br>
-            whiteboardRecording's size=%d<br>
-            <video width='320' height='240' controls>
-            <source src="data:video/mp4;base64,%s" type="video/mp4">
-            </video>
-            """,
-                        name,
-                        whiteboardRecording.getSize(),
-                        Base64.getEncoder().encodeToString(whiteboardRecording.getBytes())
-                )
-        );
-    }
-
-    // TESTING CONTROLLER, PLEASE DELETE
-    @PostMapping("/whiteboard/upload-screenshot")
-    public ResponseEntity<String> uploadWhiteboardScreenshot(
-            @RequestParam("screenshot-input") MultipartFile whiteboardScreenshot,
-            @RequestParam("screenshot-name") String name) throws IOException {
-
-        logger.info("POST /whiteboard/upload-screenshot");
-        return ResponseEntity.ok(
-            String.format("""
-            Name='%s'<br>
-            whiteboardScreenshot's size=%d<br>
-            <img src="data:image/png;base64,%s" />
-            """,
-            name,
-            whiteboardScreenshot.getSize(),
-            Base64.getEncoder().encodeToString(whiteboardScreenshot.getBytes())
-            )
-        );
-    }
 
 
 }

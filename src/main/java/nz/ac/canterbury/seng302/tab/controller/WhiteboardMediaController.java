@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,23 +43,29 @@ public class WhiteboardMediaController {
     }
 
     /**
-     *
-     * @param id
-     * @return
+     * Gets screenshot by id
+     * @param id screenshot id
+     * @return screenshot
      */
     @GetMapping("whiteboard-media/screenshot/{id}")
     public @ResponseBody ResponseEntity<byte[]> getPreview(@PathVariable long id) {
         return whiteboardScreenshotService.getScreenshot(id);
     }
 
-    // For video thumbnails:
+    /**
+     * Gets thumbnail for recording
+     * @param id
+     * @return
+     */
     @GetMapping("whiteboard-media/thumbnail/{id}")
     public @ResponseBody ResponseEntity<byte[]> getThumbnail(@PathVariable long id) {
         return whiteboardScreenshotService.getScreenshot(id);
     }
 
-    /*
-     We just yeet the bytes across, send all data at once, yolo
+    /**
+     * Gets recording by id
+     * @param id recorded video id
+     * @return recorded video
      */
     @GetMapping("whiteboard-media/video/{id}")
     public @ResponseBody ResponseEntity<byte[]> getRecording(@PathVariable long id) {
@@ -65,26 +73,45 @@ public class WhiteboardMediaController {
         return whiteboardRecordingService.getRecording(id);
     }
 
+    /**
+     * Saves whiteboard recording to backend
+     * @param file whiteboard recording file
+     * @param teamId id of the team who is using the whiteboard
+     * @param name name of the recording
+     * @param isPublic set if video should be publicly or privately viewed
+     * @param model model
+     * @param httpServletRequest httpservletrequest
+     * @return returns to team profile page upon saving video
+     */
     @PostMapping("whiteboard-media/save/video")
-    public void setRecording(
-            @RequestParam("file") MultipartFile file,
+    public String setRecording(
+            @RequestParam("recording-input") MultipartFile file,
             @RequestParam("teamId") long teamId,
-            @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
+            @RequestParam("recording-name") String name,
+            @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic, Model model, HttpServletRequest httpServletRequest
     ) {
+        model.addAttribute("httpServletRequest", httpServletRequest);
         logger.info("POST setRecording: {}", teamId);
         Team team = teamService.getTeam(teamId);
         User user = userService.getCurrentUser().orElseThrow();
         if (team != null) {
             if (team.isManagerOrCoach(user)) {
                 // TODO: Somehow save the thumbnail here.
-                whiteboardRecordingService.createRecordingForTeam(file, team, isPublic);
+                whiteboardRecordingService.createRecordingForTeam(file, name, team, isPublic);
             }
         } else {
             logger.warn("No team found with id: {}", teamId);
         }
+        return "redirect:/team-info?teamID=" + teamId;
     }
 
 
+    /**
+     * Saves whiteboard screenshot to backend
+     * @param file whiteboard screenshot file
+     * @param teamId id of the team who is using the whiteboard
+     * @param isPublic set if video should be publicly or privately viewed
+     */
     @PostMapping("whiteboard-media/save/screenshot")
     public void setScreenshot(
             @RequestParam("file") MultipartFile file,

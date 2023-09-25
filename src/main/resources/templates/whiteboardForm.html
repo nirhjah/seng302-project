@@ -273,9 +273,9 @@
                     <button class="close-button" id="close-recording-modal" onclick="recordingModal.style.display = 'none'">&times;</button>
                     <h3 class="modal-header">Save </h3>
                     <video id="recorded-canvas" controls></video>
-                    <form encType="multipart/form-data" th:action="@{/whiteboard/save-recording}" method="post">
+                    <form encType="multipart/form-data" th:action="@{/whiteboard-media/save/video}" method="post">
                         <input type="file" id="recording-input" name="recording-input"/>
-
+                        <input type="hidden" for="teamId" id="teamId" name="teamId" th:value="${teamId}"/>
                         <div class="input-box">
                             <input class="form-control" type="text" name="recording-name" id="recording-name"
                                    required>
