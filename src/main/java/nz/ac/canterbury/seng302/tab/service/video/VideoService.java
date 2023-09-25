@@ -1,19 +1,19 @@
 package nz.ac.canterbury.seng302.tab.service.video;
 
 import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
-import nz.ac.canterbury.seng302.tab.helper.ImageType;
 import nz.ac.canterbury.seng302.tab.helper.VideoType;
 import nz.ac.canterbury.seng302.tab.helper.interfaces.HasVideo;
 import nz.ac.canterbury.seng302.tab.helper.interfaces.Identifiable;
+import org.apache.tomcat.util.http.parser.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 public abstract class VideoService<Entity extends Identifiable & HasVideo> extends FileDataSaver {
 
@@ -36,22 +36,19 @@ public abstract class VideoService<Entity extends Identifiable & HasVideo> exten
         super(deploymentType, DEFAULT_VIDEO_RESTRICTIONS);
     }
 
-    private ResponseEntity<byte[]> getOGGResponse(byte[] videoData) {
-        HttpHeaders
-    }
-
-    private ResponseEntity<byte[]> getMP4Response(byte[] videoData) {
-
-    }
-
-    private ResponseEntity<byte[]> getWEBMResponse(byte[] videoData) {
+    private ResponseEntity<byte[]> getWEBMResponse() {
+        Resource res = null;
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("video/" + extension))
+                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=%s.%s", path, extension))
+                //.body(res);
 
     }
 
 
 
-    public ResponseEntity<byte[]> getVideoResponse(Entity entity) {
-        Optional<byte[]> videoData = readFile(entity.getId());
+    public ResponseEntity<Resource> getVideoResponse(Entity entity) {
+        Optional<Resource> videoData = readFile(entity.getId());
         if (videoData.isPresent()) {
 
         }

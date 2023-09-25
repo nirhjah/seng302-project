@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.helper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -340,6 +341,23 @@ public abstract class FileDataSaver {
         Path fullPath = getPath(id);
         try {
             byte[] bytes = Files.readAllBytes(fullPath);
+            return Optional.of(bytes);
+        } catch (IOException ex) {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Reads data from a file given an id.
+     * Returns empty on failure.
+     * Else, returns the resource as an Optional.
+     * @param id A unique id (ie. entity pk)
+     * @return Optional of the Resource
+     */
+    public Optional<Resource> readFileAsResource(Long id) {
+        Path fullPath = getPath(id);
+        try {
+            byte[] bytes = Files(fullPath);
             return Optional.of(bytes);
         } catch (IOException ex) {
             return Optional.empty();
