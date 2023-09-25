@@ -6,9 +6,6 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.service.image.WhiteboardScreenshotService;
 import nz.ac.canterbury.seng302.tab.service.video.WhiteboardRecordingService;
-
-import java.lang.ProcessBuilder.Redirect;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
