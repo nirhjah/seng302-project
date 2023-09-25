@@ -275,7 +275,6 @@
                     <video id="recorded-canvas" controls></video>
                     <form encType="multipart/form-data" th:action="@{/whiteboard-media/save/video}" method="post">
                         <input type="file" id="recording-input" name="recording-input"/>
-                        <input type="hidden" for="teamId" id="teamId" name="teamId" th:value="${teamId}"/>
                         <div class="input-box">
                             <input class="form-control" type="text" name="recording-name" id="recording-name"
                                    required>

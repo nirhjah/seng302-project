@@ -683,5 +683,8 @@ input[type="range"]::-moz-range-track {
 
 
 
-
-
+@media (max-width: 930px) {
+    .recording-modal-content {
+        width: 63% !important;
+    }
+}
