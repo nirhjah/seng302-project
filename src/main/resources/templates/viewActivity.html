@@ -261,12 +261,16 @@
                         </form>
                      </div>
                  </div>
-                <div class="formation-outer"
-                     th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"
-                     th:if="${formation != null}"
-                     th:data-formation="${formation.formation}"
-                     th:data-custom="${formation.custom}"
-                     th:data-customPlayers="${formation.customPlayerPositions}"></div>
+                <div class="formation-outer" th:if="${formation != null}" >
+                    <div
+                        id="lineup-details"
+                        th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"
+                        th:data-formation="${formation.formation}"
+                        th:data-custom="${formation.custom}"
+                        th:data-customPlayers="${formation.customPlayerPositions}"></div>
+
+                        <h3 th:text="${formation}"></h3>
+                    </div>
                 <h3 style="margin: auto" th:if="${formation == null}">No formation information available</h3>
 
                 <div>
@@ -553,10 +557,10 @@
     }
 
     function loadFormation() {
-        const formationOuter = document.querySelector(".formation-outer");
-        const formation = formationOuter.getAttribute("data-formation");
-        const custom = formationOuter.getAttribute("data-custom");
-        const customPlayers = formationOuter.getAttribute("data-customPlayers");
+        const lineupDetails = document.getElementById("lineup-details");
+        const formation = lineupDetails.dataset.formation;
+        const custom = lineupDetails.dataset.custom;
+        const customPlayers = lineupDetails.dataset.customPlayers;
         generatedOrCustom(formation, JSON.parse(custom), customPlayers);
         addPlayers();
     }
