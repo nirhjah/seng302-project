@@ -290,39 +290,38 @@
                     </form>
                 </div>
             </div>
-
-
-            <!-- /* Upload Screenshot Modal */ -->
-            <!-- /* This is the darken effect that covers the entire screen */ -->
-            <div id="screenshot-modal" class="modal">
-                <!-- /* This is the modal box */ -->
-                <div class="modal-content">
-                    <button class="close-button" id="close-screenshot-modal">&times;</button>
-                    <h3 class="modal-header">Save Screenshot</h3>
-                    <!-- /* Displays the image about to be saved */ -->
-                    <img id="screenshot-display" class="screenshot-display" alt="Screenshot of the whiteboard" />
-                    <form enctype="multipart/form-data" th:action="@{/whiteboard/upload-screenshot}" method="post">
-                        <!-- /* We save the image in this invisible field */ -->
-                        <input type="file" id="screenshot-input" name="screenshot-input" />
-
-                        <div class="input-box">
-                            <input class="form-control" type="text" name="screenshot-name" id="screenshot-name" required>
-                            <label for="screenshot-name">
-                                Screenshot Name:
-                                <span class="required">*</span>
-                            </label>
-                        </div>
-                        <div class="submit-button">
-                            <button id="submit-screenshot" type="submit">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-
         </div>
     </div>
 </div>
+
+<!-- /* Upload Screenshot Modal */ -->
+<!-- /* This is the darken effect that covers the entire screen */ -->
+<div id="screenshot-modal" class="modal">
+  <!-- /* This is the modal box */ -->
+  <div class="modal-content">
+    <button class="close-button" id="close-screenshot-modal">&times;</button>
+    <h3 class="modal-header">Save Screenshot</h3>
+    <!-- /* Displays the image about to be saved */ -->
+    <img id="screenshot-display" class="screenshot-display" alt="Screenshot of the whiteboard" />
+    <form id="screenshot-form" enctype="multipart/form-data" th:action="@{/whiteboard-media/save/screenshot}" method="post">
+      <!-- /* We save the image in this invisible field */ -->
+      <input type="file" id="screenshot-input" name="screenshot-input" />
+      <input type="hidden" for="teamId" id="teamId" name="teamId" th:value="${teamId}"/>
+  
+      <div class="input-box">
+        <input class="form-control" type="text" name="screenshot-name" id="screenshot-name" required>
+        <label for="screenshot-name">
+          Screenshot Name:
+          <span class="required">*</span>
+        </label>
+      </div>
+      <div class="submit-button">
+        <button id="submit-screenshot" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script type="text/javascript" th:src="@{/webjars/fabric/5.3.0/dist/fabric.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
 </body>
@@ -1842,6 +1841,34 @@
             canvas.add(group)
         }
     })
+
+    // ability to send post req without refreshing
+    const form = document.getElementById('screenshot-form')
+    form.addEventListener('submit', function(e) {
+        e.preventDefault()
+        const formData = new FormData(form)
+        sendWhiteboardWithoutRefreshing(formData)
+    })
+
+    function sendWhiteboardWithoutRefreshing(formData) {
+        axios.post("whiteboard-media/save/screenshot", formData)
+            .then(response => {
+                // open up in a new tab?
+                closeScreenshotModalAfterPost()
+            })
+            .catch(error => {
+                alert("ERROR see console");
+                console.error(error);
+            });
+    }
+
+    function closeScreenshotModalAfterPost() {
+        screenshotModal = document.getElementById("screenshot-modal");
+        allowKeyPresses = true;
+        screenshotModal.classList.remove("modal-fade-in");
+    }
+
+
 
 </script>
 </html>

@@ -76,13 +76,13 @@ public class WhiteboardController {
                 }
         ).toList();
 
+        model.addAttribute("teamId", team.getId());
+
         model.addAttribute("teamFormations", formationService.getTeamsFormations(teamID));
 
         model.addAttribute("teamMembers", team.getNonManagersAndCoaches());
 
         model.addAttribute("teamLineUps", teamLineUps);
-
-        model.addAttribute("teamId", team.getId());
 
         List<List<LineUpPosition>> positionsList = new ArrayList<>();
         model.addAttribute("teamLineupsPositions", positionsList);
@@ -110,8 +110,6 @@ public class WhiteboardController {
         }
         return ResponseEntity.notFound().build();
     }
-
-
 
 
 }
