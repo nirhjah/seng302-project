@@ -1,11 +1,16 @@
 package nz.ac.canterbury.seng302.tab.end2end;
 
+import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.options.LoadState;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+
+import java.util.List;
+import java.util.Objects;
+
 import org.junit.jupiter.api.Assertions;
 
 public class U10EditTeamDetailsFeature {
@@ -144,15 +149,16 @@ public class U10EditTeamDetailsFeature {
     }
 
     @Then("an error message tells me be that {string}.")
-    public void anErrorMessageTellsMeBeThatMessage(String message) {
-        String errorMessage = PlaywrightBrowser.page.locator(".error-message").innerText();
-        Assertions.assertEquals(errorMessage, message);
-    }
-
     @Then("an error message {string}, tells me these fields contain invalid values.")
     public void anErrorMessageMessageTellsMeTheseFieldsContainInvalidValues(String message) {
-        String errorMessage = PlaywrightBrowser.page.locator(".error-message").innerText();
-        Assertions.assertEquals(errorMessage, message);
+        // There can be multiple error messages on a page, so check them all.
+        List<Locator> everyErrorMessage = PlaywrightBrowser.page.locator(".error-message").all();
+        for (var errorMessage : everyErrorMessage) {
+            if (Objects.equals(errorMessage.innerText(), message)) {
+                return;
+            }
+        }
+        Assertions.fail("Could not find an error on this page with the message: " + message);
     }
 
 }
