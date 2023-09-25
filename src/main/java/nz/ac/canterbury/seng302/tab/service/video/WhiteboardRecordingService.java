@@ -51,9 +51,12 @@ public class WhiteboardRecordingService extends VideoService<WhiteBoardRecording
             WhiteBoardRecording recording = opt.get();
             if (canView(recording)) {
                 return getVideoResponse(recording);
+            } else {
+                logger.info("Does not have permission to view: {}", id);
             }
         }
         // else, there's no content:
+        logger.info("Failed!!! id: {}", id);
         return ResponseEntity.noContent().build();
     }
 

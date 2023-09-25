@@ -4,6 +4,7 @@ import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.service.image.WhiteboardScreenshotService;
+import nz.ac.canterbury.seng302.tab.service.video.WhiteboardRecordingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,14 @@ public class WhiteboardMediaController {
     Logger logger = LoggerFactory.getLogger(WhiteboardMediaController.class);
 
     WhiteboardScreenshotService whiteboardScreenshotService;
+    WhiteboardRecordingService whiteboardRecordingService;
     UserService userService;
     TeamService teamService;
 
     @Autowired
-    public WhiteboardMediaController(WhiteboardScreenshotService whiteboardScreenshotService, UserService userService, TeamService teamService) {
+    public WhiteboardMediaController(WhiteboardScreenshotService whiteboardScreenshotService, WhiteboardRecordingService whiteboardRecordingService, UserService userService, TeamService teamService) {
         this.whiteboardScreenshotService = whiteboardScreenshotService;
+        this.whiteboardRecordingService = whiteboardRecordingService;
         this.userService = userService;
         this.teamService = teamService;
     }
@@ -53,15 +56,12 @@ public class WhiteboardMediaController {
     }
 
     /*
-     Not sure if we should return a ResponseEntity here...
-     we may need to look into data streaming, and stream the file across.
-     Currently, the FDatasaver just loads the whole file into memory as bytes,
-     and yeets it across. This won't work well for large recordings of 300mb or above,
-     since itll put too much strain on our singular VM
+     We just yeet the bytes across, send all data at once, yolo
      */
     @GetMapping("whiteboard-media/video/{id}")
     public @ResponseBody ResponseEntity<byte[]> getRecording(@PathVariable long id) {
-        return whiteboardScreenshotService.getScreenshot(id);
+        logger.info("getRecording: {}", id);
+        return whiteboardRecordingService.getRecording(id);
     }
 
 

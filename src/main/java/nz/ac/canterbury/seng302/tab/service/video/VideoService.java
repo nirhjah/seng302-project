@@ -49,8 +49,10 @@ public abstract class VideoService<Entity extends Identifiable & HasVideo> exten
         Optional<byte[]> videoData = readFile(entity.getId());
         String extension = entity.getVideoType().getExtension();
         if (videoData.isPresent()) {
+            logger.info("Success: {}", entity.getId());
             return getResponse(videoData.get(), extension);
         }
+        logger.info("Couldn't find file: {}", entity.getId());
         return ResponseEntity.notFound().build();
     }
 
