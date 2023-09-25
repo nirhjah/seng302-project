@@ -574,13 +574,30 @@
         });
 
 
+        /*
+        Believe me, I really tried to avoid using JS here, but css has forced by hand.
+        https://stackoverflow.com/questions/4394309/how-do-i-fit-an-image-img-inside-a-div-and-keep-the-aspect-ratio
+
+        css object-fit property doesn't work on dynamically sized images.
+        Width=100% works... but only if the width is greater than the height.
+        As such, we need to use JS to check dimensions.
+         */
+        const IMG_FIT_PERCENTAGE = 0.8; // 80%
+
         function scaleImagesForParent(parent) {
             let imgDivs = parent.getElementsByTagName("div");
             imgDivs.forEach(div => {
                 let images = div.getElementsByTagName("img");
                 images.forEach(img => {
-                    img.height = "100%";
-                    img.width = "auto";
+                    // Not sure why we are using forEach here,
+                    // there should be only one img
+                    if (img.height > img.width) {
+                        img.height = div.height * 0.8;
+                        img.width = "auto";
+                    } else {
+                        img.width = div.width * 0.8;
+                        img.height = "auto";
+                    }
                 })
             })
         }

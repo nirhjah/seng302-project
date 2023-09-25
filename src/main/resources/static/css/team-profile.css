@@ -549,7 +549,8 @@
     display: inline-flex;
     cursor:pointer;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
-    aspect-ratio: 560 / 700; /* Aspect ratio of pitch */
+    /* aspect-ratio: 560 / 700; /* Aspect ratio of pitch */
+    aspect-ratio: 2 / 3; /* Aspect ratio of pitch */
     height: 90%;
     flex-shrink: 0;
 }
