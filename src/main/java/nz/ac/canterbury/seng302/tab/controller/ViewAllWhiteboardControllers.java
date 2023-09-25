@@ -11,6 +11,15 @@ import java.util.List;
 @Controller
 public class ViewAllWhiteboardControllers {
 
+    /**
+     * Controller for seeing all whiteboards
+     * @param page current page
+     * @param currentSearch current search term
+     * @param sports list of sports for filtering
+     * @param model passes data to html
+     * @param request httprequest
+     * @return page of all viewable whiteboards.
+     */
     @GetMapping("/view-whiteboards")
     public String allWhiteboards(@RequestParam(name = "page", defaultValue = "1") int page,
                                @RequestParam(name = "currentSearch", required = false) String currentSearch,
