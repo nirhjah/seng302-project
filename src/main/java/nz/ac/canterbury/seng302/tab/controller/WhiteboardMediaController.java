@@ -71,7 +71,7 @@ public class WhiteboardMediaController {
     @PostMapping("whiteboard-media/save/screenshot")
     public String setScreenshot( @RequestParam("screenshot-input") MultipartFile file, @RequestParam("teamId") long teamId, @RequestParam("screenshot-name") String name, @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
     ) {
-        logger.info("got into the method");
+        logger.info("/POST /whiteboard-media/save/screenshot");
         logger.info(name);
         Team team = teamService.getTeam(teamId);
         if (team != null) {
