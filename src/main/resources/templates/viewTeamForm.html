@@ -350,7 +350,7 @@
         <div class="content-box" id="whiteboard-media-tab">
             <div class="content whiteboard-media">
                 <div class="whiteboard-media-select">
-                    <div class="whiteboard-media-content">
+                    <div class="whiteboard-media-content" id="whiteboard-screenshots">
                         <div th:each="rec : ${screenshots}" class="media">
                             <a th:href="@{team-info}" target="_blank">
                                 <div class="media-body">
@@ -361,7 +361,7 @@
                         </div>
                     </div>
 
-                    <div class="whiteboard-media-content">
+                    <div class="whiteboard-media-content" id="whiteboard-recordings">
                         <div th:each="rec : ${recordings}" class="media">
                             <a th:href="@{team-info}" target="_blank">
                                 <div class="media-body">
@@ -414,36 +414,36 @@
                     return;
                 }
                 const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/jpg'];
-            if (!allowedTypes.includes(file.type)) {
-                alert('File type must be jpeg, png or svg');
-                return;
-            }
-            document.getElementById('upload-picture').submit();
-        });
-    }
+                if (!allowedTypes.includes(file.type)) {
+                    alert('File type must be jpeg, png or svg');
+                    return;
+                }
+                document.getElementById('upload-picture').submit();
+            });
+        }
 
-    const copyButton = document.querySelector('.copy-token');
-    const tokenValue = document.querySelector('.token-value');
-    if (tokenValue !== null) {
-        const token = tokenValue.innerHTML;
-        copyButton.addEventListener('click', () => {
-            const selection = window.getSelection();
-            const range = document.createRange();
-            range.selectNodeContents(tokenValue);
-            selection.removeAllRanges();
-            selection.addRange(range);
-            document.execCommand('copy');
-            selection.removeAllRanges();
-            tokenValue.innerHTML = 'Copied...';
-            setTimeout(() => {
-                tokenValue.style.opacity = 0;
+        const copyButton = document.querySelector('.copy-token');
+        const tokenValue = document.querySelector('.token-value');
+        if (tokenValue !== null) {
+            const token = tokenValue.innerHTML;
+            copyButton.addEventListener('click', () => {
+                const selection = window.getSelection();
+                const range = document.createRange();
+                range.selectNodeContents(tokenValue);
+                selection.removeAllRanges();
+                selection.addRange(range);
+                document.execCommand('copy');
+                selection.removeAllRanges();
+                tokenValue.innerHTML = 'Copied...';
                 setTimeout(() => {
-                    tokenValue.style.opacity = 1;
-                    tokenValue.innerHTML = token;
-                }, 500);
-            }, 1000);
-        });
-    }
+                    tokenValue.style.opacity = 0;
+                    setTimeout(() => {
+                        tokenValue.style.opacity = 1;
+                        tokenValue.innerHTML = token;
+                    }, 500);
+                }, 1000);
+            });
+        }
 
         const tabs = document.querySelectorAll('.tab');
         const tabLine = document.querySelector('.tab-line');
@@ -572,6 +572,21 @@
             }
             formationList.classList.toggle("active");
         });
+
+
+        function scaleImagesForParent(parent) {
+            let imgDivs = parent.getElementsByTagName("div");
+            imgDivs.forEach(div => {
+                let images = div.getElementsByTagName("img");
+                images.forEach(img => {
+                    img.height = "100%";
+                    img.width = "auto";
+                })
+            })
+        }
+
+        let screenshotParent = document.getElementById("whiteboard-screenshots")
+        scaleImagesForParent(screenshotParent);
 
 
     </script>
