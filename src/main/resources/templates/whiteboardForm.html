@@ -280,9 +280,10 @@
     <h3 class="modal-header">Save Screenshot</h3>
     <!-- /* Displays the image about to be saved */ -->
     <img id="screenshot-display" class="screenshot-display" alt="Screenshot of the whiteboard" />
-    <form enctype="multipart/form-data" th:action="@{/whiteboard/upload-screenshot}" method="post">
+    <form id="screenshot-form" enctype="multipart/form-data" th:action="@{/whiteboard-media/save/screenshot}" method="post">
       <!-- /* We save the image in this invisible field */ -->
       <input type="file" id="screenshot-input" name="screenshot-input" />
+      <input type="hidden" for="teamId" id="teamId" name="teamId" th:value="${teamId}"/>
   
       <div class="input-box">
         <input class="form-control" type="text" name="screenshot-name" id="screenshot-name" required>
@@ -1774,6 +1775,33 @@
             canvas.add(group)
         }
     })
+
+    // ability to send post req without refreshing 
+    const form = document.getElementById('screenshot-form')
+    form.addEventListener('submit', function(e) {
+        e.preventDefault()
+        const formData = new FormData(form)
+        sendWhiteboardWithoutRefreshing(formData)
+    })
+
+    function sendWhiteboardWithoutRefreshing(formData) {
+        axios.post("whiteboard-media/save/screenshot", formData)
+            .then(response => {
+                // open up in a new tab?
+                closeScreenshotModalAfterPost()
+            })
+            .catch(error => {
+                alert("ERROR see console");
+                console.error(error);
+            });
+    }
+
+    function closeScreenshotModalAfterPost() {
+        screenshotModal = document.getElementById("screenshot-modal");
+        allowKeyPresses = true;
+        screenshotModal.classList.remove("modal-fade-in");
+    }
+
 
 
 </script>
