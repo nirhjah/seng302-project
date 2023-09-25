@@ -114,26 +114,4 @@ public class WhiteboardController {
         return ResponseEntity.notFound().build();
     }
 
-    // TESTING CONTROLLER, PLEASE DELETE
-    // TODO remove 
-    @PostMapping("/whiteboard/upload-screenshot")
-    public ResponseEntity<String> uploadWhiteboardScreenshot(
-            @RequestParam("screenshot-input") MultipartFile whiteboardScreenshot,
-            @RequestParam("screenshot-name") String name) throws IOException {
-        
-        logger.info("POST /whiteboard/upload-screenshot");
-        return ResponseEntity.ok(
-            String.format("""
-            Name='%s'<br>
-            whiteboardScreenshot's size=%d<br>
-            <img src="data:image/png;base64,%s" />
-            """,
-            name,
-            whiteboardScreenshot.getSize(),
-            Base64.getEncoder().encodeToString(whiteboardScreenshot.getBytes())
-            )
-        );
-    }
-
-
 }
