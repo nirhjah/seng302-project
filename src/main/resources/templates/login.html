@@ -100,12 +100,15 @@
     function switchPages(){
         if (currentIndex===0){
             homeTitle.innerText="Discover new coaching techniques";
+            homeImg.src = "image/home/coach-tactics.svg";
         }
         else if (currentIndex===1){
             homeTitle.innerText="Enjoy seamless team management";
+            homeImg.src = "image/home/team-management.svg";
         }
         else{
             homeTitle.innerText="Create dynamic demonstrations for your team";
+            homeImg.src = "image/home/coach-tactics.svg";
         }
     }
     circles.forEach((circle, index) => {
