@@ -10,8 +10,7 @@ public enum VideoType {
     WEBM,
     OGG;
 
-    static Optional<VideoType> getVideoType(String extension) {
-        extension = extension.toLowerCase();
+    public static Optional<VideoType> getVideoType(String extension) {
         for (VideoType videoType: VideoType.values()) {
             if (extension.equalsIgnoreCase(videoType.name())) {
                 return Optional.of(videoType);
@@ -20,8 +19,8 @@ public enum VideoType {
         return Optional.empty();
     }
 
-    String getExtension() {
-        return this.name();
+    public String getExtension() {
+        return this.name().toLowerCase();
     }
 }
 

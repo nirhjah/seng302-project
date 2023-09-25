@@ -4,11 +4,11 @@ import nz.ac.canterbury.seng302.tab.helper.FileDataSaver;
 import nz.ac.canterbury.seng302.tab.helper.VideoType;
 import nz.ac.canterbury.seng302.tab.helper.interfaces.HasVideo;
 import nz.ac.canterbury.seng302.tab.helper.interfaces.Identifiable;
-import org.apache.tomcat.util.http.parser.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,30 +36,22 @@ public abstract class VideoService<Entity extends Identifiable & HasVideo> exten
         super(deploymentType, DEFAULT_VIDEO_RESTRICTIONS);
     }
 
-    private ResponseEntity<byte[]> getWEBMResponse() {
-        Resource res = null;
+    private ResponseEntity<byte[]> getResponse(byte[] videoData, String extension) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "video/" + extension);
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("video/" + extension))
-                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=%s.%s", path, extension))
-                //.body(res);
-
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .headers(headers)
+                .body(videoData);
     }
 
-
-
-    public ResponseEntity<Resource> getVideoResponse(Entity entity) {
-        Optional<Resource> videoData = readFile(entity.getId());
+    public ResponseEntity<byte[]> getVideoResponse(Entity entity) {
+        Optional<byte[]> videoData = readFile(entity.getId());
+        String extension = entity.getVideoType().getExtension();
         if (videoData.isPresent()) {
-
+            return getResponse(videoData.get(), extension);
         }
-    }
-
-    private Optional<VideoType> getVideoType(String extension) {
-        extension = extension.toLowerCase();
-        if (videoTypes.containsKey(extension)) {
-            return Optional.of(videoTypes.get(extension));
-        }
-        return Optional.empty();
+        return ResponseEntity.notFound().build();
     }
 
     public void saveVideo(Entity entity, MultipartFile multipartFile) {
@@ -70,7 +62,7 @@ public abstract class VideoService<Entity extends Identifiable & HasVideo> exten
         }
 
         String extension = optExtension.get();
-        Optional<VideoType> videoType = getVideoType(extension);
+        Optional<VideoType> videoType = VideoType.getVideoType(extension);
         if (videoType.isPresent()) {
             entity.setVideoType(videoType.get());
             boolean ok = saveFile(entity.getId(), multipartFile);

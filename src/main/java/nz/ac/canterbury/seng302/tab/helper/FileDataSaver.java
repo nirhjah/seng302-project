@@ -348,23 +348,6 @@ public abstract class FileDataSaver {
     }
 
     /**
-     * Reads data from a file given an id.
-     * Returns empty on failure.
-     * Else, returns the resource as an Optional.
-     * @param id A unique id (ie. entity pk)
-     * @return Optional of the Resource
-     */
-    public Optional<Resource> readFileAsResource(Long id) {
-        Path fullPath = getPath(id);
-        try {
-            byte[] bytes = Files(fullPath);
-            return Optional.of(bytes);
-        } catch (IOException ex) {
-            return Optional.empty();
-        }
-    }
-
-    /**
      * Reads bytes from a file.
      * If the file doesn't exist, or the operation fails, returns `defaultBytes`
      * @param id A unique ID (e.g. user entity primary key)
