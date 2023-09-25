@@ -43,7 +43,6 @@ public class CreateActivityController {
 
     private LineUpPositionService lineUpPositionService;
 
-    LineUp activityLineUp;
     private Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
     private static final String TEMPLATE_NAME = "createActivityForm";
@@ -294,7 +293,7 @@ public class CreateActivityController {
         activity = activityService.updateOrAddActivity(activity);
 
         Optional<Formation> optFormation = activity.getFormation();
-        if (Objects.equals(lineUpName, "") && optFormation.isPresent()) {
+        if ((lineUpName == null || lineUpName.isBlank()) && optFormation.isPresent()) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
             lineUpName = activity.getActivityStart().format(formatter) + " - " + activity.getActivityEnd().format(formatter) + ": " + optFormation.get().getFormation();
 
@@ -303,7 +302,7 @@ public class CreateActivityController {
         // Only apply lineup code if the activity can have a lineup
         if (activity.canContainFormation()) {
 
-            activityLineUp = lineUpService.findLineUpByActivityAndFormation(activity.getId(),
+            LineUp activityLineUp = lineUpService.findLineUpByActivityAndFormation(activity.getId(),
                     activity.getFormation().orElse(null));
 
             if (activityLineUp == null) {
