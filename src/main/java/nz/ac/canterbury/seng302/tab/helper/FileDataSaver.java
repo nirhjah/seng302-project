@@ -78,7 +78,7 @@ public abstract class FileDataSaver {
      *      Max size:  10mb
      *      Valid extensions:  {"png", "jpg"}
      */
-    static class FileRestrictions {
+    public static class FileRestrictions {
         public FileRestrictions(int maxSize, Collection<String> validExtensions) {
             this.maxSize = maxSize;
             this.validExtensions = validExtensions;
