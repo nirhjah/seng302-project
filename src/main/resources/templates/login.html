@@ -58,8 +58,8 @@
             </form>
         </div>
         <div class="wrapper">
-            <h2>Discover new coaching techniques </h2>
-            <img th:src="@{/image/home/Coach-tactics.svg}"/>
+            <h2 class ="home-title">Discover new coaching techniques</h2>
+            <img class ="home-image" th:src="@{/image/home/coach-tactics.svg}"/>
             <div class="pagination">
                 <div class="circle active"></div>
                 <div class="circle"></div>
@@ -89,25 +89,45 @@
             passwordToggle.src = 'image/icons/view.png';
         }
     });
-
+    //current index goes from 0 to 2
+    const homeTitle = document.querySelector(".home-title");
+    const homeImg= document.querySelector(".home-image");
+    let currentIndex = 0;
     const circles = document.querySelectorAll(".circle");
-    circles.forEach(circle => {
+    let interval;
+    interval=setInterval(switchActiveCircle, 5000);
+
+    function switchPages(){
+        if (currentIndex===0){
+            homeTitle.innerText="Discover new coaching techniques";
+        }
+        else if (currentIndex===1){
+            homeTitle.innerText="Enjoy seamless team management";
+        }
+        else{
+            homeTitle.innerText="Create dynamic demonstrations for your team";
+        }
+    }
+    circles.forEach((circle, index) => {
         circle.addEventListener("click", () => {
             circles.forEach(c => c.classList.remove("active"));
 
             circle.classList.add("active");
+            currentIndex = index;
+            switchPages();
+            clearInterval(interval);
+            interval = setInterval(switchActiveCircle, 5000);
         });
     });
-
-    let currentIndex = 0;
 
     function switchActiveCircle() {
         circles.forEach(circle => circle.classList.remove("active"));
         currentIndex = (currentIndex + 1) % circles.length;
+        console.log(currentIndex);
         circles[currentIndex].classList.add("active");
+        switchPages();
     }
 
-    setInterval(switchActiveCircle, 5000);
 
 </script>
 </body>
