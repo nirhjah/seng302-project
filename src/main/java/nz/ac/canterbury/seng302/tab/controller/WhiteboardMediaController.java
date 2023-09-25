@@ -85,20 +85,32 @@ public class WhiteboardMediaController {
     }
 
 
+    /**
+     * persists the whiteboard screenshot to the backend
+     * @param file the file to be saved
+     * @param teamId the team that the screenshot belongs to
+     * @param name the 'tag' of the whiteboard
+     * @param isPublic if the whiteboard is public or private
+     * @return redirect to the whiteboard page
+    */
     @PostMapping("whiteboard-media/save/screenshot")
-    public void setScreenshot(
-            @RequestParam("file") MultipartFile file,
+    public String setScreenshot(
+            @RequestParam("screenshot-input") MultipartFile file,
             @RequestParam("teamId") long teamId,
+            @RequestParam("screenshot-name") String name,
             @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
     ) {
+        logger.info("/POST /whiteboard-media/save/screenshot");
         Team team = teamService.getTeam(teamId);
         User user = userService.getCurrentUser().orElseThrow();
         if (team != null) {
             if (team.isManagerOrCoach(user)) {
-                whiteboardScreenshotService.createScreenshotForTeam(file, team, isPublic);
+                whiteboardScreenshotService.createScreenshotForTeam(file, name, team, isPublic);
             }
         } else {
             logger.warn("No team found with id: {}", teamId);
         }
+        // maybe redirect to view the whiteboard
+        return "redirect:/whiteboard?teamID=" + team.getId();
     }
 }

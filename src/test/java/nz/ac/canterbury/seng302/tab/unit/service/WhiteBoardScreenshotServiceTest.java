@@ -66,8 +66,8 @@ class WhiteBoardScreenshotServiceTest {
 
     void makeScreenshots() {
         for (int i=0; i<NUM_SCREENSHOTS; i++) {
-            var priv = whiteboardScreenshotService.createScreenshotForTeam(fakeScreenshot, team, false);
-            var pub = whiteboardScreenshotService.createScreenshotForTeam(fakeScreenshot, team, true);
+            var priv = whiteboardScreenshotService.createScreenshotForTeam(fakeScreenshot, "", team, false);
+            var pub = whiteboardScreenshotService.createScreenshotForTeam(fakeScreenshot, "", team, true);
             publicScreenshots.add(pub);
             privateScreenshots.add(priv);
         }
