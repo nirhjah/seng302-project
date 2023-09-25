@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
@@ -12,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -54,8 +52,8 @@ public class WhiteboardMediaController {
 
     /**
      * Gets thumbnail for recording
-     * @param id
-     * @return
+     * @param id id of media to get thumbnail of
+     * @return recording thumbnail
      */
     @GetMapping("whiteboard-media/thumbnail/{id}")
     public @ResponseBody ResponseEntity<byte[]> getThumbnail(@PathVariable long id) {
@@ -79,8 +77,6 @@ public class WhiteboardMediaController {
      * @param teamId id of the team who is using the whiteboard
      * @param name name of the recording
      * @param isPublic set if video should be publicly or privately viewed
-     * @param model model
-     * @param httpServletRequest httpservletrequest
      * @return returns to team profile page upon saving video
      */
     @PostMapping("whiteboard-media/save/video")
@@ -88,9 +84,8 @@ public class WhiteboardMediaController {
             @RequestParam("recording-input") MultipartFile file,
             @RequestParam("teamId") long teamId,
             @RequestParam("recording-name") String name,
-            @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic, Model model, HttpServletRequest httpServletRequest
+            @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
     ) {
-        model.addAttribute("httpServletRequest", httpServletRequest);
         logger.info("POST setRecording: {}", teamId);
         Team team = teamService.getTeam(teamId);
         User user = userService.getCurrentUser().orElseThrow();
@@ -102,7 +97,7 @@ public class WhiteboardMediaController {
         } else {
             logger.warn("No team found with id: {}", teamId);
         }
-        return "redirect:/team-info?teamID=" + teamId;
+        return "redirect:/whiteboard?teamID=" + teamId;
     }
 
     /**
