@@ -36,7 +36,7 @@
                 <hr>
             </div>
             <div class="dropdown">
-                <label for="lineup-dropdown" >Line-Up</label>
+                <label for="lineup-dropdown">Line-Up</label>
                 <select class="select" id="lineup-dropdown">
                     <option value="-1">(No Lineup)</option>
                     <option th:each="lineup : ${teamLineUps}"
@@ -55,9 +55,14 @@
                 <div class="player-list">
                     <ul class="player-ul">
                         <li class="player-card" th:each="member : ${teamMembers}">
-                            <img class="player-image" th:src="@{/user-profile-picture/{id}(id = ${member.userId})}" draggable="false">
-                            <span class="player-name" th:text="|${member.firstName} ${member.lastName}|"></span>
-                            <input class="player-id" type="hidden" th:value="${member.id}">
+                            <div>
+                                <img class="player-image" th:src="@{/user-profile-picture/{id}(id = ${member.userId})}"
+                                     draggable="false">
+                                <input class="player-id" type="hidden" th:value="${member.id}">
+                            </div>
+                            <div class ="player-name-div">
+                                <span class="player-name" th:text="|${member.firstName} ${member.lastName}|"></span>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -425,7 +430,8 @@
         var deleteIcon = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg version='1.1' id='Ebene_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='595.275px' height='595.275px' viewBox='200 215 230 470' xml:space='preserve'%3E%3Ccircle style='fill:%23F44336;' cx='299.76' cy='439.067' r='218.516'/%3E%3Cg%3E%3Crect x='267.162' y='307.978' transform='matrix(0.7071 -0.7071 0.7071 0.7071 -222.6202 340.6915)' style='fill:white;' width='65.545' height='262.18'/%3E%3Crect x='266.988' y='308.153' transform='matrix(0.7071 0.7071 -0.7071 0.7071 398.3889 -83.3116)' style='fill:white;' width='65.544' height='262.179'/%3E%3C/g%3E%3C/svg%3E";
         var deleteImg = document.createElement('img');
 
-        deleteImg.src= deleteIcon;
+        deleteImg.src = deleteIcon;
+
         /**
          * Takes the playerCard node, index of the node in the player list,
          * and canvas X and Y coordinates to place a fabric js player icon on the canvas.
@@ -443,7 +449,7 @@
             });
 
             const playerCardSpan = playerCard.querySelector('.player-name').textContent;
-            const playerCardImage= playerCard.querySelector('.player-image').src
+            const playerCardImage = playerCard.querySelector('.player-image').src
             const playerName = new fabric.Text(playerCardSpan, {
                 fill: 'black',
                 left: canvasX - 23,
@@ -461,8 +467,8 @@
                     scaleX: 30 / img.width,
                     scaleY: 30 / img.height,
                     clipPath: new fabric.Ellipse({
-                        rx: img.width/2,
-                        ry: img.height/2,
+                        rx: img.width / 2,
+                        ry: img.height / 2,
                         originX: 'center',
                         originY: 'center',
                         fill: 'transparent',
@@ -471,8 +477,8 @@
 
                 const group = new fabric.Group([whiteCircle, img, playerName], {
                     id: `teamPlayer:${index}`,
-                    left: canvasX-xPlayerOffset-2,
-                    top: canvasY-yPlayerOffset+10,
+                    left: canvasX - xPlayerOffset - 2,
+                    top: canvasY - yPlayerOffset + 10,
                 });
                 canvas.add(group);
                 canvas.renderAll();
@@ -485,7 +491,7 @@
                 ctx.save();
                 ctx.translate(left, top);
                 ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
-                ctx.drawImage(icon, -size/2, -size/2, size, size);
+                ctx.drawImage(icon, -size / 2, -size / 2, size, size);
                 ctx.restore();
             }
         }
@@ -784,7 +790,7 @@
          */
         function addTeamPlayers() {
             playerArray.forEach(({index, node}) => {
-                insertPlayerInTable(index,node)
+                insertPlayerInTable(index, node)
             })
         }
 
@@ -794,14 +800,15 @@
          */
         function addTeamPlayer(index) {
             const teamPlayer = playerArray.find(item => item.index === index);
-            insertPlayerInTable(index,teamPlayer.node);
+            insertPlayerInTable(index, teamPlayer.node);
         }
+
         /**
          * Adds the team player element back into the player table in the order of the index.
          * @param {number} index The index of the team player in the player list
          * @param {Element} node The index of the team player in the player list
          */
-        function insertPlayerInTable(index, node){
+        function insertPlayerInTable(index, node) {
             const playerList = document.querySelector('.player-ul');
             node.style.display = '';
             node.classList.remove("active");
@@ -1307,7 +1314,7 @@
         }
 
         function getLineUpPositions(formation, custom, customPlayerPositions, lineUpId) {
-            axios.get("whiteboard/get_lineup", { params: { lineUpId: lineUpId } })
+            axios.get("whiteboard/get_lineup", {params: {lineUpId: lineUpId}})
                 .then(response => {
                     formationSwitch(formation, custom, customPlayerPositions, response.data);
                 })
@@ -1352,8 +1359,8 @@
                     scaleX: 30 / img.width,
                     scaleY: 30 / img.height,
                     clipPath: new fabric.Ellipse({
-                        rx: img.width/2,
-                        ry: img.height/2,
+                        rx: img.width / 2,
+                        ry: img.height / 2,
                         originX: 'center',
                         originY: 'center',
                         fill: 'transparent',
@@ -1362,8 +1369,8 @@
 
                 const group = new fabric.Group([whiteCircle, img, playerName], {
                     id: `teamPlayer:${index}`,
-                    left: canvasX-xPlayerOffset-2,
-                    top: canvasY-yPlayerOffset+10,
+                    left: canvasX - xPlayerOffset - 2,
+                    top: canvasY - yPlayerOffset + 10,
                     hasControls: false,
                 });
                 canvas.add(group);
