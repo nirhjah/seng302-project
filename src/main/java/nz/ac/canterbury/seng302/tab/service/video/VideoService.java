@@ -6,7 +6,6 @@ import nz.ac.canterbury.seng302.tab.helper.interfaces.HasVideo;
 import nz.ac.canterbury.seng302.tab.helper.interfaces.Identifiable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +48,6 @@ public abstract class VideoService<Entity extends Identifiable & HasVideo> exten
         Optional<byte[]> videoData = readFile(entity.getId());
         String extension = entity.getVideoType().getExtension();
         if (videoData.isPresent()) {
-            logger.info("Success: {}", entity.getId());
             return getResponse(videoData.get(), extension);
         }
         logger.info("Couldn't find file: {}", entity.getId());
@@ -66,9 +64,10 @@ public abstract class VideoService<Entity extends Identifiable & HasVideo> exten
         String extension = optExtension.get();
         Optional<VideoType> videoType = VideoType.getVideoType(extension);
         if (videoType.isPresent()) {
-            entity.setVideoType(videoType.get());
             boolean ok = saveFile(entity.getId(), multipartFile);
-            if (!ok) {
+            if (ok) {
+                entity.setVideoType(videoType.get());
+            } else {
                 logger.error("Couldn't save file: {}", entity.getId());
             }
         }

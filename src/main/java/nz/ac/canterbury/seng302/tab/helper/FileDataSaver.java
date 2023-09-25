@@ -339,13 +339,10 @@ public abstract class FileDataSaver {
      */
     public Optional<byte[]> readFile(Long id) {
         Path fullPath = getPath(id);
-        logger.info("Reading file: {}", fullPath);
         try {
             byte[] bytes = Files.readAllBytes(fullPath);
-            logger.info("Successfully read file");
             return Optional.of(bytes);
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
             return Optional.empty();
         }
     }

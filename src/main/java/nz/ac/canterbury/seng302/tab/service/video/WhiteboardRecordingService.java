@@ -4,13 +4,14 @@ import jakarta.transaction.Transactional;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.entity.WhiteBoardRecording;
-import nz.ac.canterbury.seng302.tab.entity.WhiteboardScreenshot;
 import nz.ac.canterbury.seng302.tab.repository.WhiteBoardRecordingRepository;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -19,7 +20,10 @@ public class WhiteboardRecordingService extends VideoService<WhiteBoardRecording
     private static final String FOLDER_NAME = "WHITEBOARD_MEDIA_RECORDINGS";
 
     private final WhiteBoardRecordingRepository repository;
+
     private final UserService userService;
+
+    private final TeamService teamService;
 
 
     /**
@@ -28,9 +32,10 @@ public class WhiteboardRecordingService extends VideoService<WhiteBoardRecording
      * @param profile The deployment environment, which determines the
      */
     @Autowired
-    public WhiteboardRecordingService(@Value("${spring.profiles.active:unknown}") String profile, WhiteBoardRecordingRepository repository, UserService userService) {
+    public WhiteboardRecordingService(@Value("${spring.profiles.active:unknown}") String profile, WhiteBoardRecordingRepository repository, UserService userService, TeamService teamService) {
         super(getDeploymentType(profile));
         this.userService = userService;
+        this.teamService = teamService;
         this.repository = repository;
     }
 
@@ -39,10 +44,10 @@ public class WhiteboardRecordingService extends VideoService<WhiteBoardRecording
         return FOLDER_NAME;
     }
 
-
     /*
     We need @Transactional to get around LazyInitializationException.
      https://stackoverflow.com/questions/21574236/how-to-fix-org-hibernate-lazyinitializationexception-could-not-initialize-prox
+    (The same issue occurs in WhiteBoardScreenshotService.)
      */
     @Transactional
     public ResponseEntity<byte[]> getRecording(long id) {
@@ -71,5 +76,22 @@ public class WhiteboardRecordingService extends VideoService<WhiteBoardRecording
         Team team = recording.getTeam();
         User user = userService.getCurrentUser().orElseThrow();
         return (team.getTeamMembers().contains(user));
+    }
+
+    private WhiteBoardRecording createRecording(MultipartFile file, boolean isPublic) {
+        WhiteBoardRecording recording = new WhiteBoardRecording();
+        recording.setPublic(isPublic);
+        recording = repository.save(recording); // We must save here so the entity is given an id.
+        saveVideo(recording, file);
+        // We must save again is because the entity is mutated by saveVideo.
+        return repository.save(recording);
+    }
+
+    public void createRecordingForTeam(MultipartFile file, Team team, boolean isPublic) {
+        WhiteBoardRecording recording = createRecording(file, isPublic);
+        recording.setTeam(team);
+        recording = repository.save(recording);
+        team.addRecording(recording);
+        teamService.updateTeam(team);
     }
 }
