@@ -190,5 +190,22 @@ public class DefaultFunctions {
     }
 
 
+    public static void pwCreatePersonalActivity() {
+        //create activity
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-activity");
+        PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
+
+        PlaywrightBrowser.page.locator("#activityType").selectOption("Training");
+        PlaywrightBrowser.page.fill("#description", "desc");
+        PlaywrightBrowser.page.fill("#startDateTime", "2025-04-02T05:15");
+        PlaywrightBrowser.page.fill("#endDateTime", "2026-04-02T05:15");
+        PlaywrightBrowser.page.locator("input#address-line-1").type("1");
+        PlaywrightBrowser.page.locator("input#postcode").type("8042");
+        PlaywrightBrowser.page.locator("input#city").type("Christchurch");
+        PlaywrightBrowser.page.locator("input#country").type("New Zealand");
+        PlaywrightBrowser.page.locator("div.submit-button button[type='submit']").click();
+    }
+
+
     }
 
