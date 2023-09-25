@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.helper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -78,7 +79,7 @@ public abstract class FileDataSaver {
      *      Max size:  10mb
      *      Valid extensions:  {"png", "jpg"}
      */
-    static class FileRestrictions {
+    public static class FileRestrictions {
         public FileRestrictions(int maxSize, Collection<String> validExtensions) {
             this.maxSize = maxSize;
             this.validExtensions = validExtensions;
@@ -339,7 +340,7 @@ public abstract class FileDataSaver {
     public Optional<byte[]> readFile(Long id) {
         Path fullPath = getPath(id);
         try {
-            var bytes = Files.readAllBytes(fullPath);
+            byte[] bytes = Files.readAllBytes(fullPath);
             return Optional.of(bytes);
         } catch (IOException ex) {
             return Optional.empty();

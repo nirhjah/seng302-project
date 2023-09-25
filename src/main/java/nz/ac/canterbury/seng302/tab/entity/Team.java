@@ -45,6 +45,12 @@ public class Team implements Identifiable, HasImage {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<TeamRole> teamRoles = new HashSet<>();
 
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<WhiteboardScreenshot> screenshots = new HashSet<>();
+
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<WhiteBoardRecording> recordings = new HashSet<>();
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "team_members",
@@ -116,6 +122,22 @@ public class Team implements Identifiable, HasImage {
     }
     public void setImageType(ImageType imageType) {
         this.imageType = imageType;
+    }
+
+    public Set<WhiteboardScreenshot> getScreenshots() {
+        return screenshots;
+    }
+
+    public Set<WhiteBoardRecording> getRecordings() {
+        return recordings;
+    }
+
+    public void addRecording(WhiteBoardRecording recording) {
+        recordings.add(recording);
+    }
+
+    public void addScreenshot(WhiteboardScreenshot screenshot) {
+        screenshots.add(screenshot);
     }
 
     public Grade getGrade() {
@@ -240,6 +262,10 @@ public class Team implements Identifiable, HasImage {
     public boolean isCoach(User user) {
         var userId = user.getUserId();
         return getTeamCoaches().stream().anyMatch((u) -> u.getUserId() == userId);
+    }
+
+    public boolean isManagerOrCoach(User user) {
+        return isCoach(user) || isManager(user);
     }
 
     /** Sets team role for a user
