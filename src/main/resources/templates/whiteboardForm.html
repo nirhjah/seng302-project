@@ -749,6 +749,7 @@
                         clearInterval(progress);
                         recordingButton.classList.toggle('active');
                         circularProgress.style.background = 'conic-gradient(#1B263B 360deg, #FFFFFF 0deg)'
+                        mediaRecorder.stop()
                     }
                 }, speed);
             } else {
