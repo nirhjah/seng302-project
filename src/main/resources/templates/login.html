@@ -41,7 +41,7 @@
                     <label for="password">Password</label>
                     <img th:src="@{/image/icons/hide.png}" class="password-toggle" data-pw-field="password"/>
                 </div>
-                <div id= "lost-password" class="cancel-link">
+                <div id="lost-password" class="cancel-link">
                     <a th:href="@{lost-password}">Lost password?</a>
                 </div>
                 </br>
@@ -58,6 +58,8 @@
             </form>
         </div>
         <div class="wrapper">
+            <h2>Discover new coaching techniques </h2>
+            <img th:src="@{/image/home/Coach-tactics.svg}"/>
             <div class="pagination">
                 <div class="circle active"></div>
                 <div class="circle"></div>
@@ -97,13 +99,15 @@
         });
     });
 
-    let currentIndex =0;
-    function switchActiveCircle(){
+    let currentIndex = 0;
+
+    function switchActiveCircle() {
         circles.forEach(circle => circle.classList.remove("active"));
-        currentIndex = (currentIndex +1)%circles.length;
+        currentIndex = (currentIndex + 1) % circles.length;
         circles[currentIndex].classList.add("active");
     }
-    setInterval(switchActiveCircle, 10000);
+
+    setInterval(switchActiveCircle, 5000);
 
 </script>
 </body>
