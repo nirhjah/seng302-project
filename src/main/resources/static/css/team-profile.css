@@ -519,13 +519,23 @@
 .whiteboard-media-select {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 70%;
 }
 
-.whiteboard-play-button {
+.whiteboard-media-display {
     display: flex;
     width: 30%;
     min-width: 300px;
+}
+
+.whiteboard-media-display .play-button-box {
+    display: inline-block;
+    /*margin: 0 auto;*/
+    padding: 10%;
+    background-color: #8ebf42
+}
+
+.whiteboard-media-display .whiteboard-button {
 }
 
 
@@ -533,7 +543,7 @@
     height: 100%;
     overflow: auto;
     display: inline-flex;
-    max-width: 70%;
+    max-width: 100%;
 }
 
 
