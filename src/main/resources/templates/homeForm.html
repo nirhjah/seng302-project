@@ -4,15 +4,209 @@
     <!--    <link rel="preload" as="image" th:href="@{../image/landscape.jpg}">-->
     <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
     <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
+    <link th:href="@{/css/profile.css}" rel="stylesheet">
+    <link th:href="@{/css/home.css}" rel="stylesheet">
+    <link th:href="@{/css/view-all.css}" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
     <title>Home</title>
 </head>
 <body class="home-background">
  <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
-    <div class="Welcome-header">
-        <h1>Welcome!</h1>
-    </div>
+
+ <div class="Welcome-header">
+     <h1 th:text="${welcomeString}"></h1>
+ </div>
+
+
+ <div class="homePageWrapper">
+
+     <div class="teamsDiv">
+
+         <div style="padding-top: 19px; background: #1b263b; color: white; padding-bottom: 19px">
+             <h2 style="text-align: center">My Teams</h2>
+
+         </div>
+
+         <div class="last5" style="margin-top: 57px; padding-bottom: 21px;">
+             <h3 th:if="${userTeams.isEmpty()}" style="text-align: center; font-size: 20px">You aren't a part of any teams</h3>
+             <div th:if="${userTeams.isEmpty()}" class="submit-button"  style="width: 75%; margin: auto; padding-top: 20px">
+                 <button id="joinTeamByTokenModalBtn2" onclick="modal.style.display = 'block'" type="button" class="registerLoginButton">Join Team by Token</button>
+             </div>
+             <form id="forgot-password-form" th:action="@{/my-teams(page=1)}" method="post" th:object="${joinTeamForm}">
+             <div id="joinTeamModal" class="modal" th:style="${tokenInvalid != null ? 'display:block' : 'display:none'}">
+
+                 <div class="modal-content">
+                     <span class="close" onclick="modal.style.display = 'none'">&times;</span>
+                     <h4 class="reset-password-info"> Join Team By Token </h4>
+
+                     <div class="input-box">
+                         <input hidden value="teams" id="type" name="type" th:value="home">
+                         <input type="text" class="form-control" id="token" placeholder="" th:field="*{token}" th:value="${token}"
+                                data-cy="token" autofocus>
+                         <label for="token"> Token: <span class="required">*</span></label>
+                     </div>
+
+                     <div th:each="err : ${#fields.errors('token')}" th:text="${err}" class="error-message"></div>
+
+
+                     <div class="submit-button">
+                         <button id="joinTeam" type="submit" class="registerLoginButton">Join Team</button>
+                     </div>
+
+                 </div>
+             </div>
+             </form>
+
+
+             <ul class="homeCard">
+                 <li style="width: unset; border: solid 4px #1b263b;" th:each="team : ${userTeams}" th:onclick="|window.location.href='@{team-info(teamID=${team.teamId})}'|">
+                     <div style="display: flex">
+
+                         <div class="image-styling">
+                             <img style="margin-top: 9px; height: 130px; width: 130px;" th:src="@{/team-profile-picture/{id}(id = ${team.getId()})}" width="200" height="200">
+                             </br>
+                         </div>
+
+                         <div class="teamText">
+                             <div class="user-label">
+                                 <img style="width: 34px; height: 34px" th:src="@{/image/icons/name.svg}"/>
+                                 <div>
+                                     <h3 class="attribute-type">Name</h3>
+                                     <h3 style="margin-top: -18px;font-size: 22px"  th:text="${team.getName()}"> </h3>
+                                 </div>
+                             </div>
+
+                             <div class="user-label">
+                                 <img style="width: 34px; height: 34px" th:src="@{/image/icons/sports-alt.svg}"/>
+                                 <div>
+                                     <h3 class="attribute-type">Sport</h3>
+                                     <h3 style="margin-top: -18px;font-size: 22px" th:text="${team.getSport()}"> </h3>
+                                 </div>
+                             </div>
+
+                        </div>
+
+                     </div>
+
+                 </li>
+             </ul>
+         </div>
+         </div>
+
+
+     <div class="teamActivitiesDiv">
+         <div style="padding-top: 19px;background: #1b263b; color: white; padding-bottom: 19px">
+             <h2 style="text-align: center"> Upcoming Team Activities</h2>
+
+         </div>
+
+         <div class="last5" style="margin-top: 57px; padding-bottom: 21px;">
+             <h3 th:if="${userTeamActivities.isEmpty()}" style="text-align: center; font-size: 20px">You have no upcoming team activities</h3>
+             <ul style="overflow: auto;margin-top: -50px; height: 450px; padding-bottom: 10px" class="homeCard">
+                 <li style="width: unset; border: solid 4px #1b263b;" th:each="act : ${userTeamActivities}" th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
+
+                     <div>
+                         <div class="image-styling"  style="margin-top: 9px;">
+                             <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Game'}" th:src="@{/image/icons/game.svg}"/>
+                             <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Friendly'}" th:src="@{/image/icons/friendly.svg}"/>
+                             <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Competition'}" th:src="@{/image/icons/competition.svg}"/>
+                             <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Training'}" th:src="@{/image/icons/training.svg}"/>
+                             <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Other'}" th:src="@{/image/icons/other.svg}"/>
+                         </div>
+
+
+
+                     </div>
+
+                     <div class="teamText">
+
+                         <div class="user-label">
+                             <img style="width: 34px; height: 34px" th:src="@{/image/icons/team.svg}"/>
+                             <div>
+                                 <h3 class="attribute-type">Team</h3>
+                                 <h3 style="margin-top: -18px;font-size: 22px" th:text="${act.team.getName()}"> </h3>
+                             </div>
+                         </div>
+
+
+                         <div class="user-label">
+                             <img style="width: 34px; height: 34px" th:src="@{/image/icons/calendar.svg}"/>
+                             <div>
+                                 <h3  class="attribute-type">Date</h3>
+                                 <h4 style="margin-top: -14px;" th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
+                               endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')}" th:text="${startDate} + ' - ' + ${endDate}" ></h4>                             </div>
+                         </div>
+
+                     </div>
+
+                 </li>
+             </ul>
+         </div>
+
+     </div>
+
+     <div class="personalActivitiesDiv" style="border: solid 8px #1b263b;">
+
+         <div style="padding-top: 19px;background: #1b263b; color: white; padding-bottom: 19px">
+             <h2 style="text-align: center"> Upcoming Personal Activities</h2>
+         </div>
+
+         <div class="last5" style="margin-top: 57px; padding-bottom: 21px;">
+             <h3 th:if="${userPersonalActivities.isEmpty()}" style="text-align: center; font-size: 20px">You have no upcoming personal activities</h3>
+             <form method="get" th:action="@{create-activity}">
+                 <div th:if="${userPersonalActivities.isEmpty()}" class="submit-button"  style="width: 75%; margin: auto; padding-top: 30px">
+                     <button type="submit" >Create Activity</button>
+                 </div>
+             </form>
+             <ul style="overflow: auto;margin-top: -50px; height: 450px; padding-bottom: 10px" class="homeCard">
+                 <li style="width: unset; border: solid 4px #1b263b; justify-content: unset" th:each="act : ${userPersonalActivities}" th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
+
+                     <div>
+                         <div class="image-styling"  style="margin-top: 9px;">
+                             <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Game'}" th:src="@{/image/icons/game.svg}"/>
+                             <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Friendly'}" th:src="@{/image/icons/friendly.svg}"/>
+                             <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Competition'}" th:src="@{/image/icons/competition.svg}"/>
+                             <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Training'}" th:src="@{/image/icons/training.svg}"/>
+                             <img style="height: 130px; width: 130px;" th:if="${act.activityType.toString() == 'Other'}" th:src="@{/image/icons/other.svg}"/>
+                         </div>
+                     </div>
+
+                     <div style="margin-left: 15px;">
+                         <div class="user-label">
+                             <img style="width: 34px; height: 34px" th:src="@{/image/icons/calendar.svg}"/>
+                             <div>
+                                 <h3  class="attribute-type">Start Date</h3>
+                                 <h3 style="margin-top: -18px; font-size: 22px"
+                                     th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},"
+                                     th:text="${startDate}" ></h3>
+                             </div>
+                         </div>
+
+                         <div class="user-label">
+                             <img style="width: 34px; height: 34px" th:src="@{/image/icons/clock.svg}"/>
+                             <div>
+                                 <h3  class="attribute-type">Start Time</h3>
+                                 <h3 style="margin-top: -18px;font-size: 22px"
+                                     th:with="endDate=${#temporals.format(act.activityStart, 'h:mm a')},"
+                                     th:text="${endDate}" ></h3>
+                             </div>
+                         </div>
+
+                     </div>
+
+                 </li>
+             </ul>
+         </div>
+
+     </div>
+
+ </div>
+     <div>
+     </div>
+
+     </div>
+
     <footer>
         <p>
             Image by <a
@@ -23,3 +217,12 @@
 </div>
 </body>
 </html>
+<script>
+    var modal = document.getElementById("joinTeamModal");
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>

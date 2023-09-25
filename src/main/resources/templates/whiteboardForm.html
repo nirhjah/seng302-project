@@ -13,6 +13,7 @@
     <div class="whiteboard-wrapper">
         <div class="whiteboard-dropdowns">
             <h3 class="whiteboard-title" contenteditable="true">Untitled</h3>
+
             <div class="dropdown">
                 <label for="pitch">Pitch Type</label>
                 <select class="select" id="pitch"></select>
@@ -41,7 +42,7 @@
                     <option value="-1">(No Lineup)</option>
                     <option th:each="lineup : ${teamLineUps}"
                             th:value="${lineup.lineUpId}"
-                            th:text="${lineup.formation.getFormation()}"
+                            th:text="${lineup.lineUpName}"
                             th:data-custom="${lineup.formation.custom}"
                             th:data-custom-positions="${lineup.formation.customPlayerPositions}"
                     ></option>
@@ -59,9 +60,11 @@
                             <span class="player-name" th:text="|${member.firstName} ${member.lastName}|"></span>
                             <input class="player-id" type="hidden" th:value="${member.id}">
                         </li>
+
                     </ul>
                 </div>
             </div>
+
 
         </div>
         <div>
@@ -248,13 +251,54 @@
                         <img th:src="@{/image/icons/add-white.svg}"/>
                     </button>
                 </div>
+                <button class="camera-button" id="camera-button">
+                    <span class="tooltip">Camera (F)</span>
+                    <img class="selected-svg" th:src="@{/image/icons/camera-active.svg}"/>
+                    <img class="default-svg" th:src="@{/image/icons/camera.svg}"/>
+                </button>
+                <button class="recording-button">
+                    <span class="tooltip">Record (R)</span>
+                    <span class="recording-image"></span>
+                    <span class="recording-image-border"></span>
+                </button>
             </div>
             <div class="whiteboard">
+                <div class="camera-flash" id="camera-flash"></div>
                 <canvas id="canvas" width="560" height="700"></canvas>
             </div>
         </div>
     </div>
 </div>
+
+<!-- /* Upload Screenshot Modal */ -->
+<!-- /* This is the darken effect that covers the entire screen */ -->
+<div id="screenshot-modal" class="modal">
+  <!-- /* This is the modal box */ -->
+  <div class="modal-content">
+    <button class="close-button" id="close-screenshot-modal">&times;</button>
+    <h3 class="modal-header">Save Screenshot</h3>
+    <!-- /* Displays the image about to be saved */ -->
+    <img id="screenshot-display" class="screenshot-display" alt="Screenshot of the whiteboard" />
+    <form enctype="multipart/form-data" th:action="@{/whiteboard/upload-screenshot}" method="post">
+      <!-- /* We save the image in this invisible field */ -->
+      <input type="file" id="screenshot-input" name="screenshot-input" />
+  
+      <div class="input-box">
+        <input class="form-control" type="text" name="screenshot-name" id="screenshot-name" required>
+        <label for="screenshot-name">
+          Screenshot Name:
+          <span class="required">*</span>
+        </label>
+      </div>
+      <div class="submit-button">
+        <button id="submit-screenshot" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<video id="recorded-canvas" controls></video>
+
 <script type="text/javascript" th:src="@{/webjars/fabric/5.3.0/dist/fabric.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
 </body>
@@ -275,15 +319,7 @@
         pitchSelect.appendChild(option);
     });
 
-    const imagePath = "image/pitches/";
-    pitchSelect.addEventListener("change", function () {
-        const selectedValue = this.value;
-        const imageUrl = `${imagePath}${selectedValue}.svg`;
-        if (document.querySelector(".canvas-container") !== null) {
-            const canvasContainer = document.querySelector(".canvas-container");
-            canvasContainer.style.backgroundImage = `url(${imageUrl})`;
-        }
-    });
+
 
     /**
      * Handles editing the whiteboard name function. When the name is clicked, the name can be editable.
@@ -323,11 +359,33 @@
      * Functions related to the canvas
      */
     document.addEventListener("DOMContentLoaded", function () {
+        let allowKeyPresses = true;
+
         pitchSelect.value = "soccer";
         let canvas = new fabric.Canvas('canvas');
         let activeMode = null;
+        const imagePath = "image/pitches/";
+
         canvas.freeDrawingBrush.width = 5;
         canvas.freeDrawingBrush.color = '#ff0000';
+
+
+        const defaultImageUrl = `${imagePath}${pitchSelect.value}.svg`;
+        fabric.Image.fromURL(defaultImageUrl, function (img) {
+            canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+        });
+
+
+        pitchSelect.addEventListener("change", function () {
+            const selectedValue = this.value;
+            const imageUrl = `${imagePath}${selectedValue}.svg`;
+            canvas.clear();
+
+            fabric.Image.fromURL(imageUrl, function (img) {
+                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+            });
+
+        });
 
         const playerCards = document.querySelectorAll('.player-card');
         const whiteboard = document.querySelector('.whiteboard');
@@ -335,6 +393,7 @@
         const playerArray = [];
         const yPlayerOffset = 10;
         const xPlayerOffset = 20;
+
 
 
         /**
@@ -399,8 +458,6 @@
 
                         const canvasX = cardRect.left - canvas.upperCanvasEl.getBoundingClientRect().left;
                         const canvasY = cardRect.top - canvas.upperCanvasEl.getBoundingClientRect().top;
-                        currentX=canvasX;
-                        currentY=canvasY;
                         createTeamPlayerIcon(playerCard, canvasX, canvasY, index);
 
                         playerCard.style.display = 'none';
@@ -412,6 +469,18 @@
                 }
             });
         });
+
+        function getPlayerNameWidth(playerCard){
+            const tempElement = document.createElement('span');
+            tempElement.textContent = playerCard.querySelector('.player-name').textContent;
+            tempElement.style.position = 'absolute';
+            tempElement.style.left = '-9999px';
+            document.body.appendChild(tempElement);
+            const textContentWidth = tempElement.offsetWidth;
+            document.body.removeChild(tempElement);
+            return textContentWidth
+
+        }
 
         var deleteIcon = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg version='1.1' id='Ebene_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='595.275px' height='595.275px' viewBox='200 215 230 470' xml:space='preserve'%3E%3Ccircle style='fill:%23F44336;' cx='299.76' cy='439.067' r='218.516'/%3E%3Cg%3E%3Crect x='267.162' y='307.978' transform='matrix(0.7071 -0.7071 0.7071 0.7071 -222.6202 340.6915)' style='fill:white;' width='65.545' height='262.18'/%3E%3Crect x='266.988' y='308.153' transform='matrix(0.7071 0.7071 -0.7071 0.7071 398.3889 -83.3116)' style='fill:white;' width='65.544' height='262.179'/%3E%3C/g%3E%3C/svg%3E";
         var deleteImg = document.createElement('img');
@@ -426,18 +495,20 @@
          * @param {number} index The index in the player list
          */
         function createTeamPlayerIcon(playerCard, canvasX, canvasY, index) {
+            const playerNameWidth= getPlayerNameWidth(playerCard);
             const whiteCircle = new fabric.Circle({
-                left: canvasX,
+                left: canvasX-15,
                 top: canvasY,
                 radius: 15,
                 fill: 'white',
             });
 
+
             const playerCardSpan = playerCard.querySelector('.player-name').textContent;
             const playerCardImage= playerCard.querySelector('.player-image').src
             const playerName = new fabric.Text(playerCardSpan, {
                 fill: 'black',
-                left: canvasX - 23,
+                left: canvasX - playerNameWidth/2,
                 top: canvasY + 31,
                 fontFamily: '"Noto Sans", sans-serif',
                 fontSize: 16,
@@ -447,7 +518,7 @@
             fabric.Image.fromURL(playerCardImage, function (img) {
 
                 img.set({
-                    left: canvasX,
+                    left: canvasX-15,
                     top: canvasY,
                     scaleX: 30 / img.width,
                     scaleY: 30 / img.height,
@@ -472,7 +543,7 @@
 
         function renderIcon(icon) {
             return function renderIcon(ctx, left, top, styleOverride, fabricObject) {
-                var size = this.cornerSize;
+                let size = this.cornerSize;
                 ctx.save();
                 ctx.translate(left, top);
                 ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
@@ -495,14 +566,14 @@
 
         function deleteObject(eventData, transform) {
             var target = transform.target;
-            var canvas = target.canvas;
-            canvas.remove(target);
+            var _canvas = target.canvas;
+            _canvas.remove(target);
             if (target.id.includes("teamPlayer")) {
                 const number = target.id.match(/\d+/);
                 const index = parseInt(number[0], 10);
                 addTeamPlayer(index);
             }
-            canvas.requestRenderAll();
+            _canvas.requestRenderAll();
         }
 
         const upperCanvas = document.querySelector(".upper-canvas")
@@ -517,7 +588,8 @@
         function handleButtonClick(buttonClass, drawMode, selectMode) {
             const buttons = document.querySelectorAll('.whiteboard-buttons button');
             buttons.forEach(button => {
-                if (!button.parentElement.classList.contains("content") && !button.classList.contains("add-player-icon")) {
+                if (!button.parentElement.classList.contains("content") && !button.classList.contains("add-player-icon")
+                    && !button.classList.contains("recording-button")) {
                     button.classList.remove('active')
                 }
             });
@@ -566,6 +638,125 @@
         document.querySelector('.select-button').addEventListener('click', function () {
             handleButtonClick('select-button', false, true);
         });
+
+        /* !! Screenshot code !! */
+        const cameraButton = document.getElementById('camera-button');
+        const cameraFlash = document.querySelector('#camera-flash');
+        const screenshotModal = document.getElementById("screenshot-modal");
+        const closeScreenshotModalButton = document.getElementById("close-screenshot-modal");
+        const screenshotDisplay = document.getElementById('screenshot-display')
+        const screenshotUpload = document.getElementById("screenshot-input");
+
+        const mySound = new Audio("audio/cameraflash-cropped.mp3");
+        mySound.preload = "auto";
+
+        function createScreenshotModal() {
+            // Disable keyboard shortcuts while typing
+            allowKeyPresses = false;
+            // Display the pitch inside the modal
+            const dataURL = canvas.toDataURL();
+            screenshotDisplay.src = dataURL;
+            // Saves the image inside the modal's form
+            fetch(dataURL)
+                .then(res => res.blob())    // Base64 dataURL to binary
+                .then(blob => {
+                    // JavaScript's file APIs are very new and very bad
+                    // Turn the binary into a file
+                    const file = new File([blob], 'screenshot.png',
+                        {type: "image/png"}
+                    );
+                    // Add the file to the form's hidden "file" input.
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    screenshotUpload.files = dt.files;
+            })
+
+            screenshotModal.classList.add("modal-fade-in");
+        }
+        
+        function closeScreenshotModal() {
+            // Give keyboard shortcut controls back
+            allowKeyPresses = true;
+            screenshotModal.classList.remove("modal-fade-in");
+        }
+
+        /** Animates a camera flash on the whiteboard */
+        function screenFlash() {
+            cameraButton.classList.add('active');
+            cameraFlash.classList.add("active");
+            setTimeout(() => {
+                cameraFlash.classList.remove("active");
+            }, 990);
+            mySound.play()
+        }
+
+        function clickCamera() {
+            screenFlash();
+
+            createScreenshotModal()
+        }
+
+        function deactivateCamera() {
+            cameraButton.classList.remove('active');
+        }
+
+        cameraButton.addEventListener('click', clickCamera);
+        cameraButton.addEventListener('mouseup', deactivateCamera);
+        cameraButton.addEventListener('mouseleave', deactivateCamera);
+        closeScreenshotModalButton.addEventListener('click', closeScreenshotModal);
+        // Close the modal if you click outside the modal's content
+        screenshotModal.addEventListener('click', (event) => {
+            if (event.target == screenshotModal) {
+                closeScreenshotModal();
+            }
+        });
+        // Close the modal if you hit "Escape"
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape")
+                closeScreenshotModal();
+        });
+
+        /* Recording code*/
+        const recordingButton = document.querySelector('.recording-button');
+
+        //This is used to display the recording on screen once recorded, for testing purposes
+        const testVideoDisplay = document.getElementById('recorded-canvas');
+        var whiteboardToRecord = document.querySelector("canvas");
+
+        let recording = false;
+        var videoStream = whiteboardToRecord.captureStream(30);
+        var mediaRecorder = new MediaRecorder(videoStream);
+
+
+        recordingButton.addEventListener('click', function () {
+            toggleRecording();
+            if (!recording) {
+                var chunks = [];
+                mediaRecorder.ondataavailable = function(e) {
+                    chunks.push(e.data);
+                };
+
+                mediaRecorder.onstop = function(e) {
+                    var blob = new Blob(chunks, { 'type' : 'video/mp4' });
+                    chunks = [];
+                    var videoURL = URL.createObjectURL(blob);
+                    testVideoDisplay.src = videoURL;
+                };
+                mediaRecorder.ondataavailable = function(e) {
+                    chunks.push(e.data);
+                };
+
+                mediaRecorder.start();
+                recording = true;
+            } else {
+                mediaRecorder.stop();
+                recording = false;
+            }
+        });
+
+        function toggleRecording() {
+            recordingButton.classList.toggle('active');
+        }
 
         const formationDropdown = document.getElementById("formation-dropdown");
         const lineupDropdown = document.getElementById("lineup-dropdown");
@@ -665,6 +856,9 @@
          * Handles shortcut functionality
          */
         document.addEventListener('keydown', function (event) {
+            // If the whiteboard's not in focus (e.g. a modal's up), ignore keys
+            if (!allowKeyPresses) return;
+
             if (event.key === 's') {
                 handleButtonClick('select-button', false, true);
             } else if (event.key === 'd') {
@@ -702,6 +896,10 @@
                 }
                 formationDropdown.selectedIndex = 0;
                 lineupDropdown.selectedIndex = 0;
+            } else if (event.key === 'f') {
+                clickCamera();
+            } else if (event.key === 'r') {
+                toggleRecording();
             }
         });
 
@@ -1229,8 +1427,6 @@
                     lineGroup.addWithUpdate(leftLine);
                     lineGroup.addWithUpdate(rightLine);
                     // Old arrow elements get pushed to the top left corner for some reason so need to delete them
-                    canvas.remove(canvas.getObjects()[canvas.getObjects().length - 1])
-                    canvas.remove(canvas.getObjects()[canvas.getObjects().length - 2])
                     canvas.add(lineGroup);
                     lineGroup.setCoords();
                 }
@@ -1262,7 +1458,7 @@
         }
 
         function getLineUpPositions(formation, custom, customPlayerPositions, lineUpId) {
-            axios.get("/whiteboard/get_lineup", { params: { lineUpId: lineUpId } })
+            axios.get("whiteboard/get-lineup", { params: { lineUpId: lineUpId } })
                 .then(response => {
                     formationSwitch(formation, custom, customPlayerPositions, response.data);
                 })
@@ -1282,7 +1478,7 @@
          */
         function createLineupTeamPlayerIcon(id, name, canvasX, canvasY, index) {
 
-            const imageURL = "/user-profile-picture/" + id;
+            const imageURL = "user-profile-picture/" + id;
 
             const whiteCircle = new fabric.Circle({
                 left: canvasX,
@@ -1329,9 +1525,17 @@
 
         /** Formation **/
         document.getElementById("formation-dropdown").addEventListener("change", function (event) {
+
+            const defaultImageUrl = `${imagePath}${pitchSelect.value}.svg`;
+            fabric.Image.fromURL(defaultImageUrl, function (img) {
+                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+            });
+
             const selectedOption = event.target.options[event.target.selectedIndex];
             lineupDropdown.selectedIndex = 0;
             loadFormation(selectedOption);
+
+
         });
 
         /**
@@ -1385,9 +1589,9 @@
             for (let i = 0; i < formation.length; i++) {
                 let playersInRow = formation[i]
                 while (formation[i] !== 0) {
-                    const top = canvas.height - ((i + 1) / (formation.length + 1)) * canvas.height - radius;
-                    const left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * canvas.width - radius;
-                    if (lineUpPositions === null || lineUpPositions === undefined) {
+                    const top = canvas.height - ((i + 1) / (formation.length + 1)) * canvas.height;
+                    const left = ((playersInRow - formation[i] + 1) / (playersInRow + 1)) * canvas.width;
+                    if (!lineUpPositions) {
                         createPlayerIcon(left, top, '#EA3B52')
                     } else {
                         handleLineupGeneration(lineUpPositions, j, left, top);
@@ -1416,7 +1620,7 @@
                 let coordinates = positionsList[i].split(",")
                 const left = parseInt(coordinates[0]) * canvas.width / pitchWidthOriginal;
                 let top = canvas.width - parseInt(coordinates[1]) * canvas.width / pitchHeightOriginal;
-                if (lineUpPositions === null || lineUpPositions === undefined) {
+                if (!lineUpPositions) {
                     createPlayerIcon(left, top, '#EA3B52')
                 } else {
                     handleLineupGeneration(lineUpPositions, i, left, top);
@@ -1478,6 +1682,7 @@
          */
         function addPlayerIconMovement(playerIcon) {
             let iconIsDragging = false;
+            let drawingMode = false;
             const yOffset = 15;
             const xOffset = 18;
             let copyIcon;
@@ -1485,6 +1690,11 @@
             let newY;
 
             playerIcon.addEventListener("mousedown", (e) => {
+                if (canvas.isDrawingMode) {
+                    drawingMode = true;
+                    canvas.isDrawingMode = false;
+                    canvas.selection = true
+                }
                 iconIsDragging = true;
                 copyIcon = playerIcon.cloneNode(false)
                 copyIcon.classList.add("active")
@@ -1506,11 +1716,23 @@
             })
 
             document.addEventListener("mouseup", (e) => {
-                const {x, y} = canvas.getPointer(e);
-
+                const whiteboardRect = canvas.upperCanvasEl.getBoundingClientRect()
+                const pointer = canvas.getPointer(e);
+                const {x, y} = pointer;
                 if (iconIsDragging) {
+                    if (x > -radius && y > -radius && x < canvas.width + radius && y < canvas.height + radius) {
+                        const canvasLeft = whiteboardRect.left;
+                        const canvasTop = whiteboardRect.top;
+                        const xP = e.clientX - canvasLeft;
+                        const yP = e.clientY - canvasTop;
+                        createPlayerIcon(xP, yP, copyIcon.style.background)
+                        if (drawingMode) {
+                            drawingMode = false;
+                            canvas.isDrawingMode = true;
+                            canvas.selection = false;
+                        }
+                    }
                     iconIsDragging = false;
-                    createPlayerIcon(x, y, copyIcon.style.background)
                     playerIconsContainer.removeChild(copyIcon)
                     copyIcon.remove();
                 }
@@ -1532,8 +1754,8 @@
                 originY: 'center'
             });
             const playerIconInner = new fabric.Circle({
-                left: x - 0.5,
-                top: y - 0.5,
+                left: x,
+                top: y,
                 radius: radius - 4,
                 fill: fill,
                 strokeWidth: 2,

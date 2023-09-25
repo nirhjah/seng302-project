@@ -384,4 +384,70 @@ public class ActivityRepositoryTest {
         Assertions.assertEquals(1, activityRepository.getNumberOfWinsForATeam(team1));
     }
 
+    @Test
+    void testGettingUsersActivities_OnlyPersonal() throws Exception {
+        User user = new User("Test", "Account", "testing@test.com", "Password1!",
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity training = new Activity(ActivityType.Training, null, "Training activity",
+                LocalDateTime.of(2023, 1,6,6,30),
+                LocalDateTime.of(2023, 1,6,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity competition = new Activity(ActivityType.Competition, null, "Comp activity",
+                LocalDateTime.of(2023, 1,7,6,30),
+                LocalDateTime.of(2023, 1,7,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity other = new Activity(ActivityType.Other, null, "Other activity",
+                LocalDateTime.of(2023, 1,8,6,30),
+                LocalDateTime.of(2023, 1,8,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        activityRepository.save(training);
+        activityRepository.save(competition);
+        activityRepository.save(other);
+
+        List<Activity> expectedActivities = List.of(training, competition, other);
+        Assertions.assertEquals(expectedActivities, activityRepository.findUserTeamAndPersonalActivities(user));
+    }
+
+
+    @Test
+    void testGettingUsersActivities_OnlyTeam() throws Exception {
+        Team team1 = new Team("ATeamName", "Sport");
+        User user = new User("Test", "Account", "testing@test.com", "Password1!",
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity game = new Activity(ActivityType.Game, team1, "Training activity",
+                LocalDateTime.of(2023, 1,6,6,30),
+                LocalDateTime.of(2023, 1,6,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+
+        activityRepository.save(game);
+        List<Activity> expectedActivities = List.of(game);
+        Assertions.assertEquals(expectedActivities, activityRepository.findUserTeamAndPersonalActivities(user));
+    }
+
+
+    @Test
+    void testGettingUsersActivities_TeamAndPersonal() throws Exception {
+        Team team1 = new Team("ATeamName", "Sport");
+        User user = new User("Test", "Account", "testing@test.com", "Password1!",
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity game = new Activity(ActivityType.Game, team1, "Training activity",
+                LocalDateTime.of(2023, 1,6,6,30),
+                LocalDateTime.of(2023, 1,6,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity competition = new Activity(ActivityType.Competition, null, "Comp activity",
+                LocalDateTime.of(2023, 1,7,6,30),
+                LocalDateTime.of(2023, 1,7,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        Activity other = new Activity(ActivityType.Other, null, "Other activity",
+                LocalDateTime.of(2023, 1,8,6,30),
+                LocalDateTime.of(2023, 1,8,8,30), user,
+                new Location(null, null, null, "Christchurch", null, "New Zealand"));
+        activityRepository.save(game);
+        activityRepository.save(competition);
+        activityRepository.save(other);
+
+        List<Activity> expectedActivities = List.of(competition, other, game);
+        Assertions.assertEquals(expectedActivities, activityRepository.findUserTeamAndPersonalActivities(user));
+
+    }
 }

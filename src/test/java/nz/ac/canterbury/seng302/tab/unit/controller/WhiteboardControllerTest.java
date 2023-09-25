@@ -78,10 +78,12 @@ class WhiteboardControllerTest {
     @Test
     @WithMockUser
     void testGettingWhiteboardWithValidTeam() throws Exception {
-        mockMvc.perform(get("/whiteboard").param("teamID", TEAM_ID.toString())
-        ).andExpect(status().isOk()).andExpect(model().attributeExists("teamFormations"))
-                .andExpect(model().attributeExists("teamLineUps"))
-                        .andExpect(model().attributeExists("teamMembers"));
+        mockMvc.perform(get("/whiteboard")
+                .param("teamID", TEAM_ID.toString()))
+            .andExpect(status().isOk())
+            .andExpect(model().attributeExists("teamFormations"))
+            .andExpect(model().attributeExists("teamLineUps"))
+            .andExpect(model().attributeExists("teamMembers"));
 
 
     }
@@ -90,7 +92,8 @@ class WhiteboardControllerTest {
     @WithMockUser
     void testGettingWhiteboardWithInvalidTeam() throws Exception {
 
-        mockMvc.perform(get("/whiteboard").param("teamID", String.valueOf(2))
-        ).andExpect(view().name("redirect:/home"));
+        mockMvc.perform(get("/whiteboard")
+                .param("teamID", "2"))
+            .andExpect(status().isNotFound());
     }
 }

@@ -589,4 +589,33 @@ public class ActivityService {
         return players.stream().filter(player -> !teamCoachesAndManagersList.contains(player)).toList();
     }
 
+    /**
+     * Gets all future Personal Activities - ie ones that a user created for themselves
+     * @param user the user whose personal activities we are looking for
+     * @return a list of the users personal activities
+     */
+    public List<Activity> getAllFuturePersonalActivitiesForUser(User user) {
+        List<Activity> futureTeamActivities = new ArrayList<>();
+        for (Activity activity :  activityRepository.getPersonalActivitiesForUser(user)) {
+            if (activity.getActivityStart().isAfter(LocalDateTime.now())) {
+                futureTeamActivities.add(activity);
+            }
+        }
+        return futureTeamActivities;
+    }
+
+    /**
+     * Get all team activities for a user
+     * @param user the user whose team activities we are looking for
+     * @return a list of upcoming team activities for the user
+     */
+    public List<Activity> getAllFutureTeamActivitiesForUser(User user) {
+        List<Activity> futureTeamActivities = new ArrayList<>();
+        for (Activity activity :  activityRepository.getTeamActivitiesForUser(user)) {
+            if (activity.getActivityStart().isAfter(LocalDateTime.now())) {
+                futureTeamActivities.add(activity);
+            }
+        }
+        return futureTeamActivities;
+    }
 }

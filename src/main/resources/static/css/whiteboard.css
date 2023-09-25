@@ -29,9 +29,10 @@
     display: flex;
     align-items: center;
     border-radius: 5px 5px 0 0;
+    padding-right: 10px;
 }
 
-.select-button, .draw-button, .erase-button, .shape-button, .delete-button, .customisation-box button {
+.select-button, .draw-button, .erase-button, .shape-button, .delete-button, .customisation-box button, .camera-button, .recording-button {
     height: 35px;
     width: 35px;
     border: none;
@@ -68,7 +69,7 @@
     width: 23px;
 }
 
-.select-button.active, .draw-button.active, .erase-button.active, .shape-button.active, .delete-button.active, .customisation-box button.active {
+.select-button.active, .draw-button.active, .erase-button.active, .shape-button.active, .delete-button.active, .customisation-box button.active, .camera-button.active {
     background: #0b2239;
     border: 3px white solid;
 }
@@ -249,23 +250,18 @@ input[type="range"]::-moz-range-track {
 }
 
 .visibility-selection {
-    height: 15px !important;
-    width: 15px !important;
+    height: 20px !important;
+    width: 20px !important;
     border: none !important;
     border-radius: 30px !important;
     background: white !important;
     position: absolute !important;
-    margin-left: 59px !important;
-    margin-top: 33px !important;
+    margin-left: 56px !important;
+    margin-top: 28px !important;
 }
 
-
-.visibility-selection .selected-svg {
-    height: 6px;
-}
-
-.visibility-selection .default-svg {
-    height: 7px;
+.visibility-selection .default-svg, .visibility-selection .selected-svg {
+    height: 10px;
 }
 
 .visibility-selection.active .default-svg, .visibility-selection .selected-svg {
@@ -381,14 +377,14 @@ input[type="range"]::-moz-range-track {
 }
 
 .whiteboard-dropdowns .player-header{
-    height:18%;
-    background:#415a77;
-    border-radius: 15px 15px 0 0;
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:19px;
+    height: 18%;
+    background: #415a77;
+    border-radius: 12px 12px 0 0;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 19px;
 }
 
 .whiteboard-dropdowns .player-list{
@@ -513,11 +509,143 @@ input[type="range"]::-moz-range-track {
     padding: 3px 0 3px 0;
 }
 
+.camera-button {
+    margin-left: auto;
+}
 
+.camera-flash {
+    position: fixed;
+    width: 560px;
+    height: 700px;
+    background-color: #fff;
+    visibility: hidden;
+    opacity: 0;
+    z-index: 1;
+}
 
+.camera-flash.active {
+    visibility: visible;
+    -webkit-animation: flash-animation 1s;
+    animation: flash-animation 1s;
+    opacity: 1;
+}
 
+@-webkit-keyframes flash-animation {
+    0% {  opacity: 1;  }
+    100% { opacity: 0; }
+}
 
+@keyframes flash-animation {
+    0% { opacity: 1; }
+    100% { opacity: 0;  }
+}
 
+.recording-image {
+    background: #1B263B;
+    border-radius: 50%;
+    height: 15px;
+    width: 15px;
+    transition: all .1s ease-in-out;
+}
+
+.recording-button.active .recording-image {
+    border-radius: 2px;
+    cursor: pointer;
+    height: 9px;
+    width: 9px;
+    background: #EA3B52;
+}
+
+.recording-button.active .recording-image-border {
+    border: 3px #EA3B52 solid;
+}
+
+.recording-image-border {
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    border: 3px #1B263B solid;
+    border-radius: 50px;
+}
+
+.record-button-border {
+    width: 24px;
+    position: absolute;
+    height: 24px;
+    border-radius: 50px;
+    border: red solid 2px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    margin-top: 150px;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 400px;
+    border-radius: 20px;
+    bottom: unset;
+}
+
+.modal-header {
+    text-align: center;
+    font-size: x-large;
+    padding-bottom: 10px
+}
+
+.close-button {
+    background: none;
+    border: none;
+    appearance: none;
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: -15px;
+    margin-right: -6px;
+}
+.close-button:hover,
+.close-button:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.screenshot-display {
+    width: 360px;
+}
+
+#screenshot-input {
+    display: none;
+}
+
+.modal.modal-fade-in {
+    display: block;
+    animation-name: modal-fade-in;
+    animation-duration: 1s;
+    animation-iteration-count: 1;
+}
+
+@keyframes modal-fade-in {
+    from {
+        opacity: 0%;
+    }
+    to {
+        opacity: 100%;
+    }
+}
 
 
 

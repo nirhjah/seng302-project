@@ -216,6 +216,7 @@ public class CreateActivityController {
      * @param httpServletRequest the request
      * @param httpServletResponse the response to send
      * @param subs subs added to the lineup
+     * @param lineUpName optional name for lineup, defaults to start date + end date of activity + formation string
      * @return returns my activity page iff the details are valid, returns to activity page otherwise
      * @throws MalformedURLException thrown in some cases
      */
@@ -224,6 +225,7 @@ public class CreateActivityController {
             @RequestParam(name = "actId", defaultValue = "-1") Long actId,
             @RequestParam(name = "playerAndPositions", required = false) String playerAndPositions,
             @RequestParam(name = "subs", required = false) String subs,
+            @RequestParam(name = "lineUpName", required = false) String lineUpName,
             @Validated CreateActivityForm createActivityForm,
             BindingResult bindingResult,
             HttpServletRequest httpServletRequest,
@@ -291,6 +293,13 @@ public class CreateActivityController {
 
         activity = activityService.updateOrAddActivity(activity);
 
+        Optional<Formation> optFormation = activity.getFormation();
+        if (Objects.equals(lineUpName, "") && optFormation.isPresent()) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
+            lineUpName = activity.getActivityStart().format(formatter) + " - " + activity.getActivityEnd().format(formatter) + ": " + optFormation.get().getFormation();
+
+        }
+
         // Only apply lineup code if the activity can have a lineup
         if (activity.canContainFormation()) {
 
@@ -301,6 +310,7 @@ public class CreateActivityController {
                 Optional<Formation> formationOptional = activity.getFormation();
                 if (formationOptional.isPresent()) {
                     activityLineUp = new LineUp(formationOptional.get(), activity.getTeam(), activity);
+                    activityLineUp.setLineUpName(lineUpName);
                     lineUpService.updateOrAddLineUp(activityLineUp);
                 }
             } else {
@@ -308,10 +318,10 @@ public class CreateActivityController {
 
                 if (formationOptional.isPresent()) {
                     activityLineUp.setFormation(formationOptional.get());
+                    activityLineUp.setLineUpName(lineUpName);
                     lineUpService.updateOrAddLineUp(activityLineUp);
                 }
             }
-
             lineUpService.saveSubs(subs, activityLineUp);
 
             if (playerAndPositions != null && !playerAndPositions.isEmpty()) {

@@ -34,7 +34,7 @@
                     th:text="${noTeamsFlag}"></h4>
 
                 <div class="submit-button">
-                    <button id="joinTeamByTokenModalBtn1" onclick="modal.style.display = 'block'" type="button" class="registerLoginButton">Join Team by Token</button>
+                    <button id="joinTeamByTokenModalBtn1" onclick="modal.style.display = 'block'; " type="button" class="registerLoginButton">Join Team by Token</button>
                 </div>
 
             </div>
@@ -45,7 +45,7 @@
             <div class="modal-content">
                 <span class="close" onclick="modal.style.display = 'none'">&times;</span>
                 <h4 class="reset-password-info"> Join Team By Token </h4>
-
+                <input hidden value="teams" id="type" type="text" name="type" th:value="${type}">
                 <div class="input-box">
                     <input type="text" class="form-control" id="token" placeholder="" th:field="*{token}" th:value="${token}"
                            data-cy="token" autofocus>
@@ -98,7 +98,6 @@
 
 <script>
     var modal = document.getElementById("joinTeamModal");
-
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";

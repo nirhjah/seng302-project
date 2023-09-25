@@ -52,18 +52,14 @@ public class ViewTeamController {
     private ActivityService activityService;
 
     @Autowired
-    private CompetitionService competitionService;
-
-    @Autowired
     private FactService factService;
 
-    public ViewTeamController(UserService userService, TeamService teamService, ActivityService activityService, FactService factService, FormationService formationService, CompetitionService competitionService) {
+    public ViewTeamController(UserService userService, TeamService teamService, ActivityService activityService, FactService factService, FormationService formationService) {
         this.userService = userService;
         this.formationService = formationService;
         this.teamService = teamService;
         this.activityService = activityService;
         this.factService = factService;
-        this.competitionService = competitionService;
 
     }
 
@@ -97,7 +93,6 @@ public class ViewTeamController {
         model.addAttribute("displayLocation", team.getLocation());
         model.addAttribute("displayToken", team.getToken());
         model.addAttribute("clubId",teamService.getTeamClubId(team));
-        model.addAttribute("teamCompetitions", competitionService.getAllCompetitionsWithTeam(team));
         model.addAttribute("overallPlayersPlaytime", activityService.top5UsersWithPlayTimeAndAverageInTeam(team));
         if( team.getTeamClub()!=null){
             model.addAttribute("clubName",team.getTeamClub().getName());
