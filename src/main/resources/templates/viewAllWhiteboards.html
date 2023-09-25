@@ -35,12 +35,13 @@
     <div th:each="wb : ${listOfWhiteboards}" class="card">
         <div class="card-wrapper">
             <a th:href="@{home}">
-                <div class="card-image">
-                    <img th:src="@{image/icons/club-logo.svg}" style="width: 80%" class="card-img-top">
+                <div class="card-image" style="height: auto">
+                    <img th:src="@{image/pitches/hockey.svg}" style="height: auto" class="card-img-top">
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title">[[|${wb.team.name}|]]</h5>
+                    <h5 class="card-title" th:text="${wb.name}"></h5>
                     <p class="card-text" th:text="|Sport: ${wb.team.sport}|">Whiteboard sport</p>
+                    <p class="card-text">[[|${wb.team.name}|]]</p>
                 </div>
             </a>
         </div>
