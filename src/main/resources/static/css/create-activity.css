@@ -217,5 +217,8 @@
     padding-top:10px;
 }
 
-
-
+#formationDisplay .input-box {
+    margin-top: 9px;
+    margin-bottom: 10px;
+    width: 39%;
+}

@@ -33,6 +33,8 @@ public class LineUp {
     @JoinColumn(name = "fk_activityId", referencedColumnName = "activityId")
     private Activity activity;
 
+    @Column
+    private String lineUpName;
 
     @ManyToMany
     @JoinTable(
@@ -103,5 +105,13 @@ public class LineUp {
 
     public void setActivity(Activity activity) {
         this.activity = activity;
+    }
+
+    public String getLineUpName() {
+        return lineUpName;
+    }
+
+    public void setLineUpName(String lineUpName) {
+        this.lineUpName = lineUpName;
     }
 }
