@@ -81,6 +81,7 @@ public class WhiteboardMediaController {
     ) {
         logger.info("/POST /whiteboard-media/save/screenshot");
         logger.info(name);
+        logger.info(isPublic ? "public" : "private");
         Team team = teamService.getTeam(teamId);
         if (team != null) {
             whiteboardScreenshotService.createScreenshotForTeam(file, name, team, isPublic);

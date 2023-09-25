@@ -291,6 +291,12 @@
           <span class="required">*</span>
         </label>
       </div>
+
+      <div class="input-box">
+        <label for="isPublicCheckbox">Public:</label>
+        <input type="checkbox" id="isPublicCheckbox" name="isPublicCheckbox" value="true">
+      </div>
+
       <div class="submit-button">
         <button id="submit-screenshot" type="submit">Save</button>
       </div>
@@ -1800,6 +1806,12 @@
         allowKeyPresses = true;
         screenshotModal.classList.remove("modal-fade-in");
     }
+
+    const isPublicCheckbox = document.getElementById("isPublicCheckbox");
+
+    isPublicCheckbox.addEventListener("change", () => {
+        document.querySelector('input[name="isPublic"]').value = isPublicCheckbox.checked ? "true" : "false";
+    });
 
 
 
