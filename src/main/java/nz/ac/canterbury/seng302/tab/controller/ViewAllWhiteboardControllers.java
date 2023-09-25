@@ -17,9 +17,12 @@ public class ViewAllWhiteboardControllers {
                                @RequestParam(name = "sports", required=false) List<String> sports,
                                Model model, HttpServletRequest request) {
 
+        //Dummy data
         Team t900 = new Team("Team 900", "Programming", new Location(null, null,
                 null, "Chc", null, "nz"));
         List<WhiteBoardRecording> wbs = List.of(new WhiteBoardRecording("Test", t900), new WhiteBoardRecording("Hello", t900));
+
+        //Replace withvalues from service + pagination
         model.addAttribute("currentSearch", currentSearch);
         model.addAttribute("page", page);
         model.addAttribute("listOfWhiteboards", wbs);
