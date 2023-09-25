@@ -587,18 +587,14 @@
         function scaleImagesForParent(parent) {
             let imgDivs = parent.getElementsByTagName("div");
             imgDivs.forEach(div => {
-                let images = div.getElementsByTagName("img");
-                images.forEach(img => {
-                    // Not sure why we are using forEach here,
-                    // there should be only one img
-                    if (img.height > img.width) {
-                        img.height = div.height * 0.8;
-                        img.width = "auto";
-                    } else {
-                        img.width = div.width * 0.8;
-                        img.height = "auto";
-                    }
-                })
+                let img = div.getElementsByTagName("img").nextNode();
+                if (img.height > img.width) {
+                    img.height = div.height * 0.8;
+                    img.width = div.width * 0.8;
+                } else {
+                    img.width = div.width * 0.8;
+                    img.width = div.width * 0.8;
+                }
             })
         }
 
