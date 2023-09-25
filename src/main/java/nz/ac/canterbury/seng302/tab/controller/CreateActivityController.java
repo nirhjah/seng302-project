@@ -224,7 +224,7 @@ public class CreateActivityController {
             @RequestParam(name = "actId", defaultValue = "-1") Long actId,
             @RequestParam(name = "playerAndPositions", required = false) String playerAndPositions,
             @RequestParam(name = "subs", required = false) String subs,
-            @RequestParam(name = "lineUpName", required = false) String lineUpName,
+            @RequestParam(name = "lineUpName", defaultValue = "") String lineUpName,
             @Validated CreateActivityForm createActivityForm,
             BindingResult bindingResult,
             HttpServletRequest httpServletRequest,
@@ -293,7 +293,7 @@ public class CreateActivityController {
         activity = activityService.updateOrAddActivity(activity);
 
         Optional<Formation> optFormation = activity.getFormation();
-        if ((lineUpName == null || lineUpName.isBlank()) && optFormation.isPresent()) {
+        if (optFormation.isPresent() && lineUpName.isBlank()) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
             lineUpName = activity.getActivityStart().format(formatter) + " - " + activity.getActivityEnd().format(formatter) + ": " + optFormation.get().getFormation();
 
