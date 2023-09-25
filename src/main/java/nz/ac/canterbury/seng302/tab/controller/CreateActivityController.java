@@ -319,10 +319,10 @@ public class CreateActivityController {
                 if (formationOptional.isPresent()) {
                     activityLineUp.setFormation(formationOptional.get());
                     activityLineUp.setLineUpName(lineUpName);
+                    lineUpService.saveSubs(subs, activityLineUp);
                     lineUpService.updateOrAddLineUp(activityLineUp);
                 }
             }
-            lineUpService.saveSubs(subs, activityLineUp);
 
             if (playerAndPositions != null && !playerAndPositions.isEmpty()) {
                 List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();
