@@ -43,6 +43,14 @@ public class WhiteBoardRecording implements Identifiable, HasVideo {
         return isPublic;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     /**
      * Changes whether a whiteboard screenshot is private/public
      * @param isPublic true if public, false otherwise
