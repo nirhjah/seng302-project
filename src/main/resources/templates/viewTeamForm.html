@@ -589,11 +589,11 @@
             imgDivs.forEach(div => {
                 let img = div.getElementsByTagName("img").nextNode();
                 if (img.height > img.width) {
-                    img.height = div.height * 0.8;
                     img.width = div.width * 0.8;
+                    img.height = div.height * 0.8;
                 } else {
                     img.width = div.width * 0.8;
-                    img.width = div.width * 0.8;
+                    img.height = div.height * 0.8;
                 }
             })
         }
