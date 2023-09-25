@@ -251,7 +251,7 @@
                         <img th:src="@{/image/icons/add-white.svg}"/>
                     </button>
                 </div>
-                <button class="camera-button">
+                <button class="camera-button" id="camera-button">
                     <span class="tooltip">Camera (F)</span>
                     <img class="selected-svg" th:src="@{/image/icons/camera-active.svg}"/>
                     <img class="default-svg" th:src="@{/image/icons/camera.svg}"/>
@@ -263,17 +263,41 @@
                 </button>
             </div>
             <div class="whiteboard">
-                <div class="camera-flash"></div>
+                <div class="camera-flash" id="camera-flash"></div>
                 <canvas id="canvas" width="560" height="700"></canvas>
             </div>
         </div>
     </div>
 </div>
 
-<video id="recorded-canvas" controls></video>
-<div>
-    <img id="screenshotDisplay">
+<!-- /* Upload Screenshot Modal */ -->
+<!-- /* This is the darken effect that covers the entire screen */ -->
+<div id="screenshot-modal" class="modal">
+  <!-- /* This is the modal box */ -->
+  <div class="modal-content">
+    <button class="close-button" id="close-screenshot-modal">&times;</button>
+    <h3 class="modal-header">Save Screenshot</h3>
+    <!-- /* Displays the image about to be saved */ -->
+    <img id="screenshot-display" class="screenshot-display" alt="Screenshot of the whiteboard" />
+    <form enctype="multipart/form-data" th:action="@{/whiteboard/upload-screenshot}" method="post">
+      <!-- /* We save the image in this invisible field */ -->
+      <input type="file" id="screenshot-input" name="screenshot-input" />
+  
+      <div class="input-box">
+        <input class="form-control" type="text" name="screenshot-name" id="screenshot-name" required>
+        <label for="screenshot-name">
+          Screenshot Name:
+          <span class="required">*</span>
+        </label>
+      </div>
+      <div class="submit-button">
+        <button id="submit-screenshot" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
 </div>
+
+<video id="recorded-canvas" controls></video>
 
 <script type="text/javascript" th:src="@{/webjars/fabric/5.3.0/dist/fabric.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
@@ -335,6 +359,8 @@
      * Functions related to the canvas
      */
     document.addEventListener("DOMContentLoaded", function () {
+        let allowKeyPresses = true;
+
         pitchSelect.value = "soccer";
         let canvas = new fabric.Canvas('canvas');
         let activeMode = null;
@@ -526,14 +552,14 @@
 
         function deleteObject(eventData, transform) {
             var target = transform.target;
-            var canvas = target.canvas;
-            canvas.remove(target);
+            var _canvas = target.canvas;
+            _canvas.remove(target);
             if (target.id.includes("teamPlayer")) {
                 const number = target.id.match(/\d+/);
                 const index = parseInt(number[0], 10);
                 addTeamPlayer(index);
             }
-            canvas.requestRenderAll();
+            _canvas.requestRenderAll();
         }
 
         const upperCanvas = document.querySelector(".upper-canvas")
@@ -599,36 +625,85 @@
             handleButtonClick('select-button', false, true);
         });
 
-        const cameraButton = document.querySelector('.camera-button');
-        const cameraFlash = document.querySelector('.camera-flash');
-        const mySound = new Audio("/static/mp3/cameraflashmp3-14565.mp3");
+        /* !! Screenshot code !! */
+        const cameraButton = document.getElementById('camera-button');
+        const cameraFlash = document.querySelector('#camera-flash');
+        const screenshotModal = document.getElementById("screenshot-modal");
+        const closeScreenshotModalButton = document.getElementById("close-screenshot-modal");
+        const screenshotDisplay = document.getElementById('screenshot-display')
+        const screenshotUpload = document.getElementById("screenshot-input");
 
-        function clickCamera() {
+        const mySound = new Audio("audio/cameraflash-cropped.mp3");
+        mySound.preload = "auto";
+
+        function createScreenshotModal() {
+            // Disable keyboard shortcuts while typing
+            allowKeyPresses = false;
+            // Display the pitch inside the modal
+            const dataURL = canvas.toDataURL();
+            screenshotDisplay.src = dataURL;
+            // Saves the image inside the modal's form
+            fetch(dataURL)
+                .then(res => res.blob())    // Base64 dataURL to binary
+                .then(blob => {
+                    // JavaScript's file APIs are very new and very bad
+                    // Turn the binary into a file
+                    const file = new File([blob], 'screenshot.png',
+                        {type: "image/png"}
+                    );
+                    // Add the file to the form's hidden "file" input.
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    screenshotUpload.files = dt.files;
+            })
+
+            screenshotModal.classList.add("modal-fade-in");
+        }
+        
+        function closeScreenshotModal() {
+            // Give keyboard shortcut controls back
+            allowKeyPresses = true;
+            screenshotModal.classList.remove("modal-fade-in");
+        }
+
+        /** Animates a camera flash on the whiteboard */
+        function screenFlash() {
             cameraButton.classList.add('active');
-            // mySound.play()
             cameraFlash.classList.add("active");
             setTimeout(() => {
                 cameraFlash.classList.remove("active");
             }, 990);
+            mySound.play()
+        }
 
-            var dataURL = canvas.toDataURL();
-            const screenshotDisplay = document.getElementById('screenshotDisplay')
-            screenshotDisplay.src = dataURL;
+        function clickCamera() {
+            screenFlash();
 
+            createScreenshotModal()
         }
 
         function deactivateCamera() {
             cameraButton.classList.remove('active');
         }
 
-        cameraButton.addEventListener('mousedown', clickCamera);
-
+        cameraButton.addEventListener('click', clickCamera);
         cameraButton.addEventListener('mouseup', deactivateCamera);
-
         cameraButton.addEventListener('mouseleave', deactivateCamera);
+        closeScreenshotModalButton.addEventListener('click', closeScreenshotModal);
+        // Close the modal if you click outside the modal's content
+        screenshotModal.addEventListener('click', (event) => {
+            if (event.target == screenshotModal) {
+                closeScreenshotModal();
+            }
+        });
+        // Close the modal if you hit "Escape"
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape")
+                closeScreenshotModal();
+        });
 
+        /* Recording code*/
         const recordingButton = document.querySelector('.recording-button');
-
 
         //This is used to display the recording on screen once recorded, for testing purposes
         const testVideoDisplay = document.getElementById('recorded-canvas');
@@ -767,6 +842,9 @@
          * Handles shortcut functionality
          */
         document.addEventListener('keydown', function (event) {
+            // If the whiteboard's not in focus (e.g. a modal's up), ignore keys
+            if (!allowKeyPresses) return;
+
             if (event.key === 's') {
                 handleButtonClick('select-button', false, true);
             } else if (event.key === 'd') {
@@ -1366,7 +1444,7 @@
         }
 
         function getLineUpPositions(formation, custom, customPlayerPositions, lineUpId) {
-            axios.get("whiteboard/get_lineup", { params: { lineUpId: lineUpId } })
+            axios.get("whiteboard/get-lineup", { params: { lineUpId: lineUpId } })
                 .then(response => {
                     formationSwitch(formation, custom, customPlayerPositions, response.data);
                 })

@@ -21,7 +21,7 @@
 
  <div class="homePageWrapper">
 
-     <div class="teamsDiv" style="margin-left: 9%; margin-right: 5%; border-radius: 15px; height: 550px; border: solid 8px #1b263b;">
+     <div class="teamsDiv">
 
          <div style="padding-top: 19px; background: #1b263b; color: white; padding-bottom: 19px">
              <h2 style="text-align: center">My Teams</h2>
@@ -58,8 +58,8 @@
              </div>
              </form>
 
-             </div>
-             <ul style="overflow: auto;margin-top: -50px; height: 450px; padding-bottom: 10px" class="homeCard">
+
+             <ul class="homeCard">
                  <li style="width: unset; border: solid 4px #1b263b;" th:each="team : ${userTeams}" th:onclick="|window.location.href='@{team-info(teamID=${team.teamId})}'|">
                      <div style="display: flex">
 
@@ -69,8 +69,6 @@
                          </div>
 
                          <div class="teamText">
-
-
                              <div class="user-label">
                                  <img style="width: 34px; height: 34px" th:src="@{/image/icons/name.svg}"/>
                                  <div>
@@ -94,17 +92,14 @@
                  </li>
              </ul>
          </div>
-
          </div>
 
 
-     <div class="teamActivitiesDiv" style="border: solid 8px #1b263b;">
-
+     <div class="teamActivitiesDiv">
          <div style="padding-top: 19px;background: #1b263b; color: white; padding-bottom: 19px">
              <h2 style="text-align: center"> Upcoming Team Activities</h2>
 
          </div>
-
 
          <div class="last5" style="margin-top: 57px; padding-bottom: 21px;">
              <h3 th:if="${userTeamActivities.isEmpty()}" style="text-align: center; font-size: 20px">You have no upcoming team activities</h3>
@@ -206,7 +201,7 @@
 
      </div>
 
-
+ </div>
      <div>
      </div>
 
