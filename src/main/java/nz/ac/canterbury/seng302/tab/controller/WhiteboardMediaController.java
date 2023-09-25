@@ -75,7 +75,7 @@ public class WhiteboardMediaController {
         logger.info(name);
         Team team = teamService.getTeam(teamId);
         if (team != null) {
-            whiteboardScreenshotService.createScreenshotForTeam(file, team, isPublic);
+            whiteboardScreenshotService.createScreenshotForTeam(file, name, team, isPublic);
         } else {
             logger.warn("No team found with id: {}", teamId);
         }
