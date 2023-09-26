@@ -34,7 +34,7 @@ public class Formation {
     private String customPlayerPositions;
 
     /**
-     * Default constructor for Formation.
+     * Default constructor for Formatio
      * Required by JPA.
      */
     protected Formation() {}

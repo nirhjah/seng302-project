@@ -79,11 +79,12 @@ public class CreateTeamFormController {
                 trimmedPostcode, trimmedCountry);
     }
 
-    /**
-     * Triggers the generation of a new token for a team
-     * @param teamID the id of the team.
-     * @return redirect back to team profile page
-     */
+
+        /**
+         * Triggers the generation of a new token for a team
+         * @param teamID the id of the team.
+         * @return redirect back to team profile page
+         */
     @PostMapping("/generateTeamToken")
     public String generateTeamToken(@RequestParam(name = "teamID") Long teamID) {
         var team = teamService.getTeam(teamID);
@@ -244,6 +245,7 @@ public class CreateTeamFormController {
         if (!knownSports.contains(trimmedSport)) {
             sportService.addSport(new Sport(trimmedSport));
         }
+//        addDebugEntities(team);
         return String.format("redirect:./team-info?teamID=%s", team.getTeamId());
     }
 }

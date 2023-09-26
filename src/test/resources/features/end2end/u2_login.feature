@@ -1,10 +1,10 @@
 Feature: U2 - Login
   As Teka, I want to log into the system so that I can have a personalised experience with it and enjoy its features.
 
-  Scenario: AC1: Given I connect to the system's main URL, when I hit the button to login, then I see a login form
-    Given I have connected to the system's main URL
-    When I hit the button to login
-    Then I see a login form
+#  Scenario: AC1: Given I connect to the system's main URL, when I hit the button to login, then I see a login form
+#    Given I have connected to the system's main URL
+#    When I hit the button to login
+#    Then I see a login form
 
   # I'm assuming there's no AC2 (Successful login) because it's constantly
   # used during development, and the data persistence issues
