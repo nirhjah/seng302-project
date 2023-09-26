@@ -14,7 +14,8 @@ public class WhiteBoardRecording implements Identifiable, HasVideo {
     @Column(name = "Id")
     private long id;
 
-    String name;
+    @Column
+    private String name;
 
     @Enumerated
     private VideoType videoType;
