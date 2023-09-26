@@ -43,6 +43,7 @@
                     <option th:each="lineup : ${teamLineUps}"
                             th:value="${lineup.lineUpId}"
                             th:text="${lineup.lineUpName}"
+                            th:data-formation="${lineup.formation.formation}"
                             th:data-custom="${lineup.formation.custom}"
                             th:data-custom-positions="${lineup.formation.customPlayerPositions}"
                     ></option>
@@ -1360,20 +1361,16 @@
         document.getElementById("lineup-dropdown").addEventListener("change", function (event) {
             const selectedOption = event.target.options[event.target.selectedIndex];
             formationDropdown.selectedIndex = 0;
-            console.log(selectedOption);
             loadLineUp(selectedOption);
         });
 
         function loadLineUp(target) {
             const lineUpId = target.value;
-            const formation = target.textContent;
+            const formation = target.getAttribute("data-formation")
 
-            console.log(lineUpId);
             const custom = target.getAttribute("data-custom")
             const customPlayerPositions = target.getAttribute("data-custom-positions");
-            console.log('custom player position', customPlayerPositions);
-            console.log('custom', custom);
-            console.log('lineup id', lineUpId);
+
             canvas.clear();
             if (playerArray.length !== 0) {
                 addTeamPlayers();
@@ -1386,10 +1383,8 @@
         }
 
         function getLineUpPositions(formation, custom, customPlayerPositions, lineUpId) {
-            console.log(lineUpId);
             axios.get("whiteboard/get_lineup", { params: { lineUpId: lineUpId } })
                 .then(response => {
-                    console.log('formation text content', formation)
                     formationSwitch(formation, custom, customPlayerPositions, response.data);
                 })
                 .catch(error => {
@@ -1516,8 +1511,6 @@
             const formation = formationString.split("-").map(num => parseInt(num));
             // Builds formation
             let j = 0;
-            console.log(formation)
-            console.log("formation length", formation.length);
             for (let i = 0; i < formation.length; i++) {
                 let playersInRow = formation[i]
                 while (formation[i] !== 0) {
@@ -1545,10 +1538,10 @@
             // it is prudent to turn the value into a percentage
             const pitchHeightOriginal = 360;
             const pitchWidthOriginal = 288;
-            console.log(lineUpPositions);
+
             const positionsList = positions.split(';')
             let numPlayers = positionsList.length;
-            console.log("num of players", numPlayers)
+
             for (let i = 0; i < numPlayers; i++) {
                 let coordinates = positionsList[i].split(",")
                 const left = parseInt(coordinates[0]) * canvas.width / pitchWidthOriginal;
@@ -1556,24 +1549,21 @@
                 if (!lineUpPositions) {
                     createPlayerIcon(left, top, '#EA3B52')
                 } else {
-                    console.log('line 1555', lineUpPositions)
+
                     handleLineupGeneration(lineUpPositions, i, left, top);
                 }
             }
         }
 
         function handleLineupGeneration(lineUpPositions, i, left, top) {
-            console.log(i)
-            console.log(lineUpPositions);
             const lineUpPosition = lineUpPositions.lineUpPositions[i];
-            console.log(lineUpPosition);
+
             const userInfo = lineUpPosition.userInfo
             const playerName = userInfo.firstName + " " + userInfo.lastName;
             const playerId = userInfo.userId;
             playerCards.forEach((playerCard, index) => {
                 const id = playerCard.querySelector("input").value;
                 if (parseInt(id) === playerId) {
-                    console.log(id, playerId)
                     playerArray.push({index: index, node: playerCard});
                     playerCard.style.display = 'none';
                     createLineupTeamPlayerIcon(playerId, playerName, left, top, index);
