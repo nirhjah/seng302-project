@@ -80,8 +80,6 @@ public class WhiteboardMediaController {
     public String setScreenshot( @RequestParam("screenshot-input") MultipartFile file, @RequestParam("teamId") long teamId, @RequestParam("screenshot-name") String name, @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
     ) {
         logger.info("/POST /whiteboard-media/save/screenshot");
-        logger.info(name);
-        logger.info(isPublic ? "public" : "private");
         Team team = teamService.getTeam(teamId);
         if (team != null) {
             whiteboardScreenshotService.createScreenshotForTeam(file, name, team, isPublic);
