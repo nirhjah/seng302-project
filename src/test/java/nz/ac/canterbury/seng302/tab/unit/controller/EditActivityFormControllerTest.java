@@ -1015,12 +1015,13 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.updateOrAddActivity(any())).thenReturn(localActivity);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(localActivity);
 
-        // Validate the name is saved
-        ArgumentCaptor<LineUp> argumentCaptor = ArgumentCaptor.forClass(LineUp.class);
+        Formation formation = new Formation("1-1", team);
+        when(mockFormationService.findFormationById(1)).thenReturn(Optional.of(formation));
+
         mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Game))
-                        .param("formation", "-1")
+                        .param("formation", "1")
                         .param("lineUpName", "testlineup1")
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
@@ -1034,10 +1035,12 @@ public class EditActivityFormControllerTest {
                         .param("suburb", "A Place")
                         .param("subs", "1")
                         .param("playerAndPositions", String.valueOf(List.of("1 1"))))
-
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("./view-activity?activityID=" + localActivity.getId()));
         verify(mockActivityService, times(1)).updateOrAddActivity(any());
+
+        // Validate the name is saved
+        ArgumentCaptor<LineUp> argumentCaptor = ArgumentCaptor.forClass(LineUp.class);
         verify(mockLineUpService).updateOrAddLineUp(argumentCaptor.capture());
         assertEquals("testlineup1", argumentCaptor.getValue().getLineUpName());
 
@@ -1052,10 +1055,14 @@ public class EditActivityFormControllerTest {
         Mockito.doReturn(ACT_ID).when(localActivity).getId();
         when(mockActivityService.updateOrAddActivity(any())).thenReturn(localActivity);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(localActivity);
+
+        Formation formation = new Formation("1-1", team);
+        when(mockFormationService.findFormationById(1)).thenReturn(Optional.of(formation));
+
         mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Game))
-                        .param("formation", "-1")
+                        .param("formation", "1")
                         .param("lineUpName", "")
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
@@ -1069,11 +1076,14 @@ public class EditActivityFormControllerTest {
                         .param("suburb", "A Place")
                         .param("subs", "1")
                         .param("playerAndPositions", String.valueOf(List.of("1 1"))))
-
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("./view-activity?activityID=" + localActivity.getId()));
         verify(mockActivityService, times(1)).updateOrAddActivity(any());
 
+        // Validate the name is saved
+        ArgumentCaptor<LineUp> argumentCaptor = ArgumentCaptor.forClass(LineUp.class);
+        verify(mockLineUpService).updateOrAddLineUp(argumentCaptor.capture());
+        assertEquals("01/07/23 - 01/08/23: 1-1", argumentCaptor.getValue().getLineUpName());
     }
 
 
