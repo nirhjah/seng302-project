@@ -1,7 +1,12 @@
 package nz.ac.canterbury.seng302.tab.repository;
 
 import nz.ac.canterbury.seng302.tab.entity.Club;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 
@@ -19,7 +24,22 @@ public interface ClubRepository extends CrudRepository<Club, Long> {
 
     List<Club> findAll();
 
+    @Query("SELECT c FROM Club c "+
+           "WHERE (:#{#filteredLocations.size} = 0 OR LOWER(c.location.city) in (:filteredLocations)) "+
+           "AND (:#{#filteredSports.size} = 0 OR LOWER(c.sport) in (:filteredSports)) "+
+           "AND (:name IS NULL OR :name = '' "+
+           "OR (LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) "+
+           "OR (LOWER(c.location.city) LIKE LOWER(CONCAT('%', :name, '%'))) "+
+           "OR (LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))))")
+    Page<Club> findClubByFilteredLocationsAndSports(
+            Pageable pageable,
+            @Param("filteredLocations") List<String> filteredLocations,
+            @Param("filteredSports") List<String> filteredSports,
+            @Param("name") String name);
+
+    @Query("SELECT DISTINCT c.sport FROM Club c")
+    List<String> findAllClubSports();
+
+    @Query("SELECT DISTINCT c.location.city FROM Club c")
+    List<String> findAllClubCities();
 }
-
-
-
