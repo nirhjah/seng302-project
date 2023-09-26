@@ -293,8 +293,8 @@
       </div>
 
       <div class="input-box">
-        <label for="isPublicCheckbox">Public:</label>
-        <input type="checkbox" id="isPublicCheckbox" name="isPublicCheckbox" value="true">
+        <label for="isPublic">Public:</label>
+        <input type="checkbox" id="isPublic" name="isPublic" value="true">
       </div>
 
       <div class="submit-button">
@@ -1807,7 +1807,7 @@
         screenshotModal.classList.remove("modal-fade-in");
     }
 
-    const isPublicCheckbox = document.getElementById("isPublicCheckbox");
+    const isPublicCheckbox = document.getElementById("isPublic");
 
     isPublicCheckbox.addEventListener("change", () => {
         document.querySelector('input[name="isPublic"]').value = isPublicCheckbox.checked ? "true" : "false";
