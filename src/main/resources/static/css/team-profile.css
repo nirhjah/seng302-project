@@ -596,6 +596,7 @@
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     margin: 5%;
+    padding: 20px;
 }
 
 .whiteboard-media-wrapper {
@@ -605,8 +606,16 @@
     width: 100%;
 }
 
-.whiteboard-media-content .media-title {
-
+.whiteboard-media-wrapper .media-title {
+    height: 18%;
+    border: none;
+    outline: none;
+    background: white;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 18px;
+    color: #1B263B;
+    padding: 10px;
 }
 
 .media img:hover {
