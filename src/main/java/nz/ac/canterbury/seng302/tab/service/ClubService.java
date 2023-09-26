@@ -8,6 +8,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
@@ -67,5 +69,15 @@ public class ClubService {
         InputStream is = resource.getInputStream();
         return Base64.getEncoder().encodeToString(is.readAllBytes());
     }
+
+    public Page<Club> findClubFilteredByLocationsAndSports(Pageable pageable,List<String> filteredLocations,
+                                                            List<String> filteredSports, String name) {
+        return clubRepository.findClubByFilteredLocationsAndSports(pageable, filteredLocations, filteredSports, name);
+    }
+
+    public List<String> getClubCities() {return clubRepository.findAllClubCities();}
+
+    public List<String> getClubSports() {return clubRepository.findAllClubSports();}
+
 
 }

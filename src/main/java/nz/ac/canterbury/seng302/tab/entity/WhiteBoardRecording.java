@@ -65,4 +65,11 @@ public class WhiteBoardRecording implements Identifiable, HasVideo {
     public void setVideoType(VideoType videoType) {
         this.videoType = videoType;
     }
+
+    public WhiteBoardRecording() {}
+
+    public WhiteBoardRecording(String name, Team team) {
+        this.name = name;
+        this.team = team;
+    }
 }

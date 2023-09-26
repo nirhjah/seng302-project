@@ -84,6 +84,7 @@ th:nth-child(4) {
     color: white;
     font-family: "Noto Sans", sans-serif;
     height: 30px;
+    cursor: pointer;
 }
 
 .apply-filters-button-container {
