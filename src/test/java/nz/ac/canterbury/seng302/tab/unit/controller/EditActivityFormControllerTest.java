@@ -1014,11 +1014,14 @@ public class EditActivityFormControllerTest {
         Mockito.doReturn(ACT_ID).when(localActivity).getId();
         when(mockActivityService.updateOrAddActivity(any())).thenReturn(localActivity);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(localActivity);
+
+        ArgumentCaptor<LineUp> argumentCaptor = ArgumentCaptor.forClass(LineUp.class);
+        when(mockLineUpService.updateOrAddLineUp(argumentCaptor.capture())).thenReturn(null);
         mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Game))
                         .param("formation", "-1")
-                        .param("lineUpName", "lineup1")
+                        .param("lineUpName", "testlineup1")
                         .param("team", String.valueOf(TEAM_ID))
                         .param("description", "testing edit description")
                         .param("startDateTime", "2023-07-01T10:00:00")
@@ -1035,6 +1038,7 @@ public class EditActivityFormControllerTest {
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("./view-activity?activityID=" + localActivity.getId()));
         verify(mockActivityService, times(1)).updateOrAddActivity(any());
+        assertEquals("testlineup1" argumentCaptor.getValue().getLineUpName());
 
     }
 

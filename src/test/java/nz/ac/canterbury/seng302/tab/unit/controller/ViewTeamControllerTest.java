@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -16,12 +17,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 
+import nz.ac.canterbury.seng302.tab.entity.Formation;
 import nz.ac.canterbury.seng302.tab.service.*;
 import nz.ac.canterbury.seng302.tab.service.image.TeamImageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -180,6 +183,26 @@ class ViewTeamControllerTest {
         verify(mockFormationService, times(1)).addOrUpdateFormation(any());
     }
 
+    @Test
+    void createFormation_withName_nameSaved() throws Exception {
+        when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
+        // Capture the "saved" formation to validate its title
+        ArgumentCaptor<Formation> argumentCaptor = ArgumentCaptor.forClass(Formation.class);
+        when(mockFormationService.addOrUpdateFormation(argumentCaptor.capture())).thenReturn(null);
+
+        mockMvc.perform(post("/team-info/create-formation")
+                        .param("formation", "2")
+                        .param("customPlayerPositions", "")
+                        .param("custom", String.valueOf(false))
+                        .param("teamID", String.valueOf(TEAM_ID))
+                        .param("formation-title", "ExtremeSportz"))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/team-info?teamID=" + TEAM_ID));
+        verify(mockFormationService, times(1)).addOrUpdateFormation(any());
+        Formation savedFormation = argumentCaptor.getValue();
+        assertEquals("ExtremeSportz", savedFormation.toString());
+    }
+
     /** Extra test to ensure both managers AND coaches can do this */
     @Test
     void createFormation_validFormation_isCoach_succeeds() throws Exception {
@@ -198,7 +221,7 @@ class ViewTeamControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"", "hi", "0", "99", "H1-4", "0-1-2", "-5", "5-", "1-0", "1-1-1-1-1-1-1-1-1"})
+    @ValueSource(strings = {"", "hi", "0", "99", "H1-4", "0-1-2", "-5", "5-", "1-0", "1-1-1-1-1-1"})
     void createFormation_invalidFormation_fails(String formation) throws Exception {
         when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         mockMvc.perform(post("/team-info/create-formation")
