@@ -380,14 +380,24 @@
                         </div>
                     </div>
 
-                    <div class="whiteboard-media-content" id="whiteboard-recordings">
-                        <div th:each="rec : ${recordings}" class="media">
-                            <a th:href="@{team-info}" target="_blank">
-                                <div class="media-body">
-                                    <img th:src="@{/whiteboard-media/screenshot/{id}(id = ${rec.id})}"  class="card-img-top"
-                                         alt="Screenshot">
-                                </div>
-                            </a>
+
+                    <div class="whiteboard-media-wrapper" id="whiteboard-recordings">
+                        <div class="media-title">
+                            Recordings!
+                        </div>
+                        <div class="whiteboard-media-content">
+                            <div th:each="rec : ${recordings}" class="media">
+                                <a th:href="@{team-info}" target="_blank">
+                                    <div class="media-body">
+                                        <img th:src="@{/whiteboard-media/recordings/{id}(id = ${rec.id})}"  class="card-img-top"
+                                             alt="Recording">
+
+                                        <div class="media-name">
+                                            <p> Hello! Test 2</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
