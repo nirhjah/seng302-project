@@ -512,7 +512,7 @@
     height: 100vh;
 }
 
-.content.whiteboard-media {
+.content .whiteboard-media {
     display: flex;
 }
 
