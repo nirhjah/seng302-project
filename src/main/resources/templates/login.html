@@ -19,6 +19,9 @@
          th:insert="~{fragments/messageDropDown.html :: messageDropDown(message=${message})}"></div>
     <div class="home-wrapper">
         <div class="wrapper">
+            <div>
+                <img th:src="@{/image/logo-long.svg}" >
+            </div>
             <form th:action="@{login}" method="post">
                 <input th:if="${continue}" name="continue" th:value="${continue}" type="hidden">
                 <!--                <div class="icon">-->
@@ -119,14 +122,13 @@
             currentIndex = index;
             switchPages();
             clearInterval(interval);
-            interval = setInterval(switchActiveCircle, 5000);
+            interval = setInterval(switchActiveCircle, 4000);
         });
     });
 
     function switchActiveCircle() {
         circles.forEach(circle => circle.classList.remove("active"));
         currentIndex = (currentIndex + 1) % circles.length;
-        console.log(currentIndex);
         circles[currentIndex].classList.add("active");
         switchPages();
     }
