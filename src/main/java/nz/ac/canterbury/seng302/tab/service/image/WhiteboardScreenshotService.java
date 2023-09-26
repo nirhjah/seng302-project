@@ -90,11 +90,16 @@ public class WhiteboardScreenshotService extends ImageService<WhiteboardScreensh
      * @param file The file that represents the screenshot
      * @return returns the saved screenshot with appropriate fields.
      */
-    public WhiteboardScreenshot createScreenshot(MultipartFile file, boolean isPublic) {
+    public WhiteboardScreenshot createScreenshot(MultipartFile file, String tag, boolean isPublic) {
         WhiteboardScreenshot screenshot = new WhiteboardScreenshot();
-        saveImage(screenshot, file);
         screenshot.setPublic(isPublic);
-        return repository.save(screenshot);
+        screenshot.setTag(tag);
+        // We must save here first, so that an id is allocated to the entity
+        screenshot = repository.save(screenshot);
+        saveImage(screenshot, file);
+        // We must save here AGAIN, because our `saveImage` method mutates the entity.
+        screenshot = repository.save(screenshot);
+        return screenshot;
     }
 
     /**
@@ -103,8 +108,8 @@ public class WhiteboardScreenshotService extends ImageService<WhiteboardScreensh
      * @param team The team in question
      * @param isPublic true if screenshot is public, false otherwise
      */
-    public WhiteboardScreenshot createScreenshotForTeam(MultipartFile file, Team team, boolean isPublic) {
-        WhiteboardScreenshot screenshot = createScreenshot(file, isPublic);
+    public WhiteboardScreenshot createScreenshotForTeam(MultipartFile file, String tag, Team team, boolean isPublic) {
+        WhiteboardScreenshot screenshot = createScreenshot(file, tag, isPublic);
         screenshot.setTeam(team);
         screenshot = repository.save(screenshot);
         team.addScreenshot(screenshot);
