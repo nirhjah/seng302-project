@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @WithMockUser
-public class ViewAllClubsControllerTest {
+class ViewAllClubsControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
