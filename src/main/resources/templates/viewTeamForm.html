@@ -362,7 +362,8 @@
                 <div class="whiteboard-media-select">
                     <div class="whiteboard-media-wrapper" id="whiteboard-screenshots">
                         <div class="media-title">
-                            Pictures!
+                            Screenshots
+                            <img th:src="@{/image/icons/camera-active.svg}"/>
                         </div>
                         <div class="whiteboard-media-content">
                             <div th:each="rec : ${screenshots}" class="media">
@@ -372,7 +373,7 @@
                                              alt="Screenshot">
 
                                         <div class="media-name">
-                                            <p> Hello! Test </p>
+                                            <p>Scrensht name</p>
                                         </div>
                                     </div>
                                 </a>
@@ -380,10 +381,10 @@
                         </div>
                     </div>
 
-
                     <div class="whiteboard-media-wrapper" id="whiteboard-recordings">
                         <div class="media-title">
-                            Recordings!
+                            Recordings
+                            <img th:src="@{/image/icons/recording.svg}"/>
                         </div>
                         <div class="whiteboard-media-content">
                             <div th:each="rec : ${recordings}" class="media">
@@ -394,7 +395,7 @@
                                              alt="Recording">
 
                                         <div class="media-name">
-                                            <p> Hello! Test 2</p>
+                                            <p>Rec Name</p>
                                         </div>
                                     </div>
                                 </a>
