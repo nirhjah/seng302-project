@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <link th:href="@{/css/view-all.css}" rel="stylesheet">
+    <title>View All Whiteboards</title>
+</head>
+
+<body class="view-teams-background">
+<!--/* Nav-bar */-->
+<div th:insert="~{fragments/navBar.html::navbar}"></div>
+<!--/* Search Field */-->
+<form id="search-form" th:action="@{view-whiteboards}" method="get">
+    <div class="search-bar">
+        <input class="search-input" type="text" th:name="currentSearch" id="clubName" th:value="${currentSearch}" placeholder="Search Whiteboards" />
+        <button class="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
+    </div>
+    <div class="filter-bar">
+        <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sports')}"></div>
+    </div>
+    <div class="apply-filters-button-container">
+        <button class="apply-filters-button" type="submit">Apply Filter</button>
+    </div>
+</form>
+
+<div th:if="${listOfWhiteboards.empty}" class="emptySearchResults">
+    No Whiteboards found.
+</div>
+
+<div class="card-container">
+    <div th:each="wb : ${listOfWhiteboards}" class="card">
+        <div class="card-wrapper">
+            <a th:href="@{home}">
+                <div class="card-image" style="height: auto">
+                    <img th:src="@{image/pitches/hockey.svg}" style="height: auto; margin-bottom: -5px" class="card-img-top">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${wb.name}"></h5>
+                    <p class="card-text" th:text="|Sport: ${wb.team.sport}|">Whiteboard sport</p>
+                    <p class="card-text">[[|${wb.team.name}|]]</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<div th:insert="~{fragments/pagination.html :: pagination(pageName='view-whiteboards')}"></div>
+<footer>
+    <p>
+        Image by <a href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a> on Freepik
+    </p>
+</footer>
+<script>
+    // get search form and input element
+    const form = document.getElementById('search-form');
+    const input = document.getElementById('clubName');
+
+    form.addEventListener('submit', (event) => {
+        // if the value isn't empty and is less than 3 characters, prevent form from submitting
+        // (We allow an empty search field)
+        if (input.value.length !== 0 && input.value.length < 3) {
+            event.preventDefault();
+
+            // Remove existing error message
+            const existingErrorMessage = document.getElementById('search-error');
+            if (existingErrorMessage) {
+                existingErrorMessage.remove();
+            }
+            // Display error message
+            const errorMessage = document.createElement('p');
+            errorMessage.setAttribute('id', 'search-error');
+            errorMessage.textContent = "search must be at least 3 characters";
+            form.appendChild(errorMessage);
+        }
+    });
+</script>
+</body>
+</html>
