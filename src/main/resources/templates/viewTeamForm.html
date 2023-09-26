@@ -389,7 +389,8 @@
                             <div th:each="rec : ${recordings}" class="media">
                                 <a th:href="@{team-info}" target="_blank">
                                     <div class="media-body">
-                                        <img th:src="@{/whiteboard-media/recordings/{id}(id = ${rec.id})}"  class="card-img-top"
+                                        <!--  TODO: change this to `recordings` -->
+                                        <img th:src="@{/whiteboard-media/screenshots/{id}(id = ${rec.id})}"  class="card-img-top"
                                              alt="Recording">
 
                                         <div class="media-name">

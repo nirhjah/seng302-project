@@ -165,6 +165,7 @@ public class ViewTeamController {
             screenshots.add(ss);
         }
         model.addAttribute("screenshots", screenshots);
+        model.addAttribute("recordings", screenshots);
 
         // Is the currently logged in user this team's manager?
         Optional<User> oUser = userService.getCurrentUser();

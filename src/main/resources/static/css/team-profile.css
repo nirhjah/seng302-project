@@ -555,7 +555,7 @@
 }
 
 .media {
-    /*margin: 5% 5%;*/
+    margin: 5px;
     border-radius: 10px;
     display: inline-flex;
     cursor:pointer;
