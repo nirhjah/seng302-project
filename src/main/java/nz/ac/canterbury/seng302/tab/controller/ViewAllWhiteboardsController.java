@@ -20,7 +20,7 @@ import java.util.List;
 public class ViewAllWhiteboardsController {
     private static final int MAX_PAGE_SIZE = 10;
     
-    public static final Sort SORT_BY_TEAM_NAME = Sort.by(
+    public static final Sort SORT_BY_NAME = Sort.by(
             Sort.Order.asc("name").ignoreCase()
     );
 
@@ -33,7 +33,7 @@ public class ViewAllWhiteboardsController {
     }
 
     private Pageable getPageable(int page) {
-        return PageRequest.of(page, MAX_PAGE_SIZE, SORT_BY_TEAM_NAME);
+        return PageRequest.of(page, MAX_PAGE_SIZE, SORT_BY_NAME);
     }
 
     private Page<WhiteBoardRecording> getWhiteboardPage(int page, String currentSearch, List<String> sports) {
@@ -62,17 +62,16 @@ public class ViewAllWhiteboardsController {
         model.addAttribute("httpServletRequest", request);
 
         int internalPageNo = pageNo - 1;
-        // Dummy data
-        Team t900 = new Team("Team 900", "Programming", new Location(null, null,
-                null, "Chc", null, "nz"));
-        List<WhiteBoardRecording> wbs = List.of(new WhiteBoardRecording("Test", t900), new WhiteBoardRecording("Hello", t900));
+       
+        Page<WhiteBoardRecording> wbs = getWhiteboardPage(internalPageNo, currentSearch, sports);
 
-        // Replace withvalues from service + pagination
-        model.addAttribute("currentSearch", currentSearch);
+        // Values for pagination
         model.addAttribute("page", pageNo);
-        model.addAttribute("listOfWhiteboards", wbs);
-        model.addAttribute("listOfSports", List.of("hockey"));
-        model.addAttribute("totalPages", 1);
+        model.addAttribute("totalPages", wbs.getTotalPages());
+        // 
+        model.addAttribute("currentSearch", currentSearch);
+        model.addAttribute("listOfWhiteboards", wbs.toList());
+        model.addAttribute("listOfSports", List.of("TODO")); // TODO: Figure this one out
         return "viewAllWhiteboards";
     }
 }

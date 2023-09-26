@@ -106,6 +106,10 @@ public class WhiteboardRecordingService extends VideoService<WhiteBoardRecording
         if (currentSearch != null && currentSearch.isBlank()) {
             currentSearch = null;
         }
+        // NOT nulling the list is easier
+        if (sports == null) {
+            sports = List.of();
+        }
         return repository.findWhiteboardsByNameAndSport(pageable, currentSearch, sports);
     }
 }

@@ -15,12 +15,13 @@ public interface WhiteBoardRecordingRepository extends CrudRepository<WhiteBoard
     Optional<WhiteBoardRecording> findById(long id);
 
     @Query("""
-            SELECT w from WhiteBoardRecording w
-            WHERE (:#{#sports.size} = 0 OR lower(w.sport) in (:sports))
-            AND (:currentSearch is null
-                OR lower(w.name) LIKE lower(concat('%', :currentSearch, '%'))
-            )
-            """)
+        SELECT w from WhiteBoardRecording w
+        WHERE (:#{#sports.size} = 0 OR lower(w.sport) in (:sports))
+        AND (w.isPublic)
+        AND (:currentSearch is null
+            OR lower(w.name) LIKE lower(concat('%', :currentSearch, '%'))
+        )
+    """)    // TODO: Figure out how "public" is gonna work
     Page<WhiteBoardRecording> findWhiteboardsByNameAndSport(
             Pageable pageable,
             @Param("currentSearch") String currentSearch,
