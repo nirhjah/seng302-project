@@ -267,9 +267,9 @@
                         th:insert="~{fragments/formationDisplay.html::formationDisplay(false)}"
                         th:data-formation="${formation.formation}"
                         th:data-custom="${formation.custom}"
-                        th:data-customPlayers="${formation.customPlayerPositions}"></div>
+                        th:data-custom-players="${formation.customPlayerPositions}"></div>
 
-                        <h3 th:text="${formation}"></h3>
+                        <h3 th:text="${lineupName}"></h3>
                     </div>
                 <h3 style="margin: auto" th:if="${formation == null}">No formation information available</h3>
 
@@ -551,9 +551,7 @@
 <script th:inline="javascript">
 
     function render() {
-        setTimeout(function () {
-            loadFormation();
-        }, 500);
+        setTimeout(loadFormation, 500);
     }
 
     function loadFormation() {
