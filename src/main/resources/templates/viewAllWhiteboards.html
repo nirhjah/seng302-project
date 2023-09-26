@@ -14,7 +14,7 @@
 <!--/* Nav-bar */-->
 <div th:insert="~{fragments/navBar.html::navbar}"></div>
 <!--/* Search Field */-->
-<form id="search-form" th:action="@{view-clubs}" method="get">
+<form id="search-form" th:action="@{view-whiteboards}" method="get">
     <div class="search-bar">
         <input class="search-input" type="text" th:name="currentSearch" id="clubName" th:value="${currentSearch}" placeholder="Search Whiteboards" />
         <button class="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
@@ -47,7 +47,7 @@
         </div>
     </div>
 </div>
-<div th:insert="~{fragments/pagination.html :: pagination(pageName='view-clubs')}"></div>
+<div th:insert="~{fragments/pagination.html :: pagination(pageName='view-whiteboards')}"></div>
 <footer>
     <p>
         Image by <a href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a> on Freepik
