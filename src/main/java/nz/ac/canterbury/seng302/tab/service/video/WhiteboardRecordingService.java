@@ -9,10 +9,13 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -93,5 +96,16 @@ public class WhiteboardRecordingService extends VideoService<WhiteBoardRecording
         recording = repository.save(recording);
         team.addRecording(recording);
         teamService.updateTeam(team);
+    }
+
+    public Page<WhiteBoardRecording> findPaginatedWhiteboardsBySports(
+            Pageable pageable,
+            String currentSearch,
+            List<String> sports) {
+        // Nulling the search term makes ignoring it easier
+        if (currentSearch != null && currentSearch.isBlank()) {
+            currentSearch = null;
+        }
+        return repository.findWhiteboardsByNameAndSport(pageable, currentSearch, sports);
     }
 }
