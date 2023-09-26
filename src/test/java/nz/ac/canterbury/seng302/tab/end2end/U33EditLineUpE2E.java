@@ -44,6 +44,7 @@ public class U33EditLineUpE2E {
         PlaywrightBrowser.page.locator("#activities").click();
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("#editActivityBtn").first().click();
+        PlaywrightBrowser.page.locator("#formation-dropdown").click();
         PlaywrightBrowser.page.locator("#formation-dropdown").selectOption("2");
 
     }
@@ -84,6 +85,7 @@ public class U33EditLineUpE2E {
 
     @When("I attempt to save an empty formation")
     public void iAttemptToSaveAnEmptyFormation() {
+        PlaywrightBrowser.page.locator("#formation-dropdown").click();
         PlaywrightBrowser.page.locator("#formation-dropdown").selectOption("2");
 
         PlaywrightBrowser.page.click("button:has-text('Save')");
