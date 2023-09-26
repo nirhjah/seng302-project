@@ -188,7 +188,6 @@ class ViewTeamControllerTest {
         when(mockTeamService.getTeam(TEAM_ID)).thenReturn(team);
         // Capture the "saved" formation to validate its title
         ArgumentCaptor<Formation> argumentCaptor = ArgumentCaptor.forClass(Formation.class);
-        when(mockFormationService.addOrUpdateFormation(argumentCaptor.capture())).thenReturn(null);
 
         mockMvc.perform(post("/team-info/create-formation")
                         .param("formation", "2")
@@ -198,9 +197,9 @@ class ViewTeamControllerTest {
                         .param("formation-title", "ExtremeSportz"))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/team-info?teamID=" + TEAM_ID));
-        verify(mockFormationService, times(1)).addOrUpdateFormation(any());
-        Formation savedFormation = argumentCaptor.getValue();
-        assertEquals("ExtremeSportz", savedFormation.toString());
+        verify(mockFormationService).addOrUpdateFormation(argumentCaptor.capture());
+
+        assertEquals("ExtremeSportz", argumentCaptor.getValue().toString());
     }
 
     /** Extra test to ensure both managers AND coaches can do this */

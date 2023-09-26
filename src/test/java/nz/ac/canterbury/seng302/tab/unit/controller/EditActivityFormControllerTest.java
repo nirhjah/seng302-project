@@ -1015,8 +1015,8 @@ public class EditActivityFormControllerTest {
         when(mockActivityService.updateOrAddActivity(any())).thenReturn(localActivity);
         when(mockActivityService.findActivityById(ACT_ID)).thenReturn(localActivity);
 
+        // Validate the name is saved
         ArgumentCaptor<LineUp> argumentCaptor = ArgumentCaptor.forClass(LineUp.class);
-        when(mockLineUpService.updateOrAddLineUp(argumentCaptor.capture())).thenReturn(null);
         mockMvc.perform(post("/create-activity")
                         .param("actId", String.valueOf(ACT_ID))
                         .param("activityType", String.valueOf(ActivityType.Game))
@@ -1038,6 +1038,7 @@ public class EditActivityFormControllerTest {
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("./view-activity?activityID=" + localActivity.getId()));
         verify(mockActivityService, times(1)).updateOrAddActivity(any());
+        verify(mockLineUpService).updateOrAddLineUp(argumentCaptor.capture());
         assertEquals("testlineup1", argumentCaptor.getValue().getLineUpName());
 
     }
