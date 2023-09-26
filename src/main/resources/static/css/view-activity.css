@@ -763,6 +763,9 @@ hr.rounded {
 
 .formation-outer{
     width:50%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly !important;
 }
 
 .goal-table {
@@ -941,9 +944,6 @@ hr.rounded {
     height:fit-content;
     padding: 50px 25px;
 
-}
-.formation-outer{
-    width:50%;
 }
 
 #formation-tab .content{

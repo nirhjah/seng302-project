@@ -24,8 +24,9 @@
                     <option value="-1">(No Formation)</option>
                     <option th:each="forma : ${teamFormations}"
                             th:value="${forma.formationId}"
-                            th:text="${forma.formation}"
+                            th:text="${forma}"
                             th:selected="${forma == selectedFormation}"
+                            th:data-formation="${forma.formation}"
                             th:data-custom="${forma.custom}"
                             th:data-custom-positions="${forma.customPlayerPositions}">
                     </option>
@@ -43,6 +44,7 @@
                     <option th:each="lineup : ${teamLineUps}"
                             th:value="${lineup.lineUpId}"
                             th:text="${lineup.lineUpName}"
+                            th:data-formation="${lineup.formation.formation}"
                             th:data-custom="${lineup.formation.custom}"
                             th:data-custom-positions="${lineup.formation.customPlayerPositions}"
                     ></option>
@@ -1444,9 +1446,11 @@
 
         function loadLineUp(target) {
             const lineUpId = target.value;
-            const formation = target.textContent;
+            const formation = target.getAttribute("data-formation")
+
             const custom = target.getAttribute("data-custom")
             const customPlayerPositions = target.getAttribute("data-custom-positions");
+
             canvas.clear();
             if (playerArray.length !== 0) {
                 addTeamPlayers();
@@ -1547,8 +1551,8 @@
          */
         function loadFormation(target) {
             const formationId = target.value;
-            const formation = target.textContent;
-            const custom = target.getAttribute("data-custom")
+            const formation = target.getAttribute("data-formation");
+            const custom = target.getAttribute("data-custom");
             const customPlayerPositions = target.getAttribute("data-custom-positions");
             canvas.clear();
             if (playerArray.length !== 0) {
@@ -1617,6 +1621,7 @@
 
             const positionsList = positions.split(';')
             let numPlayers = positionsList.length;
+
             for (let i = 0; i < numPlayers; i++) {
                 let coordinates = positionsList[i].split(",")
                 const left = parseInt(coordinates[0]) * canvas.width / pitchWidthOriginal;
@@ -1624,6 +1629,7 @@
                 if (!lineUpPositions) {
                     createPlayerIcon(left, top, '#EA3B52')
                 } else {
+
                     handleLineupGeneration(lineUpPositions, i, left, top);
                 }
             }
@@ -1631,13 +1637,13 @@
 
         function handleLineupGeneration(lineUpPositions, i, left, top) {
             const lineUpPosition = lineUpPositions.lineUpPositions[i];
+
             const userInfo = lineUpPosition.userInfo
             const playerName = userInfo.firstName + " " + userInfo.lastName;
             const playerId = userInfo.userId;
             playerCards.forEach((playerCard, index) => {
                 const id = playerCard.querySelector("input").value;
                 if (parseInt(id) === playerId) {
-                    console.log(id, playerId)
                     playerArray.push({index: index, node: playerCard});
                     playerCard.style.display = 'none';
                     createLineupTeamPlayerIcon(playerId, playerName, left, top, index);
