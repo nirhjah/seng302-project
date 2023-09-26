@@ -22,7 +22,6 @@ header {
 header .header-left {
     display: flex;
     align-items: center;
-    margin-left: 20px;
 }
 
 header .header-left nav ul {
@@ -59,22 +58,29 @@ nav ul li a.active,
 header .header-right {
     display: flex;
     align-items: center;
-    margin-right: 20px;
 }
 
 header .header-left .hamburger {
     cursor: pointer;
     display: none;
+    border-radius: 5px;
+    border: white solid 3px;
+    padding: 5px 10px;
+}
+
+.header-left .hamburger:hover, .hamburger.active {
+    background-color: #415A77;
 }
 
 header .header-left .hamburger div {
     width: 30px;
-    height: 2px;
+    height: 3px;
     margin: 6px 0;
     background: #fff;
+    border-radius: 80px;
 }
 
-@media only screen and (max-width: 1500px) {
+@media only screen and (max-width: 1000px) {
     header .header-left .hamburger {
         display: block;
     }
@@ -82,20 +88,21 @@ header .header-left .hamburger div {
     header .header-left nav {
         margin: 0;
         position: absolute;
-        top: -600%;
-        left: 0;
-        width: 100vw;
-        height: fit-content;
+        top: 80px;
+        left: -40%;
+        width: 34vw;
         background-color: #0b2239;
         padding: 30px;
-        transition: 0.2s;
+        transition: 0.3s;
         text-align: center;
         z-index: -1;
         overflow: hidden;
+        border-bottom-right-radius: 17px;
+        height: 100vh;
     }
 
     header .header-left nav.active {
-        top: 75px;
+        left: 0;
         z-index: 1000;
     }
 
@@ -184,4 +191,14 @@ header .header-left .hamburger div {
 
 .navbar-user-button a:hover, .navbar-create-button a:hover, .navbar-view-all-button a:hover {
     cursor: pointer;
+}
+
+.home-button {
+    margin: 0;
+    padding: 0;
+    background: none !important;
+}
+
+.home-button img {
+    height: 50px;
 }

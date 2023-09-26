@@ -10,7 +10,7 @@
         <nav class="nav-bar" style="overflow: visible">
             <ul>
                 <li>
-                    <a th:href="@{home}" th:classappend="${httpServletRequest.requestURI == '/home' ? 'active' : ''}">Home</a>
+                    <a class="home-button" th:href="@{home}" th:classappend="${httpServletRequest.requestURI == '/home' ? 'active' : ''}"><img th:src="@{image/icons/logo-short-alt.svg}" alt=""></a>
                 </li>
 
                 <div class="create-buttons">
@@ -86,8 +86,9 @@
     <script>
         let hamburger = document.querySelector(".hamburger")
         hamburger.onclick = function () {
-            navBar = document.querySelector(".nav-bar");
+            const navBar = document.querySelector(".nav-bar");
             navBar.classList.toggle("active");
+            hamburger.classList.toggle("active");
         };
 
         // Hides a dropdown
