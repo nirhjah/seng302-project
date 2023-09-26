@@ -1038,7 +1038,7 @@ public class EditActivityFormControllerTest {
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("./view-activity?activityID=" + localActivity.getId()));
         verify(mockActivityService, times(1)).updateOrAddActivity(any());
-        assertEquals("testlineup1" argumentCaptor.getValue().getLineUpName());
+        assertEquals("testlineup1", argumentCaptor.getValue().getLineUpName());
 
     }
 
