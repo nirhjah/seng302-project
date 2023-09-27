@@ -51,7 +51,6 @@ header .header-right li a, nav ul li a,.view-profile, .create-header li a{
 
 nav ul li a:hover,
 nav ul li a.active,
-.buttons.current,
 .navbar-user-button:hover,
 .navbar-create-button:hover,
 .navbar-view-all-button:hover,
@@ -59,6 +58,10 @@ nav ul li a.active,
     background: #415a77;
     color: #fff;
     opacity: 1;
+}
+
+.current  {
+    background: #415a77;
 }
 
 header .header-right {
@@ -95,17 +98,18 @@ header .header-left .hamburger div {
         margin: 0;
         position: absolute;
         top: 80px;
-        left: -40%;
+        left: -100vw;
         width: 34vw;
         background-color: #0b2239;
-        padding: 30px;
-        transition: 0.3s;
+        transition: left 0.3s;
         text-align: center;
         z-index: -1;
         overflow: hidden;
-        border-bottom-right-radius: 17px;
         min-height: 100vh;
         height: fit-content;
+        min-width: 260px;
+        max-width: 325px;
+        padding: 10px clamp(22px, 3vw, 29px);
     }
 
     header .header-left nav.active {
@@ -121,10 +125,35 @@ header .header-left .hamburger div {
         margin: 5px !important;
     }
 
+    .home-button {
+        margin-bottom: 15px !important;
+    }
+
+    .home-button {
+        justify-content: center !important;
+    }
+
     .nav-bar .buttons {
         justify-content: left;
         margin-left: unset;
     }
+
+    nav ul li a {
+        justify-content: space-between;
+    }
+
+    .header-left .navbar-dropdown {
+        position: unset;
+        margin: 5px 7px;
+        padding: 1px;
+        box-shadow: unset;
+    }
+
+    .header-left .navbar-dropdown a {
+        width: auto !important;
+        height: auto;
+    }
+
 }
 
 .navbar-profile-picture {
@@ -158,30 +187,31 @@ header .header-left .hamburger div {
 .navbar-user-dropdown, .navbar-create-dropdown, .navbar-view-all-dropdown, .navbar-dropdown {
     display: none;
     position: absolute;
-    top: 104%;
+    top: 85%;
     background-color: #415A77;
     box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
     border-radius: 4px;
     z-index: 1000;
     transition: 0.2s;
     white-space: nowrap;
+    margin-left: 5px;
 }
 
-.navbar-dropdown.show {
+.buttons.active .navbar-dropdown {
     display: block;
 }
 
-.navbar-dropdown.show a  {
+.buttons.active .navbar-dropdown a  {
     display: block !important;
     text-decoration: none;
     text-align: left;
-    padding: 5px 8px 5px 8px !important;
+    padding: 8px !important;
     border-radius: 4px !important;
     width: 200px;
     min-width: fit-content;
 }
 
-.navbar-dropdown.show a:hover {
+.buttons.active .navbar-dropdown a:hover {
     background-color: #0b2239;
 }
 
@@ -220,16 +250,22 @@ header .header-left .hamburger div {
     height: 50px;
 }
 
-.navbar-dropdown {
-    display: none;
-}
-
 .buttons a {
     cursor: pointer;
 }
 
 .header-right .navbar-dropdown-triangle {
     margin-right: 10px;
+}
+
+.profile-button-text {
+    margin: 0 !important;
+    padding: 5px !important;
+}
+
+.navbar-dropdown.user {
+    top: 98%;
+    margin-left: 11px;
 }
 
 
