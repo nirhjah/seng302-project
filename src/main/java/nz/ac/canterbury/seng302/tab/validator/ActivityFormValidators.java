@@ -24,7 +24,7 @@ public class ActivityFormValidators {
 
     public static final String NO_DESC_MSG = "Description is required";
 
-    public static final String DESC_CONTAINS_INVALID_CHAR_MSG = "Description must contain letters";
+    public static final String DESC_CONTAINS_INVALID_CHAR_MSG = "Description must contain at least 1 letter";
 
     public static final String START_DATE_REQUIRED_MSG = "Start date and time is required";
 
@@ -38,6 +38,11 @@ public class ActivityFormValidators {
 
     public static final String FORMATION_DOES_NOT_EXIST_MSG = "The specified team does not have this formation";
 
+    // U27 AC7 - An invalid description is "...made of numbers or non-alphabetical characters only"
+    // This means an *invalid* description contains no letters
+    // Therefore, a *valid* description contains a letter anywhere
+    // Other than that, we're not picky about what they type; emoji, numbers, etc.
+    public static final String DESCRIPTION_REGEX = "(.*)\\p{L}(.*)";
     public static final String SCORE_FORMATS_DONT_MATCH_MSG = "The score formats do not match";
 
     public static final String OTHER_SCORE_CANNOT_BE_EMPTY_MSG = "Other score field cannot be empty";
@@ -50,11 +55,6 @@ public class ActivityFormValidators {
     public static final String PLAYER_IS_REQUIRED_MSG = "Player is required";
 
     public static final String GOAL_NOT_SCORED_WITHIN_DURATION = "Goal must be scored within duration of activity";
-
-    /**
-     * Regex taken from <a href="https://stackoverflow.com/a/56276700">...</a>
-     */
-    public static final String DESCRIPTION_REGEX = "^(?=[^A-Za-z]*[A-Za-z])[ -~]*$";
 
     /**
      * Checks start time is valid
