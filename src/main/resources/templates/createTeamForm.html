@@ -19,7 +19,7 @@
         <h1 data-cy="header" th:unless="${isEditing}">Create Team</h1>
     </div>
     <div class="wrapper">
-        <form th:action="@{createTeam}" th:object="${createAndEditTeamForm}" id="createAndEditTeamForm" method="post">
+        <form th:action="@{create-team}" th:object="${createAndEditTeamForm}" id="createAndEditTeamForm" method="post">
             <div th:if="${invalid_team != null}" th:text="${invalid_team}" class="invalid-team error-message"></div>
             <input type="hidden" th:if="${isEditing}" th:name="teamID" th:value="${teamID}"/>
             <div class="input-boxes">

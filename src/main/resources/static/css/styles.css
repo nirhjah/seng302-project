@@ -298,8 +298,9 @@ input:invalid + label:after {
     background-size: 400% 400%;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
     border-radius: 9px;
-    width: 80%;
+    width: fit-content;
     min-width: 250px;
+    text-align: center;
 }
 
 .pagination-container {
