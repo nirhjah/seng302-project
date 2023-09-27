@@ -116,7 +116,7 @@ public class ViewTeamController {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
-        return whiteboardScreenshotService.createScreenshotForTeam(file, team, true);
+        return whiteboardScreenshotService.createScreenshotForTeam(file, "hello123", team, true);
     }
 
     /**
