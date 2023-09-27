@@ -525,8 +525,9 @@
 
 .whiteboard-media-display {
     display: flex;
-    width: 30%;
-    min-width: 300px;
+    width: 100%;
+    flex-direction: column;
+    /*min-width: 300px;*/
 }
 
 .whiteboard-media-display .info-box {
