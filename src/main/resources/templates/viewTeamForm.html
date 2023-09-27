@@ -367,7 +367,7 @@
                         </div>
                         <div class="whiteboard-media-content">
                             <div th:each="obj : ${screenshots}" class="media" id="screenshots">
-                                <div class="media-body" th:onclick="'whiteboardRecordingOnClick(' + ${obj.id} + ')'">
+                                <div class="media-body"  th:onclick="'whiteboardMediaOnClick(' + ${obj.tag} + ', ' + ${obj.isPublic()} + ', false)'">
                                     <img th:src="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"  class="card-img-top"
                                          alt="Screenshot">
 
@@ -386,7 +386,7 @@
                         </div>
                         <div class="whiteboard-media-content">
                             <div th:each="obj : ${recordings}" class="media" id="recordings">
-                                <div class="media-body"  th:onclick="'whiteboardRecordingOnClick(' + ${obj.id} + ')'">
+                                <div class="media-body"  th:onclick="'whiteboardMediaOnClick(' + ${obj.tag} + ', ' + ${obj.isPublic()} + ', true)'">
                                     <!--  TODO: change this to `recordings` -->
                                     <img th:src="@{/whiteboard-media/screenshots/{id}(id = ${obj.id})}"  class="card-img-top"
                                          alt="Recording">
@@ -401,7 +401,7 @@
                 </div>
                 <div class="whiteboard-media-display">
                     <div class="media-container">
-                        <div class="info-box">
+                        <div class="info-box" id="info-box">
 
                         </div>
                     </div>
@@ -424,16 +424,10 @@
 
     <script th:inline="javascript">
 
-        function whiteboardRecordingOnClick(x) {
-            console.log(x);
+        function whiteboardMediaOnClick(mediaName, isPublic, isRecording) {
+            console.log(mediaName, isPublic, isRecording);
             let infoBox = document.getElementById("info-box");
-            infoBox.innerHTML = x;
-        }
-
-        function whiteboardScreenshotOnClick(x) {
-            console.log(x);
-            let infoBox = document.getElementById("info-box");
-            infoBox.innerHTML = x;
+            infoBox.innerHTML = name;
         }
 
         const dropdown = document.getElementById('dropdown');
