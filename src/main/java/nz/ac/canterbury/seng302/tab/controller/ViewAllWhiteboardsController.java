@@ -68,13 +68,13 @@ public class ViewAllWhiteboardsController {
         logger.info("GET /view-whiteboards");
         model.addAttribute("httpServletRequest", request);
 
-        int internalPageNo = pageNo - 1;
+        int internalPageNo = Math.max(0, pageNo - 1);
        
         Page<WhiteBoardRecording> wbs = getWhiteboardPage(internalPageNo, currentSearch, sports);
-
+        
         // Values for pagination
-        model.addAttribute("page", pageNo);
         model.addAttribute("totalPages", wbs.getTotalPages());
+        model.addAttribute("page", internalPageNo + 1);
         // Values for searching
         model.addAttribute("currentSearch", currentSearch);
         model.addAttribute("listOfWhiteboards", wbs.toList());
@@ -89,7 +89,9 @@ public class ViewAllWhiteboardsController {
         Team team = teamService.findPaginated(1, 1).iterator().next();
         for (int i = 0; i < 30; i++) {
             WhiteBoardRecording wbr = new WhiteBoardRecording("#"+i, team);
+            wbr.setPublic(true);
             wbrRepo.save(wbr);
+            logger.info("Created wb :D");
         }
 
         return "redirect:/view-whiteboards";

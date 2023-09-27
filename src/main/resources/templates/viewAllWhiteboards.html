@@ -23,7 +23,7 @@
         <button class="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
     </div>
     <div class="filter-bar">
-        <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${sports}, 'Filter by sport', 'sports')}"></div>
+        <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}"></div>
     </div>
     <div class="apply-filters-button-container">
         <button class="apply-filters-button" type="submit">Apply Filter</button>
