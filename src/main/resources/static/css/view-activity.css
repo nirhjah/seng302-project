@@ -1116,10 +1116,14 @@ table, th, td {
         width: 90%;
         margin: auto;
     }
+    
+    .general-activity-top {
+        padding: 15px;
+    }
 }
 
 .content {
-    max-height: 80vh;
+    max-height: calc(80vh - 80px); /* navbar is 80px tall */
     overflow: auto;
 }
 
