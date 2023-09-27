@@ -1073,10 +1073,6 @@ table, th, td {
 
 .description-box {
     border: 2px solid #778DA9;
-    word-break: break-all;
-    /* The scrollbar made the text no longer centred */
-    /* max-height: 12em; */
-    /* overflow: auto; */
     overflow-x: auto;
 }
 
@@ -1123,7 +1119,7 @@ table, th, td {
 }
 
 .content {
-    max-height: 550px;
+    max-height: 80vh;
     overflow: auto;
 }
 
