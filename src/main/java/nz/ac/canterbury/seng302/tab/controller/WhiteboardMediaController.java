@@ -135,21 +135,10 @@ public class WhiteboardMediaController {
         return "redirect:/whiteboard?teamID=" + team.getId();
     }
 
-
-//    private Optional<WhiteboardMediaInfo> getMediaInfo(WhiteboardScreenshot screenshot) {
-//        WhiteboardMediaInfo mediaInfo = new WhiteboardMediaInfo(screenshot);
-//        Optional<byte[]> data = whiteboardScreenshotService.readFile(screenshot.getId());
-//        if (data.isPresent()) {
-//            mediaInfo.setImageData(Base64.getEncoder().encodeToString(data.get()));
-//            return Optional.of(mediaInfo);
-//        }
-//        return Optional.empty();
-//    }
-
     private Optional<WhiteboardMediaInfo> getMediaInfo(WhiteboardMediaInfo mediaInfo, Optional<byte[]> data) {
         if (data.isPresent()) {
-            minfo.setImageData(Base64.getEncoder().encodeToString(data.get()));
-            return Optional.of(minfo);
+            mediaInfo.setImageData(Base64.getEncoder().encodeToString(data.get()));
+            return Optional.of(mediaInfo);
         }
         return Optional.empty();
     }
@@ -157,7 +146,7 @@ public class WhiteboardMediaController {
     /**
      * Returns a JSON object of WhiteboardMediaInfo,
      * that is, representing either a screenshot OR a recording.
-     * Some JS currently uses this information for fancy display
+     * Frontend currently uses this information for fancy display.
      * @param id Id of entity
      * @param isRecording true if recording, false if screenshot
      * @return WhiteboardMediaInfo JSON obj.
@@ -170,15 +159,15 @@ public class WhiteboardMediaController {
         Optional<WhiteboardMediaInfo> mediaInfo = Optional.empty();
         if (isRecording) {
             Optional<WhiteBoardRecording> optRec = whiteboardRecordingService.findById(id);
-
-            Optional<byte[]> data = whiteboardRecordingService.readFile(recording.getId());
-            if (optRec.isPresent()) {
-                mediaInfo = getMediaInfo(optRec.get());
+            if (optRec.isPresent() ) {
+                Optional<byte[]> optData = whiteboardRecordingService.readFile(optRec.get().getId());
+                mediaInfo = getMediaInfo(new WhiteboardMediaInfo(optRec.get()), optData);
             }
         } else {
             Optional<WhiteboardScreenshot> optScr = whiteboardScreenshotService.findById(id);
-            if (optScr.isPresent()) {
-                mediaInfo = getMediaInfo(optScr.get());
+            if (optScr.isPresent() ) {
+                Optional<byte[]> optData = whiteboardRecordingService.readFile(optScr.get().getId());
+                mediaInfo = getMediaInfo(new WhiteboardMediaInfo(optScr.get()), optData);
             }
         }
         if (mediaInfo.isPresent()) {
