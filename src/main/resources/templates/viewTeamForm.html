@@ -357,56 +357,54 @@
         View recordings, and view screenshots tab.
         -->
         <div class="content-box" id="whiteboard-media-tab">
-            <div class="content">
-                <div class="whiteboard-media">
-                    <div class="whiteboard-media-select">
-                        <div class="whiteboard-media-wrapper" id="whiteboard-screenshots">
-                            <div class="media-title">
-                                <img th:src="@{/image/icons/camera.svg}"/>
-                                <h3> Screenshots </h3>
-                            </div>
-                            <div class="whiteboard-media-content">
-                                <div th:each="rec : ${screenshots}" class="media">
-                                    <a th:href="@{team-info}" target="_blank">
-                                        <div class="media-body">
-                                            <img th:src="@{/whiteboard-media/screenshot/{id}(id = ${rec.id})}"  class="card-img-top"
-                                                 alt="Screenshot">
-
-                                            <div class="media-name">
-                                                <p>Scrensht name</p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
+            <div class="content whiteboard-media">
+                <div class="whiteboard-media-select">
+                    <div class="whiteboard-media-wrapper" id="whiteboard-screenshots">
+                        <div class="media-title">
+                            <img th:src="@{/image/icons/camera.svg}"/>
+                            <h3> Screenshots </h3>
                         </div>
+                        <div class="whiteboard-media-content">
+                            <div th:each="rec : ${screenshots}" class="media">
+                                <a th:href="@{team-info}" target="_blank">
+                                    <div class="media-body">
+                                        <img th:src="@{/whiteboard-media/screenshot/{id}(id = ${rec.id})}"  class="card-img-top"
+                                             alt="Screenshot">
 
-                        <div class="whiteboard-media-wrapper" id="whiteboard-recordings">
-                            <div class="media-title">
-                                <img th:src="@{/image/icons/record.svg}"/>
-                                <h3> Recordings </h3>
-                            </div>
-                            <div class="whiteboard-media-content">
-                                <div th:each="rec : ${recordings}" class="media">
-                                    <a th:href="@{team-info}" target="_blank">
-                                        <div class="media-body">
-                                            <!--  TODO: change this to `recordings` -->
-                                            <img th:src="@{/whiteboard-media/screenshots/{id}(id = ${rec.id})}"  class="card-img-top"
-                                                 alt="Recording">
-
-                                            <div class="media-name">
-                                                <p>Rec Name</p>
-                                            </div>
+                                        <div class="media-name">
+                                            <p>Scrensht name</p>
                                         </div>
-                                    </a>
-                                </div>
+                                    </div>
+                                </a>
                             </div>
                         </div>
                     </div>
-                    <div class="whiteboard-media-display">
-                        <div class="info-box">
 
+                    <div class="whiteboard-media-wrapper" id="whiteboard-recordings">
+                        <div class="media-title">
+                            <img th:src="@{/image/icons/record.svg}"/>
+                            <h3> Recordings </h3>
                         </div>
+                        <div class="whiteboard-media-content">
+                            <div th:each="rec : ${recordings}" class="media">
+                                <a th:href="@{team-info}" target="_blank">
+                                    <div class="media-body">
+                                        <!--  TODO: change this to `recordings` -->
+                                        <img th:src="@{/whiteboard-media/screenshots/{id}(id = ${rec.id})}"  class="card-img-top"
+                                             alt="Recording">
+
+                                        <div class="media-name">
+                                            <p>Rec Name</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="whiteboard-media-display">
+                    <div class="info-box">
+
                     </div>
                 </div>
             </div>
