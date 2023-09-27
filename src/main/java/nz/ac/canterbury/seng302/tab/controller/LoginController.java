@@ -97,9 +97,10 @@ public class LoginController {
             model.addAttribute("errorMessage", errorMessage);
         }
 
+
         model.addAttribute("passwordUpdatedMessage", model.asMap().get("passwordUpdatedMessage"));
         model.addAttribute("invalidTokenMessage", model.asMap().get("invalidTokenMessage"));
-        
+
         model.addAttribute(DEFAULT_REDIRECT, redirectUrl);
         // Maintain the redirect URL in case of error
         session.setAttribute(DEFAULT_REDIRECT, redirectUrl);
