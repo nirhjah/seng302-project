@@ -14,6 +14,9 @@ public class WhiteboardMediaInfo {
     // True if the media is a recording (i.e. video)
     private boolean isRecording;
 
+    // Imagedata as base64 encoded string
+    private String imageData;
+
 
     // Default constructor (required by Jackson)
     public WhiteboardMediaInfo() {
@@ -47,5 +50,13 @@ public class WhiteboardMediaInfo {
 
     public boolean isRecording() {
         return this.isRecording;
+    }
+
+    public String getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(String imageData) {
+        this.imageData = imageData;
     }
 }

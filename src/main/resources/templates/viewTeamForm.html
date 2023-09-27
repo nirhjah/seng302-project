@@ -433,11 +433,15 @@
                     recording: isRecording
                 }
             }).then((resp) => {
-                console.log(resp.data);
+                console.log("DATA: ", resp.data);
+                let infoBox = document.getElementById("info-box");
+                infoBox.innerHTML = resp.data.name;
             })
             let infoBox = document.getElementById("info-box");
             infoBox.innerHTML = name;
         }
+
+
 
         const dropdown = document.getElementById('dropdown');
         const topScorersDiv = document.getElementById('topScorersDiv');
