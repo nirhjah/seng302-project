@@ -365,6 +365,17 @@
     overflow: hidden;
 }
 
+.content {
+    max-height: 460px;
+    height: 100vh;
+}
+
+#team-profile-tab .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 .formation-display {
     margin: 2vh 3% 3vh 6%;
     justify-content: space-between;

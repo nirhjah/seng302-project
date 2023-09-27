@@ -9,6 +9,7 @@
 </head>
 <body class="view-teams-background">
 <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
+
 <div class="whiteboard-form">
     <div class="whiteboard-wrapper">
         <div class="whiteboard-dropdowns">
@@ -261,12 +262,37 @@
                 <button class="recording-button">
                     <span class="tooltip">Record (R)</span>
                     <span class="recording-image"></span>
-                    <span class="recording-image-border"></span>
+                    <span class="circular-progress">
+                        <span class="progress-value">0%</span>
+                    </span>
                 </button>
             </div>
             <div class="whiteboard">
                 <div class="camera-flash" id="camera-flash"></div>
                 <canvas id="canvas" width="560" height="700"></canvas>
+            </div>
+            <div id="recording-modal" class="modal">
+                <div class="recording-modal-content">
+                    <button class="close-button" id="close-recording-modal" onclick="recordingModal.style.display = 'none'">&times;</button>
+                    <h3 class="modal-header">Save </h3>
+                    <video id="recorded-canvas" controls></video>
+                    <form encType="multipart/form-data" th:action="@{/whiteboard-media/save/video}" method="post">
+                        <input type="hidden" for="teamId" id="teamIdForRecording" name="teamIdForRecording" th:value="${teamId}"/>
+
+                        <input type="file" id="recording-input" name="recording-input"/>
+                        <div class="input-box">
+                            <input class="form-control" type="text" name="recording-name" id="recording-name"
+                                   required>
+                            <label for="recording-name">
+                                Recording name:
+                                <span class="required">*</span>
+                            </label>
+                        </div>
+                        <div class="submit-button">
+                            <button id="submit-recording" type="submit">Save Recording</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -284,9 +310,8 @@
     <form id="screenshot-form" enctype="multipart/form-data" th:action="@{/whiteboard-media/save/screenshot}" method="post">
       <!-- /* We save the image in this invisible field */ -->
       <input type="file" id="screenshot-input" name="screenshot-input" />
-      <input type="hidden" for="teamId" id="teamId" name="teamId" th:value="${teamId}"/>
-  
-      <div class="input-box">
+        <input type="hidden" for="teamId" id="teamId" name="teamId" th:value="${teamId}"/>
+        <div class="input-box">
         <input class="form-control" type="text" name="screenshot-name" id="screenshot-name" required>
         <label for="screenshot-name">
           Screenshot Name:
@@ -299,8 +324,6 @@
     </form>
   </div>
 </div>
-
-<video id="recorded-canvas" controls></video>
 
 <script type="text/javascript" th:src="@{/webjars/fabric/5.3.0/dist/fabric.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
@@ -322,6 +345,13 @@
         pitchSelect.appendChild(option);
     });
 
+    const recordingModal = document.getElementById('recording-modal');
+
+    window.onclick = function(event) {
+        if (event.target === recordingModal) {
+            recordingModal.style.display = "none";
+        }
+    }
 
 
     /**
@@ -676,7 +706,7 @@
 
             screenshotModal.classList.add("modal-fade-in");
         }
-        
+
         function closeScreenshotModal() {
             // Give keyboard shortcut controls back
             allowKeyPresses = true;
@@ -692,10 +722,8 @@
             }, 990);
             mySound.play()
         }
-
         function clickCamera() {
             screenFlash();
-
             createScreenshotModal()
         }
 
@@ -729,7 +757,23 @@
         let recording = false;
         var videoStream = whiteboardToRecord.captureStream(30);
         var mediaRecorder = new MediaRecorder(videoStream);
+        const recordingUpload = document.getElementById("recording-input");
+        let videoURL;
 
+        function openRecordingModal(videoURL) {
+            fetch(videoURL)
+                .then(res => res.blob())
+                .then(blob => {
+                    const file = new File([blob], 'recording.mp4',
+                        {type: "video/mp4"}
+                    );
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    recordingUpload.files = dt.files;
+                })
+            recordingModal.style.display = "block";
+
+        }
 
         recordingButton.addEventListener('click', function () {
             toggleRecording();
@@ -742,7 +786,8 @@
                 mediaRecorder.onstop = function(e) {
                     var blob = new Blob(chunks, { 'type' : 'video/mp4' });
                     chunks = [];
-                    var videoURL = URL.createObjectURL(blob);
+                    videoURL = URL.createObjectURL(blob);
+                    openRecordingModal(videoURL);
                     testVideoDisplay.src = videoURL;
                 };
                 mediaRecorder.ondataavailable = function(e) {
@@ -757,8 +802,33 @@
             }
         });
 
+        let progress;
+        const circularProgress = document.querySelector(".circular-progress")
+        const progressValue = document.querySelector(".progress-value");
+
         function toggleRecording() {
             recordingButton.classList.toggle('active');
+            if (recordingButton.classList.contains('active')) {
+                const minutes = 5;
+                const offset = (3.6 * 27 / 300);
+                let progressStartValue = 0,
+                    progressEndValue = 360,
+                    speed = (minutes * 60) / (3.6 + offset);
+                progress = setInterval(() => {
+                    progressStartValue+=0.1;
+                    progressValue.textContent = `${progressStartValue}%`
+                    circularProgress.style.background = `conic-gradient(#EA3B52 ${progressStartValue}deg, #ffffff 0deg)`
+                    if(progressStartValue >= progressEndValue){
+                        clearInterval(progress);
+                        recordingButton.classList.toggle('active');
+                        circularProgress.style.background = 'conic-gradient(#1B263B 360deg, #FFFFFF 0deg)'
+                        mediaRecorder.stop()
+                    }
+                }, speed);
+            } else {
+                clearInterval(progress);
+                circularProgress.style.background = 'conic-gradient(#1B263B 360deg, #FFFFFF 0deg)'
+            }
         }
 
         const formationDropdown = document.getElementById("formation-dropdown");
@@ -771,6 +841,10 @@
             if (playerArray.length !== 0) {
                 addTeamPlayers();
             }
+            const defaultImageUrl = `${imagePath}${pitchSelect.value}.svg`;
+            fabric.Image.fromURL(defaultImageUrl, function (img) {
+                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+            });
         });
 
         /**
@@ -1439,6 +1513,11 @@
 
         /**Lineup Loading**/
         document.getElementById("lineup-dropdown").addEventListener("change", function (event) {
+            const defaultImageUrl = `${imagePath}${pitchSelect.value}.svg`;
+            fabric.Image.fromURL(defaultImageUrl, function (img) {
+                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+            });
+
             const selectedOption = event.target.options[event.target.selectedIndex];
             formationDropdown.selectedIndex = 0;
             loadLineUp(selectedOption);
@@ -1689,7 +1768,6 @@
          */
         function addPlayerIconMovement(playerIcon) {
             let iconIsDragging = false;
-            let drawingMode = false;
             const yOffset = 15;
             const xOffset = 18;
             let copyIcon;
@@ -1697,11 +1775,6 @@
             let newY;
 
             playerIcon.addEventListener("mousedown", (e) => {
-                if (canvas.isDrawingMode) {
-                    drawingMode = true;
-                    canvas.isDrawingMode = false;
-                    canvas.selection = true
-                }
                 iconIsDragging = true;
                 copyIcon = playerIcon.cloneNode(false)
                 copyIcon.classList.add("active")
@@ -1733,11 +1806,6 @@
                         const xP = e.clientX - canvasLeft;
                         const yP = e.clientY - canvasTop;
                         createPlayerIcon(xP, yP, copyIcon.style.background)
-                        if (drawingMode) {
-                            drawingMode = false;
-                            canvas.isDrawingMode = true;
-                            canvas.selection = false;
-                        }
                     }
                     iconIsDragging = false;
                     playerIconsContainer.removeChild(copyIcon)
@@ -1781,7 +1849,7 @@
         }
     })
 
-    // ability to send post req without refreshing 
+    // ability to send post req without refreshing
     const form = document.getElementById('screenshot-form')
     form.addEventListener('submit', function(e) {
         e.preventDefault()
