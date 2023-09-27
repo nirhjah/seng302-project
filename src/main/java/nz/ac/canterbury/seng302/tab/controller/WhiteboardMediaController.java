@@ -82,7 +82,7 @@ public class WhiteboardMediaController {
     @PostMapping("whiteboard-media/save/video")
     public String setRecording(
             @RequestParam("recording-input") MultipartFile file,
-            @RequestParam("teamId") long teamId,
+            @RequestParam("teamIdForRecording") long teamId,
             @RequestParam("recording-name") String name,
             @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
     ) {
