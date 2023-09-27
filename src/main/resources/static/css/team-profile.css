@@ -627,6 +627,11 @@
 
 .whiteboard-media-wrapper .media-title h3 {
     padding-left: 12px;
+    max-width: 80%;
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .media img:hover {
