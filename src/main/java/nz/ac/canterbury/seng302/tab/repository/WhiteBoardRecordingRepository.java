@@ -15,9 +15,9 @@ public interface WhiteBoardRecordingRepository extends CrudRepository<WhiteBoard
     Optional<WhiteBoardRecording> findById(long id);
 
     @Query("""
-        SELECT w from WhiteBoardRecording w
+        SELECT w from WhiteBoardRecordingEntity w
         WHERE w.isPublic = TRUE
-        AND (:#{#sports.size} = 0 OR lower(w.sport) in (:sports))
+        AND (:#{#sports.size} = 0 OR lower(w.team.sport) in (:sports))
         AND (:currentSearch is null
             OR lower(w.name) LIKE lower(concat('%', :currentSearch, '%'))
         )
@@ -29,7 +29,7 @@ public interface WhiteBoardRecordingRepository extends CrudRepository<WhiteBoard
 
 
     @Query("""
-        SELECT distinct(w.team.sport) from WhiteBoardRecording w
+        SELECT distinct(w.team.sport) from WhiteBoardRecordingEntity w
         WHERE w.isPublic = TRUE
     """)
     List<String> getAllDistinctPublicSports();
