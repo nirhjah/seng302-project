@@ -513,7 +513,9 @@
 }
 
 .whiteboard-media {
-    display: flex;
+    max-width: 100%;
+    max-height: 100%;
+    display: inline;
 }
 
 .whiteboard-media-select {
