@@ -580,6 +580,11 @@ hr.rounded {
 
 .submit-button {
     margin: unset;
+    width: 25%;
+    min-width: 150px;
+    float: left;
+    padding-top: 25px;
+    padding-bottom: 8px
 }
 
 
@@ -877,6 +882,11 @@ hr.rounded {
         width: 100% !important;
     }
 
+    .goalFacts ul {
+        width: 340px;
+        margin-left: 5px !important;
+    }
+
     .score-display {
         width: 300px;
         margin-left: unset !important;
@@ -1061,8 +1071,59 @@ table, th, td {
     border: 1px solid #0b2239;
 }
 
+.description-box {
+    border: 2px solid #778DA9;
+    overflow-x: auto;
+}
+
+.activity-details {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.general-activity-left {
+    width: 46%;
+    float: left;
+    margin-left: 3%;
+    margin-right: 1%;
+    text-align: left
+}
+
+.general-activity-right {
+    width: 46%;
+    float:left;
+    margin-left: 2%;
+    margin-right: 2%;
+    text-align: left;
+}
+
+.general-activity-bottom {
+    margin-top: 1em;
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
+@media(max-width: 700px) {
+    .activity-details {
+        margin: auto;
+    }
+    .general-activity-left {
+        width: 90%;
+        margin: auto;
+    }
+    .general-activity-right {
+        width: 90%;
+        margin: auto;
+    }
+    
+    .general-activity-top {
+        padding: 15px;
+    }
+}
+
 .content {
-    max-height: 550px;
+    max-height: calc(80vh - 80px); /* navbar is 80px tall */
     overflow: auto;
 }
 

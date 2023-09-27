@@ -90,9 +90,10 @@ public class WhiteboardRecordingService extends VideoService<WhiteBoardRecording
         return repository.save(recording);
     }
 
-    public void createRecordingForTeam(MultipartFile file, Team team, boolean isPublic) {
+    public void createRecordingForTeam(MultipartFile file, String name, Team team, boolean isPublic) {
         WhiteBoardRecording recording = createRecording(file, isPublic);
         recording.setTeam(team);
+        recording.setName(name);
         recording = repository.save(recording);
         team.addRecording(recording);
         teamService.updateTeam(team);
