@@ -145,7 +145,7 @@ public class WhiteboardMediaController {
     @GetMapping("whiteboard-media/get-whiteboard-media-info")
     public ResponseEntity<WhiteboardMediaInfo> getVideoInfo(
             @RequestParam("id") Long id,
-            @RequestParam("is-recording") boolean isRecording
+            @RequestParam("recording") boolean isRecording
     ) {
         Optional<WhiteboardMediaInfo> mediaInfo = Optional.empty();
         if (isRecording) {

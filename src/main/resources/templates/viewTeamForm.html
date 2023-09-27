@@ -423,9 +423,17 @@
 
     <script th:inline="javascript">
 
+        const MEDIA_INFO_ENDPOINT = "whiteboard-media/get-whiteboard-media-info";
         function whiteboardMediaOnClick(id, isRecording) {
             console.log(id, isRecording);
-            axios.get()
+            axios.get(MEDIA_INFO_ENDPOINT, {
+                params: {
+                    id: id,
+                    recording: isRecording
+                }
+            }).then((resp) => {
+                console.log(resp.data);
+            })
             let infoBox = document.getElementById("info-box");
             infoBox.innerHTML = name;
         }
