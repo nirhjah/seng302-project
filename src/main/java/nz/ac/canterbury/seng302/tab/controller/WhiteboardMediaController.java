@@ -2,9 +2,11 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
+import nz.ac.canterbury.seng302.tab.entity.WhiteBoardRecording;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.service.image.WhiteboardScreenshotService;
+import nz.ac.canterbury.seng302.tab.service.image.WhiteboardThumbnailService;
 import nz.ac.canterbury.seng302.tab.service.video.WhiteboardRecordingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,13 +31,16 @@ public class WhiteboardMediaController {
 
     WhiteboardScreenshotService whiteboardScreenshotService;
     WhiteboardRecordingService whiteboardRecordingService;
+
+    WhiteboardThumbnailService whiteboardThumbnailService;
     UserService userService;
     TeamService teamService;
 
     @Autowired
-    public WhiteboardMediaController(WhiteboardScreenshotService whiteboardScreenshotService, WhiteboardRecordingService whiteboardRecordingService, UserService userService, TeamService teamService) {
+    public WhiteboardMediaController(WhiteboardScreenshotService whiteboardScreenshotService, WhiteboardRecordingService whiteboardRecordingService, UserService userService, TeamService teamService, WhiteboardThumbnailService whiteboardThumbnailService) {
         this.whiteboardScreenshotService = whiteboardScreenshotService;
         this.whiteboardRecordingService = whiteboardRecordingService;
+        this.whiteboardThumbnailService = whiteboardThumbnailService;
         this.userService = userService;
         this.teamService = teamService;
     }
@@ -53,7 +58,7 @@ public class WhiteboardMediaController {
     // For video thumbnails:
     @GetMapping("whiteboard-media/thumbnail/{id}")
     public @ResponseBody ResponseEntity<byte[]> getThumbnail(@PathVariable long id) {
-        return whiteboardScreenshotService.getScreenshot(id);
+        return whiteboardThumbnailService.getThumbnail(id);
     }
 
     /*
@@ -67,7 +72,8 @@ public class WhiteboardMediaController {
 
     @PostMapping("whiteboard-media/save/video")
     public void setRecording(
-            @RequestParam("file") MultipartFile file,
+            @RequestParam("recording") MultipartFile recording,
+            @RequestParam("thumbnail") MultipartFile thumbnail,
             @RequestParam("teamId") long teamId,
             @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
     ) {
@@ -76,8 +82,12 @@ public class WhiteboardMediaController {
         User user = userService.getCurrentUser().orElseThrow();
         if (team != null) {
             if (team.isManagerOrCoach(user)) {
-                // TODO: Somehow save the thumbnail here.
-                whiteboardRecordingService.createRecordingForTeam(file, team, isPublic);
+                WhiteBoardRecording whiteboard = whiteboardRecordingService.createRecordingForTeam(recording, team, isPublic);
+                try {
+                    whiteboardThumbnailService.saveThumbnail(thumbnail, whiteboard);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         } else {
             logger.warn("No team found with id: {}", teamId);

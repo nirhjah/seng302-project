@@ -1,13 +1,15 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
+import nz.ac.canterbury.seng302.tab.helper.ImageType;
 import nz.ac.canterbury.seng302.tab.helper.VideoType;
+import nz.ac.canterbury.seng302.tab.helper.interfaces.HasImage;
 import nz.ac.canterbury.seng302.tab.helper.interfaces.HasVideo;
 import nz.ac.canterbury.seng302.tab.helper.interfaces.Identifiable;
 
 
 @Entity(name = "WhiteBoardRecordingEntity")
-public class WhiteBoardRecording implements Identifiable, HasVideo {
+public class WhiteBoardRecording implements Identifiable, HasVideo, HasImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +23,8 @@ public class WhiteBoardRecording implements Identifiable, HasVideo {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Team team;
+
+    private ImageType thumbnailType;
 
     // Private by default.
     @Column
@@ -71,5 +75,15 @@ public class WhiteBoardRecording implements Identifiable, HasVideo {
     public WhiteBoardRecording(String name, Team team) {
         this.name = name;
         this.team = team;
+    }
+
+    @Override
+    public ImageType getImageType() {
+        return thumbnailType;
+    }
+
+    @Override
+    public void setImageType(ImageType imageType) {
+        this.thumbnailType = imageType;
     }
 }
