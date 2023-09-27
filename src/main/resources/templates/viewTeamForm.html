@@ -404,8 +404,16 @@
                     </div>
                 </div>
                 <div class="whiteboard-media-display">
-                    <div class="info-box">
+                    <div class="media-container">
+                        <div class="info-box">
 
+                        </div>
+                    </div>
+
+                    <div class="edit-button">
+                        <a th:href="@{whiteboard(teamID=${teamID})}" th:if="${isUserManagerOrCoach}">
+                            <button type="button">Whiteboard</button>
+                        </a>
                     </div>
                 </div>
             </div>
