@@ -26,4 +26,11 @@ public interface WhiteBoardRecordingRepository extends CrudRepository<WhiteBoard
             Pageable pageable,
             @Param("currentSearch") String currentSearch,
             @Param("sports") List<String> sports);
+
+
+    @Query("""
+        SELECT distinct(w.team.sport) from WhiteBoardRecording w
+        WHERE w.isPublic = TRUE
+    """)
+    List<String> getAllDistinctPublicSports();
 }

@@ -120,4 +120,8 @@ public class WhiteboardRecordingService extends VideoService<WhiteBoardRecording
         }
         return repository.findPublicWhiteboardsByNameAndSport(pageable, currentSearch, sports);
     }
+
+    public List<String> getAllPublicWhiteboardSports() {
+        return repository.getAllDistinctPublicSports();
+    }
 }
