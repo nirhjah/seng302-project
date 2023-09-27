@@ -166,7 +166,7 @@
                                              th:text="${err}" class="error-message"></div>
                                         <div style="margin-bottom: 10%; padding-top: 5px" class="number-spinner">
                                             <button class="decrement" data-target="time-of-fact">-</button>
-                                            <input type="number" class="valueInputTime" min="0" value="0"
+                                            <input type="number" class="valueInputTime" min="0" th:max="${activityLength}"
                                                    id="time-of-fact" name="timeOfFact">
                                             <button class="increment" data-target="time-of-fact">+</button>
                                         </div>

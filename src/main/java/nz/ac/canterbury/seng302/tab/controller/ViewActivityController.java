@@ -237,7 +237,8 @@ public class ViewActivityController {
         model.addAttribute("activityFacts", activityFacts);
 
         model.addAttribute("factList", factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity));
-
+        int totalActivityMinutes = (int) Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
+        model.addAttribute("activityLength", totalActivityMinutes);
         // attributes for the subs
         // all players who are currently playing - for the sub off
         List<User> playersPlaying = activityService.getAllPlayersCurrentlyPlaying(activity.getId());
