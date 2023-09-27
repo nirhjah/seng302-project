@@ -38,7 +38,7 @@ public class ViewAllWhiteboardsController {
 
     private Page<WhiteBoardRecording> getWhiteboardPage(int page, String currentSearch, List<String> sports) {
         var pageable = getPageable(page);
-        return whiteboardRecordingService.findPaginatedWhiteboardsBySports(pageable, currentSearch, sports);
+        return whiteboardRecordingService.findPublicPaginatedWhiteboardsBySports(pageable, currentSearch, sports);
     }
 
 

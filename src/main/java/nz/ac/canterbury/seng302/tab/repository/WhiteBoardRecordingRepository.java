@@ -21,8 +21,8 @@ public interface WhiteBoardRecordingRepository extends CrudRepository<WhiteBoard
         AND (:currentSearch is null
             OR lower(w.name) LIKE lower(concat('%', :currentSearch, '%'))
         )
-    """)    // TODO: Figure out how "public" is gonna work
-    Page<WhiteBoardRecording> findWhiteboardsByNameAndSport(
+    """)
+    Page<WhiteBoardRecording> findPublicWhiteboardsByNameAndSport(
             Pageable pageable,
             @Param("currentSearch") String currentSearch,
             @Param("sports") List<String> sports);

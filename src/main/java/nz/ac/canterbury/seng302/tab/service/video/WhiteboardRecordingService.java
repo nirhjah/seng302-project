@@ -98,7 +98,15 @@ public class WhiteboardRecordingService extends VideoService<WhiteBoardRecording
         teamService.updateTeam(team);
     }
 
-    public Page<WhiteBoardRecording> findPaginatedWhiteboardsBySports(
+
+    /**
+     * Gets a page of public whiteboard recordings 
+     * @param pageable Page size, number, and sorting info
+     * @param currentSearch Search by name
+     * @param sports The list of sports that the whiteboard's owner (team) can be part of
+     * @return A page of whiteboard recordings
+     */
+    public Page<WhiteBoardRecording> findPublicPaginatedWhiteboardsBySports(
             Pageable pageable,
             String currentSearch,
             List<String> sports) {
@@ -110,6 +118,6 @@ public class WhiteboardRecordingService extends VideoService<WhiteBoardRecording
         if (sports == null) {
             sports = List.of();
         }
-        return repository.findWhiteboardsByNameAndSport(pageable, currentSearch, sports);
+        return repository.findPublicWhiteboardsByNameAndSport(pageable, currentSearch, sports);
     }
 }
