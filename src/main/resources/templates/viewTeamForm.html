@@ -367,7 +367,7 @@
                         </div>
                         <div class="whiteboard-media-content">
                             <div th:each="obj : ${screenshots}" class="media" id="screenshots">
-                                <div class="media-body" th:onclick="whiteboardScreenshotOnClick(${obj.id})">
+                                <div class="media-body" th:onclick="'whiteboardRecordingOnClick(' + ${obj.id} + ')'">
                                     <img th:src="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"  class="card-img-top"
                                          alt="Screenshot">
 
@@ -386,7 +386,7 @@
                         </div>
                         <div class="whiteboard-media-content">
                             <div th:each="obj : ${recordings}" class="media" id="recordings">
-                                <div class="media-body" th:onclick="whiteboardRecordingOnClick(${obj.id})">
+                                <div class="media-body"  th:onclick="'whiteboardRecordingOnClick(' + ${obj.id} + ')'">
                                     <!--  TODO: change this to `recordings` -->
                                     <img th:src="@{/whiteboard-media/screenshots/{id}(id = ${obj.id})}"  class="card-img-top"
                                          alt="Recording">
