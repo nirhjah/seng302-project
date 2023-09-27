@@ -154,4 +154,8 @@ public class WhiteboardScreenshotService extends ImageService<WhiteboardScreensh
         // else, there's no content:
         return ResponseEntity.noContent().build();
     }
+
+    public Optional<WhiteboardScreenshot> findById(long id) {
+        return repository.findById(id);
+    }
 }

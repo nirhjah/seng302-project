@@ -366,7 +366,7 @@
                         </div>
                         <div class="whiteboard-media-content">
                             <div th:each="obj : ${screenshots}" class="media" id="screenshots">
-                                <div class="media-body"  th:onclick="'whiteboardMediaOnClick(' + ${obj.tag} + ', ' + ${obj.isPublic()} + ', false)'">
+                                <div class="media-body"  th:onclick="'whiteboardMediaOnClick(' + ${obj} + ', false)'">
                                     <img th:src="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"  class="card-img-top"
                                          alt="Screenshot">
 
@@ -385,7 +385,7 @@
                         </div>
                         <div class="whiteboard-media-content">
                             <div th:each="obj : ${recordings}" class="media" id="recordings">
-                                <div class="media-body"  th:onclick="'whiteboardMediaOnClick(' + ${obj.tag} + ', ' + ${obj.isPublic()} + ', true)'">
+                                <div class="media-body"  th:onclick="'whiteboardMediaOnClick(' + ${obj} + ', true)'">
                                     <!--  TODO: change this to `recordings` -->
                                     <img th:src="@{/whiteboard-media/screenshots/{id}(id = ${obj.id})}"  class="card-img-top"
                                          alt="Recording">
@@ -423,8 +423,9 @@
 
     <script th:inline="javascript">
 
-        function whiteboardMediaOnClick(mediaName, isPublic, isRecording) {
-            console.log(mediaName, isPublic, isRecording);
+        function whiteboardMediaOnClick(id, isRecording) {
+            console.log(id, isRecording);
+            axios.get()
             let infoBox = document.getElementById("info-box");
             infoBox.innerHTML = name;
         }

@@ -95,4 +95,8 @@ public class WhiteboardRecordingService extends VideoService<WhiteBoardRecording
         team.addRecording(recording);
         teamService.updateTeam(team);
     }
+
+    public Optional<WhiteBoardRecording> findById(long id) {
+        return repository.findById(id);
+    }
 }
