@@ -211,6 +211,7 @@ public class ViewActivityController {
             }
             model.addAttribute("playersAndPositions", playersAndPosition);
             model.addAttribute("playerNames", playerNames);
+            model.addAttribute("lineupName", lineUp.toString());
         }
 
 

@@ -68,11 +68,8 @@ public class NamingFormationsAndLineupsFeature {
         PlaywrightBrowser.page.locator("#activities").click();
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("#editActivityBtn").first().click();
+        PlaywrightBrowser.page.locator("#formation-dropdown").click();
         PlaywrightBrowser.page.locator("#formation-dropdown").selectOption("2");
-
-
-
-
     }
 
     @When("I give a lineup no name and create the formation")

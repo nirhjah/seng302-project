@@ -15,12 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -79,6 +76,8 @@ public class WhiteboardController {
                 }
         ).toList();
 
+        model.addAttribute("teamId", team.getId());
+
         model.addAttribute("teamFormations", formationService.getTeamsFormations(teamID));
 
         model.addAttribute("teamMembers", team.getNonManagersAndCoaches());
@@ -110,26 +109,6 @@ public class WhiteboardController {
             }
         }
         return ResponseEntity.notFound().build();
-    }
-
-    // TESTING CONTROLLER, PLEASE DELETE
-    @PostMapping("/whiteboard/upload-screenshot")
-    public ResponseEntity<String> uploadWhiteboardScreenshot(
-            @RequestParam("screenshot-input") MultipartFile whiteboardScreenshot,
-            @RequestParam("screenshot-name") String name) throws IOException {
-        
-        logger.info("POST /whiteboard/upload-screenshot");
-        return ResponseEntity.ok(
-            String.format("""
-            Name='%s'<br>
-            whiteboardScreenshot's size=%d<br>
-            <img src="data:image/png;base64,%s" />
-            """,
-            name,
-            whiteboardScreenshot.getSize(),
-            Base64.getEncoder().encodeToString(whiteboardScreenshot.getBytes())
-            )
-        );
     }
 
 

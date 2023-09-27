@@ -25,9 +25,20 @@ public class WhiteboardScreenshot implements Identifiable, HasImage {
     @Column
     private boolean isPublic = false;
 
+    @Column(name="tag")
+    private String tag;
+
     @Override
     public long getId() {
         return id;
+    }
+
+    public String getTag() {
+        return this.tag;
+    }
+
+    public void setTag(String newTag) {
+        this.tag = newTag;
     }
 
     public void setTeam(Team team) {
@@ -59,4 +70,10 @@ public class WhiteboardScreenshot implements Identifiable, HasImage {
     public void setImageType(ImageType imageType) {
         this.screenshotType = imageType;
     }
+
+    public WhiteboardScreenshot(Team team) {
+        this.team = team;
+    }
+
+    public WhiteboardScreenshot() {}
 }

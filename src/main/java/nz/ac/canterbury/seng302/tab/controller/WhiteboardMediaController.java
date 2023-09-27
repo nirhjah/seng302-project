@@ -41,23 +41,29 @@ public class WhiteboardMediaController {
     }
 
     /**
-     *
-     * @param id
-     * @return
+     * Gets screenshot by id
+     * @param id screenshot id
+     * @return screenshot
      */
     @GetMapping("whiteboard-media/screenshot/{id}")
     public @ResponseBody ResponseEntity<byte[]> getPreview(@PathVariable(name="id") long id) {
         return whiteboardScreenshotService.getScreenshot(id);
     }
 
-    // For video thumbnails:
+    /**
+     * Gets thumbnail for recording
+     * @param id id of media to get thumbnail of
+     * @return recording thumbnail
+     */
     @GetMapping("whiteboard-media/thumbnail/{id}")
     public @ResponseBody ResponseEntity<byte[]> getThumbnail(@PathVariable long id) {
         return whiteboardScreenshotService.getScreenshot(id);
     }
 
-    /*
-     We just yeet the bytes across, send all data at once, yolo
+    /**
+     * Gets recording by id
+     * @param id recorded video id
+     * @return recorded video
      */
     @GetMapping("whiteboard-media/video/{id}")
     public @ResponseBody ResponseEntity<byte[]> getRecording(@PathVariable long id) {
@@ -65,10 +71,19 @@ public class WhiteboardMediaController {
         return whiteboardRecordingService.getRecording(id);
     }
 
+    /**
+     * Saves whiteboard recording to backend
+     * @param file whiteboard recording file
+     * @param teamId id of the team who is using the whiteboard
+     * @param name name of the recording
+     * @param isPublic set if video should be publicly or privately viewed
+     * @return returns to team profile page upon saving video
+     */
     @PostMapping("whiteboard-media/save/video")
-    public void setRecording(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("teamId") long teamId,
+    public String setRecording(
+            @RequestParam("recording-input") MultipartFile file,
+            @RequestParam("teamIdForRecording") long teamId,
+            @RequestParam("recording-name") String name,
             @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
     ) {
         logger.info("POST setRecording: {}", teamId);
@@ -77,28 +92,40 @@ public class WhiteboardMediaController {
         if (team != null) {
             if (team.isManagerOrCoach(user)) {
                 // TODO: Somehow save the thumbnail here.
-                whiteboardRecordingService.createRecordingForTeam(file, team, isPublic);
+                whiteboardRecordingService.createRecordingForTeam(file, name, team, isPublic);
             }
         } else {
             logger.warn("No team found with id: {}", teamId);
         }
+        return "redirect:/whiteboard?teamID=" + teamId;
     }
 
-
+    /**
+     * persists the whiteboard screenshot to the backend
+     * @param file the file to be saved
+     * @param teamId the team that the screenshot belongs to
+     * @param name the 'tag' of the whiteboard
+     * @param isPublic if the whiteboard is public or private
+     * @return redirect to the whiteboard page
+    */
     @PostMapping("whiteboard-media/save/screenshot")
-    public void setScreenshot(
-            @RequestParam("file") MultipartFile file,
+    public String setScreenshot(
+            @RequestParam("screenshot-input") MultipartFile file,
             @RequestParam("teamId") long teamId,
+            @RequestParam("screenshot-name") String name,
             @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
     ) {
+        logger.info("/POST /whiteboard-media/save/screenshot");
         Team team = teamService.getTeam(teamId);
         User user = userService.getCurrentUser().orElseThrow();
         if (team != null) {
             if (team.isManagerOrCoach(user)) {
-                whiteboardScreenshotService.createScreenshotForTeam(file, team, isPublic);
+                whiteboardScreenshotService.createScreenshotForTeam(file, name, team, isPublic);
             }
         } else {
             logger.warn("No team found with id: {}", teamId);
         }
+        // maybe redirect to view the whiteboard
+        return "redirect:/whiteboard?teamID=" + team.getId();
     }
 }
