@@ -622,6 +622,11 @@
     font-size: 18px;
     color: #1B263B;
     padding: 10px;
+    display: inline-flex;
+}
+
+.whiteboard-media-wrapper .media-title h3 {
+    padding-left: 12px;
 }
 
 .media img:hover {
