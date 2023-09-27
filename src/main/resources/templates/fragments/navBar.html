@@ -48,6 +48,9 @@
                 <li sec:authorize="isAnonymous()">
                     <a th:href="@{register}" th:classappend="${httpServletRequest.requestURI == '/register' ? 'active' : ''}">Register</a>
                 </li>
+                <li>
+                    <a th:href="@{help}" th:classappend="${httpServletRequest.requestURI == '/help' ? 'active' : ''}">Help</a>
+                </li>
 
                 <div sec:authorize="isAuthenticated()" class="view-profile">
                     View Profile:

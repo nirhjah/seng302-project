@@ -90,6 +90,7 @@ public class SecurityConfiguration {
                 AntPathRequestMatcher.antMatcher("/static/**"),
                 AntPathRequestMatcher.antMatcher("/css/**"),
                 AntPathRequestMatcher.antMatcher("/js/**"),
+                    AntPathRequestMatcher.antMatcher("/document/**"),
                 AntPathRequestMatcher.antMatcher("/image/**"),
                     AntPathRequestMatcher.antMatcher("/webjars/axios/**"),
                 AntPathRequestMatcher.antMatcher("/mail/**")
@@ -101,7 +102,7 @@ public class SecurityConfiguration {
             .authorizeHttpRequests()
             // accessible to anyone
             .requestMatchers("/", "/register", LOGIN_URL,
-                    "/geocode/autocomplete", "/lost-password", "/reset-password", "/confirm")
+                    "/geocode/autocomplete", "/lost-password", "/reset-password", "/confirm", "/help")
             .permitAll()
             // Only Federation Managers (maybe admins) can access this
             .requestMatchers("/inviteToFederationManager")
