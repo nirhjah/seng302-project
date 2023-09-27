@@ -16,8 +16,8 @@ public interface WhiteBoardRecordingRepository extends CrudRepository<WhiteBoard
 
     @Query("""
         SELECT w from WhiteBoardRecording w
-        WHERE (:#{#sports.size} = 0 OR lower(w.sport) in (:sports))
-        AND (w.isPublic)
+        WHERE w.isPublic = TRUE
+        AND (:#{#sports.size} = 0 OR lower(w.sport) in (:sports))
         AND (:currentSearch is null
             OR lower(w.name) LIKE lower(concat('%', :currentSearch, '%'))
         )
