@@ -117,6 +117,8 @@ public class WhiteboardRecordingService extends VideoService<WhiteBoardRecording
         // NOT nulling the list is easier
         if (sports == null) {
             sports = List.of();
+        } else {
+            sports = sports.stream().map(String::toLowerCase).toList();
         }
         return repository.findPublicWhiteboardsByNameAndSport(pageable, currentSearch, sports);
     }

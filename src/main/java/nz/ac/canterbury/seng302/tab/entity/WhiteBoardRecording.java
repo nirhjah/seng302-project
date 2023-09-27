@@ -73,4 +73,11 @@ public class WhiteBoardRecording implements Identifiable, HasVideo {
         this.name = name;
         this.team = team;
     }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "WhiteBoardRecording{id=%d, name='%s', team='%s'}", id, name, team
+        );
+    }
 }
