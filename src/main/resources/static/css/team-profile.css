@@ -512,7 +512,7 @@
     height: 100vh;
 }
 
-.content .whiteboard-media {
+.whiteboard-media {
     display: flex;
 }
 
@@ -533,7 +533,6 @@
     display: inline-block;
     /*margin: 0 auto;*/
     padding: 10%;
-    background-color: #8ebf42
 }
 
 .whiteboard-media-display .whiteboard-button {
