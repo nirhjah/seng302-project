@@ -414,8 +414,13 @@
                     </div>
 
                     <div class="open-link-box">
-                        <img class="main-image" id="media-image" th:src="@{/image/icons/pitch.svg}"/>
                         <a id="" target="_" th:href="@{/image/icons/pitch.svg}">
+                            <img id="media-image" th:src="@{/image/icons/pitch.svg}"/>
+
+                            <!-- TODO: Replace `right.svg` with proper. -->
+                            <div class="button-box">
+                                <img class="click-image" th:src="@{/image/icons/right.svg}"/>
+                            </div>
                         </a>
                     </div>
 
