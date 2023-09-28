@@ -63,9 +63,9 @@ public class ActivityServiceTest {
     UserRepository userRepository;
 
     private User player;
-    
+
     private User player2;
-    
+
     private User player3;
 
     /**
@@ -891,7 +891,7 @@ public class ActivityServiceTest {
         lineUpRepository.save(activityLineUp);
 
         LineUpPosition lineUpPosition = new LineUpPosition(activityLineUp, player, 1);
-        
+
 
         lineUpPositionRepository.save(lineUpPosition);
 

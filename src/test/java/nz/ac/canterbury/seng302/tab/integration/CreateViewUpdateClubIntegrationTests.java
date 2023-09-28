@@ -62,7 +62,6 @@ public class CreateViewUpdateClubIntegrationTests {
     @Autowired
     private ApplicationContext applicationContext;
 
-
     private UserRepository userRepository;
 
     private LocationRepository locationRepository;
@@ -161,7 +160,6 @@ public class CreateViewUpdateClubIntegrationTests {
         File file = resource.getFile();
         FileInputStream input = new FileInputStream(file);
         this.mockMultipartFile = new MockMultipartFile("file", "clublogo.png", "image/png", input.readAllBytes());
-
 
         userRepository.save(user);
 

@@ -33,7 +33,6 @@
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important;
-        align-items: center !important;
         width: 90vw !important;
         height: unset !important;
         margin-top: 20px;
@@ -147,7 +146,7 @@
 }
 
 
-@media (max-width: 540px) {
+@media (max-width: 750px) {
     .tab .tab-button {
         display: none;
     }
@@ -266,16 +265,14 @@
     /*display:flex;*/
 }
 
-.tab-line{
+.tab-line {
     position: relative;
     top: -4px;
-    left: 3px;
-    width: 20%;
+    width: 25%;
     height: 5px;
     background-color: #1B263B;
     border-radius: 10px;
     transition: all .3s ease-in-out;
-    display: none;
 }
 
 .tab.active .tab-button{
@@ -306,6 +303,9 @@
     display: flex;
     align-items: center;
     cursor: pointer;
+    max-width: 25%;
+    width: 100vw;
+    justify-content: center;
 }
 
 .formation-list {
@@ -525,6 +525,226 @@
     text-overflow: ellipsis;
     max-width: 15ch;
 }
+
+
+.wrapper-profile .content {
+    max-height: 460px;
+    height: 100vh;
+}
+
+.whiteboard-media {
+    display: flex;
+}
+
+.whiteboard-media-select {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    height: 100%;
+}
+
+.whiteboard-media-display {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    /*min-width: 300px;*/
+
+    margin: 5px;
+    /* min-width: 300px; */
+    border: groove #0b2239;
+    border-bottom-right-radius: 16px;
+}
+
+.whiteboard-media-display .info-box {
+    display: inline-block;
+    /*margin: 0 auto;*/
+    padding: 5%;
+    background-color: #bbbbbb;
+    max-height: 30%;
+    width: 100%;
+}
+
+
+.whiteboard-media-display .open-link-box {
+    border: groove grey;
+    height: 100%;
+    max-height: 60%;
+    background-color: #cccccc;
+    max-width: 90%;
+    margin: auto;
+    padding: 2%;
+    position: relative;
+}
+
+
+.open-link-box img {
+    object-fit: scale-down;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.open-link-box .button-box {
+
+}
+
+.open-link-box .button-box {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 40;
+    /* margin-left: auto; */
+    /* margin-right: auto; */
+    transform: translate(-50%, -50%);
+}
+
+
+
+.info-box p {
+    text-align: left;
+    font-size:16px;
+    width: 100%;
+    height: 50%; /* because there are 2 */
+    line-height: 1.5;
+    font-weight: 600;
+    text-overflow: ellipsis;
+}
+
+
+
+.whiteboard-media-display .whiteboard-button {
+}
+
+
+.whiteboard-media-content {
+    height: 100%;
+    max-height: 100%;
+    overflow: auto;
+    display: inline-flex;
+    margin: 8px;
+}
+
+
+.media-image{
+    border-radius: 5px;
+    background:whitesmoke;
+    height:200px;
+}
+
+.media {
+    margin: 5px;
+    border-radius: 10px;
+    display: inline-flex;
+    cursor:pointer;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+    /* aspect-ratio: 560 / 700; /* Aspect ratio of pitch */
+    aspect-ratio: 570 / 700; /* Aspect ratio of pitch */
+    /*height: 90%;*/
+    flex-shrink: 0;
+}
+
+.media img {
+    height: 90%;
+    width: 100%;
+    object-fit: scale-down;
+    border-radius: 10px;
+}
+
+.media-title img {
+    max-height: 100%;
+    max-width: 100%;
+    padding-left: 1%;
+}
+
+
+.media-body {
+    height: fit-content;
+    width: fit-content;
+    box-sizing: border-box;
+    color: white;
+    font-family: "Noto Sans", sans-serif;
+    position: relative;
+    margin: 5%;
+}
+
+.media-body .media-name{
+    position: absolute;
+    text-align: center;
+    font-size:16px;
+    background-color: #0b2239;
+    width: 100%;
+    height: 15%;
+    top: -5%; /* I think this is really hacky, but im not sure how else to do it*/
+    left: -5%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    margin: 5%;
+    line-height: 1.5;
+    text-overflow: ellipsis;
+}
+
+.whiteboard-media-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 50%;
+    width: 100%;
+}
+
+.whiteboard-media-wrapper .media-title {
+    height: 18%;
+    border: none;
+    outline: none;
+    background: white;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 18px;
+    color: #1B263B;
+    padding: 10px;
+    display: inline-flex;
+}
+
+.whiteboard-media-wrapper .media-title h3 {
+    padding-left: 12px;
+    max-width: 80%;
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.media img:hover {
+    cursor: pointer;
+}
+
+/*
+Custom scrollbar:
+ */
+
+/* Define the scrollbar style */
+.whiteboard-media-content::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+/* Define the thumb style */
+.whiteboard-media-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom right, #333333 0%, #111111 100%);
+    border-radius: 5px;
+}
+
+/* Define the track style */
+.whiteboard-media-content::-webkit-scrollbar-track {
+    background-color: #ddd;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Define the button style when being hovered over */
+.whiteboard-media-content::-webkit-scrollbar-button:hover {
+    background-color: #999999;
+}
+
+
+
 
 @media (max-width: 500px) {
     .float-child {

@@ -2,6 +2,9 @@
     .club-form .wrapper {
         width: 90vw !important;
     }
+    .file-upload {
+        width: 60% !important;
+    }
 }
 
 .club-form {

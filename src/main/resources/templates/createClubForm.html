@@ -17,7 +17,8 @@
 
     <div class="wrapper">
         <form th:action="@{create-club}" th:object="${createAndEditClubForm}" id="createAndEditClubForm" method="post" enctype="multipart/form-data">
-            <input type="hidden" th:if="${clubId != null}" th:name="clubId" th:value="${clubId}"/>
+            <input type="hidden" th:name="clubId" th:value="${clubId != null ? clubId : null}" id="clubId"/>
+
 
             <div class="create-header">
                 <h2>Picture</h2>
@@ -54,7 +55,7 @@
             </div>
 
             <div class="input-box">
-                <input type="text" class="form-control" id="sport" th:name="sport" th:value="*{sport}"
+                <input type="text" class="form-control" id="sport" th:name="sport" th:value="*{sport}"  oninput="getValidTeams()"
                        data-cy="sport" autofocus placeholder=""
                        title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
                 <label for="sport">Sport <span class="required">*</span></label>
@@ -124,12 +125,7 @@
             </div>
 
             <label class="selectTeamsLabel"> Select Teams </label>
-            <select th:field="*{selectedTeams}" name="selectedTeams" id="selectedTeams" multiple>
-                <option class="selectTeamsOption" th:each="team : ${listOfTeams}"
-                        th:value="${team.teamId}"
-                        th:text="${team}"
-                        th:selected="${selectedTeams != null && selectedTeams.contains(team)}"></option>
-            </select>
+            <select th:field="*{selectedTeams}" name="selectedTeams" id="selectedTeams" multiple></select>
 
             <label style="font-family: 'Noto Sans', sans-serif"> Hold ctrl and click on teams to select/deselect
                 multiple </label>
@@ -153,8 +149,67 @@
     const ENDPOINT = path + "/geocode/autocomplete";
 </script>
 <script th:inline="javascript">
+    const sportsInput = document.getElementById("sport")
 
     /**
+     * Gets valid teams from either endpoint depending on if there is a club existing or not.
+     */
+    function getValidTeams() {
+        var sportInput = document.getElementById("sport");
+        var selectedSport = sportInput.value;
+        var clubId = document.getElementById("clubId").value;
+
+        if (clubId === "") {
+            axios.get("/teams_by_sport_not_in_club", { params: { sport: selectedSport } })
+                .then(function (response) {
+                    var teams = response.data;
+                    generateTeamOptions(teams);
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        } else {
+            axios.get("/teams_by_sport", { params: { sport: selectedSport, clubId: clubId.toString() } })
+                .then(function (response) {
+                    var teams = response.data;
+                    generateTeamOptions(teams);
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        }
+        }
+
+    var preSelectedTeamIds = /*[[${selectedTeamIds}]]*/ [];
+
+    /**
+     * Creates option elements in the select box for each team
+     * @param teams list of valid teams from backend
+     */
+    function generateTeamOptions(teams) {
+        var selectElement = document.getElementById("selectedTeams");
+        selectElement.innerHTML = "";
+        teams.forEach(function (team) {
+            var option = document.createElement("option");
+            option.value = team.teamId;
+            option.textContent = team.name;
+            if (preSelectedTeamIds && preSelectedTeamIds.length > 0 && preSelectedTeamIds.includes(String(team.teamId))) {
+                option.selected = true;
+            }
+            selectElement.appendChild(option);
+        });
+    }
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (sportsInput.value.trim() !== "") {
+            getValidTeams();
+        }
+    });
+
+
+
+/**
      * The delay time (in milliseconds) for debouncing the search input.
      * @type {number}
      */
