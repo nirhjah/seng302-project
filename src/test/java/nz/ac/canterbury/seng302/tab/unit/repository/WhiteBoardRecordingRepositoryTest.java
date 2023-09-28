@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 @DataJpaTest
-public class WhiteBoardRecordingRepositoryTest {
+class WhiteBoardRecordingRepositoryTest {
 
     @Autowired
     private WhiteBoardRecordingRepository repository;
@@ -84,6 +84,56 @@ public class WhiteBoardRecordingRepositoryTest {
 
         Pageable page = PageRequest.of(0, 10);
         Set<WhiteBoardRecording> allWBRs = repository.findPublicWhiteboardsByNameAndSport(page, "YES", List.of()).toSet();
+        
+        Assertions.assertEquals(2, allWBRs.size(), "The wrong number of whiteboards were returned");
+        Assertions.assertEquals(Set.of(wb1, wb2), allWBRs);
+    }
+
+    @Test
+    void findRecordingsByTeamName() throws Exception {
+        Team team1 = new Team("Oranges", "Hockey");
+        Team team2 = new Team("Bananas", "Soccer");
+        team1 = teamRepository.save(team1);
+        team2 = teamRepository.save(team2);
+
+        WhiteBoardRecording wb1 = new WhiteBoardRecording("Yes One", team1);
+        WhiteBoardRecording wb2 = new WhiteBoardRecording("Yes Two", team1);
+        WhiteBoardRecording wb3 = new WhiteBoardRecording("Nope Three", team2);
+        wb1.setPublic(true);
+        wb2.setPublic(true);
+        wb3.setPublic(true);
+        wb1 = repository.save(wb1);
+        wb2 = repository.save(wb2);
+        wb3 = repository.save(wb3);
+
+        Pageable page = PageRequest.of(0, 10);
+        Set<WhiteBoardRecording> allWBRs = repository.findPublicWhiteboardsByNameAndSport(page, "oranges", List.of()).toSet();
+        
+        Assertions.assertEquals(2, allWBRs.size(), "The wrong number of whiteboards were returned");
+        Assertions.assertEquals(Set.of(wb1, wb2), allWBRs);
+    }
+
+    @Test
+    void findRecordingsByTeamName_multipleTeams() throws Exception {
+        Team team1 = new Team("The Apples", "Hockey");
+        Team team2 = new Team("The Oranges", "Rugby");
+        Team team3 = new Team("Bananas", "Soccer");
+        team1 = teamRepository.save(team1);
+        team2 = teamRepository.save(team2);
+        team3 = teamRepository.save(team3);
+
+        WhiteBoardRecording wb1 = new WhiteBoardRecording("Yes One", team1);
+        WhiteBoardRecording wb2 = new WhiteBoardRecording("Yes Two", team2);
+        WhiteBoardRecording wb3 = new WhiteBoardRecording("Nope Three", team3);
+        wb1.setPublic(true);
+        wb2.setPublic(true);
+        wb3.setPublic(true);
+        wb1 = repository.save(wb1);
+        wb2 = repository.save(wb2);
+        wb3 = repository.save(wb3);
+
+        Pageable page = PageRequest.of(0, 10);
+        Set<WhiteBoardRecording> allWBRs = repository.findPublicWhiteboardsByNameAndSport(page, "The", List.of()).toSet();
         
         Assertions.assertEquals(2, allWBRs.size(), "The wrong number of whiteboards were returned");
         Assertions.assertEquals(Set.of(wb1, wb2), allWBRs);
