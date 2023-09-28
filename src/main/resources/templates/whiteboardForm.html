@@ -283,6 +283,7 @@
                         <input type="hidden" for="teamId" id="teamIdForRecording" name="teamIdForRecording" th:value="${teamId}"/>
 
                         <input type="file" id="recording-input" name="recording-input"/>
+                        <input type="file" id="thumbnail" name="thumbnail"/>
                         <div class="input-box">
                             <input class="form-control" type="text" name="recording-name" id="recording-name"
                                    required>
@@ -710,6 +711,7 @@
         var videoStream = whiteboardToRecord.captureStream(30);
         var mediaRecorder = new MediaRecorder(videoStream);
         const recordingUpload = document.getElementById("recording-input");
+        const thumbnailUpload = document.getElementById("thumbnail");
         let videoURL;
 
         function closeRecordingModal() {
@@ -736,12 +738,27 @@
                     const file = new File([blob], 'recording.mp4',
                         {type: "video/mp4"}
                     );
+                    const dataURL = canvas.toDataURL();
+                    screenshotDisplay.src = dataURL;
+                    let tbnail;
+                    // Saves the image inside the modal's form
+                    fetch(dataURL)
+                        .then(res => res.blob())    // Base64 dataURL to binary
+                        .then(blob => {
+                            // JavaScript's file APIs are very new and very bad
+                            // Turn the binary into a file
+                            tbnail = new File([blob], 'thumbnail.png',
+                                {type: "image/png"}
+                            );
+                            const dt = new DataTransfer();
+                            dt.items.add(tbnail);
+                            thumbnailUpload.files = dt.files;
+                        })
                     const dt = new DataTransfer();
                     dt.items.add(file);
                     recordingUpload.files = dt.files;
                 })
             recordingModal.style.display = "block";
-
         }
 
         closeRecordingModalButton.addEventListener('click', closeRecordingModal);
