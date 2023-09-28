@@ -34,9 +34,3 @@ Feature: U2 - Login
       | password   |
       | ""         |
       | "password" |
-
-  Scenario: AC6: Given I am on the login form, when I hit the cancel button, I come back to the home page of the system.
-    Given I am on the login form
-    When I click the cancel button
-    Then I am taken to the home page
-

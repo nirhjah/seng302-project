@@ -455,12 +455,19 @@ input[type="range"]::-moz-range-track {
     justify-content: center;
     text-align: center;
     user-select:none;
+    background:transparent;
+    border:none;
 }
 .whiteboard-dropdowns .player-card.active img{
-    min-height:30px;
-    max-width:30px;
-    margin-top:18px;
+    margin-top:34px;
     border-radius: 50%;
+    height:30px;
+    width:30px;
+}
+
+.whiteboard-dropdowns .player-card.active span{
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .whiteboard-dropdowns .player-card.active span{
