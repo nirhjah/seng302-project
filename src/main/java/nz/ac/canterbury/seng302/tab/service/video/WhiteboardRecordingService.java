@@ -9,10 +9,13 @@ import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -95,5 +98,34 @@ public class WhiteboardRecordingService extends VideoService<WhiteBoardRecording
         team.addRecording(recording);
         teamService.updateTeam(team);
         return recording;
+    }
+
+
+    /**
+     * Gets a page of public whiteboard recordings 
+     * @param pageable Page size, number, and sorting info
+     * @param currentSearch Search by name
+     * @param sports The list of sports that the whiteboard's owner (team) can be part of
+     * @return A page of whiteboard recordings
+     */
+    public Page<WhiteBoardRecording> findPublicPaginatedWhiteboardsBySports(
+            Pageable pageable,
+            String currentSearch,
+            List<String> sports) {
+        // Nulling the search term makes ignoring it easier
+        if (currentSearch != null && currentSearch.isBlank()) {
+            currentSearch = null;
+        }
+        // NOT nulling the list is easier
+        if (sports == null) {
+            sports = List.of();
+        } else {
+            sports = sports.stream().map(String::toLowerCase).toList();
+        }
+        return repository.findPublicWhiteboardsByNameAndSport(pageable, currentSearch, sports);
+    }
+
+    public List<String> getAllPublicWhiteboardSports() {
+        return repository.getAllDistinctPublicSports();
     }
 }
