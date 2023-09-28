@@ -13,8 +13,8 @@
 <div class="whiteboard-form">
     <div class="whiteboard-wrapper">
         <div class="whiteboard-dropdowns">
-            <h3 class="whiteboard-title" contenteditable="true">Untitled</h3>
-
+            <input type="text" value="Untitled" class="whiteboard-title" maxlength=26>
+            <hr>
             <div class="dropdown">
                 <label for="pitch">Pitch Type</label>
                 <select class="select" id="pitch"></select>
@@ -352,34 +352,29 @@
      * Handles editing the whiteboard name function. When the name is clicked, the name can be editable.
      * There is also a limit of 26 characters for the whiteboard name. When the limit of characters is reached, the name cannot be editable
      * unless clicked on again.
+     * 
+     * (Look idk why we couldn't just use an <input>)
      */
-
-    let isLabelFocused = false;
+    const DEFAULT_TITLE = "Untitled";
     const whiteboardDropdowns = document.querySelector('.whiteboard-dropdowns');
-    const label = whiteboardDropdowns.querySelector('h3');
-
-    label.addEventListener('click', () => {
-        label.setAttribute('contenteditable', 'true');
-        label.focus();
-        isLabelFocused = true;
-    });
-
-    label.addEventListener('input', () => {
-        const editedText = label.textContent;
-        isLabelFocused = true;
-        if (editedText.length >= 26) {
-            label.textContent = editedText.slice(0, 26);
-            label.setAttribute('contenteditable', 'false');
+    const whiteboardTitle = whiteboardDropdowns.querySelector('input.whiteboard-title');
+            
+    function changeTitleColour() {
+        if (whiteboardTitle.value.trim() == DEFAULT_TITLE) {
+            whiteboardTitle.classList.remove('active');
         } else {
-            label.setAttribute('contenteditable', 'true');
+            whiteboardTitle.classList.add('active');
         }
-    });
+    }
 
-    label.addEventListener('blur', () => {
-        const editedText = label.textContent;
-        label.textContent = editedText || 'Untitled';
-        label.setAttribute('contenteditable', 'false');
-        isLabelFocused = false;
+    whiteboardTitle.addEventListener('keydown', function (event) {
+        event.stopPropagation();
+    });
+    
+    whiteboardTitle.addEventListener('blur', () => {
+        const editedText = whiteboardTitle.value.trim();
+        whiteboardTitle.value = editedText || DEFAULT_TITLE;
+        changeTitleColour()
     });
 
     /**
@@ -671,7 +666,8 @@
         const cameraFlash = document.querySelector('#camera-flash');
         const screenshotModal = document.getElementById("screenshot-modal");
         const closeScreenshotModalButton = document.getElementById("close-screenshot-modal");
-        const screenshotDisplay = document.getElementById('screenshot-display')
+        const screenshotDisplay = document.getElementById('screenshot-display');
+        const screenshotName = document.getElementById('screenshot-name');
         const screenshotUpload = document.getElementById("screenshot-input");
 
         const mySound = new Audio("audio/cameraflash-cropped.mp3");
@@ -680,6 +676,8 @@
         function createScreenshotModal() {
             // Disable keyboard shortcuts while typing
             allowKeyPresses = false;
+            // Sets the default screenshot name to the whiteboard's name
+            screenshotName.value = whiteboardTitle.value;
             // Display the pitch inside the modal
             const dataURL = canvas.toDataURL();
             screenshotDisplay.src = dataURL;
@@ -746,7 +744,9 @@
         const closeRecordingModalButton = document.getElementById('close-recording-modal')
         //This is used to display the recording on screen once recorded, for testing purposes
         const testVideoDisplay = document.getElementById('recorded-canvas');
-        var whiteboardToRecord = document.querySelector("canvas");
+        const whiteboardToRecord = document.querySelector("canvas");
+
+        const recordingName = document.getElementById('recording-name');
 
         let recording = false;
         var videoStream = whiteboardToRecord.captureStream(30);
@@ -767,6 +767,10 @@
 
         function openRecordingModal(videoURL) {
             allowKeyPresses = false;
+
+            testVideoDisplay.src = videoURL;
+
+            recordingName.value = whiteboardTitle.value;
 
             fetch(videoURL)
                 .then(res => res.blob())
@@ -805,7 +809,6 @@
                 chunks = [];
                 videoURL = URL.createObjectURL(blob);
                 openRecordingModal(videoURL);
-                testVideoDisplay.src = videoURL;
             };
             mediaRecorder.ondataavailable = function(e) {
                 chunks.push(e.data);
@@ -1214,15 +1217,10 @@
             }
         });
 
-        const whiteboardTitle = document.querySelector(".whiteboard-title")
-
         colourValueInputOutline.addEventListener('keydown', function (event) {
             event.stopPropagation();
         });
 
-        whiteboardTitle.addEventListener('keydown', function (event) {
-            event.stopPropagation();
-        });
 
         const visibilitySelectionOutline = document.querySelector('.outline-section .visibility-selection');
 

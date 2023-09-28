@@ -323,10 +323,21 @@ input[type="range"]::-moz-range-track {
     margin-right:20px;
 }
 
-.whiteboard-dropdowns h3{
+.whiteboard-dropdowns .whiteboard-title {
     padding-top:11px;
     color: #808080;
     font-size:22px;
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    border: 0;
+}
+
+.whiteboard-dropdowns .whiteboard-title.active {
+    color: #0D1B2A;
 }
 
 .whiteboard-dropdowns .dropdown{
@@ -366,8 +377,9 @@ input[type="range"]::-moz-range-track {
     font-size:18px;
 }
 
-.whiteboard-dropdowns h3:focus {
+.whiteboard-dropdowns .whiteboard-title:focus {
     outline: none;
+    color: #0D1B2A;
 }
 
 .whiteboard-dropdowns .player-table{
