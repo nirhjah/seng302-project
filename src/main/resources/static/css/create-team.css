@@ -1,31 +1,28 @@
 .team-form {
-    display: grid;
-    grid-auto-rows: 570px;
     justify-content: center;
     align-items: center;
-    grid-template-rows: 215px;
-    height: 90vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .team-form .wrapper {
     width: 630px;
-    height: 600px;
+    padding: 30px 0 10px;
 }
 
 .team-form .wrapper form {
-    width: 70%;
+    width: 65%;
 }
 
 @media (max-width: 700px) {
     .team-form .wrapper {
-        width: 90vw;
+        width: 90vw !important;
     }
     .create-team {
-        width: 90vw;
+        width: 90vw !important;
     }
 }
 
 .team-form .input-box {
     margin: 35px 0 35px !important;
-    width: 46% !important;
 }
