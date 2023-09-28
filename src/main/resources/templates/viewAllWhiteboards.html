@@ -56,29 +56,5 @@
         Image by <a href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a> on Freepik
     </p>
 </footer>
-<script>
-    // get search form and input element
-    const form = document.getElementById('search-form');
-    const input = document.getElementById('clubName');
-
-    form.addEventListener('submit', (event) => {
-        // if the value isn't empty and is less than 3 characters, prevent form from submitting
-        // (We allow an empty search field)
-        if (input.value.length !== 0 && input.value.length < 3) {
-            event.preventDefault();
-
-            // Remove existing error message
-            const existingErrorMessage = document.getElementById('search-error');
-            if (existingErrorMessage) {
-                existingErrorMessage.remove();
-            }
-            // Display error message
-            const errorMessage = document.createElement('p');
-            errorMessage.setAttribute('id', 'search-error');
-            errorMessage.textContent = "search must be at least 3 characters";
-            form.appendChild(errorMessage);
-        }
-    });
-</script>
 </body>
 </html>
