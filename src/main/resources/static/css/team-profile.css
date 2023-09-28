@@ -590,6 +590,7 @@
     height: 50%; /* because there are 2 */
     line-height: 1.5;
     font-weight: 600;
+    text-overflow: ellipsis;
 }
 
 
@@ -662,6 +663,7 @@
     border-top-right-radius: 10px;
     margin: 5%;
     line-height: 1.5;
+    text-overflow: ellipsis;
 }
 
 .whiteboard-media-wrapper {

@@ -414,7 +414,7 @@
                     </div>
 
                     <div class="open-link-box">
-                        <img th:src="@{/image/icons/pitch.svg}"/>
+                        <img id="media-image" th:src="@{/image/icons/pitch.svg}"/>
                     </div>
 
                     <div class="submit-button" th:if="${isUserManagerOrCoach}">
@@ -434,6 +434,10 @@
     </footer>
 
     <script th:inline="javascript">
+
+        /*
+        This function IS actually used, just inside a `th:script`.
+         */
         function whiteboardMediaOnClick(name, isPublic, url, isRecording) {
             console.log(name, isPublic, url, isRecording);
             let nameBox = document.getElementById("name-box");
@@ -442,7 +446,9 @@
             let publicText = isPublic ? "Public" : "Private";
             publicBox.innerHTML = "Visibility: ".concat(publicText);
             nameBox.innerHTML = name;
-            // let openButton = document.getElementById();
+
+            let img = document.getElementById("media-image");
+            img.src = url;
         }
 
         const dropdown = document.getElementById('dropdown');
