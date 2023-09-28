@@ -30,6 +30,28 @@ import static org.springframework.test.util.AssertionErrors.fail;
 @WithMockUser
 public class WhiteboardRecordingServiceTest {
 
+    /*
+
+    PLAN:
+    What do we need to test???
+
+    We need to make sure we test all abstract methods inside
+    of abstract VideoService<>, or else they won't get coverage:
+
+    We need to test that users can only access recordings
+    if they are in a team that has the recording.
+
+    Tests for abstract VideoService<>:
+    - getVideoResponse
+    - saveVideo
+
+    Tests for WhiteboardRecoridngService:
+    - canView
+    - createRecordingForTeam
+    - getRecording
+
+     */
+
     @Autowired
     private WhiteboardRecordingService whiteboardRecordingService;
 
