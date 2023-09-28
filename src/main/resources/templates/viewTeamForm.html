@@ -393,17 +393,18 @@
                         <div class="whiteboard-media-content">
                             <div th:each="obj : ${recordings}" class="media" id="recordings">
                                 <div class="media-body"
-                                     th:data-public="${obj.isPublic()}"
-                                    th:data-imgurl="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"
+                                    th:data-public="${obj.isPublic()}"
+                                    th:data-name="${obj.getName()}"
+                                    th:data-imgurl="@{/whiteboard-media/thumbnail/{id}(id = ${obj.id})}"
                                     th:data-linkurl="@{/whiteboard-media/recording/{id}(id = ${obj.id})}"
                                     th:onclick="'whiteboardMediaOnClick(this.getAttribute(\'data-name\'), this.getAttribute(\'data-public\'), this.getAttribute(\'data-imgurl\'), this.getAttribute(\'data-linkurl\'), false)'">
 
 
-                                    <img th:src="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"  class="card-img-top"
-                                         alt="Screenshot">
+                                    <img th:src="@{/whiteboard-media/thumbnail/{id}(id = ${obj.id})}"  class="card-img-top"
+                                         alt="Thumbnail">
 
                                     <div class="media-name">
-                                        <p th:text="${obj.getTag()}"></p>
+                                        <p th:text="${obj.getName()}"></p>
                                     </div>
                                 </div>
                             </div>
