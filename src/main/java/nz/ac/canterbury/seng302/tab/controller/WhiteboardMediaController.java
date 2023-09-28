@@ -46,7 +46,7 @@ public class WhiteboardMediaController {
      * @return screenshot
      */
     @GetMapping("whiteboard-media/screenshot/{id}")
-    public @ResponseBody ResponseEntity<byte[]> getPreview(@PathVariable long id) {
+    public @ResponseBody ResponseEntity<byte[]> getPreview(@PathVariable(name="id") long id) {
         return whiteboardScreenshotService.getScreenshot(id);
     }
 
@@ -86,7 +86,7 @@ public class WhiteboardMediaController {
             @RequestParam("recording-name") String name,
             @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
     ) {
-        logger.info("POST setRecording: {}", teamId);
+        logger.info("/POST /whiteboard-media/save/screenshot");
         Team team = teamService.getTeam(teamId);
         User user = userService.getCurrentUser().orElseThrow();
         if (team != null) {

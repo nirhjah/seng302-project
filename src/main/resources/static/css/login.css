@@ -1,11 +1,12 @@
 .login-form ,.forgotPassword-form{
     justify-content: center;
     align-items: center;
-    height: 90vh;
     display: flex;
     flex-direction: column;
-    gap: 8%;
+    height: 90vh;
 }
+
+
 .login-form{
     grid-auto-rows: 87vh;
 }

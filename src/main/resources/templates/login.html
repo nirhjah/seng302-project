@@ -26,6 +26,8 @@
             </div>
             <form th:action="@{login}" method="post">
                 <input th:if="${continue}" name="continue" th:value="${continue}" type="hidden">
+              <h6 class="reset-password-info" th:if="${passwordUpdatedMessage != null}" th:text="${passwordUpdatedMessage}"></h6>
+              <h6 class="reset-password-info" th:if="${invalidTokenMessage != null}" th:text="${invalidTokenMessage}"></h6>
                 <div class="input-box">
                     <input class="form-control" id="username" placeholder="" th:name="username"
                            th:value="*{username}" data-cy="username" autofocus>

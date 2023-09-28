@@ -290,6 +290,11 @@
                                 <span class="required">*</span>
                             </label>
                         </div>
+
+                        <div class="public-button">
+                          <label for="isPublic">Users outside of my team can view:</label>
+                          <input type="checkbox" id="isPublic" name="isPublic" value="true" style="cursor: pointer;">
+                        </div>
                         <div class="submit-button">
                             <button id="submit-recording" type="submit">Save Recording</button>
                         </div>
@@ -320,6 +325,13 @@
           <span class="required">*</span>
         </label>
       </div>
+
+      <!-- <div class="input-box"> -->
+      <div class="public-button">
+        <label for="isPublic">Users outside of my team can view:</label>
+        <input type="checkbox" id="isPublic" name="isPublic" value="true" style="cursor: pointer;">
+      </div>
+
       <div class="submit-button">
         <button id="submit-screenshot" type="submit">Save</button>
       </div>
@@ -1848,6 +1860,12 @@
         allowKeyPresses = true;
         screenshotModal.classList.remove("modal-fade-in");
     }
+
+    const isPublicCheckbox = document.getElementById("isPublic");
+
+    isPublicCheckbox.addEventListener("change", () => {
+        document.querySelector('input[name="isPublic"]').value = isPublicCheckbox.checked ? "true" : "false";
+    });
 
 
 
