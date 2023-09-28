@@ -374,7 +374,7 @@ input[type="range"]::-moz-range-track {
     height:300px;
     width:100%;
     border-radius:20px;
-    border:4px solid #415a77;
+    border:4px solid #1B263B;
 }
 
 .whiteboard-dropdowns .player-header{
@@ -679,6 +679,15 @@ input[type="range"]::-moz-range-track {
     to {
         opacity: 100%;
     }
+}
+
+.public-button {
+    width: 100%;
+    margin: 35px 0 0;
+    font-family: "Noto Sans", sans-serif;
+    height: 25px;
+    font-weight: 500;
+    color: gray;
 }
 
 
