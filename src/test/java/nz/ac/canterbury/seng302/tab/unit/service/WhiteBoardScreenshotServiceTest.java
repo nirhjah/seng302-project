@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.tab.unit.service;
 
-import jakarta.transaction.Transactional;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
