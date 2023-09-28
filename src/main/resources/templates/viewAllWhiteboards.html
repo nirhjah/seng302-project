@@ -37,7 +37,7 @@
 <div class="card-container">
     <div th:each="wb : ${listOfWhiteboards}" class="card">
         <div class="card-wrapper">
-            <a th:href="@{home}">
+            <a th:href="@{/whiteboard-media/video/{id}(id=${wb.id})}">
                 <div class="card-image" style="height: auto">
                     <img th:src="@{image/pitches/hockey.svg}" style="height: auto; margin-bottom: -5px" class="card-img-top">
                 </div>
