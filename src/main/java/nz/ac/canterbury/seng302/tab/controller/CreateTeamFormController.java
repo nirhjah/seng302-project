@@ -61,30 +61,6 @@ public class CreateTeamFormController {
         this.lineUpService = lineUpService;
     }
 
-    /*
-    This code should ONLY be used for testing lineups!
-    make sure that this function is NOT called in dev, or prod,
-    or anywhere serious for that matter.
-     */
-    private void addDebugEntities(Team team) {
-        // Generate users:
-        var users = new ArrayList<User>();
-        for (int i = 0; i < 30; i++) {
-            try {
-                var str = UUID.randomUUID().toString();
-                var u = User.defaultDummyUser();
-                u.setEmail(str + "@gmail.com");
-                u.setFirstName(str.substring(0, 6));
-                u.setLastName("b");
-                u = userService.updateOrAddUser(u);
-                userService.userJoinTeam(u, team);
-                users.add(u);
-            } catch (Exception e) {
-                logger.error("exception caught: " + e.getMessage());
-            }
-        }
-    }
-
 
     /**
      * Creates a location entity from details provided in the form
@@ -269,13 +245,6 @@ public class CreateTeamFormController {
         if (!knownSports.contains(trimmedSport)) {
             sportService.addSport(new Sport(trimmedSport));
         }
-
-        // TODO TODO TODO TODO:
-        // PLEASSSSE MAKE SURE THIS IS REMOVED!!!!
-        addDebugEntities(team);
-        // IF YOU SEE THIS CODE AND YOU ARE REVIEWING,
-        // DENY THE REVIEW
-
 
         return String.format("redirect:./team-info?teamID=%s", team.getTeamId());
     }
