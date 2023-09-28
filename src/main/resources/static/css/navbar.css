@@ -99,7 +99,6 @@ header .header-left .hamburger div {
         position: absolute;
         top: 80px;
         left: -100vw;
-        width: 34vw;
         background-color: #0b2239;
         transition: left 0.3s;
         text-align: center;
@@ -107,14 +106,15 @@ header .header-left .hamburger div {
         overflow: hidden;
         min-height: 100vh;
         height: fit-content;
-        min-width: 260px;
         max-width: 325px;
-        padding: 10px clamp(22px, 3vw, 29px);
+        padding: 10px clamp(16px, 3vw, 16px);
     }
 
     header .header-left nav.active {
         left: 0;
         z-index: 1000;
+        min-width: 260px;
+        width: 34vw;
     }
 
     header .header-left nav ul {
