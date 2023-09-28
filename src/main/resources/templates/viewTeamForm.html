@@ -396,7 +396,7 @@
                                     th:data-public="${obj.isPublic()}"
                                     th:data-name="${obj.getName()}"
                                     th:data-imgurl="@{/whiteboard-media/thumbnail/{id}(id = ${obj.id})}"
-                                    th:data-linkurl="@{/whiteboard-media/recording/{id}(id = ${obj.id})}"
+                                    th:data-linkurl="@{/whiteboard-media/video/{id}(id = ${obj.id})}"
                                     th:onclick="'whiteboardMediaOnClick(this.getAttribute(\'data-name\'), this.getAttribute(\'data-public\'), this.getAttribute(\'data-imgurl\'), this.getAttribute(\'data-linkurl\'), false)'">
 
 
