@@ -94,6 +94,14 @@ input[type=number] {
         position: static !important;
         padding-top: 0 !important;
     }
+
+    .add-goal-modal-content {
+        margin: unset !important;
+    }
+
+    .submit-button button {
+        width: 90% !important;
+    }
 }
 
 .activity-score {
