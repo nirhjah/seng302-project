@@ -388,3 +388,11 @@ Join team modal styling
 .team-role-box label{
     padding-right:10px;
 }
+
+.charac-error-message{
+    display:none;
+    color:red;
+    text-align:center;
+    font-weight:600;
+    margin:10px;
+}
