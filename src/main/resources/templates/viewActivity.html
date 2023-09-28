@@ -334,11 +334,10 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="submit-button" style="padding-top: 5px">
-                        <button onclick="addSubModal.style.display = 'block'" type="button"
-                         th:style="${(playersInLineUp.size() > 0) ? null : 'display:none'}">Add Substitution</button>
+                    <div class="submit-button" th:style="${playersInLineUp.size() > 0 ? 'padding-top: 5px; display: block;' : 'display: none;'}">
+                        <button onclick="addSubModal.style.display = 'block'" type="button">Add Substitution</button>
                     </div>
-                    <h3 th:style="${(playersInLineUp.size() > 0) ? 'display:none' : null}"> You cannot make a Substitution as there is no lineup</h3>
+                    <h3 th:style="${(playersInLineUp.size() > 0) ? 'display:none' : null}">You cannot make a Substitution as there is no lineup</h3>
                 </div>
             </div>
         </div>
