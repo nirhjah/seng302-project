@@ -180,24 +180,24 @@ public class CreateViewUpdateClubIntegrationTests {
     @When("I click on a UI element to create a club")
     @WithMockUser()
     public void i_click_on_a_UI_element_to_create_a_club() throws Exception {
-        mockMvc.perform(get("/createClub"));
+        mockMvc.perform(get("/create-club"));
     }
 
     @Then("I will see a form to create a club")
     @WithMockUser()
     public void i_will_see_a_form_to_create_a_club() throws Exception {
-        mockMvc.perform(get("/createClub")).andExpect(status().isOk());
+        mockMvc.perform(get("/create-club")).andExpect(status().isOk());
     }
 
     @Given("I am on the create club page")
     public void i_am_on_the_create_club_page() throws Exception {
-        mockMvc.perform(get("/createClub"));
+        mockMvc.perform(get("/create-club"));
     }
 
     @When("I enter valid values for the name, address line, postcode, city and country  and optionally a logo")
     @WithMockUser()
     public void i_enter_valid_values_for_name_address_line_postcode_city_and_country_and_optionally_a_logo() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                         .file(this.mockMultipartFile)
                         .param("clubId", "-1")
                         .param("name", "new club")
@@ -221,7 +221,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @When("I enter an empty club name or a name with invalid characters for a club \\(e.g. non-alphanumeric other than dots or curly brackets, name made of only acceptable non-alphanumeric),")
     public void i_enter_an_empty_club_name_or_a_name_with_invalid_characters_for_a_club_e_g_non_alphanumeric_other_than_dots_or_curly_brackets_name_made_of_only_acceptable_non_alphanumeric() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                 .file(this.mockMultipartFile)
                 .param("clubId", "-1")
                 .param("name", "!@#$%")
@@ -237,7 +237,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @Then("An error message tells me the name is invalid")
     public void an_error_message_tells_me_the_name_is_invalid() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                 .file(this.mockMultipartFile)
                 .param("clubId", "-1")
                 .param("name", "!@#$%")
@@ -254,7 +254,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @When("I enter either an empty location that is not addressline2 and suburb, or location with invalid characters \\(i.e. any non-letters except spaces, apostrophes and dashes),")
     public void i_enter_either_an_empty_location_that_is_not_addressline2_and_suburb_or_location_with_invalid_characters_i_e_any_non_letters_except_spaces_apostrophes_and_dashes() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                 .file(this.mockMultipartFile)
                 .param("clubId", "-1")
                 .param("name", "!@#$%")
@@ -269,7 +269,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @Then("An error message tells me the location is invalid")
     public void an_error_message_tells_me_the_location_is_invalid() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                 .file(this.mockMultipartFile)
                 .param("clubId", "-1")
                 .param("name", "!@#$%")
@@ -286,7 +286,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @Given("I am on the create or edit club page")
     public void i_am_on_the_create_or_edit_club_page() throws Exception {
-        mockMvc.perform(get("/createClub"));
+        mockMvc.perform(get("/create-club"));
     }
 
     @When("I am the manager of at least one team")
@@ -296,7 +296,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @Then("I can select as many teams as I want from the list of teams I manage to be added to that club")
     public void i_can_select_as_many_teams_as_i_want_from_the_list_of_teams_i_manage_to_be_added_to_that_club() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                 .file(this.mockMultipartFile)
                 .param("clubId", "-1")
                 .param("name", "new club")
@@ -314,7 +314,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @When("I select a team that belongs to another club")
     public void i_select_a_team_that_belongs_to_another_club() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                 .file(this.mockMultipartFile)
                 .param("clubId", "-1")
                 .param("name", "new club")
@@ -330,7 +330,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @Then("An error message tells me that team already belongs to another club")
     public void an_error_message_tells_me_that_team_already_belongs_to_another_club() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                 .file(this.mockMultipartFile)
                 .param("clubId", "-1")
                 .param("name", "new club")
@@ -348,7 +348,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @When("I select teams that contain different sports")
     public void i_select_teams_that_contain_different_sports() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                 .file(this.mockMultipartFile)
                 .param("clubId", "-1")
                 .param("name", "new club")
@@ -364,7 +364,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @Then("An error message tells me that teams must have the same sport")
     public void an_error_message_tells_me_that_teams_must_have_the_same_sport() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                 .file(this.mockMultipartFile)
                 .param("clubId", "-1")
                 .param("name", "new club")
@@ -407,7 +407,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @When("I enter an empty club sport or a sport with invalid characters \\(i.e. any non-letters except spaces, apostrophes and dashes)")
     public void i_enter_an_empty_club_sport_or_a_sport_with_invalid_characters_i_e_any_non_letters_except_spaces_apostrophes_and_dashes() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                 .file(this.mockMultipartFile)
                 .param("clubId", "-1")
                 .param("name", "Club")
@@ -422,7 +422,7 @@ public class CreateViewUpdateClubIntegrationTests {
 
     @Then("An error message tells me the sport is invalid")
     public void an_error_message_tells_me_the_sport_is_invalid() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                 .file(this.mockMultipartFile)
                 .param("clubId", "-1")
                 .param("name", "Club")

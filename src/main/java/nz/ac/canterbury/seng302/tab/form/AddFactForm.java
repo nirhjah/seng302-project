@@ -4,6 +4,7 @@ import nz.ac.canterbury.seng302.tab.validator.FactValidators;
 
 public class AddFactForm {
 
+    @FactValidators.timeValidator
     private String timeOfFact;
 
     @FactValidators.descriptionValidator
