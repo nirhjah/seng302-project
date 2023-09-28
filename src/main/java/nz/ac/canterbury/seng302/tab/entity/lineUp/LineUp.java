@@ -114,4 +114,16 @@ public class LineUp {
     public void setLineUpName(String lineUpName) {
         this.lineUpName = lineUpName;
     }
+
+    @Override
+    public String toString() {
+        // Return the line-up name if set
+        if (lineUpName != null && !lineUpName.isBlank()) {
+            return lineUpName;
+        } else {
+            // If not, return the formation's name
+            return formation.toString();
+        }
+    }
+
 }

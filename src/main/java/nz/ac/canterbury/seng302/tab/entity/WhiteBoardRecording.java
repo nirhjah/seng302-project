@@ -1,44 +1,34 @@
 package nz.ac.canterbury.seng302.tab.entity;
 
 import jakarta.persistence.*;
-import nz.ac.canterbury.seng302.tab.helper.ImageType;
-import nz.ac.canterbury.seng302.tab.helper.interfaces.HasImage;
+import nz.ac.canterbury.seng302.tab.helper.VideoType;
+import nz.ac.canterbury.seng302.tab.helper.interfaces.HasVideo;
 import nz.ac.canterbury.seng302.tab.helper.interfaces.Identifiable;
 
 
-@Entity(name = "WhiteboardScreenshotEntity")
-public class WhiteboardScreenshot implements Identifiable, HasImage {
+@Entity(name = "WhiteBoardRecordingEntity")
+public class WhiteBoardRecording implements Identifiable, HasVideo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private long id;
 
+    String name;
+
     @Enumerated
-    private ImageType screenshotType;
+    private VideoType videoType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Team team;
 
-    // Screenshots are private by default.
-    // this is safer
+    // Private by default.
     @Column
     private boolean isPublic = false;
-
-    @Column(name="tag")
-    private String tag;
 
     @Override
     public long getId() {
         return id;
-    }
-
-    public String getTag() {
-        return this.tag;
-    }
-
-    public void setTag(String newTag) {
-        this.tag = newTag;
     }
 
     public void setTeam(Team team) {
@@ -53,6 +43,14 @@ public class WhiteboardScreenshot implements Identifiable, HasImage {
         return isPublic;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     /**
      * Changes whether a whiteboard screenshot is private/public
      * @param isPublic true if public, false otherwise
@@ -61,19 +59,17 @@ public class WhiteboardScreenshot implements Identifiable, HasImage {
         this.isPublic = isPublic;
     }
 
-    @Override
-    public ImageType getImageType() {
-        return screenshotType;
+    public VideoType getVideoType() {
+        return videoType;
+    }
+    public void setVideoType(VideoType videoType) {
+        this.videoType = videoType;
     }
 
-    @Override
-    public void setImageType(ImageType imageType) {
-        this.screenshotType = imageType;
-    }
+    public WhiteBoardRecording() {}
 
-    public WhiteboardScreenshot(Team team) {
+    public WhiteBoardRecording(String name, Team team) {
+        this.name = name;
         this.team = team;
     }
-
-    public WhiteboardScreenshot() {}
 }
