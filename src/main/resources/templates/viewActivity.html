@@ -807,37 +807,29 @@
 
     document.addEventListener("DOMContentLoaded", function(){
         var addSubForm = document.getElementById("add-sub-form");
-        console.log("got into here")
 
         if (addSubForm) {
-            console.log("also got into here")
         
             var playerOffSelect = addSubForm.querySelector("#playerOff");
             var playerOnSelect = addSubForm.querySelector("#playerOn");
-            console.log("playerOnSelect");
+            var previousPlayerOption = null;
 
             // this is a clone of the original options 
             var playerOnOptions = Array.from(playerOnSelect.options);
 
             playerOffSelect.addEventListener("change", function() {
                 var selectedValue = playerOffSelect.value;
-                console.log(selectedValue);
+                
+                if (previousPlayerOption) {
+                    playerOnSelect.appendChild(previousPlayerOption);
+                }
 
                 for (var i = 0; i < playerOnSelect.options.length; i++) {
                     if (playerOnSelect.options[i].value === selectedValue) {
+                        previousPlayerOption = playerOnSelect.options[i];
                         playerOnSelect.remove(i);
                         break;
                     }
-                }
-            });
-            // Reset playerOnSelect options when playerOffSelect changes
-            playerOffSelect.addEventListener("change", function () {
-                if (playerOffSelect.value === "") {
-                    // If no option is selected in playerOffSelect, reset playerOnSelect
-                    playerOnSelect.innerHTML = "";
-                    playerOnOptions.forEach(function (option) {
-                        playerOnSelect.appendChild(option.cloneNode(true));
-                    });
                 }
             });
         }
