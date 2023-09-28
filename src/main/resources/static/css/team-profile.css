@@ -550,16 +550,32 @@
     width: 100%;
     flex-direction: column;
     /*min-width: 300px;*/
+
+    margin: 5px;
+    /* min-width: 300px; */
+    border: groove #0b2239;
+    border-bottom-right-radius: 16px;
 }
 
 .whiteboard-media-display .info-box {
     display: inline-block;
     /*margin: 0 auto;*/
-    padding: 10%;
+    padding: 5%;
     background-color: #bbbbbb;
-    height: 18%;
+    max-height: 30%;
     width: 100%;
+
 }
+
+.info-box p {
+    text-align: left;
+    font-size:16px;
+    width: 100%;
+    height: 50%; /* because there are 2 */
+    line-height: 1.5;
+    font-weight: 600;
+}
+
 
 
 .whiteboard-media-display .whiteboard-button {

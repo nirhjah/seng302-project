@@ -404,19 +404,17 @@
                     </div>
                 </div>
                 <div class="whiteboard-media-display">
-                    <div class="media-container">
-                        <div class="info-box" >
-                            <p id="name-box">
-                                No selection
-                            </p>
-                            <p id="public-box">
-
-                            </p>
-                        </div>
+                    <div class="info-box" >
+                        <p id="name-box">
+                            No selection
+                        </p>
+                        <p id="public-box">
+                            <!-- Whether its public or not -->
+                        </p>
                     </div>
 
-                    <div class="edit-button">
-                        <a th:href="@{whiteboard(teamID=${teamID})}" th:if="${isUserManagerOrCoach}">
+                    <div class="submit-button" th:if="${isUserManagerOrCoach}">
+                        <a th:href="@{whiteboard(teamID=${teamID})}">
                             <button type="button">Whiteboard</button>
                         </a>
                     </div>
@@ -437,9 +435,8 @@
             let nameBox = document.getElementById("name-box");
             let publicBox = document.getElementById("public-box");
             // TODO: Set href tag to url link.
-            let text = isPublic ? "public" : "private"
-            publicBox.innerHTML = text
-
+            let publicText = isPublic ? "public" : "private";
+            publicBox.innerHTML = "Visibility: ".concat(publicText);
             nameBox.innerHTML = name;
             // let openButton = document.getElementById();
         }
