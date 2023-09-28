@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ActivityService {
-    
+
     private final LineUpRepository lineUpRepository;
 
     private final LineUpPositionRepository lineUpPositionRepository;
@@ -40,7 +40,7 @@ public class ActivityService {
     private final FactService factService;
 
     private final LineUpPositionService lineUpPositionService;
-    
+
     private final LineUpService lineUpService;
 
 
@@ -507,8 +507,8 @@ public class ActivityService {
     }
 
     /**
-     * returns the current players who are playing in the activity -- takes into account substitutions 
-     * @param actId the activity id 
+     * returns the current players who are playing in the activity -- takes into account substitutions
+     * @param actId the activity id
      * @return a list of the users that are currrently playing in the activity
     */
     public List<User> getAllPlayersCurrentlyPlaying(long actId) {
@@ -517,11 +517,11 @@ public class ActivityService {
         if (currActivity == null  || currActivity.getTeam() == null) {
             return List.of();
         }
-        List<Fact> allSubs = factService.getAllFactsOfGivenTypeForActivity(2, currActivity); // list of all made subs in the game 
+        List<Fact> allSubs = factService.getAllFactsOfGivenTypeForActivity(2, currActivity); // list of all made subs in the game
 
         List<Fact> copiedSubs = new ArrayList<>(allSubs); // using a copy here because allsubs is an immutable collection
-        copiedSubs.sort(Comparator.comparingInt(sub -> Integer.parseInt(sub.getTimeOfEvent()))); // all the subs sorted by time 
-        
+        copiedSubs.sort(Comparator.comparingInt(sub -> Integer.parseInt(sub.getTimeOfEvent()))); // all the subs sorted by time
+
         for (Fact fact : copiedSubs) {
             Substitution sub = (Substitution) fact;
             User playerOn = sub.getPlayerOn();
@@ -533,7 +533,7 @@ public class ActivityService {
     }
 
     /**
-     * @param actId the activity id 
+     * @param actId the activity id
      * @return a list of users who are not in the lineup
     */
     public List<User> getAllPlayerSubstitutes(long actId) {
@@ -550,22 +550,22 @@ public class ActivityService {
     }
 
     /**
-     * returns a list of the users that are in the lineup 
-     * @param actId the activity id 
-     * @return a list of the users that are currently in the lineup for the activity, if there are no players the returns an empty list 
+     * returns a list of the users that are in the lineup
+     * @param actId the activity id
+     * @return a list of the users that are currently in the lineup for the activity, if there are no players the returns an empty list
     */
     public List<User> getAllPlayersPlaying(long actId) {
         Optional<List<LineUp>> optionalActivityLineups = lineUpService.findLineUpByActivity(actId);
         if (optionalActivityLineups.isEmpty()) {
-            return List.of(); 
+            return List.of();
         }
         List<LineUp> activityLineups = optionalActivityLineups.get();
-        
+
         if (activityLineups.isEmpty()) { // there is no lineup for some activities
             return List.of();
-        } 
+        }
 
-        LineUp lineup = activityLineups.get(activityLineups.size() -1); // here we get the last one as that is the most recent one 
+        LineUp lineup = activityLineups.get(activityLineups.size() -1); // here we get the last one as that is the most recent one
 
         Optional<List<LineUpPosition>> optionaLineupPositions = lineUpPositionService.findLineUpPositionsByLineUp(lineup.getLineUpId());
 
@@ -578,8 +578,8 @@ public class ActivityService {
 
     /**
      * returns the list of players without coaches and manageers
-     * @param team the team the players are in 
-     * @return a list of the users that arent a coach or manager for that team 
+     * @param team the team the players are in
+     * @return a list of the users that arent a coach or manager for that team
     */
     private List<User> removeCoachesAndManager(Team team, List<User> players) {
         Set<User> coachesAndMangers = team.getTeamCoaches();
@@ -589,4 +589,33 @@ public class ActivityService {
         return players.stream().filter(player -> !teamCoachesAndManagersList.contains(player)).toList();
     }
 
+    /**
+     * Gets all future Personal Activities - ie ones that a user created for themselves
+     * @param user the user whose personal activities we are looking for
+     * @return a list of the users personal activities
+     */
+    public List<Activity> getAllFuturePersonalActivitiesForUser(User user) {
+        List<Activity> futureTeamActivities = new ArrayList<>();
+        for (Activity activity :  activityRepository.getPersonalActivitiesForUser(user)) {
+            if (activity.getActivityStart().isAfter(LocalDateTime.now())) {
+                futureTeamActivities.add(activity);
+            }
+        }
+        return futureTeamActivities;
+    }
+
+    /**
+     * Get all team activities for a user
+     * @param user the user whose team activities we are looking for
+     * @return a list of upcoming team activities for the user
+     */
+    public List<Activity> getAllFutureTeamActivitiesForUser(User user) {
+        List<Activity> futureTeamActivities = new ArrayList<>();
+        for (Activity activity :  activityRepository.getTeamActivitiesForUser(user)) {
+            if (activity.getActivityStart().isAfter(LocalDateTime.now())) {
+                futureTeamActivities.add(activity);
+            }
+        }
+        return futureTeamActivities;
+    }
 }

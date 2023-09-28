@@ -99,6 +99,8 @@ public class ViewActivityController {
 
     String viewActivityRedirect = "redirect:./view-activity?activityID=%s";
 
+    final String NEGATIVE_GOAL_VALUE_MSG = "Goal value must be positive";
+
     int scoreTabIndex = 3;
 
     int subTabIndex = 2;
@@ -211,6 +213,7 @@ public class ViewActivityController {
             }
             model.addAttribute("playersAndPositions", playersAndPosition);
             model.addAttribute("playerNames", playerNames);
+            model.addAttribute("lineupName", lineUp.toString());
         }
 
 
@@ -236,7 +239,8 @@ public class ViewActivityController {
         model.addAttribute("activityFacts", activityFacts);
 
         model.addAttribute("factList", factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity));
-
+        int totalActivityMinutes = (int) Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
+        model.addAttribute("activityLength", totalActivityMinutes);
         // attributes for the subs
         // all players who are currently playing - for the sub off
         List<User> playersPlaying = activityService.getAllPlayersCurrentlyPlaying(activity.getId());
@@ -309,9 +313,8 @@ public class ViewActivityController {
         String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
         if (!timeOfFact.isEmpty()) {
             try {
-                int time = Integer.parseInt(timeOfFact);
-                int totalActivityMinutes = (int) Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
-                if (time > totalActivityMinutes) {
+                int parsedTime = Integer.parseInt(timeOfFact);
+                if (!activityService.checkTimeOfFactWithinActivity(activity, parsedTime) && !factService.timeLength(timeOfFact)) {
                     result.addError(new FieldError("addFactForm", "timeOfFact", FactValidators.timeErrorMessage));
                 }
             } catch (NumberFormatException e) {
@@ -320,9 +323,11 @@ public class ViewActivityController {
         } else {
             timeOfFact = null;
         }
+
         if (LocalDateTime.now().isBefore(activity.getActivityStart())) {
             result.addError(new FieldError("addFactForm", "timeOfFact", "You can only add a fact once the activity starts"));
         }
+
         redirectAttributes.addFlashAttribute(stayOnTabNameString, "facts-tab");
         redirectAttributes.addFlashAttribute(stayOnTabIndexString, 1);
 
@@ -349,8 +354,6 @@ public class ViewActivityController {
      * @param activityOutcome outcome of the activity
      * @param request              request
      * @param model                model to be filled
-     * @param httpServletResponse   httpServerletResponse
-     * @param redirectAttributes    stores error message to be displayed
      * @return  view activity page
      */
     @PostMapping("/add-outcome")
@@ -358,9 +361,7 @@ public class ViewActivityController {
             @RequestParam(name = "actId", defaultValue = "-1") long actId,
             @RequestParam(name = "activityOutcomes", defaultValue = "NONE") ActivityOutcome activityOutcome,
             HttpServletRequest request,
-            Model model,
-            HttpServletResponse httpServletResponse,
-            RedirectAttributes redirectAttributes) {
+            Model model) {
         model.addAttribute(httpServletRequestString, request);
         Activity activity = activityService.findActivityById(actId);
         String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
@@ -416,13 +417,23 @@ public class ViewActivityController {
         if (time.isBlank()) {
             bindingResult.addError(new FieldError(createEventFormString, "time", FIELD_CANNOT_BE_BLANK_MSG));
         } else {
-            if (!activityService.checkTimeOfFactWithinActivity(activity, Integer.parseInt(time))) {
-                bindingResult.addError(new FieldError(createEventFormString, "time", GOAL_NOT_SCORED_WITHIN_DURATION));
+            try {
+                int parsedTime = Integer.parseInt(time);
+                if (!activityService.checkTimeOfFactWithinActivity(activity, parsedTime) && !factService.timeLength(time)) {
+                    bindingResult.addError(new FieldError(createEventFormString, "time", GOAL_NOT_SCORED_WITHIN_DURATION));
+                }
+            } catch (NumberFormatException e) {
+                bindingResult.addError(new FieldError(createEventFormString, "time", "Must be a number"));
             }
+
         }
 
         if (LocalDateTime.now().isBefore(activity.getActivityStart())) {
             bindingResult.addError(new FieldError(createEventFormString, "scorer", ADDING_GOAL_BEFORE_ACTIVITY_START_MSG));
+        }
+
+        if (goalValue < 1) {
+            bindingResult.addError(new FieldError(createEventFormString, "goalValue", NEGATIVE_GOAL_VALUE_MSG));
         }
 
         if (bindingResult.hasErrors()) {
@@ -549,8 +560,7 @@ public class ViewActivityController {
         if (!time.isBlank()) {
             try {
                 int parsedTime = Integer.parseInt(time);
-                // check if the time is within the activity
-                if (!activityService.checkTimeOfFactWithinActivity(currActivity, parsedTime)) {
+                if (!activityService.checkTimeOfFactWithinActivity(currActivity, parsedTime) && !factService.timeLength(time)) {
                     bindingResult.addError(new FieldError(createEventFormString, "time", GOAL_NOT_SCORED_WITHIN_DURATION));
                 }
 
@@ -595,121 +605,6 @@ public class ViewActivityController {
         currActivity.addFactList(factList);
         activityService.updateOrAddActivity(currActivity);
         logger.info("added the activity");
-
-
-        return viewActivityRedirectUrl;
-    }
-
-    /**
-     * Handles creating an event and adding overall scores
-     *
-     * @param actId               activity ID to add stats/event to
-     * @param factType            selected fact type
-     * @param description         description of event
-     * @param activityOutcome     outcome of activity (win loss or draw) for team
-     * @param time                time of event
-     * @param subOffId            user ID of sub off
-     * @param subOnId             user ID of sub on
-     * @param createEventForm     CreateEventForm object used for validation
-     * @param bindingResult       BindingResult used for errors
-     * @param request             request
-     * @param model               model to be filled
-     * @param httpServletResponse httpServerletResponse
-     * @param redirectAttributes  stores error message to be displayed
-     * @return view activity page
-     */
-    @PostMapping("/view-activity")
-    public String createEvent(
-            @RequestParam(name = "actId", defaultValue = "-1") long actId,
-            @RequestParam(name = "factType", defaultValue = "FACT") FactType factType,
-            @RequestParam(name = "description", defaultValue = "") String description,
-            @RequestParam(name = "activityOutcomes", defaultValue = "None") ActivityOutcome activityOutcome,
-            @RequestParam(name = "time") String time,
-            @RequestParam(name = "playerOff", defaultValue = "-1") int subOffId,
-            @RequestParam(name = "playerOn", defaultValue = "-1") int subOnId,
-            @Validated CreateEventForm createEventForm,
-            BindingResult bindingResult,
-            HttpServletRequest request,
-            Model model,
-            HttpServletResponse httpServletResponse,
-            RedirectAttributes redirectAttributes) {
-
-        logger.info(factType.name());
-        logger.info(String.format("got the act id: %s", actId));
-        logger.info(String.format("got the player on id: %s", subOnId));
-        logger.info(String.format("got the player on id: %s", subOffId));
-
-        model.addAttribute(httpServletRequestString, request);
-
-        Activity activity = activityService.findActivityById(actId);
-        Fact fact;
-        String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
-
-
-        if (factType == FactType.SUBSTITUTION && subOffId == subOnId) {
-            logger.info("players cannot sub themselves");
-            bindingResult.addError(new FieldError(createEventFormString, "subOn", "Players cannot sub themselves"));
-        }
-
-        if (factType == FactType.FACT && description.isEmpty()) {
-            logger.info("description was not provided for fact");
-            bindingResult.addError(new FieldError(createEventFormString, "description", "Fact type events require a description"));
-        }
-
-
-        if (bindingResult.hasErrors()) {
-            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            redirectAttributes.addFlashAttribute("scoreInvalid", leaveModalOpenString);
-            redirectAttributes.addFlashAttribute(createEventFormBindingResult, bindingResult);
-            return viewActivityRedirectUrl;
-        }
-
-        List<Fact> factList = new ArrayList<>();
-
-
-        switch (factType) {
-            case FACT:
-                fact = new Fact(description, time, activity);
-                factList.add(fact);
-
-                break;
-
-            case SUBSTITUTION:
-                Optional<User> potentialSubOff = userService.findUserById(subOffId);
-                if (potentialSubOff.isEmpty()) {
-                    logger.error("subbed off player Id not found");
-                    return viewActivityRedirectUrl;
-                }
-                User playerOff = potentialSubOff.get();
-
-                Optional<User> potentialSubOn = userService.findUserById(subOnId);
-                if (potentialSubOn.isEmpty()) {
-                    logger.error("subbed on player Id not found");
-                    return viewActivityRedirectUrl;
-                }
-
-                User playerOn = potentialSubOn.get();
-
-                fact = new Substitution(description, time, activity, playerOff, playerOn);
-                factList.add(fact);
-
-                break;
-
-            case NONE:
-                break;
-
-            default:
-                logger.error("fact type unknown value");
-                return viewActivityRedirectUrl;
-        }
-
-        if (activityOutcome != ActivityOutcome.None) {
-            activity.setActivityOutcome(activityOutcome);
-        }
-
-
-        activity.addFactList(factList);
-        activityService.updateOrAddActivity(activity);
 
 
         return viewActivityRedirectUrl;

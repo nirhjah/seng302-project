@@ -103,7 +103,7 @@ td {
     background-color: #0b2239;
     font-weight: 500;
 }
-.view-competition-background,
+
 .home-background,
 .view-users-background,
 .view-teams-background,
@@ -118,6 +118,7 @@ td {
     background-repeat: no-repeat;
     background-attachment: fixed;
     height: 90vh;
+    margin-top: 80px;
 }
 
 footer {
@@ -143,7 +144,7 @@ footer {
 
 
 
-.team-form .create-team, .user-form .user-header,.login-header,
+.team-form .create-team, .user-form .user-header,.login-header, .view-all-header,
 .register-form .register-header, .activity-form .create-activity-header, .create-club-header {
     font-family: "Noto Sans",sans-serif;
     /*color: #0B1B2A;*/
@@ -283,22 +284,24 @@ input:invalid + label:after {
     font-style: italic;
 }
 .Welcome-header {
-    overflow: hidden;
-    height: 90vh;
+    height: fit-content;
+    padding: 30px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
 }
 
 .Welcome-header h1 {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 7rem;
+    font-size: 4rem;
     color: #0d1b2a;
     padding: 1rem;
     background: linear-gradient(-30deg, #333 50%, white 50%);
     background-size: 400% 400%;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
     border-radius: 9px;
+    width: fit-content;
+    min-width: 250px;
+    text-align: center;
 }
 
 .pagination-container {
@@ -360,7 +363,7 @@ ul {
     font-family: "Noto Sans", sans-serif;
     font-size: 1em;
     color: #fff;
-    border-radius: 20px;
+    border-radius: 15px;
     border: none;
     padding: .1em .5em;
     cursor: pointer;
@@ -372,32 +375,18 @@ ul {
 }
 
 
-.selectBox {
-    position: relative;
-}
-
 .selectBox select {
     width: 100%;
     font-weight: bold;
     color: #ffffff;
     background: #415A77;
     border-radius: 20px;
-    font-size: 16px;
+    font-size: medium;
     border: none;
     outline: 0;
     padding: .1em .5em;
     cursor: pointer;
 }
-
-
-.overSelect {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-}
-
 
 #checkBoxes {
     display: none;
@@ -408,13 +397,15 @@ ul {
 .checkbox {
     display: none;
     max-height: 200px;
-    overflow-y: scroll;
+    overflow-y: auto;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background-color: #415a77;
 }
 
 .checkbox label {
     display: block;
-    padding: 3px;
-
+    padding: 7px;
 }
 
 .checkbox label:hover {
@@ -440,18 +431,6 @@ ul {
     display: flex;
 }
 
-.apply-filters-button {
-    border: 0;
-    text-decoration: none;
-    /* font-size: 17px; */
-    font-weight: bold;
-    padding: 0 15px;
-    border-radius: 20px;
-    background-color: #415A77;
-    color: white;
-    font-family: "Noto Sans", sans-serif;
-}
-
 .selectBox {
     position: relative;
 }
@@ -464,24 +443,6 @@ ul {
     bottom: 0;
 }
 
-.checkbox {
-    display: none;
-    max-height: 200px;
-    overflow-y: scroll;
-    border-bottom-right-radius: 5px;
-    border-bottom-left-radius: 5px;
-    background-color: #415a77;
-}
-
-.checkbox label {
-    display: block;
-    padding: 7px;
-
-}
-
-.checkbox label:hover {
-    background-color: #4F615E;
-}
 
 ul.autocomplete-result{
     display:block;
@@ -600,7 +561,7 @@ ul.autocomplete-result{
     margin-top: 15px;
 }
 
-.checkbox-box label, .competitor-message {
+.checkbox-box label {
     font-family: "Noto Sans", sans-serif;
     left: 1px;
     font-size: 1em;

@@ -38,6 +38,12 @@ public class LoginController {
         this.userService = userService;
     }
 
+
+    @GetMapping("/")
+    public String home() {
+        logger.info("GET /homeForm");
+        return "redirect:./login";
+    }
     /**
      * Gets form to be displayed
      * @return thymeleaf register
@@ -51,7 +57,7 @@ public class LoginController {
             HttpServletRequest request,
             HttpSession session) {
         model.addAttribute("httpServletRequest", request);
-        logger.info("GET /login");
+        logger.info("GET /home");
         
         // If the redirect URL isn't local (Open Redirect Vulnerability), trash it.
         if (redirectUrl != null && !LOCAL_URL_PATTERN.matcher(redirectUrl).matches()) {
@@ -97,9 +103,10 @@ public class LoginController {
             model.addAttribute("errorMessage", errorMessage);
         }
 
+
         model.addAttribute("passwordUpdatedMessage", model.asMap().get("passwordUpdatedMessage"));
         model.addAttribute("invalidTokenMessage", model.asMap().get("invalidTokenMessage"));
-        
+
         model.addAttribute(DEFAULT_REDIRECT, redirectUrl);
         // Maintain the redirect URL in case of error
         session.setAttribute(DEFAULT_REDIRECT, redirectUrl);
@@ -111,15 +118,4 @@ public class LoginController {
         return "login";
     }
 
-
-    /**
-     * Takes the user to the home page if they don't want to login
-     * @return redirect to the home page
-     */
-    @GetMapping("/cancel-login")
-    public String cancelLogin()
-    {
-        logger.info("GET /");
-        return "redirect:./demo";
-    }
 }

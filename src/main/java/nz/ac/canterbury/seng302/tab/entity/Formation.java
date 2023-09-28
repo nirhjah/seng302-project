@@ -30,11 +30,14 @@ public class Formation {
     /**
      * String is of form e.g. '10px,20px;20px30px;'
      */
-    @Column
+    @Column(columnDefinition = "MEDIUMBLOB")
     private String customPlayerPositions;
 
+    @Column
+    private String title;
+
     /**
-     * Default constructor for Formation.
+     * Default constructor for Formations.
      * Required by JPA.
      */
     protected Formation() {}
@@ -79,6 +82,25 @@ public class Formation {
         return this.formationId;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * The displayed "title" of a formation. If the user didn't enter one, it'll be the formation numbers + (Custom?)
+     */
+    public String getDisplayTitle() {
+        if (title == null || title.isEmpty()) {
+            return formation + " " + (custom ? "Custom" : "");
+        } else {
+            return title;
+        }
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public boolean isCustom() {
         return custom;
     }
@@ -87,9 +109,9 @@ public class Formation {
         return customPlayerPositions;
     }
 
-//    @Override
-//    public String toString() {
-//        return String.format("Formation(formation='%s', team='%s')", getFormation(), getTeam());
-//    }
+    @Override
+    public String toString() {
+        return getDisplayTitle();
+    }
 
 }

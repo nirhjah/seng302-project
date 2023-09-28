@@ -83,7 +83,6 @@ input[type=number] {
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important;
-        align-items: center !important;
         width: 90vw !important;
         height: unset !important;
     }
@@ -545,6 +544,9 @@ hr.rounded {
 }
 
 @media (max-width: 760px){
+    #formation-tab{
+        overflow-y:scroll;
+    }
     #formation-tab .content{
         flex-direction:column !important;
         justify-content:center;
@@ -552,6 +554,9 @@ hr.rounded {
     }
     .sub-table{
         margin-top:30px !important;
+    }
+    #pitch{
+        margin-top:100% !important;
     }
 }
 
@@ -580,6 +585,11 @@ hr.rounded {
 
 .submit-button {
     margin: unset;
+    width: 25%;
+    min-width: 150px;
+    float: left;
+    padding-top: 25px;
+    padding-bottom: 8px
 }
 
 
@@ -758,6 +768,9 @@ hr.rounded {
 
 .formation-outer{
     width:50%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly !important;
 }
 
 .goal-table {
@@ -826,6 +839,10 @@ hr.rounded {
     /*    margin-left: 34px !important;*/
     /*}*/
 
+    .wrapper-profile {
+        margin-top:50px !important;
+    }
+
     .score-display h1 {
         margin-left: -26px;
     }
@@ -872,6 +889,11 @@ hr.rounded {
         padding-bottom: 10% !important;
         margin-left: 1.5% !important;
         width: 100% !important;
+    }
+
+    .goalFacts ul {
+        width: 340px;
+        margin-left: 5px !important;
     }
 
     .score-display {
@@ -931,9 +953,6 @@ hr.rounded {
     height:fit-content;
     padding: 50px 25px;
 
-}
-.formation-outer{
-    width:50%;
 }
 
 #formation-tab .content{
@@ -1061,8 +1080,59 @@ table, th, td {
     border: 1px solid #0b2239;
 }
 
+.description-box {
+    border: 2px solid #778DA9;
+    overflow-x: auto;
+}
+
+.activity-details {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.general-activity-left {
+    width: 46%;
+    float: left;
+    margin-left: 3%;
+    margin-right: 1%;
+    text-align: left
+}
+
+.general-activity-right {
+    width: 46%;
+    float:left;
+    margin-left: 2%;
+    margin-right: 2%;
+    text-align: left;
+}
+
+.general-activity-bottom {
+    margin-top: 1em;
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
+@media(max-width: 700px) {
+    .activity-details {
+        margin: auto;
+    }
+    .general-activity-left {
+        width: 90%;
+        margin: auto;
+    }
+    .general-activity-right {
+        width: 90%;
+        margin: auto;
+    }
+    
+    .general-activity-top {
+        padding: 15px;
+    }
+}
+
 .content {
-    max-height: 550px;
+    max-height: calc(80vh - 80px); /* navbar is 80px tall */
     overflow: auto;
 }
 
@@ -1092,4 +1162,7 @@ table, th, td {
     border-color:#415a77;
     margin-bottom:15px;
     font-size:17px;
+}
+.player.uneditable{
+    background-image:none !important;
 }

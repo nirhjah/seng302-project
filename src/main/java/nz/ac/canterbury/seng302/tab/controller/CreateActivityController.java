@@ -43,7 +43,6 @@ public class CreateActivityController {
 
     private LineUpPositionService lineUpPositionService;
 
-    LineUp activityLineUp;
     private Logger logger = LoggerFactory.getLogger(CreateActivityController.class);
 
     private static final String TEMPLATE_NAME = "createActivityForm";
@@ -216,6 +215,7 @@ public class CreateActivityController {
      * @param httpServletRequest the request
      * @param httpServletResponse the response to send
      * @param subs subs added to the lineup
+     * @param lineUpName optional name for lineup, defaults to start date + end date of activity + formation string
      * @return returns my activity page iff the details are valid, returns to activity page otherwise
      * @throws MalformedURLException thrown in some cases
      */
@@ -224,6 +224,7 @@ public class CreateActivityController {
             @RequestParam(name = "actId", defaultValue = "-1") Long actId,
             @RequestParam(name = "playerAndPositions", required = false) String playerAndPositions,
             @RequestParam(name = "subs", required = false) String subs,
+            @RequestParam(name = "lineUpName", defaultValue = "") String lineUpName,
             @Validated CreateActivityForm createActivityForm,
             BindingResult bindingResult,
             HttpServletRequest httpServletRequest,
@@ -243,11 +244,11 @@ public class CreateActivityController {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             if (activity != null) {
                 model.addAttribute("actId", actId);
-                model.addAttribute(FORMATION_PLAYER_POSITIONS, lineUpService.getFormationAndPlayersAndPosition(activity));
-
+                if (activity.getTeam() != null) {
+                    model.addAttribute(FORMATION_PLAYER_POSITIONS, lineUpService.getFormationAndPlayersAndPosition(activity));
+                }
                 fillModelWithActivity(model, activity);
             }
-
             return TEMPLATE_NAME;
         }
 
@@ -291,16 +292,24 @@ public class CreateActivityController {
 
         activity = activityService.updateOrAddActivity(activity);
 
+        Optional<Formation> optFormation = activity.getFormation();
+        if (optFormation.isPresent() && lineUpName.isBlank()) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
+            lineUpName = activity.getActivityStart().format(formatter) + " - " + activity.getActivityEnd().format(formatter) + ": " + optFormation.get().getFormation();
+
+        }
+
         // Only apply lineup code if the activity can have a lineup
         if (activity.canContainFormation()) {
 
-            activityLineUp = lineUpService.findLineUpByActivityAndFormation(activity.getId(),
+            LineUp activityLineUp = lineUpService.findLineUpByActivityAndFormation(activity.getId(),
                     activity.getFormation().orElse(null));
 
             if (activityLineUp == null) {
                 Optional<Formation> formationOptional = activity.getFormation();
                 if (formationOptional.isPresent()) {
                     activityLineUp = new LineUp(formationOptional.get(), activity.getTeam(), activity);
+                    activityLineUp.setLineUpName(lineUpName);
                     lineUpService.updateOrAddLineUp(activityLineUp);
                 }
             } else {
@@ -308,11 +317,11 @@ public class CreateActivityController {
 
                 if (formationOptional.isPresent()) {
                     activityLineUp.setFormation(formationOptional.get());
+                    activityLineUp.setLineUpName(lineUpName);
+                    lineUpService.saveSubs(subs, activityLineUp);
                     lineUpService.updateOrAddLineUp(activityLineUp);
                 }
             }
-
-            lineUpService.saveSubs(subs, activityLineUp);
 
             if (playerAndPositions != null && !playerAndPositions.isEmpty()) {
                 List<String> positionsAndPlayers = Arrays.stream(playerAndPositions.split(", ")).toList();

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" context="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" as="image" th:href="@{/image/landscape.jpeg}">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <link th:href="@{/css/view-all.css}" rel="stylesheet">
+    <title>View All Whiteboards</title>
+</head>
+
+<body class="view-teams-background">
+<!--/* Nav-bar */-->
+<div th:insert="~{fragments/navBar.html::navbar}"></div>
+<div class="view-all-header">
+    <h1>Public Whiteboards</h1>
+</div>
+<!--/* Search Field */-->
+<form id="search-form" th:action="@{view-whiteboards}" method="get">
+    <div class="search-bar">
+        <input class="search-input" type="text" th:name="currentSearch" id="clubName" th:value="${currentSearch}" placeholder="Search Whiteboards" />
+        <button class="search-team-button" type="submit"><img width="40px" th:src="@{image/search.png}"></button>
+    </div>
+    <div class="filter-bar">
+        <div th:replace="~{fragments/filterDropdownFragment.html::filterDropdownFragment(${listOfSports}, 'Filter by sport', 'sports')}"></div>
+    </div>
+    <div class="apply-filters-button-container">
+        <button class="apply-filters-button" type="submit">Apply Filter</button>
+    </div>
+</form>
+
+<div th:if="${listOfWhiteboards.empty}" class="emptySearchResults">
+    No Whiteboards found.
+</div>
+
+<div class="card-container">
+    <div th:each="wb : ${listOfWhiteboards}" class="card">
+        <div class="card-wrapper">
+            <a th:href="@{/whiteboard-media/video/{id}(id=${wb.id})}" target="_blank">
+                <div class="card-image" style="height: auto">
+                    <img th:src="@{/whiteboard-media/thumbnail/{id}(id = ${wb.id})}" style="height: auto; margin-bottom: -5px" class="card-img-top">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${wb.name}"></h5>
+                    <p class="card-text" th:text="|Sport: ${wb.team.sport}|">Whiteboard sport</p>
+                    <p class="card-text" th:text="|Team: ${wb.team.name}|">Whiteboard Team</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<div th:insert="~{fragments/pagination.html :: pagination(pageName='view-whiteboards')}"></div>
+<footer>
+    <p>
+        Image by <a href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a> on Freepik
+    </p>
+</footer>
+</body>
+</html>

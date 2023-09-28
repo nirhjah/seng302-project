@@ -72,13 +72,13 @@ public class LineUpPositionRepositoryTest {
         this.lineUpPositionRepository.save(lineUpPosition);
     }
     @Test
-    public void getLineUpByPositionId() {
+    void getLineUpByPositionId() {
         LineUpPosition retreivedLineUpPosition = lineUpPositionRepository.findById(lineUpPosition.getLineUpPositionId()).get();
         Assertions.assertEquals(lineUpPosition, retreivedLineUpPosition);
     }
 
     @Test
-    public void getLineUpPositionsByFormation() {
+    void getLineUpPositionsByFormation() {
         List<LineUpPosition> retrievedLineupPositions = lineUpPositionRepository.findLineUpPositionsByLineUpLineUpId(lineUp.getLineUpId()).get();
         Assertions.assertEquals(lineUpPosition, retrievedLineupPositions.get(0));
     }

@@ -10,37 +10,63 @@
         <nav class="nav-bar">
             <ul>
                 <li>
-                    <a th:href="@{home}" th:classappend="${httpServletRequest.requestURI == '/home' ? 'active' : ''}">Home</a>
+                    <a class="home-button" th:href="@{home}" th:classappend="${httpServletRequest.requestURI == '/home' ? 'current' : ''}">
+                        <img th:src="@{image/icons/logo-short-alt.svg}" alt=""></a>
                 </li>
 
-                <div class="create-buttons">
-                    <li class="navbar-create-button" sec:authorize="isAuthenticated()">
-                        <div class="navbar-create-dropdown">
-                            <a th:href="@{createTeam}">Create Team</a>
-                            <a th:href="@{create-activity}">Create Activity</a>
-                            <a th:href="@{createClub}">Create Club</a>
-                            <a th:href="@{create-competition}" sec:authorize="hasAnyRole('ROLE_FEDERATION_MANAGER')">Create Competition</a>
-                        </div>
-                        <a>
-                            <span th:text="Create"></span>
-                            <i class="navbar-dropdown-triangle"></i>
-                        </a>
-                    </li>
-                </div>
+                <li class="buttons users" sec:authorize="isAuthenticated()">
+                    <a th:classappend="${httpServletRequest.requestURI.contains('user') ? 'current' : ''}">
+                        <span th:text="Users"></span>
+                        <i class="navbar-dropdown-triangle"></i>
+                    </a>
+                    <div class="navbar-dropdown users">
+                        <a th:href="@{view-users(page=1)}">View Users</a>
+                    </div>
+                </li>
 
-                <div class="view-all-buttons">
-                    <li class="navbar-view-all-button" sec:authorize="isAuthenticated()">
-                        <div class="navbar-view-all-dropdown">
-                            <a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a>
-                            <a th:href="@{view-users(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
-                            <a th:href="@{view-all-competitions(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-all-competitions' ? 'active' : ''}">View All Competitions</a>
-                        </div>
-                        <a>
-                            <span th:text="'View All'"></span>
-                            <i class="navbar-dropdown-triangle"></i>
-                        </a>
-                    </li>
-                </div>
+                <li class="buttons teams" sec:authorize="isAuthenticated()">
+                    <a th:classappend="${httpServletRequest.requestURI.contains('team') ? 'current' : ''}">
+                        <span th:text="Teams"></span>
+                        <i class="navbar-dropdown-triangle"></i>
+                    </a>
+                    <div class="navbar-dropdown teams">
+                        <a th:href="@{create-team}" th:classappend="${httpServletRequest.requestURI == '/create-team' ? 'current' : ''}">Create Team</a>
+                        <a th:href="@{my-teams}" th:classappend="${httpServletRequest.requestURI == '/my-teams' ? 'current' : ''}">My Teams</a>
+                        <a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'current' : ''}">View Teams</a>
+                    </div>
+                </li>
+
+                <li class="buttons clubs" sec:authorize="isAuthenticated()">
+                    <a th:classappend="${httpServletRequest.requestURI.contains('club') ? 'current' : ''}">
+                        <span th:text="Clubs"></span>
+                        <i class="navbar-dropdown-triangle"></i>
+                    </a>
+                    <div class="navbar-dropdown clubs">
+                        <a th:href="@{create-club}" th:classappend="${httpServletRequest.requestURI == '/create-club' ? 'current' : ''}">Create Club</a>
+                        <a th:href="@{view-clubs(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-clubs' ? 'current' : ''}">View Clubs</a>
+                    </div>
+                </li>
+
+                <li class="buttons activities" sec:authorize="isAuthenticated()">
+                    <a th:classappend="${httpServletRequest.requestURI.contains('activ') ? 'current' : ''}">
+                        <span th:text="Activities"></span>
+                        <i class="navbar-dropdown-triangle"></i>
+                    </a>
+                    <div class="navbar-dropdown activities">
+                        <a th:href="@{create-activity}" th:classappend="${httpServletRequest.requestURI == '/create-activity' ? 'current' : ''}">Create Activity</a>
+                        <a th:href="@{view-activities(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-activities' ? 'current' : ''}">My Activities</a>
+                    </div>
+                </li>
+
+                <li class="buttons whiteboards" sec:authorize="isAuthenticated()">
+                    <a th:classappend="${httpServletRequest.requestURI.contains('whiteboard') ? 'current' : ''}">
+                        <span th:text="Whiteboards"></span>
+                        <i class="navbar-dropdown-triangle"></i>
+                    </a>
+                    <div class="navbar-dropdown whiteboards">
+                        <a th:href="@{view-whiteboards(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-whiteboards' ? 'current' : ''}">View Whiteboards</a>
+                    </div>
+                </li>
 
                 <li sec:authorize="isAnonymous()">
                     <a th:href="@{login}" th:classappend="${httpServletRequest.requestURI == '/login' ? 'active' : ''}">Login</a>
@@ -48,106 +74,77 @@
                 <li sec:authorize="isAnonymous()">
                     <a th:href="@{register}" th:classappend="${httpServletRequest.requestURI == '/register' ? 'active' : ''}">Register</a>
                 </li>
-                <li sec:authorize="hasAnyRole('ROLE_FEDERATION_MANAGER')">
-                    <a th:href="@{inviteToFederationManager}" th:classappend="${httpServletRequest.requestURI == '/inviteToFederationManager' ? 'active' : ''}">Invite</a>
-                </li>
-
-                <div sec:authorize="isAuthenticated()" class="view-profile">
-                    View Profile:
-                    <select class="form-control" id="dropDownList" name="teamSelector"
-                            onchange="if(this.value != '-1') window.location.href = 'team-info?teamID=' + this.value;">
-                        <option value="-1" selected>Select a Team</option>
-                        <option th:each="team : ${G_navTeams}"
-                                th:value="${team.teamId}"
-                                th:text="${team}"
-                                th:selected="${team.teamId.equals(teamID)}"></option>
-                    </select>
-                </div>
 
             </ul>
         </nav>
     </div>
 
     <div class="header-right">
-        <li class="navbar-user-button" sec:authorize="isAuthenticated()" th:if="${G_optUser.present}" th:with="user = ${G_optUser.get()}">
-            <div class="navbar-user-dropdown">
-                <a th:href="@{user-info/self}">Profile</a>
-                <a th:href="@{my-teams}">My Teams</a>
-                <a th:href="@{view-activities(page=1)}">My Activities</a>
-                <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
-            </div>
-            <a>
-                <img th:src="@{/user-profile-picture/{id}(id = ${user.userId})}" class="navbar-profile-picture"
-                     alt="My Profile">
-                <span th:if="${#strings.length(user.firstName + ' ' + user.lastName)} &lt;= 24" th:text="${user.firstName + ' ' + user.lastName}"></span>
-                <span th:unless="${#strings.length(user.firstName + ' ' + user.lastName)} &lt;= 24" th:text="${#strings.substring(user.firstName + ' ' + user.lastName, 0, 21) + '...'}"></span>
-                <i class="navbar-dropdown-triangle" aria-hidden="true"></i>
-            </a>
-        </li>
+        <ul>
+            <li class="buttons user" sec:authorize="isAuthenticated()" th:if="${G_optUser.present}" th:with="user = ${G_optUser.get()}">
+                <div class="navbar-dropdown user">
+                    <a th:href="@{user-info/self}">Profile</a>
+                    <a th:href="@{my-teams}">My Teams</a>
+                    <a th:href="@{view-activities(page=1)}">My Activities</a>
+                    <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
+                </div>
+                <a class="profile-button-text" th:classappend="${httpServletRequest.requestURI.contains('user-info') ? 'current' : ''}">
+                    <img th:src="@{/user-profile-picture/{id}(id = ${user.userId})}" class="navbar-profile-picture"
+                         alt="My Profile">
+                    <span th:if="${#strings.length(user.firstName + ' ' + user.lastName)} &lt;= 24" th:text="${user.firstName + ' ' + user.lastName}"></span>
+                    <span th:unless="${#strings.length(user.firstName + ' ' + user.lastName)} &lt;= 24" th:text="${#strings.substring(user.firstName + ' ' + user.lastName, 0, 21) + '...'}"></span>
+                    <i class="navbar-dropdown-triangle" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
         <form id="logoutForm" th:action="@{logout}" method="POST"></form>
     </div>
     <script>
         let hamburger = document.querySelector(".hamburger")
         hamburger.onclick = function () {
-            navBar = document.querySelector(".nav-bar");
+            const navBar = document.querySelector(".nav-bar");
             navBar.classList.toggle("active");
+            hamburger.classList.toggle("active");
         };
 
-        // Hides a dropdown
-        function hide(event, button, dropdown, triangle) {
-            if (button && !button.contains(event.target)) {
-                dropdown.classList.remove("show")
-                triangle.classList.remove("up")
-            }
-        }
+        const buttons = document.querySelectorAll('.buttons')
+        const dropdowns = document.querySelectorAll('.navbar-dropdown')
 
-        // Toggles a dropdown
-        function toggle(event, button, dropdown, triangle) {
-            event.stopPropagation();
-            dropdown.classList.toggle("show")
-            triangle.classList.toggle("up")
-        }
 
-        let navbarViewAllButton = document.querySelector(".navbar-view-all-button");
-        let viewAllTriangle, navbarViewAllDropdown
-        if (navbarViewAllButton) {
-            viewAllTriangle = navbarViewAllButton.querySelector(".navbar-dropdown-triangle");
-            navbarViewAllDropdown = navbarViewAllButton.querySelector(".navbar-view-all-dropdown");
-
-            navbarViewAllButton.addEventListener("click", function (event) {
-                toggle(event, navbarViewAllButton, navbarViewAllDropdown, viewAllTriangle)
-            });
-        }
-
-        let navbarCreateButton = document.querySelector(".navbar-create-button");
-        let createTriangle, navbarCreateDropdown
-        if (navbarCreateButton) {
-            createTriangle = navbarCreateButton.querySelector(".navbar-dropdown-triangle");
-            navbarCreateDropdown = navbarCreateButton.querySelector(".navbar-create-dropdown");
-
-            navbarCreateButton.addEventListener("click", function (event) {
-                toggle(event, navbarCreateButton, navbarCreateDropdown, createTriangle)
-            });
-        }
-
-        let navbarUserButton = document.querySelector(".navbar-user-button");
-        let userTriangle, navbarUserDropdown
-        if (navbarUserButton) {
-            userTriangle = navbarUserButton.querySelector(".navbar-dropdown-triangle");
-            navbarUserDropdown = navbarUserButton.querySelector(".navbar-user-dropdown");
-
-            navbarUserButton.addEventListener("click", function (event) {
-                toggle(event, navbarUserButton, navbarUserDropdown, userTriangle)
+        /**
+         * Handles opening and closing dropdowns
+         */
+        buttons.forEach(button => {
+            let buttonType;
+            button.classList.forEach(element => {
+                if (element !== "buttons" || element !== "active") {
+                    buttonType = element;
+                }
             })
-        }
-
-        document.addEventListener("click", function (event) {
-            // Whenever there is a click that ISN'T on the dropdowns,
-            // hide all the dropdowns.
-            // This ensures that all dropdowns aren't open at once, so it doesnt get messy.
-            hide(event, navbarCreateButton, navbarCreateDropdown, createTriangle)
-            hide(event, navbarViewAllButton, navbarViewAllDropdown, viewAllTriangle)
-            hide(event, navbarUserButton, navbarUserDropdown, userTriangle)
+            button.addEventListener("click", () => {
+                buttons.forEach(buttonOther => {
+                    if (button === buttonOther) {
+                        buttonOther.classList.toggle("active")
+                    } else {
+                        buttonOther.classList.remove("active")
+                    }
+                })
+            })
         });
+
+        /**
+         * Removes open dropdowns from view on click off
+         */
+        document.body.addEventListener('click', function (event) {
+            const isButton = Array.from(buttons).some(button => button.contains(event.target));
+            const isDropdown = Array.from(dropdowns).some(dropdown => dropdown.contains(event.target));
+
+            if (!isButton && !isDropdown) {
+                buttons.forEach(button => {
+                    button.classList.remove('active');
+                });
+            }
+        });
+
     </script>
 </header>

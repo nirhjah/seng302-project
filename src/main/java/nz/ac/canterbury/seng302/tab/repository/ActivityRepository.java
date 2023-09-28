@@ -53,4 +53,24 @@ public interface ActivityRepository extends CrudRepository<Activity, Long> {
 
     @Query("SELECT (a) FROM Activity a WHERE (a.activityType = 0 OR a.activityType = 1) and a.team= :team")
     List<Activity> getAllGamesAndFriendliesForTeam(@Param("team") Team team);
+
+    @Query("SELECT a FROM Activity a " +
+            "LEFT JOIN Team t ON a.team = t " +
+            "WHERE a.activityOwner = :user " +
+            "OR (a.team IS NOT NULL AND :user IN (SELECT tr.user FROM TeamRole tr WHERE t = tr.team)) " +
+            "GROUP BY a, t.name " +
+            "ORDER BY COALESCE(LOWER(t.name),''), a.activityStart")
+    List<Activity> findUserTeamAndPersonalActivities(@Param("user") User user);
+
+    @Query("SELECT a FROM Activity a " +
+            "WHERE a.activityOwner = :user and a.team is null " +
+            "ORDER BY a.activityStart")
+    List<Activity> getPersonalActivitiesForUser(@Param("user") User user);
+
+    @Query("SELECT a FROM Activity a " +
+            "LEFT JOIN Team t ON a.team = t " +
+            "WHERE (a.team IS NOT NULL AND :user IN (SELECT tr.user FROM TeamRole tr WHERE t = tr.team)) " +
+            "GROUP BY a, t.name " +
+            "ORDER BY COALESCE(LOWER(t.name),''), a.activityStart")
+    List<Activity> getTeamActivitiesForUser(@Param("user") User user);
 }

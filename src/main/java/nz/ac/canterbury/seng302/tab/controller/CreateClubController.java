@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import nz.ac.canterbury.seng302.tab.api.response.ClubTeamInfo;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditClubForm;
 import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
@@ -12,6 +13,7 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -69,12 +71,12 @@ public class CreateClubController {
      * @param request http request
      * @return create club form
      */
-    @GetMapping("/createClub")
+    @GetMapping("/create-club")
     public String clubForm(@RequestParam(name = "edit", required = false) Long clubId,
                            Model model,CreateAndEditClubForm createAndEditClubForm,
                            HttpServletRequest request) throws MalformedURLException {
 
-        logger.info("GET /createClub");
+        logger.info("GET /create-club");
         prefillModel(model, request);
         URL url = new URL(request.getRequestURL().toString());
         String path = (url.getPath() + "/..");
@@ -88,6 +90,7 @@ public class CreateClubController {
                 List<String> selectedTeamIds = teamService.findTeamsByClub(optClub.get())
                         .stream()
                         .map(team -> String.valueOf(team.getTeamId())).toList();
+                model.addAttribute("selectedTeamIds", selectedTeamIds);
                 createAndEditClubForm.setSelectedTeams(selectedTeamIds);
 
                 createAndEditClubForm.prepopulate(optClub.get());
@@ -124,7 +127,7 @@ public class CreateClubController {
 
     /**
      * Handles the creation or editing of a club based on the provided form data.
-     * This method is invoked when a POST request is made to "/createClub" endpoint.
+     * This method is invoked when a POST request is made to "/create-club" endpoint.
      *
      * @param clubId                The ID of the club being edited.
      * @param name                  The name of the club.
@@ -139,7 +142,7 @@ public class CreateClubController {
      * @return The view name to be displayed after the club creation/edit process.
      * @throws IOException If an I/O error occurs during file handling.
      */
-    @PostMapping("/createClub")
+    @PostMapping("/create-club")
     public String createClub(
             @RequestParam(name = "clubId", defaultValue = "-1") long clubId,
             @RequestParam(name="name") String name,
@@ -205,6 +208,7 @@ public class CreateClubController {
             }
 
             return "redirect:/view-club?clubID=" + club.getClubId();
+
         }
     }
 
@@ -268,5 +272,42 @@ public class CreateClubController {
         model.addAttribute(HTTP_SERVLET_REQUEST_STRING, httpServletRequest);
         model.addAttribute("listOfTeams", teamsUserManagerOf);
     }
+
+    /**
+     * Gets all teams with matching sport, and clubId, for a club to join. This is to ensure clubs can only add teams to their club that have the same sport, or
+     * are not already in a club. and the list also includes teams that are part of the club itself, which is why we ask for the club id.
+     * @param sport sport to match teams with
+     * @param clubId club id to match teams with if it's part of this club
+     * @return list of teams
+     */
+    @GetMapping("/teams_by_sport")
+    public ResponseEntity<List<ClubTeamInfo>> getTeamsBySport(@RequestParam String sport, @RequestParam String clubId) {
+
+        Optional<Club> optClub = clubService.findClubById(Long.parseLong(clubId));
+
+        return optClub.map(club -> ResponseEntity.ok().body(
+                teamService.findTeamsBySportAndClubOrNotInClub(sport, club).stream().map(team -> new ClubTeamInfo(
+                        team.getTeamId(),
+                        team.getName()
+                )).toList()
+        )).orElseGet(() -> ResponseEntity.ok().body(List.of()));
+    }
+
+
+    /**
+     * Gets list of teams that match the sport and are also not part of a club
+     * @param sport sport to match teams with
+     * @return list of teams
+     */
+    @GetMapping("/teams_by_sport_not_in_club")
+    public ResponseEntity<List<ClubTeamInfo>> getTeamsBySportNotInClub(@RequestParam String sport) {
+            return ResponseEntity.ok().body(
+                    teamService.findTeamsBySportAndNotInClub(sport).stream().map(team -> new ClubTeamInfo(
+                            team.getTeamId(),
+                            team.getName()
+                    )).toList()
+            );
+    }
+
 
 }

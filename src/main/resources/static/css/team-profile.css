@@ -15,6 +15,7 @@
     .wrapper-profile {
         width: 90vw !important;
     }
+
 }
 
 @media (max-width: 960px) {
@@ -22,13 +23,19 @@
         min-height: unset;
     }
 
+    #team-wrapper .content {
+        max-height: unset !important;
+        height: unset !important;
+    }
+
+
     .wrapper-profile {
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important;
-        align-items: center !important;
         width: 90vw !important;
         height: unset !important;
+        margin-top: 20px;
     }
 
     .wrapper-profile .profile-pic {
@@ -87,18 +94,21 @@
 
 }
 
-@media (max-width: 850px) {
-   .formation-display.active {
+@media (max-width: 920px) {
+    .formation-display.active {
         display: block !important;
     }
 
-    .create-formation-display {
-        margin-bottom: 10px;
+    .formation-RHS {
+        margin-top: 15px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
     }
 
-    .formation-RHS button {
-        margin-right: 10px;
-    }
+
+
 }
 
 @media (max-width:  500px) {
@@ -136,7 +146,7 @@
 }
 
 
-@media (max-width: 540px) {
+@media (max-width: 750px) {
     .tab .tab-button {
         display: none;
     }
@@ -255,16 +265,14 @@
     /*display:flex;*/
 }
 
-.tab-line{
+.tab-line {
     position: relative;
     top: -4px;
-    left: 3px;
-    width: 20%;
+    width: 25%;
     height: 5px;
     background-color: #1B263B;
     border-radius: 10px;
     transition: all .3s ease-in-out;
-    display: none;
 }
 
 .tab.active .tab-button{
@@ -295,6 +303,9 @@
     display: flex;
     align-items: center;
     cursor: pointer;
+    max-width: 25%;
+    width: 100vw;
+    justify-content: center;
 }
 
 .formation-list {
@@ -345,7 +356,8 @@
 
 .create-formation-display {
     display: flex;
-    margin-top: 2vh;
+    margin: 2vh 0 5px 0;
+    max-width: 1px;
 }
 
 .content.formations {
@@ -353,16 +365,26 @@
     overflow: hidden;
 }
 
+.content {
+    max-height: 460px;
+}
+
+#team-profile-tab .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 .formation-display {
-    margin: 20px 23px;
+    margin: 2vh 3% 3vh 6%;
+    justify-content: space-between;
 }
 
 .input-box {
     min-width: 96px;
-    height: unset;
     margin: unset;
+    height: 38px;
     width: 30%;
-
 }
 
 .error-message, .formation-display {
@@ -375,7 +397,6 @@
 
 .formation-display.active {
     display: flex;
-    justify-content: center;
     width: 100%;
 }
 
@@ -383,14 +404,13 @@
     background-color: #0b2239;
     border: none;
     outline: none;
-    color: #fff;
-    border-radius: 30px;
-    font-size: 1.1em;
-    font-weight: 500;
-    padding: 0 10px;
-    height: 34px;
+    padding: 10px 20px;
     margin-left: 5px;
     white-space: nowrap;
+    font-size: 1em;
+    color: #fff;
+    border-radius: 30px;
+    font-weight: bold;
 }
 
 .formation-display button:hover {
@@ -405,7 +425,7 @@
 
 .formation-RHS button {
     float: right;
-    margin-top: 5px;
+    margin-top: 10px;
 }
 
 .col-wrapper {
@@ -452,6 +472,7 @@
     font-size: 20px;
     font-family: revert;
     padding: 0 0 2px 0;
+    z-index: 1;
 }
 
 .formation-list-outer {
@@ -505,6 +526,226 @@
     max-width: 15ch;
 }
 
+
+.wrapper-profile .content {
+    max-height: 460px;
+    height: 100vh;
+}
+
+.whiteboard-media {
+    display: flex;
+}
+
+.whiteboard-media-select {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    height: 100%;
+}
+
+.whiteboard-media-display {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    /*min-width: 300px;*/
+
+    margin: 5px;
+    /* min-width: 300px; */
+    border: groove #0b2239;
+    border-bottom-right-radius: 16px;
+}
+
+.whiteboard-media-display .info-box {
+    display: inline-block;
+    /*margin: 0 auto;*/
+    padding: 5%;
+    background-color: #bbbbbb;
+    max-height: 30%;
+    width: 100%;
+}
+
+
+.whiteboard-media-display .open-link-box {
+    border: groove grey;
+    height: 100%;
+    max-height: 60%;
+    background-color: #cccccc;
+    max-width: 90%;
+    margin: auto;
+    padding: 2%;
+    position: relative;
+}
+
+
+.open-link-box img {
+    object-fit: scale-down;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.open-link-box .button-box {
+
+}
+
+.open-link-box .button-box {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 40;
+    /* margin-left: auto; */
+    /* margin-right: auto; */
+    transform: translate(-50%, -50%);
+}
+
+
+
+.info-box p {
+    text-align: left;
+    font-size:16px;
+    width: 100%;
+    height: 50%; /* because there are 2 */
+    line-height: 1.5;
+    font-weight: 600;
+    text-overflow: ellipsis;
+}
+
+
+
+.whiteboard-media-display .whiteboard-button {
+}
+
+
+.whiteboard-media-content {
+    height: 100%;
+    max-height: 100%;
+    overflow: auto;
+    display: inline-flex;
+    margin: 8px;
+}
+
+
+.media-image{
+    border-radius: 5px;
+    background:whitesmoke;
+    height:200px;
+}
+
+.media {
+    margin: 5px;
+    border-radius: 10px;
+    display: inline-flex;
+    cursor:pointer;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+    /* aspect-ratio: 560 / 700; /* Aspect ratio of pitch */
+    aspect-ratio: 570 / 700; /* Aspect ratio of pitch */
+    /*height: 90%;*/
+    flex-shrink: 0;
+}
+
+.media img {
+    height: 90%;
+    width: 100%;
+    object-fit: scale-down;
+    border-radius: 10px;
+}
+
+.media-title img {
+    max-height: 100%;
+    max-width: 100%;
+    padding-left: 1%;
+}
+
+
+.media-body {
+    height: fit-content;
+    width: fit-content;
+    box-sizing: border-box;
+    color: white;
+    font-family: "Noto Sans", sans-serif;
+    position: relative;
+    margin: 5%;
+}
+
+.media-body .media-name{
+    position: absolute;
+    text-align: center;
+    font-size:16px;
+    background-color: #0b2239;
+    width: 100%;
+    height: 15%;
+    top: -5%; /* I think this is really hacky, but im not sure how else to do it*/
+    left: -5%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    margin: 5%;
+    line-height: 1.5;
+    text-overflow: ellipsis;
+}
+
+.whiteboard-media-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 50%;
+    width: 100%;
+}
+
+.whiteboard-media-wrapper .media-title {
+    height: 18%;
+    border: none;
+    outline: none;
+    background: white;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 18px;
+    color: #1B263B;
+    padding: 10px;
+    display: inline-flex;
+}
+
+.whiteboard-media-wrapper .media-title h3 {
+    padding-left: 12px;
+    max-width: 80%;
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.media img:hover {
+    cursor: pointer;
+}
+
+/*
+Custom scrollbar:
+ */
+
+/* Define the scrollbar style */
+.whiteboard-media-content::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+/* Define the thumb style */
+.whiteboard-media-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom right, #333333 0%, #111111 100%);
+    border-radius: 5px;
+}
+
+/* Define the track style */
+.whiteboard-media-content::-webkit-scrollbar-track {
+    background-color: #ddd;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Define the button style when being hovered over */
+.whiteboard-media-content::-webkit-scrollbar-button:hover {
+    background-color: #999999;
+}
+
+
+
+
 @media (max-width: 500px) {
     .float-child {
         width: 100vw;
@@ -552,6 +793,7 @@
     font-style: italic;
     font-size: small;
     line-height: 1.1rem;
+    white-space: nowrap;
 }
 
 /* Other CSS files disable the icon before a <li>, this adds it back for specific children */
@@ -564,10 +806,45 @@ ul.formation-description > li {
     text-align: center;
 }
 
-.formation-RHS {
-    margin: auto;
-}
-
 .tabNameAndIndex {
     display: none;
 }
+
+.formation-description ul {
+    margin-bottom: 10px;
+}
+
+.formation-title-display {
+    margin-top: 20px;
+    width: fit-content;
+}
+
+.formation-title-display .input-box {
+    width: inherit;
+}
+
+.formation-RHS .formation-description {
+    margin-top: -5px;
+}
+
+#team-profile-tab .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+#team-wrapper .content {
+    max-height: 460px;
+    height: 100vh;
+}
+
+#generate-formation-button img {
+    width: 18px;
+    margin-right: 10px;
+}
+
+#generate-formation-button {
+    display: flex;
+    align-items: center;
+}
+

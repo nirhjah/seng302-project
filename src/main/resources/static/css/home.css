@@ -1,0 +1,76 @@
+.homePageWrapper {
+    display: flex;
+}
+
+.teamsDiv {
+    background-color: white;
+    width: 24%;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
+    border-radius: 9px;
+    margin-left: 9%; margin-right: 5%;
+    height: 550px;
+    border: solid 8px #1b263b;
+}
+
+.teamActivitiesDiv {
+    background-color: white;
+    width: 24%;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
+    border-radius: 9px;
+    margin-right: 5%;
+    height: 550px;
+    border: solid 8px #1b263b;
+}
+
+.personalActivitiesDiv {
+    height: 550px;
+    background-color: white;
+    width: 24%;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
+    border-radius: 9px;
+}
+
+.teamText {
+    margin-left: 15px;
+}
+
+.homeCard {
+    overflow: auto;
+    margin-top: -50px;
+    height: 450px;
+    padding-bottom: 10px;
+}
+
+.last5 h3 {
+    margin: 0 10px;
+}
+
+@media (max-width: 1300px) {
+    .homePageWrapper {
+        flex-direction: column;
+    }
+
+    .personalActivitiesDiv {
+        width: 95%;
+        margin: 15px auto !important;
+    }
+
+    .teamActivitiesDiv {
+        width: 95%;
+        margin: 15px auto !important;
+    }
+
+    .teamsDiv {
+        width: 95%;
+        margin: 30px auto 15px !important;
+    }
+
+    .Welcome-header h1 {
+        font-size: 3rem !important;
+    }
+
+    .homeCard {
+        width: 100% !important;
+    }
+
+}

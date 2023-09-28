@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
+import nz.ac.canterbury.seng302.tab.api.response.ClubTeamInfo;
 import nz.ac.canterbury.seng302.tab.entity.Club;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
@@ -20,9 +21,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -114,7 +118,7 @@ public class CreateClubControllerTest {
 
     @Test
     public void testDisplayCreateClubForm_return200() throws Exception {
-        mockMvc.perform(get("/createClub"))
+        mockMvc.perform(get("/create-club"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("createClubForm"));
     }
@@ -123,7 +127,7 @@ public class CreateClubControllerTest {
     @Test
         public void whenAllFieldsValid_return302() throws Exception {
 
-            mockMvc.perform(multipart("/createClub", 42L)
+            mockMvc.perform(multipart("/create-club", 42L)
                             .file(this.mockMultipartFile)
                             .param("clubId", "-1")
                             .param("name", "new club")
@@ -144,7 +148,7 @@ public class CreateClubControllerTest {
 
      @Test
         public void whenSelectedTeamsIsEmpty_return302() throws Exception {
-            mockMvc.perform(multipart("/createClub", 42L)
+            mockMvc.perform(multipart("/create-club", 42L)
                             .file(this.mockMultipartFile)
                             .param("clubId", "-1")
                             .param("name", "new club")
@@ -165,7 +169,7 @@ public class CreateClubControllerTest {
 
     @Test
     public void whenOptionalFieldsEmpty_return302() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                         .file(this.mockMultipartFile)
                         .param("clubId", "-1")
                         .param("name", "new club")
@@ -185,7 +189,7 @@ public class CreateClubControllerTest {
 
     @Test
     public void whenSelectedTeamsHaveDifferentSports_return400() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                         .file(this.mockMultipartFile)
                         .param("clubId", "-1")
                         .param("name", "new club")
@@ -206,7 +210,7 @@ public class CreateClubControllerTest {
 
     @Test
     public void whenAllRequiredFieldsEmpty_return400() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                         .file(this.mockMultipartFile)
                         .param("clubId", "-1")
                         .param("name", "")
@@ -225,7 +229,7 @@ public class CreateClubControllerTest {
 
     @Test
     public void whenClubNameInvalid_return400() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                         .file(this.mockMultipartFile)
                         .param("clubId", "-1")
                         .param("name", "!@#$%^")
@@ -244,7 +248,7 @@ public class CreateClubControllerTest {
 
     @Test
     public void whenTeamAlreadyPartOfAnotherClub_return400() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                         .file(this.mockMultipartFile)
                         .param("clubId", "-1")
                         .param("name", "new club")
@@ -262,14 +266,14 @@ public class CreateClubControllerTest {
 
     @Test
     public void testDisplayingEditClub_returns200() throws Exception {
-        mockMvc.perform(get("/createClub?edit={id}", club.getClubId()))
+        mockMvc.perform(get("/create-club?edit={id}", club.getClubId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("createClubForm"));
     }
 
     @Test
     public void testWhenInvalidFieldEntered_ClubNameNotUpdated() throws Exception {
-        mockMvc.perform(multipart("/createClub?edit={id}", club.getClubId())
+        mockMvc.perform(multipart("/create-club?edit={id}", club.getClubId())
                         .file(this.mockMultipartFile)
                         .param("clubId", String.valueOf(club.getClubId()))
                         .param("name", "!@#$%^")
@@ -286,7 +290,7 @@ public class CreateClubControllerTest {
 
     @Test
     public void testWhenSportInvalid_ClubNotUpdated() throws Exception {
-        mockMvc.perform(multipart("/createClub?edit={id}", club.getClubId())
+        mockMvc.perform(multipart("/create-club?edit={id}", club.getClubId())
                 .file(this.mockMultipartFile)
                 .param("clubId", String.valueOf(club.getClubId()))
                 .param("name", "Club")
@@ -299,6 +303,43 @@ public class CreateClubControllerTest {
                 .param("postcode", "8042")).andExpect(status().isBadRequest());
 
         verify(mockClubService, times(0)).updateOrAddClub(any());
+    }
+
+
+    @Test
+    void testGettingTeamsBySportNoClub() throws  Exception {
+        String sport = "YourSport";
+        Team teamTest = new Team("NewTeam", sport);
+        Team teamTestNotMatchingSport = new Team("NewTeam", "Soccer");
+        teamRepository.save(teamTest);
+        teamRepository.save(teamTestNotMatchingSport);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/teams_by_sport_not_in_club")
+                        .param("sport", sport)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string("[{\"teamId\":37,\"name\":\"NewTeam\"}]"));
+    }
+
+    @Test
+    void testGettingTeamsBySport() throws  Exception {
+        Team teamInClub = new Team("NewTeam", "Rugby");
+        Team teamNotInClubButSameSport = new Team("OtherTeam", "Rugby");
+        Team teamNotInClubAndNotMatchingSport = new Team("RandomTeam", "Cricket");
+
+        teamRepository.save(teamInClub);
+        teamRepository.save(teamNotInClubButSameSport);
+        teamRepository.save(teamNotInClubAndNotMatchingSport);
+        teamInClub.setTeamClub(club);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/teams_by_sport")
+                        .param("sport", "Rugby")
+                        .param("clubId", String.valueOf(club.getClubId()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string("[{\"teamId\":3,\"name\":\"test3\"},{\"teamId\":4,\"name\":\"NewTeam\"},{\"teamId\":5,\"name\":\"OtherTeam\"}]"));
     }
 
 }

@@ -10,7 +10,7 @@ import io.cucumber.java.en.When;
 
 public class U8CreateTeamFeature {
 
-    private static final String CREATE_TEAM_URL = "/createTeam";
+    private static final String CREATE_TEAM_URL = "/create-team";
     private static final String HOME_URL = "/home";
 
     @Before("@create_team")
@@ -36,7 +36,7 @@ public class U8CreateTeamFeature {
         if (hamburger.isVisible()) {
             hamburger.click();
         }
-        PlaywrightBrowser.page.locator("li.navbar-create-button").click();
+        PlaywrightBrowser.page.locator("li.teams").click();
         PlaywrightBrowser.page.locator("text=Create Team").click();
     }
 

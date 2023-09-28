@@ -61,6 +61,26 @@ public class CreateTeamFormController {
         this.lineUpService = lineUpService;
     }
 
+        private void addDebugEntities(Team team) {
+        // Generate users:
+        var users = new ArrayList<User>();
+        for (int i = 0; i < 30; i++) {
+            try {
+                var str = UUID.randomUUID().toString();
+                var u = User.defaultDummyUser();
+                u.setEmail(str + "@gmail.com");
+                u.setFirstName(str.substring(0, 6));
+                u.setLastName("b");
+                u = userService.updateOrAddUser(u);
+                userService.userJoinTeam(u, team);
+                users.add(u);
+            } catch (Exception e) {
+                logger.error("exception caught: " + e.getMessage());
+            }
+        }
+    }
+
+
 
     /**
      * Creates a location entity from details provided in the form
@@ -79,11 +99,12 @@ public class CreateTeamFormController {
                 trimmedPostcode, trimmedCountry);
     }
 
-    /**
-     * Triggers the generation of a new token for a team
-     * @param teamID the id of the team.
-     * @return redirect back to team profile page
-     */
+
+        /**
+         * Triggers the generation of a new token for a team
+         * @param teamID the id of the team.
+         * @return redirect back to team profile page
+         */
     @PostMapping("/generateTeamToken")
     public String generateTeamToken(@RequestParam(name = "teamID") Long teamID) {
         var team = teamService.getTeam(teamID);
@@ -95,19 +116,20 @@ public class CreateTeamFormController {
                 logger.info("POST /generateTeamToken, new token: {}", team.getToken());
             }
         }
+        addDebugEntities(team);
         return String.format("redirect:./team-info?teamID=%s", teamID);
     }
 
     /**
      * Endpoint for creating a new team. Gives a blank form.
      */
-    @GetMapping("/createTeam")
+    @GetMapping("/create-team")
     public String createTeamForm(
             Model model,
             HttpServletRequest request,
             CreateAndEditTeamForm createAndEditTeamForm) throws MalformedURLException {
 
-        logger.info("GET /createTeam - new team");
+        logger.info("GET /create-team - new team");
 
         model.addAttribute(HTTP_SERVLET_REQUEST_STRING, request);
 
@@ -129,14 +151,14 @@ public class CreateTeamFormController {
     /**
      * Endpoint for *updating* a team. Gives a pre-populated form.
      */
-    @GetMapping(value = "/createTeam", params = {"edit"})
+    @GetMapping(value = "/create-team", params = {"edit"})
     public String editTeamForm(
             @RequestParam(name = "edit", required = true) long teamID,
             Model model,
             HttpServletRequest request,
             CreateAndEditTeamForm createAndEditTeamForm) throws MalformedURLException {
 
-        logger.info("GET /createTeam - updated team with ID={}", teamID);
+        logger.info("GET /create-team - updated team with ID={}", teamID);
 
         model.addAttribute(HTTP_SERVLET_REQUEST_STRING, request);
 
@@ -181,7 +203,7 @@ public class CreateTeamFormController {
      *              with values being set to relevant parameters provided
      * @return thymeleaf teamFormTemplate
      */
-    @PostMapping("/createTeam")
+    @PostMapping("/create-team")
     public String submitTeamForm(
             @RequestParam(name = "teamID", defaultValue = "-1") long teamID,
             @Validated CreateAndEditTeamForm createAndEditTeamForm,
@@ -191,7 +213,7 @@ public class CreateTeamFormController {
             HttpServletRequest httpServletRequest) throws IOException {
         
         boolean editingTeam = (teamID != -1);
-        logger.info("POST /createTeam - {} team", (editingTeam ? "updating" : "creating"));
+        logger.info("POST /create-team - {} team", (editingTeam ? "updating" : "creating"));
 
 
         // I'm starting to regret this pattern
@@ -244,6 +266,7 @@ public class CreateTeamFormController {
         if (!knownSports.contains(trimmedSport)) {
             sportService.addSport(new Sport(trimmedSport));
         }
+//        addDebugEntities(team);
         return String.format("redirect:./team-info?teamID=%s", team.getTeamId());
     }
 }

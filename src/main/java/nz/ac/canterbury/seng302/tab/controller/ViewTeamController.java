@@ -1,14 +1,16 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
+import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.service.*;
 import nz.ac.canterbury.seng302.tab.service.image.TeamImageService;
+import nz.ac.canterbury.seng302.tab.service.image.WhiteboardScreenshotService;
+import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
@@ -18,15 +20,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
-import jakarta.servlet.http.HttpServletRequest;
-import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.Formation;
-import nz.ac.canterbury.seng302.tab.entity.Team;
-import nz.ac.canterbury.seng302.tab.entity.User;
-
-import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * Spring Boot Controller class for the ViewTeamForm
@@ -52,20 +51,20 @@ public class ViewTeamController {
     private ActivityService activityService;
 
     @Autowired
-    private CompetitionService competitionService;
-
-    @Autowired
     private FactService factService;
 
-    public ViewTeamController(UserService userService, TeamService teamService, ActivityService activityService, FactService factService, FormationService formationService, CompetitionService competitionService) {
+    @Autowired
+    private WhiteboardScreenshotService whiteboardScreenshotService;
+
+    public ViewTeamController(UserService userService, TeamService teamService, ActivityService activityService, FactService factService, FormationService formationService) {
         this.userService = userService;
         this.formationService = formationService;
         this.teamService = teamService;
         this.activityService = activityService;
         this.factService = factService;
-        this.competitionService = competitionService;
 
     }
+
 
     /**
      * Gets form to be displayed, includes the ability to display results of
@@ -87,6 +86,7 @@ public class ViewTeamController {
         Team team = teamService.getTeam(teamID);
 
         if (team == null) {
+            logger.error("Couldn't find team with id: {}", teamID);
             throw new ResponseStatusException(HttpStatusCode.valueOf(404));
         }
 
@@ -97,11 +97,20 @@ public class ViewTeamController {
         model.addAttribute("displayLocation", team.getLocation());
         model.addAttribute("displayToken", team.getToken());
         model.addAttribute("clubId",teamService.getTeamClubId(team));
-        model.addAttribute("teamCompetitions", competitionService.getAllCompetitionsWithTeam(team));
         model.addAttribute("overallPlayersPlaytime", activityService.top5UsersWithPlayTimeAndAverageInTeam(team));
         if( team.getTeamClub()!=null){
             model.addAttribute("clubName",team.getTeamClub().getName());
         }
+
+        Set<WhiteboardScreenshot> screenshots = team.getScreenshots();
+        Set<WhiteBoardRecording> recordings = team.getRecordings();
+        model.addAttribute("screenshots", screenshots);
+        model.addAttribute("recordings", recordings);
+
+//        WhiteboardScreenshot ss = createMockScreenshot(team);
+//        for (int i=0; i<10; i++) {
+//            screenshots.add(ss);
+//        }
 
         // Is the currently logged in user this team's manager?
         Optional<User> oUser = userService.getCurrentUser();
@@ -174,6 +183,7 @@ public class ViewTeamController {
      *                              "20px30px;40px20px"
      * @param custom boolean to represent whether a formation has been manually changed by dragging and dropping the
      *               players rather than simply being from a generated formation string
+     * @param formationTitle optional title for formation
      * @return reloads the page on success, brings you to an error page on failure.
      */
     @PostMapping("/team-info/create-formation")
@@ -183,6 +193,7 @@ public class ViewTeamController {
             @RequestParam(name="formationID", defaultValue = "-1") long formationID,
             @RequestParam("customPlayerPositions") String customPlayerPositions,
             @RequestParam("custom") Boolean custom,
+            @RequestParam("formation-title") String formationTitle,
             RedirectAttributes redirectAttributes) {
         logger.info("POST /team-info/create-formation");
 
@@ -210,9 +221,11 @@ public class ViewTeamController {
         Formation formation;
         if (formationOptional.isPresent()) {
             formation = formationOptional.get();
+            formation.setTitle(formationTitle);
             formation.setFormation(newFormation);
         } else {
             formation = new Formation(newFormation, team);
+            formation.setTitle(formationTitle);
         }
         formation.setCustomPlayerPositions(customPlayerPositions);
         formation.setCustom(custom);

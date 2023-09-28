@@ -17,7 +17,7 @@ public class DefaultFunctions {
     }
 
     public static void pwCreateTeam() {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createTeam");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-team");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
         PlaywrightBrowser.page.locator("input#name").type("team");
@@ -41,7 +41,7 @@ public class DefaultFunctions {
 
         String teamName = String.valueOf(0);
             //create team
-            PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createTeam");
+            PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-team");
             PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
             PlaywrightBrowser.page.locator("input#name").type(teamName);
@@ -82,7 +82,7 @@ public class DefaultFunctions {
     public static void pwCreateNewTeamWithFormationAnd5Activity() {
 
         //create team
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createTeam");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-team");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
         PlaywrightBrowser.page.locator("input#name").type("team ag stats team");
@@ -180,7 +180,7 @@ public class DefaultFunctions {
     }
 
     public static void pwCreateTeamForWhiteboard() {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createTeam");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-team");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("input#name").type("whiteboardteam");
         PlaywrightBrowser.page.locator("input#sport").type("hockey");
@@ -190,27 +190,20 @@ public class DefaultFunctions {
     }
 
 
-    public static void pwCreateTeamForCompetition() {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createTeam");
+    public static void pwCreatePersonalActivity() {
+        //create activity
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-activity");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
-        PlaywrightBrowser.page.locator("input#name").type("CompetitionTeam");
-        PlaywrightBrowser.page.locator("input#sport").type("soccer");
+        PlaywrightBrowser.page.locator("#activityType").selectOption("Training");
+        PlaywrightBrowser.page.fill("#description", "desc");
+        PlaywrightBrowser.page.fill("#startDateTime", "2025-04-02T05:15");
+        PlaywrightBrowser.page.fill("#endDateTime", "2026-04-02T05:15");
+        PlaywrightBrowser.page.locator("input#address-line-1").type("1");
+        PlaywrightBrowser.page.locator("input#postcode").type("8042");
         PlaywrightBrowser.page.locator("input#city").type("Christchurch");
         PlaywrightBrowser.page.locator("input#country").type("New Zealand");
         PlaywrightBrowser.page.locator("div.submit-button button[type='submit']").click();
-    }
-
-    public static void pwCreateCompetition() {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-competition");
-        PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
-        PlaywrightBrowser.page.locator("input#name").type("soccercomp");
-        PlaywrightBrowser.page.locator("input#sport").type("soccer");
-        PlaywrightBrowser.page.fill("#startDateTime", "2025-04-02T05:15");
-        PlaywrightBrowser.page.fill("#endDateTime", "2026-04-02T05:15");
-        PlaywrightBrowser.page.locator("ul.users-teams-ul li").first().click();
-        PlaywrightBrowser.page.locator("div.submit-button button[type='submit']").click();
-
     }
 
 

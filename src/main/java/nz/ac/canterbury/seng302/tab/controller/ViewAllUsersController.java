@@ -68,9 +68,7 @@ public class ViewAllUsersController {
         model.addAttribute("currentSearch", currentSearch);
         model.addAttribute("page", page);
         model.addAttribute("listOfUsers", userList);
-        ArrayList<String> ls = new ArrayList<>(List.of("soccer1", "rugby1", "golf1", "time1", "oter1"));
-        ls.addAll(userService.findSportBysearch(currentSearch).stream().map(Sport::getName).toList());
-        model.addAttribute("listOfSports", ls); //nirhjah
+        model.addAttribute("listOfSports", userService.findSportBysearch(currentSearch).stream().map(Sport::getName).toList()); //nirhjah
         model.addAttribute("listOfCities", listOfCities);
         model.addAttribute("totalPages", userPage.getTotalPages());
         model.addAttribute("httpServletRequest", request);
