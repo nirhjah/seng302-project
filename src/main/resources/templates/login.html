@@ -62,7 +62,7 @@
         </div>
         <div class="wrapper">
             <h2 class ="home-title">Discover new coaching techniques</h2>
-            <img class ="home-image" th:src="@{/image/home/coach-tactics.svg}"/>
+            <img class ="home-image" th:src="@{/image/home/page1.svg}"/>
             <div class="pagination">
                 <div class="circle active"></div>
                 <div class="circle"></div>
@@ -103,15 +103,18 @@
     function switchPages(){
         if (currentIndex===0){
             homeTitle.innerText="Discover new coaching techniques";
-            homeImg.src = "image/home/coach-tactics.svg";
+            homeImg.src = "image/home/page1.svg";
+            homeImg.style.height='300px';
         }
         else if (currentIndex===1){
             homeTitle.innerText="Enjoy seamless team management";
-            homeImg.src = "image/home/team-management.svg";
+            homeImg.src = "image/home/page2.svg";
+            homeImg.style.height='350px';
         }
         else{
             homeTitle.innerText="Create dynamic demonstrations for your team";
-            homeImg.src = "image/home/coach-tactics.svg";
+            homeImg.src = "image/home/page3.svg";
+            homeImg.style.height='300px';
         }
     }
     circles.forEach((circle, index) => {
