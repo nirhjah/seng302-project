@@ -244,7 +244,7 @@ public class CreateActivityController {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             if (activity != null) {
                 model.addAttribute("actId", actId);
-                if (team != null) {
+                if (activity.getTeam() != null) {
                     model.addAttribute(FORMATION_PLAYER_POSITIONS, lineUpService.getFormationAndPlayersAndPosition(activity));
                 }
                 fillModelWithActivity(model, activity);
