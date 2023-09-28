@@ -319,7 +319,7 @@ public class CreateClubControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string("[{\"teamId\":4,\"name\":\"NewTeam\"}]"));
+                .andExpect(content().string("[{\"teamId\":37,\"name\":\"NewTeam\"}]"));
     }
 
     @Test
