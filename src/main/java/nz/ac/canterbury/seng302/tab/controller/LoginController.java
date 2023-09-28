@@ -117,15 +117,4 @@ public class LoginController {
         return "login";
     }
 
-
-//    /**
-//     * Takes the user to the home page if they don't want to login
-//     * @return redirect to the home page
-//     */
-//    @GetMapping("/cancel-login")
-//    public String cancelLogin()
-//    {
-//        logger.info("GET /");
-//        return "redirect:./demo";
-//    }
 }
