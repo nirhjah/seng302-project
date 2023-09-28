@@ -564,6 +564,19 @@
     background-color: #bbbbbb;
     max-height: 30%;
     width: 100%;
+}
+
+
+.whiteboard-media-display .open-link-box {
+    border: groove grey;
+    width: 80%;
+    max-height: 50%;
+    background-color: #cccccc;
+
+    width: 90%;
+    max-height: 50%;
+    height: 100%;
+    margin: auto;
 
 }
 

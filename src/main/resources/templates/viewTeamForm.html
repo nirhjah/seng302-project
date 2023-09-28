@@ -413,6 +413,10 @@
                         </p>
                     </div>
 
+                    <div class="open-link-box">
+
+                    </div>
+
                     <div class="submit-button" th:if="${isUserManagerOrCoach}">
                         <a th:href="@{whiteboard(teamID=${teamID})}">
                             <button type="button">Whiteboard</button>
@@ -435,7 +439,7 @@
             let nameBox = document.getElementById("name-box");
             let publicBox = document.getElementById("public-box");
             // TODO: Set href tag to url link.
-            let publicText = isPublic ? "public" : "private";
+            let publicText = isPublic ? "Public" : "Private";
             publicBox.innerHTML = "Visibility: ".concat(publicText);
             nameBox.innerHTML = name;
             // let openButton = document.getElementById();
