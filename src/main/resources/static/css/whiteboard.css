@@ -558,7 +558,8 @@ input[type="range"]::-moz-range-track {
     margin: 105px auto auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 25%;
+    width: 480px;
+    max-height: 90%;
     border-radius: 20px;
     bottom: unset;
 }
@@ -695,8 +696,8 @@ input[type="range"]::-moz-range-track {
 
 
 
-@media (max-width: 930px) {
+@media (max-width: 480px) {
     .recording-modal-content {
-        width: 63% !important;
+        width: 100% !important;
     }
 }
