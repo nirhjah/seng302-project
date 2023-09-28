@@ -240,11 +240,10 @@ public class ViewActivityController {
 
         // attributes for the subs
         // all players who are currently playing - for the sub off
-        List<User> playersPlaying = activityService.getAllPlayersCurrentlyPlaying(activity.getId());
-        model.addAttribute("playersInLineUp", playersPlaying);
+        List<User> teamMembers = activity.getInvolvedMembers();
+        model.addAttribute("playersInLineUp", teamMembers);
         // all players who arent playing - for the sub on
-        List<User> playersNotPlaying = activityService.getAllPlayerSubstitutes(activity.getId());
-        model.addAttribute("playersNotInLineUp", playersNotPlaying);
+        model.addAttribute("playersNotInLineUp", teamMembers);
 
         // Rambling that's required for navBar.html
         model.addAttribute(httpServletRequestString, request);
