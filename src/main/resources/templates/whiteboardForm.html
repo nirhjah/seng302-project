@@ -360,10 +360,15 @@
     const recordingModal = document.getElementById('recording-modal');
 
     const whiteboardTitle = document.querySelector('input.whiteboard-title');
-            
+    
+    // So typing doesn't fire off the keyboard shortcuts
     whiteboardTitle.addEventListener('keydown', function (event) {
         event.stopPropagation();
     });
+    
+    whiteboardTitle.addEventListener('blur', () => {
+        whiteboardTitle.value = whiteboardTitle.value.trim();
+    })
 
     /**
      * Functions related to the canvas
