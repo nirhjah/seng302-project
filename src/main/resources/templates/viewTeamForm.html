@@ -397,7 +397,7 @@
                                     th:data-name="${obj.getName()}"
                                     th:data-imgurl="@{/whiteboard-media/thumbnail/{id}(id = ${obj.id})}"
                                     th:data-linkurl="@{/whiteboard-media/video/{id}(id = ${obj.id})}"
-                                    th:onclick="'whiteboardMediaOnClick(this.getAttribute(\'data-name\'), this.getAttribute(\'data-public\'), this.getAttribute(\'data-imgurl\'), this.getAttribute(\'data-linkurl\'), false)'">
+                                    th:onclick="'whiteboardMediaOnClick(this.getAttribute(\'data-name\'), this.getAttribute(\'data-public\'), this.getAttribute(\'data-imgurl\'), this.getAttribute(\'data-linkurl\'), true)'">
 
 
                                     <img th:src="@{/whiteboard-media/thumbnail/{id}(id = ${obj.id})}"  class="card-img-top"
@@ -426,7 +426,7 @@
                             <img id="whiteboard-media-image" th:src="@{/image/icons/pitch.svg}"/>
 
                             <div class="button-box">
-                                <img class="click-image" th:src="@{/image/icons/play.svg}"/>
+                                <img class="click-image" id="whiteboard-click-image" th:src="@{/image/icons/play.svg}" style="visibility: hidden"/>
                             </div>
                         </a>
                     </div>
@@ -463,6 +463,7 @@
             let publicBox = document.getElementById("public-box");
             let img = document.getElementById("whiteboard-media-image");
             let link = document.getElementById("open-media-link");
+            let clickImage = document.getElementById("whiteboard-click-image");
 
             // Set display text:
             let publicText = isPublic ? "Public" : "Private";
@@ -472,6 +473,8 @@
             // Set links:
             img.src = imageURL;
             link.href = linkURL;
+
+            clickImage.style.visibility = isRecording ? "visible" : "hidden";
         }
 
         const dropdown = document.getElementById('dropdown');
