@@ -20,7 +20,7 @@
 
             <!--/* Activity Type dropdown */-->
             <div class="select-container">
-                <label for="activityType">Activity Type <span class="required">*</span> </label>
+                <label for="activityType">Activity Type<span class="required"> *</span> </label>
                 <select th:field="*{activityType}" name="activityType" id="activityType" onchange="updateFormationList()">
                     <option th:each="type : ${activityTypes}"
                             th:value="${type}"
@@ -34,7 +34,7 @@
             <!--/* Team selection dropdown */-->
             <div class="select-container">
                 <div class="select-box">
-                    <label for="team">Activity Team <span class="required">*</span></label>
+                    <label for="team">Activity Team<span class="required"> *</span></label>
                     <select th:field="*{team}" name="team" id="team" onchange="updateFormationList()">
                         <option value="-1">(No Team)</option>
                         <option th:each="team : ${teamList}"
@@ -54,8 +54,9 @@
                         <option value="-1">(No Formation)</option>
                         <option th:each="forma : ${teamFormations}"
                                 th:value="${forma.formationId}"
-                                th:text="${forma.formation}"
+                                th:text="${forma}"
                                 th:selected="${forma == selectedFormation}"
+                                th:data-formation="${forma.formation}"
                                 th:data-custom="${forma.custom}"
                                 th:data-custom-positions="${forma.customPlayerPositions}"
                         ></option>
@@ -98,7 +99,7 @@
 
             <!--/* Activity Description */-->
             <div class="description-box">
-                <label for="description">Description: <span class="required">*</span></label>
+                <label for="description">Description:<span class="required"> *</span></label>
                 <textarea class="description-text" id="description" th:name="description" autofocus placeholder=""
                           th:text="*{description}"></textarea>
                 <div th:each="err : ${#fields.errors('description')}" th:text="${err}" class="error-message"></div>
@@ -110,7 +111,7 @@
                 <div class="input-box">
                     <input type="datetime-local" class="datetime-input" id="startDateTime" name="startDateTime"
                            th:value="*{startDateTime}">
-                    <label for="startDateTime">Start date & time of activity<span class="required">*</span> </label>
+                    <label for="startDateTime">Start date & time of activity<span class="required"> *</span> </label>
                     <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}" class="error-message"></div>
                 </div>
 
@@ -118,7 +119,7 @@
                 <div class="input-box">
                     <input type="datetime-local" class="datetime-input" id="endDateTime" name="endDateTime"
                            th:value="*{endDateTime}">
-                    <label for="endDateTime">End date & time of activity<span class="required">*</span> </label>
+                    <label for="endDateTime">End date & time of activity<span class="required"> *</span> </label>
                     <div th:each="err : ${#fields.errors('endDateTime')}" th:text="${err}" class="error-message"></div>
                 </div>
             </div>
@@ -158,14 +159,14 @@
             <div class="input-box">
                 <input type="text" class="form-control" id="city" th:name="city"
                        data-cy="location" autofocus placeholder="" th:value="*{city}">
-                <label for="city">City <span class="required">*</span></label>
+                <label for="city">City <span class="required"> *</span></label>
             </div>
             <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
 
             <div class="input-box">
                 <input type="text" class="form-control" id="country" th:name="country"
                        data-cy="location" autofocus placeholder="" th:value="*{country}">
-                <label for="country">Country <span class="required">*</span></label>
+                <label for="country">Country <span class="required"> *</span></label>
             </div>
             <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
             <div class="submit-button">
@@ -292,7 +293,7 @@
         const remainingChars = limit - value.length;
         charCount.textContent = `Characters remaining: ${remainingChars}`;
 
-        if (remainingChars <= 0) {
+        if (remainingChars < 0) {
             textarea.style.borderColor = 'red';
             charCount.style.color='red';
         } else {
@@ -387,7 +388,7 @@
 
         const reservesLi = document.querySelectorAll(".reserves-li");
         const formationId = target.value;
-        const formation = target.textContent;
+        const formation = target.getAttribute("data-formation");
         const custom = target.getAttribute("data-custom")
         const customPlayerPositions = target.getAttribute("data-custom-positions");
         reservesLi.forEach(li => {
@@ -559,7 +560,7 @@
         })
         deactivateSubs();
         const selectedFormation = formationDropdown.options[formationDropdown.selectedIndex]
-        const formation = selectedFormation.textContent;
+        const formation = selectedFormation.getAttribute("data-formation");
         const custom = selectedFormation.getAttribute("data-custom")
         const customPlayerPositions = selectedFormation.getAttribute("data-custom-positions");
         generatedOrCustom(formation, custom === "true", customPlayerPositions);
@@ -578,15 +579,13 @@
         let item = document.createElement("option");
         item.value = -1;
         item.innerText = emptyValueName;
-        /*
-                    item.addEventListener("click", onFormationOptionClick);
-        */
         formationDropdown.appendChild(item);
         // Add the remaining fields
         for (let i = 0; i < formationList.length; i++) {
             const formation = formationList[i];
             const option = document.createElement("option");
-            option.textContent = formation.formation;
+            option.setAttribute("data-formation", formation.formation)
+            option.textContent = formation;
             option.value = formation.formationID;
             option.setAttribute("data-custom-positions", formation.customPlayerPositions);
             option.setAttribute("data-custom", formation.custom);
