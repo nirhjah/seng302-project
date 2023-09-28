@@ -405,8 +405,13 @@
                 </div>
                 <div class="whiteboard-media-display">
                     <div class="media-container">
-                        <div class="info-box" id="info-box">
+                        <div class="info-box" >
+                            <p id="name-box">
+                                No selection
+                            </p>
+                            <p id="public-box">
 
+                            </p>
                         </div>
                     </div>
 
@@ -427,14 +432,17 @@
     </footer>
 
     <script th:inline="javascript">
+        function whiteboardMediaOnClick(name, isPublic, url, isRecording) {
+            console.log(name, isPublic, url, isRecording);
+            let nameBox = document.getElementById("name-box");
+            let publicBox = document.getElementById("public-box");
+            // TODO: Set href tag to url link.
+            let text = isPublic ? "public" : "private"
+            publicBox.innerHTML = text
 
-        function whiteboardMediaOnClick(id, isPublic, url, isRecording) {
-            console.log(id, isPublic, url, isRecording);
-            let infoBox = document.getElementById("info-box");
-            infoBox.innerHTML = name;
+            nameBox.innerHTML = name;
+            // let openButton = document.getElementById();
         }
-
-
 
         const dropdown = document.getElementById('dropdown');
         const topScorersDiv = document.getElementById('topScorersDiv');
