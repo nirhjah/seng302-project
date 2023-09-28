@@ -107,6 +107,7 @@ public class WhiteboardMediaController {
             }
         } else {
             logger.warn("No team found with id: {}", teamId);
+            return "redirect:/home";
         }
         return "redirect:/whiteboard?teamID=" + teamId;
     }
