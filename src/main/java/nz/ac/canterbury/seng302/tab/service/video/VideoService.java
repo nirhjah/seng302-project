@@ -38,6 +38,7 @@ public abstract class VideoService<Entity extends Identifiable & HasVideo> exten
     private ResponseEntity<byte[]> getResponse(byte[] videoData, String extension) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "video/" + extension);
+        headers.add("Content-Disposition", "inline; filename=\"video." + extension + "\"");
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .headers(headers)
