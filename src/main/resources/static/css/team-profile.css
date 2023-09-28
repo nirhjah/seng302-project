@@ -15,12 +15,19 @@
     .wrapper-profile {
         width: 90vw !important;
     }
+
 }
 
 @media (max-width: 960px) {
     .team-profile-form {
         min-height: unset;
     }
+
+    #team-wrapper .content {
+        max-height: unset !important;
+        height: unset !important;
+    }
+
 
     .wrapper-profile {
         display: flex !important;
@@ -29,6 +36,7 @@
         align-items: center !important;
         width: 90vw !important;
         height: unset !important;
+        margin-top: 20px;
     }
 
     .wrapper-profile .profile-pic {
@@ -87,18 +95,21 @@
 
 }
 
-@media (max-width: 850px) {
-   .formation-display.active {
+@media (max-width: 920px) {
+    .formation-display.active {
         display: block !important;
     }
 
-    .create-formation-display {
-        margin-bottom: 10px;
+    .formation-RHS {
+        margin-top: 15px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
     }
 
-    .formation-RHS button {
-        margin-right: 10px;
-    }
+
+
 }
 
 @media (max-width:  500px) {
@@ -345,7 +356,8 @@
 
 .create-formation-display {
     display: flex;
-    margin-top: 2vh;
+    margin: 2vh 0 5px 0;
+    max-width: 1px;
 }
 
 .content.formations {
@@ -353,16 +365,27 @@
     overflow: hidden;
 }
 
+.content {
+    max-height: 460px;
+    height: 100vh;
+}
+
+#team-profile-tab .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 .formation-display {
-    margin: 20px 23px;
+    margin: 2vh 3% 3vh 6%;
+    justify-content: space-between;
 }
 
 .input-box {
     min-width: 96px;
-    height: unset;
     margin: unset;
+    height: 38px;
     width: 30%;
-
 }
 
 .error-message, .formation-display {
@@ -375,7 +398,6 @@
 
 .formation-display.active {
     display: flex;
-    justify-content: center;
     width: 100%;
 }
 
@@ -383,14 +405,13 @@
     background-color: #0b2239;
     border: none;
     outline: none;
-    color: #fff;
-    border-radius: 30px;
-    font-size: 1.1em;
-    font-weight: 500;
-    padding: 0 10px;
-    height: 34px;
+    padding: 10px 20px;
     margin-left: 5px;
     white-space: nowrap;
+    font-size: 1em;
+    color: #fff;
+    border-radius: 30px;
+    font-weight: bold;
 }
 
 .formation-display button:hover {
@@ -405,7 +426,7 @@
 
 .formation-RHS button {
     float: right;
-    margin-top: 5px;
+    margin-top: 10px;
 }
 
 .col-wrapper {
@@ -452,6 +473,7 @@
     font-size: 20px;
     font-family: revert;
     padding: 0 0 2px 0;
+    z-index: 1;
 }
 
 .formation-list-outer {
@@ -552,6 +574,7 @@
     font-style: italic;
     font-size: small;
     line-height: 1.1rem;
+    white-space: nowrap;
 }
 
 /* Other CSS files disable the icon before a <li>, this adds it back for specific children */
@@ -564,10 +587,45 @@ ul.formation-description > li {
     text-align: center;
 }
 
-.formation-RHS {
-    margin: auto;
-}
-
 .tabNameAndIndex {
     display: none;
 }
+
+.formation-description ul {
+    margin-bottom: 10px;
+}
+
+.formation-title-display {
+    margin-top: 20px;
+    width: fit-content;
+}
+
+.formation-title-display .input-box {
+    width: inherit;
+}
+
+.formation-RHS .formation-description {
+    margin-top: -5px;
+}
+
+#team-profile-tab .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+#team-wrapper .content {
+    max-height: 460px;
+    height: 100vh;
+}
+
+#generate-formation-button img {
+    width: 18px;
+    margin-right: 10px;
+}
+
+#generate-formation-button {
+    display: flex;
+    align-items: center;
+}
+

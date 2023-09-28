@@ -13,6 +13,9 @@
 <body class="view-teams-background">
     <!--/* Nav-bar */-->
     <div th:insert="~{fragments/navBar.html::navbar(navTeams=${navTeams})}"></div>
+    <div class="view-all-header">
+        <h1>View All Teams</h1>
+    </div>
     <!--/* Search Field */-->
     <form id="search-form" th:action="@{view-teams}" method="get">
         <div class="search-bar">

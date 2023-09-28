@@ -169,6 +169,7 @@ public class ViewTeamController {
      *                              "20px30px;40px20px"
      * @param custom boolean to represent whether a formation has been manually changed by dragging and dropping the
      *               players rather than simply being from a generated formation string
+     * @param formationTitle optional title for formation
      * @return reloads the page on success, brings you to an error page on failure.
      */
     @PostMapping("/team-info/create-formation")
@@ -178,6 +179,7 @@ public class ViewTeamController {
             @RequestParam(name="formationID", defaultValue = "-1") long formationID,
             @RequestParam("customPlayerPositions") String customPlayerPositions,
             @RequestParam("custom") Boolean custom,
+            @RequestParam("formation-title") String formationTitle,
             RedirectAttributes redirectAttributes) {
         logger.info("POST /team-info/create-formation");
 
@@ -205,9 +207,11 @@ public class ViewTeamController {
         Formation formation;
         if (formationOptional.isPresent()) {
             formation = formationOptional.get();
+            formation.setTitle(formationTitle);
             formation.setFormation(newFormation);
         } else {
             formation = new Formation(newFormation, team);
+            formation.setTitle(formationTitle);
         }
         formation.setCustomPlayerPositions(customPlayerPositions);
         formation.setCustom(custom);
