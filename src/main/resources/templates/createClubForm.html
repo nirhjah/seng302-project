@@ -43,7 +43,7 @@
             </div>
 
             <div class="input-box">
-                <input type="text" class="form-control" id="sport" th:name="sport" th:value="*{sport}"
+                <input type="text" class="form-control" id="sport" th:name="sport" th:value="*{sport}"  oninput="getValidTeams()"
                        data-cy="sport" autofocus placeholder=""
                        title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
                 <label for="sport">Club Sport <span class="required">*</span></label>
@@ -105,10 +105,10 @@
 
             <label class="selectTeamsLabel"> Select Teams </label>
             <select th:field="*{selectedTeams}" name="selectedTeams" id="selectedTeams" multiple>
-                <option class="selectTeamsOption" th:each="team : ${listOfTeams}"
-                        th:value="${team.teamId}"
-                        th:text="${team}"
-                        th:selected="${selectedTeams != null && selectedTeams.contains(team)}"></option>
+<!--                <option class="selectTeamsOption" th:each="team : ${listOfTeams}"-->
+<!--                        th:value="${team.teamId}"-->
+<!--                        th:text="${team}"-->
+<!--                        th:selected="${selectedTeams != null && selectedTeams.contains(team)}"></option>-->
             </select>
 
             <label style="font-family: 'Noto Sans', sans-serif"> Hold ctrl and click on teams to select/deselect
@@ -133,6 +133,48 @@
     const ENDPOINT = path + "/geocode/autocomplete";
 </script>
 <script th:inline="javascript">
+/*
+
+    const sportsInput = document.getElementById("sport")
+
+    function clearOptionsInSelect() {
+        var selectElement = document.getElementById("selectedTeams");
+        while (selectElement.options.length > 0) {
+            selectElement.remove();
+        }
+
+    }
+
+ */
+
+
+
+
+    function getValidTeams() {
+        var sportInput = document.getElementById("sport");
+        var selectedSport = sportInput.value;
+
+        axios.get("/teams_by_sport", { params: { sport: selectedSport } })
+            .then(function (response) {
+                var teams = response.data;
+                generateTeamOptions(teams);
+            })
+            .catch(function (error) {
+                console.error(error);
+            });
+        }
+
+    function generateTeamOptions(teams) {
+        var selectElement = document.getElementById("selectedTeams");
+        selectElement.innerHTML = "";
+        teams.forEach(function (team) {
+            var option = document.createElement("option");
+            option.value = team.id;
+            option.textContent = team.name;
+            selectElement.appendChild(option);
+        });
+    }
+
 
     /**
      * The delay time (in milliseconds) for debouncing the search input.

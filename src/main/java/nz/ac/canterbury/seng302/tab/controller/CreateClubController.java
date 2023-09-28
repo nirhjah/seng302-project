@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import nz.ac.canterbury.seng302.tab.api.response.ClubTeamInfo;
 import nz.ac.canterbury.seng302.tab.entity.*;
 import nz.ac.canterbury.seng302.tab.form.CreateAndEditClubForm;
 import nz.ac.canterbury.seng302.tab.helper.exceptions.UnmatchedSportException;
@@ -12,6 +13,8 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -205,6 +208,7 @@ public class CreateClubController {
             }
 
             return "redirect:/view-club?clubID=" + club.getClubId();
+
         }
     }
 
@@ -219,6 +223,7 @@ public class CreateClubController {
             teamsAlreadyInClub.clearTeamClub();
         }
         try {
+            System.out.println("THESE ARE SELECTED TEAMS" + selectedTeams);
             if (selectedTeams != null) {
                 for (String team : selectedTeams) {
                     if ( teamService.getTeam(Long.parseLong(team)).getTeamClub() != null ) {
@@ -268,5 +273,21 @@ public class CreateClubController {
         model.addAttribute(HTTP_SERVLET_REQUEST_STRING, httpServletRequest);
         model.addAttribute("listOfTeams", teamsUserManagerOf);
     }
+
+
+    @GetMapping("/teams_by_sport")
+    public ResponseEntity<List<ClubTeamInfo>> getTeamsBySport(@RequestParam String sport) {
+       /* List<Team> teams = teamService.findTeamsBySport(sport);
+        return ResponseEntity.ok(teams);*/
+
+        return ResponseEntity.ok().body(
+                teamService.findTeamsBySport(sport).stream().map(team -> new ClubTeamInfo(
+                        team.getTeamId(),
+                        team.getName()
+                )).toList()
+        );
+
+    }
+
 
 }

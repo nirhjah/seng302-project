@@ -283,4 +283,7 @@ public class TeamService {
     public Optional<Team> findTeamById(long id) {
         return teamRepository.findById(id);
     }
+
+
+    public List<Team> findTeamsBySport(String sport) { return teamRepository.findTeamsBySport(sport); }
 }
