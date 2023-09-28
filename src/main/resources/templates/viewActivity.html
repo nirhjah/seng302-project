@@ -32,7 +32,6 @@
             <div class="tab" id="facts-tab">
                 <img class="tab-icon" th:src="@{/image/icons/editform.svg}"/>
                 <button class="tab-button"> Facts &nbsp;</button>
-                <div class="tab-line"></div>
             </div>
             <div class="tab" id="formations-tab" th:if="${canShowScores}">
                 <img class="tab-icon" th:src="@{/image/icons/formation.svg}"/>
@@ -45,6 +44,7 @@
                 <button class="tab-button"> Score &nbsp;</button>
             </div>
         </div>
+        <div class="tab-line"></div>
 
         <div class="content-box active" id="general-tab">
             <div class="content general">
@@ -256,7 +256,7 @@
                                             th:text="${err}" class="error-message"/>
                                     </ul>
                                 </div>
-                                <div class="description-box">
+                                <div >
                                     <label class="goal-form-labels" for="description">Description</label>
                                     <textarea class="description-text" id="description" th:name="description" autofocus
                                               placeholder=""
@@ -323,7 +323,7 @@
                                         <img class="swap-icon" th:src="@{/image/icons/swap.svg}"/>
                                         <div class="player-container">
                                             <img class="player-image"
-                                                 th:src="@{/user-profile-picture/{id}(id = ${subsitution.playerOn.userId})}">
+                                                 th:src="@{/user-profile-picture/{id}(id = ${subsitution.playerOff.userId})}">
                                             <div class="player-out-container">
                                                 <span>OUT</span>
                                                 <span class="player-out"
@@ -605,9 +605,6 @@
         const playersAndPositions = /*[[${playersAndPositions}]]*/ {};
         const playerNames = /*[[${playerNames}]]*/ {};
         const positions = pitch.childNodes;
-        console.log(playersAndPositions);
-        console.log(playerNames);
-        console.log(positions);
 
         for (const positionIndex in playersAndPositions) {
             const playerId = playersAndPositions[positionIndex];
@@ -621,12 +618,11 @@
                 playerNameElement.style.display = 'inline-block';
                 playerNameElement.style.width = 'auto';
                 playerNameElement.style.marginLeft = '-4px';
-
                 const playerImage = position.querySelector('.player-profile-img');
                 playerImage.src = "user-profile-picture/" + playerId;
                 playerImage.alt = "My Profile";
 
-                position.style.backgroundImage = 'none';
+                position.style.backgroundImage = 'none !important';
             }
         }
 
@@ -765,6 +761,7 @@
     }
 
     //functionality for clicking on tabs
+
     tabs.forEach((tab, index) => {
         tab.addEventListener('click', (e) => {
             tabs.forEach(otherTab => {
@@ -772,13 +769,14 @@
             });
             tab.classList.add('active');
             if (index === 0) {
-                tabLine.style.left = "18px";
+                tabLine.style.left = "0";
             } else if (index === 1) {
-                tabLine.style.left = "247px";
+                tabLine.style.left = "25%";
             } else if (index === 2) {
-                tabLine.style.left = "460px";
-            } else {
-                tabLine.style.left = "685px";
+                tabLine.style.left = "50%";
+            }
+            else {
+                tabLine.style.left = "75%";
             }
             displayBox.forEach(box => {
                 box.classList.remove('active')
@@ -790,6 +788,8 @@
             displayContent[index].classList.add('active');
         });
     });
+
+
 
     //Description Char Limit For Fact
     const textareaFact = document.getElementById('description');

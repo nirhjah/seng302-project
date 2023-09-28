@@ -90,18 +90,19 @@ public class WhiteboardRecordingService extends VideoService<WhiteBoardRecording
         return repository.save(recording);
     }
 
-    public void createRecordingForTeam(MultipartFile file, String name, Team team, boolean isPublic) {
+    public WhiteBoardRecording createRecordingForTeam(MultipartFile file, String name, Team team, boolean isPublic) {
         WhiteBoardRecording recording = createRecording(file, isPublic);
         recording.setTeam(team);
         recording.setName(name);
         recording = repository.save(recording);
         team.addRecording(recording);
         teamService.updateTeam(team);
+        return recording;
     }
 
 
     /**
-     * Gets a page of public whiteboard recordings 
+     * Gets a page of public whiteboard recordings
      * @param pageable Page size, number, and sorting info
      * @param currentSearch Search by name
      * @param sports The list of sports that the whiteboard's owner (team) can be part of
@@ -126,5 +127,9 @@ public class WhiteboardRecordingService extends VideoService<WhiteBoardRecording
 
     public List<String> getAllPublicWhiteboardSports() {
         return repository.getAllDistinctPublicSports();
+    }
+
+    public Optional<WhiteBoardRecording> findById(long id) {
+        return repository.findById(id);
     }
 }

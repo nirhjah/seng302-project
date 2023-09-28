@@ -3,9 +3,12 @@ package nz.ac.canterbury.seng302.tab.unit.service;
 import nz.ac.canterbury.seng302.tab.authentication.UserPasswordEncoder;
 import nz.ac.canterbury.seng302.tab.config.ThreadPoolTaskSchedulerConfig;
 import nz.ac.canterbury.seng302.tab.entity.Location;
+import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
+import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +23,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Import({UserService.class, ThreadPoolTaskSchedulerConfig.class, UserPasswordEncoder.class})
@@ -33,7 +35,13 @@ public class UserServiceTest {
     private UserService userService;
 
     @Autowired
+    private TeamService teamService;
+
+    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TeamRepository teamRepository;
 
 
 
@@ -117,5 +125,57 @@ public class UserServiceTest {
         assertTrue(actualUsers.stream().anyMatch(u -> u == user2));
         
     }
+
+    @Test
+    void testFindUsersEmptyFilters() throws Exception {
+        User user = new User("Hee", "Account", "tab@gmail.com", "password", location);
+        userRepository.save(user);
+        User user2 = new User("tab@gmail.com", "test", "test@gmail.com", "password", location);
+        userRepository.save(user2);
+        User user3 = new User("Heeman", "test", "test2@gmail.com", "password", location);
+        userRepository.save(user3);
+
+        Pageable pageable = PageRequest.of(0, 10, UserService.SORT_BY_LAST_AND_FIRST_NAME);
+
+        assertTrue(List.of(user, user2, user3).containsAll(userService.findUsersByNameOrSportOrCity(pageable, List.of(), List.of(), "").toList()));
+    }
+
+    @Test
+    void testEmailIsInUse() throws Exception {
+        User user = new User("Hee", "Account", "tab@gmail.com", "password", location);
+        userRepository.save(user);
+        assertTrue(userService.emailIsInUse(user.getEmail()));
+    }
+
+    @Test
+    void testEmailIsInUse_EmailDoesntExist() throws Exception {
+        User user = new User("Hee", "Account", "tab@gmail.com", "password", location);
+        userRepository.save(user);
+        assertFalse(userService.emailIsInUse("test@test.com"));
+    }
+
+    @Test
+    void testUpdatePassword() throws Exception {
+        User user = new User("Hee", "Account", "tab@gmail.com", "password", location);
+        userRepository.save(user);
+        String pw = user.getPassword();
+        userService.updatePassword(user, "hello!H999");
+        assertNotEquals(pw, user.getPassword());
+    }
+
+    @Test
+    void testUserJoinTeam() throws Exception {
+        Team team = new Team("test", "sports", new Location(null, null, null, "chc", null, "nz"));
+        teamRepository.save(team);
+        User user = new User("Hee", "Account", "tab@gmail.com", "password", location);
+        userRepository.save(user);
+
+        userService.userJoinTeam(user, team);
+
+        assertTrue(teamService.findTeamsWithUser(user).contains(team));
+
+    }
+
+
 
 }

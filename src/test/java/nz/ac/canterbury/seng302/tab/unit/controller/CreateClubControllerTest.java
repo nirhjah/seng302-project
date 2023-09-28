@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
+import nz.ac.canterbury.seng302.tab.api.response.ClubTeamInfo;
 import nz.ac.canterbury.seng302.tab.entity.Club;
 import nz.ac.canterbury.seng302.tab.entity.Location;
 import nz.ac.canterbury.seng302.tab.entity.Team;
@@ -20,9 +21,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -299,6 +303,43 @@ public class CreateClubControllerTest {
                 .param("postcode", "8042")).andExpect(status().isBadRequest());
 
         verify(mockClubService, times(0)).updateOrAddClub(any());
+    }
+
+
+    @Test
+    void testGettingTeamsBySportNoClub() throws  Exception {
+        String sport = "YourSport";
+        Team teamTest = new Team("NewTeam", sport);
+        Team teamTestNotMatchingSport = new Team("NewTeam", "Soccer");
+        teamRepository.save(teamTest);
+        teamRepository.save(teamTestNotMatchingSport);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/teams_by_sport_not_in_club")
+                        .param("sport", sport)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string("[{\"teamId\":37,\"name\":\"NewTeam\"}]"));
+    }
+
+    @Test
+    void testGettingTeamsBySport() throws  Exception {
+        Team teamInClub = new Team("NewTeam", "Rugby");
+        Team teamNotInClubButSameSport = new Team("OtherTeam", "Rugby");
+        Team teamNotInClubAndNotMatchingSport = new Team("RandomTeam", "Cricket");
+
+        teamRepository.save(teamInClub);
+        teamRepository.save(teamNotInClubButSameSport);
+        teamRepository.save(teamNotInClubAndNotMatchingSport);
+        teamInClub.setTeamClub(club);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/teams_by_sport")
+                        .param("sport", "Rugby")
+                        .param("clubId", String.valueOf(club.getClubId()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string("[{\"teamId\":3,\"name\":\"test3\"},{\"teamId\":4,\"name\":\"NewTeam\"},{\"teamId\":5,\"name\":\"OtherTeam\"}]"));
     }
 
 }

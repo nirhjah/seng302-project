@@ -297,10 +297,6 @@ public class UserService {
         updateOrAddUser(user);
     }
 
-    public List<User> findUsersBySportAndName(String sport, String name) {
-        return userRepository.findUserBySportAndName(sport, name);
-    }
-
     /**
      * gets all users who arent federation managers
      * @param pageable

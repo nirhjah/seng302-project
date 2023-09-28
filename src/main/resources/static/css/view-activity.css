@@ -83,7 +83,6 @@ input[type=number] {
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important;
-        align-items: center !important;
         width: 90vw !important;
         height: unset !important;
     }
@@ -848,6 +847,10 @@ hr.rounded {
     /*    margin-left: 34px !important;*/
     /*}*/
 
+    .wrapper-profile {
+        margin-top:50px !important;
+    }
+
     .score-display h1 {
         margin-left: -26px;
     }
@@ -1166,6 +1169,9 @@ table, th, td {
     border-color:#415a77;
     margin-bottom:15px;
     font-size:17px;
+}
+.player.uneditable{
+    background-image:none !important;
 }
 
 .submit-button-container{

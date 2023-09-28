@@ -13,8 +13,8 @@
 <div class="whiteboard-form">
     <div class="whiteboard-wrapper">
         <div class="whiteboard-dropdowns">
-            <h3 class="whiteboard-title" contenteditable="true">Untitled</h3>
-
+            <input type="text" placeholder="Untitled" class="whiteboard-title" maxlength=26>
+            <hr>
             <div class="dropdown">
                 <label for="pitch">Pitch Type</label>
                 <select class="select" id="pitch"></select>
@@ -39,7 +39,7 @@
                 <hr>
             </div>
             <div class="dropdown">
-                <label for="lineup-dropdown" >Line-Up</label>
+                <label for="lineup-dropdown">Line-Up</label>
                 <select class="select" id="lineup-dropdown">
                     <option value="-1">(No Lineup)</option>
                     <option th:each="lineup : ${teamLineUps}"
@@ -59,15 +59,18 @@
                 <div class="player-list">
                     <ul class="player-ul">
                         <li class="player-card" th:each="member : ${teamMembers}">
-                            <img class="player-image" th:src="@{/user-profile-picture/{id}(id = ${member.userId})}" draggable="false">
-                            <span class="player-name" th:text="|${member.firstName} ${member.lastName}|"></span>
-                            <input class="player-id" type="hidden" th:value="${member.id}">
+                            <div>
+                                <img class="player-image" th:src="@{/user-profile-picture/{id}(id = ${member.userId})}"
+                                     draggable="false">
+                                <input class="player-id" type="hidden" th:value="${member.id}">
+                            </div>
+                            <div class ="player-name-div">
+                                <span class="player-name" th:text="|${member.firstName} ${member.lastName}|"></span>
+                            </div>
                         </li>
-
                     </ul>
                 </div>
             </div>
-
 
         </div>
         <div>
@@ -280,6 +283,7 @@
                         <input type="hidden" for="teamId" id="teamIdForRecording" name="teamIdForRecording" th:value="${teamId}"/>
 
                         <input type="file" id="recording-input" name="recording-input"/>
+                        <input type="file" id="thumbnail" name="thumbnail"/>
                         <div class="input-box">
                             <input class="form-control" type="text" name="recording-name" id="recording-name"
                                    required>
@@ -287,6 +291,11 @@
                                 Recording name:
                                 <span class="required">*</span>
                             </label>
+                        </div>
+
+                        <div class="public-button">
+                          <label for="isPublic">Users outside of my team can view:</label>
+                          <input type="checkbox" id="isPublic" name="isPublic" value="true" style="cursor: pointer;">
                         </div>
                         <div class="submit-button">
                             <button id="submit-recording" type="submit">Save Recording</button>
@@ -318,6 +327,13 @@
           <span class="required">*</span>
         </label>
       </div>
+
+      <!-- <div class="input-box"> -->
+      <div class="public-button">
+        <label for="isPublic">Users outside of my team can view:</label>
+        <input type="checkbox" id="isPublic" name="isPublic" value="true" style="cursor: pointer;">
+      </div>
+
       <div class="submit-button">
         <button id="submit-screenshot" type="submit">Save</button>
       </div>
@@ -347,40 +363,16 @@
 
     const recordingModal = document.getElementById('recording-modal');
 
-
-    /**
-     * Handles editing the whiteboard name function. When the name is clicked, the name can be editable.
-     * There is also a limit of 26 characters for the whiteboard name. When the limit of characters is reached, the name cannot be editable
-     * unless clicked on again.
-     */
-
-    let isLabelFocused = false;
-    const whiteboardDropdowns = document.querySelector('.whiteboard-dropdowns');
-    const label = whiteboardDropdowns.querySelector('h3');
-
-    label.addEventListener('click', () => {
-        label.setAttribute('contenteditable', 'true');
-        label.focus();
-        isLabelFocused = true;
+    const whiteboardTitle = document.querySelector('input.whiteboard-title');
+    
+    // So typing doesn't fire off the keyboard shortcuts
+    whiteboardTitle.addEventListener('keydown', function (event) {
+        event.stopPropagation();
     });
-
-    label.addEventListener('input', () => {
-        const editedText = label.textContent;
-        isLabelFocused = true;
-        if (editedText.length >= 26) {
-            label.textContent = editedText.slice(0, 26);
-            label.setAttribute('contenteditable', 'false');
-        } else {
-            label.setAttribute('contenteditable', 'true');
-        }
-    });
-
-    label.addEventListener('blur', () => {
-        const editedText = label.textContent;
-        label.textContent = editedText || 'Untitled';
-        label.setAttribute('contenteditable', 'false');
-        isLabelFocused = false;
-    });
+    
+    whiteboardTitle.addEventListener('blur', () => {
+        whiteboardTitle.value = whiteboardTitle.value.trim();
+    })
 
     /**
      * Functions related to the canvas
@@ -509,10 +501,6 @@
 
         }
 
-        var deleteIcon = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg version='1.1' id='Ebene_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='595.275px' height='595.275px' viewBox='200 215 230 470' xml:space='preserve'%3E%3Ccircle style='fill:%23F44336;' cx='299.76' cy='439.067' r='218.516'/%3E%3Cg%3E%3Crect x='267.162' y='307.978' transform='matrix(0.7071 -0.7071 0.7071 0.7071 -222.6202 340.6915)' style='fill:white;' width='65.545' height='262.18'/%3E%3Crect x='266.988' y='308.153' transform='matrix(0.7071 0.7071 -0.7071 0.7071 398.3889 -83.3116)' style='fill:white;' width='65.544' height='262.179'/%3E%3C/g%3E%3C/svg%3E";
-        var deleteImg = document.createElement('img');
-
-        deleteImg.src= deleteIcon;
         /**
          * Takes the playerCard node, index of the node in the player list,
          * and canvas X and Y coordinates to place a fabric js player icon on the canvas.
@@ -532,7 +520,7 @@
 
 
             const playerCardSpan = playerCard.querySelector('.player-name').textContent;
-            const playerCardImage= playerCard.querySelector('.player-image').src
+            const playerCardImage = playerCard.querySelector('.player-image').src
             const playerName = new fabric.Text(playerCardSpan, {
                 fill: 'black',
                 left: canvasX - playerNameWidth/2,
@@ -550,8 +538,8 @@
                     scaleX: 30 / img.width,
                     scaleY: 30 / img.height,
                     clipPath: new fabric.Ellipse({
-                        rx: img.width/2,
-                        ry: img.height/2,
+                        rx: img.width / 2,
+                        ry: img.height / 2,
                         originX: 'center',
                         originY: 'center',
                         fill: 'transparent',
@@ -560,47 +548,13 @@
 
                 const group = new fabric.Group([whiteCircle, img, playerName], {
                     id: `teamPlayer:${index}`,
-                    left: canvasX-xPlayerOffset-2,
-                    top: canvasY-yPlayerOffset+10,
+                    left: canvasX - xPlayerOffset - 2,
+                    top: canvasY - yPlayerOffset + 10,
+                    hasControls: false,
                 });
                 canvas.add(group);
                 canvas.renderAll();
             });
-        }
-
-        function renderIcon(icon) {
-            return function renderIcon(ctx, left, top, styleOverride, fabricObject) {
-                let size = this.cornerSize;
-                ctx.save();
-                ctx.translate(left, top);
-                ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
-                ctx.drawImage(icon, -size/2, -size/2, size, size);
-                ctx.restore();
-            }
-        }
-
-
-        fabric.Object.prototype.controls.deleteControl = new fabric.Control({
-            x: 0.5,
-            y: -0.5,
-            offsetY: -10,
-            offsetX: 10,
-            cursorStyle: 'pointer',
-            mouseUpHandler: deleteObject,
-            render: renderIcon(deleteImg),
-            cornerSize: 24
-        });
-
-        function deleteObject(eventData, transform) {
-            var target = transform.target;
-            var _canvas = target.canvas;
-            _canvas.remove(target);
-            if (target.id.includes("teamPlayer")) {
-                const number = target.id.match(/\d+/);
-                const index = parseInt(number[0], 10);
-                addTeamPlayer(index);
-            }
-            _canvas.requestRenderAll();
         }
 
         const upperCanvas = document.querySelector(".upper-canvas")
@@ -671,7 +625,8 @@
         const cameraFlash = document.querySelector('#camera-flash');
         const screenshotModal = document.getElementById("screenshot-modal");
         const closeScreenshotModalButton = document.getElementById("close-screenshot-modal");
-        const screenshotDisplay = document.getElementById('screenshot-display')
+        const screenshotDisplay = document.getElementById('screenshot-display');
+        const screenshotName = document.getElementById('screenshot-name');
         const screenshotUpload = document.getElementById("screenshot-input");
 
         const mySound = new Audio("audio/cameraflash-cropped.mp3");
@@ -680,6 +635,8 @@
         function createScreenshotModal() {
             // Disable keyboard shortcuts while typing
             allowKeyPresses = false;
+            // Sets the default screenshot name to the whiteboard's name
+            screenshotName.value = whiteboardTitle.value;
             // Display the pitch inside the modal
             const dataURL = canvas.toDataURL();
             screenshotDisplay.src = dataURL;
@@ -746,12 +703,15 @@
         const closeRecordingModalButton = document.getElementById('close-recording-modal')
         //This is used to display the recording on screen once recorded, for testing purposes
         const testVideoDisplay = document.getElementById('recorded-canvas');
-        var whiteboardToRecord = document.querySelector("canvas");
+        const whiteboardToRecord = document.querySelector("canvas");
+
+        const recordingName = document.getElementById('recording-name');
 
         let recording = false;
         var videoStream = whiteboardToRecord.captureStream(30);
         var mediaRecorder = new MediaRecorder(videoStream);
         const recordingUpload = document.getElementById("recording-input");
+        const thumbnailUpload = document.getElementById("thumbnail");
         let videoURL;
 
         function closeRecordingModal() {
@@ -768,18 +728,37 @@
         function openRecordingModal(videoURL) {
             allowKeyPresses = false;
 
+            testVideoDisplay.src = videoURL;
+
+            recordingName.value = whiteboardTitle.value;
+
             fetch(videoURL)
                 .then(res => res.blob())
                 .then(blob => {
                     const file = new File([blob], 'recording.mp4',
                         {type: "video/mp4"}
                     );
+                    const dataURL = canvas.toDataURL();
+                    screenshotDisplay.src = dataURL;
+                    let tbnail;
+                    // Saves the image inside the modal's form
+                    fetch(dataURL)
+                        .then(res => res.blob())    // Base64 dataURL to binary
+                        .then(blob => {
+                            // JavaScript's file APIs are very new and very bad
+                            // Turn the binary into a file
+                            tbnail = new File([blob], 'thumbnail.png',
+                                {type: "image/png"}
+                            );
+                            const dt = new DataTransfer();
+                            dt.items.add(tbnail);
+                            thumbnailUpload.files = dt.files;
+                        })
                     const dt = new DataTransfer();
                     dt.items.add(file);
                     recordingUpload.files = dt.files;
                 })
             recordingModal.style.display = "block";
-
         }
 
         closeRecordingModalButton.addEventListener('click', closeRecordingModal);
@@ -787,36 +766,39 @@
 
         recordingButton.addEventListener('click', function () {
             toggleRecording();
-            if (!recording) {
-                var chunks = [];
-                mediaRecorder.ondataavailable = function(e) {
-                    chunks.push(e.data);
-                };
 
-                mediaRecorder.onstop = function(e) {
-                    var blob = new Blob(chunks, { 'type' : 'video/mp4' });
-                    chunks = [];
-                    videoURL = URL.createObjectURL(blob);
-                    openRecordingModal(videoURL);
-                    testVideoDisplay.src = videoURL;
-                };
-                mediaRecorder.ondataavailable = function(e) {
-                    chunks.push(e.data);
-                };
-
-                mediaRecorder.start();
-                recording = true;
-            } else {
-                mediaRecorder.stop();
-                recording = false;
-            }
         });
 
         let progress;
         const circularProgress = document.querySelector(".circular-progress")
         const progressValue = document.querySelector(".progress-value");
 
-        function toggleRecording() {
+        function startRecording() {
+            var chunks = [];
+            mediaRecorder.ondataavailable = function(e) {
+                chunks.push(e.data);
+            };
+
+            mediaRecorder.onstop = function(e) {
+                var blob = new Blob(chunks, { 'type' : 'video/mp4' });
+                chunks = [];
+                videoURL = URL.createObjectURL(blob);
+                openRecordingModal(videoURL);
+            };
+            mediaRecorder.ondataavailable = function(e) {
+                chunks.push(e.data);
+            };
+
+            mediaRecorder.start();
+            recording = true;
+        }
+
+        function stopRecording() {
+            mediaRecorder.stop();
+            recording = false;
+        }
+
+        function toggleRecordingDisplay() {
             recordingButton.classList.toggle('active');
             if (recordingButton.classList.contains('active')) {
                 const minutes = 5;
@@ -832,12 +814,22 @@
                         clearInterval(progress);
                         recordingButton.classList.toggle('active');
                         circularProgress.style.background = 'conic-gradient(#1B263B 360deg, #FFFFFF 0deg)'
-                        mediaRecorder.stop()
+                        stopRecording()
                     }
                 }, speed);
             } else {
                 clearInterval(progress);
                 circularProgress.style.background = 'conic-gradient(#1B263B 360deg, #FFFFFF 0deg)'
+            }
+        }
+
+        function toggleRecording() {
+            toggleRecordingDisplay();
+
+            if (!recording) {
+                startRecording();
+            } else {
+                stopRecording();
             }
         }
 
@@ -1022,7 +1014,7 @@
          */
         function addTeamPlayers() {
             playerArray.forEach(({index, node}) => {
-                insertPlayerInTable(index,node)
+                insertPlayerInTable(index, node)
             })
         }
 
@@ -1032,14 +1024,15 @@
          */
         function addTeamPlayer(index) {
             const teamPlayer = playerArray.find(item => item.index === index);
-            insertPlayerInTable(index,teamPlayer.node);
+            insertPlayerInTable(index, teamPlayer.node);
         }
+
         /**
          * Adds the team player element back into the player table in the order of the index.
          * @param {number} index The index of the team player in the player list
          * @param {Element} node The index of the team player in the player list
          */
-        function insertPlayerInTable(index, node){
+        function insertPlayerInTable(index, node) {
             const playerList = document.querySelector('.player-ul');
             node.style.display = '';
             node.classList.remove("active");
@@ -1200,15 +1193,10 @@
             }
         });
 
-        const whiteboardTitle = document.querySelector(".whiteboard-title")
-
         colourValueInputOutline.addEventListener('keydown', function (event) {
             event.stopPropagation();
         });
 
-        whiteboardTitle.addEventListener('keydown', function (event) {
-            event.stopPropagation();
-        });
 
         const visibilitySelectionOutline = document.querySelector('.outline-section .visibility-selection');
 
@@ -1597,8 +1585,8 @@
                     scaleX: 30 / img.width,
                     scaleY: 30 / img.height,
                     clipPath: new fabric.Ellipse({
-                        rx: img.width/2,
-                        ry: img.height/2,
+                        rx: img.width / 2,
+                        ry: img.height / 2,
                         originX: 'center',
                         originY: 'center',
                         fill: 'transparent',
@@ -1607,8 +1595,8 @@
 
                 const group = new fabric.Group([whiteCircle, img, playerName], {
                     id: `teamPlayer:${index}`,
-                    left: canvasX-xPlayerOffset-2,
-                    top: canvasY-yPlayerOffset+10,
+                    left: canvasX - xPlayerOffset - 2,
+                    top: canvasY - yPlayerOffset + 10,
                     hasControls: false,
                 });
                 canvas.add(group);
@@ -1884,6 +1872,12 @@
         allowKeyPresses = true;
         screenshotModal.classList.remove("modal-fade-in");
     }
+
+    const isPublicCheckbox = document.getElementById("isPublic");
+
+    isPublicCheckbox.addEventListener("change", () => {
+        document.querySelector('input[name="isPublic"]').value = isPublicCheckbox.checked ? "true" : "false";
+    });
 
 
 

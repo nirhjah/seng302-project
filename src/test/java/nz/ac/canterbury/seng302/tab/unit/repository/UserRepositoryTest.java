@@ -335,7 +335,6 @@ public class UserRepositoryTest {
         User christchurchUser = generateRandomUsers.createRandomUser();
         userRepository.save(nelsonUser);
         userRepository.save(christchurchUser);
-        System.out.println(nelsonUser);
 
         Page<User> returnedUsers = userRepository.findUserByFilteredLocationsAndSports(PageRequest.ofSize(5), List.of(nelson.getCity()), List.of(), "");
 

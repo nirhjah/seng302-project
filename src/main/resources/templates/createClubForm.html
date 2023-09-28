@@ -17,7 +17,13 @@
 
     <div class="wrapper">
         <form th:action="@{create-club}" th:object="${createAndEditClubForm}" id="createAndEditClubForm" method="post" enctype="multipart/form-data">
-            <input type="hidden" th:if="${clubId != null}" th:name="clubId" th:value="${clubId}"/>
+            <input type="hidden" th:name="clubId" th:value="${clubId != null ? clubId : null}" id="clubId"/>
+
+
+            <div class="create-header">
+                <h2>Picture</h2>
+                <img th:src="@{/image/icons/camera-outline.svg}"/>
+            </div>
 
             <div class="preview-logo">
                 <div class="logo-container">
@@ -34,29 +40,39 @@
                 </div>
             </div>
 
+            <div class="create-header">
+                <h2>Details</h2>
+                <img th:src="@{/image/icons/details.svg}"/>
+            </div>
+
+
             <div class="input-box">
                 <input type="text" class="form-control" id="name" th:name="name" th:value="*{name}"
                        data-cy="name" autofocus placeholder=""
                        title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
-                <label for="name">Club Name <span class="required">*</span></label>
+                <label for="name">Name <span class="required">*</span></label>
                 <div th:each="err : ${#fields.errors('name')}" th:text="${err}" class="error-message"></div>
             </div>
 
             <div class="input-box">
-                <input type="text" class="form-control" id="sport" th:name="sport" th:value="*{sport}"
+                <input type="text" class="form-control" id="sport" th:name="sport" th:value="*{sport}"  oninput="getValidTeams()"
                        data-cy="sport" autofocus placeholder=""
                        title="May include letters, numbers, dots, and curly braces. Must start with letter or number">
-                <label for="sport">Club Sport <span class="required">*</span></label>
+                <label for="sport">Sport <span class="required">*</span></label>
                 <div th:each="err : ${#fields.errors('sport')}" th:text="${err}" class="error-message"></div>
             </div>
 
+            <div class="create-header">
+                <h2>Location</h2>
+                <img th:src="@{/image/icons/dark-blue-location.svg}"/>
+            </div>
 
             <div class="input-boxes">
                 <div class="input-box">
                     <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
                            data-cy="location" autofocus placeholder="" autocomplete="off" th:value="*{addressLine1}"
                            title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
-                    <label for="address-line-1">Address Line 1<span class="required">*</span></label>
+                    <label for="address-line-1">Address Line 1 <span class="required">*</span></label>
                     <div class="autocomplete-container" id="autocomplete-container"></div>
                     <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="error-message"></div>
                 </div>
@@ -82,7 +98,7 @@
                 <div class="input-box">
                     <input type="text" class="form-control" id="postcode" th:name="postcode"
                            data-cy="location" autofocus placeholder="" th:value="*{postcode}">
-                    <label for="postcode">Postcode<span class="required">*</span></label>
+                    <label for="postcode">Postcode <span class="required">*</span></label>
                     <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
                 </div>
             </div>
@@ -103,13 +119,13 @@
                 </div>
             </div>
 
+            <div class="create-header">
+                <h2>Teams</h2>
+                <img th:src="@{/image/icons/members.svg}"/>
+            </div>
+
             <label class="selectTeamsLabel"> Select Teams </label>
-            <select th:field="*{selectedTeams}" name="selectedTeams" id="selectedTeams" multiple>
-                <option class="selectTeamsOption" th:each="team : ${listOfTeams}"
-                        th:value="${team.teamId}"
-                        th:text="${team}"
-                        th:selected="${selectedTeams != null && selectedTeams.contains(team)}"></option>
-            </select>
+            <select th:field="*{selectedTeams}" name="selectedTeams" id="selectedTeams" multiple></select>
 
             <label style="font-family: 'Noto Sans', sans-serif"> Hold ctrl and click on teams to select/deselect
                 multiple </label>
@@ -133,8 +149,67 @@
     const ENDPOINT = path + "/geocode/autocomplete";
 </script>
 <script th:inline="javascript">
+    const sportsInput = document.getElementById("sport")
 
     /**
+     * Gets valid teams from either endpoint depending on if there is a club existing or not.
+     */
+    function getValidTeams() {
+        var sportInput = document.getElementById("sport");
+        var selectedSport = sportInput.value;
+        var clubId = document.getElementById("clubId").value;
+
+        if (clubId === "") {
+            axios.get("/teams_by_sport_not_in_club", { params: { sport: selectedSport } })
+                .then(function (response) {
+                    var teams = response.data;
+                    generateTeamOptions(teams);
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        } else {
+            axios.get("/teams_by_sport", { params: { sport: selectedSport, clubId: clubId.toString() } })
+                .then(function (response) {
+                    var teams = response.data;
+                    generateTeamOptions(teams);
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        }
+        }
+
+    var preSelectedTeamIds = /*[[${selectedTeamIds}]]*/ [];
+
+    /**
+     * Creates option elements in the select box for each team
+     * @param teams list of valid teams from backend
+     */
+    function generateTeamOptions(teams) {
+        var selectElement = document.getElementById("selectedTeams");
+        selectElement.innerHTML = "";
+        teams.forEach(function (team) {
+            var option = document.createElement("option");
+            option.value = team.teamId;
+            option.textContent = team.name;
+            if (preSelectedTeamIds && preSelectedTeamIds.length > 0 && preSelectedTeamIds.includes(String(team.teamId))) {
+                option.selected = true;
+            }
+            selectElement.appendChild(option);
+        });
+    }
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (sportsInput.value.trim() !== "") {
+            getValidTeams();
+        }
+    });
+
+
+
+/**
      * The delay time (in milliseconds) for debouncing the search input.
      * @type {number}
      */

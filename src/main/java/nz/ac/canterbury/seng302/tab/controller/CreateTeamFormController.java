@@ -61,26 +61,6 @@ public class CreateTeamFormController {
         this.lineUpService = lineUpService;
     }
 
-        private void addDebugEntities(Team team) {
-        // Generate users:
-        var users = new ArrayList<User>();
-        for (int i = 0; i < 30; i++) {
-            try {
-                var str = UUID.randomUUID().toString();
-                var u = User.defaultDummyUser();
-                u.setEmail(str + "@gmail.com");
-                u.setFirstName(str.substring(0, 6));
-                u.setLastName("b");
-                u = userService.updateOrAddUser(u);
-                userService.userJoinTeam(u, team);
-                users.add(u);
-            } catch (Exception e) {
-                logger.error("exception caught: " + e.getMessage());
-            }
-        }
-    }
-
-
 
     /**
      * Creates a location entity from details provided in the form
@@ -116,7 +96,6 @@ public class CreateTeamFormController {
                 logger.info("POST /generateTeamToken, new token: {}", team.getToken());
             }
         }
-        addDebugEntities(team);
         return String.format("redirect:./team-info?teamID=%s", teamID);
     }
 
@@ -266,7 +245,7 @@ public class CreateTeamFormController {
         if (!knownSports.contains(trimmedSport)) {
             sportService.addSport(new Sport(trimmedSport));
         }
-//        addDebugEntities(team);
+
         return String.format("redirect:./team-info?teamID=%s", team.getTeamId());
     }
 }
