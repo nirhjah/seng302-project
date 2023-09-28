@@ -21,7 +21,6 @@
     background-color: white;
     border-radius: 10px;
     padding: 20px;
-    margin-top: 180px;
 }
 
 .whiteboard-buttons {
@@ -323,10 +322,18 @@ input[type="range"]::-moz-range-track {
     margin-right:20px;
 }
 
-.whiteboard-dropdowns h3{
-    padding-top:11px;
-    color: #808080;
+.whiteboard-dropdowns .whiteboard-title {
+    outline: none;
+    color: #0D1B2A;
     font-size:22px;
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: bold;
+    border: 0;
+}
+
+.whiteboard-title::placeholder {
+    color: #808080;
 }
 
 .whiteboard-dropdowns .dropdown{
@@ -364,10 +371,6 @@ input[type="range"]::-moz-range-track {
 .whiteboard-dropdowns .line span{
     padding: 0 10px;
     font-size:18px;
-}
-
-.whiteboard-dropdowns h3:focus {
-    outline: none;
 }
 
 .whiteboard-dropdowns .player-table{
@@ -553,7 +556,8 @@ input[type="range"]::-moz-range-track {
     margin: 105px auto auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 25%;
+    width: 480px;
+    max-height: 90%;
     border-radius: 20px;
     bottom: unset;
 }
@@ -699,8 +703,8 @@ input[type="range"]::-moz-range-track {
 
 
 
-@media (max-width: 930px) {
+@media (max-width: 480px) {
     .recording-modal-content {
-        width: 63% !important;
+        width: 100% !important;
     }
 }
