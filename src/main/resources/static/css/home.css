@@ -41,6 +41,10 @@
     padding-bottom: 10px;
 }
 
+.last5 h3 {
+    margin: 0 10px;
+}
+
 @media (max-width: 1300px) {
     .homePageWrapper {
         flex-direction: column;
@@ -63,7 +67,6 @@
 
     .Welcome-header h1 {
         font-size: 3rem !important;
-        text-align: center !important;
     }
 
     .homeCard {

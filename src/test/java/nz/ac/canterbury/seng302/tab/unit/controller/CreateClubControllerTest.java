@@ -118,7 +118,7 @@ public class CreateClubControllerTest {
 
     @Test
     public void testDisplayCreateClubForm_return200() throws Exception {
-        mockMvc.perform(get("/createClub"))
+        mockMvc.perform(get("/create-club"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("createClubForm"));
     }
@@ -127,7 +127,7 @@ public class CreateClubControllerTest {
     @Test
         public void whenAllFieldsValid_return302() throws Exception {
 
-            mockMvc.perform(multipart("/createClub", 42L)
+            mockMvc.perform(multipart("/create-club", 42L)
                             .file(this.mockMultipartFile)
                             .param("clubId", "-1")
                             .param("name", "new club")
@@ -148,7 +148,7 @@ public class CreateClubControllerTest {
 
      @Test
         public void whenSelectedTeamsIsEmpty_return302() throws Exception {
-            mockMvc.perform(multipart("/createClub", 42L)
+            mockMvc.perform(multipart("/create-club", 42L)
                             .file(this.mockMultipartFile)
                             .param("clubId", "-1")
                             .param("name", "new club")
@@ -169,7 +169,7 @@ public class CreateClubControllerTest {
 
     @Test
     public void whenOptionalFieldsEmpty_return302() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                         .file(this.mockMultipartFile)
                         .param("clubId", "-1")
                         .param("name", "new club")
@@ -189,7 +189,7 @@ public class CreateClubControllerTest {
 
     @Test
     public void whenSelectedTeamsHaveDifferentSports_return400() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                         .file(this.mockMultipartFile)
                         .param("clubId", "-1")
                         .param("name", "new club")
@@ -210,7 +210,7 @@ public class CreateClubControllerTest {
 
     @Test
     public void whenAllRequiredFieldsEmpty_return400() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                         .file(this.mockMultipartFile)
                         .param("clubId", "-1")
                         .param("name", "")
@@ -229,7 +229,7 @@ public class CreateClubControllerTest {
 
     @Test
     public void whenClubNameInvalid_return400() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                         .file(this.mockMultipartFile)
                         .param("clubId", "-1")
                         .param("name", "!@#$%^")
@@ -248,7 +248,7 @@ public class CreateClubControllerTest {
 
     @Test
     public void whenTeamAlreadyPartOfAnotherClub_return400() throws Exception {
-        mockMvc.perform(multipart("/createClub", 42L)
+        mockMvc.perform(multipart("/create-club", 42L)
                         .file(this.mockMultipartFile)
                         .param("clubId", "-1")
                         .param("name", "new club")
@@ -266,14 +266,14 @@ public class CreateClubControllerTest {
 
     @Test
     public void testDisplayingEditClub_returns200() throws Exception {
-        mockMvc.perform(get("/createClub?edit={id}", club.getClubId()))
+        mockMvc.perform(get("/create-club?edit={id}", club.getClubId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("createClubForm"));
     }
 
     @Test
     public void testWhenInvalidFieldEntered_ClubNameNotUpdated() throws Exception {
-        mockMvc.perform(multipart("/createClub?edit={id}", club.getClubId())
+        mockMvc.perform(multipart("/create-club?edit={id}", club.getClubId())
                         .file(this.mockMultipartFile)
                         .param("clubId", String.valueOf(club.getClubId()))
                         .param("name", "!@#$%^")
@@ -290,7 +290,7 @@ public class CreateClubControllerTest {
 
     @Test
     public void testWhenSportInvalid_ClubNotUpdated() throws Exception {
-        mockMvc.perform(multipart("/createClub?edit={id}", club.getClubId())
+        mockMvc.perform(multipart("/create-club?edit={id}", club.getClubId())
                 .file(this.mockMultipartFile)
                 .param("clubId", String.valueOf(club.getClubId()))
                 .param("name", "Club")

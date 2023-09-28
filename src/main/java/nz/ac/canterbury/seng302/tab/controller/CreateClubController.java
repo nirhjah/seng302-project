@@ -71,12 +71,12 @@ public class CreateClubController {
      * @param request http request
      * @return create club form
      */
-    @GetMapping("/createClub")
+    @GetMapping("/create-club")
     public String clubForm(@RequestParam(name = "edit", required = false) Long clubId,
                            Model model,CreateAndEditClubForm createAndEditClubForm,
                            HttpServletRequest request) throws MalformedURLException {
 
-        logger.info("GET /createClub");
+        logger.info("GET /create-club");
         prefillModel(model, request);
         URL url = new URL(request.getRequestURL().toString());
         String path = (url.getPath() + "/..");
@@ -127,7 +127,7 @@ public class CreateClubController {
 
     /**
      * Handles the creation or editing of a club based on the provided form data.
-     * This method is invoked when a POST request is made to "/createClub" endpoint.
+     * This method is invoked when a POST request is made to "/create-club" endpoint.
      *
      * @param clubId                The ID of the club being edited.
      * @param name                  The name of the club.
@@ -142,7 +142,7 @@ public class CreateClubController {
      * @return The view name to be displayed after the club creation/edit process.
      * @throws IOException If an I/O error occurs during file handling.
      */
-    @PostMapping("/createClub")
+    @PostMapping("/create-club")
     public String createClub(
             @RequestParam(name = "clubId", defaultValue = "-1") long clubId,
             @RequestParam(name="name") String name,

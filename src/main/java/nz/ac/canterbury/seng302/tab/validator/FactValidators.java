@@ -34,4 +34,17 @@ public class FactValidators {
 
         Class<? extends Payload>[] payload() default {};
     }
+
+    /**/@Target({ METHOD, FIELD, ANNOTATION_TYPE })
+    /**/@Retention(RUNTIME)
+    /**/@Constraint(validatedBy = {})
+    /**/@Documented
+    @Size(max = 250, message = "Score is too large.")
+    public @interface timeValidator {
+        String message() default "Score is too large.";
+
+        Class<?>[] groups() default {};
+
+        Class<? extends Payload>[] payload() default {};
+    }
 }

@@ -14,7 +14,7 @@ import nz.ac.canterbury.seng302.tab.entity.Activity;
 @DiscriminatorColumn(name="fact_type",
         discriminatorType = DiscriminatorType.INTEGER)
 @DiscriminatorValue("0")
-public class Fact {
+public class   Fact {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

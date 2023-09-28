@@ -16,7 +16,7 @@
     </div>
 
     <div class="wrapper">
-        <form th:action="@{createClub}" th:object="${createAndEditClubForm}" id="createAndEditClubForm" method="post" enctype="multipart/form-data">
+        <form th:action="@{create-club}" th:object="${createAndEditClubForm}" id="createAndEditClubForm" method="post" enctype="multipart/form-data">
             <input type="hidden" th:name="clubId" th:value="${clubId != null ? clubId : null}" id="clubId"/>
 
 
