@@ -32,7 +32,6 @@
             <div class="tab" id="facts-tab">
                 <img class="tab-icon" th:src="@{/image/icons/editform.svg}"/>
                 <button class="tab-button"> Facts &nbsp;</button>
-                <div class="tab-line"></div>
             </div>
             <div class="tab" id="formations-tab" th:if="${canShowScores}">
                 <img class="tab-icon" th:src="@{/image/icons/formation.svg}"/>
@@ -45,6 +44,7 @@
                 <button class="tab-button"> Score &nbsp;</button>
             </div>
         </div>
+        <div class="tab-line"></div>
 
         <div class="content-box active" id="general-tab">
             <div class="content general">
@@ -751,13 +751,14 @@
             });
             tab.classList.add('active');
             if (index === 0) {
-                tabLine.style.left = "18px";
+                tabLine.style.left = "0";
             } else if (index === 1) {
-                tabLine.style.left = "247px";
+                tabLine.style.left = "25%";
             } else if (index === 2) {
-                tabLine.style.left = "460px";
-            } else {
-                tabLine.style.left = "685px";
+                tabLine.style.left = "50%";
+            }
+            else {
+                tabLine.style.left = "75%";
             }
             displayBox.forEach(box => {
                 box.classList.remove('active')
