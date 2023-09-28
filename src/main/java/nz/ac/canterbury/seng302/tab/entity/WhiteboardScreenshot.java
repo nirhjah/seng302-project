@@ -71,9 +71,5 @@ public class WhiteboardScreenshot implements Identifiable, HasImage {
         this.screenshotType = imageType;
     }
 
-    public WhiteboardScreenshot(Team team) {
-        this.team = team;
-    }
-
     public WhiteboardScreenshot() {}
 }
