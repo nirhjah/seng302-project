@@ -29,14 +29,9 @@ public class ViewAllWhiteboardsController {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private WhiteboardRecordingService whiteboardRecordingService;
-    // TODO: DELETE THESE ONCE THUMBNAIL EXISTS
-    private TeamService teamService;
-    private WhiteBoardRecordingRepository wbrRepo;
 
-    public ViewAllWhiteboardsController(WhiteboardRecordingService whiteboardRecordingService, TeamService teamService, WhiteBoardRecordingRepository wbrRepo) {
+    public ViewAllWhiteboardsController(WhiteboardRecordingService whiteboardRecordingService) {
         this.whiteboardRecordingService = whiteboardRecordingService;
-        this.teamService = teamService;
-        this.wbrRepo = wbrRepo;
     }
 
     private Pageable getPageable(int page) {
@@ -83,17 +78,4 @@ public class ViewAllWhiteboardsController {
         return "viewAllWhiteboards";
     }
 
-
-    @GetMapping("/populate_wb")
-    public String testPopWb() {
-        Team team = teamService.findPaginated(1, 1).iterator().next();
-        for (int i = 0; i < 30; i++) {
-            WhiteBoardRecording wbr = new WhiteBoardRecording("#"+i, team);
-            wbr.setPublic(true);
-            wbrRepo.save(wbr);
-            logger.info("Created wb :D");
-        }
-
-        return "redirect:/view-whiteboards";
-    }
 }
