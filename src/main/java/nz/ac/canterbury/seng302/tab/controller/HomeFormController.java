@@ -1,7 +1,6 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-
 import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.form.JoinTeamForm;
 import nz.ac.canterbury.seng302.tab.service.ActivityService;
@@ -42,16 +41,16 @@ public class HomeFormController {
         this.activityService = activityService;
     }
 
-    /**
-     * Redirects GET default url '/' to '/home'
-     *
-     * @return redirect to /home
-     */
-    @GetMapping("/")
-    public String home() {
-        logger.info("GET /homeForm");
-        return "redirect:./login";
-    }
+//    /**
+//     * Redirects GET default url '/' to '/home'
+//     *
+//     * @return redirect to /home
+//     */
+//    @GetMapping("/")
+//    public String home() {
+//        logger.info("GET /homeForm");
+//        return "redirect:./login";
+//    }
 
     /**
      * Gets the thymeleaf page representing the /home page (a basic welcome screen with nav bar)

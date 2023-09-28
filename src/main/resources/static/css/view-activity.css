@@ -544,6 +544,9 @@ hr.rounded {
 }
 
 @media (max-width: 760px){
+    #formation-tab{
+        overflow-y:scroll;
+    }
     #formation-tab .content{
         flex-direction:column !important;
         justify-content:center;
@@ -551,6 +554,9 @@ hr.rounded {
     }
     .sub-table{
         margin-top:30px !important;
+    }
+    #pitch{
+        margin-top:100% !important;
     }
 }
 
@@ -832,6 +838,10 @@ hr.rounded {
     /*.number-spinner {*/
     /*    margin-left: 34px !important;*/
     /*}*/
+
+    .wrapper-profile {
+        margin-top:50px !important;
+    }
 
     .score-display h1 {
         margin-left: -26px;
@@ -1152,4 +1162,7 @@ table, th, td {
     border-color:#415a77;
     margin-bottom:15px;
     font-size:17px;
+}
+.player.uneditable{
+    background-image:none !important;
 }
