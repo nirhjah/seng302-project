@@ -273,7 +273,7 @@
             </div>
             <div id="recording-modal" class="modal">
                 <div class="recording-modal-content">
-                    <button class="close-button" id="close-recording-modal" onclick="recordingModal.style.display = 'none'">&times;</button>
+                    <button class="close-button" id="close-recording-modal">&times;</button>
                     <h3 class="modal-header">Save </h3>
                     <video id="recorded-canvas" controls></video>
                     <form encType="multipart/form-data" th:action="@{/whiteboard-media/save/video}" method="post">
@@ -346,12 +346,6 @@
     });
 
     const recordingModal = document.getElementById('recording-modal');
-
-    window.onclick = function(event) {
-        if (event.target === recordingModal) {
-            recordingModal.style.display = "none";
-        }
-    }
 
 
     /**
@@ -713,6 +707,7 @@
             screenshotModal.classList.remove("modal-fade-in");
         }
 
+
         /** Animates a camera flash on the whiteboard */
         function screenFlash() {
             cameraButton.classList.add('active');
@@ -730,7 +725,6 @@
         function deactivateCamera() {
             cameraButton.classList.remove('active');
         }
-
         cameraButton.addEventListener('click', clickCamera);
         cameraButton.addEventListener('mouseup', deactivateCamera);
         cameraButton.addEventListener('mouseleave', deactivateCamera);
@@ -749,7 +743,7 @@
 
         /* Recording code*/
         const recordingButton = document.querySelector('.recording-button');
-
+        const closeRecordingModalButton = document.getElementById('close-recording-modal')
         //This is used to display the recording on screen once recorded, for testing purposes
         const testVideoDisplay = document.getElementById('recorded-canvas');
         var whiteboardToRecord = document.querySelector("canvas");
@@ -760,7 +754,20 @@
         const recordingUpload = document.getElementById("recording-input");
         let videoURL;
 
+        function closeRecordingModal() {
+            allowKeyPresses = true;
+            recordingModal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target === recordingModal) {
+                closeRecordingModal();
+            }
+        }
+
         function openRecordingModal(videoURL) {
+            allowKeyPresses = false;
+
             fetch(videoURL)
                 .then(res => res.blob())
                 .then(blob => {
@@ -774,6 +781,9 @@
             recordingModal.style.display = "block";
 
         }
+
+        closeRecordingModalButton.addEventListener('click', closeRecordingModal);
+
 
         recordingButton.addEventListener('click', function () {
             toggleRecording();

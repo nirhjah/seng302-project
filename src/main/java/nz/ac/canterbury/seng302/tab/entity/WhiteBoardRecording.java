@@ -14,7 +14,8 @@ public class WhiteBoardRecording implements Identifiable, HasVideo {
     @Column(name = "Id")
     private long id;
 
-    String name;
+    @Column
+    private String name;
 
     @Enumerated
     private VideoType videoType;
@@ -71,5 +72,12 @@ public class WhiteBoardRecording implements Identifiable, HasVideo {
     public WhiteBoardRecording(String name, Team team) {
         this.name = name;
         this.team = team;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "WhiteBoardRecording{id=%d, name='%s', team='%s'}", id, name, team
+        );
     }
 }

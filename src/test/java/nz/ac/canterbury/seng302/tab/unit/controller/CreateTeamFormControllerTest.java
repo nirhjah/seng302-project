@@ -88,7 +88,7 @@ public class CreateTeamFormControllerTest {
     /** Try to get the Create Team form */
     @Test
     void getCreateTeamForm() throws Exception {
-        mockMvc.perform(get("/createTeam"))
+        mockMvc.perform(get("/create-team"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("createTeamForm"));
     }
@@ -96,7 +96,7 @@ public class CreateTeamFormControllerTest {
     /** Try to get the Edit Team form */
     @Test
     void getEditTeamForm() throws Exception {
-        mockMvc.perform(get("/createTeam")
+        mockMvc.perform(get("/create-team")
                     .param("edit", TEAM_ID.toString()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("createTeamForm"));
@@ -105,7 +105,7 @@ public class CreateTeamFormControllerTest {
     /** Check if the Edit Team form is pre-populated */
     @Test
     void getEditTeamForm_formIsPrepopulated() throws Exception {
-        mockMvc.perform(get("/createTeam")
+        mockMvc.perform(get("/create-team")
                     .param("edit", TEAM_ID.toString()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("createTeamForm"))
@@ -126,7 +126,7 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenAFieldsValid_return302() throws Exception {
-        mockMvc.perform(post("/createTeam")
+        mockMvc.perform(post("/create-team")
                         .param("teamID", String.valueOf(TEAM_ID))
                         .param("name", "name")
                         .param("sport", "hockey-team a'b")
@@ -148,7 +148,7 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenTeamNameFieldIsInvalid_return302() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L)
+        mockMvc.perform(post("/create-team", 42L)
                         .param("teamID", String.valueOf(TEAM_ID))
                         .param("name", "test^team")
                         .param("sport", "hockey")
@@ -169,7 +169,7 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenSportFieldIsInvalid_return302() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L)
+        mockMvc.perform(post("/create-team", 42L)
                         .param("teamID", String.valueOf(TEAM_ID))
                         .param("name", "test")
                         .param("sport", "###")
@@ -190,7 +190,7 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenCityIsInvalid_return400() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L)
+        mockMvc.perform(post("/create-team", 42L)
                         .param("teamID", String.valueOf(TEAM_ID))
                         .param("name", "test")
                         .param("sport", "hockey")
@@ -213,7 +213,7 @@ public class CreateTeamFormControllerTest {
     @Test
     void whenTeamNameFieldIsInvalidWithCharsValidForSport_return302() throws
             Exception {
-        mockMvc.perform(post("/createTeam", 42L)
+        mockMvc.perform(post("/create-team", 42L)
                         .param("teamID", String.valueOf(TEAM_ID))
                         .param("name", "test-team's")
                         .param("sport", "hockey")
@@ -236,7 +236,7 @@ public class CreateTeamFormControllerTest {
     @Test
     void whenSportFieldIsInvalidWithCharsValidForTeam_return302() throws
             Exception {
-        mockMvc.perform(post("/createTeam", 42L)
+        mockMvc.perform(post("/create-team", 42L)
                         .param("teamID", String.valueOf(TEAM_ID))
                         .param("name", "test")
                         .param("sport", "123.123{123}")
@@ -258,7 +258,7 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenCityIsInvalidWithCharsValidForTeam__return400() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L)
+        mockMvc.perform(post("/create-team", 42L)
                         .param("teamID", String.valueOf(TEAM_ID))
                         .param("name", "test")
                         .param("sport", "hockey")
@@ -280,7 +280,7 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenCountryIsInvalidWithCharsValidForTeam__return400() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L)
+        mockMvc.perform(post("/create-team", 42L)
                         .param("teamID", String.valueOf(TEAM_ID))
                         .param("name", "test")
                         .param("sport", "hockey")
@@ -300,7 +300,7 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenSuburbIsInvalidWithCharsValidForTeam__return400() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L)
+        mockMvc.perform(post("/create-team", 42L)
                         .param("teamID", String.valueOf(TEAM_ID))
                         .param("name", "test")
                         .param("sport", "hockey")
@@ -320,7 +320,7 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenPostcodeIsInvalidWithCharsValidForTeam__return400() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L)
+        mockMvc.perform(post("/create-team", 42L)
                         .param("teamID", String.valueOf(TEAM_ID))
                         .param("name", "test")
                         .param("sport", "hockey")
@@ -340,7 +340,7 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenAllFieldsAreValidButAddressLine1IsEmpty__return302() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L)
+        mockMvc.perform(post("/create-team", 42L)
                         .param("teamID", String.valueOf(TEAM_ID))
                         .param("name", "name")
                         .param("sport", "hockey-team a'b")
@@ -361,7 +361,7 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenAllFieldsAreValidButAddressLine2IsEmpty__return302() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L)
+        mockMvc.perform(post("/create-team", 42L)
                         .param("teamID", String.valueOf(TEAM_ID))
                         .param("name", "name")
                         .param("sport", "hockey-team a'b")
@@ -382,7 +382,7 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenAllFieldsAreValidButSuburbIsEmpty__return302() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L)
+        mockMvc.perform(post("/create-team", 42L)
                         .param("teamID", String.valueOf(TEAM_ID))
                         .param("name", "name")
                         .param("sport", "hockey-team a'b")
@@ -403,7 +403,7 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenAllFieldsAreValidButPostcodeIsEmpty__return302() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L)
+        mockMvc.perform(post("/create-team", 42L)
                         .param("teamID", String.valueOf(TEAM_ID))
                         .param("name", "name")
                         .param("sport", "hockey-team a'b")
@@ -424,7 +424,7 @@ public class CreateTeamFormControllerTest {
      */
     @Test
     void whenAllOptionalFieldsAreEmpty__return302() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L)
+        mockMvc.perform(post("/create-team", 42L)
                         .param("teamID", String.valueOf(TEAM_ID))
                         .param("name", "name")
                         .param("sport", "hockey-team a'b")
@@ -441,7 +441,7 @@ public class CreateTeamFormControllerTest {
 
     @Test
     void whenSportIsNewAndValid_checkThatItWasSaved() throws Exception {
-        mockMvc.perform(post("/createTeam", 42L)
+        mockMvc.perform(post("/create-team", 42L)
                         .param("teamID", String.valueOf(TEAM_ID))
                         .param("name", "{}.test.{team1}")
                         .param("sport", " '-hockey-team a'b")
@@ -480,7 +480,7 @@ public class CreateTeamFormControllerTest {
         String badCountry = "Evil States of America";
         String badPostcode = "I love posting code";
         String badSuburb = "Where all the villains live";
-        mockMvc.perform(post("/createTeam")
+        mockMvc.perform(post("/create-team")
                         .param("teamID", String.valueOf(TEAM_ID))
                         .param("name", badName)
                         .param("sport", badSport)
@@ -507,7 +507,7 @@ public class CreateTeamFormControllerTest {
     // "Create Team" <=> "Edit Team" 
     @Test
     void createTeam_onGet_pageSaysCreateTeam() throws Exception {
-        mockMvc.perform(get("/createTeam"))
+        mockMvc.perform(get("/create-team"))
             .andExpect(status().isOk())
             // "Create Team" should be in the title & header, and have a "Submit" button.
             .andExpect(model().attribute("isEditing", false))
@@ -520,7 +520,7 @@ public class CreateTeamFormControllerTest {
 
     @Test
     void createTeam_onSubmissionFail_stillSaysCreateTeam() throws Exception {
-        mockMvc.perform(post("/createTeam"))    // A blank form is invalid
+        mockMvc.perform(post("/create-team"))    // A blank form is invalid
             .andExpect(status().isBadRequest())
             // "Create Team" should be in the title & header, and have a "Submit" button.
             .andExpect(model().attribute("isEditing", false))
@@ -532,7 +532,7 @@ public class CreateTeamFormControllerTest {
     @Test
     void editTeam_onGet_pageSaysEditTeam() throws Exception {
         doReturn(team).when(mockTeamService).getTeam(TEAM_ID);
-        mockMvc.perform(get("/createTeam")
+        mockMvc.perform(get("/create-team")
                         .param("edit", TEAM_ID.toString()))
             .andExpect(status().isOk())
             // "Edit Team" should be in the title & header, and have a "Save" button.
@@ -545,7 +545,7 @@ public class CreateTeamFormControllerTest {
     @Test
     void editTeam_onSubmissionFail_stillSaysEditTeam() throws Exception {
         doReturn(team).when(mockTeamService).getTeam(TEAM_ID);
-        mockMvc.perform(post("/createTeam")
+        mockMvc.perform(post("/create-team")
                             .param("teamID", TEAM_ID.toString()))
             .andExpect(status().isBadRequest())
             // "Edit Team" should be in the title & header, and have a "Save" button.

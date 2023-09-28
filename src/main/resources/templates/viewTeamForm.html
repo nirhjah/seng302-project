@@ -49,7 +49,7 @@
                             </div>
                             </br>
                             <div class="file-upload" th:if="${isUserManagerOrCoach}">
-                                <div class="file-label-border">
+                                <div class="file-label-border" onclick="openFilePicker()">
                                     <label for="file" class="file-label">
                                         Edit Profile Picture </label>
                                 </div>
@@ -123,7 +123,7 @@
                         <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
                         <div class="grouped-buttons">
                             <div class="edit-button">
-                                <a th:href="@{createTeam(edit=${teamID})}" th:if="${isUserManager}">
+                                <a th:href="@{create-team(edit=${teamID})}" th:if="${isUserManager}">
                                     <button id="edit-profile" type="button">Edit Profile</button>
                                 </a>
                             </div>
@@ -448,6 +448,11 @@
     </footer>
 
     <script th:inline="javascript">
+
+        function openFilePicker() {
+            const filePicker = document.getElementById("file");
+            filePicker.click();
+        }
 
         /*
         This function IS actually used, just inside a `th:script`.
