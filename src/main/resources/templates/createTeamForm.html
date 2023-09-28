@@ -99,7 +99,12 @@
             </div>
             <div th:if="${invalid_input != null}" th:text="${invalid_input}" class="error-message"></div>
             <div data-cy="cancel" class="cancel-link">
-                <a th:if="${isEditing}" th:href="@{team-info(teamID=${teamID})}">Cancel</a>
+                <!--/*
+                    We got written up for UX reasons because Team Profile's Back Button ping-pongs you
+                    between Edit Team <-> Team Profile
+                */-->
+                <a th:if="${isEditing}" onclick="history.back()">Cancel</a>
+                <!--/* However U8:AC6 specifies "When creating a team, 'Back' means 'Home Page'" */-->
                 <a th:unless="${isEditing}" th:href="@{home}">Cancel</a>
             </div>
         </form>
