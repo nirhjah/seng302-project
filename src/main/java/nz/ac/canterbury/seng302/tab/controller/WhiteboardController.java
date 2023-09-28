@@ -9,12 +9,14 @@ import nz.ac.canterbury.seng302.tab.response.LineUpInfo;
 import nz.ac.canterbury.seng302.tab.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -33,7 +35,6 @@ public class WhiteboardController {
 
     private final LineUpPositionService lineUpPositionService;
 
-    Team team;
     private final Logger logger = LoggerFactory.getLogger(WhiteboardController.class);
 
 
@@ -63,7 +64,9 @@ public class WhiteboardController {
         Optional<List<LineUp>> teamLineUpsOpt = lineUpService.findLineUpsByTeam(teamID);
         List<LineUp> teamLineUps = teamLineUpsOpt.orElse(Collections.emptyList());
 
-        Optional<Team> teamOpt = teamService.findTeamById(teamID);
+        // Throw a 404 if the specified team doesn't exist
+        Team team = teamService.findTeamById(teamID).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Team does not exist"));
 
         //Index of list of players equals the associated lineup
         List<List<User>> playersPerLineup = teamLineUps.stream().map(
@@ -73,13 +76,7 @@ public class WhiteboardController {
                 }
         ).toList();
 
-
-        if (teamOpt.isPresent()) {
-            team = teamOpt.get();
-        }
-        else {
-            return "redirect:/home";
-        }
+        model.addAttribute("teamId", team.getId());
 
         model.addAttribute("teamFormations", formationService.getTeamsFormations(teamID));
 
@@ -95,7 +92,7 @@ public class WhiteboardController {
         return "whiteboardForm";
     }
 
-    @GetMapping(path = "/whiteboard/get_lineup", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/whiteboard/get-lineup", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LineUpInfo> getLineUpJSON(@RequestParam("lineUpId") long lineUpId) {
         Optional<LineUp> optLineUp = lineUpService.findLineUpById(lineUpId);
         if (optLineUp.isPresent()) {
@@ -113,5 +110,6 @@ public class WhiteboardController {
         }
         return ResponseEntity.notFound().build();
     }
+
 
 }

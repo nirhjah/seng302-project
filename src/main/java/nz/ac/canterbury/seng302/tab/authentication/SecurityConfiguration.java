@@ -27,7 +27,7 @@ import nz.ac.canterbury.seng302.tab.enums.AuthorityType;
 @ComponentScan(basePackages = "com.baeldung.security")
 public class SecurityConfiguration {
 
-    public static final String DEFAULT_LOGIN_REDIRECT_URL = "/user-info/self";
+    public static final String DEFAULT_LOGIN_REDIRECT_URL = "/home";
     public static final String LOGIN_URL = "/login";
 
     /**
@@ -100,7 +100,7 @@ public class SecurityConfiguration {
             .csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2/**"), AntPathRequestMatcher.antMatcher("/geocode/autocomplete")))
             .authorizeHttpRequests()
             // accessible to anyone
-            .requestMatchers("/", "/register", LOGIN_URL, "/home",
+            .requestMatchers("/", "/register", LOGIN_URL,
                     "/geocode/autocomplete", "/lost-password", "/reset-password", "/confirm")
             .permitAll()
             // Only Federation Managers (maybe admins) can access this

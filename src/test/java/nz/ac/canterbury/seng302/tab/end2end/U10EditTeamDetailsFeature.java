@@ -1,11 +1,16 @@
 package nz.ac.canterbury.seng302.tab.end2end;
 
+import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.options.LoadState;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+
+import java.util.List;
+import java.util.Objects;
+
 import org.junit.jupiter.api.Assertions;
 
 public class U10EditTeamDetailsFeature {
@@ -30,15 +35,17 @@ public class U10EditTeamDetailsFeature {
 
     @When("I hit the edit button,")
     public void i_hit_the_edit_button() {
+        PlaywrightBrowser.page.waitForTimeout(2000);
         PlaywrightBrowser.page.locator("#edit-profile").click();
     }
 
     @Then("I see the edit team details form with all its details prepopulated.")
     public void i_see_the_edit_team_details_form_with_all_its_details_prepopulated() {
-        String nameValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('input#name').value"));
-        String sportValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('input#sport').value"));
-        String cityValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('input#city').value"));
-        String countryValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('input#country').value"));
+        PlaywrightBrowser.page.waitForTimeout(2000);
+        String nameValue = PlaywrightBrowser.page.locator("input#name").inputValue();
+        String sportValue = PlaywrightBrowser.page.locator("input#sport").inputValue();
+        String cityValue = PlaywrightBrowser.page.locator("input#city").inputValue();
+        String countryValue = PlaywrightBrowser.page.locator("input#country").inputValue();
 
         Assertions.assertEquals(DEFAULT_TEAM_NAME, nameValue);
         Assertions.assertEquals(DEFAULT_SPORT, sportValue);
@@ -50,10 +57,10 @@ public class U10EditTeamDetailsFeature {
     @Given("I am on the edit team profile form,")
     public void i_am_on_the_edit_team_profile_form() {
         PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/team-info?teamID=1");
-        String nameValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('h3[data-cy=\"name\"]').textContent"));
-        String sportValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('h3[data-cy=\"sport\"]').textContent"));
-        String locationValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('h3[data-cy=\"location\"]').textContent"));
-
+        String nameValue = PlaywrightBrowser.page.locator("h3[data-cy=\"name\"]").innerText();
+        String sportValue = PlaywrightBrowser.page.locator("h3[data-cy=\"sport\"]").innerText();
+        String locationValue = PlaywrightBrowser.page.locator("h3[data-cy=\"location\"]").innerText();
+        System.out.println(locationValue);
         DEFAULT_TEAM_NAME= nameValue;
         DEFAULT_SPORT= sportValue;
         String[] location = locationValue.split("\\s+");
@@ -85,9 +92,9 @@ public class U10EditTeamDetailsFeature {
         PlaywrightBrowser.page.locator(".submit-button button").click();
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
-        String nameValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('h3[data-cy=\"name\"]').textContent"));
-        String sportValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('h3[data-cy=\"sport\"]').textContent"));
-        String locationValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('h3[data-cy=\"location\"]').textContent"));
+        String nameValue = PlaywrightBrowser.page.locator("h3[data-cy=\"name\"]").innerText();
+        String sportValue = PlaywrightBrowser.page.locator("h3[data-cy=\"sport\"]").innerText();
+        String locationValue = PlaywrightBrowser.page.locator("h3[data-cy=\"location\"]").innerText();
 
         Assertions.assertEquals("Testing", nameValue);
         Assertions.assertEquals("sport", sportValue);
@@ -118,9 +125,9 @@ public class U10EditTeamDetailsFeature {
 
     @When("no changes have been made to its profile")
     public void no_changes_have_been_made_to_its_profile() {
-        String nameValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('h3[data-cy=\"name\"]').textContent"));
-        String sportValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('h3[data-cy=\"sport\"]').textContent"));
-        String locationValue = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('h3[data-cy=\"location\"]').textContent"));
+        String nameValue = PlaywrightBrowser.page.locator("h3[data-cy=\"name\"]").innerText();
+        String sportValue = PlaywrightBrowser.page.locator("h3[data-cy=\"sport\"]").innerText();
+        String locationValue = PlaywrightBrowser.page.locator("h3[data-cy=\"location\"]").innerText();
 
         Assertions.assertEquals(DEFAULT_TEAM_NAME, nameValue);
         Assertions.assertEquals(DEFAULT_SPORT, sportValue);
@@ -142,15 +149,16 @@ public class U10EditTeamDetailsFeature {
     }
 
     @Then("an error message tells me be that {string}.")
-    public void anErrorMessageTellsMeBeThatMessage(String message) {
-        String errorMessage = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('.error-message').textContent"));
-        Assertions.assertEquals(errorMessage, message);
-    }
-
     @Then("an error message {string}, tells me these fields contain invalid values.")
     public void anErrorMessageMessageTellsMeTheseFieldsContainInvalidValues(String message) {
-        String errorMessage = String.valueOf(PlaywrightBrowser.page.evaluate("() => document.querySelector('.error-message').textContent"));
-        Assertions.assertEquals(errorMessage, message);
+        // There can be multiple error messages on a page, so check them all.
+        List<Locator> everyErrorMessage = PlaywrightBrowser.page.locator(".error-message").all();
+        for (var errorMessage : everyErrorMessage) {
+            if (Objects.equals(errorMessage.innerText(), message)) {
+                return;
+            }
+        }
+        Assertions.fail("Could not find an error on this page with the message: " + message);
     }
 
 }

@@ -7,7 +7,7 @@
             <div class="line"></div>
             <div class="line"></div>
         </div>
-        <nav class="nav-bar">
+        <nav class="nav-bar" style="overflow: visible">
             <ul>
                 <li>
                     <a th:href="@{home}" th:classappend="${httpServletRequest.requestURI == '/home' ? 'active' : ''}">Home</a>
@@ -33,6 +33,7 @@
                             <a th:href="@{view-teams(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-teams' ? 'active' : ''}">View All Teams</a>
                             <a th:href="@{view-users(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-users' ? 'active' : ''}">View All Users</a>
                             <a th:href="@{view-clubs(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-clubs' ? 'active' : ''}">View All Clubs</a>
+                            <a th:href="@{view-whiteboards(page=1)}" th:classappend="${httpServletRequest.requestURI == '/view-whiteboards' ? 'active' : ''}">View All Whiteboards</a>
                         </div>
                         <a>
                             <span th:text="'View All'"></span>

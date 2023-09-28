@@ -182,7 +182,7 @@ public class ViewMyActivitiesIntegrationTests {
 
     @Given("I am on the home form")
     public void iAmOnTheHomeForm() throws Exception {
-        mockMvc.perform(get("/")).andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:./home"));
+        mockMvc.perform(get("/")).andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:./login"));
     }
 
     @When("I click the profile box and then select the My Activities button")
