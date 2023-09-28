@@ -21,7 +21,6 @@
     background-color: white;
     border-radius: 10px;
     padding: 20px;
-    margin-top: 180px;
 }
 
 .whiteboard-buttons {
@@ -328,10 +327,7 @@ input[type="range"]::-moz-range-track {
     color: #0D1B2A;
     font-size:22px;
     display: block;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
+    margin-bottom: 0.25rem;
     font-weight: bold;
     border: 0;
 }
