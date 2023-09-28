@@ -369,8 +369,9 @@
                                 <div class="media-body"
                                      th:data-public="${obj.isPublic()}"
                                      th:data-name="${obj.getTag()}"
-                                     th:data-url="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"
-                                     th:onclick="'whiteboardMediaOnClick(this.getAttribute(\'data-name\'), this.getAttribute(\'data-public\'), this.getAttribute(\'data-url\'), false)'">
+                                     th:data-imgurl="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"
+                                     th:data-linkurl="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"
+                                     th:onclick="'whiteboardMediaOnClick(this.getAttribute(\'data-name\'), this.getAttribute(\'data-public\'), this.getAttribute(\'data-imgurl\'), this.getAttribute(\'data-linkurl\'), false)'">
 
                                     <img th:src="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"  class="card-img-top"
                                          alt="Screenshot">
@@ -393,9 +394,10 @@
                             <div th:each="obj : ${recordings}" class="media" id="recordings">
                                 <div class="media-body"
                                      th:data-public="${obj.isPublic()}"
-                                     th:data-name="${obj.getTag()}"
-                                     th:data-url="@{/whiteboard-media/recording/{id}(id = ${obj.id})}"
-                                     th:onclick="'whiteboardMediaOnClick(this.getAttribute(\'data-name\'), this.getAttribute(\'data-public\'), this.getAttribute(\'data-url\'), false)'">
+                                    th:data-imgurl="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"
+                                    th:data-linkurl="@{/whiteboard-media/recording/{id}(id = ${obj.id})}"
+                                    th:onclick="'whiteboardMediaOnClick(this.getAttribute(\'data-name\'), this.getAttribute(\'data-public\'), this.getAttribute(\'data-imgurl\'), this.getAttribute(\'data-linkurl\'), false)'">
+
 
                                     <img th:src="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"  class="card-img-top"
                                          alt="Screenshot">
@@ -449,19 +451,21 @@
         /*
         This function IS actually used, just inside a `th:script`.
          */
-        function whiteboardMediaOnClick(name, isPublic, url, isRecording) {
-            console.log(name, isPublic, url, isRecording);
+        function whiteboardMediaOnClick(name, isPublic, imageURL, linkURL, isRecording) {
+            console.log(name, isPublic, imageURL, linkURL, isRecording);
             let nameBox = document.getElementById("name-box");
             let publicBox = document.getElementById("public-box");
-            // TODO: Set href tag to url link.
+            let img = document.getElementById("whiteboard-media-image");
+            let link = document.getElementById("open-media-link");
+
+            // Set display text:
             let publicText = isPublic ? "Public" : "Private";
             publicBox.innerHTML = "Visibility: ".concat(publicText);
             nameBox.innerHTML = name;
 
-            let img = document.getElementById("whiteboard-media-image");
-            let aTag = document.getElementById("open-media-link");
-            img.src = url;
-            aTag.href = url;
+            // Set links:
+            img.src = imageURL;
+            link.href = linkURL;
         }
 
         const dropdown = document.getElementById('dropdown');

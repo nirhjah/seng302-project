@@ -38,9 +38,7 @@ public class WhiteboardScreenshotService extends ImageService<WhiteboardScreensh
     private final byte[] defaultBytes;
 
     /**
-     * Writes files to the /{profile}/USER_PROFILE_PICTURES/ folder
-     * inside the project's directory
-     * @param profile The deployment environment, which determines the
+     * @param profile The deployment environment, which determines the deploymentType
      */
     @Autowired
     public WhiteboardScreenshotService(@Value("${spring.profiles.active:unknown}") String profile, WhiteboardScreenshotRepository repository, TeamService teamService, UserService userService) {
