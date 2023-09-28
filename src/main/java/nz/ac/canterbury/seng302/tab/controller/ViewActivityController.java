@@ -99,6 +99,8 @@ public class ViewActivityController {
 
     String viewActivityRedirect = "redirect:./view-activity?activityID=%s";
 
+    final String NEGATIVE_GOAL_VALUE_MSG = "Goal value must be positive";
+
     int scoreTabIndex = 3;
 
     int subTabIndex = 2;
@@ -311,9 +313,8 @@ public class ViewActivityController {
         String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
         if (!timeOfFact.isEmpty()) {
             try {
-                int time = Integer.parseInt(timeOfFact);
-                int totalActivityMinutes = (int) Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
-                if (time > totalActivityMinutes) {
+                Integer.parseInt(timeOfFact);
+                if (!factService.validateFactTime(timeOfFact, activity)) {
                     result.addError(new FieldError("addFactForm", "timeOfFact", FactValidators.timeErrorMessage));
                 }
             } catch (NumberFormatException e) {
@@ -322,9 +323,11 @@ public class ViewActivityController {
         } else {
             timeOfFact = null;
         }
+
         if (LocalDateTime.now().isBefore(activity.getActivityStart())) {
             result.addError(new FieldError("addFactForm", "timeOfFact", "You can only add a fact once the activity starts"));
         }
+
         redirectAttributes.addFlashAttribute(stayOnTabNameString, "facts-tab");
         redirectAttributes.addFlashAttribute(stayOnTabIndexString, 1);
 
@@ -351,8 +354,6 @@ public class ViewActivityController {
      * @param activityOutcome outcome of the activity
      * @param request              request
      * @param model                model to be filled
-     * @param httpServletResponse   httpServerletResponse
-     * @param redirectAttributes    stores error message to be displayed
      * @return  view activity page
      */
     @PostMapping("/add-outcome")
@@ -360,9 +361,7 @@ public class ViewActivityController {
             @RequestParam(name = "actId", defaultValue = "-1") long actId,
             @RequestParam(name = "activityOutcomes", defaultValue = "NONE") ActivityOutcome activityOutcome,
             HttpServletRequest request,
-            Model model,
-            HttpServletResponse httpServletResponse,
-            RedirectAttributes redirectAttributes) {
+            Model model) {
         model.addAttribute(httpServletRequestString, request);
         Activity activity = activityService.findActivityById(actId);
         String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
@@ -418,13 +417,23 @@ public class ViewActivityController {
         if (time.isBlank()) {
             bindingResult.addError(new FieldError(createEventFormString, "time", FIELD_CANNOT_BE_BLANK_MSG));
         } else {
-            if (!activityService.checkTimeOfFactWithinActivity(activity, Integer.parseInt(time))) {
-                bindingResult.addError(new FieldError(createEventFormString, "time", GOAL_NOT_SCORED_WITHIN_DURATION));
+            try {
+                Integer.parseInt(time);
+                if (!factService.validateFactTime(time, activity)) {
+                    bindingResult.addError(new FieldError(createEventFormString, "time", GOAL_NOT_SCORED_WITHIN_DURATION));
+                }
+            } catch (NumberFormatException e) {
+                bindingResult.addError(new FieldError(createEventFormString, "time", "Must be a number"));
             }
+
         }
 
         if (LocalDateTime.now().isBefore(activity.getActivityStart())) {
             bindingResult.addError(new FieldError(createEventFormString, "scorer", ADDING_GOAL_BEFORE_ACTIVITY_START_MSG));
+        }
+
+        if (goalValue < 1) {
+            bindingResult.addError(new FieldError(createEventFormString, "goalValue", NEGATIVE_GOAL_VALUE_MSG));
         }
 
         if (bindingResult.hasErrors()) {
@@ -550,9 +559,9 @@ public class ViewActivityController {
         // error checking the time 
         if (!time.isBlank()) {
             try {
-                int parsedTime = Integer.parseInt(time);
+                Integer.parseInt(time);
                 // check if the time is within the activity
-                if (!activityService.checkTimeOfFactWithinActivity(currActivity, parsedTime)) {
+                if (!factService.validateFactTime(time, currActivity)) {
                     bindingResult.addError(new FieldError(createEventFormString, "time", GOAL_NOT_SCORED_WITHIN_DURATION));
                 }
 

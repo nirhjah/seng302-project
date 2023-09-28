@@ -109,4 +109,17 @@ public class FactService {
     }
 
     public void addOrUpdate(Fact fact) {factRepository.save(fact);}
+
+    public boolean validateFactTime(String time, Activity activity) {
+        if (time.length() > 250) {
+            int parsedTime = Integer.parseInt(time);
+            if (parsedTime >= 0 && parsedTime <= Duration.between(activity.getActivityStart(),
+                    activity.getActivityEnd()).toMinutes()) {
+                return true;
+            }
+        }
+        return false;
+
+
+    }
 }
