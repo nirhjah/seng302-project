@@ -51,7 +51,7 @@ public class ResetPasswordFeature {
     @Then("A confirmation message tells me that an email was sent to the address if it was recognised")
     public void confirmation_message_tells_email_sent_to_address_if_recognised() {
         PlaywrightBrowser.page.locator("#message-dropdown-text");
-        Assertions.assertEquals(PlaywrightBrowser.page.locator("#message-dropdown-text").textContent(), "If your email is registered with our system, you will receive a link to reset your password shortly.");
+        Assertions.assertEquals("If your email is registered with our system, you will receive a link to reset your password shortly.", PlaywrightBrowser.page.locator("#message-dropdown-text").textContent());
     }
 
 }
