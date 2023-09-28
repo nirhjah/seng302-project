@@ -307,7 +307,7 @@ public class CreateClubControllerTest {
 
 
     @Test
-    public void testGettingTeamsBySportNoClub() throws  Exception {
+    void testGettingTeamsBySportNoClub() throws  Exception {
         String sport = "YourSport";
         Team teamTest = new Team("NewTeam", sport);
         Team teamTestNotMatchingSport = new Team("NewTeam", "Soccer");
@@ -323,7 +323,7 @@ public class CreateClubControllerTest {
     }
 
     @Test
-    public void testGettingTeamsBySport() throws  Exception {
+    void testGettingTeamsBySport() throws  Exception {
         Team teamInClub = new Team("NewTeam", "Rugby");
         Team teamNotInClubButSameSport = new Team("OtherTeam", "Rugby");
         Team teamNotInClubAndNotMatchingSport = new Team("RandomTeam", "Cricket");

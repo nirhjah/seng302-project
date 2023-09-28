@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Import(TeamService.class)
-public class TeamRepositoryTest {
+class TeamRepositoryTest {
 
     @Autowired
     private TeamRepository teamRepository;
@@ -39,7 +39,7 @@ public class TeamRepositoryTest {
     private ClubRepository clubRepository;
 
     @Test
-    public void testGettingTeamById() {
+    void testGettingTeamById() {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
         Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
@@ -53,7 +53,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    public void testGettingTeamList() {
+    void testGettingTeamList() {
         assertTrue(teamService.getTeamList().isEmpty());
         Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
 
@@ -103,7 +103,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    public void filteringTeamsByCities_noCitiesSelected_allCitiesDisplayed() {
+    void filteringTeamsByCities_noCitiesSelected_allCitiesDisplayed() {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
         Team team1 = new Team("team1", "Hockey", new Location("123 Test1 road", "", "Suburb1", "Christchurch", "1111", "NZ"));
@@ -122,7 +122,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    public void filteringTeamsByCities_oneCitySelected_allTeamsWithCityDisplayed() {
+    void filteringTeamsByCities_oneCitySelected_allTeamsWithCityDisplayed() {
         final String WANTED_CITY = "Christchurch";
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
@@ -144,7 +144,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    public void filteringTeamsByCities_twoCitiesSelected_allTeamsWithThoseCitiesDisplayed() {
+    void filteringTeamsByCities_twoCitiesSelected_allTeamsWithThoseCitiesDisplayed() {
         final String WANTED_CITY1 = "Christchurch";
         final String WANTED_CITY2 = "Auckland";
 
@@ -168,7 +168,7 @@ public class TeamRepositoryTest {
 
     }
     @Test
-    public void filteringTeamsByCities_twoCitiesSelectedAndTeamNamesDifferent_displayCitiesAndTeams() {
+    void filteringTeamsByCities_twoCitiesSelectedAndTeamNamesDifferent_displayCitiesAndTeams() {
 
         final String WANTED_CITY1 = "Christchurch";
         final String WANTED_CITY2 = "Dunedin";
@@ -194,7 +194,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    public void filteringTeamsByCities_allCitiesSelected_allCitiesDisplayed() {
+    void filteringTeamsByCities_allCitiesSelected_allCitiesDisplayed() {
         final String WANTED_CITY1 = "Christchurch";
         final String WANTED_CITY2 = "Dunedin";
         final String WANTED_CITY3 = "Auckland";
@@ -433,7 +433,7 @@ public class TeamRepositoryTest {
 
 
     @Test
-    public void findTeamsWithUser_MultipleUsersJoiningMultipleTeams() throws IOException {
+    void findTeamsWithUser_MultipleUsersJoiningMultipleTeams() throws IOException {
 
         var pageable = PageRequest.of(0, 10);
 
@@ -459,7 +459,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    public void findTeamsWithUser_UserIsPartOfZeroTeams() {
+    void findTeamsWithUser_UserIsPartOfZeroTeams() {
         var pageable = PageRequest.of(0, 10);
         User user1 = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", new Location(null, null, null, "dunedin", null, "nz"));
         userRepository.save(user1);
