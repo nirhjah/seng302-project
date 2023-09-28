@@ -1,6 +1,6 @@
 package nz.ac.canterbury.seng302.tab.helper;
 
-import nz.ac.canterbury.seng302.tab.entity.fact.Fact;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 
 import java.util.Comparator;
 

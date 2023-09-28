@@ -1,7 +1,7 @@
 package nz.ac.canterbury.seng302.tab.repository;
 
 import nz.ac.canterbury.seng302.tab.entity.Activity;
-import nz.ac.canterbury.seng302.tab.entity.fact.Fact;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import org.springframework.data.jpa.repository.Query;
 import nz.ac.canterbury.seng302.tab.entity.User;

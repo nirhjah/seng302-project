@@ -36,7 +36,7 @@ public class U8CreateTeamFeature {
         if (hamburger.isVisible()) {
             hamburger.click();
         }
-        PlaywrightBrowser.page.locator("li.navbar-create-button").click();
+        PlaywrightBrowser.page.locator("li.navbar buttons teams").click();
         PlaywrightBrowser.page.locator("text=Create Team").click();
     }
 

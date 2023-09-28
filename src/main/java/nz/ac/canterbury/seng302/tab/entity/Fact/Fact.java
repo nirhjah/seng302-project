@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.tab.entity.fact;
+package nz.ac.canterbury.seng302.tab.entity.Fact;
 
 import jakarta.persistence.*;
 import nz.ac.canterbury.seng302.tab.entity.Activity;
