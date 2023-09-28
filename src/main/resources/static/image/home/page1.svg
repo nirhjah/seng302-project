@@ -2,18 +2,18 @@
 <ellipse cx="386.5" cy="245" rx="176.5" ry="24" fill="#2E3E5C"/>
 <ellipse cx="279" cy="313" rx="195" ry="24" fill="#2E3E5C"/>
 <ellipse cx="176.5" cy="246" rx="176.5" ry="24" fill="#2E3E5C"/>
-<path d="M244 20H71C66.5817 20 63 23.5817 63 28V241C63 245.418 66.5817 249 71 249H244C248.418 249 252 245.418 252 241V28C252 23.5817 248.418 20 244 20Z" fill="white"/>
+<path d="M246 14H70C65.5817 14 62 17.5817 62 22V241C62 245.418 65.5817 249 70 249H246C250.418 249 254 245.418 254 241V22C254 17.5817 250.418 14 246 14Z" fill="white"/>
 <path d="M148.299 59.5188L120.935 50.537" stroke="#FF0000" stroke-opacity="0.7" stroke-width="8" stroke-linecap="round"/>
 <path d="M153.868 148.696L162.408 122.235" stroke="#FF0000" stroke-opacity="0.7" stroke-width="8" stroke-linecap="round"/>
 <path d="M172.043 140.354L144.679 131.372" stroke="#FF0000" stroke-opacity="0.7" stroke-width="8" stroke-linecap="round"/>
 <path d="M95.9331 210.241L104.473 183.781" stroke="#FF0000" stroke-opacity="0.7" stroke-width="8" stroke-linecap="round"/>
 <path d="M114.108 201.899L86.7437 192.917" stroke="#FF0000" stroke-opacity="0.7" stroke-width="8" stroke-linecap="round"/>
-<path d="M241 28H76V240H241V28Z" stroke="#415A77" stroke-width="5"/>
+<path d="M241 28H76V237H241V28Z" stroke="#415A77" stroke-width="5"/>
 <path d="M179 133.5C179 145.334 168.967 155 156.5 155C144.033 155 134 145.334 134 133.5C134 121.666 144.033 112 156.5 112C168.967 112 179 121.666 179 133.5Z" stroke="#415A77" stroke-width="5"/>
 <path d="M74 90H240" stroke="#415A77" stroke-width="5"/>
-<path d="M73 177H239" stroke="#415A77" stroke-width="5"/>
+<path d="M74 177L238 177" stroke="#415A77" stroke-width="5"/>
 <path d="M214 28C214 39.6695 207.837 50.8611 196.866 59.1127C185.895 67.3643 171.015 72 155.5 72C139.985 72 125.105 67.3643 114.134 59.1127C103.163 50.8611 97 39.6695 97 28" stroke="#415A77" stroke-width="5"/>
-<path d="M100 239C100 227.596 106.163 216.658 117.134 208.594C128.105 200.53 142.985 196 158.5 196C174.015 196 188.895 200.53 199.866 208.594C210.837 216.658 217 227.596 217 239" stroke="#415A77" stroke-width="5"/>
+<path d="M100 236C100 224.861 106.163 214.178 117.134 206.302C128.105 198.425 142.985 194 158.5 194C174.015 194 188.895 198.425 199.866 206.302C210.837 214.178 217 224.861 217 236" stroke="#415A77" stroke-width="5"/>
 <path d="M130.124 67.8608L138.664 41.3999" stroke="#FF0000" stroke-opacity="0.7" stroke-width="8" stroke-linecap="round"/>
 <circle cx="405.313" cy="48" r="10.5" stroke="#1B263B" stroke-width="3"/>
 <circle cx="406.313" cy="48" r="7" fill="#1B263B"/>
@@ -21,7 +21,7 @@
 <circle cx="454.313" cy="108" r="7" fill="#1B263B"/>
 <circle cx="453.813" cy="149.5" r="10" stroke="#EA3B52" stroke-width="3"/>
 <circle cx="454.313" cy="150" r="7" fill="#EA3B52"/>
-<path d="M491 19H318C313.582 19 310 22.5817 310 27V240C310 244.418 313.582 248 318 248H491C495.418 248 499 244.418 499 240V27C499 22.5817 495.418 19 491 19Z" fill="white"/>
+<path d="M493 14H317C312.582 14 309 17.5817 309 22V244C309 248.418 312.582 252 317 252H493C497.418 252 501 248.418 501 244V22C501 17.5817 497.418 14 493 14Z" fill="white"/>
 <path d="M487.656 27.1633H322.656V238.239H487.656V27.1633Z" stroke="#415A77" stroke-width="5"/>
 <path d="M322.854 131.884H487.187" stroke="#415A77" stroke-width="5"/>
 <path d="M322.487 85.4099H486.82" stroke="#415A77" stroke-width="5"/>
