@@ -25,10 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Spring Boot Controller class for the ViewTeamForm
@@ -68,56 +65,6 @@ public class ViewTeamController {
 
     }
 
-    /**
-     * For testing purposes ONLY.
-     * Delete this method after we are done testing, thanks
-     */
-    private WhiteboardScreenshot createMockScreenshot(Team team) {
-        Resource resource = new ClassPathResource("/static/image/default-profile.png");
-        MultipartFile file = null;
-        try {
-            InputStream is = resource.getInputStream();
-            byte[] bytes = is.readAllBytes();
-            // MockMultipartFile isn't available in dev! only in test
-            file = new MultipartFile() {
-                @Override
-                public String getName() {
-                    return "my_screenshot";
-                }
-                @Override
-                public String getOriginalFilename() {
-                    return "screenshot.png";
-                }
-                @Override
-                public String getContentType() {
-                    return "image/png";
-                }
-                @Override
-                public boolean isEmpty() {
-                    return false;
-                }
-                @Override
-                public long getSize() {
-                    return bytes.length;
-                }
-                @Override
-                public byte[] getBytes() throws IOException {
-                    return bytes;
-                }
-                @Override
-                public InputStream getInputStream() throws IOException {
-                    return null;
-                }
-                @Override
-                public void transferTo(File dest) throws IOException, IllegalStateException {
-
-                }
-            };
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        }
-        return whiteboardScreenshotService.createScreenshotForTeam(file, "hello123", team, true);
-    }
 
     /**
      * Gets form to be displayed, includes the ability to display results of
@@ -155,17 +102,15 @@ public class ViewTeamController {
             model.addAttribute("clubName",team.getTeamClub().getName());
         }
 
-        // Set<WhiteboardScreenshot> screenshots = team.getScreenshots();
-        // model.addAttribute("screenshots", screenshots);
-        // This should eventually use team.getRecordings() as opposed to team.getScreenshots()
-        // model.addAttribute("recordings", screenshots);
-        List<WhiteboardScreenshot> screenshots = new ArrayList<>();
-        WhiteboardScreenshot ss = createMockScreenshot(team);
-        for (int i=0; i<10; i++) {
-            screenshots.add(ss);
-        }
+        Set<WhiteboardScreenshot> screenshots = team.getScreenshots();
+        Set<WhiteBoardRecording> recordings = team.getRecordings();
         model.addAttribute("screenshots", screenshots);
-        model.addAttribute("recordings", screenshots);
+        model.addAttribute("recordings", recordings);
+
+//        WhiteboardScreenshot ss = createMockScreenshot(team);
+//        for (int i=0; i<10; i++) {
+//            screenshots.add(ss);
+//        }
 
         // Is the currently logged in user this team's manager?
         Optional<User> oUser = userService.getCurrentUser();
@@ -216,13 +161,6 @@ public class ViewTeamController {
             @RequestParam("teamID") long teamID) {
         logger.info("POST /team-info");
         teamImageService.updateProfilePicture(teamID, file);
-
-//        // THIS CODE IS FOR TESTING ONLY!!!
-//        var team = teamService.getTeam(teamID);
-//        if (team != null) {
-//            whiteboardScreenshotService.createScreenshotForTeam(file, team, false);
-//        }
-
         return "redirect:/team-info?teamID=" + teamID;
     }
 
