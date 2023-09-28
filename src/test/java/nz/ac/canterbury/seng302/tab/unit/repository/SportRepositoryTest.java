@@ -30,7 +30,6 @@ public class SportRepositoryTest {
     public void testFindingById() {
         for (int i=0; i<sportsList.size(); i++){
             Optional<Sport> sport = sportRepository.findById(i+1);
-            System.out.println(sport.get().getName());
             Assertions.assertEquals(sportsList.get(i), sport.get().getName());
         }
     }
