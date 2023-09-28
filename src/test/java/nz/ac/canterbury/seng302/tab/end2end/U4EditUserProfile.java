@@ -20,7 +20,11 @@ public class U4EditUserProfile {
 
     @Given("I am on the user profile page,")
     public void i_am_on_the_user_profile_page() {
+        PlaywrightBrowser.page.locator(".profile-button-text").click();
+        PlaywrightBrowser.page.locator("a[href='user-info/self']").click();
+        PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         String currentUrl = PlaywrightBrowser.page.url();
+
 
         String nameValue = PlaywrightBrowser.page.locator(".user-label:has(.attribute-type:has-text('Name')) .name").textContent();
         String dobValue = PlaywrightBrowser.page.locator(".user-label:has(.attribute-type:has-text('Date of Birth')) .dob").textContent();
@@ -82,6 +86,9 @@ public class U4EditUserProfile {
 
     @Given("I am on the edit profile form,")
     public void i_am_on_the_edit_profile_form() {
+        PlaywrightBrowser.page.locator(".profile-button-text").click();
+        PlaywrightBrowser.page.locator("a[href='user-info/self']").click();
+        PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("a[href='editUser']").click();
     }
 

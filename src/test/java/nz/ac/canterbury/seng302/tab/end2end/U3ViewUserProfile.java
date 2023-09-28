@@ -15,7 +15,7 @@ public class U3ViewUserProfile {
     }
     @When("I click on the my profile button,")
     public void i_click_on_the_button() {
-        PlaywrightBrowser.page.locator(".navbar-user-button").click();
+        PlaywrightBrowser.page.locator(".profile-button-text").click();
         PlaywrightBrowser.page.locator("a[href='user-info/self']").click();
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
     }
@@ -33,7 +33,6 @@ public class U3ViewUserProfile {
     @Given("I am on my user profile page,")
     public void i_am_on_my_user_profile_page() {
         i_am_logged_in();
-
     }
 
     @Then("I cannot edit any of my details that are shown to me")

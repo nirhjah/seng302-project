@@ -54,7 +54,7 @@
                             <img th:src="@{/image/icons/name.svg}"/>
                             <div>
                                 <h3 class="attribute-type">Name</h3>
-                                <h3 class ="name" th:text="|*{firstName} *{lastName}|"></h3>
+                                <h3 class="name" th:text="|*{firstName} *{lastName}|"></h3>
                             </div>
                         </div>
                         <div class="user-label">
@@ -95,7 +95,7 @@
                     <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
                     <div th:if="${canEdit}" class="edit-button">
                         <a th:href="@{editUser}">
-                            <button type="button">Edit Profile</button>
+                            <button id="" type="button">Edit Profile</button>
                         </a>
                     </div>
 
