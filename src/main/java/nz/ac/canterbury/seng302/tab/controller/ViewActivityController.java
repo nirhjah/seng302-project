@@ -313,8 +313,8 @@ public class ViewActivityController {
         String viewActivityRedirectUrl = String.format(viewActivityRedirect, actId);
         if (!timeOfFact.isEmpty()) {
             try {
-                Integer.parseInt(timeOfFact);
-                if (!factService.validateFactTime(timeOfFact, activity)) {
+                int parsedTime = Integer.parseInt(timeOfFact);
+                if (!activityService.checkTimeOfFactWithinActivity(activity, parsedTime) && !factService.timeLength(timeOfFact)) {
                     result.addError(new FieldError("addFactForm", "timeOfFact", FactValidators.timeErrorMessage));
                 }
             } catch (NumberFormatException e) {
@@ -418,8 +418,8 @@ public class ViewActivityController {
             bindingResult.addError(new FieldError(createEventFormString, "time", FIELD_CANNOT_BE_BLANK_MSG));
         } else {
             try {
-                Integer.parseInt(time);
-                if (!factService.validateFactTime(time, activity)) {
+                int parsedTime = Integer.parseInt(time);
+                if (!activityService.checkTimeOfFactWithinActivity(activity, parsedTime) && !factService.timeLength(time)) {
                     bindingResult.addError(new FieldError(createEventFormString, "time", GOAL_NOT_SCORED_WITHIN_DURATION));
                 }
             } catch (NumberFormatException e) {
@@ -559,9 +559,8 @@ public class ViewActivityController {
         // error checking the time 
         if (!time.isBlank()) {
             try {
-                Integer.parseInt(time);
-                // check if the time is within the activity
-                if (!factService.validateFactTime(time, currActivity)) {
+                int parsedTime = Integer.parseInt(time);
+                if (!activityService.checkTimeOfFactWithinActivity(currActivity, parsedTime) && !factService.timeLength(time)) {
                     bindingResult.addError(new FieldError(createEventFormString, "time", GOAL_NOT_SCORED_WITHIN_DURATION));
                 }
 

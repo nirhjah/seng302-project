@@ -110,16 +110,10 @@ public class FactService {
 
     public void addOrUpdate(Fact fact) {factRepository.save(fact);}
 
-    public boolean validateFactTime(String time, Activity activity) {
-        if (time.length() > 250) {
-            int parsedTime = Integer.parseInt(time);
-            if (parsedTime >= 0 && parsedTime <= Duration.between(activity.getActivityStart(),
-                    activity.getActivityEnd()).toMinutes()) {
-                return true;
-            }
-        }
-        return false;
-
-
-    }
+    /**
+     * Time is stored as a string in the db - max length is 250
+     * @param time the string of the time value
+     * @return true iff time string is less than or equal to 250 chars in length
+     */
+    public boolean timeLength(String time) {return time.length() <= 250;}
 }
