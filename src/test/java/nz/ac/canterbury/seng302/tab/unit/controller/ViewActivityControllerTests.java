@@ -391,6 +391,39 @@ public class ViewActivityControllerTests {
     }
 
     @Test
+    void testFactTimeNotInt() throws Exception {
+        mockMvc.perform(post("/add-fact", 42L)
+                        .param("actId", "1")
+                        .param("timeOfFact", "5A")
+                        .param("description", "shdfsd"))
+                .andExpect(MockMvcResultMatchers.status().isFound());
+    }
+
+    @Test
+    void testGoalTimeNotInt() throws Exception {
+        mockMvc.perform(post("/add-goal", 42L)
+                        .param("actId", "1")
+                        .param("scorer", "1")
+                        .param("goalValue", "1")
+                        .param("time", "aaaa")
+                )
+                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andReturn();
+    }
+
+    @Test
+    void testGoalTimeOutsideAct() throws Exception {
+        mockMvc.perform(post("/add-goal", 42L)
+                        .param("actId", "1")
+                        .param("scorer", "1")
+                        .param("goalValue", "1")
+                        .param("time", "9999999999999999999999999999")
+                )
+                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andReturn();
+    }
+
+    @Test
     void testDescriptionLengthGoal() throws Exception {
         String description = "a".repeat(151);
         mockMvc.perform(post("/add-goal", 42L)
@@ -420,4 +453,33 @@ public class ViewActivityControllerTests {
                 .andReturn();
     }
 
+    @Test
+    void testAddSubTimeNotInt() throws Exception {
+        String player1IDString = Long.toString(activityPlayer.getId());
+        String player2IDString = Long.toString(activityPlayer2.getId());
+        mockMvc.perform(post("/add-sub", 42L)
+                        .param("actId", "1")
+                        .param("playerOn", player1IDString)
+                        .param("goalValue", player2IDString)
+                        .param("description", "ads")
+                        .param("time", "aaaaa")
+                )
+                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andReturn();
+    }
+
+    @Test
+    void testAddSub() throws Exception {
+        String player1IDString = Long.toString(activityPlayer.getId());
+        String player2IDString = Long.toString(activityPlayer2.getId());
+        mockMvc.perform(post("/add-sub", 42L)
+                        .param("actId", "1")
+                        .param("playerOn", player1IDString)
+                        .param("goalValue", player2IDString)
+                        .param("description", "ads")
+                        .param("time", "3")
+                )
+                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andReturn();
+    }
 }
