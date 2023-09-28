@@ -86,7 +86,7 @@ public class WhiteboardMediaController {
             @RequestParam("recording-name") String name,
             @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
     ) {
-        logger.info("POST setRecording: {}", teamId);
+        logger.info("/POST /whiteboard-media/save/screenshot");
         Team team = teamService.getTeam(teamId);
         User user = userService.getCurrentUser().orElseThrow();
         if (team != null) {
