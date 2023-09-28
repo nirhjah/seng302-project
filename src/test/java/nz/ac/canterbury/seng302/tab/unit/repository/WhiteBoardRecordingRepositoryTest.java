@@ -11,7 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.List;
 import java.util.Set;
@@ -43,8 +43,8 @@ public class WhiteBoardRecordingRepositoryTest {
         Pageable page = PageRequest.of(0, 10);
         Set<WhiteBoardRecording> allWBRs = repository.findPublicWhiteboardsByNameAndSport(page, null, List.of()).toSet();
         
-        assertEquals(3, allWBRs.size(), "The wrong number of whiteboards were returned");
-        assertEquals(Set.of(wb1, wb2, wb3), allWBRs);
+        Assertions.assertEquals(3, allWBRs.size(), "The wrong number of whiteboards were returned");
+        Assertions.assertEquals(Set.of(wb1, wb2, wb3), allWBRs);
     }
 
     @Test
@@ -64,8 +64,8 @@ public class WhiteBoardRecordingRepositoryTest {
         Pageable page = PageRequest.of(0, 10);
         Set<WhiteBoardRecording> allWBRs = repository.findPublicWhiteboardsByNameAndSport(page, "yes", List.of()).toSet();
         
-        assertEquals(2, allWBRs.size(), "The wrong number of whiteboards were returned");
-        assertEquals(Set.of(wb1, wb2), allWBRs);
+        Assertions.assertEquals(2, allWBRs.size(), "The wrong number of whiteboards were returned");
+        Assertions.assertEquals(Set.of(wb1, wb2), allWBRs);
     }
 
     @Test
@@ -85,8 +85,8 @@ public class WhiteBoardRecordingRepositoryTest {
         Pageable page = PageRequest.of(0, 10);
         Set<WhiteBoardRecording> allWBRs = repository.findPublicWhiteboardsByNameAndSport(page, "YES", List.of()).toSet();
         
-        assertEquals(2, allWBRs.size(), "The wrong number of whiteboards were returned");
-        assertEquals(Set.of(wb1, wb2), allWBRs);
+        Assertions.assertEquals(2, allWBRs.size(), "The wrong number of whiteboards were returned");
+        Assertions.assertEquals(Set.of(wb1, wb2), allWBRs);
     }
 
     @Test
@@ -110,8 +110,8 @@ public class WhiteBoardRecordingRepositoryTest {
         List<String> sports = List.of("hockey");    // We make it lowercase here because we'd normally do this in the service.
         Set<WhiteBoardRecording> allWBRs = repository.findPublicWhiteboardsByNameAndSport(page, null, sports).toSet();
         
-        assertEquals(2, allWBRs.size(), "The wrong number of whiteboards were returned");
-        assertEquals(Set.of(wb1, wb2), allWBRs);
+        Assertions.assertEquals(2, allWBRs.size(), "The wrong number of whiteboards were returned");
+        Assertions.assertEquals(Set.of(wb1, wb2), allWBRs);
     }
 
     @Test
@@ -137,8 +137,8 @@ public class WhiteBoardRecordingRepositoryTest {
         List<String> sports = List.of("hockey", "soccer");    // We make it lowercase here because we'd normally do this in the service.
         Set<WhiteBoardRecording> allWBRs = repository.findPublicWhiteboardsByNameAndSport(page, null, sports).toSet();
         
-        assertEquals(2, allWBRs.size(), "The wrong number of whiteboards were returned");
-        assertEquals(Set.of(wb1, wb2), allWBRs);
+        Assertions.assertEquals(2, allWBRs.size(), "The wrong number of whiteboards were returned");
+        Assertions.assertEquals(Set.of(wb1, wb2), allWBRs);
     }
 
     @Test
@@ -164,8 +164,8 @@ public class WhiteBoardRecordingRepositoryTest {
         List<String> sports = List.of("swimming");    // We make it lowercase here because we'd normally do this in the service.
         Set<WhiteBoardRecording> allWBRs = repository.findPublicWhiteboardsByNameAndSport(page, null, sports).toSet();
         
-        assertEquals(0, allWBRs.size(), "The wrong number of whiteboards were returned");
-        assertEquals(Set.of(), allWBRs);
+        Assertions.assertEquals(0, allWBRs.size(), "The wrong number of whiteboards were returned");
+        Assertions.assertEquals(Set.of(), allWBRs);
     }
 
     @Test
@@ -192,8 +192,8 @@ public class WhiteBoardRecordingRepositoryTest {
         List<String> sports = List.of("hockey");    // We make it lowercase here because we'd normally do this in the service.
         List<WhiteBoardRecording> allWBRs = repository.findPublicWhiteboardsByNameAndSport(page, "Yes", sports).toList();
         
-        assertEquals(1, allWBRs.size(), "The wrong number of whiteboards were returned");
-        assertEquals(List.of(wb1), allWBRs);
+        Assertions.assertEquals(1, allWBRs.size(), "The wrong number of whiteboards were returned");
+        Assertions.assertEquals(List.of(wb1), allWBRs);
     }
 
     @Test
@@ -222,8 +222,8 @@ public class WhiteBoardRecordingRepositoryTest {
         List<String> sports = List.of("hockey", "rugby");    // We make it lowercase here because we'd normally do this in the service.
         List<WhiteBoardRecording> allWBRs = repository.findPublicWhiteboardsByNameAndSport(page, "yes", sports).toList();
         
-        assertEquals(2, allWBRs.size(), "The wrong number of whiteboards were returned");
-        assertEquals(List.of(wb1, wb3), allWBRs);
+        Assertions.assertEquals(2, allWBRs.size(), "The wrong number of whiteboards were returned");
+        Assertions.assertEquals(List.of(wb1, wb3), allWBRs);
     }
 
 }
