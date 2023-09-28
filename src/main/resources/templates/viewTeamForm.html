@@ -20,20 +20,24 @@
         <div class="tab-box">
             <div class="tab active">
                 <img class="tab-icon" th:src="@{/image/icons/team.svg}"/>
-                <button class="tab-button"> Team Profile &nbsp;</button>
+                <button class="tab-button">Profile</button>
             </div>
             <div class="tab" id="formations-tab">
                 <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
-                <button class="tab-button" >Formations &nbsp;</button>
+                <button class="tab-button" >Formations</button>
             </div>
             <div class="tab" id="stats-tab">
 <!--                this is a temporary icon for statistic, which is probably going to be replaced when working-->
 <!--                on the team aggregated statistic task-->
                 <img class ="tab-icon" th:src="@{/image/icons/statistics.png}"/>
-                <button class="tab-button" >Statistics &nbsp;</button>
-                <div class="tab-line"></div>
+                <button class="tab-button" >Statistics</button>
+            </div>
+            <div class="tab" id="whiteboard-tab">
+                <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
+                <button class="tab-button" >Whiteboard</button>
             </div>
         </div>
+        <div class="tab-line"></div>
         <div class="content-box active" id="team-profile-tab">
             <div class="content">
                 <div class="profile-top-content">
@@ -241,9 +245,7 @@
                            </li>
                        </ul>
                    </div>
-
-
-                    </div>
+                </div>
                     <div style="margin-left: 9px; margin-bottom: 10px" class="third-col">
 
                         <div class="select-container">
@@ -273,10 +275,8 @@
 
                                 </li>
                             </ul>
-
                         </div>
-
-</div>
+                    </div>
 
                         <div id="topOverallPlaytimeDiv" class="hidden" style="display: none;">
 
@@ -352,7 +352,93 @@
             </div>
         </div>
 
-    </div>
+        <!--
+        Whiteboard media:
+        View recordings, and view screenshots tab.
+        -->
+        <div class="content-box" id="whiteboard-media-tab">
+            <div class="content whiteboard-media" style="display: flex">
+                <div class="whiteboard-media-select">
+                    <div class="whiteboard-media-wrapper" id="whiteboard-screenshots">
+                        <div class="media-title">
+                            <img th:src="@{/image/icons/camera.svg}"/>
+                            <h3> Screenshots </h3>
+                        </div>
+                        <div class="whiteboard-media-content">
+                            <div th:each="obj : ${screenshots}" class="media" id="screenshots">
+                                <div class="media-body"
+                                     th:data-public="${obj.isPublic()}"
+                                     th:data-name="${obj.getTag()}"
+                                     th:data-imgurl="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"
+                                     th:data-linkurl="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"
+                                     th:onclick="'whiteboardMediaOnClick(this.getAttribute(\'data-name\'), this.getAttribute(\'data-public\'), this.getAttribute(\'data-imgurl\'), this.getAttribute(\'data-linkurl\'), false)'">
+
+                                    <img th:src="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"  class="card-img-top"
+                                         alt="Screenshot">
+
+                                    <div class="media-name">
+                                        <p th:text="${obj.getTag()}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="whiteboard-media-wrapper" id="whiteboard-recordings">
+                        <div class="media-title">
+                            <img th:src="@{/image/icons/record.svg}"/>
+                            <h3> Recordings </h3>
+                        </div>
+
+                        <div class="whiteboard-media-content">
+                            <div th:each="obj : ${recordings}" class="media" id="recordings">
+                                <div class="media-body"
+                                    th:data-public="${obj.isPublic()}"
+                                    th:data-name="${obj.getName()}"
+                                    th:data-imgurl="@{/whiteboard-media/thumbnail/{id}(id = ${obj.id})}"
+                                    th:data-linkurl="@{/whiteboard-media/video/{id}(id = ${obj.id})}"
+                                    th:onclick="'whiteboardMediaOnClick(this.getAttribute(\'data-name\'), this.getAttribute(\'data-public\'), this.getAttribute(\'data-imgurl\'), this.getAttribute(\'data-linkurl\'), true)'">
+
+
+                                    <img th:src="@{/whiteboard-media/thumbnail/{id}(id = ${obj.id})}"  class="card-img-top"
+                                         alt="Thumbnail">
+
+                                    <div class="media-name">
+                                        <p th:text="${obj.getName()}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="whiteboard-media-display">
+                    <div class="info-box" >
+                        <p id="name-box">
+                            No selection
+                        </p>
+                        <p id="public-box">
+                            <!-- Whether its public or not -->
+                        </p>
+                    </div>
+
+                    <div class="open-link-box">
+                        <a id="open-media-link" target="_" th:href="@{/image/icons/pitch.svg}">
+                            <img id="whiteboard-media-image" th:src="@{/image/icons/pitch.svg}"/>
+
+                            <div class="button-box">
+                                <img class="click-image" id="whiteboard-click-image" th:src="@{/image/icons/play.svg}" style="visibility: hidden"/>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="submit-button" th:if="${isUserManagerOrCoach}">
+                        <a th:href="@{whiteboard(teamID=${teamID})}">
+                            <button type="button">Whiteboard</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     <footer>
         <p>
             Image by <a
@@ -368,6 +454,28 @@
             filePicker.click();
         }
 
+        /*
+        This function IS actually used, just inside a `th:script`.
+         */
+        function whiteboardMediaOnClick(name, isPublic, imageURL, linkURL, isRecording) {
+            console.log(name, isPublic, imageURL, linkURL, isRecording);
+            let nameBox = document.getElementById("name-box");
+            let publicBox = document.getElementById("public-box");
+            let img = document.getElementById("whiteboard-media-image");
+            let link = document.getElementById("open-media-link");
+            let clickImage = document.getElementById("whiteboard-click-image");
+
+            // Set display text:
+            let publicText = isPublic ? "Public" : "Private";
+            publicBox.innerHTML = "Visibility: ".concat(publicText);
+            nameBox.innerHTML = name;
+
+            // Set links:
+            img.src = imageURL;
+            link.href = linkURL;
+
+            clickImage.style.visibility = isRecording ? "visible" : "hidden";
+        }
 
         const dropdown = document.getElementById('dropdown');
         const topScorersDiv = document.getElementById('topScorersDiv');
@@ -397,36 +505,36 @@
                     return;
                 }
                 const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/jpg'];
-            if (!allowedTypes.includes(file.type)) {
-                alert('File type must be jpeg, png or svg');
-                return;
-            }
-            document.getElementById('upload-picture').submit();
-        });
-    }
+                if (!allowedTypes.includes(file.type)) {
+                    alert('File type must be jpeg, png or svg');
+                    return;
+                }
+                document.getElementById('upload-picture').submit();
+            });
+        }
 
-    const copyButton = document.querySelector('.copy-token');
-    const tokenValue = document.querySelector('.token-value');
-    if (tokenValue !== null) {
-        const token = tokenValue.innerHTML;
-        copyButton.addEventListener('click', () => {
-            const selection = window.getSelection();
-            const range = document.createRange();
-            range.selectNodeContents(tokenValue);
-            selection.removeAllRanges();
-            selection.addRange(range);
-            document.execCommand('copy');
-            selection.removeAllRanges();
-            tokenValue.innerHTML = 'Copied...';
-            setTimeout(() => {
-                tokenValue.style.opacity = 0;
+        const copyButton = document.querySelector('.copy-token');
+        const tokenValue = document.querySelector('.token-value');
+        if (tokenValue !== null) {
+            const token = tokenValue.innerHTML;
+            copyButton.addEventListener('click', () => {
+                const selection = window.getSelection();
+                const range = document.createRange();
+                range.selectNodeContents(tokenValue);
+                selection.removeAllRanges();
+                selection.addRange(range);
+                document.execCommand('copy');
+                selection.removeAllRanges();
+                tokenValue.innerHTML = 'Copied...';
                 setTimeout(() => {
-                    tokenValue.style.opacity = 1;
-                    tokenValue.innerHTML = token;
-                }, 500);
-            }, 1000);
-        });
-    }
+                    tokenValue.style.opacity = 0;
+                    setTimeout(() => {
+                        tokenValue.style.opacity = 1;
+                        tokenValue.innerHTML = token;
+                    }, 500);
+                }, 1000);
+            });
+        }
 
         const tabs = document.querySelectorAll('.tab');
         const tabLine = document.querySelector('.tab-line');
@@ -464,14 +572,14 @@
                 });
                 tab.classList.add('active');
                 if (index === 0) {
-                    tabLine.style.left = "18px"; //64
+                    tabLine.style.left = "0";
                 } else if (index === 1) {
-                    tabLine.style.left = "247px"; //368
+                    tabLine.style.left = "25%";
                 } else if (index === 2) {
-                    tabLine.style.left = "460px"; //670
+                    tabLine.style.left = "50%";
                 }
                 else {
-                    tabLine.style.left = "685px";
+                    tabLine.style.left = "75%";
                 }
                 displayBox.forEach(box => {
                     box.classList.remove('active')
@@ -558,8 +666,8 @@
             formationList.classList.toggle("active");
         });
 
-
     </script>
+    </div>
 </div>
 </body>
 </html>

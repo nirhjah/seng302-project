@@ -101,7 +101,7 @@ public class WhiteboardRecordingService extends VideoService<WhiteBoardRecording
 
 
     /**
-     * Gets a page of public whiteboard recordings 
+     * Gets a page of public whiteboard recordings
      * @param pageable Page size, number, and sorting info
      * @param currentSearch Search by name
      * @param sports The list of sports that the whiteboard's owner (team) can be part of
@@ -126,5 +126,9 @@ public class WhiteboardRecordingService extends VideoService<WhiteBoardRecording
 
     public List<String> getAllPublicWhiteboardSports() {
         return repository.getAllDistinctPublicSports();
+    }
+
+    public Optional<WhiteBoardRecording> findById(long id) {
+        return repository.findById(id);
     }
 }
