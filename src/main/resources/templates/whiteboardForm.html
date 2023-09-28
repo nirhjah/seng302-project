@@ -13,7 +13,7 @@
 <div class="whiteboard-form">
     <div class="whiteboard-wrapper">
         <div class="whiteboard-dropdowns">
-            <input type="text" value="Untitled" class="whiteboard-title" maxlength=26>
+            <input type="text" placeholder="Untitled" class="whiteboard-title" maxlength=26>
             <hr>
             <div class="dropdown">
                 <label for="pitch">Pitch Type</label>
@@ -359,34 +359,10 @@
 
     const recordingModal = document.getElementById('recording-modal');
 
-
-    /**
-     * Handles editing the whiteboard name function. When the name is clicked, the name can be editable.
-     * There is also a limit of 26 characters for the whiteboard name. When the limit of characters is reached, the name cannot be editable
-     * unless clicked on again.
-     * 
-     * (Look idk why we couldn't just use an <input>)
-     */
-    const DEFAULT_TITLE = "Untitled";
-    const whiteboardDropdowns = document.querySelector('.whiteboard-dropdowns');
-    const whiteboardTitle = whiteboardDropdowns.querySelector('input.whiteboard-title');
+    const whiteboardTitle = document.querySelector('input.whiteboard-title');
             
-    function changeTitleColour() {
-        if (whiteboardTitle.value.trim() == DEFAULT_TITLE) {
-            whiteboardTitle.classList.remove('active');
-        } else {
-            whiteboardTitle.classList.add('active');
-        }
-    }
-
     whiteboardTitle.addEventListener('keydown', function (event) {
         event.stopPropagation();
-    });
-    
-    whiteboardTitle.addEventListener('blur', () => {
-        const editedText = whiteboardTitle.value.trim();
-        whiteboardTitle.value = editedText || DEFAULT_TITLE;
-        changeTitleColour()
     });
 
     /**

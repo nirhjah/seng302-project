@@ -324,8 +324,8 @@ input[type="range"]::-moz-range-track {
 }
 
 .whiteboard-dropdowns .whiteboard-title {
-    padding-top:11px;
-    color: #808080;
+    outline: none;
+    color: #0D1B2A;
     font-size:22px;
     display: block;
     margin-block-start: 1em;
@@ -336,8 +336,8 @@ input[type="range"]::-moz-range-track {
     border: 0;
 }
 
-.whiteboard-dropdowns .whiteboard-title.active {
-    color: #0D1B2A;
+.whiteboard-title::placeholder {
+    color: #808080;
 }
 
 .whiteboard-dropdowns .dropdown{
@@ -375,11 +375,6 @@ input[type="range"]::-moz-range-track {
 .whiteboard-dropdowns .line span{
     padding: 0 10px;
     font-size:18px;
-}
-
-.whiteboard-dropdowns .whiteboard-title:focus {
-    outline: none;
-    color: #0D1B2A;
 }
 
 .whiteboard-dropdowns .player-table{
