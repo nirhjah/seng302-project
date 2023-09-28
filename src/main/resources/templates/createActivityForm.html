@@ -293,7 +293,7 @@
         const remainingChars = limit - value.length;
         charCount.textContent = `Characters remaining: ${remainingChars}`;
 
-        if (remainingChars <= 0) {
+        if (remainingChars < 0) {
             textarea.style.borderColor = 'red';
             charCount.style.color='red';
         } else {
