@@ -65,13 +65,13 @@ public class LineUpRepositoryTest {
         this.lineUpRepository.save(lineUp);
     }
     @Test
-    public void getLineUpById(){
+    void getLineUpById(){
         LineUp retreivedLineup = lineUpRepository.findById(lineUp.getLineUpId()).get();
         Assertions.assertEquals(lineUp, retreivedLineup);
     }
 
     @Test
-    public void getLineUpsByTeam() {
+    void getLineUpsByTeam() {
         List<LineUp> retrievedLineups = lineUpRepository.findLineUpByTeamTeamId(team.getTeamId()).get();
         Assertions.assertEquals(lineUp, retrievedLineups.get(0));
     }

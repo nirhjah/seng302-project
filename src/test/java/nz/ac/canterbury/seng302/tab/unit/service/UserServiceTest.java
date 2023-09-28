@@ -144,14 +144,14 @@ public class UserServiceTest {
     void testEmailIsInUse() throws Exception {
         User user = new User("Hee", "Account", "tab@gmail.com", "password", location);
         userRepository.save(user);
-        userService.emailIsInUse(user.getEmail());
+        assertTrue(userService.emailIsInUse(user.getEmail()));
     }
 
     @Test
     void testEmailIsInUse_EmailDoesntExist() throws Exception {
         User user = new User("Hee", "Account", "tab@gmail.com", "password", location);
         userRepository.save(user);
-        userService.emailIsInUse("test@test.com");
+        assertFalse(userService.emailIsInUse("test@test.com"));
     }
 
     @Test

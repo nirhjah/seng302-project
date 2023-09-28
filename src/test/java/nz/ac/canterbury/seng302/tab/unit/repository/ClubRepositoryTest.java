@@ -36,7 +36,7 @@ public class ClubRepositoryTest {
     }
 
     @Test
-    public void testFindClubById() {
+    void testFindClubById() {
         for (int i = 0; i < CLUB_DB_SIZE; i++) {
             Optional<Club> club = clubRepository.findById(i + 1);
             Assertions.assertEquals("Club " + i, club.get().getName());
@@ -44,7 +44,7 @@ public class ClubRepositoryTest {
     }
 
     @Test
-    public void testFindAll() {
+    void testFindAll() {
         List<Club> clubList = clubRepository.findAll();
         Assertions.assertEquals(CLUB_DB_SIZE, clubList.size());
         int counter = 0;

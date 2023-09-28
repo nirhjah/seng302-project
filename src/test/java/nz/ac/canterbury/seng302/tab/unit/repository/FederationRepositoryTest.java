@@ -25,7 +25,7 @@ public class FederationRepositoryTest {
     private FederationManagerInvite federationManagerInviteOne;
     private FederationManagerInvite federationManagerInviteTwo;
     @BeforeEach
-    public void beforeEach() throws Exception {
+    void beforeEach() throws Exception {
         Location location = new Location(null, null, null, "Christchurch", null, "New Zealand");
         userOne = new User("TestOnw", "AccountOne", "test1@test.com", "Password1!", location);
         userTwo = new User("TestTwo", "AccountTwo", "test2@test.com", "Password2!", location);
@@ -38,7 +38,7 @@ public class FederationRepositoryTest {
     }
 
     @Test
-    public void testFindByUser(){
+    void testFindByUser(){
         federationRepository.findByUser(userOne);
         Optional<FederationManagerInvite> userOneInvite = federationRepository.findByUser(userOne);
         Assertions.assertNotNull(userOneInvite);
@@ -51,7 +51,7 @@ public class FederationRepositoryTest {
     }
 
     @Test
-    public void testGettingFederationManagerInviteByToken(){
+    void testGettingFederationManagerInviteByToken(){
         String tokenOne = federationManagerInviteOne.getToken();
         String tokenTwo = federationManagerInviteTwo.getToken();
 

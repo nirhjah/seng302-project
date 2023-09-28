@@ -18,7 +18,7 @@ public class SportRepositoryTest {
     private List<String> sportsList;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         sportRepository.deleteAll();
         sportsList = Arrays.asList("American Football", "Basketball", "Hockey", "Netball", "Rugby", "Soccer", "Tennis", "Volleyball");
         for (String sport : sportsList) {
@@ -27,7 +27,7 @@ public class SportRepositoryTest {
     }
     @Test
     @Order(1)
-    public void testFindingById() {
+    void testFindingById() {
         for (int i=0; i<sportsList.size(); i++){
             Optional<Sport> sport = sportRepository.findById(i+1);
             Assertions.assertEquals(sportsList.get(i), sport.get().getName());
@@ -35,7 +35,7 @@ public class SportRepositoryTest {
     }
     @Test
     @Order(2)
-    public void testFindingAll(){
+    void testFindingAll(){
         List<Sport> actualSportList = sportRepository.findAll();
         int index=0;
         for (Sport sport : actualSportList){
@@ -45,7 +45,7 @@ public class SportRepositoryTest {
     }
     @Test
     @Order(3)
-    public void testFindingSportsByName(){
+    void testFindingSportsByName(){
         for (String sport: sportsList) {
             Optional<Sport> actualSport = sportRepository.findSportByName(sport);
             Assertions.assertEquals(sport,actualSport.get().getName());
