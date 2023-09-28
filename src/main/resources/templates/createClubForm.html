@@ -133,19 +133,21 @@
     const ENDPOINT = path + "/geocode/autocomplete";
 </script>
 <script th:inline="javascript">
-/*
-
     const sportsInput = document.getElementById("sport")
 
-    function clearOptionsInSelect() {
-        var selectElement = document.getElementById("selectedTeams");
-        while (selectElement.options.length > 0) {
-            selectElement.remove();
+    /*
+
+        const sportsInput = document.getElementById("sport")
+
+        function clearOptionsInSelect() {
+            var selectElement = document.getElementById("selectedTeams");
+            while (selectElement.options.length > 0) {
+                selectElement.remove();
+            }
+
         }
 
-    }
-
- */
+     */
 
 
 
@@ -169,14 +171,23 @@
         selectElement.innerHTML = "";
         teams.forEach(function (team) {
             var option = document.createElement("option");
-            option.value = team.id;
+            option.value = team.teamId;
             option.textContent = team.name;
             selectElement.appendChild(option);
         });
     }
 
 
-    /**
+    document.addEventListener('DOMContentLoaded', function() {
+        if (sportsInput.value.trim() !== "") {
+            getValidTeams();
+        }
+
+    });
+
+
+
+/**
      * The delay time (in milliseconds) for debouncing the search input.
      * @type {number}
      */
