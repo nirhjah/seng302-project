@@ -88,7 +88,7 @@
                     <a th:href="@{view-activities(page=1)}">My Activities</a>
                     <a href="javascript:void(0)" onclick="document.querySelector('#logoutForm').submit()">Logout</a>
                 </div>
-                <a class="profile-button-text">
+                <a class="profile-button-text" th:classappend="${httpServletRequest.requestURI.contains('user-info') ? 'current' : ''}">
                     <img th:src="@{/user-profile-picture/{id}(id = ${user.userId})}" class="navbar-profile-picture"
                          alt="My Profile">
                     <span th:if="${#strings.length(user.firstName + ' ' + user.lastName)} &lt;= 24" th:text="${user.firstName + ' ' + user.lastName}"></span>
@@ -110,6 +110,10 @@
         const buttons = document.querySelectorAll('.buttons')
         const dropdowns = document.querySelectorAll('.navbar-dropdown')
 
+
+        /**
+         * Handles opening and closing dropdowns
+         */
         buttons.forEach(button => {
             let buttonType;
             button.classList.forEach(element => {
@@ -128,11 +132,17 @@
             })
         });
 
-        document.addEventListener("click", function (event) {
-            if (!event.target.classList.contains("buttons") && !event.target.parentElement.classList.contains("navbar-dropdown")) {
-                dropdowns.forEach(dropdown => {
-                    dropdown.classList.remove("show")
-                })
+        /**
+         * Removes open dropdowns from view on click off
+         */
+        document.body.addEventListener('click', function (event) {
+            const isButton = Array.from(buttons).some(button => button.contains(event.target));
+            const isDropdown = Array.from(dropdowns).some(dropdown => dropdown.contains(event.target));
+
+            if (!isButton && !isDropdown) {
+                buttons.forEach(button => {
+                    button.classList.remove('active');
+                });
             }
         });
 
