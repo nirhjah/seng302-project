@@ -366,7 +366,12 @@
                         </div>
                         <div class="whiteboard-media-content">
                             <div th:each="obj : ${screenshots}" class="media" id="screenshots">
-                                <div class="media-body"  th:onclick="'whiteboardMediaOnClick(' + ${obj.id} + ', false)'">
+                                <div class="media-body"
+                                     th:data-public="${obj.isPublic()}"
+                                     th:data-name="${obj.getTag()}"
+                                     th:data-url="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"
+                                     th:onclick="'whiteboardMediaOnClick(this.getAttribute(\'data-name\'), this.getAttribute(\'data-public\'), this.getAttribute(\'data-url\'), false)'">
+
                                     <img th:src="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"  class="card-img-top"
                                          alt="Screenshot">
 
@@ -385,7 +390,7 @@
                         </div>
                         <div class="whiteboard-media-content">
                             <div th:each="obj : ${recordings}" class="media" id="recordings">
-                                <div class="media-body"  th:onclick="'whiteboardMediaOnClick(' + ${obj.id} + ', true)'">
+                                <div class="media-body" th:onclick="'whiteboardMediaOnClick(' + ${obj.id} + ', true)'">
                                     <!--  TODO: change this to `recordings` -->
                                     <img th:src="@{/whiteboard-media/screenshots/{id}(id = ${obj.id})}"  class="card-img-top"
                                          alt="Recording">
@@ -425,8 +430,8 @@
     <script th:inline="javascript">
 
         const MEDIA_INFO_ENDPOINT = "whiteboard-media/get-whiteboard-media-info";
-        function whiteboardMediaOnClick(id, isRecording) {
-            console.log(id, isRecording);
+        function whiteboardMediaOnClick(id, isPublic, url, isRecording) {
+            console.log(id, isPublic, url, isRecording);
             axios.get(MEDIA_INFO_ENDPOINT, {
                 params: {
                     id: id,
@@ -533,7 +538,6 @@
 
         tabs.forEach((tab, index) => {
             tab.addEventListener('click', (e) => {
-                console.log("HELLO?")
                 tabs.forEach(otherTab => {
                     otherTab.classList.remove('active');
                 });
