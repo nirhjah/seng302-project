@@ -787,36 +787,40 @@
 
         recordingButton.addEventListener('click', function () {
             toggleRecording();
-            if (!recording) {
-                var chunks = [];
-                mediaRecorder.ondataavailable = function(e) {
-                    chunks.push(e.data);
-                };
 
-                mediaRecorder.onstop = function(e) {
-                    var blob = new Blob(chunks, { 'type' : 'video/mp4' });
-                    chunks = [];
-                    videoURL = URL.createObjectURL(blob);
-                    openRecordingModal(videoURL);
-                    testVideoDisplay.src = videoURL;
-                };
-                mediaRecorder.ondataavailable = function(e) {
-                    chunks.push(e.data);
-                };
-
-                mediaRecorder.start();
-                recording = true;
-            } else {
-                mediaRecorder.stop();
-                recording = false;
-            }
         });
 
         let progress;
         const circularProgress = document.querySelector(".circular-progress")
         const progressValue = document.querySelector(".progress-value");
 
-        function toggleRecording() {
+        function startRecording() {
+            var chunks = [];
+            mediaRecorder.ondataavailable = function(e) {
+                chunks.push(e.data);
+            };
+
+            mediaRecorder.onstop = function(e) {
+                var blob = new Blob(chunks, { 'type' : 'video/mp4' });
+                chunks = [];
+                videoURL = URL.createObjectURL(blob);
+                openRecordingModal(videoURL);
+                testVideoDisplay.src = videoURL;
+            };
+            mediaRecorder.ondataavailable = function(e) {
+                chunks.push(e.data);
+            };
+
+            mediaRecorder.start();
+            recording = true;
+        }
+
+        function stopRecording() {
+            mediaRecorder.stop();
+            recording = false;
+        }
+
+        function toggleRecordingDisplay() {
             recordingButton.classList.toggle('active');
             if (recordingButton.classList.contains('active')) {
                 const minutes = 5;
@@ -832,12 +836,22 @@
                         clearInterval(progress);
                         recordingButton.classList.toggle('active');
                         circularProgress.style.background = 'conic-gradient(#1B263B 360deg, #FFFFFF 0deg)'
-                        mediaRecorder.stop()
+                        stopRecording()
                     }
                 }, speed);
             } else {
                 clearInterval(progress);
                 circularProgress.style.background = 'conic-gradient(#1B263B 360deg, #FFFFFF 0deg)'
+            }
+        }
+
+        function toggleRecording() {
+            toggleRecordingDisplay();
+
+            if (!recording) {
+                startRecording();
+            } else {
+                stopRecording();
             }
         }
 
