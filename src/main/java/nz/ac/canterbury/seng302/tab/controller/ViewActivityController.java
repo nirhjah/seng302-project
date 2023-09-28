@@ -243,7 +243,7 @@ public class ViewActivityController {
         model.addAttribute("activityLength", totalActivityMinutes);
         // attributes for the subs
         // all players who are currently playing - for the sub off
-        List<User> teamMembers = activity.getInvolvedMembers();
+        List<User> teamMembers = new ArrayList<>(activity.getTeam().getNonManagersAndCoaches());
         model.addAttribute("playersInLineUp", teamMembers);
         List<User> teamMembersRev = new ArrayList<>(teamMembers);
         Collections.reverse(teamMembersRev);
