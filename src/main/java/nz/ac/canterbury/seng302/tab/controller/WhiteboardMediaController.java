@@ -1,10 +1,7 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import nz.ac.canterbury.seng302.tab.api.response.WhiteboardMediaInfo;
 import nz.ac.canterbury.seng302.tab.entity.Team;
 import nz.ac.canterbury.seng302.tab.entity.User;
-import nz.ac.canterbury.seng302.tab.entity.WhiteBoardRecording;
-import nz.ac.canterbury.seng302.tab.entity.WhiteboardScreenshot;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
 import nz.ac.canterbury.seng302.tab.service.UserService;
 import nz.ac.canterbury.seng302.tab.service.image.WhiteboardScreenshotService;
@@ -16,9 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Base64;
-import java.util.Optional;
 
 /**
  * This controller handles saved media,
@@ -133,46 +127,5 @@ public class WhiteboardMediaController {
         }
         // maybe redirect to view the whiteboard
         return "redirect:/whiteboard?teamID=" + team.getId();
-    }
-
-    private Optional<WhiteboardMediaInfo> getMediaInfo(WhiteboardMediaInfo mediaInfo, Optional<byte[]> data) {
-        if (data.isPresent()) {
-            mediaInfo.setImageData(Base64.getEncoder().encodeToString(data.get()));
-            return Optional.of(mediaInfo);
-        }
-        return Optional.empty();
-    }
-
-    /**
-     * Returns a JSON object of WhiteboardMediaInfo,
-     * that is, representing either a screenshot OR a recording.
-     * Frontend currently uses this information for fancy display.
-     * @param id Id of entity
-     * @param isRecording true if recording, false if screenshot
-     * @return WhiteboardMediaInfo JSON obj.
-     */
-    @GetMapping("whiteboard-media/get-whiteboard-media-info")
-    public ResponseEntity<WhiteboardMediaInfo> getVideoInfo(
-            @RequestParam("id") Long id,
-            @RequestParam("recording") boolean isRecording
-    ) {
-        Optional<WhiteboardMediaInfo> mediaInfo = Optional.empty();
-        if (isRecording) {
-            Optional<WhiteBoardRecording> optRec = whiteboardRecordingService.findById(id);
-            if (optRec.isPresent() ) {
-                Optional<byte[]> optData = whiteboardRecordingService.readFile(optRec.get().getId());
-                mediaInfo = getMediaInfo(new WhiteboardMediaInfo(optRec.get()), optData);
-            }
-        } else {
-            Optional<WhiteboardScreenshot> optScr = whiteboardScreenshotService.findById(id);
-            if (optScr.isPresent() ) {
-                Optional<byte[]> optData = whiteboardRecordingService.readFile(optScr.get().getId());
-                mediaInfo = getMediaInfo(new WhiteboardMediaInfo(optScr.get()), optData);
-            }
-        }
-        if (mediaInfo.isPresent()) {
-            return ResponseEntity.ok().body(mediaInfo.get());
-        }
-        return ResponseEntity.notFound().build();
     }
 }

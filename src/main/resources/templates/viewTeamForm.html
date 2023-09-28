@@ -426,22 +426,10 @@
         </p>
     </footer>
 
-    <script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
     <script th:inline="javascript">
 
-        const MEDIA_INFO_ENDPOINT = "whiteboard-media/get-whiteboard-media-info";
         function whiteboardMediaOnClick(id, isPublic, url, isRecording) {
             console.log(id, isPublic, url, isRecording);
-            axios.get(MEDIA_INFO_ENDPOINT, {
-                params: {
-                    id: id,
-                    recording: isRecording
-                }
-            }).then((resp) => {
-                console.log("DATA: ", resp.data);
-                let infoBox = document.getElementById("info-box");
-                infoBox.innerHTML = resp.data.name;
-            })
             let infoBox = document.getElementById("info-box");
             infoBox.innerHTML = name;
         }
