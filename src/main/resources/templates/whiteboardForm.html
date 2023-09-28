@@ -342,6 +342,22 @@
 </body>
 <script th:inline="javascript">
 
+    
+    function setWhiteboardToMobileFriendlySize() {
+        if (window.innerWidth <= 945) {
+            const canvasContainer = document.querySelector('.canvas-container');
+            const upperCanvas = document.querySelector('.upper-canvas');
+            const canvas = document.querySelector('#canvas');
+            canvasContainer.style.width = '400px';
+            upperCanvas.style.width = '400px';
+            canvas.style.width = '400px';
+        }
+    }
+
+    window.addEventListener('resize', setWhiteboardToMobileFriendlySize);
+    window.addEventListener('load', setWhiteboardToMobileFriendlySize);
+
+
     /**
      * This handles the pitch dropdown selection for the whiteboard. There is a fixed list of pitchTypes and a for each loop is used to
      * create the option element for each pitch type.

@@ -697,3 +697,26 @@ input[type="range"]::-moz-range-track {
         width: 63% !important;
     }
 }
+
+
+@media (max-width: 945px) {
+
+    .whiteboard-wrapper {
+        flex-direction: column-reverse !important;
+        width: 107% !important;
+        margin-top: 203% !important;
+        margin-left: 73px !important;
+    }
+
+    .canvas-container {
+        width: 400px !important;
+    }
+
+    .upper-canvas {
+        width: 400px !important;
+    }
+
+    #canvas {
+        width: 400px;
+    }
+}
