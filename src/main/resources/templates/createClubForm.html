@@ -105,12 +105,7 @@
             </div>
 
             <label class="selectTeamsLabel"> Select Teams </label>
-            <select th:field="*{selectedTeams}" name="selectedTeams" id="selectedTeams" multiple>
-<!--                <option class="selectTeamsOption" th:each="team : ${listOfTeams}"-->
-<!--                        th:value="${team.teamId}"-->
-<!--                        th:text="${team}"-->
-<!--                        th:selected="${selectedTeams != null && selectedTeams.contains(team)}"></option>-->
-            </select>
+            <select th:field="*{selectedTeams}" name="selectedTeams" id="selectedTeams" multiple></select>
 
             <label style="font-family: 'Noto Sans', sans-serif"> Hold ctrl and click on teams to select/deselect
                 multiple </label>

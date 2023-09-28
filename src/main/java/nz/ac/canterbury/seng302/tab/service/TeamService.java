@@ -63,26 +63,41 @@ public class TeamService {
      **/
     public final String sportUnicodeRegex = TeamFormValidators.VALID_TEAM_SPORT_REGEX;
 
+    /**
+     * Gets list of all teams in system
+     * @return list of teams
+     */
     public List<Team> getTeamList() {
         return teamRepository.findAll();
     }
 
+    /**
+     * Saves team to system
+     * @param team team to save
+     * @return saves team
+     */
     public Team addTeam(Team team) {
         return teamRepository.save(team);
     }
 
+    /**
+     * Gets team by its id
+     * @param teamID id to get team by
+     * @return team, or null if no team found for that id
+     */
     public Team getTeam(long teamID) {
         return teamRepository.findById(teamID).orElse(null);
     }
 
+    /**
+     * Updates an already existing team
+     * @param team team to update
+     * @return saves/updates team
+     */
     public Team updateTeam(Team team) {
         return teamRepository.save(team);
     }
 
-    public Page<Team> findPaginated(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
-        return teamRepository.findAll(pageable);
-    }
 
     /**
      * Method that finds paginated teams by city <strong>AND</strong> sports, using
@@ -109,6 +124,11 @@ public class TeamService {
         return teamRepository.findTeamByFilteredLocationsAndSports(pageable, searchedCities, searchedSports, name);
     }
 
+    /**
+     * Finds team by token
+     * @param token token to find team by
+     * @return team if found
+     */
     public Optional<Team> findByToken(String token) {
         return teamRepository.findByToken(token);
     }
@@ -185,12 +205,13 @@ public class TeamService {
     }
 
     /**
-     * @param country
-     * @param city
-     * @param postcode
-     * @param suburb
-     * @param addressline1
-     * @param addressline2
+     * Checks if given location fields make up a valid location
+     * @param country country
+     * @param city city
+     * @param postcode postcode
+     * @param suburb suburb
+     * @param addressline1 addressline1
+     * @param addressline2 addressline2
      * @return true if all the params match their respective regex's
      */
     public boolean isValidLocation(String country, String city, String postcode, String suburb, String addressline1,
@@ -227,13 +248,28 @@ public class TeamService {
         return filtered;
     }
 
+    /**
+     * Checks that user roles are valid
+     * @param userRoles user roles to check
+     * @return true or false if user roles are valid
+     */
     public boolean userRolesAreValid(List<String> userRoles) {
         int numOfManagers = Collections.frequency(userRoles, Role.MANAGER.toString());
         return ((numOfManagers > 0) && (numOfManagers <=3));
     }
 
+    /**
+     * Finds all teams the given user is a member of
+     * @param user user to find teams
+     * @return list of teams
+     */
     public List<Team> findTeamsWithUser(User user) {return teamRepository.findTeamsWithUser_List(user);}
 
+    /**
+     * Gets all teams in a given club
+     * @param club club to get teams of
+     * @return list of teams
+     */
     public List<Team> findTeamsByClub(Club club) {
         long id = club.getClubId();
         return teamRepository.findTeamsByTeamClubClubId(id);
@@ -266,6 +302,11 @@ public class TeamService {
         return teamRepository.getAllDistinctCities();
     }
 
+    /**
+     * Finds team by id
+     * @param id id to find team by
+     * @return team if found
+     */
     public Optional<Team> findTeamById(long id) {
         return teamRepository.findById(id);
     }

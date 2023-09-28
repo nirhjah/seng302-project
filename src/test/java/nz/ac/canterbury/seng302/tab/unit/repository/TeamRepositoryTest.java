@@ -8,6 +8,7 @@ import nz.ac.canterbury.seng302.tab.repository.ClubRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import nz.ac.canterbury.seng302.tab.repository.UserRepository;
 import nz.ac.canterbury.seng302.tab.service.TeamService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -38,7 +39,7 @@ public class TeamRepositoryTest {
     private ClubRepository clubRepository;
 
     @Test
-    public void testGettingTeamById() throws IOException {
+    public void testGettingTeamById() {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
         Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
@@ -52,7 +53,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    public void testGettingTeamList() throws IOException {
+    public void testGettingTeamList() {
         assertTrue(teamService.getTeamList().isEmpty());
         Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
 
@@ -68,7 +69,7 @@ public class TeamRepositoryTest {
 
     }
 
-    @Test void filteringSearchBySport_filteringAllTeamsByHockeyAndNetball_correctListReturned() throws IOException {
+    @Test void filteringSearchBySport_filteringAllTeamsByHockeyAndNetball_correctListReturned() {
         assertTrue(teamService.getTeamList().isEmpty());
         Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
 
@@ -84,7 +85,7 @@ public class TeamRepositoryTest {
         assertEquals(expectedTeamList.toString(), teamRepository.findTeamByNameAndSportIn(PageRequest.of(0,10), searchedSports, "").toList().toString());
     }
 
-    @Test void filteringSearchBySport_filteringTeamsNamedTestByHockey_correctListReturned() throws IOException {
+    @Test void filteringSearchBySport_filteringTeamsNamedTestByHockey_correctListReturned() {
         assertTrue(teamService.getTeamList().isEmpty());
         Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
 
@@ -102,7 +103,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    public void filteringTeamsByCities_noCitiesSelected_allCitiesDisplayed() throws IOException {
+    public void filteringTeamsByCities_noCitiesSelected_allCitiesDisplayed() {
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
         Team team1 = new Team("team1", "Hockey", new Location("123 Test1 road", "", "Suburb1", "Christchurch", "1111", "NZ"));
@@ -121,7 +122,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    public void filteringTeamsByCities_oneCitySelected_allTeamsWithCityDisplayed() throws IOException {
+    public void filteringTeamsByCities_oneCitySelected_allTeamsWithCityDisplayed() {
         final String WANTED_CITY = "Christchurch";
         List<Team> teamList = teamService.getTeamList();
         assertTrue(teamList.isEmpty());
@@ -143,7 +144,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    public void filteringTeamsByCities_twoCitiesSelected_allTeamsWithThoseCitiesDisplayed() throws IOException {
+    public void filteringTeamsByCities_twoCitiesSelected_allTeamsWithThoseCitiesDisplayed() {
         final String WANTED_CITY1 = "Christchurch";
         final String WANTED_CITY2 = "Auckland";
 
@@ -167,7 +168,7 @@ public class TeamRepositoryTest {
 
     }
     @Test
-    public void filteringTeamsByCities_twoCitiesSelectedAndTeamNamesDifferent_displayCitiesAndTeams() throws IOException {
+    public void filteringTeamsByCities_twoCitiesSelectedAndTeamNamesDifferent_displayCitiesAndTeams() {
 
         final String WANTED_CITY1 = "Christchurch";
         final String WANTED_CITY2 = "Dunedin";
@@ -193,7 +194,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    public void filteringTeamsByCities_allCitiesSelected_allCitiesDisplayed() throws IOException {
+    public void filteringTeamsByCities_allCitiesSelected_allCitiesDisplayed() {
         final String WANTED_CITY1 = "Christchurch";
         final String WANTED_CITY2 = "Dunedin";
         final String WANTED_CITY3 = "Auckland";
@@ -223,7 +224,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    void filteringSearchBySport_filteringAllTeamsAndNoSports_correctListReturned() throws IOException {
+    void filteringSearchBySport_filteringAllTeamsAndNoSports_correctListReturned() {
         assertTrue(teamService.getTeamList().isEmpty());
         Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
 
@@ -241,7 +242,7 @@ public class TeamRepositoryTest {
 
 
     @Test
-    void filteringByCityAndSport_filterByOneSportAndCity_correctListReturned() throws Exception {
+    void filteringByCityAndSport_filterByOneSportAndCity_correctListReturned() {
         Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
 
         Team team1 = new Team("test1", "Hockey", testLocation);
@@ -261,7 +262,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    void filteringByCityAndSport_filterByTwoSportsAndOneCity_correctListReturned() throws Exception {
+    void filteringByCityAndSport_filterByTwoSportsAndOneCity_correctListReturned() {
         Location testLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
 
         Team team1 = new Team("test1", "Hockey", testLocation);
@@ -283,7 +284,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    void filteringByCityAndSport_filterByTwoSportsAndTwoCities_correctListReturned() throws Exception {
+    void filteringByCityAndSport_filterByTwoSportsAndTwoCities_correctListReturned() {
         Location chchLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
         Location auckLocation = new Location(null, null, null, "Auckland", null, "New Zealand");
 
@@ -308,7 +309,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    void filteringByCityAndSport_filterByNameAndOneSportAndCity_correctListReturned() throws Exception {
+    void filteringByCityAndSport_filterByNameAndOneSportAndCity_correctListReturned() {
         Location chchLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
         Location auckLocation = new Location(null, null, null, "Auckland", null, "New Zealand");
 
@@ -333,7 +334,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    void filteringByCityAndSport_emptyFilters_returnEverything() throws Exception {
+    void filteringByCityAndSport_emptyFilters_returnEverything() {
         Location chchLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
         Location auckLocation = new Location(null, null, null, "Auckland", null, "New Zealand");
 
@@ -358,7 +359,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    void filteringByCityAndSport_filterByJustName_correctListReturned() throws Exception {
+    void filteringByCityAndSport_filterByJustName_correctListReturned() {
         Location chchLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
         Location auckLocation = new Location(null, null, null, "Auckland", null, "New Zealand");
 
@@ -382,7 +383,7 @@ public class TeamRepositoryTest {
         assertEquals(Set.of(team1, team2, team3), output);
     }
     @Test
-    void filteringByCityAndSport_filterByOneSport_correctListReturned() throws Exception {
+    void filteringByCityAndSport_filterByOneSport_correctListReturned()  {
         Location chchLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
         Location auckLocation = new Location(null, null, null, "Auckland", null, "New Zealand");
 
@@ -406,7 +407,7 @@ public class TeamRepositoryTest {
         assertEquals(Set.of(team1, team2), output);
     }
     @Test
-    void filteringByCityAndSport_filterByOneCity_correctListReturned() throws Exception {
+    void filteringByCityAndSport_filterByOneCity_correctListReturned()  {
         Location chchLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
         Location auckLocation = new Location(null, null, null, "Auckland", null, "New Zealand");
 
@@ -458,7 +459,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    public void findTeamsWithUser_UserIsPartOfZeroTeams() throws IOException {
+    public void findTeamsWithUser_UserIsPartOfZeroTeams() {
         var pageable = PageRequest.of(0, 10);
         User user1 = new User("John", "Doe", new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime(), "johndoe@example.com", "Password123!", new Location(null, null, null, "dunedin", null, "nz"));
         userRepository.save(user1);
@@ -496,7 +497,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    void getAllTeamSports_returnsCorrectResults() throws Exception {
+    void getAllTeamSports_returnsCorrectResults() {
         Location auckLocation = new Location(null, null, null, "Auckland", null, "New Zealand");
         Location chchLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
 
@@ -513,7 +514,7 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    void getAllTeamSports_noDuplicates() throws Exception {
+    void getAllTeamSports_noDuplicates()  {
         Location auckLocation = new Location(null, null, null, "Auckland", null, "New Zealand");
         Location chchLocation = new Location(null, null, null, "Christchurch", null, "New Zealand");
 
@@ -526,6 +527,42 @@ public class TeamRepositoryTest {
         var sports = teamRepository.getAllDistinctSports();
 
         assertEquals(List.of("Hockey"), sports);
+    }
+
+    @Test
+    void testFindTeamsBySportAndClubOrNotInClub() throws Exception {
+        Location location = new Location(null, null, null, "Auckland", null, "New Zealand");
+
+        Team team = new Team("test", "Hockey", location);
+        Team team2 = new Team("test2", "Hockey", location);
+        Team team3 = new Team("test3", "Cricket", location);
+
+        Club club = new Club("Hockey Team", location, "Hockey",null);
+        clubRepository.save(club);
+
+        team.setTeamClub(club);
+
+        teamRepository.save(team);
+        teamRepository.save(team2);
+        teamRepository.save(team3);
+        List<Team> expectedTeams = Arrays.asList(team, team2);
+        Assertions.assertEquals(expectedTeams, teamRepository.findTeamsBySportAndClubOrNotInClub("Hockey", club));
+
+    }
+
+    @Test
+    void testFindTeamsBySportAndNotInClub() {
+        Location location = new Location(null, null, null, "Auckland", null, "New Zealand");
+
+        Team team = new Team("test", "Hockey", location);
+        Team team2 = new Team("test2", "Hockey", location);
+        Team team3 = new Team("test3", "Cricket", location);
+
+        teamRepository.save(team);
+        teamRepository.save(team2);
+        teamRepository.save(team3);
+        List<Team> expectedTeams = Arrays.asList(team, team2);
+        Assertions.assertEquals(expectedTeams, teamRepository.findTeamsBySportAndNotInClub("Hockey"));
     }
 
 }
