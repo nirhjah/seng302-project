@@ -516,7 +516,7 @@ ul.autocomplete-result{
     align-content: center;
     width: 120%;
     align-items: center;
-    margin-top: 35px;
+    margin-top: 25px;
     margin-left: -10%;
 }
 
@@ -530,7 +530,6 @@ ul.autocomplete-result{
 .create-header img {
     height: 30px;
     margin: 0 5px;
-    width: 35px;
 }
 
 .create-header::before {

@@ -18,8 +18,13 @@
         <form th:action="@{create-activity}" th:object="${createActivityForm}" id="createActivityForm" method="post">
             <input type="hidden" th:if="${actId != null}" th:name="actId" th:value="${actId}"/>
 
+            <div class="create-header">
+                <h2>Details</h2>
+                <img th:src="@{/image/icons/details.svg}"/>
+            </div>
+
             <!--/* Activity Type dropdown */-->
-            <div class="select-container">
+            <div class="select-container" style="margin-top: 20px;">
                 <label for="activityType">Activity Type<span class="required"> *</span> </label>
                 <select th:field="*{activityType}" name="activityType" id="activityType" onchange="updateFormationList()">
                     <option th:each="type : ${activityTypes}"
@@ -106,12 +111,17 @@
                 <p id="charCount" class="charCount"></p>
             </div>
 
+            <div class="create-header">
+                <h2>Date & Time</h2>
+                <img th:src="@{/image/icons/calendar-blue.svg}"/>
+            </div>
+
             <div class="input-boxes">
                 <!--/* Start Date */-->
                 <div class="input-box">
                     <input type="datetime-local" class="datetime-input" id="startDateTime" name="startDateTime"
                            th:value="*{startDateTime}">
-                    <label for="startDateTime">Start date & time of activity<span class="required"> *</span> </label>
+                    <label for="startDateTime">Start date & time<span class="required"> *</span> </label>
                     <div th:each="err : ${#fields.errors('startDateTime')}" th:text="${err}" class="error-message"></div>
                 </div>
 
@@ -119,18 +129,22 @@
                 <div class="input-box">
                     <input type="datetime-local" class="datetime-input" id="endDateTime" name="endDateTime"
                            th:value="*{endDateTime}">
-                    <label for="endDateTime">End date & time of activity<span class="required"> *</span> </label>
+                    <label for="endDateTime">End date & time<span class="required"> *</span> </label>
                     <div th:each="err : ${#fields.errors('endDateTime')}" th:text="${err}" class="error-message"></div>
                 </div>
             </div>
 
+            <div class="create-header">
+                <h2>Location</h2>
+                <img th:src="@{/image/icons/dark-blue-location.svg}"/>
+            </div>
 
             <div class="input-boxes">
                 <div class="input-box">
                     <input type="text" class="form-control" id="address-line-1" th:name="addressLine1"
                            data-cy="location" autofocus placeholder="" autocomplete="off" th:value="*{addressLine1}"
                            title="May include letters, numbers, spaces, commas, periods, hyphens, forward slashes, and pound signs. Must start with letter or number">
-                    <label for="address-line-1">Address Line 1<span class="required">*</span></label>
+                    <label for="address-line-1">Address Line 1<span class="required"> *</span></label>
                     <div class="autocomplete-container" id="autocomplete-container"></div>
                     <div th:each="err : ${#fields.errors('addressLine1')}" th:text="${err}" class="error-message"></div>
                 </div>
@@ -152,14 +166,14 @@
             <div class="input-box">
                 <input type="text" class="form-control" id="postcode" th:name="postcode"
                        data-cy="location" autofocus placeholder="" th:value="*{postcode}">
-                <label for="postcode">Postcode<span class="required">*</span></label>
+                <label for="postcode">Postcode<span class="required"> *</span></label>
             </div>
             <div th:each="err : ${#fields.errors('postcode')}" th:text="${err}" class="error-message"></div>
 
             <div class="input-box">
                 <input type="text" class="form-control" id="city" th:name="city"
                        data-cy="location" autofocus placeholder="" th:value="*{city}">
-                <label for="city">City <span class="required"> *</span></label>
+                <label for="city">City<span class="required"> *</span></label>
             </div>
             <div th:each="err : ${#fields.errors('city')}" th:text="${err}" class="error-message"></div>
 
