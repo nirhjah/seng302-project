@@ -17,7 +17,7 @@ public class DefaultFunctions {
     }
 
     public static void pwCreateTeam() {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createTeam");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-team");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
         PlaywrightBrowser.page.locator("input#name").type("team");
@@ -41,7 +41,7 @@ public class DefaultFunctions {
 
         String teamName = String.valueOf(0);
             //create team
-            PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createTeam");
+            PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-team");
             PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
             PlaywrightBrowser.page.locator("input#name").type(teamName);
@@ -82,7 +82,7 @@ public class DefaultFunctions {
     public static void pwCreateNewTeamWithFormationAnd5Activity() {
 
         //create team
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createTeam");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-team");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
 
         PlaywrightBrowser.page.locator("input#name").type("team ag stats team");
@@ -180,7 +180,7 @@ public class DefaultFunctions {
     }
 
     public static void pwCreateTeamForWhiteboard() {
-        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/createTeam");
+        PlaywrightBrowser.page.navigate(PlaywrightBrowser.baseUrl + "/create-team");
         PlaywrightBrowser.page.waitForLoadState(LoadState.NETWORKIDLE);
         PlaywrightBrowser.page.locator("input#name").type("whiteboardteam");
         PlaywrightBrowser.page.locator("input#sport").type("hockey");
