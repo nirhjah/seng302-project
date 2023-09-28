@@ -8,10 +8,7 @@
 
 <body>
 <video th:src="@{whiteboard-media/video-data/{id}(id=${videoId})}">
-    <source
-            th:src="@{whiteboard-media/video-data/{id}(id=${videoId})}"
-    >
-
+    <source th:src="@{whiteboard-media/video-data/{id}(id=${videoId})}">
     Video is unsupported on your bowser!
 </video>
 </body>
