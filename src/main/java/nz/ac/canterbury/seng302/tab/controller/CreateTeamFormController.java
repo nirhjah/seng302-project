@@ -61,7 +61,10 @@ public class CreateTeamFormController {
         this.lineUpService = lineUpService;
     }
 
-        private void addDebugEntities(Team team) {
+    /*
+    TODO: get rid of this crap
+     */
+    private void addDebugEntities(Team team) {
         // Generate users:
         var users = new ArrayList<User>();
         for (int i = 0; i < 30; i++) {
@@ -79,7 +82,6 @@ public class CreateTeamFormController {
             }
         }
     }
-
 
 
     /**
@@ -116,7 +118,6 @@ public class CreateTeamFormController {
                 logger.info("POST /generateTeamToken, new token: {}", team.getToken());
             }
         }
-        addDebugEntities(team);
         return String.format("redirect:./team-info?teamID=%s", teamID);
     }
 
@@ -266,7 +267,14 @@ public class CreateTeamFormController {
         if (!knownSports.contains(trimmedSport)) {
             sportService.addSport(new Sport(trimmedSport));
         }
-//        addDebugEntities(team);
+
+        // TODO TODO TODO TODO:
+        // PLEASSSSE MAKE SURE THIS IS REMOVED!!!!
+        addDebugEntities(team);
+        // IF YOU SEE THIS CODE AND YOU ARE REVIEWING,
+        // DENY THE REVIEW
+
+
         return String.format("redirect:./team-info?teamID=%s", team.getTeamId());
     }
 }

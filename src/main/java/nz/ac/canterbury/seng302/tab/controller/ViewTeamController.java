@@ -9,8 +9,6 @@ import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
@@ -22,9 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -106,11 +101,6 @@ public class ViewTeamController {
         Set<WhiteBoardRecording> recordings = team.getRecordings();
         model.addAttribute("screenshots", screenshots);
         model.addAttribute("recordings", recordings);
-
-//        WhiteboardScreenshot ss = createMockScreenshot(team);
-//        for (int i=0; i<10; i++) {
-//            screenshots.add(ss);
-//        }
 
         // Is the currently logged in user this team's manager?
         Optional<User> oUser = userService.getCurrentUser();
