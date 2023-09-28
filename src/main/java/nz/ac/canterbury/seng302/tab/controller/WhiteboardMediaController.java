@@ -62,6 +62,7 @@ public class WhiteboardMediaController {
      */
     @GetMapping("whiteboard-media/thumbnail/{id}")
     public @ResponseBody ResponseEntity<byte[]> getThumbnail(@PathVariable long id) {
+        logger.info("found endpoint");
         return whiteboardThumbnailService.getThumbnail(id);
     }
 
@@ -97,7 +98,7 @@ public class WhiteboardMediaController {
         User user = userService.getCurrentUser().orElseThrow();
         if (team != null) {
             if (team.isManagerOrCoach(user)) {
-                WhiteBoardRecording whiteboard = whiteboardRecordingService.createRecordingForTeam(recording, team, isPublic);
+                WhiteBoardRecording whiteboard = whiteboardRecordingService.createRecordingForTeam(file, name, team, isPublic);
                 try {
                     whiteboardThumbnailService.saveThumbnail(thumbnail, whiteboard);
                 } catch (Exception e) {
