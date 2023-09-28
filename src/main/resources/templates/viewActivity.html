@@ -744,6 +744,7 @@
     }
 
     //functionality for clicking on tabs
+
     tabs.forEach((tab, index) => {
         tab.addEventListener('click', (e) => {
             tabs.forEach(otherTab => {
@@ -770,6 +771,8 @@
             displayContent[index].classList.add('active');
         });
     });
+
+
 
     //Description Char Limit For Fact
     const textareaFact = document.getElementById('description');

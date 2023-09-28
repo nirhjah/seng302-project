@@ -33,7 +33,6 @@
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important;
-        align-items: center !important;
         width: 90vw !important;
         height: unset !important;
         margin-top: 20px;
@@ -738,15 +737,6 @@ Custom scrollbar:
     border: 1px solid #ccc;
     border-radius: 5px;
 }
-
-/* Define the button style */
-
-/*
-TODO: Do some checks; we want to button(s) to be invisible, since it looks bad
-
-.whiteboard-media-content::-webkit-scrollbar-button {
-}
- */
 
 /* Define the button style when being hovered over */
 .whiteboard-media-content::-webkit-scrollbar-button:hover {
