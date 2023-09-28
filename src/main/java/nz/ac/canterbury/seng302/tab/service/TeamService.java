@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +22,6 @@ import nz.ac.canterbury.seng302.tab.validator.TeamFormValidators;
  */
 @Service
 public class TeamService {
-    Logger logger = LoggerFactory.getLogger(getClass());
 
     private final TeamRepository teamRepository;
 
@@ -68,10 +65,6 @@ public class TeamService {
 
     public List<Team> getTeamList() {
         return teamRepository.findAll();
-    }
-
-    public long getNumberOfTeams() {
-        return teamRepository.count();
     }
 
     public Team addTeam(Team team) {
@@ -234,10 +227,6 @@ public class TeamService {
         return filtered;
     }
 
-    public List<String> getAllTeamNames() {
-        return teamRepository.getAllTeamNames();
-    }
-
     public boolean userRolesAreValid(List<String> userRoles) {
         int numOfManagers = Collections.frequency(userRoles, Role.MANAGER.toString());
         return ((numOfManagers > 0) && (numOfManagers <=3));
@@ -250,9 +239,6 @@ public class TeamService {
         return teamRepository.findTeamsByTeamClubClubId(id);
     }
 
-    public List<Team> findTeamsBySportAndSearch(String sport, String search) {
-        return teamRepository.findTeamsByNameAndSport(search, sport);
-    }
 
     /**
      * Checks if a team has a club and return the club id if it does.
@@ -285,5 +271,18 @@ public class TeamService {
     }
 
 
-    public List<Team> findTeamsBySport(String sport) { return teamRepository.findTeamsBySport(sport); }
+    /**
+     * Gets list of teams that have matching sport, and match the club, or are not in a club at all
+     * @param sport sport to match
+     * @param club club to match
+     * @return list of teams
+     */
+    public List<Team> findTeamsBySportAndClubOrNotInClub(String sport, Club club) { return teamRepository.findTeamsBySportAndClubOrNotInClub(sport, club); }
+
+    /**
+     * Gets list of teams that have matching sport and are not in a club at all
+     * @param sport sport to match
+     * @return list of teams
+     */
+    public List<Team> findTeamsBySportAndNotInClub(String sport) { return teamRepository.findTeamsBySportAndNotInClub(sport); }
 }

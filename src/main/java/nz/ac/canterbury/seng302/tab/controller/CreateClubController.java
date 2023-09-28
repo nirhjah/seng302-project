@@ -13,7 +13,6 @@ import nz.ac.canterbury.seng302.tab.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -91,6 +90,7 @@ public class CreateClubController {
                 List<String> selectedTeamIds = teamService.findTeamsByClub(optClub.get())
                         .stream()
                         .map(team -> String.valueOf(team.getTeamId())).toList();
+                model.addAttribute("selectedTeamIds", selectedTeamIds);
                 createAndEditClubForm.setSelectedTeams(selectedTeamIds);
 
                 createAndEditClubForm.prepopulate(optClub.get());
@@ -223,7 +223,6 @@ public class CreateClubController {
             teamsAlreadyInClub.clearTeamClub();
         }
         try {
-            System.out.println("THESE ARE SELECTED TEAMS" + selectedTeams);
             if (selectedTeams != null) {
                 for (String team : selectedTeams) {
                     if ( teamService.getTeam(Long.parseLong(team)).getTeamClub() != null ) {
@@ -274,19 +273,40 @@ public class CreateClubController {
         model.addAttribute("listOfTeams", teamsUserManagerOf);
     }
 
-
+    /**
+     * Gets all teams with matching sport, and clubId, for a club to join. This is to ensure clubs can only add teams to their club that have the same sport, or
+     * are not already in a club. and the list also includes teams that are part of the club itself, which is why we ask for the club id.
+     * @param sport sport to match teams with
+     * @param clubId club id to match teams with if it's part of this club
+     * @return list of teams
+     */
     @GetMapping("/teams_by_sport")
-    public ResponseEntity<List<ClubTeamInfo>> getTeamsBySport(@RequestParam String sport) {
-       /* List<Team> teams = teamService.findTeamsBySport(sport);
-        return ResponseEntity.ok(teams);*/
+    public ResponseEntity<List<ClubTeamInfo>> getTeamsBySport(@RequestParam String sport, @RequestParam String clubId) {
 
-        return ResponseEntity.ok().body(
-                teamService.findTeamsBySport(sport).stream().map(team -> new ClubTeamInfo(
+        Optional<Club> optClub = clubService.findClubById(Long.parseLong(clubId));
+
+        return optClub.map(club -> ResponseEntity.ok().body(
+                teamService.findTeamsBySportAndClubOrNotInClub(sport, club).stream().map(team -> new ClubTeamInfo(
                         team.getTeamId(),
                         team.getName()
                 )).toList()
-        );
+        )).orElseGet(() -> ResponseEntity.ok().body(List.of()));
+    }
 
+
+    /**
+     * Gets list of teams that match the sport and are also not part of a club
+     * @param sport sport to match teams with
+     * @return list of teams
+     */
+    @GetMapping("/teams_by_sport_not_in_club")
+    public ResponseEntity<List<ClubTeamInfo>> getTeamsBySportNotInClub(@RequestParam String sport) {
+            return ResponseEntity.ok().body(
+                    teamService.findTeamsBySportAndNotInClub(sport).stream().map(team -> new ClubTeamInfo(
+                            team.getTeamId(),
+                            team.getName()
+                    )).toList()
+            );
     }
 
 

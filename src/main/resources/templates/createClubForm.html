@@ -17,7 +17,8 @@
 
     <div class="wrapper">
         <form th:action="@{createClub}" th:object="${createAndEditClubForm}" id="createAndEditClubForm" method="post" enctype="multipart/form-data">
-            <input type="hidden" th:if="${clubId != null}" th:name="clubId" th:value="${clubId}"/>
+            <input type="hidden" th:name="clubId" th:value="${clubId != null ? clubId : null}" id="clubId"/>
+
 
             <div class="preview-logo">
                 <div class="logo-container">
@@ -135,37 +136,41 @@
 <script th:inline="javascript">
     const sportsInput = document.getElementById("sport")
 
-    /*
-
-        const sportsInput = document.getElementById("sport")
-
-        function clearOptionsInSelect() {
-            var selectElement = document.getElementById("selectedTeams");
-            while (selectElement.options.length > 0) {
-                selectElement.remove();
-            }
-
-        }
-
+    /**
+     * Gets valid teams from either endpoint depending on if there is a club existing or not.
      */
-
-
-
-
     function getValidTeams() {
         var sportInput = document.getElementById("sport");
         var selectedSport = sportInput.value;
+        var clubId = document.getElementById("clubId").value;
 
-        axios.get("/teams_by_sport", { params: { sport: selectedSport } })
-            .then(function (response) {
-                var teams = response.data;
-                generateTeamOptions(teams);
-            })
-            .catch(function (error) {
-                console.error(error);
-            });
+        if (clubId === "") {
+            axios.get("/teams_by_sport_not_in_club", { params: { sport: selectedSport } })
+                .then(function (response) {
+                    var teams = response.data;
+                    generateTeamOptions(teams);
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        } else {
+            axios.get("/teams_by_sport", { params: { sport: selectedSport, clubId: clubId.toString() } })
+                .then(function (response) {
+                    var teams = response.data;
+                    generateTeamOptions(teams);
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        }
         }
 
+    var preSelectedTeamIds = /*[[${selectedTeamIds}]]*/ [];
+
+    /**
+     * Creates option elements in the select box for each team
+     * @param teams list of valid teams from backend
+     */
     function generateTeamOptions(teams) {
         var selectElement = document.getElementById("selectedTeams");
         selectElement.innerHTML = "";
@@ -173,6 +178,9 @@
             var option = document.createElement("option");
             option.value = team.teamId;
             option.textContent = team.name;
+            if (preSelectedTeamIds && preSelectedTeamIds.length > 0 && preSelectedTeamIds.includes(String(team.teamId))) {
+                option.selected = true;
+            }
             selectElement.appendChild(option);
         });
     }
@@ -182,7 +190,6 @@
         if (sportsInput.value.trim() !== "") {
             getValidTeams();
         }
-
     });
 
 
