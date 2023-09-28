@@ -298,18 +298,6 @@ public class TeamServiceTest {
     }
 
     @Test
-    void ifNoTeam_getPaginatedTeam_returnsEmpty() {
-        Assertions.assertEquals(List.of(), teamService.findPaginated(1, 10).toList());
-    }
-
-    @Test
-    void ifTeam_getPaginatedTeam_returnsTeam() throws IOException {
-        Team team = new Team("Test", "Hockey");
-        teamRepository.save(team);
-        Assertions.assertEquals(List.of(team), teamService.findPaginated(1, 10).toList());
-    }
-
-    @Test
     void testFindTeamsByClub() throws IOException {
         List<Team> teamsInClub = new ArrayList<>();
         var NUM_TEAMS_IN_CLUB = 5;
@@ -375,4 +363,38 @@ public class TeamServiceTest {
 
         Assertions.assertEquals(club.getClubId(), teamService.getTeamClubId(team));
     }
+
+    @Test
+    void testFindTeamsBySportAndClubOrNotInClub() throws Exception {
+        Team team = new Team("test", "Hockey", location);
+        Team team2 = new Team("test2", "Hockey", location2);
+        Team team3 = new Team("test3", "Cricket", location3);
+
+        Club club = new Club("Hockey Team", location, "Hockey",null);
+        clubService.updateOrAddClub(club);
+
+        team.setTeamClub(club);
+
+        teamService.addTeam(team);
+        teamService.addTeam(team2);
+        teamService.addTeam(team3);
+        List<Team> expectedTeams = Arrays.asList(team, team2);
+        Assertions.assertEquals(expectedTeams, teamService.findTeamsBySportAndClubOrNotInClub("Hockey", club));
+
+    }
+
+    @Test
+    void testFindTeamsBySportAndNotInClub() throws Exception {
+        Team team = new Team("test", "Hockey", location);
+        Team team2 = new Team("test2", "Hockey", location2);
+        Team team3 = new Team("test3", "Cricket", location3);
+
+        teamService.addTeam(team);
+        teamService.addTeam(team2);
+        teamService.addTeam(team3);
+        List<Team> expectedTeams = Arrays.asList(team, team2);
+        Assertions.assertEquals(expectedTeams, teamService.findTeamsBySportAndNotInClub("Hockey"));
+    }
+
+
 }

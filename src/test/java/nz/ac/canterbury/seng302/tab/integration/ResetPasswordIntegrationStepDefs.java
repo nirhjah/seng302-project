@@ -138,7 +138,6 @@ public class ResetPasswordIntegrationStepDefs {
 
     @Given("I received a reset password email")
     public void i_received_a_reset_password_email() {
-        System.out.println("real user token:" + user.getToken());
         Assertions.assertNotNull(user.getToken());
     }
 

@@ -60,7 +60,6 @@ public class U10EditTeamDetailsFeature {
         String nameValue = PlaywrightBrowser.page.locator("h3[data-cy=\"name\"]").innerText();
         String sportValue = PlaywrightBrowser.page.locator("h3[data-cy=\"sport\"]").innerText();
         String locationValue = PlaywrightBrowser.page.locator("h3[data-cy=\"location\"]").innerText();
-        System.out.println(locationValue);
         DEFAULT_TEAM_NAME= nameValue;
         DEFAULT_SPORT= sportValue;
         String[] location = locationValue.split("\\s+");
