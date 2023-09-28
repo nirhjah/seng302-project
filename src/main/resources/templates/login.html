@@ -16,6 +16,8 @@
   <div th:insert="~{fragments/navBar.html::navbar(displayTeams=${displayTeams})}"></div>
   <div class="login-form">
     <div th:if="${message != null}" th:insert="~{fragments/messageDropDown.html :: messageDropDown(message=${message})}"></div>
+    <div th:if="${passwordUpdatedMessage != null}" th:insert="~{fragments/messageDropDown.html :: messageDropDown(message=${passwordUpdatedMessage})}"></div>
+    <div th:if="${invalidTokenMessage != null}" th:insert="~{fragments/messageDropDown.html :: messageDropDown(message=${invalidTokenMessage})}"></div>
     <div class="wrapper">
       <form  th:action="@{login}" method="post">
         <input th:if="${continue}" name="continue" th:value="${continue}" type="hidden">
