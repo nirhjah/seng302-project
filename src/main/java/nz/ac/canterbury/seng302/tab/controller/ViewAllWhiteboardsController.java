@@ -1,6 +1,10 @@
 package nz.ac.canterbury.seng302.tab.controller;
 
-import java.util.List;
+import jakarta.servlet.http.HttpServletRequest;
+import nz.ac.canterbury.seng302.tab.entity.*;
+import nz.ac.canterbury.seng302.tab.repository.WhiteBoardRecordingRepository;
+import nz.ac.canterbury.seng302.tab.service.TeamService;
+import nz.ac.canterbury.seng302.tab.service.video.WhiteboardRecordingService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import jakarta.servlet.http.HttpServletRequest;
-import nz.ac.canterbury.seng302.tab.entity.WhiteBoardRecording;
-import nz.ac.canterbury.seng302.tab.service.video.WhiteboardRecordingService;
+import java.util.List;
 @Controller
 public class ViewAllWhiteboardsController {
     private static final int MAX_PAGE_SIZE = 10;
@@ -27,9 +29,14 @@ public class ViewAllWhiteboardsController {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private WhiteboardRecordingService whiteboardRecordingService;
+    // TODO: DELETE THESE ONCE THUMBNAIL EXISTS
+    private TeamService teamService;
+    private WhiteBoardRecordingRepository wbrRepo;
 
-    public ViewAllWhiteboardsController(WhiteboardRecordingService whiteboardRecordingService) {
+    public ViewAllWhiteboardsController(WhiteboardRecordingService whiteboardRecordingService, TeamService teamService, WhiteBoardRecordingRepository wbrRepo) {
         this.whiteboardRecordingService = whiteboardRecordingService;
+        this.teamService = teamService;
+        this.wbrRepo = wbrRepo;
     }
 
     private Pageable getPageable(int page) {
@@ -76,4 +83,17 @@ public class ViewAllWhiteboardsController {
         return "viewAllWhiteboards";
     }
 
+
+    @GetMapping("/populate_wb")
+    public String testPopWb() {
+        Team team = teamService.findPaginated(1, 1).iterator().next();
+        for (int i = 0; i < 30; i++) {
+            WhiteBoardRecording wbr = new WhiteBoardRecording("#"+i, team);
+            wbr.setPublic(true);
+            wbrRepo.save(wbr);
+            logger.info("Created wb :D");
+        }
+
+        return "redirect:/view-whiteboards";
+    }
 }
