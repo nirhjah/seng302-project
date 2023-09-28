@@ -20,6 +20,7 @@ public interface WhiteBoardRecordingRepository extends CrudRepository<WhiteBoard
         AND (:#{#sports.size} = 0 OR lower(w.team.sport) in (:sports))
         AND (:currentSearch is null
             OR lower(w.name) LIKE lower(concat('%', :currentSearch, '%'))
+            OR lower(w.team.name) LIKE lower(concat('%', :currentSearch, '%'))
         )
     """)
     Page<WhiteBoardRecording> findPublicWhiteboardsByNameAndSport(
