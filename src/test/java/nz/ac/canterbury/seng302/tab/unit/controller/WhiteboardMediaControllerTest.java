@@ -1,7 +1,10 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
 
+import nz.ac.canterbury.seng302.tab.service.image.WhiteboardScreenshotService;
+import nz.ac.canterbury.seng302.tab.service.video.WhiteboardRecordingService;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 @SpringBootTest
 public class WhiteboardMediaControllerTest {
@@ -14,6 +17,18 @@ public class WhiteboardMediaControllerTest {
 
     ^^^ Angela
      */
+
+    @SpyBean
+    WhiteboardRecordingService recordingService;
+
+    @SpyBean
+    WhiteboardScreenshotService screenshotService;
+
+
+
+    public void testGetRecording() {
+
+    }
 
 }
 

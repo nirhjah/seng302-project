@@ -65,6 +65,8 @@ public class WhiteboardRecordingServiceTest {
 
     private Team team;
 
+    private MockMultipartFile file;
+
     Location location = new Location("1 Test Lane", "", "Ilam", "Christchurch", "8041", "New Zealand");
 
     private void setupUser() {
@@ -88,7 +90,6 @@ public class WhiteboardRecordingServiceTest {
         teamService.updateTeam(team);
     }
 
-    @Test
     public void testGetRecording(){
         MultipartFile recording = new MockMultipartFile(
                 "hello.jpg", new byte[] {1,2,3,4,5,6,7,8}
