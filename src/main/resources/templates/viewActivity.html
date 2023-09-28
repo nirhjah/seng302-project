@@ -812,7 +812,8 @@
         
             var playerOffSelect = addSubForm.querySelector("#playerOff");
             var playerOnSelect = addSubForm.querySelector("#playerOn");
-            var previousPlayerOption = null;
+            var previousPlayerOffOption = null;
+            var previousPlayerOnOption = null;
 
             // this is a clone of the original options 
             var playerOnOptions = Array.from(playerOnSelect.options);
@@ -820,14 +821,30 @@
             playerOffSelect.addEventListener("change", function() {
                 var selectedValue = playerOffSelect.value;
                 
-                if (previousPlayerOption) {
-                    playerOnSelect.appendChild(previousPlayerOption);
+                if (previousPlayerOffOption) {
+                    playerOnSelect.appendChild(previousPlayerOffOption);
                 }
 
                 for (var i = 0; i < playerOnSelect.options.length; i++) {
                     if (playerOnSelect.options[i].value === selectedValue) {
-                        previousPlayerOption = playerOnSelect.options[i];
+                        previousPlayerOffOption = playerOnSelect.options[i];
                         playerOnSelect.remove(i);
+                        break;
+                    }
+                }
+            });
+        
+            playerOnSelect.addEventListener("change", function() {
+                var selectedValue = playerOnSelect.value;
+                
+                if (previousPlayerOnOption) {
+                    playerOffSelect.appendChild(previousPlayerOnOption);
+                }
+
+                for (var i = 0; i < playerOffSelect.options.length; i++) {
+                    if (playerOffSelect.options[i].value === selectedValue) {
+                        previousPlayerOnOption = playerOffSelect.options[i];
+                        playerOffSelect.remove(i);
                         break;
                     }
                 }
