@@ -62,7 +62,9 @@ public class CreateTeamFormController {
     }
 
     /*
-    TODO: get rid of this crap
+    This code should ONLY be used for testing lineups!
+    make sure that this function is NOT called in dev, or prod,
+    or anywhere serious for that matter.
      */
     private void addDebugEntities(Team team) {
         // Generate users:
