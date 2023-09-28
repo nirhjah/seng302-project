@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.tab.unit.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.verify;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -58,11 +60,37 @@ public class ViewAllWhiteboardsControllerTest {
 
 
         mockMvc.perform(get("/view-whiteboards"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("viewAllWhiteboards"));
+            .andExpect(status().isOk())
+            .andExpect(view().name("viewAllWhiteboards"));
 
         verify(mockWBRecService).findPublicPaginatedWhiteboardsBySports(any(), isNull(), isNull());
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    void viewAllWhiteboards_withParams_passedToService() throws Exception {
+        Pageable page = PageRequest.of(10, PAGE_SIZE);
+        List<WhiteBoardRecording> items = generateRecordings();
+        when(mockWBRecService.findPublicPaginatedWhiteboardsBySports(any(), any(), any())).thenReturn(new PageImpl<>(items, page, PAGE_SIZE));
+
+
+        mockMvc.perform(get("/view-whiteboards")
+                .param("sports", "Hockey", "Rugby")
+                .param("currentSearch", "TestString")
+                .param("page", "10"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("viewAllWhiteboards"));
+
+        ArgumentCaptor<Pageable> pageCaptor = ArgumentCaptor.forClass(Pageable.class);
+        ArgumentCaptor<String> searchCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<List<String>> sportsCaptor = ArgumentCaptor.forClass(List.class);
+        verify(mockWBRecService).findPublicPaginatedWhiteboardsBySports(pageCaptor.capture(), searchCaptor.capture(), sportsCaptor.capture());
+
+        assertEquals("TestString", searchCaptor.getValue(), "The search string was not accurately passed");
+        // We expect this to be 9, because the front-facing page number
+        // starts at 1, but internally starts at 0
+        assertEquals(9, pageCaptor.getValue().getPageNumber(), "Page number was not properly passed");
+        assertEquals(List.of("Hockey", "Rugby"), sportsCaptor.getValue(), "Sports were not properly passed");
+    }
 
 }
