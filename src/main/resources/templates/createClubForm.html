@@ -19,6 +19,11 @@
         <form th:action="@{create-club}" th:object="${createAndEditClubForm}" id="createAndEditClubForm" method="post" enctype="multipart/form-data">
             <input type="hidden" th:if="${clubId != null}" th:name="clubId" th:value="${clubId}"/>
 
+            <div class="create-header">
+                <h2>Image</h2>
+                <img th:src="@{/image/icons/camera-outline.svg}"/>
+            </div>
+
             <div class="preview-logo">
                 <div class="logo-container">
 
@@ -33,6 +38,12 @@
                     <input id ="file" type='file' th:name="file" accept=".jpg, .jpeg, .png, .svg, .svg+xml" onchange="readImageURL(this);"/>
                 </div>
             </div>
+
+            <div class="create-header">
+                <h2>Details</h2>
+                <img th:src="@{/image/icons/details.svg}"/>
+            </div>
+
 
             <div class="input-box">
                 <input type="text" class="form-control" id="name" th:name="name" th:value="*{name}"
@@ -50,6 +61,10 @@
                 <div th:each="err : ${#fields.errors('sport')}" th:text="${err}" class="error-message"></div>
             </div>
 
+            <div class="create-header">
+                <h2>Location</h2>
+                <img th:src="@{/image/icons/dark-blue-location.svg}"/>
+            </div>
 
             <div class="input-boxes">
                 <div class="input-box">
@@ -101,6 +116,11 @@
                     <label for="country">Country <span class="required">*</span></label>
                     <div th:each="err : ${#fields.errors('country')}" th:text="${err}" class="error-message"></div>
                 </div>
+            </div>
+
+            <div class="create-header">
+                <h2>Teams</h2>
+                <img th:src="@{/image/icons/members.svg}"/>
             </div>
 
             <label class="selectTeamsLabel"> Select Teams </label>
