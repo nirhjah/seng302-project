@@ -73,7 +73,7 @@
                                  <img style="width: 34px; height: 34px" th:src="@{/image/icons/name.svg}"/>
                                  <div>
                                      <h3 class="attribute-type">Name</h3>
-                                     <h3 style="margin-top: -9px;font-size: 22px"  th:text="${team.getName()}"> </h3>
+                                     <h3 style="margin-top: 4px;font-size: 22px"  th:text="${team.getName()}"> </h3>
                                  </div>
                              </div>
 
@@ -81,7 +81,7 @@
                                  <img style="width: 34px; height: 34px" th:src="@{/image/icons/sports-alt.svg}"/>
                                  <div>
                                      <h3 class="attribute-type">Sport</h3>
-                                     <h3 style="margin-top: -9px;font-size: 22px" th:text="${team.getSport()}"> </h3>
+                                     <h3 style="margin-top: 4px;font-size: 22px" th:text="${team.getSport()}"> </h3>
                                  </div>
                              </div>
 
@@ -125,7 +125,7 @@
                              <img style="width: 34px; height: 34px" th:src="@{/image/icons/team.svg}"/>
                              <div>
                                  <h3 class="attribute-type">Team</h3>
-                                 <h3 style="margin-top: -9px;font-size: 22px" th:text="${act.team.getName()}"> </h3>
+                                 <h3 style="margin-top: 4px;font-size: 22px" th:text="${act.team.getName()}"> </h3>
                              </div>
                          </div>
 
@@ -177,7 +177,7 @@
                              <img style="width: 34px; height: 34px" th:src="@{/image/icons/calendar.svg}"/>
                              <div>
                                  <h3  class="attribute-type">Start Date</h3>
-                                 <h3 style="margin-top: -9px; font-size: 22px"
+                                 <h3 style="margin-top: 4px; font-size: 22px"
                                      th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},"
                                      th:text="${startDate}" ></h3>
                              </div>
@@ -187,7 +187,7 @@
                              <img style="width: 34px; height: 34px" th:src="@{/image/icons/clock.svg}"/>
                              <div>
                                  <h3  class="attribute-type">Start Time</h3>
-                                 <h3 style="margin-top: -9px;font-size: 22px"
+                                 <h3 style="margin-top: 4px;font-size: 22px"
                                      th:with="endDate=${#temporals.format(act.activityStart, 'h:mm a')},"
                                      th:text="${endDate}" ></h3>
                              </div>
