@@ -47,7 +47,7 @@
         <div class="tab-line"></div>
 
         <div class="content-box active" id="general-tab">
-            <div class="content general">
+            <div class="content general" style="max-height: 400px;">
                 <div class="general-activity-header" style="font-size: x-large; text-align: center; padding: 20px">
                     <h2 th:text="|${activity.activityType.name()}: ${activityStartTitle}|"></h2>
                 </div>
@@ -189,7 +189,7 @@
                                 <div style="display: unset" th:each="err : ${#fields.errors('description')}"
                                      th:text="${err}" class="error-message"></div>
                             </div>
-                            <div class="submit-button" style="padding-top: 5%;">
+                            <div class="submit-button" style="padding-top: 5%; width:100%">
                                 <button id="createEvent" type="submit" class="registerLoginButton">Add Fact</button>
                             </div>
 
@@ -451,9 +451,9 @@
                                     the same format i.e either 12-4 and 9-3 or 23 and 18 </label>
 
 
-                                <div style="padding-bottom: 11px; padding-top: 11px; width: 80%; margin-left: 10%"
+                                <div style="padding-bottom: 11px; padding-top: 11px; width: 100%; margin-left: 10%"
                                      class="submit-button">
-                                    <button id="createEvent" type="submit"> Add</button>
+                                    <button style="width: 50%;" id="createEvent" type="submit"> Add</button>
                                 </div>
 
 
@@ -536,7 +536,7 @@
 
 
                                 <div style="padding-bottom: 11px; padding-top: 11px; width:100%" class="submit-button">
-                                    <button style="width: 30%" id="createGoal" type="submit"> Add</button>
+                                    <button style="width: 50%" id="createGoal" type="submit"> Add</button>
                                 </div>
 
 
