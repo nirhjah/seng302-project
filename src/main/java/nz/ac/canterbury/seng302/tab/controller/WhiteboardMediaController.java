@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -72,10 +73,23 @@ public class WhiteboardMediaController {
      * @return recorded video
      */
     @GetMapping("whiteboard-media/video/{id}")
-    public @ResponseBody ResponseEntity<byte[]> getRecording(@PathVariable long id) {
+    public String getRecording(Model model, @PathVariable long id) {
         logger.info("getRecording: {}", id);
+        model.addAttribute("videoId", id);
+        return "video";
+    }
+
+    /**
+     * Gets recording by id
+     * @param id recorded video id
+     * @return recorded video
+     */
+    @GetMapping("whiteboard-media/video-data/{id}")
+    public @ResponseBody ResponseEntity<byte[]> getRecordingData(@PathVariable long id) {
+        logger.info("getRecordingData: {}", id);
         return whiteboardRecordingService.getRecording(id);
     }
+
 
     /**
      * Saves whiteboard recording to backend

@@ -241,13 +241,21 @@ public class ViewActivityController {
         model.addAttribute("factList", factService.getAllFactsOfGivenTypeForActivity(FactType.FACT.ordinal(), activity));
         int totalActivityMinutes = (int) Duration.between(activity.getActivityStart(), activity.getActivityEnd()).toMinutes();
         model.addAttribute("activityLength", totalActivityMinutes);
+        // 
         // attributes for the subs
-        // all players who are currently playing - for the sub off
-        List<User> playersPlaying = activityService.getAllPlayersCurrentlyPlaying(activity.getId());
-        model.addAttribute("playersInLineUp", playersPlaying);
+        List<User> teamMembers;
+        // if there is no team then we dont need to worry about the subs/formations 
+        if (activity.getTeam() == null) {
+            teamMembers = new ArrayList<>();
+        } else {
+
+            teamMembers = new ArrayList<>(activity.getTeam().getNonManagersAndCoaches());
+        }
+        model.addAttribute("playersInLineUp", teamMembers);
+        List<User> teamMembersRev = new ArrayList<>(teamMembers);
+        Collections.reverse(teamMembersRev);
         // all players who arent playing - for the sub on
-        List<User> playersNotPlaying = activityService.getAllPlayerSubstitutes(activity.getId());
-        model.addAttribute("playersNotInLineUp", playersNotPlaying);
+        model.addAttribute("playersNotInLineUp", teamMembersRev);
 
         // Rambling that's required for navBar.html
         model.addAttribute(httpServletRequestString, request);

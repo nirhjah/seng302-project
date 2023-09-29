@@ -160,7 +160,7 @@
         var clubId = document.getElementById("clubId").value;
 
         if (clubId === "") {
-            axios.get("/teams_by_sport_not_in_club", { params: { sport: selectedSport } })
+            axios.get("teams_by_sport_not_in_club", { params: { sport: selectedSport } })
                 .then(function (response) {
                     var teams = response.data;
                     generateTeamOptions(teams);
@@ -169,7 +169,7 @@
                     console.error(error);
                 });
         } else {
-            axios.get("/teams_by_sport", { params: { sport: selectedSport, clubId: clubId.toString() } })
+            axios.get("teams_by_sport", { params: { sport: selectedSport, clubId: clubId.toString() } })
                 .then(function (response) {
                     var teams = response.data;
                     generateTeamOptions(teams);

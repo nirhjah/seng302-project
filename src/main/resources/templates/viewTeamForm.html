@@ -122,7 +122,7 @@
                 </div>
                 <div class="profile-bottom-content">
                     <form th:action="@{team-info}" class="profile-buttons" method="post">
-                        <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+                        <button type="button" class="back-button" onclick="window.history.back()">Back</button>
                         <div class="grouped-buttons">
                             <div class="edit-button">
                                 <a th:href="@{create-team(edit=${teamID})}" th:if="${isUserManager}">
@@ -463,6 +463,26 @@
                 const filePicker = document.getElementById("file");
                 filePicker.click();
             }
+
+            // The AC only specifies a back button if we came from the view-teams page.
+            (() => {
+                const illegal_urls = ['/login', '/register', '/create-team'];
+                const backButton = document.getElementsByClassName('back-button')[0];
+                const bottomButtons = document.querySelector('.profile-buttons');
+                let previousPage;
+                try {
+                    previousPage = new URL(document.referrer).pathname;
+                } catch {
+                    return;
+                }
+                if (illegal_urls.some(url => previousPage.includes(url))) {
+                    bottomButtons.width = '50%';
+                    backButton.remove();
+                } else {
+                    backButton.style.visibility = '';
+                }
+            })()
+
 
             /*
             This function IS actually used, just inside a `th:script`.

@@ -44,7 +44,7 @@
                     <option value="-1">(No Lineup)</option>
                     <option th:each="lineup : ${teamLineUps}"
                             th:value="${lineup.lineUpId}"
-                            th:text="${lineup.lineUpName}"
+                            th:text="${lineup.lineUpName != null} ? ${lineup.lineUpName} : ${lineup.lineUpId}"
                             th:data-formation="${lineup.formation.formation}"
                             th:data-custom="${lineup.formation.custom}"
                             th:data-custom-positions="${lineup.formation.customPlayerPositions}"
@@ -345,6 +345,27 @@
 <script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
 </body>
 <script th:inline="javascript">
+
+    
+    function setWhiteboardToMobileFriendlySize() {
+        const canvasContainer = document.querySelector('.canvas-container');
+        const upperCanvas = document.querySelector('.upper-canvas');
+        const canvas = document.querySelector('#canvas');
+
+        if (window.innerWidth <= 945) {
+            canvasContainer.style.width = '400px';
+            upperCanvas.style.width = '400px';
+            canvas.style.width = '400px';
+        } else {
+            canvasContainer.style.width = '560px';
+            upperCanvas.style.width = '';
+            canvas.style.width = '';
+        }
+    }
+
+    window.addEventListener('resize', setWhiteboardToMobileFriendlySize);
+    window.addEventListener('load', setWhiteboardToMobileFriendlySize);
+
 
     /**
      * This handles the pitch dropdown selection for the whiteboard. There is a fixed list of pitchTypes and a for each loop is used to

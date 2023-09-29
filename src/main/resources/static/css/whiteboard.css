@@ -4,6 +4,10 @@
     display:flex;
     flex-direction:column;
     height: 100%;
+    left: 23%;
+    top: 22%;
+    right: 23%;
+    position: absolute;
 }
 
 .upper-canvas.erase {
@@ -557,9 +561,11 @@ input[type="range"]::-moz-range-track {
     padding: 20px;
     border: 1px solid #888;
     width: 480px;
-    max-height: 90%;
+    max-height: 87%;
     border-radius: 20px;
     bottom: unset;
+    overflow-y: auto;
+
 }
 
 #recording-input {
@@ -642,6 +648,8 @@ input[type="range"]::-moz-range-track {
     width: 400px;
     border-radius: 20px;
     bottom: unset;
+    overflow-y: auto;
+    max-height: 87%;
 }
 
 .modal-header {
@@ -706,5 +714,38 @@ input[type="range"]::-moz-range-track {
 @media (max-width: 480px) {
     .recording-modal-content {
         width: 100% !important;
+    }
+}
+
+
+@media (max-width: 945px) {
+
+    .whiteboard-form {
+        left: unset;
+        top: unset;
+        right: unset;
+    }
+
+    .whiteboard-dropdowns {
+        width: unset;
+    }
+
+    .whiteboard-wrapper {
+        flex-direction: column-reverse !important;
+        width: 107% !important;
+        margin-top: 203% !important;
+        margin-left: 73px !important;
+    }
+
+    .canvas-container {
+        width: 400px !important;
+    }
+
+    .upper-canvas {
+        width: 400px !important;
+    }
+
+    #canvas {
+        width: 400px;
     }
 }
