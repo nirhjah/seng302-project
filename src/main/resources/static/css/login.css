@@ -37,6 +37,7 @@
 
 .message-dropdown-container {
     min-width: fit-content;
+    margin-bottom:20px;
 }
 
 .message-dropdown-container a {
