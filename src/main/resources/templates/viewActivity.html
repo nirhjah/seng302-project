@@ -218,7 +218,7 @@
                      <div class="add-goal-modal-content event" style="bottom: unset">
                         <span class="close" onclick="addSubModal.style.display = 'none'">&times;</span>
                         <h3>Add Sub</h3>
-                        <form style="height: unset" th:action="@{add-sub}" id="createEventForm" method="post" th:object="${createEventForm}" class="view-activity-form">
+                        <form style="height: unset" th:action="@{add-sub}" id="add-sub-form" method="post" th:object="${createEventForm}" class="view-activity-form">
                             <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
                              <div class="select-container">
                                  <label class="goal-form-labels" for="playerOff" style="display: block">Player Off <span class="required">*</span> </label>
@@ -271,8 +271,8 @@
                                     <li style="display: unset" th:each="err : ${#fields.errors('time')}"
                                         th:text="${err}" class="error-message"/>
                                 </ul>
-                                 <div style="padding-bottom: 11px; padding-top: 11px;" class="submit-button">
-                                     <button style="width: 30%" id="addSub" type="submit"> Add </button>
+                                 <div style="padding-bottom: 11px; padding-top: 11px; width: 100%;" class="submit-button">
+                                     <button style="width: 100%" id="addSub" type="submit"> Add </button>
                                  </div>
                              </div>
                         </form>
@@ -804,6 +804,56 @@
             charCountGoal.style.color='#888888';
         }
     });
+
+    document.addEventListener("DOMContentLoaded", function(){
+        var addSubForm = document.getElementById("add-sub-form");
+
+        if (addSubForm) {
+        
+            var playerOffSelect = addSubForm.querySelector("#playerOff");
+            var playerOnSelect = addSubForm.querySelector("#playerOn");
+            var previousPlayerOffOption = null;
+            var previousPlayerOnOption = null;
+
+            // this is a clone of the original options 
+            var playerOnOptions = Array.from(playerOnSelect.options);
+
+            playerOffSelect.addEventListener("change", function() {
+                var selectedValue = playerOffSelect.value;
+                
+                if (previousPlayerOffOption) {
+                    playerOnSelect.appendChild(previousPlayerOffOption);
+                }
+
+                for (var i = 0; i < playerOnSelect.options.length; i++) {
+                    if (playerOnSelect.options[i].value === selectedValue) {
+                        previousPlayerOffOption = playerOnSelect.options[i];
+                        playerOnSelect.remove(i);
+                        break;
+                    }
+                }
+            });
+        
+            playerOnSelect.addEventListener("change", function() {
+                var selectedValue = playerOnSelect.value;
+                
+                if (previousPlayerOnOption) {
+                    playerOffSelect.appendChild(previousPlayerOnOption);
+                }
+
+                for (var i = 0; i < playerOffSelect.options.length; i++) {
+                    if (playerOffSelect.options[i].value === selectedValue) {
+                        previousPlayerOnOption = playerOffSelect.options[i];
+                        playerOffSelect.remove(i);
+                        break;
+                    }
+                }
+            });
+        }
+    });
+
+
+
 </script>
 </div>
 </body>
