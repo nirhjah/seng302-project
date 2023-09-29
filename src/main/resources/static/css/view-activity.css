@@ -544,9 +544,6 @@ hr.rounded {
 }
 
 @media (max-width: 760px){
-    #formation-tab{
-        overflow-y:scroll;
-    }
     #formation-tab .content{
         flex-direction:column !important;
         justify-content:center;
@@ -556,11 +553,16 @@ hr.rounded {
         margin-top:30px !important;
     }
     #pitch{
-        margin-top:100% !important;
+        margin-top:150%;
+    }
+
+    #formation-tab{
+        overflow-y:scroll;
+        overflow-x:hidden;
     }
 }
 
-@media (max-width: 480px){
+@media (max-width: 495px){
     .sub-table{
         width:320px !important;
     }
@@ -574,6 +576,12 @@ hr.rounded {
     .player-in-container span:nth-child(2), .player-out-container span:nth-child(2){
         font-size:13px !important;
     }
+
+    .empty-sub-message{
+        padding:0 30px 0 30px;
+        font-size:16px;
+    }
+
 }
 
 .helpText {
@@ -588,8 +596,8 @@ hr.rounded {
     width: 25%;
     min-width: 150px;
     float: left;
-    padding-top: 25px;
-    padding-bottom: 8px
+    padding-top: 10px;
+    padding-bottom: 10px
 }
 
 
@@ -952,7 +960,6 @@ hr.rounded {
 #formation-tab{
     height:fit-content;
     padding: 50px 25px;
-
 }
 
 #formation-tab .content{
@@ -1165,4 +1172,21 @@ table, th, td {
 }
 .player.uneditable{
     background-image:none !important;
+}
+
+.submit-button-container{
+    display:flex;
+    justify-content: center;
+    align-items:center;
+}
+
+.submit-button-container .submit-button button{
+    display:flex;
+    justify-content: center;
+    align-items:center;
+    padding: 0 40px;
+}
+
+.submit-button-container .submit-button{
+    margin:0;
 }
