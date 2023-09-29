@@ -144,7 +144,7 @@
                 </div>
             </div>
         </div>
-        <div class="content-box">
+        <div class="content-box" id="formation-tab">
             <div class="content formations">
                 <div class="formation-list-outer">
                     <ul class="formation-list active">
@@ -421,29 +421,29 @@
                     </div>
                 </div>
                 <div class="whiteboard-media-display">
-                    <div class="info-box">
-                        <p id="name-box">
-                            No selection
-                        </p>
-                        <p id="public-box">
-                            <!-- Whether its public or not -->
-                        </p>
+                    <div class="media-display-upper">
+                        <div class="info-box">
+                            <p id="name-box">
+                                No selection
+                            </p>
+                            <p id="public-box">
+                                <!-- Whether its public or not -->
+                            </p>
+                        </div>
+                        <div class="open-link-box">
+                            <a id="open-media-link" target="_" th:href="@{/image/icons/pitch.svg}">
+                                <img id="whiteboard-media-image" th:src="@{/image/icons/pitch.svg}"/>
+
+                                <div class="button-box">
+                                    <img class="click-image" id="whiteboard-click-image" th:src="@{/image/icons/play.svg}"
+                                         style="visibility: hidden"/>
+                                </div>
+                            </a>
+                        </div>
                     </div>
-
-                    <div class="open-link-box">
-                        <a id="open-media-link" target="_" th:href="@{/image/icons/pitch.svg}">
-                            <img id="whiteboard-media-image" th:src="@{/image/icons/pitch.svg}"/>
-
-                            <div class="button-box">
-                                <img class="click-image" id="whiteboard-click-image" th:src="@{/image/icons/play.svg}"
-                                     style="visibility: hidden"/>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="submit-button" th:if="${isUserManagerOrCoach}">
+                    <div class="submit-button whiteboard" th:if="${isUserManagerOrCoach}">
                         <a th:href="@{whiteboard(teamID=${teamID})}">
-                            <button type="button">Whiteboard</button>
+                            <button class="whiteboard-button" type="button">Whiteboard</button>
                         </a>
                     </div>
                 </div>
@@ -473,6 +473,9 @@
                 let img = document.getElementById("whiteboard-media-image");
                 let link = document.getElementById("open-media-link");
                 let clickImage = document.getElementById("whiteboard-click-image");
+                const openLinkBox = document.querySelector(".open-link-box");
+
+                openLinkBox.classList.add("active");
 
                 // Set display text:
                 let publicText = isPublic ? "Public" : "Private";

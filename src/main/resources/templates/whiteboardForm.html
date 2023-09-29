@@ -279,7 +279,7 @@
                     <button class="close-button" id="close-recording-modal">&times;</button>
                     <h3 class="modal-header">Save </h3>
                     <video id="recorded-canvas" controls></video>
-                    <form encType="multipart/form-data" th:action="@{/whiteboard-media/save/video}" method="post">
+                    <form class="video-form" encType="multipart/form-data" th:action="@{/whiteboard-media/save/video}" method="post">
                         <input type="hidden" for="teamId" id="teamIdForRecording" name="teamIdForRecording" th:value="${teamId}"/>
 
                         <input type="file" id="recording-input" name="recording-input"/>
@@ -623,7 +623,7 @@
         /* !! Screenshot code !! */
         const cameraButton = document.getElementById('camera-button');
         const cameraFlash = document.querySelector('#camera-flash');
-        const screenshotModal = document.getElementById("screenshot-modal");
+        let screenshotModal = document.getElementById("screenshot-modal");
         const closeScreenshotModalButton = document.getElementById("close-screenshot-modal");
         const screenshotDisplay = document.getElementById('screenshot-display');
         const screenshotName = document.getElementById('screenshot-name');
@@ -1855,33 +1855,46 @@
             });
             canvas.add(group)
         }
+
+        // ability to send post req without refreshing
+        const form = document.getElementById('screenshot-form')
+        form.addEventListener('submit', function(e) {
+            e.preventDefault()
+            const formData = new FormData(form)
+            sendWhiteboardWithoutRefreshing(formData)
+        })
+
+        function sendWhiteboardWithoutRefreshing(formData) {
+            axios.post("whiteboard-media/save/screenshot", formData)
+                .then(response => {
+                    // open up in a new tab?
+                    closeScreenshotModalAfterPost()
+                })
+                .catch(error => {
+                    alert("ERROR see console");
+                    console.error(error);
+                });
+        }
+
+        function sendWhiteboardVideoWithoutRefreshing(formData) {
+            axios.post("whiteboard-media/save/screenshot", formData)
+                .then(response => {
+                    // open up in a new tab?
+                    closeScreenshotModalAfterPost()
+                })
+                .catch(error => {
+                    alert("ERROR see console");
+                    console.error(error);
+                });
+        }
+
+        function closeScreenshotModalAfterPost() {
+            screenshotModal = document.getElementById("screenshot-modal");
+            allowKeyPresses = true;
+            screenshotModal.classList.remove("modal-fade-in");
+        }
+
     })
-
-    // ability to send post req without refreshing
-    const form = document.getElementById('screenshot-form')
-    form.addEventListener('submit', function(e) {
-        e.preventDefault()
-        const formData = new FormData(form)
-        sendWhiteboardWithoutRefreshing(formData)
-    })
-
-    function sendWhiteboardWithoutRefreshing(formData) {
-        axios.post("whiteboard-media/save/screenshot", formData)
-            .then(response => {
-                // open up in a new tab?
-                closeScreenshotModalAfterPost()
-            })
-            .catch(error => {
-                alert("ERROR see console");
-                console.error(error);
-            });
-    }
-
-    function closeScreenshotModalAfterPost() {
-        screenshotModal = document.getElementById("screenshot-modal");
-        allowKeyPresses = true;
-        screenshotModal.classList.remove("modal-fade-in");
-    }
 
     const isPublicCheckbox = document.getElementById("isPublic");
 
