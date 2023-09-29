@@ -226,7 +226,8 @@
                     <div class="add-goal-modal-content event" style="bottom: unset">
                         <span class="close" onclick="addSubModal.style.display = 'none'">&times;</span>
                         <h3>Add Sub</h3>
-                        <form style="height: unset" th:action="@{add-sub}" id="add-sub-form" method="post" th:object="${createEventForm}" class="view-activity-form">
+                        <form style="height: unset" th:action="@{add-sub}" id="add-sub-form" method="post"
+                              th:object="${createEventForm}" class="view-activity-form">
                             <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
                             <div class="select-container">
                                 <label class="goal-form-labels" for="playerOff" style="display: block">Player Off <span
@@ -255,7 +256,7 @@
                                             th:text="${err}" class="error-message"/>
                                     </ul>
                                 </div>
-                                <div >
+                                <div>
                                     <label class="goal-form-labels" for="description">Description</label>
                                     <textarea class="description-text" id="description" th:name="description" autofocus
                                               placeholder=""
@@ -282,10 +283,11 @@
                                     <li style="display: unset" th:each="err : ${#fields.errors('time')}"
                                         th:text="${err}" class="error-message"/>
                                 </ul>
-                                 <div style="padding-bottom: 11px; padding-top: 11px; width: 100%;" class="submit-button">
-                                     <button style="width: 100%" id="addSub" type="submit"> Add </button>
-                                 </div>
-                             </div>
+                                <div style="padding-bottom: 11px; padding-top: 11px; width: 100%;"
+                                     class="submit-button">
+                                    <button style="width: 100%" id="addSub" type="submit"> Add</button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -345,7 +347,8 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="submit-button-container"  th:style="${playersInLineUp.size() > 0 ? 'padding-top: 5px; display: flex;' : 'display: none;'}">
+                    <div class="submit-button-container"
+                         th:style="${playersInLineUp.size() > 0 ? 'padding-top: 5px; display: flex;' : 'display: none;'}">
                         <div class="submit-button">
                             <button onclick="addSubModal.style.display = 'block'" type="button">Add Substitution
                             </button>
@@ -735,14 +738,9 @@
     var stayOnTab_Name = document.getElementById("stayOnTab_Name").innerHTML;
     var stayOnTab_Index = document.getElementById("stayOnTab_index").innerHTML;
 
-    console.log("tabname" + stayOnTab_Name);
-    console.log("tabindex" + stayOnTab_Index);
-
     if (stayOnTab_Name === "score-tab" || stayOnTab_Name === "generalTab" || stayOnTab_Name === "formations-tab" || stayOnTab_Name === "facts-tab") {
         var tabToBeActive = document.getElementById(stayOnTab_Name)
 
-        console.log(tabToBeActive)
-        console.log(stayOnTab_Name)
         tabs.forEach(otherTab => {
             otherTab.classList.remove('active');
         });
@@ -759,6 +757,10 @@
 
     }
 
+    if (tabs.length === 2){
+        tabLine.style.width = "50%";
+    }
+
     //functionality for clicking on tabs
 
     tabs.forEach((tab, index) => {
@@ -767,15 +769,23 @@
                 otherTab.classList.remove('active');
             });
             tab.classList.add('active');
-            if (index === 0) {
-                tabLine.style.left = "0";
-            } else if (index === 1) {
-                tabLine.style.left = "25%";
-            } else if (index === 2) {
-                tabLine.style.left = "50%";
-            }
-            else {
-                tabLine.style.left = "75%";
+            if (tabs.length === 4) {
+                if (index === 0) {
+                    tabLine.style.left = "0";
+                } else if (index === 1) {
+                    tabLine.style.left = "25%";
+                } else if (index === 2) {
+                    tabLine.style.left = "50%";
+                } else {
+                    tabLine.style.left = "75%";
+                }
+            } else {
+                tabLine.style.width = "50%";
+                if (index === 0) {
+                    tabLine.style.left = "0";
+                } else {
+                    tabLine.style.left = "50%";
+                }
             }
             displayBox.forEach(box => {
                 box.classList.remove('active')
@@ -787,7 +797,6 @@
             displayContent[index].classList.add('active');
         });
     });
-
 
 
     //Description Char Limit For Fact
@@ -825,7 +834,7 @@
         }
     });
 
-    document.addEventListener("DOMContentLoaded", function(){
+    document.addEventListener("DOMContentLoaded", function () {
         var addSubForm = document.getElementById("add-sub-form");
 
         if (addSubForm) {
@@ -838,7 +847,7 @@
             // this is a clone of the original options
             var playerOnOptions = Array.from(playerOnSelect.options);
 
-            playerOffSelect.addEventListener("change", function() {
+            playerOffSelect.addEventListener("change", function () {
                 var selectedValue = playerOffSelect.value;
 
                 if (previousPlayerOffOption) {
@@ -854,7 +863,7 @@
                 }
             });
 
-            playerOnSelect.addEventListener("change", function() {
+            playerOnSelect.addEventListener("change", function () {
                 var selectedValue = playerOnSelect.value;
 
                 if (previousPlayerOnOption) {
@@ -871,7 +880,6 @@
             });
         }
     });
-
 
 
 </script>
