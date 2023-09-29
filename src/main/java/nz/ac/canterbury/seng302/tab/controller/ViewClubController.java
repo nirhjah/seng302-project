@@ -65,7 +65,7 @@ public class ViewClubController {
             return "redirect:/home";
         }
         Club club = optClub.get();
-
+        model.addAttribute("isClubManager", club.getManager() == user.get());
         model.addAttribute("club",club);
         model.addAttribute("location", club.getLocation().toString());
         return "viewClub";

@@ -4,6 +4,10 @@
     display:flex;
     flex-direction:column;
     height: 100%;
+    left: 23%;
+    top: 22%;
+    right: 23%;
+    position: absolute;
 }
 
 .upper-canvas.erase {
@@ -21,7 +25,6 @@
     background-color: white;
     border-radius: 10px;
     padding: 20px;
-    margin-top: 180px;
 }
 
 .whiteboard-buttons {
@@ -323,10 +326,18 @@ input[type="range"]::-moz-range-track {
     margin-right:20px;
 }
 
-.whiteboard-dropdowns h3{
-    padding-top:11px;
-    color: #808080;
+.whiteboard-dropdowns .whiteboard-title {
+    outline: none;
+    color: #0D1B2A;
     font-size:22px;
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: bold;
+    border: 0;
+}
+
+.whiteboard-title::placeholder {
+    color: #808080;
 }
 
 .whiteboard-dropdowns .dropdown{
@@ -364,10 +375,6 @@ input[type="range"]::-moz-range-track {
 .whiteboard-dropdowns .line span{
     padding: 0 10px;
     font-size:18px;
-}
-
-.whiteboard-dropdowns h3:focus {
-    outline: none;
 }
 
 .whiteboard-dropdowns .player-table{
@@ -553,9 +560,12 @@ input[type="range"]::-moz-range-track {
     margin: 105px auto auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 25%;
+    width: 480px;
+    max-height: 87%;
     border-radius: 20px;
     bottom: unset;
+    overflow-y: auto;
+
 }
 
 #recording-input {
@@ -638,6 +648,8 @@ input[type="range"]::-moz-range-track {
     width: 400px;
     border-radius: 20px;
     bottom: unset;
+    overflow-y: auto;
+    max-height: 87%;
 }
 
 .modal-header {
@@ -699,8 +711,41 @@ input[type="range"]::-moz-range-track {
 
 
 
-@media (max-width: 930px) {
+@media (max-width: 480px) {
     .recording-modal-content {
-        width: 63% !important;
+        width: 100% !important;
+    }
+}
+
+
+@media (max-width: 945px) {
+
+    .whiteboard-form {
+        left: unset;
+        top: unset;
+        right: unset;
+    }
+
+    .whiteboard-dropdowns {
+        width: unset;
+    }
+
+    .whiteboard-wrapper {
+        flex-direction: column-reverse !important;
+        width: 107% !important;
+        margin-top: 203% !important;
+        margin-left: 73px !important;
+    }
+
+    .canvas-container {
+        width: 400px !important;
+    }
+
+    .upper-canvas {
+        width: 400px !important;
+    }
+
+    #canvas {
+        width: 400px;
     }
 }

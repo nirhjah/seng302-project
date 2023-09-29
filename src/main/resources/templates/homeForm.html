@@ -134,7 +134,7 @@
                              <img style="width: 34px; height: 34px" th:src="@{/image/icons/calendar.svg}"/>
                              <div>
                                  <h3  class="attribute-type">Date</h3>
-                                 <h4 style="margin-top: -14px;" th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
+                                 <h4 style="margin-top: 4px;" th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
                                endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')}" th:text="${startDate} + ' - ' + ${endDate}" ></h4>                             </div>
                          </div>
 
