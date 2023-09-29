@@ -13,7 +13,7 @@
 <div class="whiteboard-form">
     <div class="whiteboard-wrapper">
         <div class="whiteboard-dropdowns">
-            <input type="text" placeholder="Untitled" class="whiteboard-title" maxlength=26>
+            <input type="text" placeholder="Untitled" class="whiteboard-title" maxlength=26 th:value="${teamName} + ' - ' + ${#temporals.format(localDate, 'dd-MM-yyyy')}">
             <hr>
             <div class="dropdown">
                 <label for="pitch">Pitch Type</label>
@@ -667,13 +667,14 @@
 
         /** Animates a camera flash on the whiteboard */
         function screenFlash() {
-            cameraButton.classList.add('active');
             cameraFlash.classList.add("active");
             setTimeout(() => {
                 cameraFlash.classList.remove("active");
+                cameraButton.classList.remove('active');
             }, 990);
             mySound.play()
         }
+
         function clickCamera() {
             screenFlash();
             createScreenshotModal()
@@ -976,6 +977,10 @@
                 formationDropdown.selectedIndex = 0;
                 lineupDropdown.selectedIndex = 0;
             } else if (event.key === 'f') {
+                cameraButton.classList.add('active');
+                setTimeout(() => {
+                    cameraButton.classList.remove('active');
+                }, 300);
                 clickCamera();
             } else if (event.key === 'r') {
                 toggleRecording();
@@ -1372,29 +1377,34 @@
                         });
                         canvas.renderAll();
                     } else if (shapeButton.classList.contains("rectangle") || shapeButton.classList.contains("triangle")) {
-                        if (startX > x) {
-                            if (x < 0) {
-                                drawingShape.set({left: 0});
-                            } else {
-                                drawingShape.set({left: Math.abs(x)});
-                            }
+                        console.log(startX, x)
+                        if (startX >= x) {
+                            drawingShape.set({left: Math.max(x, 0)});
                             drawingShape.set({width: Math.abs(startX - Math.max(x, 0))});
-                        } else {
-                            drawingShape.set({width: Math.min(maxWidth, Math.abs(startX - Math.max(x, 0)))});
-                        }
-                        if (startY > y) {
-                            if (y < 0) {
-                                drawingShape.set({top: 0});
-                            } else {
-                                drawingShape.set({top: Math.abs(y)});
+                            if (drawingShape.width < 0) {
+                                drawingShape.set({left: 0});
                             }
-                            drawingShape.set({height: Math.abs(startY - Math.max(y, 0))});
                         } else {
-                            drawingShape.set({height: Math.min(maxHeight, Math.abs(startY - Math.max(y, 0)))});
+                            drawingShape.set({width: Math.abs(x - startX)});
+                            if (x > canvas.width) {
+                                drawingShape.set({width: maxWidth});
+                            }
+                        }
+                        if (startY >= y) {
+                            drawingShape.set({top: Math.max(y, 0)});
+                            drawingShape.set({height: Math.abs(startY - Math.max(y, 0))});
+                            if (drawingShape.height < 0) {
+                                drawingShape.set({top: 0});
+                            }
+                        } else {
+                            drawingShape.set({height: Math.abs(startY - Math.max(y, 0))});
+                            if (drawingShape.height > maxHeight) {
+                                drawingShape.set({height: maxHeight});
+                            }
                         }
                         canvas.renderAll();
                     } else if (shapeButton.classList.contains("ellipse")) {
-                        if (startX > x) {
+                        if (startX >= x) {
                             if (x < 0) {
                                 drawingShape.set({left: 0});
                             } else {
@@ -1404,7 +1414,7 @@
                         } else {
                             drawingShape.set({rx: Math.min(maxWidth, Math.abs(startX - Math.max(x, 0)) / 2)});
                         }
-                        if (startY > y) {
+                        if (startY >= y) {
                             if (y < 0) {
                                 drawingShape.set({top: 0});
                             } else {

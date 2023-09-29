@@ -130,18 +130,13 @@
                                 </a>
                             </div>
                             <div class="edit-button">
-                                <a th:href="@{editTeamRole(edit=${teamID})}" th:if="${isUserManager}">
-                                    <button id="edit-roles" type="button">Roles</button>
-                                </a>
-                            </div>
-                            <div class="edit-button">
                                 <a th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
                                     <button id="activities" type="button">Activities</button>
                                 </a>
                             </div>
                             <div class="edit-button">
-                                <a th:href="@{whiteboard(teamID=${teamID})}" th:if="${isUserManagerOrCoach}">
-                                    <button id="whiteboard" type="button">Whiteboard</button>
+                                <a th:href="@{editTeamRole(edit=${teamID})}" th:if="${isUserManager}">
+                                    <button id="edit-roles" type="button">Roles</button>
                                 </a>
                             </div>
                         </div>
@@ -473,7 +468,6 @@
             This function IS actually used, just inside a `th:script`.
              */
             function whiteboardMediaOnClick(name, isPublic, imageURL, linkURL, isRecording) {
-                console.log(name, isPublic, imageURL, linkURL, isRecording);
                 let nameBox = document.getElementById("name-box");
                 let publicBox = document.getElementById("public-box");
                 let img = document.getElementById("whiteboard-media-image");
@@ -644,7 +638,6 @@
             }
 
             function renderSavedFormation(formation, custom, customPlayerPositions, title) {
-                console.log(title);
                 const formationDisplay = document.querySelector('.formation-display');
                 const input = document.getElementById('formation-string');
                 const titleInput = document.getElementById('formation-title');

@@ -244,7 +244,7 @@
 .tab-box{
     border-radius: 20px 20px 0 0;
     display:flex;
-    justify-content:space-around;
+    justify-content:space-between;
     align-items:center;
     top:-60px;
     width:100%;
@@ -273,6 +273,7 @@
     background-color: #1B263B;
     border-radius: 10px;
     transition: all .3s ease-in-out;
+    left: 0;
 }
 
 .tab.active .tab-button{
@@ -367,6 +368,7 @@
 
 .content {
     max-height: 460px;
+    overflow: hidden;
 }
 
 #team-profile-tab .content {
@@ -446,7 +448,7 @@
 }
 
 .back-button {
-    margin-right: 14%;
+    margin-right: 28%;
 }
 
 .grouped-buttons {
@@ -539,20 +541,15 @@
 .whiteboard-media-select {
     display: flex;
     flex-direction: column;
-    width: 70%;
+    width: 65%;
     height: 100%;
 }
 
 .whiteboard-media-display {
     display: flex;
-    width: 100%;
+    width: 30%;
     flex-direction: column;
-    /*min-width: 300px;*/
-
     margin: 5px;
-    /* min-width: 300px; */
-    border: groove #0b2239;
-    border-bottom-right-radius: 16px;
 }
 
 .whiteboard-media-display .info-box {
@@ -611,8 +608,7 @@
 
 
 
-.whiteboard-media-display .whiteboard-button {
-}
+
 
 
 .whiteboard-media-content {
@@ -620,7 +616,8 @@
     max-height: 100%;
     overflow: auto;
     display: inline-flex;
-    margin: 8px;
+    border: 2px #DFDEDE solid;
+    border-radius: 1px;
 }
 
 
@@ -646,13 +643,12 @@
     height: 90%;
     width: 100%;
     object-fit: scale-down;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 .media-title img {
-    max-height: 100%;
-    max-width: 100%;
-    padding-left: 1%;
+    height: 25px;
+    width: 25px;
 }
 
 
@@ -667,19 +663,15 @@
 }
 
 .media-body .media-name{
-    position: absolute;
-    text-align: center;
-    font-size:16px;
+    border-radius: 5px 5px 0 0;
+    opacity: 95%;
+    top: 0;
     background-color: #0b2239;
+    position: absolute;
+    padding: 2px 6px;
+    overflow: hidden;
+    font-size: 12px;
     width: 100%;
-    height: 15%;
-    top: -5%; /* I think this is really hacky, but im not sure how else to do it*/
-    left: -5%;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    margin: 5%;
-    line-height: 1.5;
-    text-overflow: ellipsis;
 }
 
 .whiteboard-media-wrapper {
@@ -690,16 +682,17 @@
 }
 
 .whiteboard-media-wrapper .media-title {
-    height: 18%;
+    height: fit-content;
     border: none;
     outline: none;
     background: white;
-    cursor: pointer;
+    cursor: default;
     font-weight: 600;
     font-size: 18px;
     color: #1B263B;
-    padding: 10px;
+    padding: 10px 2px;
     display: inline-flex;
+    align-items: center;
 }
 
 .whiteboard-media-wrapper .media-title h3 {
@@ -709,6 +702,7 @@
     display: inline-block;
     white-space: nowrap;
     overflow: hidden;
+    height: fit-content;
 }
 
 .media img:hover {
@@ -846,5 +840,15 @@ ul.formation-description > li {
 #generate-formation-button {
     display: flex;
     align-items: center;
+}
+
+.whiteboard-media {
+    padding: 5px 30px 30px 30px;
+    display: flex;
+    justify-content: space-between;
+}
+
+#edit-profile {
+    white-space: nowrap;
 }
 
