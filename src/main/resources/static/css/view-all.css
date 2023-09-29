@@ -410,3 +410,13 @@ Join team modal styling
     align-items:center;
     border-radius:10px;
 }
+
+/* Unique rule for the "Join Team" button on the my-teams page */
+
+#joinTeamByTokenModalBtn2 {
+    width: 200px;
+}
+
+#join-team-button {
+    margin-bottom: 0px;
+}

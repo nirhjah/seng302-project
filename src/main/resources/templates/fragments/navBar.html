@@ -59,7 +59,7 @@
                 </li>
 
                 <li class="buttons whiteboards" sec:authorize="isAuthenticated()">
-                    <a th:classappend="${httpServletRequest.requestURI.contains('whiteboard') ? 'current' : ''}">
+                    <a th:classappend="${httpServletRequest.requestURI.contains('-whiteboard') ? 'current' : ''}">
                         <span th:text="Whiteboards"></span>
                         <i class="navbar-dropdown-triangle"></i>
                     </a>
@@ -100,6 +100,18 @@
         <form id="logoutForm" th:action="@{logout}" method="POST"></form>
     </div>
     <script>
+
+        const userButton= document.querySelector(".profile-button-text");
+        if (userButton){
+            const linkWidth= Math.floor(userButton.getBoundingClientRect().width -30);
+            const userDropDown = document.querySelector(".navbar-dropdown.user");
+            const userDropDownLinks=userDropDown.querySelectorAll("a")
+            userDropDownLinks.forEach((link) => {
+                link.style.width = `${linkWidth}px`;
+
+            });
+        }
+
         let hamburger = document.querySelector(".hamburger")
         hamburger.onclick = function () {
             const navBar = document.querySelector(".nav-bar");

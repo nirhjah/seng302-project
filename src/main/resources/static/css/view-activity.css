@@ -647,6 +647,7 @@ hr.rounded {
     height:80%;
     overflow-x: hidden;
     overflow-y: scroll;
+    scrollbar-width: none;
 
 }
 
@@ -1178,6 +1179,7 @@ table, th, td {
     display:flex;
     justify-content: center;
     align-items:center;
+    height:15%;
 }
 
 .submit-button-container .submit-button button{
@@ -1189,4 +1191,12 @@ table, th, td {
 
 .submit-button-container .submit-button{
     margin:0;
+}
+
+.submit-button.fact{
+    width:100% !important;
+}
+
+.submit-button.fact button{
+    width:30%;
 }

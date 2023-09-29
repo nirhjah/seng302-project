@@ -19,21 +19,19 @@
     </div>
 
 
-    <div th:if="${noTeamsFlag == null}" class="submit-button"  style="width: 15%; float: right;">
+    <div th:if="${noTeamsFlag == null}" class="submit-button" id="join-team-button">
         <button id="joinTeamByTokenModalBtn2" onclick="modal.style.display = 'block'" type="button" class="registerLoginButton">Join Team by Token</button>
     </div>
 
 
 
     <form id="forgot-password-form" th:action="@{/my-teams(page=1)}" method="post" th:object="${joinTeamForm}">
-
-
         <div style="padding-top: 200px" th:if="${noTeamsFlag == 'You are not a member of any teams.'}">
             <div class="noTeamsBox">
                 <h4 id="reset-password-info" class="reset-password-info"
                     th:text="${noTeamsFlag}"></h4>
 
-                <div class="submit-button">
+                <div class="submit-button" id="join-team-button">
                     <button id="joinTeamByTokenModalBtn1" onclick="modal.style.display = 'block'; " type="button" class="registerLoginButton">Join Team by Token</button>
                 </div>
 
