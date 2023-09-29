@@ -23,18 +23,18 @@
                 <button class="tab-button">Profile</button>
             </div>
             <div class="tab" id="formations-tab">
-                <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
-                <button class="tab-button" >Formations</button>
+                <img class="tab-icon" th:src="@{/image/icons/formation.svg}"/>
+                <button class="tab-button">Formations</button>
             </div>
             <div class="tab" id="stats-tab">
-<!--                this is a temporary icon for statistic, which is probably going to be replaced when working-->
-<!--                on the team aggregated statistic task-->
-                <img class ="tab-icon" th:src="@{/image/icons/statistics.png}"/>
-                <button class="tab-button" >Statistics</button>
+                <!--                this is a temporary icon for statistic, which is probably going to be replaced when working-->
+                <!--                on the team aggregated statistic task-->
+                <img class="tab-icon" th:src="@{/image/icons/statistics.png}"/>
+                <button class="tab-button">Statistics</button>
             </div>
             <div class="tab" id="whiteboard-tab">
-                <img class ="tab-icon"  th:src="@{/image/icons/formation.svg}"/>
-                <button class="tab-button" >Whiteboard</button>
+                <img class="tab-icon" th:src="@{/image/icons/formation.svg}"/>
+                <button class="tab-button">Whiteboard</button>
             </div>
         </div>
         <div class="tab-line"></div>
@@ -53,7 +53,8 @@
                                     <label for="file" class="file-label">
                                         Edit Profile Picture </label>
                                 </div>
-                                <input type="file" name="file" class="form-control-file" id="file" accept=".jpg, .jpeg, .png, .svg, .svg+xml">
+                                <input type="file" name="file" class="form-control-file" id="file"
+                                       accept=".jpg, .jpeg, .png, .svg, .svg+xml">
                                 <input type="hidden" name="teamID" th:value="${teamID}">
                             </div>
                         </form>
@@ -70,7 +71,8 @@
                                         </a>
                                         <div class="join-token-box">
                                             <span class="token-value" th:text="${displayToken}"></span>
-                                            <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}" th:method="post">
+                                            <form action="#" th:action="@{'/generateTeamToken'(teamID=${teamID})}"
+                                                  th:method="post">
                                                 <button type="submit">
                                                     <img th:src="@{image/icons/reload.svg}">
                                                 </button>
@@ -106,7 +108,7 @@
                                 <div class="float-child" th:if="${clubId}">
                                     <a th:href="@{/view-club?clubID={id}(id=${clubId})}" class="club-link">
                                         <div class="user-label">
-                                                <img th:src="@{/club-logo/{id}(id = ${clubId})}"/>
+                                            <img th:src="@{/club-logo/{id}(id = ${clubId})}"/>
                                             <div>
                                                 <h3 class="attribute-type">Club</h3>
                                                 <h3 data-cy="club" th:text="*{clubName}"></h3>
@@ -120,7 +122,7 @@
                 </div>
                 <div class="profile-bottom-content">
                     <form th:action="@{team-info}" class="profile-buttons" method="post">
-                        <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+                        <button type="button" class="back-button" onclick="window.history.back()">Back</button>
                         <div class="grouped-buttons">
                             <div class="edit-button">
                                 <a th:href="@{create-team(edit=${teamID})}" th:if="${isUserManager}">
@@ -165,7 +167,7 @@
                             <span class="title">
                                 <h3 th:text="${formation}"></h3>
                             </span>
-                            <input type="hidden" class="formation-id" th:value="${formation.formationId}" />
+                            <input type="hidden" class="formation-id" th:value="${formation.formationId}"/>
                         </li>
                         <!--/* Tell the user if there's no formations */-->
                         <div th:if="${#lists.isEmpty(formations)}" class="no-formation">
@@ -175,7 +177,8 @@
                     </ul>
                     <button class="toggle-formation-button">&lt;</button>
                 </div>
-                <form class="formation-display" method="post" th:action="@{/team-info/create-formation}" onsubmit="return submissionCheck(document.getElementById('formation-string').value)">
+                <form class="formation-display" method="post" th:action="@{/team-info/create-formation}"
+                      onsubmit="return submissionCheck(document.getElementById('formation-string').value)">
                     <!--/* The LHS contains the input, and removing it centres the formation */-->
                     <div class="formation-LHS" th:style="${isUserManagerOrCoach ? '' : 'display: none'}">
                         <div class="create-formation-display">
@@ -183,7 +186,8 @@
                                 <input type="text" id="formation-string" name="formation" placeholder="">
                                 <label for="formation-string">Formation</label>
                             </div>
-                            <button type="button" id="generate-formation-button" onclick="render(document.getElementById('formation-string').value, null)">
+                            <button type="button" id="generate-formation-button"
+                                    onclick="render(document.getElementById('formation-string').value, null)">
                                 <img th:src="@{/image/icons/reload.svg}"> Generate
                             </button>
                         </div>
@@ -204,19 +208,24 @@
                         <div class="error-message">Formation must match specified form</div>
                         <div class="formation-title-display">
                             <div class="input-box">
-                                <input type="text" id="formation-title" name="formation-title" maxlength="20" placeholder="">
+                                <input type="text" id="formation-title" name="formation-title" maxlength="20"
+                                       placeholder="">
                                 <label for="formation-title">Formation Name (optional)</label>
                             </div>
                         </div>
                     </div>
                     <div class="formation-RHS">
-                        <p th:if="${isUserManagerOrCoach}" class="formation-description drag-info">Drag shirts to move</p>
-                        <div class="formation-outer" th:insert="~{fragments/formationDisplay.html::formationDisplay(${isUserManagerOrCoach})}"></div>
+                        <p th:if="${isUserManagerOrCoach}" class="formation-description drag-info">Drag shirts to
+                            move</p>
+                        <div class="formation-outer"
+                             th:insert="~{fragments/formationDisplay.html::formationDisplay(${isUserManagerOrCoach})}"></div>
                         <!--/* Only coaches/managers can edit formations */-->
                         <th:block th:if="${isUserManagerOrCoach}">
-                            <input type="hidden" name="teamID" th:value="${teamID}" />
+                            <input type="hidden" name="teamID" th:value="${teamID}"/>
                             <input type="hidden" name="formationID" class="current-formation-id"/>
-                            <button type="submit" class="create-formation" id="create-formation-button">Create Formation</button>
+                            <button type="submit" class="create-formation" id="create-formation-button">Create
+                                Formation
+                            </button>
                         </th:block>
                     </div>
                 </form>
@@ -228,24 +237,29 @@
                     <div class="third-col" style="padding-bottom: 20px">
 
                         <h3 style="margin-top: 12px">Last 5 Matches: </h3>
-                   <div class="last5" style="margin-top: 57px">
-                       <ul class="last5Ul">
-                           <li th:each="act : ${last5GOrF}" th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
-                               <div>
-                                   <h3 th:text="${act.activityType.name()}"> </h3>
-                                   <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
-                               endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')}" th:text="${startDate} + ' - ' + ${endDate}" ></h4>
-                                   <h4 th:text="'Score: ' + ${act.activityTeamScore} + ' : ' + ${act.otherTeamScore}" > </h4>
-                               </div>
-                               <div>
-                                   <img th:if="${act.outcome.toString() == 'Win'}" th:src="@{/image/icons/win.svg}"/>
-                                   <img th:if="${act.outcome.toString() == 'Loss'}" th:src="@{/image/icons/loss.svg}"/>
-                                   <img th:if="${act.outcome.toString() == 'Draw'}" th:src="@{/image/icons/draw.svg}"/>
-                               </div>
-                           </li>
-                       </ul>
-                   </div>
-                </div>
+                        <div class="last5" style="margin-top: 57px">
+                            <ul class="last5Ul">
+                                <li th:each="act : ${last5GOrF}"
+                                    th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
+                                    <div>
+                                        <h3 th:text="${act.activityType.name()}"></h3>
+                                        <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
+                               endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')}"
+                                            th:text="${startDate} + ' - ' + ${endDate}"></h4>
+                                        <h4 th:text="'Score: ' + ${act.activityTeamScore} + ' : ' + ${act.otherTeamScore}"></h4>
+                                    </div>
+                                    <div>
+                                        <img th:if="${act.outcome.toString() == 'Win'}"
+                                             th:src="@{/image/icons/win.svg}"/>
+                                        <img th:if="${act.outcome.toString() == 'Loss'}"
+                                             th:src="@{/image/icons/loss.svg}"/>
+                                        <img th:if="${act.outcome.toString() == 'Draw'}"
+                                             th:src="@{/image/icons/draw.svg}"/>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                     <div style="margin-left: 9px; margin-bottom: 10px" class="third-col">
 
                         <div class="select-container">
@@ -259,52 +273,50 @@
                         </div>
 
 
-                        <div id="topScorersDiv" class="hidden" >
+                        <div id="topScorersDiv" class="hidden">
 
-                        <div class="top5Players">
-                            <ul>
-                                <li th:each="player : ${top5Scorers}">
-                                    <div>
-                                        <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
-                                    </div>
-                                    <div style="width: 100%; margin-top: 16px">
-                                        <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"> </h3>
+                            <div class="top5Players">
+                                <ul>
+                                    <li th:each="player : ${top5Scorers}">
+                                        <div>
+                                            <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
+                                        </div>
+                                        <div style="width: 100%; margin-top: 16px">
+                                            <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"></h3>
 
-                                        <h4 th:text="${player.value == 1 ? player.value.toString() + ' pt' : player.value.toString() + ' pts'}"></h4>
-                                    </div>
+                                            <h4 th:text="${player.value == 1 ? player.value.toString() + ' pt' : player.value.toString() + ' pts'}"></h4>
+                                        </div>
 
-                                </li>
-                            </ul>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
 
                         <div id="topOverallPlaytimeDiv" class="hidden" style="display: none;">
 
-                        <div class="top5Players">
-                            <ul>
-                                <li th:each="player : ${overallPlayersPlaytime}">
-                                    <div>
-                                        <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
-                                    </div>
-                                    <div class="player-name-div" style="width: 100%; margin-top: 16px">
-                                        <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"> </h3>
-                                    </div>
+                            <div class="top5Players">
+                                <ul>
+                                    <li th:each="player : ${overallPlayersPlaytime}">
+                                        <div>
+                                            <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
+                                        </div>
+                                        <div class="player-name-div" style="width: 100%; margin-top: 16px">
+                                            <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"></h3>
+                                        </div>
 
-                                    <div class="player-time-div">
+                                        <div class="player-time-div">
 
-                                        <h4 th:text="'Total: ' + ${player.value[0].toString()} + 'm'"></h4>
-                                        <h4 th:text="'Avg: ' + ${player.value[1].toString()} + 'm'"></h4>
+                                            <h4 th:text="'Total: ' + ${player.value[0].toString()} + 'm'"></h4>
+                                            <h4 th:text="'Avg: ' + ${player.value[1].toString()} + 'm'"></h4>
 
-                                    </div>
+                                        </div>
 
-                                </li>
-                            </ul>
+                                    </li>
+                                </ul>
+
+                            </div>
 
                         </div>
-
-</div>
-
-
 
 
                     </div>
@@ -337,15 +349,15 @@
                         </div>
 
 
-
                         <form th:action="@{team-info}" class="profile-buttons" method="post">
                             <a class="edit-button" th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
-                                <button style="margin-left: -27px; width: max-content" type="button">View Team Activities</button>
+                                <button style="margin-left: -27px; width: max-content" type="button">View Team
+                                    Activities
+                                </button>
                             </a>
                         </form>
 
                     </div>
-
 
 
                 </div>
@@ -373,7 +385,8 @@
                                      th:data-linkurl="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"
                                      th:onclick="'whiteboardMediaOnClick(this.getAttribute(\'data-name\'), this.getAttribute(\'data-public\'), this.getAttribute(\'data-imgurl\'), this.getAttribute(\'data-linkurl\'), false)'">
 
-                                    <img th:src="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"  class="card-img-top"
+                                    <img th:src="@{/whiteboard-media/screenshot/{id}(id = ${obj.id})}"
+                                         class="card-img-top"
                                          alt="Screenshot">
 
                                     <div class="media-name">
@@ -393,14 +406,15 @@
                         <div class="whiteboard-media-content">
                             <div th:each="obj : ${recordings}" class="media" id="recordings">
                                 <div class="media-body"
-                                    th:data-public="${obj.isPublic()}"
-                                    th:data-name="${obj.getName()}"
-                                    th:data-imgurl="@{/whiteboard-media/thumbnail/{id}(id = ${obj.id})}"
-                                    th:data-linkurl="@{/whiteboard-media/video/{id}(id = ${obj.id})}"
-                                    th:onclick="'whiteboardMediaOnClick(this.getAttribute(\'data-name\'), this.getAttribute(\'data-public\'), this.getAttribute(\'data-imgurl\'), this.getAttribute(\'data-linkurl\'), true)'">
+                                     th:data-public="${obj.isPublic()}"
+                                     th:data-name="${obj.getName()}"
+                                     th:data-imgurl="@{/whiteboard-media/thumbnail/{id}(id = ${obj.id})}"
+                                     th:data-linkurl="@{/whiteboard-media/video/{id}(id = ${obj.id})}"
+                                     th:onclick="'whiteboardMediaOnClick(this.getAttribute(\'data-name\'), this.getAttribute(\'data-public\'), this.getAttribute(\'data-imgurl\'), this.getAttribute(\'data-linkurl\'), true)'">
 
 
-                                    <img th:src="@{/whiteboard-media/thumbnail/{id}(id = ${obj.id})}"  class="card-img-top"
+                                    <img th:src="@{/whiteboard-media/thumbnail/{id}(id = ${obj.id})}"
+                                         class="card-img-top"
                                          alt="Thumbnail">
 
                                     <div class="media-name">
@@ -412,7 +426,7 @@
                     </div>
                 </div>
                 <div class="whiteboard-media-display">
-                    <div class="info-box" >
+                    <div class="info-box">
                         <p id="name-box">
                             No selection
                         </p>
@@ -426,7 +440,8 @@
                             <img id="whiteboard-media-image" th:src="@{/image/icons/pitch.svg}"/>
 
                             <div class="button-box">
-                                <img class="click-image" id="whiteboard-click-image" th:src="@{/image/icons/play.svg}" style="visibility: hidden"/>
+                                <img class="click-image" id="whiteboard-click-image" th:src="@{/image/icons/play.svg}"
+                                     style="visibility: hidden"/>
                             </div>
                         </a>
                     </div>
@@ -439,234 +454,251 @@
                 </div>
             </div>
         </div>
-    <footer>
-        <p>
-            Image by <a
-                href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
-            on Freepik
-        </p>
-    </footer>
+        <footer>
+            <p>
+                Image by <a
+                    href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+                on Freepik
+            </p>
+        </footer>
 
-    <script th:inline="javascript">
+        <script th:inline="javascript">
 
-        function openFilePicker() {
-            const filePicker = document.getElementById("file");
-            filePicker.click();
-        }
-
-        /*
-        This function IS actually used, just inside a `th:script`.
-         */
-        function whiteboardMediaOnClick(name, isPublic, imageURL, linkURL, isRecording) {
-            console.log(name, isPublic, imageURL, linkURL, isRecording);
-            let nameBox = document.getElementById("name-box");
-            let publicBox = document.getElementById("public-box");
-            let img = document.getElementById("whiteboard-media-image");
-            let link = document.getElementById("open-media-link");
-            let clickImage = document.getElementById("whiteboard-click-image");
-
-            // Set display text:
-            let publicText = isPublic ? "Public" : "Private";
-            publicBox.innerHTML = "Visibility: ".concat(publicText);
-            nameBox.innerHTML = name;
-
-            // Set links:
-            img.src = imageURL;
-            link.href = linkURL;
-
-            clickImage.style.visibility = isRecording ? "visible" : "hidden";
-        }
-
-        const dropdown = document.getElementById('dropdown');
-        const topScorersDiv = document.getElementById('topScorersDiv');
-        const topOverallPlaytimeDiv = document.getElementById('topOverallPlaytimeDiv');
-
-        dropdown.addEventListener('change', function() {
-            if (dropdown.value === 'topScorersDiv') {
-                topScorersDiv.style.display = 'block';
-                topOverallPlaytimeDiv.style.display = 'none';
-            } else if (dropdown.value === 'topOverallPlaytimeDiv') {
-                topScorersDiv.style.display = 'none';
-                topOverallPlaytimeDiv.style.display = 'block';
+            function openFilePicker() {
+                const filePicker = document.getElementById("file");
+                filePicker.click();
             }
-        });
 
-        const input = document.getElementById('file');
-
-
-        const VALID_FORMATION_REGEX = new RegExp(/*[[ ${formationRegex} ]]*/ "");
-        const fileInput = document.getElementById('file');
-
-        if (fileInput !== null) {
-            fileInput.addEventListener('change', () => {
-                const file = fileInput.files[0];
-                if (file.size > 10000000) {
-                    alert('File size must be less than 10MB');
+            // The AC only specifies a back button if we came from the view-teams page.
+            (() => {
+                const illegal_urls = ['/login', '/register', '/create-team'];
+                const backButton = document.getElementsByClassName('back-button')[0];
+                const bottomButtons = document.querySelector('.profile-buttons');
+                let previousPage;
+                try {
+                    previousPage = new URL(document.referrer).pathname;
+                } catch {
                     return;
                 }
-                const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/jpg'];
-                if (!allowedTypes.includes(file.type)) {
-                    alert('File type must be jpeg, png or svg');
-                    return;
+                if (illegal_urls.some(url => previousPage.includes(url))) {
+                    bottomButtons.width = '50%';
+                    backButton.remove();
+                } else {
+                    backButton.style.visibility = '';
                 }
-                document.getElementById('upload-picture').submit();
+            })()
+
+
+            /*
+            This function IS actually used, just inside a `th:script`.
+             */
+            function whiteboardMediaOnClick(name, isPublic, imageURL, linkURL, isRecording) {
+                console.log(name, isPublic, imageURL, linkURL, isRecording);
+                let nameBox = document.getElementById("name-box");
+                let publicBox = document.getElementById("public-box");
+                let img = document.getElementById("whiteboard-media-image");
+                let link = document.getElementById("open-media-link");
+                let clickImage = document.getElementById("whiteboard-click-image");
+
+                // Set display text:
+                let publicText = isPublic ? "Public" : "Private";
+                publicBox.innerHTML = "Visibility: ".concat(publicText);
+                nameBox.innerHTML = name;
+
+                // Set links:
+                img.src = imageURL;
+                link.href = linkURL;
+
+                clickImage.style.visibility = isRecording ? "visible" : "hidden";
+            }
+
+            const dropdown = document.getElementById('dropdown');
+            const topScorersDiv = document.getElementById('topScorersDiv');
+            const topOverallPlaytimeDiv = document.getElementById('topOverallPlaytimeDiv');
+
+            dropdown.addEventListener('change', function () {
+                if (dropdown.value === 'topScorersDiv') {
+                    topScorersDiv.style.display = 'block';
+                    topOverallPlaytimeDiv.style.display = 'none';
+                } else if (dropdown.value === 'topOverallPlaytimeDiv') {
+                    topScorersDiv.style.display = 'none';
+                    topOverallPlaytimeDiv.style.display = 'block';
+                }
             });
-        }
 
-        const copyButton = document.querySelector('.copy-token');
-        const tokenValue = document.querySelector('.token-value');
-        if (tokenValue !== null) {
-            const token = tokenValue.innerHTML;
-            copyButton.addEventListener('click', () => {
-                const selection = window.getSelection();
-                const range = document.createRange();
-                range.selectNodeContents(tokenValue);
-                selection.removeAllRanges();
-                selection.addRange(range);
-                document.execCommand('copy');
-                selection.removeAllRanges();
-                tokenValue.innerHTML = 'Copied...';
-                setTimeout(() => {
-                    tokenValue.style.opacity = 0;
+            const input = document.getElementById('file');
+
+
+            const VALID_FORMATION_REGEX = new RegExp(/*[[ ${formationRegex} ]]*/ "");
+            const fileInput = document.getElementById('file');
+
+            if (fileInput !== null) {
+                fileInput.addEventListener('change', () => {
+                    const file = fileInput.files[0];
+                    if (file.size > 10000000) {
+                        alert('File size must be less than 10MB');
+                        return;
+                    }
+                    const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/jpg'];
+                    if (!allowedTypes.includes(file.type)) {
+                        alert('File type must be jpeg, png or svg');
+                        return;
+                    }
+                    document.getElementById('upload-picture').submit();
+                });
+            }
+
+            const copyButton = document.querySelector('.copy-token');
+            const tokenValue = document.querySelector('.token-value');
+            if (tokenValue !== null) {
+                const token = tokenValue.innerHTML;
+                copyButton.addEventListener('click', () => {
+                    const selection = window.getSelection();
+                    const range = document.createRange();
+                    range.selectNodeContents(tokenValue);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    document.execCommand('copy');
+                    selection.removeAllRanges();
+                    tokenValue.innerHTML = 'Copied...';
                     setTimeout(() => {
-                        tokenValue.style.opacity = 1;
-                        tokenValue.innerHTML = token;
-                    }, 500);
-                }, 1000);
-            });
-        }
+                        tokenValue.style.opacity = 0;
+                        setTimeout(() => {
+                            tokenValue.style.opacity = 1;
+                            tokenValue.innerHTML = token;
+                        }, 500);
+                    }, 1000);
+                });
+            }
 
-        const tabs = document.querySelectorAll('.tab');
-        const tabLine = document.querySelector('.tab-line');
-        const displayBox = document.querySelectorAll('.content-box');
-        const displayContent = document.querySelectorAll('.content');
-
-
-        var stayOnTab_Name =  document.getElementById("stayOnTab_Name").innerHTML;
-        var stayOnTab_Index =  document.getElementById("stayOnTab_index").innerHTML;
-
-        if (stayOnTab_Name === "formations-tab") {
-            var tabToBeActive = document.getElementById(stayOnTab_Name)
-            tabs.forEach(otherTab => {
-                otherTab.classList.remove('active');
-            });
-            tabToBeActive.classList.add('active')
-
-            displayBox.forEach(box => {
-                box.classList.remove('active')
-            });
-            displayBox[stayOnTab_Index].classList.add('active');
-            displayContent.forEach(content => {
-                content.classList.remove('active')
-            });
-            displayContent[stayOnTab_Index].classList.add('active');
-
-        }
+            const tabs = document.querySelectorAll('.tab');
+            const tabLine = document.querySelector('.tab-line');
+            const displayBox = document.querySelectorAll('.content-box');
+            const displayContent = document.querySelectorAll('.content');
 
 
+            var stayOnTab_Name = document.getElementById("stayOnTab_Name").innerHTML;
+            var stayOnTab_Index = document.getElementById("stayOnTab_index").innerHTML;
 
-        tabs.forEach((tab, index) => {
-            tab.addEventListener('click', (e) => {
+            if (stayOnTab_Name === "formations-tab") {
+                var tabToBeActive = document.getElementById(stayOnTab_Name)
                 tabs.forEach(otherTab => {
                     otherTab.classList.remove('active');
                 });
-                tab.classList.add('active');
-                if (index === 0) {
-                    tabLine.style.left = "0";
-                } else if (index === 1) {
-                    tabLine.style.left = "25%";
-                } else if (index === 2) {
-                    tabLine.style.left = "50%";
-                }
-                else {
-                    tabLine.style.left = "75%";
-                }
+                tabToBeActive.classList.add('active')
+
                 displayBox.forEach(box => {
                     box.classList.remove('active')
                 });
-                displayBox[index].classList.add('active');
+                displayBox[stayOnTab_Index].classList.add('active');
                 displayContent.forEach(content => {
                     content.classList.remove('active')
                 });
-                displayContent[index].classList.add('active');
-            });
-        });
+                displayContent[stayOnTab_Index].classList.add('active');
+
+            }
 
 
-        const formationListItems = document.querySelectorAll('.formation-list li')
-        const createFormation = document.querySelector('.create-formation')
-        const currentFormationId = document.querySelector('.current-formation-id')
-
-        formationListItems.forEach((formation, index) => {
-            formation.addEventListener('click', () => {
-                formationListItems.forEach(otherFormation => {
-                    otherFormation.classList.remove('active');
+            tabs.forEach((tab, index) => {
+                tab.addEventListener('click', (e) => {
+                    tabs.forEach(otherTab => {
+                        otherTab.classList.remove('active');
+                    });
+                    tab.classList.add('active');
+                    if (index === 0) {
+                        tabLine.style.left = "0";
+                    } else if (index === 1) {
+                        tabLine.style.left = "25%";
+                    } else if (index === 2) {
+                        tabLine.style.left = "50%";
+                    }
+                    else {
+                        tabLine.style.left = "75%";
+                    }
+                    displayBox.forEach(box => {
+                        box.classList.remove('active')
+                    });
+                    displayBox[index].classList.add('active');
+                    displayContent.forEach(content => {
+                        content.classList.remove('active')
+                    });
+                    displayContent[index].classList.add('active');
                 });
-                formation.classList.add('active');
-                currentFormationId.value = document.querySelector('li.active .formation-id').value;
-                if (index > 0) {
-                    createFormation.innerHTML = "Update Formation"
-                } else {
-                    createFormation.innerHTML = "Create Formation"
-                }
             });
-        });
+            const formationListItems = document.querySelectorAll('.formation-list li')
+            const createFormation = document.querySelector('.create-formation')
+            const currentFormationId = document.querySelector('.current-formation-id')
+
+            formationListItems.forEach((formation, index) => {
+                formation.addEventListener('click', () => {
+                    formationListItems.forEach(otherFormation => {
+                        otherFormation.classList.remove('active');
+                    });
+                    formation.classList.add('active');
+                    currentFormationId.value = document.querySelector('li.active .formation-id').value;
+                    if (index > 0) {
+                        createFormation.innerHTML = "Update Formation"
+                    } else {
+                        createFormation.innerHTML = "Create Formation"
+                    }
+                });
+            });
 
 
-        function render(formation, customPlayerPositions) {
-            const input = document.getElementById('formation-string');
-            const errorMessage = document.querySelector('.error-message')
-            const formationDisplay = document.querySelector('.formation-display')
-            input.value = formation;
-            if (validateFormation(formation)) {
-                formationDisplay.classList.add('active')
-                errorMessage.classList.remove('active')
-                if (customPlayerPositions !== null && customPlayerPositions.size > 0) {
-                    renderPlayersCustom(customPlayerPositions)
+            function render(formation, customPlayerPositions) {
+                const input = document.getElementById('formation-string');
+                const errorMessage = document.querySelector('.error-message')
+                const formationDisplay = document.querySelector('.formation-display')
+                input.value = formation;
+                if (validateFormation(formation)) {
+                    formationDisplay.classList.add('active')
+                    errorMessage.classList.remove('active')
+                    if (customPlayerPositions !== null && customPlayerPositions.size > 0) {
+                        renderPlayersCustom(customPlayerPositions)
+                    } else {
+                        renderPlayers(formation);
+                    }
                 } else {
-                    renderPlayers(formation);
+                    errorMessage.classList.add('active')
                 }
-            } else {
-                errorMessage.classList.add('active')
             }
-        }
 
-        function renderSavedFormation(formation, custom, customPlayerPositions, title) {
-            console.log(title);
-            const formationDisplay = document.querySelector('.formation-display');
-            const input = document.getElementById('formation-string');
-            const titleInput = document.getElementById('formation-title');
-            titleInput.value = title
-            input.value = formation;
-            formationDisplay.classList.add('active');
-            generatedOrCustom(formation, custom, customPlayerPositions)
-        }
-
-        function submissionCheck(formation) {
-            const errorMessage = document.querySelector('.error-message')
-            const valid = validateFormation(formation)
-            if (!valid) {
-                errorMessage.classList.add('active')
+            function renderSavedFormation(formation, custom, customPlayerPositions, title) {
+                console.log(title);
+                const formationDisplay = document.querySelector('.formation-display');
+                const input = document.getElementById('formation-string');
+                const titleInput = document.getElementById('formation-title');
+                titleInput.value = title
+                input.value = formation;
+                formationDisplay.classList.add('active');
+                generatedOrCustom(formation, custom, customPlayerPositions)
             }
-            return valid
-        }
 
-        function validateFormation(formation) {
-            return VALID_FORMATION_REGEX.test(formation);
-        }
-
-        const toggleFormationButton = document.querySelector(".toggle-formation-button");
-        const formationList = document.querySelector(".formation-list");
-        toggleFormationButton.addEventListener("click", () => {
-            if (toggleFormationButton.textContent === "<") {
-                toggleFormationButton.textContent = ">";
-            } else {
-                toggleFormationButton.textContent = "<";
+            function submissionCheck(formation) {
+                const errorMessage = document.querySelector('.error-message')
+                const valid = validateFormation(formation)
+                if (!valid) {
+                    errorMessage.classList.add('active')
+                }
+                return valid
             }
-            formationList.classList.toggle("active");
-        });
 
-    </script>
+            function validateFormation(formation) {
+                return VALID_FORMATION_REGEX.test(formation);
+            }
+
+            const toggleFormationButton = document.querySelector(".toggle-formation-button");
+            const formationList = document.querySelector(".formation-list");
+            toggleFormationButton.addEventListener("click", () => {
+                if (toggleFormationButton.textContent === "<") {
+                    toggleFormationButton.textContent = ">";
+                } else {
+                    toggleFormationButton.textContent = "<";
+                }
+                formationList.classList.toggle("active");
+            });
+
+        </script>
     </div>
 </div>
 </body>

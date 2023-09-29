@@ -54,28 +54,28 @@
                             <img th:src="@{/image/icons/name.svg}"/>
                             <div>
                                 <h3 class="attribute-type">Name</h3>
-                                <h3 th:text="|*{firstName} *{lastName}|"></h3>
+                                <h3 class="name" th:text="|*{firstName} *{lastName}|"></h3>
                             </div>
                         </div>
                         <div class="user-label">
                             <img th:src="@{/image/icons/email.svg}"/>
                             <div>
                                 <h3 class="attribute-type">Email</h3>
-                                <h3 th:text="*{email}"></h3>
+                                <h3 class = "email" th:text="*{email}"></h3>
                             </div>
                         </div>
                         <div class="user-label">
                             <img  th:src="@{/image/icons/date-of-birth.svg}"/>
                             <div>
                                 <h3 class="attribute-type">Date of Birth</h3>
-                                <h3 th:text="*{#dates.format(dateOfBirth, 'dd-MM-yyyy')}"></h3>
+                                <h3 class= "dob" th:text="*{#dates.format(dateOfBirth, 'dd-MM-yyyy')}"></h3>
                             </div>
                         </div>
                         <div class="user-label">
                             <img  th:src="@{/image/icons/location.svg}"/>
                             <div>
                                 <h3 class="attribute-type">Location</h3>
-                                <h3 th:text="*{location}"></h3>
+                                <h3 class = "location" th:text="*{location}"></h3>
                             </div>
                         </div>
                         <div class="user-label">
@@ -92,10 +92,10 @@
             </div>
             <div class="profile-bottom-content">
                 <div class="profile-buttons">
-                    <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+                    <button type="button" class="back-button" onclick="window.history.back()">Back</button>
                     <div th:if="${canEdit}" class="edit-button">
                         <a th:href="@{editUser}">
-                            <button type="button">Edit Profile</button>
+                            <button id="" type="button">Edit Profile</button>
                         </a>
                     </div>
 
@@ -130,17 +130,25 @@
     </p>
 </footer>
   <script th:inline="javascript">
+
     // The AC only specifies a back button if we came from the view-users page.
-    const legal_url = '/view-users';
-    const backButton = document.getElementsByClassName('back-button')[0];
-    const buttons = document.querySelector('.profile-buttons');
-    const previousPage = document.referrer;
-    if (previousPage.includes(legal_url)) {
-        backButton.style.visibility = '';
-    } else {
-        buttons.width = '50%';
-        backButton.remove();
-    }
+    (() => {
+        const illegal_urls = ['/login', '/register', '/editUser'];
+        const backButton = document.getElementsByClassName('back-button')[0];
+        const bottomButtons = document.querySelector('.profile-buttons');
+        let previousPage;
+        try {
+            previousPage = new URL(document.referrer).pathname;
+        } catch {
+            return;
+        }
+        if (illegal_urls.some(url => previousPage.includes(url))) {
+            bottomButtons.width = '50%';
+            backButton.remove();
+        } else {
+            backButton.style.visibility = '';
+        }
+    })()
   </script>
 
 </body>

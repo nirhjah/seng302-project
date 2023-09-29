@@ -13,7 +13,8 @@
 <div class="whiteboard-form">
     <div class="whiteboard-wrapper">
         <div class="whiteboard-dropdowns">
-            <h3 class="whiteboard-title" contenteditable="true">Untitled</h3>
+            <input type="text" placeholder="Untitled" class="whiteboard-title" maxlength=26>
+            <hr>
             <div class="dropdown">
                 <label for="pitch">Pitch Type</label>
                 <select class="select" id="pitch"></select>
@@ -43,7 +44,7 @@
                     <option value="-1">(No Lineup)</option>
                     <option th:each="lineup : ${teamLineUps}"
                             th:value="${lineup.lineUpId}"
-                            th:text="${lineup.lineUpName}"
+                            th:text="${lineup.lineUpName != null} ? ${lineup.lineUpName} : ${lineup.lineUpId}"
                             th:data-formation="${lineup.formation.formation}"
                             th:data-custom="${lineup.formation.custom}"
                             th:data-custom-positions="${lineup.formation.customPlayerPositions}"
@@ -282,6 +283,7 @@
                         <input type="hidden" for="teamId" id="teamIdForRecording" name="teamIdForRecording" th:value="${teamId}"/>
 
                         <input type="file" id="recording-input" name="recording-input"/>
+                        <input type="file" id="thumbnail" name="thumbnail"/>
                         <div class="input-box">
                             <input class="form-control" type="text" name="recording-name" id="recording-name"
                                    required>
@@ -344,6 +346,27 @@
 </body>
 <script th:inline="javascript">
 
+    
+    function setWhiteboardToMobileFriendlySize() {
+        const canvasContainer = document.querySelector('.canvas-container');
+        const upperCanvas = document.querySelector('.upper-canvas');
+        const canvas = document.querySelector('#canvas');
+
+        if (window.innerWidth <= 945) {
+            canvasContainer.style.width = '400px';
+            upperCanvas.style.width = '400px';
+            canvas.style.width = '400px';
+        } else {
+            canvasContainer.style.width = '560px';
+            upperCanvas.style.width = '';
+            canvas.style.width = '';
+        }
+    }
+
+    window.addEventListener('resize', setWhiteboardToMobileFriendlySize);
+    window.addEventListener('load', setWhiteboardToMobileFriendlySize);
+
+
     /**
      * This handles the pitch dropdown selection for the whiteboard. There is a fixed list of pitchTypes and a for each loop is used to
      * create the option element for each pitch type.
@@ -361,39 +384,16 @@
 
     const recordingModal = document.getElementById('recording-modal');
 
-    /**
-     * Handles editing the whiteboard name function. When the name is clicked, the name can be editable.
-     * There is also a limit of 26 characters for the whiteboard name. When the limit of characters is reached, the name cannot be editable
-     * unless clicked on again.
-     */
-
-    let isLabelFocused = false;
-    const whiteboardDropdowns = document.querySelector('.whiteboard-dropdowns');
-    const label = whiteboardDropdowns.querySelector('h3');
-
-    label.addEventListener('click', () => {
-        label.setAttribute('contenteditable', 'true');
-        label.focus();
-        isLabelFocused = true;
+    const whiteboardTitle = document.querySelector('input.whiteboard-title');
+    
+    // So typing doesn't fire off the keyboard shortcuts
+    whiteboardTitle.addEventListener('keydown', function (event) {
+        event.stopPropagation();
     });
-
-    label.addEventListener('input', () => {
-        const editedText = label.textContent;
-        isLabelFocused = true;
-        if (editedText.length >= 26) {
-            label.textContent = editedText.slice(0, 26);
-            label.setAttribute('contenteditable', 'false');
-        } else {
-            label.setAttribute('contenteditable', 'true');
-        }
-    });
-
-    label.addEventListener('blur', () => {
-        const editedText = label.textContent;
-        label.textContent = editedText || 'Untitled';
-        label.setAttribute('contenteditable', 'false');
-        isLabelFocused = false;
-    });
+    
+    whiteboardTitle.addEventListener('blur', () => {
+        whiteboardTitle.value = whiteboardTitle.value.trim();
+    })
 
     /**
      * Functions related to the canvas
@@ -646,7 +646,8 @@
         const cameraFlash = document.querySelector('#camera-flash');
         const screenshotModal = document.getElementById("screenshot-modal");
         const closeScreenshotModalButton = document.getElementById("close-screenshot-modal");
-        const screenshotDisplay = document.getElementById('screenshot-display')
+        const screenshotDisplay = document.getElementById('screenshot-display');
+        const screenshotName = document.getElementById('screenshot-name');
         const screenshotUpload = document.getElementById("screenshot-input");
 
         const mySound = new Audio("audio/cameraflash-cropped.mp3");
@@ -655,6 +656,8 @@
         function createScreenshotModal() {
             // Disable keyboard shortcuts while typing
             allowKeyPresses = false;
+            // Sets the default screenshot name to the whiteboard's name
+            screenshotName.value = whiteboardTitle.value;
             // Display the pitch inside the modal
             const dataURL = canvas.toDataURL();
             screenshotDisplay.src = dataURL;
@@ -721,12 +724,15 @@
         const closeRecordingModalButton = document.getElementById('close-recording-modal')
         //This is used to display the recording on screen once recorded, for testing purposes
         const testVideoDisplay = document.getElementById('recorded-canvas');
-        var whiteboardToRecord = document.querySelector("canvas");
+        const whiteboardToRecord = document.querySelector("canvas");
+
+        const recordingName = document.getElementById('recording-name');
 
         let recording = false;
         var videoStream = whiteboardToRecord.captureStream(30);
         var mediaRecorder = new MediaRecorder(videoStream);
         const recordingUpload = document.getElementById("recording-input");
+        const thumbnailUpload = document.getElementById("thumbnail");
         let videoURL;
 
         function closeRecordingModal() {
@@ -743,18 +749,37 @@
         function openRecordingModal(videoURL) {
             allowKeyPresses = false;
 
+            testVideoDisplay.src = videoURL;
+
+            recordingName.value = whiteboardTitle.value;
+
             fetch(videoURL)
                 .then(res => res.blob())
                 .then(blob => {
                     const file = new File([blob], 'recording.mp4',
                         {type: "video/mp4"}
                     );
+                    const dataURL = canvas.toDataURL();
+                    screenshotDisplay.src = dataURL;
+                    let tbnail;
+                    // Saves the image inside the modal's form
+                    fetch(dataURL)
+                        .then(res => res.blob())    // Base64 dataURL to binary
+                        .then(blob => {
+                            // JavaScript's file APIs are very new and very bad
+                            // Turn the binary into a file
+                            tbnail = new File([blob], 'thumbnail.png',
+                                {type: "image/png"}
+                            );
+                            const dt = new DataTransfer();
+                            dt.items.add(tbnail);
+                            thumbnailUpload.files = dt.files;
+                        })
                     const dt = new DataTransfer();
                     dt.items.add(file);
                     recordingUpload.files = dt.files;
                 })
             recordingModal.style.display = "block";
-
         }
 
         closeRecordingModalButton.addEventListener('click', closeRecordingModal);
@@ -762,36 +787,39 @@
 
         recordingButton.addEventListener('click', function () {
             toggleRecording();
-            if (!recording) {
-                var chunks = [];
-                mediaRecorder.ondataavailable = function(e) {
-                    chunks.push(e.data);
-                };
 
-                mediaRecorder.onstop = function(e) {
-                    var blob = new Blob(chunks, { 'type' : 'video/mp4' });
-                    chunks = [];
-                    videoURL = URL.createObjectURL(blob);
-                    openRecordingModal(videoURL);
-                    testVideoDisplay.src = videoURL;
-                };
-                mediaRecorder.ondataavailable = function(e) {
-                    chunks.push(e.data);
-                };
-
-                mediaRecorder.start();
-                recording = true;
-            } else {
-                mediaRecorder.stop();
-                recording = false;
-            }
         });
 
         let progress;
         const circularProgress = document.querySelector(".circular-progress")
         const progressValue = document.querySelector(".progress-value");
 
-        function toggleRecording() {
+        function startRecording() {
+            var chunks = [];
+            mediaRecorder.ondataavailable = function(e) {
+                chunks.push(e.data);
+            };
+
+            mediaRecorder.onstop = function(e) {
+                var blob = new Blob(chunks, { 'type' : 'video/mp4' });
+                chunks = [];
+                videoURL = URL.createObjectURL(blob);
+                openRecordingModal(videoURL);
+            };
+            mediaRecorder.ondataavailable = function(e) {
+                chunks.push(e.data);
+            };
+
+            mediaRecorder.start();
+            recording = true;
+        }
+
+        function stopRecording() {
+            mediaRecorder.stop();
+            recording = false;
+        }
+
+        function toggleRecordingDisplay() {
             recordingButton.classList.toggle('active');
             if (recordingButton.classList.contains('active')) {
                 const minutes = 5;
@@ -807,12 +835,22 @@
                         clearInterval(progress);
                         recordingButton.classList.toggle('active');
                         circularProgress.style.background = 'conic-gradient(#1B263B 360deg, #FFFFFF 0deg)'
-                        mediaRecorder.stop()
+                        stopRecording()
                     }
                 }, speed);
             } else {
                 clearInterval(progress);
                 circularProgress.style.background = 'conic-gradient(#1B263B 360deg, #FFFFFF 0deg)'
+            }
+        }
+
+        function toggleRecording() {
+            toggleRecordingDisplay();
+
+            if (!recording) {
+                startRecording();
+            } else {
+                stopRecording();
             }
         }
 
@@ -1176,15 +1214,10 @@
             }
         });
 
-        const whiteboardTitle = document.querySelector(".whiteboard-title")
-
         colourValueInputOutline.addEventListener('keydown', function (event) {
             event.stopPropagation();
         });
 
-        whiteboardTitle.addEventListener('keydown', function (event) {
-            event.stopPropagation();
-        });
 
         const visibilitySelectionOutline = document.querySelector('.outline-section .visibility-selection');
 

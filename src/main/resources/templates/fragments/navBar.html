@@ -68,10 +68,10 @@
                     </div>
                 </li>
 
-                <li sec:authorize="isAnonymous()">
+                <li class="buttons" sec:authorize="isAnonymous()">
                     <a th:href="@{login}" th:classappend="${httpServletRequest.requestURI == '/login' ? 'active' : ''}">Login</a>
                 </li>
-                <li sec:authorize="isAnonymous()">
+                <li class="buttons" sec:authorize="isAnonymous()">
                     <a th:href="@{register}" th:classappend="${httpServletRequest.requestURI == '/register' ? 'active' : ''}">Register</a>
                 </li>
 
