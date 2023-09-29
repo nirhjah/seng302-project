@@ -1180,9 +1180,13 @@ table, th, td {
     align-items:center;
 }
 
-.submit-button button{
+.submit-button-container .submit-button button{
     display:flex;
     justify-content: center;
     align-items:center;
     padding: 0 40px;
+}
+
+.submit-button-container .submit-button{
+    margin:0;
 }
