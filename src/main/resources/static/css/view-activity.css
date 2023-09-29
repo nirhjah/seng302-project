@@ -1192,3 +1192,11 @@ table, th, td {
 .submit-button-container .submit-button{
     margin:0;
 }
+
+.submit-button.fact{
+    width:100% !important;
+}
+
+.submit-button.fact button{
+    width:30%;
+}

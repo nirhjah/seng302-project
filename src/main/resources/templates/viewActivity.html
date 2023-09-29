@@ -149,9 +149,9 @@
         <div class="content-box" id="facts-tab" style="margin-bottom: 16px">
             <div class="content">
                 <div th:if="${activity.team==null || (activity.team !=null && (activity.team.isManager(currentUser.get()) ||
-                activity.team.isCoach(currentUser.get())))}" class="submit-button"
-                     style="padding-top: 10px; padding-bottom: 10px; width: 80%; margin-left: 10%">
-                    <button style="width: 50%" onclick="addFactModal.style.display = 'block'">Add Fact</button>
+                activity.team.isCoach(currentUser.get())))}" class="submit-button fact"
+                     style="padding-top: 5px; padding-bottom: 5px;margin-left: 10%">
+                    <button onclick="addFactModal.style.display = 'block'">Add Fact</button>
                 </div>
 
                 <div id="addFactModal" class="modal"
@@ -535,7 +535,7 @@
                                      class="error-message"></div>
 
 
-                                <div style="padding-bottom: 11px; padding-top: 11px;" class="submit-button">
+                                <div style="padding-bottom: 11px; padding-top: 11px; width:100%" class="submit-button">
                                     <button style="width: 30%" id="createGoal" type="submit"> Add</button>
                                 </div>
 
