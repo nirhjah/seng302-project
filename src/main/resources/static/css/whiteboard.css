@@ -4,6 +4,10 @@
     display:flex;
     flex-direction:column;
     height: 100%;
+    left: 23%;
+    top: 22%;
+    right: 23%;
+    position: absolute;
 }
 
 .upper-canvas.erase {
@@ -711,6 +715,12 @@ input[type="range"]::-moz-range-track {
 
 
 @media (max-width: 945px) {
+
+    .whiteboard-form {
+        left: unset;
+        top: unset;
+        right: unset;
+    }
 
     .whiteboard-dropdowns {
         width: unset;
