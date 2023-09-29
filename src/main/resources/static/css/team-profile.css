@@ -902,4 +902,13 @@ ul.formation-description > li {
     width: 100% !important;
 }
 
+.media-name p, #name-box {
+    white-space: nowrap;
+    text-overflow: '...';
+    overflow: hidden;
+}
+
+
+
+
 

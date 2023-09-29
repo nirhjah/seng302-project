@@ -286,7 +286,7 @@
                         <input type="file" id="thumbnail" name="thumbnail"/>
                         <div class="input-box">
                             <input class="form-control" type="text" name="recording-name" id="recording-name"
-                                   required>
+                                   required maxlength="52">
                             <label for="recording-name">
                                 Recording name:
                                 <span class="required">*</span>
@@ -321,7 +321,7 @@
       <input type="file" id="screenshot-input" name="screenshot-input" />
         <input type="hidden" for="teamId" id="teamId" name="teamId" th:value="${teamId}"/>
         <div class="input-box">
-        <input class="form-control" type="text" name="screenshot-name" id="screenshot-name" required>
+        <input class="form-control" type="text" name="screenshot-name" id="screenshot-name" required maxlength="52">
         <label for="screenshot-name">
           Screenshot Name:
           <span class="required">*</span>

@@ -498,7 +498,7 @@
                 openLinkBox.classList.add("active");
 
                 // Set display text:
-                let publicText = isPublic ? "Public" : "Private";
+                let publicText = isPublic === "true" ? "Public" : "Private";
                 publicBox.innerHTML = "Visibility: ".concat(publicText);
                 nameBox.innerHTML = name;
 
