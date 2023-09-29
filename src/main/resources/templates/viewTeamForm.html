@@ -122,7 +122,7 @@
                 </div>
                 <div class="profile-bottom-content">
                     <form th:action="@{team-info}" class="profile-buttons" method="post">
-                        <button type="button" class="back-button" onclick="goBack()">Back</button>
+                        <button type="button" class="back-button" onclick="window.history.back()">Back</button>
                         <div class="grouped-buttons">
                             <div class="edit-button">
                                 <a th:href="@{create-team(edit=${teamID})}" th:if="${isUserManager}">
@@ -469,26 +469,25 @@
                 filePicker.click();
             }
 
-            /**
-             * U12:AC4 - On team profile, the 'Back' button brings you to /view-teams with the previous page number.
-             * That's hard to do without tracking our state across the entire website, which we don't have time for.
-             * So: If 'Back' would bring you to /view-teams?page=<...>, do so. Otherwise, just go to the base /view-teams page
-             */
-            function goBack() {
-                let prevPage;
-                const FALLBACK_PAGE = "view-teams"
+            // The AC only specifies a back button if we came from the view-teams page.
+            (() => {
+                const illegal_urls = ['/login', '/register', '/create-team'];
+                const backButton = document.getElementsByClassName('back-button')[0];
+                const bottomButtons = document.querySelector('.profile-buttons');
+                let previousPage;
                 try {
-                    prevPage = new URL(document.referrer).pathname;
-                } catch {   // Can be null sometimes
-                    window.location.assign(FALLBACK_PAGE);
+                    previousPage = new URL(document.referrer).pathname;
+                } catch {
+                    return;
                 }
-
-                if (prevPage.includes("/view-teams")) {
-                    window.history.back();
+                if (illegal_urls.some(url => previousPage.includes(url))) {
+                    bottomButtons.width = '50%';
+                    backButton.remove();
                 } else {
-                    window.location.assign(FALLBACK_PAGE)
+                    backButton.style.visibility = '';
                 }
-            }
+            })()
+
 
             /*
             This function IS actually used, just inside a `th:script`.
