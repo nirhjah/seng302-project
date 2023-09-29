@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -77,16 +78,14 @@ public class WhiteboardController {
         ).toList();
 
         model.addAttribute("teamId", team.getId());
-
+        model.addAttribute("teamName", team.getName());
+        model.addAttribute("localDate", LocalDate.now());
         model.addAttribute("teamFormations", formationService.getTeamsFormations(teamID));
-
         model.addAttribute("teamMembers", team.getNonManagersAndCoaches());
-
         model.addAttribute("teamLineUps", teamLineUps);
 
         List<List<LineUpPosition>> positionsList = new ArrayList<>();
         model.addAttribute("teamLineupsPositions", positionsList);
-
         model.addAttribute("playersPerLineup", playersPerLineup);
 
         return "whiteboardForm";

@@ -19,11 +19,12 @@
 }
 
 @media (max-width: 960px) {
+
     .team-profile-form {
         min-height: unset;
     }
 
-    #team-wrapper .content {
+    #formation-tab .content, #team-profile-tab .content, #statistics-tab .content {
         max-height: unset !important;
         height: unset !important;
     }
@@ -121,12 +122,12 @@
         margin-right: 3px;
     }
 
-    #edit-roles {
+    #activities {
         border-radius: 7px;
         margin-right: 3px;
     }
 
-    #activities {
+    #edit-roles {
         border-radius: 7px 30px 30px 7px;
         margin-right: 0;
     }
@@ -141,6 +142,15 @@
 
     .grouped-buttons button {
         white-space: unset !important;
+    }
+
+    #whiteboard-media-tab .content {
+        height: unset;
+        justify-content: center;
+    }
+
+    .whiteboard-media-display {
+        margin: 0;
     }
 
 }
@@ -244,7 +254,7 @@
 .tab-box{
     border-radius: 20px 20px 0 0;
     display:flex;
-    justify-content:space-around;
+    justify-content:space-between;
     align-items:center;
     top:-60px;
     width:100%;
@@ -273,6 +283,7 @@
     background-color: #1B263B;
     border-radius: 10px;
     transition: all .3s ease-in-out;
+    left: 0;
 }
 
 .tab.active .tab-button{
@@ -367,6 +378,7 @@
 
 .content {
     max-height: 460px;
+    overflow: hidden;
 }
 
 #team-profile-tab .content {
@@ -446,7 +458,7 @@
 }
 
 .back-button {
-    margin-right: 14%;
+    margin-right: 28%;
 }
 
 .grouped-buttons {
@@ -539,52 +551,57 @@
 .whiteboard-media-select {
     display: flex;
     flex-direction: column;
-    width: 70%;
+    width: 68%;
     height: 100%;
 }
 
 .whiteboard-media-display {
+    height: 100%;
     display: flex;
-    width: 100%;
+    width: 27%;
     flex-direction: column;
-    /*min-width: 300px;*/
-
-    margin: 5px;
-    /* min-width: 300px; */
-    border: groove #0b2239;
-    border-bottom-right-radius: 16px;
+    border-radius: 5px 5px 0 0;
+    justify-content: space-between;
+    min-width: 226px;
+    margin-left: 40px;
 }
+
 
 .whiteboard-media-display .info-box {
     display: inline-block;
     /*margin: 0 auto;*/
-    padding: 5%;
-    background-color: #bbbbbb;
-    max-height: 30%;
+    padding: 10px;
+    background-color: #1B263B;
+    max-height: 27%;
     width: 100%;
+    margin-top: 15px;
+    border-radius: 5px 5px 0 0;
 }
 
 
 .whiteboard-media-display .open-link-box {
-    border: groove grey;
-    height: 100%;
-    max-height: 60%;
-    background-color: #cccccc;
-    max-width: 90%;
-    margin: auto;
-    padding: 2%;
     position: relative;
+    border-left: 2px solid #DFDEDE;
+    border-bottom: 2px solid #DFDEDE;
+    border-right: 2px solid #DFDEDE;
 }
-
 
 .open-link-box img {
     object-fit: scale-down;
     max-width: 100%;
     max-height: 100%;
+    border-radius: 0 0 1px 1px;
+    opacity: 0;
+    cursor: default;
 }
 
-.open-link-box .button-box {
+.open-link-box.active {
+    border: none
+}
 
+.open-link-box.active img {
+    opacity: 1;
+    cursor: pointer;
 }
 
 .open-link-box .button-box {
@@ -601,26 +618,22 @@
 
 .info-box p {
     text-align: left;
-    font-size:16px;
+    font-size:15px;
     width: 100%;
     height: 50%; /* because there are 2 */
     line-height: 1.5;
-    font-weight: 600;
     text-overflow: ellipsis;
+    color: white;
 }
-
-
-
-.whiteboard-media-display .whiteboard-button {
-}
-
 
 .whiteboard-media-content {
     height: 100%;
-    max-height: 100%;
+    min-height: 162px;
     overflow: auto;
     display: inline-flex;
-    margin: 8px;
+    border: 2px #DFDEDE solid;
+    border-radius: 1px;
+    max-height: 162px;
 }
 
 
@@ -635,7 +648,7 @@
     border-radius: 10px;
     display: inline-flex;
     cursor:pointer;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
     /* aspect-ratio: 560 / 700; /* Aspect ratio of pitch */
     aspect-ratio: 570 / 700; /* Aspect ratio of pitch */
     /*height: 90%;*/
@@ -646,13 +659,12 @@
     height: 90%;
     width: 100%;
     object-fit: scale-down;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 .media-title img {
-    max-height: 100%;
-    max-width: 100%;
-    padding-left: 1%;
+    height: 25px;
+    width: 25px;
 }
 
 
@@ -667,19 +679,15 @@
 }
 
 .media-body .media-name{
-    position: absolute;
-    text-align: center;
-    font-size:16px;
+    border-radius: 5px 5px 0 0;
+    opacity: 95%;
+    top: 0;
     background-color: #0b2239;
+    position: absolute;
+    padding: 2px 6px;
+    overflow: hidden;
+    font-size: 12px;
     width: 100%;
-    height: 15%;
-    top: -5%; /* I think this is really hacky, but im not sure how else to do it*/
-    left: -5%;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    margin: 5%;
-    line-height: 1.5;
-    text-overflow: ellipsis;
 }
 
 .whiteboard-media-wrapper {
@@ -690,16 +698,17 @@
 }
 
 .whiteboard-media-wrapper .media-title {
-    height: 18%;
+    height: fit-content;
     border: none;
     outline: none;
     background: white;
-    cursor: pointer;
+    cursor: default;
     font-weight: 600;
     font-size: 18px;
     color: #1B263B;
-    padding: 10px;
+    padding: 10px 2px;
     display: inline-flex;
+    align-items: center;
 }
 
 .whiteboard-media-wrapper .media-title h3 {
@@ -709,6 +718,7 @@
     display: inline-block;
     white-space: nowrap;
     overflow: hidden;
+    height: fit-content;
 }
 
 .media img:hover {
@@ -743,7 +753,28 @@ Custom scrollbar:
     background-color: #999999;
 }
 
+@media (max-width: 570px) {
+    .whiteboard-media {
+        flex-direction: column;
+        max-height: unset !important;
+        height: unset !important;
+        align-items: center;
+    }
 
+    .whiteboard-media-select {
+        width: 100%;
+        max-height: 514px;
+    }
+
+    .whiteboard-media-display {
+        margin: unset;
+    }
+
+    .open-link-box {
+        margin-bottom: 15px;
+    }
+
+}
 
 
 @media (max-width: 500px) {
@@ -847,4 +878,37 @@ ul.formation-description > li {
     display: flex;
     align-items: center;
 }
+
+.whiteboard-media {
+    padding: 5px 30px 30px 30px;
+    display: flex;
+    justify-content: space-between;
+}
+
+#edit-profile {
+    white-space: nowrap;
+}
+
+.media:hover {
+    transform: scaleX(1.02) scaleY(1.02);
+    transition: 0.1s;
+}
+
+.submit-button.whiteboard {
+    margin: unset !important;
+}
+
+.whiteboard-button {
+    width: 100% !important;
+}
+
+.media-name p, #name-box {
+    white-space: nowrap;
+    text-overflow: '...';
+    overflow: hidden;
+}
+
+
+
+
 

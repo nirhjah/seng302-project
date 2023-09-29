@@ -59,7 +59,7 @@
                 </li>
 
                 <li class="buttons whiteboards" sec:authorize="isAuthenticated()">
-                    <a th:classappend="${httpServletRequest.requestURI.contains('whiteboard') ? 'current' : ''}">
+                    <a th:classappend="${httpServletRequest.requestURI.contains('-whiteboard') ? 'current' : ''}">
                         <span th:text="Whiteboards"></span>
                         <i class="navbar-dropdown-triangle"></i>
                     </a>
