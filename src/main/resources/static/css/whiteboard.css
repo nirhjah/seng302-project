@@ -561,9 +561,11 @@ input[type="range"]::-moz-range-track {
     padding: 20px;
     border: 1px solid #888;
     width: 480px;
-    max-height: 90%;
+    max-height: 87%;
     border-radius: 20px;
     bottom: unset;
+    overflow-y: auto;
+
 }
 
 #recording-input {
@@ -646,6 +648,8 @@ input[type="range"]::-moz-range-track {
     width: 400px;
     border-radius: 20px;
     bottom: unset;
+    overflow-y: auto;
+    max-height: 87%;
 }
 
 .modal-header {
