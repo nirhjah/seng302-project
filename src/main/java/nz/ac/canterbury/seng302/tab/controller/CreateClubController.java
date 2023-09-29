@@ -200,7 +200,7 @@ public class CreateClubController {
                 return "createClubForm";
             }
 
-            clubService.updateOrAddClub(club);
+            club = clubService.updateOrAddClub(club);
 
             if (!Objects.equals(clubLogo.getOriginalFilename(), "")) {
                 // If there's a logo, set it.
