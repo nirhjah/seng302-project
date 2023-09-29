@@ -93,7 +93,7 @@ public class WhiteboardMediaController {
             @RequestParam("thumbnail") MultipartFile thumbnail,
             @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
     ) {
-        logger.info("/POST /whiteboard-media/save/screenshot");
+        logger.info("/POST /whiteboard-media/save/video");
         Team team = teamService.getTeam(teamId);
         User user = userService.getCurrentUser().orElseThrow();
         if (team != null) {

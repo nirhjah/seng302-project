@@ -1856,6 +1856,13 @@
             canvas.add(group)
         }
 
+        const videoForm = document.querySelector(".video-form");
+        videoForm.addEventListener('submit', function(e) {
+            e.preventDefault()
+            const formData = new FormData(videoForm)
+            sendWhiteboardVideoWithoutRefreshing(formData)
+        })
+
         // ability to send post req without refreshing
         const form = document.getElementById('screenshot-form')
         form.addEventListener('submit', function(e) {
@@ -1877,10 +1884,10 @@
         }
 
         function sendWhiteboardVideoWithoutRefreshing(formData) {
-            axios.post("whiteboard-media/save/screenshot", formData)
+            axios.post("whiteboard-media/save/video", formData)
                 .then(response => {
                     // open up in a new tab?
-                    closeScreenshotModalAfterPost()
+                    closeVideoModalAfterPost()
                 })
                 .catch(error => {
                     alert("ERROR see console");
@@ -1892,6 +1899,13 @@
             screenshotModal = document.getElementById("screenshot-modal");
             allowKeyPresses = true;
             screenshotModal.classList.remove("modal-fade-in");
+        }
+
+
+        function closeVideoModalAfterPost() {
+            const recordingModal = document.getElementById("recording-modal");
+            allowKeyPresses = true;
+            recordingModal.style.display = 'none';
         }
 
     })
