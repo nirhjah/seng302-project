@@ -92,7 +92,7 @@
             </div>
             <div class="profile-bottom-content">
                 <div class="profile-buttons">
-                    <button type="button" class="back-button" onclick="window.history.go(-1);">Back</button>
+                    <button type="button" class="back-button" onclick="goBack()">Back</button>
                     <div th:if="${canEdit}" class="edit-button">
                         <a th:href="@{editUser}">
                             <button id="" type="button">Edit Profile</button>
@@ -130,16 +130,25 @@
     </p>
 </footer>
   <script th:inline="javascript">
-    // The AC only specifies a back button if we came from the view-users page.
-    const legal_url = '/view-users';
-    const backButton = document.getElementsByClassName('back-button')[0];
-    const buttons = document.querySelector('.profile-buttons');
-    const previousPage = document.referrer;
-    if (previousPage.includes(legal_url)) {
-        backButton.style.visibility = '';
-    } else {
-        buttons.width = '50%';
-        backButton.remove();
+    /**
+     * U6:AC4 - On user profile, the 'Back' button brings you to /view-users with the previous page number.
+     * That's hard to do without tracking our state across the entire website, which we don't have time for.
+     * So: If 'Back' would bring you to /view-teams?page=<...>, do so. Otherwise, just go to the base /view-teams page
+     */
+    function goBack() {
+        let prevPage;
+        const FALLBACK_PAGE = "view-users"
+        try {
+            prevPage = new URL(document.referrer).pathname;
+        } catch {   // Can be null sometimes
+            window.location.assign(FALLBACK_PAGE);
+        }
+
+        if (prevPage.includes("/view-users")) {
+            window.history.back();
+        } else {
+            window.location.assign(FALLBACK_PAGE)
+        }
     }
   </script>
 
