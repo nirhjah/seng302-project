@@ -5,6 +5,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import nz.ac.canterbury.seng302.tab.api.response.FormationInfo;
 import nz.ac.canterbury.seng302.tab.api.response.PlayerFormationInfo;
 import nz.ac.canterbury.seng302.tab.entity.*;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Goal;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
 import nz.ac.canterbury.seng302.tab.entity.lineUp.LineUp;
 import nz.ac.canterbury.seng302.tab.enums.ActivityType;
 import nz.ac.canterbury.seng302.tab.form.CreateActivityForm;
@@ -289,6 +292,8 @@ public class CreateActivityController {
             }
 
         }
+
+
 
         activity = activityService.updateOrAddActivity(activity);
 
