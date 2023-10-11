@@ -73,17 +73,23 @@
                                 
                                 <th:block th:if="${canShowScores}">
                                     <h3 class="attribute-type"><br>Outcome</h3>
-                                    <h3 th:if="${completed == null && activity.outcome == null}">Activity Not Completed</h3>
+                                    <!--/* If there's an outcome, simply display it */-->
                                     <h3 th:if="${activity.outcome != null}" th:text="${activity.outcome}"></h3>
-                                    <h3 th:if="${activity.outcome == null && canShowScores  && completed != null
-                                    && !(activity.team.isManager(currentUser.get()) ||
-                                    activity.team.isCoach(currentUser.get()))}">Outcome Not Set</h3>
-                                    <div th:if="${activity.outcome == null && completed != null
-                                    && (activity.team.isManager(currentUser.get()) ||
-                                    activity.team.isCoach(currentUser.get()))}" class="submit-button">
-                                        <button onclick="outcomeModal.style.display = 'block'" type="button">
-                                            Add Outcome
-                                        </button>
+                                    <!--/* If the outcome's unknown... */-->
+                                    <th:block th:if="${activity.outcome == null}">
+                                        <!--/* The activity is still ongoing */-->
+                                        <h3 th:if="${completed == null}">N/A: Activity ongoing</h3>
+                                        <!--/* The activity's outcome still needs to be set */-->
+                                        <h3 th:if="${completed != null
+                                        && !activity.team.isManagerOrCoach(currentUser.get())}">Outcome Not Set</h3>
+                                        <!--/* Offering the coach to set the outcome */-->
+                                        <div th:if="${completed != null
+                                        && activity.team.isManagerOrCoach(currentUser.get())}" class="submit-button">
+                                            <button onclick="outcomeModal.style.display = 'block'" type="button">
+                                                Add Outcome
+                                            </button>
+                                    </th:block>
+
                                     </div>
                                 </th:block>
 
