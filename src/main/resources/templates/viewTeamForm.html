@@ -237,10 +237,10 @@
                                 <li th:each="act : ${last5GOrF}"
                                     th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
                                     <div>
-                                        <h3 th:text="${act.activityType.name()} + ' - ' + ${act.activityTeamScore} + ' : ' + ${act.otherTeamScore}"></h3>
+                                        <h3 th:text="|${act.activityType.name} - ${act.activityTeamScore ?: 'N/A'} : ${act.otherTeamScore ?: 'N/A'}"></h3>
                                         <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
                                endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')}"
-                                            th:text="${startDate} + ' - ' + ${endDate}"></h4>
+                                            th:text="|${startDate} - ${endDate}|"></h4>
                                     </div>
                                     <img th:if="${act.outcome.toString() == 'Win'}"
                                          th:src="@{/image/icons/win.svg}"/>

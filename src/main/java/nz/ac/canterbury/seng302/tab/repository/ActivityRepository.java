@@ -41,7 +41,7 @@ public interface ActivityRepository extends CrudRepository<Activity, Long> {
         WHERE a.team = :team
             and (a.outcome = 0 OR a.outcome = 1 OR a.outcome = 2)
             and (a.activityType = 0 OR a.activityType = 1)
-        ORDER BY a.activityEnd desc, a.activityStart desc, a.activityId desc
+        ORDER BY a.activityEnd desc, a.activityStart desc, a.id desc
         LIMIT 5""")
     List<Activity> getLast5GameOrFriendly(@Param("team") Team team);
 
