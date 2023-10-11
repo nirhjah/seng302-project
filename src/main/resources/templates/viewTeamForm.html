@@ -237,11 +237,10 @@
                                 <li th:each="act : ${last5GOrF}"
                                     th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
                                     <div>
-                                        <h3 th:text="${act.activityType.name()}"></h3>
+                                        <h3 th:text="${act.activityType.name()} + ' - ' + ${act.activityTeamScore} + ' : ' + ${act.otherTeamScore}"></h3>
                                         <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
                                endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')}"
                                             th:text="${startDate} + ' - ' + ${endDate}"></h4>
-                                        <h4 th:text="'Score: ' + ${act.activityTeamScore} + ' : ' + ${act.otherTeamScore}"></h4>
                                     </div>
                                     <img th:if="${act.outcome.toString() == 'Win'}"
                                          th:src="@{/image/icons/win.svg}"/>
@@ -249,41 +248,6 @@
                                          th:src="@{/image/icons/loss.svg}"/>
                                     <img th:if="${act.outcome.toString() == 'Draw'}"
                                          th:src="@{/image/icons/draw.svg}"/>
-                                </li>
-                                <li>
-                                    <div>
-                                        <h3>Game - 5 : 2</h3>
-                                        <h4>10th October - 11th October</h4>
-                                    </div>
-                                    <img th:src="@{/image/icons/loss.svg}"/>
-                                </li>
-                                <li>
-                                    <div>
-                                        <h3>Game - 5 : 2</h3>
-                                        <h4>10th October - 11th October</h4>
-                                    </div>
-                                    <img th:src="@{/image/icons/draw.svg}"/>
-                                </li>
-                                <li>
-                                    <div>
-                                        <h3>Game - 5 : 2</h3>
-                                        <h4>10th October - 11th October</h4>
-                                    </div>
-                                    <img th:src="@{/image/icons/win.svg}"/>
-                                </li>
-                                <li>
-                                    <div>
-                                        <h3>Game - 5 : 2</h3>
-                                        <h4>10th October - 11th October</h4>
-                                    </div>
-                                    <img th:src="@{/image/icons/win.svg}"/>
-                                </li>
-                                <li>
-                                    <div>
-                                        <h3>Game - 5 : 2</h3>
-                                        <h4>10th October - 11th October</h4>
-                                    </div>
-                                    <img th:src="@{/image/icons/win.svg}"/>
                                 </li>
                             </ul>
                         </div>
@@ -314,46 +278,6 @@
                                             <h4 th:text="${player.value == 1 ? player.value.toString() + ' pt' : player.value.toString() + ' pts'}"></h4>
                                         </div>
                                     </li>
-                                    <li>
-                                        <img th:src="@{/team-profile-picture/{id}(id = ${teamID})}">
-                                        <div style="width: 79%">
-                                            <h3 th:text="'Lionel Messi'"></h3>
-
-                                            <h4 th:text="'5 pts'"></h4>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <img th:src="@{/team-profile-picture/{id}(id = ${teamID})}">
-                                        <div style="width: 79%">
-                                            <h3 th:text="'Lionel Messi'"></h3>
-
-                                            <h4 th:text="'5 pts'"></h4>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <img th:src="@{/team-profile-picture/{id}(id = ${teamID})}">
-                                        <div style="width: 79%">
-                                            <h3 th:text="'Lionel Messi'"></h3>
-
-                                            <h4 th:text="'5 pts'"></h4>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <img th:src="@{/team-profile-picture/{id}(id = ${teamID})}">
-                                        <div style="width: 79%">
-                                            <h3 th:text="'Lionel Messi'"></h3>
-
-                                            <h4 th:text="'5 pts'"></h4>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <img th:src="@{/team-profile-picture/{id}(id = ${teamID})}">
-                                        <div style="width: 79%">
-                                            <h3 th:text="'Lionel Messi'"></h3>
-
-                                            <h4 th:text="'5 pts'"></h4>
-                                        </div>
-                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -368,78 +292,14 @@
                                         <div class="player-name-div">
                                             <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"></h3>
                                         </div>
-
                                         <div class="player-time-div">
-
                                             <h4 th:text="'Total: ' + ${player.value[0].toString()} + 'm'"></h4>
                                             <h4 th:text="'Avg: ' + ${player.value[1].toString()} + 'm'"></h4>
-
                                         </div>
-
-                                    </li>
-                                    <li th:each="player : ${overallPlayersPlaytime}">
-                                        <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
-                                        <div class="player-name-div">
-                                            <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"></h3>
-                                        </div>
-
-                                        <div class="player-time-div">
-
-                                            <h4 th:text="'Total: ' + ${player.value[0].toString()} + 'm'"></h4>
-                                            <h4 th:text="'Avg: ' + ${player.value[1].toString()} + 'm'"></h4>
-
-                                        </div>
-
-                                    </li>
-                                    <li th:each="player : ${overallPlayersPlaytime}">
-                                        <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
-                                        <div class="player-name-div">
-                                            <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"></h3>
-                                        </div>
-
-                                        <div class="player-time-div">
-
-                                            <h4 th:text="'Total: ' + ${player.value[0].toString()} + 'm'"></h4>
-                                            <h4 th:text="'Avg: ' + ${player.value[1].toString()} + 'm'"></h4>
-
-                                        </div>
-
-                                    </li>
-                                    <li th:each="player : ${overallPlayersPlaytime}">
-                                        <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
-                                        <div class="player-name-div">
-                                            <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"></h3>
-                                        </div>
-
-                                        <div class="player-time-div">
-
-                                            <h4 th:text="'Total: ' + ${player.value[0].toString()} + 'm'"></h4>
-                                            <h4 th:text="'Avg: ' + ${player.value[1].toString()} + 'm'"></h4>
-
-                                        </div>
-
-                                    </li>
-                                    <li th:each="player : ${overallPlayersPlaytime}">
-                                        <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
-                                        <div class="player-name-div">
-                                            <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"></h3>
-                                        </div>
-
-                                        <div class="player-time-div">
-
-                                            <h4 th:text="'Total: ' + ${player.value[0].toString()} + 'm'"></h4>
-                                            <h4 th:text="'Avg: ' + ${player.value[1].toString()} + 'm'"></h4>
-
-                                        </div>
-
                                     </li>
                                 </ul>
-
                             </div>
-
                         </div>
-
-
                     </div>
                     <div style="margin-bottom: 10px; width: 32%" class="third-col">
 
