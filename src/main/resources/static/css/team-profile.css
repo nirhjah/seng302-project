@@ -254,7 +254,7 @@
 .tab-box{
     border-radius: 20px 20px 0 0;
     display:flex;
-    justify-content:space-between;
+    justify-content:space-around;
     align-items:center;
     top:-60px;
     width:100%;
