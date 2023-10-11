@@ -149,7 +149,10 @@ public class ActivityRepositoryTest {
         activityRepository.save(activity2);
         activityRepository.save(activity3);
 
-        Assertions.assertEquals(List.of(activity1, activity2), activityRepository.getLast5GameOrFriendly(team1));
+        var last5Activities = activityRepository.getLast5GameOrFriendly(team1);
+
+        Assertions.assertEquals(2, last5Activities.size());
+        Assertions.assertEquals(List.of(activity2, activity1), last5Activities);
     }
 
     @Test
