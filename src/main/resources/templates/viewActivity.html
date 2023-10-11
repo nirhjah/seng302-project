@@ -84,10 +84,11 @@
                                         && !activity.team.isManagerOrCoach(currentUser.get())}">Outcome Not Set</h3>
                                         <!--/* Offering the coach to set the outcome */-->
                                         <div th:if="${completed != null
-                                        && activity.team.isManagerOrCoach(currentUser.get())}" class="submit-button">
+                                        && activity.team.isManagerOrCoach(currentUser.get())}" class="general-outcome-button">
                                             <button onclick="outcomeModal.style.display = 'block'" type="button">
                                                 Add Outcome
                                             </button>
+                                        </div>
                                     </th:block>
                                 </th:block>
                             </div>
@@ -121,7 +122,6 @@
                                         </form>
                                     </div>
                                 </div>
-                            </div>
                         </div>
                         <div class="general-activity-bottom">
                             <h3 class="attribute-type">Description</h3>
