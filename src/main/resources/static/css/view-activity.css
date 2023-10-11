@@ -1165,8 +1165,9 @@ table, th, td {
 }
 
 .content {
-    max-height: calc(80vh - 80px); /* navbar is 80px tall */
-    overflow: auto;
+    height: fit-content !important;
+    max-height: calc(80vh - 80px) !important; /* navbar is 80px tall */
+    overflow: auto !important;
 }
 
 .add-fact-title {
