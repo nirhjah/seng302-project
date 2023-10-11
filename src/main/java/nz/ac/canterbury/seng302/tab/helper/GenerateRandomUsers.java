@@ -1,24 +1,20 @@
 package nz.ac.canterbury.seng302.tab.helper;
 
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-import nz.ac.canterbury.seng302.tab.entity.Location;
-import nz.ac.canterbury.seng302.tab.entity.Team;
+import nz.ac.canterbury.seng302.tab.entity.*;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Fact;
+import nz.ac.canterbury.seng302.tab.entity.Fact.Substitution;
+import nz.ac.canterbury.seng302.tab.enums.ActivityType;
+import nz.ac.canterbury.seng302.tab.repository.ActivityRepository;
 import nz.ac.canterbury.seng302.tab.repository.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import nz.ac.canterbury.seng302.tab.entity.Sport;
-import nz.ac.canterbury.seng302.tab.entity.User;
 import nz.ac.canterbury.seng302.tab.repository.SportRepository;
 
 @Service
@@ -30,6 +26,9 @@ public class GenerateRandomUsers {
 
     @Autowired
     TeamRepository teamRepository;
+
+    @Autowired
+    ActivityRepository activityRepository;
 
     private final Random random = ThreadLocalRandom.current();
 
@@ -99,6 +98,18 @@ public class GenerateRandomUsers {
 
         for (Team team : allTeams) {
             user.joinTeam(team);
+            Activity activity = new Activity(ActivityType.Game, team, "Game with Team",
+                    LocalDateTime.of(2023, 1,1,6,30),
+                    LocalDateTime.of(2023, 1,1,8,30),
+                    user,  new Location(null, null, null,
+                    "Christchurch", null, "New Zealand"));
+            List<Fact> factList = new ArrayList<>();
+            factList.add(new Substitution("Player was taken off", "10", activity, user, user));
+            factList.add(new Substitution("Player was taken off", "20", activity, user, user));
+
+            factList.add(new Substitution("Player was taken off", "15", activity, user, user));
+            activity.addFactList(factList);
+            activityRepository.save(activity);
         }
 
         return user;

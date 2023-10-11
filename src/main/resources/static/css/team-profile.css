@@ -10,6 +10,10 @@
     left: 33%;
 }
 
+.team-profile-form .wrapper-profile {
+    min-width: 320px;
+}
+
 /* width is ~ current width / 90 * 100 */
 @media (max-width: 1000px) {
     .wrapper-profile {
@@ -37,6 +41,7 @@
         width: 90vw !important;
         height: unset !important;
         margin-top: 20px;
+        margin-bottom: 50px;
     }
 
     .wrapper-profile .profile-pic {
@@ -113,7 +118,7 @@
 }
 
 @media (max-width:  500px) {
-    .profile-buttons button {
+    #team-profile-tab .profile-buttons button {
         padding: 0 15px;
     }
 
@@ -137,7 +142,7 @@
     }
 
     .grouped-buttons {
-        justify-content: left !important;
+        justify-content: center !important;
     }
 
     .grouped-buttons button {
@@ -161,6 +166,11 @@
         display: none;
     }
 }
+
+#statistics-tab .content {
+    padding: 10px;
+}
+
 
 .join-token {
     display: flex;
@@ -254,7 +264,7 @@
 .tab-box{
     border-radius: 20px 20px 0 0;
     display:flex;
-    justify-content:space-between;
+    justify-content:space-around;
     align-items:center;
     top:-60px;
     width:100%;
@@ -284,6 +294,7 @@
     border-radius: 10px;
     transition: all .3s ease-in-out;
     left: 0;
+    z-index: 5;
 }
 
 .tab.active .tab-button{
@@ -297,6 +308,7 @@
 
 .content-box.active{
     display:block;
+    margin-top: -5px;
 }
 
 .tab img{
@@ -379,6 +391,7 @@
 .content {
     max-height: 460px;
     overflow: hidden;
+    min-width: 320px;
 }
 
 #team-profile-tab .content {
@@ -450,6 +463,10 @@
     display: block;
     width: 33%;
     text-align: center;
+}
+
+.third-col .profile-buttons {
+    justify-content: center !important;
 }
 
 .team-display .profile-top-content {
@@ -906,6 +923,10 @@ ul.formation-description > li {
     white-space: nowrap;
     text-overflow: '...';
     overflow: hidden;
+}
+
+#topScorersDiv, #topOverallPlaytimeDiv {
+    margin-top: -15px;
 }
 
 

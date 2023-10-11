@@ -341,30 +341,37 @@
   </div>
 </div>
 
+    <footer>
+        <p>
+            Image by <a
+                href="https://www.freepik.com/free-vector/flat-happy-children-play-run-cycling-public-park_27059506.htm#query=nature%20sports%20illustration&position=0&from_view=search&track=ais">redgreystock</a>
+            on Freepik
+        </p>
+    </footer>
 <script type="text/javascript" th:src="@{/webjars/fabric/5.3.0/dist/fabric.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/axios/1.4.0/dist/axios.min.js}"></script>
 </body>
 <script th:inline="javascript">
 
     
-    function setWhiteboardToMobileFriendlySize() {
-        const canvasContainer = document.querySelector('.canvas-container');
-        const upperCanvas = document.querySelector('.upper-canvas');
-        const canvas = document.querySelector('#canvas');
+    // function setWhiteboardToMobileFriendlySize() {
+    //     const canvasContainer = document.querySelector('.canvas-container');
+    //     const upperCanvas = document.querySelector('.upper-canvas');
+    //     const canvas = document.querySelector('#canvas');
+    //
+    //     if (window.innerWidth <= 945) {
+    //         canvasContainer.style.width = '400px';
+    //         upperCanvas.style.width = '400px';
+    //         canvas.style.width = '400px';
+    //     } else {
+    //         canvasContainer.style.width = '560px';
+    //         upperCanvas.style.width = '';
+    //         canvas.style.width = '';
+    //     }
+    // }
 
-        if (window.innerWidth <= 945) {
-            canvasContainer.style.width = '400px';
-            upperCanvas.style.width = '400px';
-            canvas.style.width = '400px';
-        } else {
-            canvasContainer.style.width = '560px';
-            upperCanvas.style.width = '';
-            canvas.style.width = '';
-        }
-    }
-
-    window.addEventListener('resize', setWhiteboardToMobileFriendlySize);
-    window.addEventListener('load', setWhiteboardToMobileFriendlySize);
+    // window.addEventListener('resize', setWhiteboardToMobileFriendlySize);
+    // window.addEventListener('load', setWhiteboardToMobileFriendlySize);
 
 
     /**
