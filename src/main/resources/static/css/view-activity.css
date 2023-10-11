@@ -468,6 +468,7 @@ hr.rounded {
 }
 
 .add-goal-modal-content.event {
+    margin-top:15%;
     width: max-content;
     position: relative;
     bottom: 40%;
@@ -523,13 +524,14 @@ hr.rounded {
 
     }
 
-    .overall-score-modal-content{
+    .overall-score-modal-content {
         transform: translate(-72%, 71%) !important;
         width: 97% !important;
     }
-    .modal-content-outcome.event{
-        height:fit-content !important;
-        width:60% !important;
+
+    .modal-content-outcome.event {
+        height: fit-content !important;
+        width: 60% !important;
     }
 
     .overall-score-modal-content button {
@@ -552,6 +554,12 @@ hr.rounded {
     }
 
 
+}
+
+@media (max-width: 389px){
+    .add-goal-modal-content.event{
+        width:90% !important;
+    }
 }
 
 @media (max-width: 760px) {
@@ -1290,6 +1298,44 @@ table, th, td {
     height:fit-content !important;
     display:flex;
     flex-direction:row;
+}
+
+@media (max-width: 418px){
+    #formation-tab {
+        padding: 30px 10px 0 10px;
+    }
+    .sub-table {
+        width: 280px !important;
+    }
+    .score-display {
+        width:250px;
+        font-size: initial !important;
+    }
+
+    #scores-tab{
+        padding: 30px 10px 0 10px !important;
+    }
+
+    .goal-table{
+        width: 280px !important;
+    }
+    .goals-list button{
+        width: 255px !important;
+    }
+
+    #pitch{
+        width:280px !important;
+    }
+
+    .formation-outer{
+        font-size:14px;
+        padding-top:10px;
+    }
+
+    .sub-card{
+        overflow-x:scroll;
+        scrollbar-width: none;
+    }
 }
 
 

@@ -159,7 +159,7 @@
                 <div id="addFactModal" class="modal"
                      th:style="${factInvalid != null ? 'display:block' : 'display:none'}">
 
-                    <div class="add-goal-modal-content event" style="bottom: unset">
+                    <div class="add-goal-modal-content event">
                         <span class="close" onclick="addFactModal.style.display = 'none'">&times;</span>
                         <form style="height: unset" th:action="@{add-fact}" id="addFactForm" method="post"
                               th:object="${addFactForm}" class="view-activity-form">
@@ -225,7 +225,7 @@
             <div class="content" style="overflow: unset">
                 <div id="addSubModal" class="modal"
                      th:style="${subInvalid != null ? 'display:block' : 'display:none'}">
-                    <div class="add-goal-modal-content event" style="bottom: unset">
+                    <div class="add-goal-modal-content event">
                         <span class="close" onclick="addSubModal.style.display = 'none'">&times;</span>
                         <h3>Add Sub</h3>
                         <form style="height: unset" th:action="@{add-sub}" id="add-sub-form" method="post"
@@ -468,7 +468,7 @@
                     <div id="addGoalModal" class="modal"
                          th:style="${goalInvalid != null ? 'display:block' : 'display:none'}">
 
-                        <div class="add-goal-modal-content event" style="bottom: unset">
+                        <div class="add-goal-modal-content event">
                             <span class="close" onclick="addGoalModal.style.display = 'none'">&times;</span>
                             <form style="height: unset" th:action="@{add-goal}" id="goalForm" method="post"
                                   th:object="${createEventForm}" class="view-activity-form">
