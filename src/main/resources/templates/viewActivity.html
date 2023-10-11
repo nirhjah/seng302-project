@@ -70,20 +70,23 @@
                                         <h3 th:text="${activity.team.name}"></h3>
                                     </a>
                                 </th:block>
-                                <h3 th:if="${canShowScores}" class="attribute-type"><br>Outcome</h3>
-                                <h3 th:if="${canShowScores  && completed == null && activity.outcome == null}">Activity
-                                    Not Completed</h3>
-                                <h3 th:if="${activity.outcome != null}" th:text="${activity.outcome}"></h3>
-                                <h3 th:if="${activity.outcome == null && canShowScores  && completed != null
-                                && !(activity.team.isManager(currentUser.get()) ||
-                                activity.team.isCoach(currentUser.get()))}">Outcome Not Set</h3>
-                                <div th:if="${activity.outcome == null && completed != null
-                                && (activity.team.isManager(currentUser.get()) ||
-                                activity.team.isCoach(currentUser.get()))}" class="submit-button" style="width: 80%">
-                                    <button style="width: 50%; float:left;"
-                                            onclick="outcomeModal.style.display = 'block'" type="button">Add Outcome
-                                    </button>
-                                </div>
+                                
+                                <th:block th:if="${canShowScores}">
+                                    <h3 class="attribute-type"><br>Outcome</h3>
+                                    <h3 th:if="${completed == null && activity.outcome == null}">Activity Not Completed</h3>
+                                    <h3 th:if="${activity.outcome != null}" th:text="${activity.outcome}"></h3>
+                                    <h3 th:if="${activity.outcome == null && canShowScores  && completed != null
+                                    && !(activity.team.isManager(currentUser.get()) ||
+                                    activity.team.isCoach(currentUser.get()))}">Outcome Not Set</h3>
+                                    <div th:if="${activity.outcome == null && completed != null
+                                    && (activity.team.isManager(currentUser.get()) ||
+                                    activity.team.isCoach(currentUser.get()))}" class="submit-button" style="width: 80%">
+                                        <button style="width: 50%; float:left;"
+                                                onclick="outcomeModal.style.display = 'block'" type="button">Add Outcome
+                                        </button>
+                                    </div>
+                                </th:block>
+
                                 <div id="outcomeModal" class="modal">
                                     <div class="modal-content event" style="bottom: unset; width: 20%; height:200px">
                                         <span class="close" onclick="outcomeModal.style.display = 'none'">&times;</span>
