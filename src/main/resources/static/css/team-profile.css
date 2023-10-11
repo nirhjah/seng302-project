@@ -137,7 +137,7 @@
     }
 
     .grouped-buttons {
-        justify-content: left !important;
+        justify-content: center !important;
     }
 
     .grouped-buttons button {
@@ -161,6 +161,11 @@
         display: none;
     }
 }
+
+#statistics-tab .content {
+    padding: 10px;
+}
+
 
 .join-token {
     display: flex;
@@ -297,6 +302,7 @@
 
 .content-box.active{
     display:block;
+    margin-top: -5px;
 }
 
 .tab img{
@@ -450,6 +456,10 @@
     display: block;
     width: 33%;
     text-align: center;
+}
+
+.third-col .profile-buttons {
+    justify-content: center !important;
 }
 
 .team-display .profile-top-content {
@@ -906,6 +916,10 @@ ul.formation-description > li {
     white-space: nowrap;
     text-overflow: '...';
     overflow: hidden;
+}
+
+#topScorersDiv, #topOverallPlaytimeDiv {
+    margin-top: -15px;
 }
 
 
