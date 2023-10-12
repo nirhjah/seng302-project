@@ -199,22 +199,22 @@
     width: inherit;
 }
 
-
-
-
-
-
-
 .last5 li, .top5Players li {
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    padding: 15px;
+    padding: 10px;
     border-radius: 10px;
-    margin-top: 5%;
     margin-left: 5%;
     margin-right: 5%;
     display: flex;
     justify-content: space-between;
     width: 100%;
+    align-items: center;
+    border: #d7d7d7 1px solid;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.last5 li:hover, .top5Players li:hover {
+    background-color: #f4f4f4;
 }
 
 
@@ -226,24 +226,28 @@
     margin-right: unset;
 }
 
-.last5 li:hover {
-    cursor: pointer;
-    transform: scaleX(1.03) scaleY(1.03);
-    box-shadow: 0 2px 3px 4px rgba(0, 0, 0, 0.2);
+.top5Players img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+    border: 1px #e1e1e1 solid;
+    margin-right: 12px;
+    background-color: white;
 }
 
-.last5 img, .top5Players img {
-    width: 50px;
-    height: 50px;
+.last5 img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
 }
 
 .last5 h3 {
     color: #1B263B;
-    font-size: 25px;
+    font-size: 24px;
     font-weight: 600;
     text-decoration-thickness: 2px;
     text-align: left;
-    margin-bottom: 10px;
+    margin-top: -5px;
 }
 
 
@@ -251,7 +255,7 @@
     top: 40px;
     right: 28%;
     text-align: left;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .last5 li .r, .top5Players li .r {
@@ -272,16 +276,18 @@
 }
 .cell {
     /* center the cell content */
-    justify-content: center;
-    align-items: center;
+    justify-content: space-between;
+    align-items: flex-end;
     display: flex;
-    font-family: Arial;
     font-size: 3rem;
     font-weight: bold;
-    background: white;
+    background-color: white;
     border-radius: 10px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    flex-direction: column;
+    padding: 10px;
 }
+
 
 .outcome-grid h3 {
     color: #1B263B;
@@ -289,25 +295,32 @@
     font-weight: 600;
     text-decoration-thickness: 2px;
     text-align: left;
-    margin-bottom: 48px;
+    width: 100%;
 }
 
 .outcome-grid h4 {
-    margin-top: 52px;
     font-size: 22px;
+
 }
 
 .top5Players h3 {
     float: left;
     font-size: 19px;
+    white-space: nowrap;
+    text-overflow: '...';
+    overflow: hidden;
+    max-width: 130px;
+}
 
+#topScorersDiv .top5Players h3 {
+    max-width: 145px !important;
 }
 
 .top5Players h4 {
     float: right;
-    font-size: 19px;
+    font-size: 18px;
     padding-left: 10px;
-
+    font-weight: 500;
 }
 
 .select-container select {
@@ -329,7 +342,6 @@
 
 .player-time-div {
     width: 52%;
-    margin-top: 8px;
 }
 
 @media (max-width: 850px) {

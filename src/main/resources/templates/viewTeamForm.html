@@ -205,7 +205,7 @@
                             <div class="input-box">
                                 <input type="text" id="formation-title" name="formation-title" maxlength="20"
                                        placeholder="">
-                                <label for="formation-title">Formation Name (optional)</label>
+                                <label for="formation-title">Name (optional)</label>
                             </div>
                         </div>
                     </div>
@@ -231,26 +231,23 @@
                 <div class="col-wrapper">
                     <div class="third-col" style="padding-bottom: 20px">
 
-                        <h3 style="margin-top: 12px">Last 5 Matches: </h3>
-                        <div class="last5" style="margin-top: 57px">
+                        <h3>Last 5 Matches: </h3>
+                        <div class="last5">
                             <ul class="last5Ul">
                                 <li th:each="act : ${last5GOrF}"
                                     th:onclick="|window.location.href='@{view-activity(activityID=${act.id})}'|">
                                     <div>
-                                        <h3 th:text="${act.activityType.name()}"></h3>
+                                        <h3 th:text="${act.activityType.name()} + ' - ' + ${act.activityTeamScore} + ' : ' + ${act.otherTeamScore}"></h3>
                                         <h4 th:with="startDate=${#temporals.format(act.activityStart, 'dd MMM yyyy')},
                                endDate=${#temporals.format(act.activityEnd, 'dd MMM yyyy')}"
                                             th:text="${startDate} + ' - ' + ${endDate}"></h4>
-                                        <h4 th:text="'Score: ' + ${act.activityTeamScore} + ' : ' + ${act.otherTeamScore}"></h4>
                                     </div>
-                                    <div>
-                                        <img th:if="${act.outcome.toString() == 'Win'}"
-                                             th:src="@{/image/icons/win.svg}"/>
-                                        <img th:if="${act.outcome.toString() == 'Loss'}"
-                                             th:src="@{/image/icons/loss.svg}"/>
-                                        <img th:if="${act.outcome.toString() == 'Draw'}"
-                                             th:src="@{/image/icons/draw.svg}"/>
-                                    </div>
+                                    <img th:if="${act.outcome.toString() == 'Win'}"
+                                         th:src="@{/image/icons/win.svg}"/>
+                                    <img th:if="${act.outcome.toString() == 'Loss'}"
+                                         th:src="@{/image/icons/loss.svg}"/>
+                                    <img th:if="${act.outcome.toString() == 'Draw'}"
+                                         th:src="@{/image/icons/draw.svg}"/>
                                 </li>
                             </ul>
                         </div>
@@ -272,16 +269,14 @@
 
                             <div class="top5Players">
                                 <ul>
-                                    <li th:each="player : ${top5Scorers}">
-                                        <div>
-                                            <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
-                                        </div>
-                                        <div style="width: 100%; margin-top: 16px">
-                                            <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"></h3>
+                                    <li th:each="player : ${top5Scorers}"
+                                        th:onclick="|window.location.href='@{user-info(name=${player.key.userId})}'|">
+                                        <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
+                                        <div style="width: 79%">
+                                            <h3 th:text="${player.key.firstName.charAt(0)} + '. ' + ${player.key.lastName}"></h3>
 
                                             <h4 th:text="${player.value == 1 ? player.value.toString() + ' pt' : player.value.toString() + ' pts'}"></h4>
                                         </div>
-
                                     </li>
                                 </ul>
                             </div>
@@ -291,33 +286,24 @@
 
                             <div class="top5Players">
                                 <ul>
-                                    <li th:each="player : ${overallPlayersPlaytime}">
-                                        <div>
-                                            <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
-                                        </div>
-                                        <div class="player-name-div" style="width: 100%; margin-top: 16px">
+                                    <li th:each="player : ${overallPlayersPlaytime}"
+                                        th:onclick="|window.location.href='@{user-info(name=${player.key.userId})}'|">
+                                        <img th:src="@{/user-profile-picture/{id}(id = ${player.key.userId})}"/>
+                                        <div class="player-name-div">
                                             <h3 th:text="${player.key.firstName} + ' ' + ${player.key.lastName}"></h3>
                                         </div>
-
                                         <div class="player-time-div">
-
                                             <h4 th:text="'Total: ' + ${player.value[0].toString()} + 'm'"></h4>
                                             <h4 th:text="'Avg: ' + ${player.value[1].toString()} + 'm'"></h4>
-
                                         </div>
-
                                     </li>
                                 </ul>
-
                             </div>
-
                         </div>
-
-
                     </div>
                     <div style="margin-bottom: 10px; width: 32%" class="third-col">
 
-                        <h3 style="margin-top: 12px">Outcome of Games and Friendlies:</h3>
+                        <h3>Outcome of Games and Friendlies:</h3>
                         <div class="outcome-container">
                             <div class="outcome-grid">
                                 <div class="cell" id="cell-1">
@@ -345,8 +331,8 @@
 
 
                         <form th:action="@{team-info}" class="profile-buttons" method="post">
-                            <a class="edit-button" th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
-                                <button style="margin-left: -27px; width: max-content" type="button">View Team
+                            <a th:href="@{viewTeamActivities(page=1, teamID=${teamID})}">
+                                <button style="width: max-content" type="button">View Team
                                     Activities
                                 </button>
                             </a>

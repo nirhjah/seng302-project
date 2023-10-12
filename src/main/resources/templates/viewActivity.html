@@ -47,7 +47,7 @@
         <div class="tab-line"></div>
 
         <div class="content-box active" id="general-tab">
-            <div class="content general" style="max-height: 400px;">
+            <div class="content general">
                 <div class="general-activity-header" style="font-size: x-large; text-align: center; padding: 20px">
                     <h2 th:text="|${activity.activityType.name()}: ${activityStartTitle}|"></h2>
                 </div>
@@ -79,13 +79,13 @@
                                 activity.team.isCoach(currentUser.get()))}">Outcome Not Set</h3>
                                 <div th:if="${activity.outcome == null && completed != null
                                 && (activity.team.isManager(currentUser.get()) ||
-                                activity.team.isCoach(currentUser.get()))}" class="submit-button" style="width: 80%">
-                                    <button style="width: 50%; float:left;"
+                                activity.team.isCoach(currentUser.get()))}" class="general-outcome-button">
+                                    <button
                                             onclick="outcomeModal.style.display = 'block'" type="button">Add Outcome
                                     </button>
                                 </div>
                                 <div id="outcomeModal" class="modal">
-                                    <div class="modal-content event" style="bottom: unset; width: 20%; height:200px">
+                                    <div class="modal-content-outcome event">
                                         <span class="close" onclick="outcomeModal.style.display = 'none'">&times;</span>
                                         <form style="height: unset" th:action="@{add-outcome}" method="post">
                                             <input type="hidden" th:name="actId" th:value="${activity.getId()}"/>
@@ -102,10 +102,13 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="submit-button" style="padding-top: 5%; margin-left: 10%">
-                                                <button id="createEvent" type="submit" class="registerLoginButton">Add
-                                                    Outcome
-                                                </button>
+                                            <div class="outcome-wrapper">
+                                                <div class="submit-button" style="padding-top: 5%; margin-left: 10%">
+                                                    <button id="createEvent" type="submit" class="registerLoginButton">
+                                                        Add
+                                                        Outcome
+                                                    </button>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
@@ -132,14 +135,14 @@
 
                             </div>
                         </div>
-                    </div>
-                    <div style="width: 100%; display: inline-block">
-                        <div class="submit-button"
-                             style="width: 25%; min-width: 150px; float: left; padding-top: 25px; padding-bottom: 8px">
-                            <a th:if="${activity.team==null || (activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}"
-                               th:href="@{create-activity(edit=${activity.id})}" type="button">
-                                <button type="submit" id="editActivityBtn">Edit</button>
-                            </a>
+                        <div style="width: 100%; display: inline-block">
+                            <div class="submit-button"
+                                 style="width: 25%; min-width: 150px; float: left; padding-top: 25px; padding-bottom: 8px">
+                                <a th:if="${activity.team==null || (activity.team.isManager(currentUser.get()) || activity.team.isCoach(currentUser.get()))}"
+                                   th:href="@{create-activity(edit=${activity.id})}" type="button">
+                                    <button type="submit" id="editActivityBtn">Edit</button>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -149,15 +152,14 @@
         <div class="content-box" id="facts-tab" style="margin-bottom: 16px">
             <div class="content">
                 <div th:if="${activity.team==null || (activity.team !=null && (activity.team.isManager(currentUser.get()) ||
-                activity.team.isCoach(currentUser.get())))}" class="submit-button fact"
-                     style="padding-top: 5px; padding-bottom: 5px;margin-left: 10%">
+                activity.team.isCoach(currentUser.get())))}" class="submit-button fact">
                     <button onclick="addFactModal.style.display = 'block'">Add Fact</button>
                 </div>
 
                 <div id="addFactModal" class="modal"
                      th:style="${factInvalid != null ? 'display:block' : 'display:none'}">
 
-                    <div class="add-goal-modal-content event" style="bottom: unset">
+                    <div class="add-goal-modal-content event">
                         <span class="close" onclick="addFactModal.style.display = 'none'">&times;</span>
                         <form style="height: unset" th:action="@{add-fact}" id="addFactForm" method="post"
                               th:object="${addFactForm}" class="view-activity-form">
@@ -223,7 +225,7 @@
             <div class="content" style="overflow: unset">
                 <div id="addSubModal" class="modal"
                      th:style="${subInvalid != null ? 'display:block' : 'display:none'}">
-                    <div class="add-goal-modal-content event" style="bottom: unset">
+                    <div class="add-goal-modal-content event">
                         <span class="close" onclick="addSubModal.style.display = 'none'">&times;</span>
                         <h3>Add Sub</h3>
                         <form style="height: unset" th:action="@{add-sub}" id="add-sub-form" method="post"
@@ -283,7 +285,7 @@
                                     <li style="display: unset" th:each="err : ${#fields.errors('time')}"
                                         th:text="${err}" class="error-message"/>
                                 </ul>
-                                <div style="padding-bottom: 11px; padding-top: 11px; width: 100%;"
+                                <div style="padding-bottom: 11px; padding-top: 11px; width: 100%; margin: none;"
                                      class="submit-button">
                                     <button style="width: 100%" id="addSub" type="submit"> Add</button>
                                 </div>
@@ -361,7 +363,7 @@
         </div>
 
         <div class="content-box" id="scores-tab">
-            <div class="content">
+            <div class="content score">
 
 
                 <div class="scoreboard">
@@ -466,7 +468,7 @@
                     <div id="addGoalModal" class="modal"
                          th:style="${goalInvalid != null ? 'display:block' : 'display:none'}">
 
-                        <div class="add-goal-modal-content event" style="bottom: unset">
+                        <div class="add-goal-modal-content event">
                             <span class="close" onclick="addGoalModal.style.display = 'none'">&times;</span>
                             <form style="height: unset" th:action="@{add-goal}" id="goalForm" method="post"
                                   th:object="${createEventForm}" class="view-activity-form">
@@ -757,7 +759,7 @@
 
     }
 
-    if (tabs.length === 2){
+    if (tabs.length === 2) {
         tabLine.style.width = "50%";
     }
 
